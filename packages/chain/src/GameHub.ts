@@ -18,7 +18,7 @@ import {
 } from 'o1js';
 
 export class GameRecordKey extends Struct({
-    seed: Field,
+    seed: UInt64,
     player: PublicKey,
 }) {}
 
@@ -75,34 +75,35 @@ export class GameRecordPublicOutput extends Struct({
 }) {}
 
 export function checkGameRecord(
-    ignoredPI: Field,
     gameField: GameField,
     gameInputs: GameInputs
 ): GameRecordPublicOutput {
+    // ignoredPI: Field
     // #TODO write game logic
 
-    let score = new UInt64(0);
+    let score = UInt64.from(0);
 
     /// Just for testing purposed 01210 will give you 666 points
-    const cheatCodeScore = new UInt64(666);
+    const cheatCodeScore = UInt64.from(666);
 
-    const cheatCodeActivated =
-        gameInputs.tiks[0].action.equals(UInt64.from(0)) && //.add
-        gameInputs.tiks[1].action.equals(UInt64.from(1)) &&
-        gameInputs.tiks[2].action.equals(UInt64.from(2)) &&
-        gameInputs.tiks[3].action.equals(UInt64.from(1)) &&
-        gameInputs.tiks[4].action.equals(UInt64.from(0));
+    const cheatCodeActivated = gameInputs.tiks[0].action
+        .equals(UInt64.from(0))
+        .and(gameInputs.tiks[1].action.equals(UInt64.from(1)))
+        .and(gameInputs.tiks[2].action.equals(UInt64.from(2)))
+        .and(gameInputs.tiks[3].action.equals(UInt64.from(1)))
+        .and(gameInputs.tiks[4].action.equals(UInt64.from(0)));
 
-    score = Provable.if(cheatCodeActivated, cheatCodeScore, new UInt64(0));
+    score = Provable.if(cheatCodeActivated, cheatCodeScore, UInt64.from(0));
 
     return new GameRecordPublicOutput({ score });
 }
 
 export const gameRecord = Experimental.ZkProgram({
-    publicInput: Field,
+    // publicInput: Field,
     publicOutput: GameRecordPublicOutput,
     methods: {
         checkGameRecord: {
+            // privateInputs: [],
             privateInputs: [GameField, GameInputs],
             method: checkGameRecord,
         },
@@ -114,16 +115,19 @@ export class GameRecordProof extends Experimental.ZkProgram.Proof(gameRecord) {}
 @runtimeModule()
 export class GameHub extends RuntimeModule<unknown> {
     /// Seed + User => Record
-    @state() public gameRecords = StateMap.from(GameRecordKey, UInt64);
-    @state() public seeds = StateMap.from(UInt64, Field);
-    @state() public lastSeed = State.from(UInt64);
-    @state() public lastUpdate = State.from(UInt64);
+    @state() public gameRecords = StateMap.from<GameRecordKey, UInt64>(
+        GameRecordKey,
+        UInt64
+    );
+    @state() public seeds = StateMap.from<UInt64, UInt64>(UInt64, UInt64);
+    @state() public lastSeed = State.from<UInt64>(UInt64);
+    @state() public lastUpdate = State.from<UInt64>(UInt64);
 
     @runtimeMethod()
-    public updateSeed(seed: Field): void {
-        const lastSeedIndex = this.lastSeed.get().orElse(0);
+    public updateSeed(seed: UInt64): void {
+        const lastSeedIndex = this.lastSeed.get().orElse(UInt64.from(0));
         this.seeds.set(lastSeedIndex, seed);
-        this.lastSeed.set(lastSeedIndex + 1);
+        this.lastSeed.set(lastSeedIndex.add(1));
     }
 
     @runtimeMethod()
