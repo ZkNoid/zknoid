@@ -1,4 +1,4 @@
-learimport { TestingAppChain } from '@proto-kit/sdk';
+import { TestingAppChain } from '@proto-kit/sdk';
 import { PrivateKey, Provable, UInt64, Field } from 'o1js';
 import {
     GameHub,
@@ -27,7 +27,8 @@ async function mockProof(
     return new GameRecordProof({
         proof: proof,
         maxProofsVerified: 2,
-        publicInput: Field(0),
+        // publicInput: Field(0),
+        publicInput: undefined,
         publicOutput,
     });
 }
@@ -43,12 +44,13 @@ describe('game hub', () => {
             },
         });
 
-        await appChain.start();
-
         const alicePrivateKey = PrivateKey.random();
         const alice = alicePrivateKey.toPublicKey();
 
+        await appChain.start();
+
         appChain.setSigner(alicePrivateKey);
+
         const gameHub = appChain.runtime.resolve('GameHub');
 
         const dummieField: GameField = new GameField({
@@ -69,23 +71,11 @@ describe('game hub', () => {
         cheatInput.tiks[4] = new Tick({ action: UInt64.from(0) });
 
         const gameProof = await mockProof(
-            checkGameRecord(Field(0), dummieField, cheatInput)
+            checkGameRecord(dummieField, cheatInput)
         );
-
-        console.log(gameProof);
 
         const tx1 = await appChain.transaction(alice, () => {
             gameHub.addGameResult(alice, gameProof);
-        });
-
-        console.log(tx1);
-
-        Provable.log('before sign', {
-            alice,
-            gameProof: {
-                publicInput: gameProof.publicInput,
-                publicOutput: gameProof.publicOutput,
-            },
         });
 
         await tx1.sign();
@@ -93,7 +83,9 @@ describe('game hub', () => {
 
         const block = await appChain.produceBlock();
 
-        const lastSeed = await gameHub.lastSeed.get().value;
+        const lastSeed =
+            (await appChain.query.runtime.GameHub.lastSeed.get()) ??
+            UInt64.from(0);
         console.log(lastSeed);
 
         const gameRecordKey: GameRecordKey = new GameRecordKey({
@@ -101,8 +93,11 @@ describe('game hub', () => {
             player: alice,
         });
 
-        const userScore = await gameHub.gameRecords.get(gameRecordKey).value;
+        console.log(gameRecordKey);
 
-        console.log(userScore);
+        const userScore =
+            await appChain.query.runtime.GameHub.gameRecords.get(gameRecordKey);
+
+        console.log(userScore?.toBigInt());
     });
 });
