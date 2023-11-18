@@ -27,7 +27,6 @@ async function mockProof(
     return new GameRecordProof({
         proof: proof,
         maxProofsVerified: 2,
-        // publicInput: Field(0),
         publicInput: undefined,
         publicOutput,
     });
