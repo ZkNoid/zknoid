@@ -18,6 +18,7 @@ import {
     Provable,
     Int64,
     Bool,
+    Proof,
 } from 'o1js';
 
 export class GameRecordKey extends Struct({
@@ -44,10 +45,9 @@ export class Point extends Struct({
     }
 }
 
-export class GameCell extends Struct({
-    value: UInt64, // Indicated lifes of the cell
-}) {}
+const MAX_BRICKS = 20;
 
+const BRICK_HALF_WIDTH = 25;
 const FIELD_PIXEL_WIDTH = 1000;
 const FIELD_PIXEL_HEIGHT = 2000;
 const PLATFORM_HALF_WIDTH = 50;
@@ -59,10 +59,6 @@ const ADJUST_KOEF = FIELD_PIXEL_WIDTH / FIELD_WIDTH;
 const BRICK_SIZE = FIELD_PIXEL_WIDTH / FIELD_WIDTH;
 
 export const FIELD_SIZE = FIELD_WIDTH * FIELD_HEIGHT;
-
-export class GameField extends Struct({
-    cells: Provable.Array(GameCell, FIELD_SIZE),
-}) {}
 
 export const GAME_LENGTH = 1000;
 
@@ -78,24 +74,24 @@ class MapGenerationPublicOutput extends Struct({}) {}
 
 export function checkMapGeneration(
     seed: Field,
-    gameField: GameField
+    bricks: Bricks
 ): MapGenerationPublicOutput {
     return new MapGenerationPublicOutput({});
 }
 
-export const mapGeneration = Experimental.ZkProgram({
-    publicOutput: MapGenerationPublicOutput,
-    methods: {
-        checkGameRecord: {
-            privateInputs: [Field, GameField],
-            method: checkMapGeneration,
-        },
-    },
-});
+// export const mapGeneration = Experimental.ZkProgram({
+//     publicOutput: MapGenerationPublicOutput,
+//     methods: {
+//         checkGameRecord: {
+//             privateInputs: [Field, Bricks],
+//             method: checkMapGeneration,
+//         },
+//     },
+// });
 
-export class MapGenerationProof extends Experimental.ZkProgram.Proof(
-    mapGeneration
-) {}
+// export class MapGenerationProof extends Experimental.ZkProgram.Proof(
+//     mapGeneration
+// ) {}
 
 export class GameRecordPublicOutput extends Struct({
     score: UInt64,
@@ -114,6 +110,15 @@ class IntPoint extends Struct({
         });
     }
 }
+
+export class Brick extends Struct({
+    pos: IntPoint, //
+    value: UInt64,
+}) {}
+
+export class Bricks extends Struct({
+    bricks: Provable.Array(Brick, MAX_BRICKS),
+}) {}
 
 class Ball extends Struct({
     position: IntPoint,
@@ -136,7 +141,7 @@ const DEFAULT_BALL_SPEED = IntPoint.from(1, 1);
 const DEFAULT_PLATFORM_LOCATION = Int64.from(100);
 
 export function checkGameRecord(
-    gameField: GameField,
+    bricks: Bricks,
     gameInputs: GameInputs
 ): GameRecordPublicOutput {
     let winable = Bool(true);
@@ -160,6 +165,11 @@ export function checkGameRecord(
             .sub(gameInputs.tiks[i].action);
 
         /// 3) Update ball position
+        const prevBallPos = new IntPoint({
+            x: ball.position.x,
+            y: ball.position.y,
+        });
+
         ball.move();
 
         /// 4) Check for edge bumps
@@ -219,7 +229,138 @@ export function checkGameRecord(
 
         winable = winable.and(isFail.not());
 
-        /// 6) Check bricks bump
+        //6) Check bricks bump
+
+        for (let j = 0; j < MAX_BRICKS; j++) {
+            const currentBrick = bricks.bricks[j];
+            let isAlive = currentBrick.value.greaterThan(UInt64.from(0));
+
+            let leftBorder = currentBrick.pos.x.sub(BRICK_HALF_WIDTH);
+            let rightBorder = currentBrick.pos.x.add(BRICK_HALF_WIDTH);
+            let topBorder = currentBrick.pos.y.add(BRICK_HALF_WIDTH);
+            let bottomBorder = currentBrick.pos.y.sub(BRICK_HALF_WIDTH);
+
+            /*
+            Collision
+                ball.pos.x \inc [leftBorder, rightBorder]
+                ball.pos.y \inc [bottomBorder, topBorder]
+
+            */
+
+            const horizontalCollision = rightBorder
+                .sub(ball.position.x)
+                .isPositive()
+                .and(ball.position.x.sub(leftBorder).isPositive());
+
+            const verticalCollision = topBorder
+                .sub(ball.position.y)
+                .isPositive()
+                .and(ball.position.y.sub(bottomBorder).isPositive());
+
+            const collisionHappen = isAlive.and(
+                horizontalCollision.and(verticalCollision)
+            );
+
+            /*
+                Detect where collision ocured
+                /////////////// vertical part of a brick //////////////////////////
+                y = d
+                ay = bx + c;
+                c = ay1 - bx1
+                    a - ball.speed.x
+                    b - ball.speed.y
+                bx = ay - c
+                bx = ad - c;
+
+                x \incl [ brick.pos.x - BRICK_HALF_WIDTH, brick.pos.x + BRICK_HALF_WIDTH ]
+                bx \incl [b(brics.pos.x - BRICK_HALF_WIDTH, b(brick.pos.x + BRICK_HALF_WIDTH))]
+                ad - c \incl [b(brics.pos.x - BRICK_HALF_WIDTH, b(brick.pos.x + BRICK_HALF_WIDTH))]
+                
+
+
+                /////////////// horizontal part of a brick ////////////////////////////
+                x = d
+                ay = bx + c
+                c = ay1 - bx1
+                    a - ball.speed.x
+                    b - ball.speed.y
+                ay = bd + c
+
+                y \incl [ brick.pos.y - BRICK_HALF_WIDTH, brick.pos.y + BRICK_HALF_WIDTH]
+                ay \incl [ a(brick.pos.y - BRICK_HALF_WIDTH), a(brick.pos.y + BRICK_HALF_WIDTH)]
+                bd + c \incl [ a(brick.pos.y - BRICK_HALF_WIDTH), a(brick.pos.y + BRICK_HALF_WIDTH)]
+            */
+
+            let a = ball.speed.x;
+            let b = ball.speed.y;
+            let c = a.mul(ball.position.y).sub(b.mul(ball.position.x));
+
+            // Top horizontal
+            let d1 = topBorder;
+            let adc1 = a.mul(d1).sub(c);
+            let crossBrickTop = adc1
+                .sub(b.mul(leftBorder))
+                .isPositive()
+                .and(b.mul(rightBorder).sub(adc1).isPositive());
+            let hasTopBump = crossBrickTop.and(
+                prevBallPos.y.sub(topBorder).isPositive()
+            );
+
+            // Bottom horisontal
+            let d2 = bottomBorder;
+            let adc2 = a.mul(d2).sub(c);
+            let crossBrickBottom = adc2
+                .sub(b.mul(leftBorder))
+                .isPositive()
+                .and(b.mul(rightBorder).sub(adc2).isPositive());
+            let hasBottomBump = crossBrickBottom.and(
+                bottomBorder.sub(prevBallPos.y).isPositive()
+            );
+
+            // Left vertical
+            let d3 = leftBorder;
+            let bdc1 = b.mul(d3).add(c);
+            let crossBrickLeft = a
+                .mul(topBorder)
+                .sub(bdc1)
+                .isPositive()
+                .and(bdc1.sub(a.mul(bottomBorder)).isPositive());
+            let hasLeftBump = crossBrickLeft.and(
+                leftBorder.sub(prevBallPos.x).isPositive()
+            );
+
+            // Right vertical
+            let d4 = rightBorder;
+            let bdc2 = b.mul(d4).add(c);
+            let crossBrickRight = a
+                .mul(topBorder)
+                .sub(bdc2)
+                .isPositive()
+                .and(bdc2.sub(a.mul(bottomBorder)).isPositive());
+            let hasRightBump = crossBrickRight.and(
+                prevBallPos.x.sub(rightBorder).isPositive()
+            );
+
+            // Reduce health if coliision happend and brick is not dead
+            currentBrick.value = Provable.if(
+                collisionHappen,
+                currentBrick.value.sub(1),
+                currentBrick.value
+            );
+
+            ball.speed.x = Provable.if(
+                hasLeftBump.or(hasRightBump),
+                ball.speed.x.neg(),
+                ball.speed.x
+            );
+
+            ball.speed.y = Provable.if(
+                hasBottomBump.or(hasTopBump),
+                ball.speed.y.neg(),
+                ball.speed.y
+            );
+        }
+
         /*
         let gridX = ball.position.x.div(ADJUST_KOEF);
         let gridY = ball.position.y.div(ADJUST_KOEF);
@@ -259,7 +400,7 @@ export const gameRecord = Experimental.ZkProgram({
     methods: {
         checkGameRecord: {
             // privateInputs: [],
-            privateInputs: [GameField, GameInputs],
+            privateInputs: [Bricks, GameInputs],
             method: checkGameRecord,
         },
     },
@@ -287,15 +428,12 @@ export class GameHub extends RuntimeModule<unknown> {
 
     @runtimeMethod()
     /// Check for user public key
-    public addGameResult(
-        account: PublicKey,
-        gameRecordProof: GameRecordProof
-    ): void {
+    public addGameResult(gameRecordProof: GameRecordProof): void {
         gameRecordProof.verify();
 
         const gameKey = new GameRecordKey({
             seed: this.seeds.get(this.lastSeed.get().value).value,
-            player: account,
+            player: this.transaction.sender,
         });
 
         const currentScore = this.gameRecords.get(gameKey).value;
