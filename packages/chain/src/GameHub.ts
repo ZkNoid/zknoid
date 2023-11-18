@@ -140,99 +140,98 @@ const DEFAULT_BALL_LOCATION = IntPoint.from(100, 100);
 const DEFAULT_BALL_SPEED = IntPoint.from(1, 1);
 const DEFAULT_PLATFORM_LOCATION = Int64.from(100);
 
-export function checkGameRecord(
+export class GameContext extends Struct({
     bricks: Bricks,
-    gameInputs: GameInputs
-): GameRecordPublicOutput {
-    let winable = Bool(true);
-    let score = UInt64.from(0);
-    let ball = new Ball({
-        position: DEFAULT_BALL_LOCATION,
-        speed: DEFAULT_BALL_SPEED,
-    });
-    let platform = new Platform({
-        position: DEFAULT_PLATFORM_LOCATION,
-    });
-
-    for (let i = 0; i < gameInputs.tiks.length; i++) {
+    ball: Ball,
+    platform: Platform,
+    score: UInt64,
+    winable: Bool,
+}) {
+    processTick(tick: Tick): void {
         // 1) Update score
-        score = score.add(1);
+        this.score = this.score.add(1);
 
         /// 2) Update platform position
         /// Check for underflow/overflow
-        platform.position = platform.position
-            .add(1)
-            .sub(gameInputs.tiks[i].action);
+        this.platform.position = this.platform.position.add(1).sub(tick.action);
 
         /// 3) Update ball position
         const prevBallPos = new IntPoint({
-            x: ball.position.x,
-            y: ball.position.y,
+            x: this.ball.position.x,
+            y: this.ball.position.y,
         });
 
-        ball.move();
+        this.ball.move();
 
         /// 4) Check for edge bumps
 
-        const leftBump = ball.position.x.isPositive().not();
-        const rightBump = ball.position.x.sub(FIELD_PIXEL_WIDTH).isPositive();
-        const topBump = ball.position.y.sub(FIELD_PIXEL_HEIGHT).isPositive();
-        const bottomBump = ball.position.y.isPositive().not();
+        const leftBump = this.ball.position.x.isPositive().not();
+        const rightBump = this.ball.position.x
+            .sub(FIELD_PIXEL_WIDTH)
+            .isPositive();
+        const topBump = this.ball.position.y
+            .sub(FIELD_PIXEL_HEIGHT)
+            .isPositive();
+        const bottomBump = this.ball.position.y.isPositive().not();
 
         /// Add come constrains just in case
 
         // If bumf - just return it and change speed
-        ball.position.x = Provable.if(leftBump, Int64.from(0), ball.position.x);
-        ball.position.x = Provable.if(
+        this.ball.position.x = Provable.if(
+            leftBump,
+            Int64.from(0),
+            this.ball.position.x
+        );
+        this.ball.position.x = Provable.if(
             rightBump,
             Int64.from(FIELD_PIXEL_WIDTH),
-            ball.position.x
+            this.ball.position.x
         );
 
-        ball.speed.x = Provable.if(
+        this.ball.speed.x = Provable.if(
             leftBump.or(rightBump),
-            ball.speed.x.neg(),
-            ball.speed.x
+            this.ball.speed.x.neg(),
+            this.ball.speed.x
         );
 
-        ball.position.y = Provable.if(
+        this.ball.position.y = Provable.if(
             topBump,
             Int64.from(FIELD_PIXEL_HEIGHT),
-            ball.position.y
+            this.ball.position.y
         );
-        ball.position.y = Provable.if(
+        this.ball.position.y = Provable.if(
             bottomBump,
             Int64.from(0),
-            ball.position.y
+            this.ball.position.y
         );
 
-        ball.speed.y = Provable.if(
+        this.ball.speed.y = Provable.if(
             topBump.or(bottomBump),
-            ball.speed.y.neg(),
-            ball.speed.y
+            this.ball.speed.y.neg(),
+            this.ball.speed.y
         );
 
         /// 5) Check platform bump
         let isFail = bottomBump.and(
             /// Too left from the platform
-            ball.position.x
-                .sub(platform.position.sub(PLATFORM_HALF_WIDTH))
+            this.ball.position.x
+                .sub(this.platform.position.sub(PLATFORM_HALF_WIDTH))
                 .isPositive()
                 .not()
                 .or(
                     // Too right from the platform
-                    ball.position.x
-                        .sub(platform.position.add(PLATFORM_HALF_WIDTH))
+                    this.ball.position.x
+                        .sub(this.platform.position.add(PLATFORM_HALF_WIDTH))
                         .isPositive()
                 )
         );
 
-        winable = winable.and(isFail.not());
+        this.winable = this.winable.and(isFail.not());
 
         //6) Check bricks bump
 
         for (let j = 0; j < MAX_BRICKS; j++) {
-            const currentBrick = bricks.bricks[j];
+            const currentBrick = this.bricks.bricks[j];
             let isAlive = currentBrick.value.greaterThan(UInt64.from(0));
 
             let leftBorder = currentBrick.pos.x.sub(BRICK_HALF_WIDTH);
@@ -248,14 +247,14 @@ export function checkGameRecord(
             */
 
             const horizontalCollision = rightBorder
-                .sub(ball.position.x)
+                .sub(this.ball.position.x)
                 .isPositive()
-                .and(ball.position.x.sub(leftBorder).isPositive());
+                .and(this.ball.position.x.sub(leftBorder).isPositive());
 
             const verticalCollision = topBorder
-                .sub(ball.position.y)
+                .sub(this.ball.position.y)
                 .isPositive()
-                .and(ball.position.y.sub(bottomBorder).isPositive());
+                .and(this.ball.position.y.sub(bottomBorder).isPositive());
 
             const collisionHappen = isAlive.and(
                 horizontalCollision.and(verticalCollision)
@@ -291,9 +290,11 @@ export function checkGameRecord(
                 bd + c \incl [ a(brick.pos.y - BRICK_HALF_WIDTH), a(brick.pos.y + BRICK_HALF_WIDTH)]
             */
 
-            let a = ball.speed.x;
-            let b = ball.speed.y;
-            let c = a.mul(ball.position.y).sub(b.mul(ball.position.x));
+            let a = this.ball.speed.x;
+            let b = this.ball.speed.y;
+            let c = a
+                .mul(this.ball.position.y)
+                .sub(b.mul(this.ball.position.x));
 
             // Top horizontal
             let d1 = topBorder;
@@ -348,47 +349,52 @@ export function checkGameRecord(
                 currentBrick.value
             );
 
-            ball.speed.x = Provable.if(
+            this.ball.speed.x = Provable.if(
                 hasLeftBump.or(hasRightBump),
-                ball.speed.x.neg(),
-                ball.speed.x
+                this.ball.speed.x.neg(),
+                this.ball.speed.x
             );
 
-            ball.speed.y = Provable.if(
+            this.ball.speed.y = Provable.if(
                 hasBottomBump.or(hasTopBump),
-                ball.speed.y.neg(),
-                ball.speed.y
+                this.ball.speed.y.neg(),
+                this.ball.speed.y
             );
         }
+    }
+}
 
-        /*
-        let gridX = ball.position.x.div(ADJUST_KOEF);
-        let gridY = ball.position.y.div(ADJUST_KOEF);
+export function checkGameRecord(
+    bricks: Bricks,
+    gameInputs: GameInputs
+): GameRecordPublicOutput {
+    let winable = Bool(true);
+    let score = UInt64.from(0);
+    let ball = new Ball({
+        position: DEFAULT_BALL_LOCATION,
+        speed: DEFAULT_BALL_SPEED,
+    });
+    let platform = new Platform({
+        position: DEFAULT_PLATFORM_LOCATION,
+    });
 
-        gridX.sub(FIELD_WIDTH).isPositive().assertFalse(); // No index out of length
-        gridX.isPositive().assertTrue();
-        gridY.sub(FIELD_HEIGHT).isPositive().assertFalse();
-        gridY.isPositive().assertTrue();
+    const gameContext = new GameContext({
+        bricks,
+        ball,
+        platform,
+        score,
+        winable,
+    });
 
-        let gridXNum = gridX.toConstant();
-        let gridYNum = gridY.toConstant();
-        // gridX + gridY * FIELD_WIDTH
+    for (let i = 0; i < gameInputs.tiks.length; i++) {
+        gameContext.processTick(gameInputs.tiks[i]);
+    }
 
-        let element = new GameCell({ value: UInt64.from(0) });
-        for (let i = 0; i++; i < gameField.cells.length) {
-            // let _x:ToFieldable = gameField.cells[i];
-            // GameCell.toFields(gameField.cells[i])
-            element = Provable.if(
-                Int64.from(i).equals(gridX),
-                GameCell,
-                gameField.cells[i],
-                element
-            );
-        }
+    gameContext.winable.assertTrue();
 
-        // gameField.cells[Number(gridX.toField().toString())]
-
-        */
+    for (let i = 0; i < gameContext.bricks.bricks.length; i++) {
+        /// Check that all bricks is destroyed
+        gameContext.bricks.bricks[i].value.assertEquals(UInt64.from(0));
     }
 
     return new GameRecordPublicOutput({ score });
