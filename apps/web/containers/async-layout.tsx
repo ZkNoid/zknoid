@@ -1,16 +1,16 @@
 import Header from "@/components/header";
 import { Toaster } from "@/components/ui/toaster";
-import { useClientStore } from "@/lib/stores/client";
+// import { useClientStore } from "@/lib/stores/client";
 import { useNotifyTransactions, useWalletStore } from "@/lib/stores/wallet";
 import { ReactNode, useEffect, useMemo } from "react";
 
 export default function AsyncLayout({ children }: { children: ReactNode }) {
   const wallet = useWalletStore();
-  const client = useClientStore();
+  // const client = useClientStore();
   useNotifyTransactions();
 
   useEffect(() => {
-    client.start();
+    // client.start();
   }, []);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export default function AsyncLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <Header
-        loading={client.loading}
+        loading={false}
         wallet={wallet.wallet}
         onConnectWallet={wallet.connectWallet}
         blockHeight={"0"}
