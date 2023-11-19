@@ -1,7 +1,7 @@
 "use client";
 import { Faucet } from "@/components/faucet";
 import { useWalletStore } from "@/lib/stores/wallet";
-import { GameRecordProof, client } from "zknoid-chain";
+// import { GameRecordProof, client } from "zknoid-chain";
 import { useEffect, useRef, useState } from 'react'
 import { PublicKey } from "o1js";
 import { DUMMY_PROOF } from "@/constants";
@@ -216,7 +216,7 @@ export default function Home() {
     ball = {
       x: canvas!.current!.width / 2,
       y: canvas!.current!.height / 2,
-      dx: 5,
+      dx: 4,
       dy: -3,
       radius: 3
     };
@@ -268,16 +268,18 @@ export default function Home() {
     setLost(true);
     setWin(false);
     stopped = true;
-    client.start();
-    const gameHub = client.runtime.resolve('GameHub');
-    const sender = PublicKey.fromBase58(address);
 
-    const tx1 = await client.transaction(sender, () => {
-        gameHub.addGameResult(sender, GameRecordProof.fromJSON(DUMMY_PROOF));
-    });
+    // @help porblem with deployement because of local package
+    // client.start();
+    // const gameHub = client.runtime.resolve('GameHub');
+    // const sender = PublicKey.fromBase58(address);
 
-    await tx1.sign();
-    await tx1.send();
+    // const tx1 = await client.transaction(sender, () => {
+    //     gameHub.addGameResult(sender, GameRecordProof.fromJSON(DUMMY_PROOF));
+    // });
+
+    // await tx1.sign();
+    // await tx1.send();
 
     // const sender = PublicKey.fromBase58(address);
 
