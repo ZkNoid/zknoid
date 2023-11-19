@@ -33,8 +33,8 @@ interface Cart {
   dx: number;
 }
 
-const bricksInRow = 1;
-const bricksInCol = 1;
+const bricksInRow = 5;
+const bricksInCol = 2;
 
 export default function Home() {
   const wallet = useWalletStore();
