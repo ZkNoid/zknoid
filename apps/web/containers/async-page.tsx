@@ -4,11 +4,12 @@ import { useWalletStore } from "@/lib/stores/wallet";
 import { FIELD_SIZE, GAME_LENGTH, GameCell, GameField, GameInputs, GameRecordProof, GameRecordPublicOutput, Tick, client, checkGameRecord } from "chain";
 import { useEffect, useRef, useState } from 'react'
 import { PublicKey, UInt64 } from "o1js";
+import { DUMMY_PROOF } from "@/constants";
 // import { dummyBase64Proof } from './../node_modules/o1js/dist/web/lib/proof_system';
 // import { Pickles } from 'o1js/dist/node/snarky';
 // export { Pickles } from 'o1js/';
 
-interface Ball {    
+interface Ball {
   x: number;
   y: number;
   dx: number;
@@ -59,29 +60,29 @@ export default function Home() {
   let stopped: boolean = false;
 
   useEffect(() => {
-      const ctx = canvas!.current?.getContext('2d');
-      setContext(ctx);
+    const ctx = canvas!.current?.getContext('2d');
+    setContext(ctx);
   }, [canvas]);
 
   const gameLoop = (time: number) => {
-      if (stopped) return;
+    if (stopped) return;
 
-      ctx!.clearRect(0, 0, canvas.current!.width, canvas.current!.height);
-      moveCart();
-      moveBall();
+    ctx!.clearRect(0, 0, canvas.current!.width, canvas.current!.height);
+    moveCart();
+    moveBall();
 
-      drawBall();
-      drawBricks();
+    drawBall();
+    drawBricks();
 
-      drawCart();
+    drawCart();
 
-      if (Date.now() - lastUpdateTime > tickPeriod) {
-        ticksCache.push(1);
-        setTicks([...ticksCache, 1]);
-        lastUpdateTime = Date.now();
-      }
+    if (Date.now() - lastUpdateTime > tickPeriod) {
+      ticksCache.push(1);
+      setTicks([...ticksCache, 1]);
+      lastUpdateTime = Date.now();
+    }
 
-      setAnimationId(requestAnimationFrame(gameLoop));
+    setAnimationId(requestAnimationFrame(gameLoop));
   }
 
   const moveCart = () => {
@@ -98,8 +99,8 @@ export default function Home() {
   }
 
   const moveBall = () => {
-      ball.x += ball.dx;
-      ball.y += ball.dy;
+    ball.x += ball.dx;
+    ball.y += ball.dy;
 
     if (ball.x + ball.radius > canvas!.current!.width || ball.x - ball.radius < 0) {
       ball.dx *= -1;
@@ -127,17 +128,16 @@ export default function Home() {
       column.forEach(brick => {
         if (brick.active) {
           if (
-            ball.x - ball.radius > brick.x && 
-            ball.x + ball.radius < brick.x + brick.w && 
-            ball.y + ball.radius > brick.y && 
-            ball.y - ball.radius < brick.y + brick.h 
-                      ) {
+            ball.x - ball.radius > brick.x &&
+            ball.x + ball.radius < brick.x + brick.w &&
+            ball.y + ball.radius > brick.y &&
+            ball.y - ball.radius < brick.y + brick.h
+          ) {
             ball.dy *= -1;
             brick.active = false;
             bricksLeft -= 1;
 
             if (bricksLeft == 0) {
-              console.log('Win');
               stopped = true;
               setWin(true);
             }
@@ -148,17 +148,17 @@ export default function Home() {
   }
 
   const drawBall = () => {
-      ctx!.beginPath();
-      ctx!.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-      ctx!.fillStyle = 'black';
-      ctx!.fill();
-      ctx!.closePath();
+    ctx!.beginPath();
+    ctx!.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+    ctx!.fillStyle = 'black';
+    ctx!.fill();
+    ctx!.closePath();
   }
 
   const drawBricks = () => {
     bricks.forEach(column => {
       column.forEach(brick => {
-        
+
         ctx!.beginPath();
         ctx!.rect(brick.x, brick.y, brick.w, brick.h);
         ctx!.fillStyle = brick.active ? '#0095dd' : 'transparent';
@@ -191,7 +191,7 @@ export default function Home() {
         setTicks([...ticksCache, 0]);
         lastUpdateTime = Date.now();
       }
-      
+
       cart.dx = -4;
     }
   }
@@ -212,199 +212,205 @@ export default function Home() {
     setWin(false);
     stopped = false;
     bricksLeft = bricksInRow * bricksInCol
-    console.log('Start');
-      ball = {
-          x: canvas!.current!.width / 2,
-          y: canvas!.current!.height / 2,
-          dx: 4,
-          dy: -4,
-          radius: 3
-      };
 
-      cart = {
-        x: canvas!.current!.width / 2,
-        y: canvas!.current!.height - 10,
-        w: 100,
-        h: 20,
-        dx: 0,
+    ball = {
+      x: canvas!.current!.width / 2,
+      y: canvas!.current!.height / 2,
+      dx: 5,
+      dy: -3,
+      radius: 3
     };
 
-      const commonBrick = {
-        w: 30,
-        h: 30,
-        gap: 20,
-        active: true
-      };
-  
-      for (let i = 0; i < bricksInRow; i++) {
-        bricks[i] = [];
-        for (let j = 0; j < bricksInCol; j++) {
-          const x = i * (commonBrick.w + commonBrick.gap);
-          const y = j * (commonBrick.h + commonBrick.gap) + 60;
-          bricks[i][j] = { x, y, ...commonBrick };
-        }
-      }
+    cart = {
+      x: canvas!.current!.width / 2,
+      y: canvas!.current!.height - 10,
+      w: 100,
+      h: 20,
+      dx: 0,
+    };
 
-      if (
-        ball.x - ball.radius > cart.x &&
-        ball.x + ball.radius < cart.x + cart.w &&
-        ball.y + ball.radius > cart.y
-      ) {
-        ball.dy = -ball.dy;
-      }
-  
-      gameLoop(-1);
+    const commonBrick = {
+      w: 30,
+      h: 30,
+      gap: 20,
+      active: true
+    };
 
-      document.addEventListener('keydown', keyDown);
-      document.addEventListener('keyup', keyUp);
+    for (let i = 0; i < bricksInRow; i++) {
+      bricks[i] = [];
+      for (let j = 0; j < bricksInCol; j++) {
+        const x = i * (commonBrick.w + commonBrick.gap) + 200;
+        const y = j * (commonBrick.h + commonBrick.gap) + 60;
+        bricks[i][j] = { x, y, ...commonBrick };
+      }
+    }
+
+    if (
+      ball.x - ball.radius > cart.x &&
+      ball.x + ball.radius < cart.x + cart.w &&
+      ball.y + ball.radius > cart.y
+    ) {
+      ball.dy = -ball.dy;
+    }
+
+    gameLoop(-1);
+
+    document.addEventListener('keydown', keyDown);
+    document.addEventListener('keyup', keyUp);
   }
 
   const connectWallet = async () => {
-      const accounts = await (window as any).mina.requestAccounts();
-      setAddress(accounts[0])
+    const accounts = await (window as any).mina.requestAccounts();
+    setAddress(accounts[0])
   }
 
   const endGame = async () => {
     setLost(true);
     setWin(false);
     stopped = true;
+    client.start();
+    const gameHub = client.runtime.resolve('GameHub');
+    const sender = PublicKey.fromBase58(address);
 
-      // const gameHub = client.runtime.resolve('GameHub'); 
-  // }
-  // return null;
-  // const endGame = async () => {
-      // client.start();
-      // const appChain = TestingAppChain.fromRuntime({
-      //     modules: {
-      //         GameHub,
-      //     },
-      //     config: {
-      //         GameHub: {},
-      //     },
-      // });
+    const tx1 = await client.transaction(sender, () => {
+        gameHub.addGameResult(sender, GameRecordProof.fromJSON(DUMMY_PROOF));
+    });
 
-      // const balances = client.runtime.resolve("Balances");
-      // const sender = PublicKey.fromBase58(address);
+    await tx1.sign();
+    await tx1.send();
 
-      // const tx = await client.transaction(sender, () => {
-      //   balances.addBalance(sender, UInt64.from(1000));
-      // });
+    // 
+    //  
+    // }
+    // return null;
+    // const endGame = async () => {
+    // const appChain = TestingAppChain.fromRuntime({
+    //     modules: {
+    //         GameHub,
+    //     },
+    //     config: {
+    //         GameHub: {},
+    //     },
+    // });
 
-      // const gameHub = client.runtime.resolve('GameHub');
+    // const balances = client.runtime.resolve("Balances");
+    // const sender = PublicKey.fromBase58(address);
 
-      // const dummieField: GameField = new GameField({
-      //     cells: [...new Array(FIELD_SIZE)].map(
-      //         (elem) => new GameCell({ value: UInt64.from(0) })
-      //     ),
-      // });
+    // const tx = await client.transaction(sender, () => {
+    //   balances.addBalance(sender, UInt64.from(1000));
+    // });
 
-      // let cheatInput: GameInputs = new GameInputs({
-      //     tiks: [...new Array(GAME_LENGTH)].map(
-      //         (elem) => new Tick({ action: UInt64.from(0) })
-      //     ),
-      // });
+    // const gameHub = client.runtime.resolve('GameHub');
 
-      // cheatInput.tiks[1] = new Tick({ action: UInt64.from(1) });
-      // cheatInput.tiks[2] = new Tick({ action: UInt64.from(2) });
-      // cheatInput.tiks[3] = new Tick({ action: UInt64.from(1) });
-      // cheatInput.tiks[4] = new Tick({ action: UInt64.from(0) });
+    // const dummieField: GameField = new GameField({
+    //     cells: [...new Array(FIELD_SIZE)].map(
+    //         (elem) => new GameCell({ value: UInt64.from(0) })
+    //     ),
+    // });
 
-      // dummyBase64Proof();
+    // let cheatInput: GameInputs = new GameInputs({
+    //     tiks: [...new Array(GAME_LENGTH)].map(
+    //         (elem) => new Tick({ action: UInt64.from(0) })
+    //     ),
+    // });
 
-      // const gameProof = await mockProof(
-      //     checkGameRecord(dummieField, cheatInput)
-      // );
-      // const sender = PublicKey.fromBase58(address);
+    // cheatInput.tiks[1] = new Tick({ action: UInt64.from(1) });
+    // cheatInput.tiks[2] = new Tick({ action: UInt64.from(2) });
+    // cheatInput.tiks[3] = new Tick({ action: UInt64.from(1) });
+    // cheatInput.tiks[4] = new Tick({ action: UInt64.from(0) });
 
-      // const tx1 = await client.transaction(sender, () => {
-      //     gameHub.addGameResult(sender, gameProof);
-      // });
+    // dummyBase64Proof();
 
-      // await tx1.sign();
-      // await tx1.send();
-
-
-      // const lastSeed =
-      //     (await appChain.query.runtime.GameHub.lastSeed.get()) ??
-      //     UInt64.from(0);
-      // console.log(lastSeed);
+    // const gameProof = await mockProof(
+    //     checkGameRecord(dummieField, cheatInput)
+    // );
 
 
-      // const alice = alicePrivateKey.toPublicKey();
 
-      // await appChain.start();
+    // const lastSeed =
+    //     (await appChain.query.runtime.GameHub.lastSeed.get()) ??
+    //     UInt64.from(0);
+    // console.log(lastSeed);
 
 
-      // const gameHub = appChain.runtime.resolve('GameHub');
+    // const alice = alicePrivateKey.toPublicKey();
 
-      // // @ts-expect-error
-      // const dummieField: GameField = new GameField({
-      //     cells: [...new Array(FIELD_SIZE)].map(
-      //         (elem) => new GameCell({ value: UInt64.from(0) })
-      //     ),
-      // });
+    // await appChain.start();
 
-      // let cheatInput: GameInputs = new GameInputs({
-      //     tiks: [...new Array(GAME_LENGTH)].map(
-      //         (elem) => new Tick({ action: UInt64.from(0) })
-      //     ),
-      // }); // })[... new Array(FIELD_SIZE)].map(elem => )
 
-      // cheatInput.tiks[1] = new Tick({ action: UInt64.from(1) });
-      // cheatInput.tiks[2] = new Tick({ action: UInt64.from(2) });
-      // cheatInput.tiks[3] = new Tick({ action: UInt64.from(1) });
-      // cheatInput.tiks[4] = new Tick({ action: UInt64.from(0) });
+    // const gameHub = appChain.runtime.resolve('GameHub');
 
-      // const gameProof = await mockProof(
-      //     checkGameRecord(dummieField, cheatInput)
-      // );
+    // // @ts-expect-error
+    // const dummieField: GameField = new GameField({
+    //     cells: [...new Array(FIELD_SIZE)].map(
+    //         (elem) => new GameCell({ value: UInt64.from(0) })
+    //     ),
+    // });
 
-      // const tx1 = await appChain.transaction(alice, () => {
-      //     gameHub.addGameResult(alice, gameProof);
-      // });
+    // let cheatInput: GameInputs = new GameInputs({
+    //     tiks: [...new Array(GAME_LENGTH)].map(
+    //         (elem) => new Tick({ action: UInt64.from(0) })
+    //     ),
+    // }); // })[... new Array(FIELD_SIZE)].map(elem => )
 
-      // await tx1.sign();
-      // await tx1.send();
+    // cheatInput.tiks[1] = new Tick({ action: UInt64.from(1) });
+    // cheatInput.tiks[2] = new Tick({ action: UInt64.from(2) });
+    // cheatInput.tiks[3] = new Tick({ action: UInt64.from(1) });
+    // cheatInput.tiks[4] = new Tick({ action: UInt64.from(0) });
 
-      // const block = await appChain.produceBlock();
+    // const gameProof = await mockProof(
+    //     checkGameRecord(dummieField, cheatInput)
+    // );
 
-      // const lastSeed =
-      //     (await appChain.query.runtime.GameHub.lastSeed.get()) ??
-      //     UInt64.from(0);
-      // console.log(lastSeed);
+    // const tx1 = await appChain.transaction(alice, () => {
+    //     gameHub.addGameResult(alice, gameProof);
+    // });
 
-      // const gameRecordKey: GameRecordKey = new GameRecordKey({
-      //     seed: lastSeed,
-      //     player: alice,
-      // });
+    // await tx1.sign();
+    // await tx1.send();
 
-      // console.log(gameRecordKey);
+    // const block = await appChain.produceBlock();
 
-      // const userScore =
-      //     await appChain.query.runtime.GameHub.gameRecords.get(gameRecordKey);
+    // const lastSeed =
+    //     (await appChain.query.runtime.GameHub.lastSeed.get()) ??
+    //     UInt64.from(0);
+    // console.log(lastSeed);
 
-      // console.log(userScore?.toBigInt());
+    // const gameRecordKey: GameRecordKey = new GameRecordKey({
+    //     seed: lastSeed,
+    //     player: alice,
+    // });
+
+    // console.log(gameRecordKey);
+
+    // const userScore =
+    //     await appChain.query.runtime.GameHub.gameRecords.get(gameRecordKey);
+
+    // console.log(userScore?.toBigInt());
   }
 
   return (
     <main className="flex min-h-screen flex-col items-center p-5">
-            {
-                address ?
-                <div className="flex flex-col gap-5">
-                      {win && <div>You won! Ticks verification: <input type="text" value={JSON.stringify(ticks)}></input></div>}
-                      {lost && <div>You've lost! Nothing to prove</div>}
+      {
+        address ?
+          <div className="flex flex-col gap-5">
+            {win && <div>You won! Ticks verification: <input type="text" value={JSON.stringify(ticks)} readOnly></input></div>}
+            {lost && <div>You've lost! Nothing to prove</div>}
 
-                    <div className="flex flex-row gap-5 items-center justify-center">
-                      {win || lost ? (
-                        <div className='p-5 bg-slate-300 rounded-xl' onClick={() => startGame()}>Restart</div>
-                      ) : (
-                        <div className='p-5 bg-slate-300 rounded-xl' onClick={() => startGame()}>Start</div>
-                      )}
-                                          </div></div>:
-                    <div className='p-5 bg-slate-300 rounded-xl' onClick={() => connectWallet()}>Connect wallet</div>
-            }
-            <canvas id="canvas" width="500" height="500" ref={canvas}>
-            </canvas>
-        </main>
+            <div className="flex flex-row gap-5 items-center justify-center">
+              {win || lost ? (
+                <div className='p-5 bg-slate-300 rounded-xl' onClick={() => startGame()}>Restart</div>
+              ) : (
+                <div className='p-5 bg-slate-300 rounded-xl' onClick={() => startGame()}>Start</div>
+              )}
+               {win && 
+                <div className='p-5 bg-slate-300 rounded-xl' onClick={() => startGame()}>Send proof</div>
+              }
+            </div></div> :
+          <div className='p-5 bg-slate-300 rounded-xl' onClick={() => connectWallet()}>Connect wallet</div>
+      }
+      <canvas id="canvas" width="500" height="500" ref={canvas}>
+      </canvas>
+    </main>
   );
 }
