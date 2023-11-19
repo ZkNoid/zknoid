@@ -12,7 +12,10 @@ export default function Home() {
       </div>
       <div className='bg-white p-10 rounded-xl border-gray-300 bg-gradient-to-b from-zinc-200'>
         Always wondering how many bots and cheaters are in the game you want to try? <br />
-        <div><div className='font-bold inline'>- No more cheating or bots allowed</div> (c) ZK proof</div>
+        <div><div className='font-bold inline'>- No more cheating or bots allowed</div> (c) ZK proof</div> <br />
+        Nobody belives in your speedrun results? <br />
+        <div><div className='font-bold inline'>- Proofs can't be tricked</div> (c) ZK proof verifier</div>
+
       </div>
       <div className='bg-white p-10 rounded-xl border-gray-300 bg-gradient-to-b from-zinc-200'>
 

@@ -8,7 +8,6 @@ import { immer } from "zustand/middleware/immer";
 import truncateMiddle from "truncate-middle";
 import { usePrevious } from "@uidotdev/usehooks";
 import { useClientStore } from "./client";
-import { useChainStore } from "./chain";
 import { Field, PublicKey, Signature, UInt64 } from "o1js";
 
 export interface WalletState {
@@ -77,7 +76,6 @@ export const useWalletStore = create<WalletState, [["zustand/immer", never]]>(
 
 export const useNotifyTransactions = () => {
   const wallet = useWalletStore();
-  const chain = useChainStore();
   const { toast } = useToast();
   const client = useClientStore();
 
@@ -130,52 +128,4 @@ export const useNotifyTransactions = () => {
     },
     [client.client],
   );
-
-  // notify about new pending transactions
-  useEffect(() => {
-    newPendingTransactions.forEach((pendingTransaction) => {
-      notifyTransaction("PENDING", pendingTransaction);
-    });
-  }, [newPendingTransactions, notifyTransaction]);
-
-  // notify about transaction success or failure
-  useEffect(() => {
-    const confirmedTransactions = chain.block?.txs?.map(
-      ({ tx, status, statusMessage }) => {
-        return {
-          tx: new PendingTransaction({
-            methodId: Field(tx.methodId),
-            nonce: UInt64.from(tx.nonce),
-            sender: PublicKey.fromBase58(tx.sender),
-            argsFields: tx.argsFields.map((arg) => Field(arg)),
-            argsJSON: tx.argsJSON,
-            signature: Signature.fromJSON({
-              r: tx.signature.r,
-              s: tx.signature.s,
-            }),
-          }),
-          status,
-          statusMessage,
-        };
-      },
-    );
-
-    const confirmedPendingTransactions = confirmedTransactions?.filter(
-      ({ tx }) => {
-        return wallet.pendingTransactions?.find((pendingTransaction) => {
-          return pendingTransaction.hash().toString() === tx.hash().toString();
-        });
-      },
-    );
-
-    confirmedPendingTransactions?.forEach(({ tx, status }) => {
-      wallet.removePendingTransaction(tx);
-      notifyTransaction(status ? "SUCCESS" : "FAILURE", tx);
-    });
-  }, [
-    chain.block,
-    wallet.pendingTransactions,
-    client.client,
-    notifyTransaction,
-  ]);
 };
