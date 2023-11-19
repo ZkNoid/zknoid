@@ -62,7 +62,7 @@ const BRICK_SIZE = FIELD_PIXEL_WIDTH / FIELD_WIDTH;
 
 export const FIELD_SIZE = FIELD_WIDTH * FIELD_HEIGHT;
 
-export const GAME_LENGTH = 40;
+export const GAME_LENGTH = 100;
 
 export class Tick extends Struct({
     action: UInt64,
@@ -153,7 +153,11 @@ export class GameContext extends Struct({
 }) {
     processTick(tick: Tick): void {
         // 1) Update score
-        this.score = this.score.sub(SCORE_PER_TICKS);
+        this.score = Provable.if(
+            this.alreadyWon,
+            this.score,
+            this.score.sub(SCORE_PER_TICKS)
+        );
 
         /// 2) Update platform position
         /// Check for underflow/overflow
@@ -305,10 +309,12 @@ export class GameContext extends Struct({
             // Top horizontal
             let d1 = topBorder;
             let adc1 = a.mul(d1).sub(c);
+            let adc1Sign = adc1.div(adc1.magnitude);
             let crossBrickTop = adc1
                 .sub(b.mul(leftBorder))
+                .mul(adc1Sign)
                 .isPositive()
-                .and(b.mul(rightBorder).sub(adc1).isPositive());
+                .and(b.mul(rightBorder).sub(adc1).mul(adc1Sign).isPositive());
             let hasTopBump = crossBrickTop.and(
                 prevBallPos.y.sub(topBorder).isPositive()
             );
@@ -316,10 +322,12 @@ export class GameContext extends Struct({
             // Bottom horisontal
             let d2 = bottomBorder;
             let adc2 = a.mul(d2).sub(c);
+            let adc2Sign = adc2.div(adc2.magnitude);
             let crossBrickBottom = adc2
                 .sub(b.mul(leftBorder))
+                .mul(adc2Sign)
                 .isPositive()
-                .and(b.mul(rightBorder).sub(adc2).isPositive());
+                .and(b.mul(rightBorder).sub(adc2).mul(adc2Sign).isPositive());
             let hasBottomBump = crossBrickBottom.and(
                 bottomBorder.sub(prevBallPos.y).isPositive()
             );
@@ -327,11 +335,13 @@ export class GameContext extends Struct({
             // Left vertical
             let d3 = leftBorder;
             let bdc1 = b.mul(d3).add(c);
+            let bdc1Sign = bdc1.div(bdc1.magnitude);
             let crossBrickLeft = a
                 .mul(topBorder)
                 .sub(bdc1)
+                .mul(bdc1Sign)
                 .isPositive()
-                .and(bdc1.sub(a.mul(bottomBorder)).isPositive());
+                .and(bdc1.sub(a.mul(bottomBorder)).mul(bdc1Sign).isPositive());
             let hasLeftBump = crossBrickLeft.and(
                 leftBorder.sub(prevBallPos.x).isPositive()
             );
@@ -339,11 +349,13 @@ export class GameContext extends Struct({
             // Right vertical
             let d4 = rightBorder;
             let bdc2 = b.mul(d4).add(c);
+            let bdc2Sign = bdc2.div(bdc2.magnitude);
             let crossBrickRight = a
                 .mul(topBorder)
                 .sub(bdc2)
+                .mul(bdc2Sign)
                 .isPositive()
-                .and(bdc2.sub(a.mul(bottomBorder)).isPositive());
+                .and(bdc2.sub(a.mul(bottomBorder).mul(bdc2Sign)).isPositive());
             let hasRightBump = crossBrickRight.and(
                 prevBallPos.x.sub(rightBorder).isPositive()
             );
@@ -385,14 +397,24 @@ export class GameContext extends Struct({
                 Provable.log('Bump');
                 Provable.log(this.ball.position);
                 Provable.log(this.ball.speed);
-                Provable.log(hasBottomBump);
-                Provable.log(hasTopBump);
+                // Provable.log(hasBottomBump);
+                // Provable.log(hasTopBump);
+                // Provable.log(adc1);
+                // Provable.log(adc1Sign);
+                // Provable.log(adc1.sub(b.mul(leftBorder)).mul(adc1Sign));
+                // Provable.log(b.mul(rightBorder).sub(adc1).mul(adc1Sign));
+                // Provable.log(b.mul(leftBorder));
+                // Provable.log(b.mul(rightBorder));
+                // Provable.log(adc1.sub(b.mul(leftBorder)));
+                // Provable.log(b.mul(rightBorder).sub(adc1));
+                // Provable.log(crossBrickTop);
             }
         }
     }
 }
 
 export function checkGameRecord(
+    // publicInput: Bricks
     bricks: Bricks,
     gameInputs: GameInputs
 ): GameRecordPublicOutput {
