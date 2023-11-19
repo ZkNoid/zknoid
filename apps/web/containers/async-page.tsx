@@ -1,9 +1,9 @@
 "use client";
 import { Faucet } from "@/components/faucet";
 import { useWalletStore } from "@/lib/stores/wallet";
-import { FIELD_SIZE, GAME_LENGTH, GameCell, GameField, GameInputs, GameRecordProof, GameRecordPublicOutput, Tick, client, checkGameRecord } from "chain";
+import { GameRecordProof, client } from "chain";
 import { useEffect, useRef, useState } from 'react'
-import { PublicKey, UInt64 } from "o1js";
+import { PublicKey } from "o1js";
 import { DUMMY_PROOF } from "@/constants";
 // import { dummyBase64Proof } from './../node_modules/o1js/dist/web/lib/proof_system';
 // import { Pickles } from 'o1js/dist/node/snarky';
@@ -279,21 +279,6 @@ export default function Home() {
     await tx1.sign();
     await tx1.send();
 
-    // 
-    //  
-    // }
-    // return null;
-    // const endGame = async () => {
-    // const appChain = TestingAppChain.fromRuntime({
-    //     modules: {
-    //         GameHub,
-    //     },
-    //     config: {
-    //         GameHub: {},
-    //     },
-    // });
-
-    // const balances = client.runtime.resolve("Balances");
     // const sender = PublicKey.fromBase58(address);
 
     // const tx = await client.transaction(sender, () => {
