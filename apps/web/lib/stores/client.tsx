@@ -1,3 +1,4 @@
+'use client'
 import { client } from "chain";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
@@ -8,6 +9,7 @@ export interface ClientState {
   client?: Client;
   start: () => Promise<void>;
 }
+
 
 export const useClientStore = create<ClientState, [["zustand/immer", never]]>(
   immer((set) => ({

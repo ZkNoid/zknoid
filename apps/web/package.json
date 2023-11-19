@@ -18,7 +18,7 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@tailwindcss/typography": "^0.5.10",
     "@uidotdev/usehooks": "^2.4.1",
-    "chain": "workspace:*",
+    "chain": "^1.0.5",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "immer": "^10.0.3",
@@ -27,6 +27,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.48.2",
+    "snarky": "^0.1.0",
     "tailwind-merge": "^2.0.0",
     "tailwindcss-animate": "^1.0.7",
     "truncate-middle": "^1.0.6",
@@ -39,7 +40,6 @@
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
-    "eslint-config-custom": "workspace:*",
     "eslint-config-next": "14.0.1",
     "eslint-config-prettier": "^9.0.0",
     "postcss": "^8",
@@ -48,9 +48,9 @@
     "typescript": "^5"
   },
   "peerDependencies": {
+    "@proto-kit/module": "*",
     "@proto-kit/sdk": "*",
     "@proto-kit/sequencer": "*",
-    "@proto-kit/module": "*",
     "o1js": "0.13.1"
   }
 }
