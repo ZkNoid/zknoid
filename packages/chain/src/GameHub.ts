@@ -45,22 +45,24 @@ export class Point extends Struct({
     }
 }
 
-const MAX_BRICKS = 20;
+export const INITIAL_SCORE = 99999;
+export const SCORE_PER_TICKS = 1;
+export const MAX_BRICKS = 3;
 
-const BRICK_HALF_WIDTH = 25;
-const FIELD_PIXEL_WIDTH = 1000;
-const FIELD_PIXEL_HEIGHT = 2000;
-const PLATFORM_HALF_WIDTH = 50;
+export const BRICK_HALF_WIDTH = 25;
+export const FIELD_PIXEL_WIDTH = 500;
+export const FIELD_PIXEL_HEIGHT = 500;
+export const PLATFORM_HALF_WIDTH = 50;
 
-const FIELD_WIDTH = 5;
-const FIELD_HEIGHT = 10;
+export const FIELD_WIDTH = 5;
+export const FIELD_HEIGHT = 10;
 
 const ADJUST_KOEF = FIELD_PIXEL_WIDTH / FIELD_WIDTH;
 const BRICK_SIZE = FIELD_PIXEL_WIDTH / FIELD_WIDTH;
 
 export const FIELD_SIZE = FIELD_WIDTH * FIELD_HEIGHT;
 
-export const GAME_LENGTH = 1000;
+export const GAME_LENGTH = 40;
 
 export class Tick extends Struct({
     action: UInt64,
@@ -99,7 +101,7 @@ export class GameRecordPublicOutput extends Struct({
 
 /////////////////////////////////// Game logic structs //////////////////////////////////
 
-class IntPoint extends Struct({
+export class IntPoint extends Struct({
     x: Int64,
     y: Int64,
 }) {
@@ -142,14 +144,16 @@ const DEFAULT_PLATFORM_LOCATION = Int64.from(100);
 
 export class GameContext extends Struct({
     bricks: Bricks,
+    totalLeft: UInt64,
     ball: Ball,
     platform: Platform,
     score: UInt64,
     winable: Bool,
+    alreadyWon: Bool,
 }) {
     processTick(tick: Tick): void {
         // 1) Update score
-        this.score = this.score.add(1);
+        this.score = this.score.sub(SCORE_PER_TICKS);
 
         /// 2) Update platform position
         /// Check for underflow/overflow
@@ -161,6 +165,8 @@ export class GameContext extends Struct({
             y: this.ball.position.y,
         });
 
+        // Provable.log(this.ball.speed);
+        // Provable.log(this.ball.position);
         this.ball.move();
 
         /// 4) Check for edge bumps
@@ -232,7 +238,7 @@ export class GameContext extends Struct({
 
         for (let j = 0; j < MAX_BRICKS; j++) {
             const currentBrick = this.bricks.bricks[j];
-            let isAlive = currentBrick.value.greaterThan(UInt64.from(0));
+            let isAlive = currentBrick.value.greaterThan(UInt64.from(1)); // 1 just so UInt64.sub do not underflow
 
             let leftBorder = currentBrick.pos.x.sub(BRICK_HALF_WIDTH);
             let rightBorder = currentBrick.pos.x.add(BRICK_HALF_WIDTH);
@@ -343,23 +349,45 @@ export class GameContext extends Struct({
             );
 
             // Reduce health if coliision happend and brick is not dead
+            // Provable.log(currentBrick.value);
+
             currentBrick.value = Provable.if(
                 collisionHappen,
                 currentBrick.value.sub(1),
                 currentBrick.value
             );
 
+            this.totalLeft = Provable.if(
+                collisionHappen,
+                this.totalLeft.sub(1),
+                this.totalLeft
+            );
+
+            this.alreadyWon = Provable.if(
+                this.totalLeft.equals(UInt64.from(1)),
+                Bool(true),
+                this.alreadyWon
+            );
+
             this.ball.speed.x = Provable.if(
-                hasLeftBump.or(hasRightBump),
+                collisionHappen.and(hasLeftBump.or(hasRightBump)),
                 this.ball.speed.x.neg(),
                 this.ball.speed.x
             );
 
             this.ball.speed.y = Provable.if(
-                hasBottomBump.or(hasTopBump),
+                collisionHappen.and(hasBottomBump.or(hasTopBump)),
                 this.ball.speed.y.neg(),
                 this.ball.speed.y
             );
+
+            if (collisionHappen.toBoolean()) {
+                Provable.log('Bump');
+                Provable.log(this.ball.position);
+                Provable.log(this.ball.speed);
+                Provable.log(hasBottomBump);
+                Provable.log(hasTopBump);
+            }
         }
     }
 }
@@ -368,8 +396,7 @@ export function checkGameRecord(
     bricks: Bricks,
     gameInputs: GameInputs
 ): GameRecordPublicOutput {
-    let winable = Bool(true);
-    let score = UInt64.from(0);
+    let score = UInt64.from(INITIAL_SCORE);
     let ball = new Ball({
         position: DEFAULT_BALL_LOCATION,
         speed: DEFAULT_BALL_SPEED,
@@ -378,12 +405,20 @@ export function checkGameRecord(
         position: DEFAULT_PLATFORM_LOCATION,
     });
 
+    let totalLeft = UInt64.from(1); // Again 1 == 0
+
+    for (let i = 0; i < bricks.bricks.length; i++) {
+        totalLeft = totalLeft.add(bricks.bricks[i].value.sub(1)); // Sub(1), because 1 = 0. (Workaround UInt64.sub(1))
+    }
+
     const gameContext = new GameContext({
         bricks,
+        totalLeft,
         ball,
         platform,
         score,
-        winable,
+        winable: new Bool(true),
+        alreadyWon: new Bool(false),
     });
 
     for (let i = 0; i < gameInputs.tiks.length; i++) {
@@ -394,10 +429,10 @@ export function checkGameRecord(
 
     for (let i = 0; i < gameContext.bricks.bricks.length; i++) {
         /// Check that all bricks is destroyed
-        gameContext.bricks.bricks[i].value.assertEquals(UInt64.from(0));
+        gameContext.bricks.bricks[i].value.assertEquals(UInt64.from(1));
     }
 
-    return new GameRecordPublicOutput({ score });
+    return new GameRecordPublicOutput({ score: gameContext.score });
 }
 
 export const gameRecord = Experimental.ZkProgram({
