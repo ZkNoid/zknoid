@@ -7,7 +7,7 @@ import { immer } from "zustand/middleware/immer";
 // @ts-ignore
 import truncateMiddle from "truncate-middle";
 import { usePrevious } from "@uidotdev/usehooks";
-import { useClientStore } from "./client";
+// import { useClientStore } from "./client";
 import { Field, PublicKey, Signature, UInt64 } from "o1js";
 
 export interface WalletState {
@@ -77,7 +77,7 @@ export const useWalletStore = create<WalletState, [["zustand/immer", never]]>(
 export const useNotifyTransactions = () => {
   const wallet = useWalletStore();
   const { toast } = useToast();
-  const client = useClientStore();
+  // const client = useClientStore();
 
   const previousPendingTransactions = usePrevious(wallet.pendingTransactions);
   const newPendingTransactions = useMemo(() => {
@@ -87,45 +87,4 @@ export const useNotifyTransactions = () => {
     );
   }, [wallet.pendingTransactions, previousPendingTransactions]);
 
-  const notifyTransaction = useCallback(
-    (
-      status: "PENDING" | "SUCCESS" | "FAILURE",
-      transaction: UnsignedTransaction | PendingTransaction,
-    ) => {
-      if (!client.client) return;
-
-      const methodIdResolver = client.client.resolveOrFail(
-        "MethodIdResolver",
-        MethodIdResolver,
-      );
-
-      const resolvedMethodDetails = methodIdResolver.getMethodNameFromId(
-        transaction.methodId.toBigInt(),
-      );
-
-      if (!resolvedMethodDetails)
-        throw new Error("Unable to resolve method details");
-
-      const [moduleName, methodName] = resolvedMethodDetails;
-
-      const hash = truncateMiddle(transaction.hash().toString(), 15, 15, "...");
-
-      function title() {
-        switch (status) {
-          case "PENDING":
-            return `⏳ Transaction sent: ${moduleName}.${methodName}`;
-          case "SUCCESS":
-            return `✅ Transaction successful: ${moduleName}.${methodName}`;
-          case "FAILURE":
-            return `❌ Transaction failed: ${moduleName}.${methodName}`;
-        }
-      }
-
-      toast({
-        title: title(),
-        description: `Hash: ${hash}`,
-      });
-    },
-    [client.client],
-  );
 };
