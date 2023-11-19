@@ -101,6 +101,9 @@ importers:
       truncate-middle:
         specifier: ^1.0.6
         version: 1.0.6
+      zknoid-chain:
+        specifier: workspace:1.0.6
+        version: link:../../packages/chain
       zod:
         specifier: ^3.22.4
         version: 3.22.4
