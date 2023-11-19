@@ -1,7 +1,7 @@
 "use client";
 import { Faucet } from "@/components/faucet";
 import { useWalletStore } from "@/lib/stores/wallet";
-import { GameRecordProof, client } from "chain";
+import { GameRecordProof, client } from "zknoid-chain";
 import { useEffect, useRef, useState } from 'react'
 import { PublicKey } from "o1js";
 import { DUMMY_PROOF } from "@/constants";
