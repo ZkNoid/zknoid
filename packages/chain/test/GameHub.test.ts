@@ -1,17 +1,19 @@
 import { TestingAppChain } from '@proto-kit/sdk';
-import { PrivateKey, Provable, UInt64, Field } from 'o1js';
+import { PrivateKey, Provable, UInt64, Int64, Field } from 'o1js';
 import {
     GameHub,
     GameRecordProof,
     GameRecordPublicOutput,
     checkGameRecord,
     FIELD_SIZE,
+    MAX_BRICKS,
     GAME_LENGTH,
-    GameField,
-    GameCell,
     GameInputs,
     Tick,
     GameRecordKey,
+    Bricks,
+    Brick,
+    IntPoint,
 } from '../src/GameHub';
 import { log } from '@proto-kit/common';
 import { Pickles } from 'o1js/dist/node/snarky';
@@ -52,29 +54,72 @@ describe('game hub', () => {
 
         const gameHub = appChain.runtime.resolve('GameHub');
 
-        const dummieField: GameField = new GameField({
-            cells: [...new Array(FIELD_SIZE)].map(
-                (elem) => new GameCell({ value: UInt64.from(0) })
+        // const dummieField: GameField = new GameField({
+        //     cells: [...new Array(FIELD_SIZE)].map(
+        //         (elem) => new GameCell({ value: UInt64.from(0) })
+        //     ),
+        // });
+
+        const bricks: Bricks = new Bricks({
+            bricks: [...new Array(MAX_BRICKS)].map(
+                (elem) =>
+                    new Brick({
+                        pos: {
+                            x: Int64.from(0),
+                            y: Int64.from(0),
+                        },
+                        value: UInt64.from(1),
+                    })
             ),
         });
+
+        bricks.bricks[0] = new Brick({
+            pos: new IntPoint({
+                x: Int64.from(125),
+                y: Int64.from(130),
+            }),
+            value: UInt64.from(2),
+        });
+
+        bricks.bricks[1] = new Brick({
+            pos: new IntPoint({
+                x: Int64.from(136),
+                y: Int64.from(70),
+            }),
+            value: UInt64.from(2),
+        });
+
+        bricks.bricks[2] = new Brick({
+            pos: new IntPoint({
+                x: Int64.from(400),
+                y: Int64.from(400),
+            }),
+            value: UInt64.from(2),
+        });
+
+        // bricks.bricks[1] = new Brick({
+        //     pos: new IntPoint({
+        //         x: Int64.from(400),
+        //         y: Int64.from(400),
+        //     }),
+        //     value: UInt64.from(1),
+        // });
 
         let cheatInput: GameInputs = new GameInputs({
             tiks: [...new Array(GAME_LENGTH)].map(
                 (elem) => new Tick({ action: UInt64.from(0) })
             ),
-        }); // })[... new Array(FIELD_SIZE)].map(elem => )
+        });
 
         cheatInput.tiks[1] = new Tick({ action: UInt64.from(1) });
         cheatInput.tiks[2] = new Tick({ action: UInt64.from(2) });
         cheatInput.tiks[3] = new Tick({ action: UInt64.from(1) });
         cheatInput.tiks[4] = new Tick({ action: UInt64.from(0) });
 
-        const gameProof = await mockProof(
-            checkGameRecord(dummieField, cheatInput)
-        );
+        const gameProof = await mockProof(checkGameRecord(bricks, cheatInput));
 
         const tx1 = await appChain.transaction(alice, () => {
-            gameHub.addGameResult(alice, gameProof);
+            gameHub.addGameResult(gameProof);
         });
 
         await tx1.sign();
