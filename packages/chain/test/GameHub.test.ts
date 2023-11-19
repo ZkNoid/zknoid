@@ -91,8 +91,8 @@ describe('game hub', () => {
 
         bricks.bricks[2] = new Brick({
             pos: new IntPoint({
-                x: Int64.from(400),
-                y: Int64.from(400),
+                x: Int64.from(150),
+                y: Int64.from(156),
             }),
             value: UInt64.from(2),
         });
@@ -105,18 +105,29 @@ describe('game hub', () => {
         //     value: UInt64.from(1),
         // });
 
-        let cheatInput: GameInputs = new GameInputs({
-            tiks: [...new Array(GAME_LENGTH)].map(
-                (elem) => new Tick({ action: UInt64.from(0) })
+        let uiUserInput = [
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2,
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+            2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2,
+            0, 0, 0, 0, 0, 0, 0, 0,
+        ];
+
+        let userInput = new GameInputs({
+            tiks: uiUserInput.map(
+                (elem) => new Tick({ action: UInt64.from(elem) })
             ),
         });
 
-        cheatInput.tiks[1] = new Tick({ action: UInt64.from(1) });
-        cheatInput.tiks[2] = new Tick({ action: UInt64.from(2) });
-        cheatInput.tiks[3] = new Tick({ action: UInt64.from(1) });
-        cheatInput.tiks[4] = new Tick({ action: UInt64.from(0) });
+        // let dummieInput: GameInputs = new GameInputs({
+        //     tiks: [...new Array(GAME_LENGTH)].map(
+        //         (elem) => new Tick({ action: UInt64.from(0) })
+        //     ),
+        // });
 
-        const gameProof = await mockProof(checkGameRecord(bricks, cheatInput));
+        const gameProof = await mockProof(checkGameRecord(bricks, userInput));
+
+        console.log(JSON.stringify(gameProof.toJSON()));
 
         const tx1 = await appChain.transaction(alice, () => {
             gameHub.addGameResult(gameProof);
