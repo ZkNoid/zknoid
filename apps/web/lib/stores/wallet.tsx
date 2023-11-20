@@ -24,7 +24,7 @@ export interface WalletState {
 export const useWalletStore = create<WalletState, [["zustand/immer", never]]>(
   immer((set) => ({
     async initializeWallet() {
-      if (!mina) {
+      if (typeof mina === 'undefined') {
         throw new Error("Auro wallet not installed");
       }
 
@@ -35,7 +35,7 @@ export const useWalletStore = create<WalletState, [["zustand/immer", never]]>(
       });
     },
     async connectWallet() {
-      if (!mina) {
+      if (typeof mina === 'undefined') {
         throw new Error("Auro wallet not installed");
       }
 
@@ -46,7 +46,7 @@ export const useWalletStore = create<WalletState, [["zustand/immer", never]]>(
       });
     },
     observeWalletChange() {
-      if (!mina) {
+      if (typeof mina === 'undefined') {
         throw new Error("Auro wallet not installed");
       }
 
