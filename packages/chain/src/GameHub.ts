@@ -1,24 +1,19 @@
-import { ToFieldable } from '@proto-kit/common';
 import {
     RuntimeModule,
     runtimeModule,
     state,
     runtimeMethod,
 } from '@proto-kit/module';
-import { State, StateMap, assert } from '@proto-kit/protocol';
+import { State, StateMap } from '@proto-kit/protocol';
 import {
     Experimental,
     PublicKey,
     Field,
     UInt64,
     Struct,
-    arrayProp,
-    MerkleMap,
-    CircuitString,
     Provable,
     Int64,
     Bool,
-    Proof,
 } from 'o1js';
 
 export class GameRecordKey extends Struct({
@@ -47,7 +42,7 @@ export class Point extends Struct({
 
 export const INITIAL_SCORE = 99999;
 export const SCORE_PER_TICKS = 1;
-export const MAX_BRICKS = 3;
+export const MAX_BRICKS = 10;
 
 export const BRICK_HALF_WIDTH = 25;
 export const FIELD_PIXEL_WIDTH = 500;
@@ -80,20 +75,6 @@ export function checkMapGeneration(
 ): MapGenerationPublicOutput {
     return new MapGenerationPublicOutput({});
 }
-
-// export const mapGeneration = Experimental.ZkProgram({
-//     publicOutput: MapGenerationPublicOutput,
-//     methods: {
-//         checkGameRecord: {
-//             privateInputs: [Field, Bricks],
-//             method: checkMapGeneration,
-//         },
-//     },
-// });
-
-// export class MapGenerationProof extends Experimental.ZkProgram.Proof(
-//     mapGeneration
-// ) {}
 
 export class GameRecordPublicOutput extends Struct({
     score: UInt64,
@@ -160,7 +141,6 @@ export class GameContext extends Struct({
         );
 
         /// 2) Update platform position
-        /// Check for underflow/overflow
         this.platform.position = this.platform.position.add(1).sub(tick.action);
 
         /// 3) Update ball position
@@ -169,8 +149,6 @@ export class GameContext extends Struct({
             y: this.ball.position.y,
         });
 
-        // Provable.log(this.ball.speed);
-        // Provable.log(this.ball.position);
         this.ball.move();
 
         /// 4) Check for edge bumps
@@ -361,7 +339,6 @@ export class GameContext extends Struct({
             );
 
             // Reduce health if coliision happend and brick is not dead
-            // Provable.log(currentBrick.value);
 
             currentBrick.value = Provable.if(
                 collisionHappen,
@@ -392,23 +369,6 @@ export class GameContext extends Struct({
                 this.ball.speed.y.neg(),
                 this.ball.speed.y
             );
-
-            if (collisionHappen.toBoolean()) {
-                Provable.log('Bump');
-                Provable.log(this.ball.position);
-                Provable.log(this.ball.speed);
-                // Provable.log(hasBottomBump);
-                // Provable.log(hasTopBump);
-                // Provable.log(adc1);
-                // Provable.log(adc1Sign);
-                // Provable.log(adc1.sub(b.mul(leftBorder)).mul(adc1Sign));
-                // Provable.log(b.mul(rightBorder).sub(adc1).mul(adc1Sign));
-                // Provable.log(b.mul(leftBorder));
-                // Provable.log(b.mul(rightBorder));
-                // Provable.log(adc1.sub(b.mul(leftBorder)));
-                // Provable.log(b.mul(rightBorder).sub(adc1));
-                // Provable.log(crossBrickTop);
-            }
         }
     }
 }
@@ -458,7 +418,6 @@ export function checkGameRecord(
 }
 
 export const gameRecord = Experimental.ZkProgram({
-    // publicInput: Field,
     publicOutput: GameRecordPublicOutput,
     methods: {
         checkGameRecord: {
@@ -490,7 +449,6 @@ export class GameHub extends RuntimeModule<unknown> {
     }
 
     @runtimeMethod()
-    /// Check for user public key
     public addGameResult(gameRecordProof: GameRecordProof): void {
         gameRecordProof.verify();
 
