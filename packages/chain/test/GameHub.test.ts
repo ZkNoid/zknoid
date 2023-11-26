@@ -14,11 +14,11 @@ import {
     Bricks,
     Brick,
     IntPoint,
+    gameRecord,
 } from '../src/GameHub';
 import { log } from '@proto-kit/common';
 import { Pickles } from 'o1js/dist/node/snarky';
 import { dummyBase64Proof } from 'o1js/dist/node/lib/proof_system';
-import { checkRange } from 'o1js/dist/node/provable/field-bigint';
 
 log.setLevel('ERROR');
 
@@ -53,12 +53,6 @@ describe('game hub', () => {
         appChain.setSigner(alicePrivateKey);
 
         const gameHub = appChain.runtime.resolve('GameHub');
-
-        // const dummieField: GameField = new GameField({
-        //     cells: [...new Array(FIELD_SIZE)].map(
-        //         (elem) => new GameCell({ value: UInt64.from(0) })
-        //     ),
-        // });
 
         const bricks: Bricks = new Bricks({
             bricks: [...new Array(MAX_BRICKS)].map(
@@ -97,14 +91,6 @@ describe('game hub', () => {
             value: UInt64.from(2),
         });
 
-        // bricks.bricks[1] = new Brick({
-        //     pos: new IntPoint({
-        //         x: Int64.from(400),
-        //         y: Int64.from(400),
-        //     }),
-        //     value: UInt64.from(1),
-        // });
-
         let uiUserInput = [
             1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2,
             2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0,
@@ -119,15 +105,7 @@ describe('game hub', () => {
             ),
         });
 
-        // let dummieInput: GameInputs = new GameInputs({
-        //     tiks: [...new Array(GAME_LENGTH)].map(
-        //         (elem) => new Tick({ action: UInt64.from(0) })
-        //     ),
-        // });
-
         const gameProof = await mockProof(checkGameRecord(bricks, userInput));
-
-        console.log(JSON.stringify(gameProof.toJSON()));
 
         const tx1 = await appChain.transaction(alice, () => {
             gameHub.addGameResult(gameProof);
