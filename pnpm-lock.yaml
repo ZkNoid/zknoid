@@ -100,7 +100,7 @@ importers:
         specifier: ^1.0.6
         version: 1.0.6
       zknoid-chain:
-        specifier: 1.0.6
+        specifier: workspace:*
         version: link:../../packages/chain
       zod:
         specifier: ^3.22.4
