@@ -1,5 +1,5 @@
 {
-    "name": "zknoid-chain",
+    "name": "zknoid-chain-dev",
     "version": "1.0.6",
     "type": "module",
     "main": "dist/index.js",
