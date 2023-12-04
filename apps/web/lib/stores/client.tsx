@@ -1,30 +1,30 @@
 'use client'
-// import { client } from "zknoid-chain";
-// import { create } from "zustand";
-// import { immer } from "zustand/middleware/immer";
+import { client } from "zknoid-chain";
+import { create } from "zustand";
+import { immer } from "zustand/middleware/immer";
 
-// export type Client = typeof client;
-// export interface ClientState {
-//   loading: boolean;
-//   client?: Client;
-//   start: () => Promise<void>;
-// }
+export type Client = typeof client;
+export interface ClientState {
+  loading: boolean;
+  client?: Client;
+  start: () => Promise<void>;
+}
 
 
-// export const useClientStore = create<ClientState, [["zustand/immer", never]]>(
-//   immer((set) => ({
-//     loading: Boolean(false),
-//     async start() {
-//       set((state) => {
-//         state.loading = true;
-//       });
+export const useClientStore = create<ClientState, [["zustand/immer", never]]>(
+  immer((set) => ({
+    loading: Boolean(false),
+    async start() {
+      set((state) => {
+        state.loading = true;
+      });
 
-//       await client.start();
+      await client.start();
 
-//       set((state) => {
-//         state.loading = false;
-//         state.client = client;
-//       });
-//     },
-//   })),
-// );
+      set((state) => {
+        state.loading = false;
+        state.client = client;
+      });
+    },
+  })),
+);
