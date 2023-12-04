@@ -10,6 +10,8 @@ import {
     GameInputs,
     Tick,
     GameRecordKey,
+    Brick,
+    Bricks
 } from './GameHub.js';
 
 export { GameHub,
