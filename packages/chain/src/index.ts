@@ -11,7 +11,9 @@ import {
     Tick,
     GameRecordKey,
     Brick,
-    Bricks
+    Bricks,
+    MAX_BRICKS,
+    IntPoint
 } from './GameHub.js';
 
 export { GameHub,
@@ -24,6 +26,8 @@ export { GameHub,
     Tick,
     GameRecordKey,    
     Brick,
-    Bricks
+    Bricks,
+    MAX_BRICKS,
+    IntPoint,
 };
 

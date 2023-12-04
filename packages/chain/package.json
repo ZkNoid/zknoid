@@ -1,6 +1,6 @@
 {
-    "name": "zknoid-chain",
-    "version": "1.0.8",
+    "name": "zknoid-chain-dev",
+    "version": "1.1.0",
     "type": "module",
     "main": "dist/index.js",
     "watch": {
