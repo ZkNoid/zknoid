@@ -1,9 +1,9 @@
 "use client";
 import { Faucet } from "@/components/faucet";
 import { useWalletStore } from "@/lib/stores/wallet";
-// import { GameRecordProof, client } from "zknoid-chain";
+import { FIELD_SIZE, GAME_LENGTH, GameCell, GameField, GameInputs, GameRecordProof, Tick, client } from "zknoid-chain";
 import { useEffect, useRef, useState } from 'react'
-import { PublicKey } from "o1js";
+import { PublicKey, UInt64 } from "o1js";
 import { DUMMY_PROOF } from "@/constants";
 // import { dummyBase64Proof } from './../node_modules/o1js/dist/web/lib/proof_system';
 // import { Pickles } from 'o1js/dist/node/snarky';
@@ -269,8 +269,7 @@ export default function Home() {
     setWin(false);
     stopped = true;
 
-    // @help porblem with deployement because of local package
-    // client.start();
+    client.start();
     // const gameHub = client.runtime.resolve('GameHub');
     // const sender = PublicKey.fromBase58(address);
 
@@ -286,25 +285,29 @@ export default function Home() {
     // const tx = await client.transaction(sender, () => {
     //   balances.addBalance(sender, UInt64.from(1000));
     // });
+    
 
-    // const gameHub = client.runtime.resolve('GameHub');
-
-    // const dummieField: GameField = new GameField({
-    //     cells: [...new Array(FIELD_SIZE)].map(
-    //         (elem) => new GameCell({ value: UInt64.from(0) })
-    //     ),
-    // });
-
-    // let cheatInput: GameInputs = new GameInputs({
-    //     tiks: [...new Array(GAME_LENGTH)].map(
-    //         (elem) => new Tick({ action: UInt64.from(0) })
-    //     ),
-    // });
-
-    // cheatInput.tiks[1] = new Tick({ action: UInt64.from(1) });
-    // cheatInput.tiks[2] = new Tick({ action: UInt64.from(2) });
-    // cheatInput.tiks[3] = new Tick({ action: UInt64.from(1) });
-    // cheatInput.tiks[4] = new Tick({ action: UInt64.from(0) });
+    const gameHub = client.runtime.resolve('GameHub');
+    const dummieField: GameField = new GameField({
+        cells: [...new Array(FIELD_SIZE)].map(
+            (elem) => new GameCell({ value: UInt64.from(0) })
+        ),
+    });
+// @ts-expect-error
+    let cheatInput: GameInputs = new GameInputs({
+        tiks: [...new Array(GAME_LENGTH)].map(
+          // @ts-expect-error
+            (elem) => new Tick({ action: UInt64.from(0) })
+        ),
+    });
+// @ts-expect-error
+    cheatInput.tiks[1] = new Tick({ action: UInt64.from(1) });
+    // @ts-expect-error
+    cheatInput.tiks[2] = new Tick({ action: UInt64.from(2) });
+    // @ts-expect-error
+    cheatInput.tiks[3] = new Tick({ action: UInt64.from(1) });
+    // @ts-expect-error
+    cheatInput.tiks[4] = new Tick({ action: UInt64.from(0) });
 
     // dummyBase64Proof();
 
@@ -391,7 +394,7 @@ export default function Home() {
                 <div className='p-5 bg-slate-300 rounded-xl' onClick={() => startGame()}>Start</div>
               )}
                {win && 
-                <div className='p-5 bg-slate-300 rounded-xl' onClick={() => startGame()}>Send proof</div>
+                <div className='p-5 bg-slate-300 rounded-xl' onClick={() => endGame()}>Send proof</div>
               }
             </div></div> :
           <div className='p-5 bg-slate-300 rounded-xl' onClick={() => connectWallet()}>Connect wallet</div>
