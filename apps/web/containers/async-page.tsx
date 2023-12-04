@@ -1,9 +1,9 @@
 "use client";
 import { Faucet } from "@/components/faucet";
 import { useWalletStore } from "@/lib/stores/wallet";
-import { FIELD_SIZE, GAME_LENGTH, GameCell, Brick, Bricks, GameInputs, GameRecordProof, Tick, client } from "zknoid-chain";
+import { FIELD_SIZE, GAME_LENGTH, Brick, Bricks, GameInputs, GameRecordProof, Tick, client, checkGameRecord, IntPoint } from "zknoid-chain";
 import { useEffect, useRef, useState } from 'react'
-import { PublicKey, UInt64 } from "o1js";
+import { Int64, PublicKey, UInt64 } from "o1js";
 import { DUMMY_PROOF } from "@/constants";
 // import { dummyBase64Proof } from './../node_modules/o1js/dist/web/lib/proof_system';
 // import { Pickles } from 'o1js/dist/node/snarky';
@@ -17,7 +17,7 @@ interface Ball {
   radius: number;
 }
 
-interface Brick {
+interface IBrick {
   x: number;
   y: number;
   w: number;
@@ -56,7 +56,7 @@ export default function Home() {
 
   let ball: Ball;
   let cart: Cart;
-  let bricks: Brick[][] = [];
+  let bricks: IBrick[][] = [];
   let stopped: boolean = false;
 
   useEffect(() => {
@@ -285,98 +285,60 @@ export default function Home() {
     // const tx = await client.transaction(sender, () => {
     //   balances.addBalance(sender, UInt64.from(1000));
     // });
-    
-
-    const gameHub = client.runtime.resolve('GameHub');
-    const dummieField: GameField = new GameField({
-        cells: [...new Array(FIELD_SIZE)].map(
-            (elem) => new GameCell({ value: UInt64.from(0) })
-        ),
-    });
-// @ts-expect-error
-    let cheatInput: GameInputs = new GameInputs({
-        tiks: [...new Array(GAME_LENGTH)].map(
+    const MAX_BRICKS = 10;
+    // @ts-expect-error
+    const bricks: Bricks = new Bricks({
+      bricks: [...new Array(MAX_BRICKS)].map(
+        (elem) =>
           // @ts-expect-error
-            (elem) => new Tick({ action: UInt64.from(0) })
-        ),
+          new Brick({
+            pos: {
+              x: Int64.from(0),
+              y: Int64.from(0),
+            },
+            value: UInt64.from(1),
+          })
+      ),
     });
-// @ts-expect-error
-    cheatInput.tiks[1] = new Tick({ action: UInt64.from(1) });
     // @ts-expect-error
-    cheatInput.tiks[2] = new Tick({ action: UInt64.from(2) });
+    bricks.bricks[0] = new Brick({
+      // @ts-expect-error
+      pos: new IntPoint({
+        x: Int64.from(125),
+        y: Int64.from(130),
+      }),
+      value: UInt64.from(2),
+    });
+
     // @ts-expect-error
-    cheatInput.tiks[3] = new Tick({ action: UInt64.from(1) });
+    bricks.bricks[1] = new Brick({
+      // @ts-expect-error
+      pos: new IntPoint({
+        x: Int64.from(136),
+        y: Int64.from(70),
+      }),
+      value: UInt64.from(2),
+    });
+
     // @ts-expect-error
-    cheatInput.tiks[4] = new Tick({ action: UInt64.from(0) });
+    bricks.bricks[2] = new Brick({
+      // @ts-expect-error
+      pos: new IntPoint({
+        x: Int64.from(150),
+        y: Int64.from(156),
+      }),
+      value: UInt64.from(2),
+    });
 
-    // dummyBase64Proof();
+    // @ts-expect-error
+    let userInput = new GameInputs({
+      tiks: ticks.map(
+        // @ts-expect-error
+        (elem) => new Tick({ action: UInt64.from(elem) })
+      ),
+    });
 
-    // const gameProof = await mockProof(
-    //     checkGameRecord(dummieField, cheatInput)
-    // );
-
-
-
-    // const lastSeed =
-    //     (await appChain.query.runtime.GameHub.lastSeed.get()) ??
-    //     UInt64.from(0);
-    // console.log(lastSeed);
-
-
-    // const alice = alicePrivateKey.toPublicKey();
-
-    // await appChain.start();
-
-
-    // const gameHub = appChain.runtime.resolve('GameHub');
-
-    // // @ts-expect-error
-    // const dummieField: GameField = new GameField({
-    //     cells: [...new Array(FIELD_SIZE)].map(
-    //         (elem) => new GameCell({ value: UInt64.from(0) })
-    //     ),
-    // });
-
-    // let cheatInput: GameInputs = new GameInputs({
-    //     tiks: [...new Array(GAME_LENGTH)].map(
-    //         (elem) => new Tick({ action: UInt64.from(0) })
-    //     ),
-    // }); // })[... new Array(FIELD_SIZE)].map(elem => )
-
-    // cheatInput.tiks[1] = new Tick({ action: UInt64.from(1) });
-    // cheatInput.tiks[2] = new Tick({ action: UInt64.from(2) });
-    // cheatInput.tiks[3] = new Tick({ action: UInt64.from(1) });
-    // cheatInput.tiks[4] = new Tick({ action: UInt64.from(0) });
-
-    // const gameProof = await mockProof(
-    //     checkGameRecord(dummieField, cheatInput)
-    // );
-
-    // const tx1 = await appChain.transaction(alice, () => {
-    //     gameHub.addGameResult(alice, gameProof);
-    // });
-
-    // await tx1.sign();
-    // await tx1.send();
-
-    // const block = await appChain.produceBlock();
-
-    // const lastSeed =
-    //     (await appChain.query.runtime.GameHub.lastSeed.get()) ??
-    //     UInt64.from(0);
-    // console.log(lastSeed);
-
-    // const gameRecordKey: GameRecordKey = new GameRecordKey({
-    //     seed: lastSeed,
-    //     player: alice,
-    // });
-
-    // console.log(gameRecordKey);
-
-    // const userScore =
-    //     await appChain.query.runtime.GameHub.gameRecords.get(gameRecordKey);
-
-    // console.log(userScore?.toBigInt());
+    const record = checkGameRecord(bricks, userInput);
   }
 
   return (
@@ -393,7 +355,7 @@ export default function Home() {
               ) : (
                 <div className='p-5 bg-slate-300 rounded-xl' onClick={() => startGame()}>Start</div>
               )}
-               {win && 
+              {win &&
                 <div className='p-5 bg-slate-300 rounded-xl' onClick={() => endGame()}>Send proof</div>
               }
             </div></div> :
