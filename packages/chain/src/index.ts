@@ -23,5 +23,7 @@ export { GameHub,
     GameInputs,
     Tick,
     GameRecordKey,    
+    Brick,
+    Bricks
 };
 
