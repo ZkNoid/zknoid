@@ -96,8 +96,8 @@ importers:
         specifier: ^1.0.6
         version: 1.0.6
       zknoid-chain:
-        specifier: ^1.1.0
-        version: 1.1.0(@proto-kit/api@0.1.1-develop.340)(@proto-kit/cli@0.1.1-develop.340)(@proto-kit/common@0.1.1-develop.340)(@proto-kit/module@0.1.1-develop.340)(@proto-kit/protocol@0.1.1-develop.340)(@proto-kit/sdk@0.1.1-develop.340)(@proto-kit/sequencer@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0)
+        specifier: ^1.2.0
+        version: 1.2.0(@proto-kit/api@0.1.1-develop.340)(@proto-kit/cli@0.1.1-develop.340)(@proto-kit/common@0.1.1-develop.340)(@proto-kit/module@0.1.1-develop.340)(@proto-kit/protocol@0.1.1-develop.340)(@proto-kit/sdk@0.1.1-develop.340)(@proto-kit/sequencer@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0)
       zod:
         specifier: ^3.22.4
         version: 3.22.4
@@ -8247,8 +8247,8 @@ packages:
     resolution: {integrity: sha512-N+d4UJSJbt/R3wqY7Coqs5pcV0aUj2j9IaQ3rNj9bVCLld8tTGKRa2USARjnvZJWVx1NDmQev8EknoczaOQDOA==}
     dev: false
 
-  /zknoid-chain@1.1.0(@proto-kit/api@0.1.1-develop.340)(@proto-kit/cli@0.1.1-develop.340)(@proto-kit/common@0.1.1-develop.340)(@proto-kit/module@0.1.1-develop.340)(@proto-kit/protocol@0.1.1-develop.340)(@proto-kit/sdk@0.1.1-develop.340)(@proto-kit/sequencer@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0):
-    resolution: {integrity: sha512-B6EVrVonGaOOVFGO/gqlEQqiDOtFMTh3WlK7Egpp2U60Eb8GvtKXOkCBrycCYqZwtXMOyhMA2ZWKamN/5hqspw==}
+  /zknoid-chain@1.2.0(@proto-kit/api@0.1.1-develop.340)(@proto-kit/cli@0.1.1-develop.340)(@proto-kit/common@0.1.1-develop.340)(@proto-kit/module@0.1.1-develop.340)(@proto-kit/protocol@0.1.1-develop.340)(@proto-kit/sdk@0.1.1-develop.340)(@proto-kit/sequencer@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0):
+    resolution: {integrity: sha512-IMl7MrJ14RffvVMlaXUih1+PCH71sVymErXl5LoNBctgBxg+X6Kx5kcYFesNFSYqY2hXi+cqHMThODu93Caiug==}
     peerDependencies:
       '@proto-kit/api': '*'
       '@proto-kit/cli': '*'

@@ -1,4 +1,3 @@
-import { useToast } from "@/components/ui/use-toast";
 import { PendingTransaction, UnsignedTransaction } from "@proto-kit/sequencer";
 import { MethodIdResolver } from "@proto-kit/module";
 import { useCallback, useEffect, useMemo } from "react";
@@ -76,7 +75,6 @@ export const useWalletStore = create<WalletState, [["zustand/immer", never]]>(
 
 export const useNotifyTransactions = () => {
   const wallet = useWalletStore();
-  const { toast } = useToast();
   // const client = useClientStore();
 
   const previousPendingTransactions = usePrevious(wallet.pendingTransactions);

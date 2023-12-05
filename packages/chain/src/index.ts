@@ -5,22 +5,24 @@ import {
     GameRecordProof,
     GameRecordPublicOutput,
     checkGameRecord,
-    FIELD_SIZE,
-    GAME_LENGTH,
+    loadGameContext,
     GameInputs,
     Tick,
     GameRecordKey,
     Brick,
     Bricks,
-    MAX_BRICKS,
     IntPoint,
 } from './GameHub.js';
+
+import { FIELD_SIZE, GAME_LENGTH, MAX_BRICKS, BRICK_SIZE } from './constants.js';
+import { defaultLevel } from './levels.js';
 
 export {
     GameHub,
     GameRecordProof,
     GameRecordPublicOutput,
     checkGameRecord,
+    loadGameContext,
     FIELD_SIZE,
     GAME_LENGTH,
     GameInputs,
@@ -29,5 +31,7 @@ export {
     Brick,
     Bricks,
     MAX_BRICKS,
+    BRICK_SIZE,
     IntPoint,
+    defaultLevel
 };

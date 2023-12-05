@@ -1,23 +1,16 @@
-import { Button } from "@/components/ui/button";
 import protokit from "@/public/protokit-zinc.svg";
 import Image from "next/image";
 // @ts-ignore
 import truncateMiddle from "truncate-middle";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Separator } from "./ui/separator";
 
 export interface HeaderProps {
-  loading: boolean;
-  wallet?: string;
+  address?: string;
   onConnectWallet: () => void;
-  blockHeight?: string;
 }
 
 export default function Header({
-  loading,
-  wallet,
+    address,
   onConnectWallet,
-  blockHeight,
 }: HeaderProps) {
   return (
     <div className="flex items-center justify-between border-b p-2 shadow-sm">
@@ -29,11 +22,11 @@ export default function Header({
           {/* balance */}
 
           {/* connect wallet */}
-          <Button loading={loading} className="w-44" onClick={onConnectWallet}>
+          <div className="w-44" onClick={onConnectWallet}>
             <div>
-              {wallet ? truncateMiddle(wallet, 7, 7, "...") : "Connect wallet"}
+              {address ? truncateMiddle(address, 7, 7, "...") : "Connect wallet"}
             </div>
-          </Button>
+          </div>
         </div>
       </div>
     </div>
