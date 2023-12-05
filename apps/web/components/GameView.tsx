@@ -14,8 +14,9 @@ import { Ball, Cart, IBrick } from "@/lib/types";
 
 interface IGameViewProps {
     gameId: number;
-    onWin: (ticks: number[]) => void
-    onLost: (ticks: number[]) => void
+    onWin: (ticks: number[]) => void;
+    onLost: (ticks: number[]) => void;
+    level: Bricks;
 }
 
 export const GameView = (props: IGameViewProps) => {
@@ -198,13 +199,12 @@ export const GameView = (props: IGameViewProps) => {
       }
     };
 
-    const level: Bricks = useMemo(() => defaultLevel(), []);
   
     const startGame = () => {
       setLost(false);
       setWin(false);
       stopped = false;
-      bricksLeft = level.bricks.length;
+      bricksLeft = props.level.bricks.length;
   
       ball = {
         x: canvas!.current!.width / 2,
@@ -231,14 +231,14 @@ export const GameView = (props: IGameViewProps) => {
       for (let i = 0; i < bricks.length; i++) {
       }
 
-      console.log('Level bricks', level.bricks);
+      console.log('Level bricks', props.level.bricks);
   
-      for (let i = 0; i < level.bricks.length; i++) {
-        const brickValue = level.bricks[i].value * 1;
+      for (let i = 0; i < props.level.bricks.length; i++) {
+        const brickValue = props.level.bricks[i].value * 1;
         if (brickValue > 0)
           bricks[i] = { 
-            x: level.bricks[i].pos.x * 1, 
-            y: level.bricks[i].pos.y * 1, 
+            x: props.level.bricks[i].pos.x * 1, 
+            y: props.level.bricks[i].pos.y * 1, 
             value: brickValue, 
             ...commonBrick 
         };
@@ -246,7 +246,6 @@ export const GameView = (props: IGameViewProps) => {
 
       console.log(' bricks', bricks);
 
-  
       if (
         ball.x - ball.radius > cart.x &&
         ball.x + ball.radius < cart.x + cart.w &&
@@ -265,7 +264,6 @@ export const GameView = (props: IGameViewProps) => {
 
         props.onWin(ticksCache);
         return;
-
     }
 
     const onLost = async () => {
@@ -290,25 +288,6 @@ export const GameView = (props: IGameViewProps) => {
         // const tx = await client.transaction(sender, () => {
         //   balances.addBalance(sender, UInt64.from(1000));
         // });
-    
-        // @ts-expect-error
-        let userInput = new GameInputs({
-          tiks: ticksCache.map(
-            // @ts-expect-error
-            (elem) => new Tick({ action: UInt64.from(elem) }),
-          ),
-        });
-        try {
-          const gameContext = loadGameContext(bricks, new Bool(true));
-    
-          for (let i = 0; i < userInput.tiks.length; i++) {
-              gameContext.processTick(userInput.tiks[i]);
-          }
-    
-        } catch (e) {
-          console.log("Error while generating ZK proof");
-          console.log(e);
-        }
       };
     
   return <canvas id="canvas" width="500" height="500" ref={canvas}></canvas>;
