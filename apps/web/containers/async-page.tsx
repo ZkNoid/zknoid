@@ -1,26 +1,8 @@
 "use client";
 import { useWalletStore } from "@/lib/stores/wallet";
-import {
-  FIELD_SIZE,
-  GAME_LENGTH,
-  Brick,
-  Bricks,
-  GameInputs,
-  GameRecordProof,
-  Tick,
-  client,
-  checkGameRecord,
-  loadGameContext,
-  IntPoint,
-  defaultLevel
-} from "zknoid-chain-dev";
-import { useEffect, useRef, useState } from "react";
-import { Int64, PublicKey, UInt64, Bool } from "o1js";
-import { DUMMY_PROOF } from "@/constants";
+
+import { useState } from "react";
 import { GameView } from "@/components/GameView";
-// import { dummyBase64Proof } from './../node_modules/o1js/dist/web/lib/proof_system';
-// import { Pickles } from 'o1js/dist/node/snarky';
-// export { Pickles } from 'o1js/';
 
 enum GameState {
   NotStarted,
@@ -37,7 +19,6 @@ export default function Home() {
   const [gameState, setGameState] = useState(GameState.NotStarted);
   const [lastTicks, setLastTicks] = useState<number[]>([]);
   let [gameId, setGameId] = useState(0);
-
 
   const connectWallet = async () => {
     const accounts = await (window as any).mina.requestAccounts();
