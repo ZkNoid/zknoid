@@ -45,7 +45,8 @@
     "postcss": "^8",
     "prettier-plugin-tailwindcss": "^0.5.6",
     "tailwindcss": "^3.3.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "zknoid-chain-dev": "../../packages/chain/"
   },
   "peerDependencies": {
     "@proto-kit/module": "*",

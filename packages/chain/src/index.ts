@@ -1,4 +1,4 @@
-export * from "./client.config.js";
+export * from './client.config.js';
 
 import {
     GameHub,
@@ -13,10 +13,11 @@ import {
     Brick,
     Bricks,
     MAX_BRICKS,
-    IntPoint
+    IntPoint,
 } from './GameHub.js';
 
-export { GameHub,
+export {
+    GameHub,
     GameRecordProof,
     GameRecordPublicOutput,
     checkGameRecord,
@@ -24,10 +25,9 @@ export { GameHub,
     GAME_LENGTH,
     GameInputs,
     Tick,
-    GameRecordKey,    
+    GameRecordKey,
     Brick,
     Bricks,
     MAX_BRICKS,
     IntPoint,
 };
-
