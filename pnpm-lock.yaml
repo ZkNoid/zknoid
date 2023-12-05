@@ -26,6 +26,9 @@ importers:
       '@proto-kit/module':
         specifier: '*'
         version: 0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(@proto-kit/protocol@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0)
+      '@proto-kit/protocol':
+        specifier: 0.1.1-develop.340
+        version: 0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0)
       '@proto-kit/sdk':
         specifier: '*'
         version: 0.1.1-develop.340(@proto-kit/api@0.1.1-develop.340)(@proto-kit/common@0.1.1-develop.340)(@proto-kit/module@0.1.1-develop.340)(@proto-kit/protocol@0.1.1-develop.340)(@proto-kit/sequencer@0.1.1-develop.340)(graphql@16.6.0)(o1js@0.13.1)(reflect-metadata@0.1.13)(tsyringe@4.8.0)
@@ -98,6 +101,9 @@ importers:
       zknoid-chain:
         specifier: ^1.2.0
         version: 1.2.0(@proto-kit/api@0.1.1-develop.340)(@proto-kit/cli@0.1.1-develop.340)(@proto-kit/common@0.1.1-develop.340)(@proto-kit/module@0.1.1-develop.340)(@proto-kit/protocol@0.1.1-develop.340)(@proto-kit/sdk@0.1.1-develop.340)(@proto-kit/sequencer@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0)
+      zknoid-chain-dev:
+        specifier: workspace:^
+        version: link:../../packages/chain
       zod:
         specifier: ^3.22.4
         version: 3.22.4
@@ -138,9 +144,6 @@ importers:
       typescript:
         specifier: ^5
         version: 5.2.2
-      zknoid-chain-dev:
-        specifier: ../../packages/chain/
-        version: link:../../packages/chain
 
   packages/chain:
     dependencies:
