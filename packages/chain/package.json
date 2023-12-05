@@ -23,6 +23,8 @@
         "dev": "npm-watch build-and-start"
     },
     "peerDependencies": {
+    },
+    "devDependencies": {
         "@proto-kit/api": "*",
         "@proto-kit/cli": "*",
         "@proto-kit/common": "*",
@@ -31,9 +33,7 @@
         "@proto-kit/sdk": "*",
         "@proto-kit/sequencer": "*",
         "o1js": "0.13.1",
-        "tsyringe": "^4.7.0"
-    },
-    "devDependencies": {
+        "tsyringe": "^4.7.0",
         "npm-watch": "^0.11.0",
         "@jest/globals": "^29.6.1",
         "@types/jest": "^29.5.7",
