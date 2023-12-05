@@ -23,15 +23,6 @@ importers:
       '@hookform/resolvers':
         specifier: ^3.3.2
         version: 3.3.2(react-hook-form@7.48.2)
-      '@proto-kit/module':
-        specifier: '*'
-        version: 0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(@proto-kit/protocol@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0)
-      '@proto-kit/protocol':
-        specifier: 0.1.1-develop.340
-        version: 0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0)
-      '@proto-kit/sdk':
-        specifier: '*'
-        version: 0.1.1-develop.340(@proto-kit/api@0.1.1-develop.340)(@proto-kit/common@0.1.1-develop.340)(@proto-kit/module@0.1.1-develop.340)(@proto-kit/protocol@0.1.1-develop.340)(@proto-kit/sequencer@0.1.1-develop.340)(graphql@16.6.0)(o1js@0.13.1)(reflect-metadata@0.1.13)(tsyringe@4.8.0)
       '@radix-ui/react-label':
         specifier: ^2.0.2
         version: 2.0.2(@types/react-dom@18.2.14)(@types/react@18.2.35)(react-dom@18.2.0)(react@18.2.0)
@@ -105,6 +96,15 @@ importers:
         specifier: ^4.4.6
         version: 4.4.6(@types/react@18.2.35)(immer@10.0.3)(react@18.2.0)
     devDependencies:
+      '@proto-kit/module':
+        specifier: '*'
+        version: 0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(@proto-kit/protocol@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0)
+      '@proto-kit/protocol':
+        specifier: 0.1.1-develop.340
+        version: 0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0)
+      '@proto-kit/sdk':
+        specifier: '*'
+        version: 0.1.1-develop.340(@proto-kit/api@0.1.1-develop.340)(@proto-kit/common@0.1.1-develop.340)(@proto-kit/module@0.1.1-develop.340)(@proto-kit/protocol@0.1.1-develop.340)(@proto-kit/sequencer@0.1.1-develop.340)(graphql@16.6.0)(o1js@0.13.1)(reflect-metadata@0.1.13)(tsyringe@4.8.0)
       '@proto-kit/sequencer':
         specifier: '*'
         version: 0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(@proto-kit/module@0.1.1-develop.340)(@proto-kit/protocol@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0)

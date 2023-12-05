@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
-    "@proto-kit/protocol": "0.1.1-develop.340",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-slot": "^1.0.2",
@@ -37,6 +36,9 @@
     "zustand": "^4.4.6"
   },
   "devDependencies": {
+    "@proto-kit/module": "*",
+    "@proto-kit/protocol": "0.1.1-develop.340",
+    "@proto-kit/sdk": "*",
     "@proto-kit/sequencer": "*",
     "@types/node": "^20",
     "@types/react": "^18",
