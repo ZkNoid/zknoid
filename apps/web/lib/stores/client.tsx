@@ -1,5 +1,5 @@
 'use client'
-import { client } from "zknoid-chain";
+import { client } from "zknoid-chain-dev";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 

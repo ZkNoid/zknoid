@@ -6,7 +6,7 @@ import {
   Tick,
   loadGameContext,
   defaultLevel
-} from "zknoid-chain";
+} from "zknoid-chain-dev";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Int64, PublicKey, UInt64, Bool } from "o1js";
 import { DUMMY_PROOF } from "@/constants";
