@@ -1,5 +1,5 @@
 import { TestingAppChain } from '@proto-kit/sdk';
-import { PrivateKey, Provable, UInt64, Int64, Field } from 'o1js';
+import { PrivateKey, Provable, UInt64, Int64, Field, Bool } from 'o1js';
 import {
     GameHub,
     GameRecordProof,
@@ -105,7 +105,9 @@ describe('game hub', () => {
             ),
         });
 
-        const gameProof = await mockProof(checkGameRecord(bricks, userInput));
+        const gameProof = await mockProof(
+            checkGameRecord(bricks, userInput, new Bool(true))
+        );
 
         const tx1 = await appChain.transaction(alice, () => {
             gameHub.addGameResult(gameProof);

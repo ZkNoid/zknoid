@@ -138,6 +138,9 @@ importers:
       typescript:
         specifier: ^5
         version: 5.2.2
+      zknoid-chain-dev:
+        specifier: ../../packages/chain/
+        version: link:../../packages/chain
 
   packages/chain:
     dependencies:

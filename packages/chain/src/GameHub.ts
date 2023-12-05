@@ -131,6 +131,7 @@ export class GameContext extends Struct({
     score: UInt64,
     winable: Bool,
     alreadyWon: Bool,
+    debug: Bool,
 }) {
     processTick(tick: Tick): void {
         // 1) Update score
@@ -382,13 +383,23 @@ export class GameContext extends Struct({
                 this.ball.speed.y
             );
         }
+
+        if (this.debug) {
+            console.log(
+                `Ball position: <${this.ball.position.x} : ${this.ball.position.y}>`
+            );
+            console.log(
+                `Ball speed: ${this.ball.speed.x} : ${this.ball.speed.y}`
+            );
+        }
     }
 }
 
 export function checkGameRecord(
     // publicInput: Bricks
     bricks: Bricks,
-    gameInputs: GameInputs
+    gameInputs: GameInputs,
+    debug: Bool
 ): GameRecordPublicOutput {
     let score = UInt64.from(INITIAL_SCORE);
     let ball = new Ball({
@@ -413,6 +424,7 @@ export function checkGameRecord(
         score,
         winable: new Bool(true),
         alreadyWon: new Bool(false),
+        debug,
     });
 
     for (let i = 0; i < gameInputs.tiks.length; i++) {
@@ -434,7 +446,7 @@ export const gameRecord = Experimental.ZkProgram({
     methods: {
         checkGameRecord: {
             // privateInputs: [],
-            privateInputs: [Bricks, GameInputs],
+            privateInputs: [Bricks, GameInputs, Bool],
             method: checkGameRecord,
         },
     },
