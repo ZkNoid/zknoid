@@ -1,8 +1,16 @@
 "use client";
 import { useWalletStore } from "@/lib/stores/wallet";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { GameView } from "@/components/GameView";
+import {
+  Bricks,
+  GameInputs,
+  Tick,
+  loadGameContext,
+  defaultLevel
+} from "zknoid-chain";
+import { Bool, UInt64 } from "o1js";
 
 enum GameState {
   NotStarted,
@@ -14,11 +22,11 @@ enum GameState {
 }
 
 export default function Home() {
-  const wallet = useWalletStore();
   const [address, setAddress] = useState("");
   const [gameState, setGameState] = useState(GameState.NotStarted);
   const [lastTicks, setLastTicks] = useState<number[]>([]);
   let [gameId, setGameId] = useState(0);
+  const level: Bricks = useMemo(() => defaultLevel(), []);
 
   const connectWallet = async () => {
     const accounts = await (window as any).mina.requestAccounts();
@@ -31,8 +39,25 @@ export default function Home() {
   }
 
   const proof = () => {
-    setGameState(GameState.Active);
-    setGameId(gameId + 1);
+    console.log('Ticks', lastTicks)
+
+    // @ts-expect-error
+    let userInput = new GameInputs({
+      tiks: lastTicks.map(
+        // @ts-expect-error
+        (elem) => new Tick({ action: UInt64.from(elem) }),
+      ),
+    });
+
+    try {
+      const gameContext = loadGameContext(level, new Bool(true));
+      for (let i = 0; i < userInput.tiks.length; i++) {
+          gameContext.processTick(userInput.tiks[i]);
+      }
+    } catch (e) {
+      console.log("Error while generating ZK proof");
+      console.log(e);
+    }
   }
 
   return (
@@ -92,7 +117,9 @@ export default function Home() {
           setLastTicks(ticks);
           setGameState(GameState.Lost)
         }} 
-        gameId={gameId} />
+        level={level}
+        gameId={gameId} 
+      />
     </main>
   );
 }
