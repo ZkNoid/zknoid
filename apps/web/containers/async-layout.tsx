@@ -1,5 +1,4 @@
-import Header from "@/components/header";
-import { Toaster } from "@/components/ui/toaster";
+import Header from "@/components/Header";
 import { useClientStore } from "@/lib/stores/client";
 import { useNotifyTransactions, useWalletStore } from "@/lib/stores/wallet";
 import { ReactNode, useEffect, useMemo } from "react";
@@ -21,13 +20,11 @@ export default function AsyncLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <Header
-        loading={false}
-        wallet={wallet.wallet}
+        address={wallet.wallet}
         onConnectWallet={wallet.connectWallet}
-        blockHeight={"0"}
       />
       {children}
-      <Toaster />
+      {/* <Toaster /> */}
     </>
   );
 }

@@ -5,17 +5,11 @@ import {
     GameRecordProof,
     GameRecordPublicOutput,
     checkGameRecord,
-    FIELD_SIZE,
-    MAX_BRICKS,
-    GAME_LENGTH,
     GameInputs,
     Tick,
     GameRecordKey,
-    Bricks,
-    Brick,
-    IntPoint,
-    gameRecord,
-} from '../src/GameHub';
+    defaultLevel
+} from '../src/index';
 import { log } from '@proto-kit/common';
 import { Pickles } from 'o1js/dist/node/snarky';
 import { dummyBase64Proof } from 'o1js/dist/node/lib/proof_system';
@@ -54,42 +48,7 @@ describe('game hub', () => {
 
         const gameHub = appChain.runtime.resolve('GameHub');
 
-        const bricks: Bricks = new Bricks({
-            bricks: [...new Array(MAX_BRICKS)].map(
-                (elem) =>
-                    new Brick({
-                        pos: {
-                            x: Int64.from(0),
-                            y: Int64.from(0),
-                        },
-                        value: UInt64.from(1),
-                    })
-            ),
-        });
-
-        bricks.bricks[0] = new Brick({
-            pos: new IntPoint({
-                x: Int64.from(125),
-                y: Int64.from(130),
-            }),
-            value: UInt64.from(2),
-        });
-
-        bricks.bricks[1] = new Brick({
-            pos: new IntPoint({
-                x: Int64.from(136),
-                y: Int64.from(70),
-            }),
-            value: UInt64.from(2),
-        });
-
-        bricks.bricks[2] = new Brick({
-            pos: new IntPoint({
-                x: Int64.from(150),
-                y: Int64.from(156),
-            }),
-            value: UInt64.from(2),
-        });
+        const bricks = defaultLevel();
 
         let uiUserInput = [
             1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2,

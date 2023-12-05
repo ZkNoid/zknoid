@@ -15,6 +15,7 @@ import {
     Int64,
     Bool,
 } from 'o1js';
+import { BRICK_HALF_WIDTH, DEFAULT_BALL_LOCATION_X, DEFAULT_BALL_LOCATION_Y, DEFAULT_BALL_SPEED_X, DEFAULT_BALL_SPEED_Y, DEFAULT_PLATFORM_X, FIELD_PIXEL_HEIGHT, FIELD_PIXEL_WIDTH, GAME_LENGTH, INITIAL_SCORE, MAX_BRICKS, PLATFORM_HALF_WIDTH, SCORE_PER_TICKS } from './constants';
 
 export class GameRecordKey extends Struct({
     seed: UInt64,
@@ -40,24 +41,6 @@ export class Point extends Struct({
     }
 }
 
-export const INITIAL_SCORE = 99999;
-export const SCORE_PER_TICKS = 1;
-export const MAX_BRICKS = 10;
-
-export const BRICK_HALF_WIDTH = 25;
-export const FIELD_PIXEL_WIDTH = 500;
-export const FIELD_PIXEL_HEIGHT = 500;
-export const PLATFORM_HALF_WIDTH = 50;
-
-export const FIELD_WIDTH = 5;
-export const FIELD_HEIGHT = 10;
-
-const ADJUST_KOEF = FIELD_PIXEL_WIDTH / FIELD_WIDTH;
-const BRICK_SIZE = FIELD_PIXEL_WIDTH / FIELD_WIDTH;
-
-export const FIELD_SIZE = FIELD_WIDTH * FIELD_HEIGHT;
-
-export const GAME_LENGTH = 100;
 
 export class Tick extends Struct({
     action: UInt64,
@@ -119,9 +102,6 @@ class Platform extends Struct({
 
 ////////////////////////////////// Game logic structs end ////////////////////////////////
 
-const DEFAULT_BALL_LOCATION = IntPoint.from(100, 100);
-const DEFAULT_BALL_SPEED = IntPoint.from(1, 1);
-const DEFAULT_PLATFORM_LOCATION = Int64.from(100);
 
 export class GameContext extends Struct({
     bricks: Bricks,
@@ -395,19 +375,17 @@ export class GameContext extends Struct({
     }
 }
 
-export function checkGameRecord(
-    // publicInput: Bricks
+export function loadGameContext(
     bricks: Bricks,
-    gameInputs: GameInputs,
     debug: Bool
-): GameRecordPublicOutput {
+) {
     let score = UInt64.from(INITIAL_SCORE);
     let ball = new Ball({
-        position: DEFAULT_BALL_LOCATION,
-        speed: DEFAULT_BALL_SPEED,
+        position: IntPoint.from(DEFAULT_BALL_LOCATION_X, DEFAULT_BALL_LOCATION_Y),
+        speed: IntPoint.from(DEFAULT_BALL_SPEED_X, DEFAULT_BALL_SPEED_Y),
     });
     let platform = new Platform({
-        position: DEFAULT_PLATFORM_LOCATION,
+        position: Int64.from(DEFAULT_PLATFORM_X),
     });
 
     let totalLeft = UInt64.from(1); // Again 1 == 0
@@ -416,7 +394,7 @@ export function checkGameRecord(
         totalLeft = totalLeft.add(bricks.bricks[i].value.sub(1)); // Sub(1), because 1 = 0. (Workaround UInt64.sub(1))
     }
 
-    const gameContext = new GameContext({
+    return new GameContext({
         bricks,
         totalLeft,
         ball,
@@ -426,6 +404,15 @@ export function checkGameRecord(
         alreadyWon: new Bool(false),
         debug,
     });
+}
+
+export function checkGameRecord(
+    // publicInput: Bricks
+    bricks: Bricks,
+    gameInputs: GameInputs,
+    debug: Bool
+): GameRecordPublicOutput {
+    const gameContext = loadGameContext(bricks, debug);
 
     for (let i = 0; i < gameInputs.tiks.length; i++) {
         gameContext.processTick(gameInputs.tiks[i]);
