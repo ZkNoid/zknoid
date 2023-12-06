@@ -5,9 +5,13 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center p-24">
       <div className='z-10 max-w-5xl w-full items-center justify-between text-sm flex'>
-        <div className='fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit'>
-          <div className='flex text-xl flex-column items-center'>ZkNoid<div className='text-sm pl-4 pt-2'>the bot free gaming</div></div>
+        <div className='fixed left-0 top-0 flex w-full justify-around border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit'>
+            <div className='flex basis-6/12 text-xl flex-row px-4'>ZkNoid<div className='text-sm pl-4 pt-2'>the bot free gaming</div></div>
+            <div className='flex justify-end basis-6/12 text-xl flex-row px-8'>
+              <a href="https://docs.zknoid.io/">Docs</a>
+            </div>
         </div>
+
 
       </div>
       <div className='bg-white p-10 rounded-xl border-gray-300 bg-gradient-to-b from-zinc-200'>
