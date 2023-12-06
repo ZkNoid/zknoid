@@ -73,7 +73,7 @@ export default function Home() {
           {gameState == GameState.Lost && <div>You've lost! Nothing to prove</div>}
 
           <div className="flex flex-row items-center justify-center gap-5">
-            {gameState == GameState.Won || gameState == GameState.Lost && (
+            {(gameState == GameState.Won || gameState == GameState.Lost) && (
               <div
                 className="rounded-xl bg-slate-300 p-5"
                 onClick={() => startGame()}
