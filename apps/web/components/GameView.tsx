@@ -189,7 +189,8 @@ export const GameView = (props: IGameViewProps) => {
         tickPeriod
         // ticksCache[ticksCache.length - 1] != 2
       ) {
-        ticksCache.push(2);
+        pushTick(2);
+        // ticksCache.push(2);
         //   setTicks([...ticksCache, 2]);
         lastUpdateTime = Date.now();
       }
@@ -201,7 +202,8 @@ export const GameView = (props: IGameViewProps) => {
         tickPeriod
         // ticksCache[ticksCache.length - 1] != 0
       ) {
-        ticksCache.push(0);
+        pushTick(0);
+        // ticksCache.push(0);
         //   setTicks([...ticksCache, 0]);
         lastUpdateTime = Date.now();
       }
