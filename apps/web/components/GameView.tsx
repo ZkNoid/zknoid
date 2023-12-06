@@ -8,6 +8,13 @@ import {
   loadGameContext,
   defaultLevel,
   MAX_BRICKS,
+  FIELD_HEIGHT,
+  FIELD_WIDTH,
+  DEFAULT_BALL_LOCATION_X,
+  DEFAULT_BALL_LOCATION_Y,
+  TICK_PERIOD,
+  DEFAULT_BALL_SPEED_X,
+  DEFAULT_BALL_SPEED_Y,
 } from "zknoid-chain";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Int64, PublicKey, UInt64, Bool, AccountUpdate } from "o1js";
@@ -27,7 +34,6 @@ export const GameView = (props: IGameViewProps) => {
   const [ctx, setContext] = useState<
     CanvasRenderingContext2D | null | undefined
   >(null);
-  const [animationId, setAnimationId] = useState(-1);
   const [win, setWin] = useState(false);
   const [lost, setLost] = useState(false);
 
@@ -37,7 +43,7 @@ export const GameView = (props: IGameViewProps) => {
   // const [ticks, setTicks] = useState<number[]>([]);
 
   let lastUpdateTime = Date.now();
-  const tickPeriod = 1000;
+  const tickPeriod = TICK_PERIOD;
 
   let gameContext: GameContext; // For updating contractBall position
 
@@ -56,12 +62,21 @@ export const GameView = (props: IGameViewProps) => {
     setContext(ctx);
   }, [canvas]);
 
+  let lastTime: number | undefined;
+
   const gameLoop = (time: number) => {
     if (stopped) return;
 
+    if (lastTime === undefined)
+      lastTime = time;
+
+    const elapsed = time - lastTime;
+
+    lastTime = time;
+
     ctx!.clearRect(0, 0, canvas.current!.width, canvas.current!.height);
-    moveCart();
-    moveBall();
+    moveCart(elapsed);
+    moveBall(elapsed);
 
     drawBall();
     drawContractBall();
@@ -76,10 +91,10 @@ export const GameView = (props: IGameViewProps) => {
       lastUpdateTime = Date.now();
     }
 
-    setAnimationId(requestAnimationFrame(gameLoop));
+    requestAnimationFrame(gameLoop);
   };
 
-  const moveCart = () => {
+  const moveCart = (elapsed: number) => {
     cart.x += cart.dx;
 
     if (cart.x > canvas!.current!.width - cart.w) {
@@ -91,9 +106,9 @@ export const GameView = (props: IGameViewProps) => {
     }
   };
 
-  const moveBall = () => {
-    ball.x += ball.dx;
-    ball.y += ball.dy;
+  const moveBall = (elapsed: number) => {
+    ball.x += ball.dx * elapsed / 1000;
+    ball.y += ball.dy * elapsed / 1000;
 
     if (
       ball.x + ball.radius > canvas!.current!.width ||
@@ -226,14 +241,15 @@ export const GameView = (props: IGameViewProps) => {
   const startGame = () => {
     setLost(false);
     setWin(false);
+    lastTime = undefined;
     stopped = false;
     bricksLeft = props.level.bricks.length;
 
     ball = {
-      x: canvas!.current!.width / 2,
-      y: canvas!.current!.height / 2,
-      dx: 4,
-      dy: -3,
+      x: DEFAULT_BALL_LOCATION_X,
+      y: DEFAULT_BALL_LOCATION_Y,
+      dx: DEFAULT_BALL_SPEED_X,
+      dy: DEFAULT_BALL_SPEED_Y,
       radius: 3,
     };
 
@@ -269,9 +285,11 @@ export const GameView = (props: IGameViewProps) => {
     console.log(" bricks", bricks);
 
     /// Contract context init
+    //@ts-ignore
     const contractBricks: Bricks = new Bricks({
       bricks: [...new Array(MAX_BRICKS)].map(
         (elem) =>
+            //@ts-ignore
           new Brick({
             pos: {
               x: Int64.from(0),
@@ -283,6 +301,7 @@ export const GameView = (props: IGameViewProps) => {
     });
 
     for (let i = 0; i < Math.min(props.level.bricks.length, MAX_BRICKS); i++) {
+      //@ts-ignore
       contractBricks.bricks[i] = new Brick({
         pos: {
           x: Int64.from(bricks[i].x),
@@ -311,7 +330,7 @@ export const GameView = (props: IGameViewProps) => {
       ball.dy = -ball.dy;
     }
 
-    gameLoop(-1);
+    requestAnimationFrame(gameLoop);
 
     document.addEventListener("keydown", keyDown);
     document.addEventListener("keyup", keyUp);
@@ -351,10 +370,11 @@ export const GameView = (props: IGameViewProps) => {
     console.log(`Push ${action}`);
     ticksCache.push(action);
     UInt64.from(action);
+        //@ts-ignore
     gameContext.processTick(new Tick({ action: UInt64.from(action) }));
     contractBall.x = gameContext.ball.position.x;
     contractBall.y = gameContext.ball.position.y;
   };
 
-  return <canvas id="canvas" width="500" height="500" ref={canvas}></canvas>;
+  return <canvas id="canvas" width={`${FIELD_WIDTH}`} height={`${FIELD_HEIGHT}`} ref={canvas}></canvas>;
 };
