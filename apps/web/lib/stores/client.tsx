@@ -4,6 +4,7 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
 export type Client = typeof client;
+
 export interface ClientState {
   loading: boolean;
   client?: Client;
