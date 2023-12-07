@@ -15,7 +15,7 @@ import {
   TICK_PERIOD,
   DEFAULT_BALL_SPEED_X,
   DEFAULT_BALL_SPEED_Y,
-} from "zknoid-chain";
+} from "zknoid-chain-dev";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Int64, PublicKey, UInt64, Bool, AccountUpdate } from "o1js";
 import { DUMMY_PROOF } from "@/constants";
@@ -53,6 +53,9 @@ export const GameView = (props: IGameViewProps) => {
   let bricks: IBrick[] = [];
   let stopped: boolean = false;
 
+  let ballTrace: [[number, number]] = [];
+  let contractBallTrace: [[number, number]] = [];
+
   useEffect(() => {
     if (props.gameId > 0) startGame();
   }, [props.gameId]);
@@ -67,8 +70,7 @@ export const GameView = (props: IGameViewProps) => {
   const gameLoop = (time: number) => {
     if (stopped) return;
 
-    if (lastTime === undefined)
-      lastTime = time;
+    if (lastTime === undefined) lastTime = time;
 
     const elapsed = time - lastTime;
 
@@ -83,6 +85,8 @@ export const GameView = (props: IGameViewProps) => {
     drawBricks();
 
     drawCart();
+
+    drawBallsTraces();
 
     if (Date.now() - lastUpdateTime > tickPeriod) {
       pushTick(1);
@@ -107,8 +111,8 @@ export const GameView = (props: IGameViewProps) => {
   };
 
   const moveBall = (elapsed: number) => {
-    ball.x += ball.dx * elapsed / 1000;
-    ball.y += ball.dy * elapsed / 1000;
+    ball.x += (ball.dx * elapsed) / 1000;
+    ball.y += (ball.dy * elapsed) / 1000;
 
     if (
       ball.x + ball.radius > canvas!.current!.width ||
@@ -135,6 +139,8 @@ export const GameView = (props: IGameViewProps) => {
     ) {
       ball.dy *= -1;
     }
+
+    ballTrace.push([ball.x, ball.y]);
 
     bricks.forEach((brick) => {
       if (brick.value > 0) {
@@ -197,6 +203,39 @@ export const GameView = (props: IGameViewProps) => {
     ctx!.closePath();
   };
 
+  const drawBallsTraces = () => {
+    const prevLineWidth = ctx!.lineWidth;
+    ctx!.lineWidth = 0.3;
+    ctx!.setLineDash([5, 5]);
+
+    // Ball trace
+    ctx!.beginPath();
+    ctx!.strokeStyle = "black";
+    if (ballTrace.length > 0) {
+      ctx!.moveTo(ballTrace[0][0], ballTrace[0][1]);
+    }
+    for (const point of ballTrace.slice(1)) {
+      ctx!.lineTo(point[0], point[1]);
+    }
+    ctx!.stroke();
+    ctx!.closePath();
+
+    // Contract ball trace
+    ctx!.beginPath();
+    ctx!.strokeStyle = "red";
+    if (contractBallTrace.length > 0) {
+      ctx!.moveTo(contractBallTrace[0][0], contractBallTrace[0][1]);
+    }
+    for (const point of contractBallTrace) {
+      ctx!.lineTo(point[0], point[1]);
+    }
+    ctx!.stroke();
+    ctx!.closePath();
+
+    ctx!.lineWidth = prevLineWidth;
+    ctx!.setLineDash([]);
+  };
+
   const keyDown = (e: KeyboardEvent) => {
     if (e.key === "Right" || e.key === "ArrowRight") {
       if (
@@ -253,6 +292,8 @@ export const GameView = (props: IGameViewProps) => {
       radius: 3,
     };
 
+    console.log(ball);
+
     cart = {
       x: canvas!.current!.width / 2,
       y: canvas!.current!.height - 10,
@@ -289,7 +330,7 @@ export const GameView = (props: IGameViewProps) => {
     const contractBricks: Bricks = new Bricks({
       bricks: [...new Array(MAX_BRICKS)].map(
         (elem) =>
-            //@ts-ignore
+          //@ts-ignore
           new Brick({
             pos: {
               x: Int64.from(0),
@@ -311,7 +352,7 @@ export const GameView = (props: IGameViewProps) => {
       });
     }
 
-    gameContext = loadGameContext(contractBricks, new Bool(true));
+    gameContext = loadGameContext(contractBricks, new Bool(false));
     contractBall = {
       x: +gameContext.ball.position.x.toString(),
       y: +gameContext.ball.position.y.toString(),
@@ -369,12 +410,61 @@ export const GameView = (props: IGameViewProps) => {
   const pushTick = (action: number) => {
     console.log(`Push ${action}`);
     ticksCache.push(action);
-    UInt64.from(action);
-        //@ts-ignore
+    let prevPos =
+      contractBallTrace.length > 0
+        ? contractBallTrace[contractBallTrace.length - 1]
+        : [
+            +gameContext.ball.position.x.toString(),
+            +gameContext.ball.position.y.toString(),
+          ];
+
+    let prevSpeed = [
+      +gameContext.ball.speed.x.toString(),
+      +gameContext.ball.speed.y.toString(),
+    ];
+    //@ts-ignore
     gameContext.processTick(new Tick({ action: UInt64.from(action) }));
-    contractBall.x = gameContext.ball.position.x;
-    contractBall.y = gameContext.ball.position.y;
+    let [x, y] = [
+      +gameContext.ball.position.x.toString(),
+      +gameContext.ball.position.y.toString(),
+    ];
+    contractBall.x = x;
+    contractBall.y = y;
+    let newSpeed = [
+      +gameContext.ball.speed.x.toString(),
+      +gameContext.ball.speed.y.toString(),
+    ];
+
+    Int64.from(1).toString();
+    // Int64.from(1).isPositive().
+    // Vertical bump
+    // if (prevSpeed[0] == -newSpeed[0]) {
+    //   console.log("Bump");
+    //   console.log(`Prevpos: ${prevPos}`);
+    //   console.log(`Nextpos: ${[x, y]}`);
+    //   let distance =
+    //     prevSpeed[0] > 0 ? canvas!.current!.width - prevPos[0] : prevPos[0];
+    //   let t = distance / prevSpeed[0];
+    //   contractBallTrace.push([
+    //     prevPos[0] + t * prevSpeed[0],
+    //     prevPos[1] + t * prevSpeed[1],
+    //   ]);
+    // }
+
+    // // Horisontal bump
+    // if (!prevSpeed.y.equals(newSpeed.y)) {
+
+    // }
+    contractBallTrace.push([contractBall.x, contractBall.y]);
+    console.log(contractBallTrace);
   };
 
-  return <canvas id="canvas" width={`${FIELD_WIDTH}`} height={`${FIELD_HEIGHT}`} ref={canvas}></canvas>;
+  return (
+    <canvas
+      id="canvas"
+      width={`${FIELD_WIDTH}`}
+      height={`${FIELD_HEIGHT}`}
+      ref={canvas}
+    ></canvas>
+  );
 };

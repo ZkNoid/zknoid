@@ -15,7 +15,21 @@ import {
     Int64,
     Bool,
 } from 'o1js';
-import { BRICK_HALF_WIDTH, DEFAULT_BALL_LOCATION_X, DEFAULT_BALL_LOCATION_Y, DEFAULT_BALL_SPEED_X, DEFAULT_BALL_SPEED_Y, DEFAULT_PLATFORM_X, FIELD_PIXEL_HEIGHT, FIELD_PIXEL_WIDTH, GAME_LENGTH, INITIAL_SCORE, MAX_BRICKS, PLATFORM_HALF_WIDTH, SCORE_PER_TICKS } from './constants';
+import {
+    BRICK_HALF_WIDTH,
+    DEFAULT_BALL_LOCATION_X,
+    DEFAULT_BALL_LOCATION_Y,
+    DEFAULT_BALL_SPEED_X,
+    DEFAULT_BALL_SPEED_Y,
+    DEFAULT_PLATFORM_X,
+    FIELD_PIXEL_HEIGHT,
+    FIELD_PIXEL_WIDTH,
+    GAME_LENGTH,
+    INITIAL_SCORE,
+    MAX_BRICKS,
+    PLATFORM_HALF_WIDTH,
+    SCORE_PER_TICKS,
+} from './constants';
 
 export class GameRecordKey extends Struct({
     seed: UInt64,
@@ -40,7 +54,6 @@ export class Point extends Struct({
         });
     }
 }
-
 
 export class Tick extends Struct({
     action: UInt64,
@@ -101,7 +114,6 @@ class Platform extends Struct({
 }) {}
 
 ////////////////////////////////// Game logic structs end ////////////////////////////////
-
 
 export class GameContext extends Struct({
     bricks: Bricks,
@@ -364,7 +376,7 @@ export class GameContext extends Struct({
             );
         }
 
-        if (this.debug) {
+        if (this.debug.toBoolean()) {
             console.log(
                 `Ball position: <${this.ball.position.x} : ${this.ball.position.y}>`
             );
@@ -375,13 +387,13 @@ export class GameContext extends Struct({
     }
 }
 
-export function loadGameContext(
-    bricks: Bricks,
-    debug: Bool
-) {
+export function loadGameContext(bricks: Bricks, debug: Bool) {
     let score = UInt64.from(INITIAL_SCORE);
     let ball = new Ball({
-        position: IntPoint.from(DEFAULT_BALL_LOCATION_X, DEFAULT_BALL_LOCATION_Y),
+        position: IntPoint.from(
+            DEFAULT_BALL_LOCATION_X,
+            DEFAULT_BALL_LOCATION_Y
+        ),
         speed: IntPoint.from(DEFAULT_BALL_SPEED_X, DEFAULT_BALL_SPEED_Y),
     });
     let platform = new Platform({
