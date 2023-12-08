@@ -407,10 +407,36 @@ export const GameView = (props: IGameViewProps) => {
     // });
   };
 
+  const getCollisionPoint = (
+    pos: [number, number],
+    speed: [number, number],
+  ): [number, number] => {
+    let overflowPoint = [pos[0] + speed[0], pos[1] + speed[1]];
+    console.log(overflowPoint);
+    let t: number = 1;
+    if (overflowPoint[0] > FIELD_WIDTH) {
+      t = (FIELD_WIDTH - pos[0]) / speed[0];
+    }
+
+    if (overflowPoint[0] < 0) {
+      t = -pos[0] / speed[0];
+    }
+
+    if (overflowPoint[1] > FIELD_HEIGHT) {
+      t = (FIELD_HEIGHT - pos[1]) / speed[1];
+    }
+
+    if (overflowPoint[1] < 0) {
+      t = -pos[1] / speed[1];
+    }
+
+    return [pos[0] + speed[0] * t, pos[1] + speed[1] * t];
+  };
+
   const pushTick = (action: number) => {
-    console.log(`Push ${action}`);
+    // console.log(`Push ${action}`);
     ticksCache.push(action);
-    let prevPos =
+    let prevPos: [number, number] =
       contractBallTrace.length > 0
         ? contractBallTrace[contractBallTrace.length - 1]
         : [
@@ -418,7 +444,7 @@ export const GameView = (props: IGameViewProps) => {
             +gameContext.ball.position.y.toString(),
           ];
 
-    let prevSpeed = [
+    let prevSpeed: [number, number] = [
       +gameContext.ball.speed.x.toString(),
       +gameContext.ball.speed.y.toString(),
     ];
@@ -435,28 +461,13 @@ export const GameView = (props: IGameViewProps) => {
       +gameContext.ball.speed.y.toString(),
     ];
 
-    Int64.from(1).toString();
-    // Int64.from(1).isPositive().
-    // Vertical bump
-    // if (prevSpeed[0] == -newSpeed[0]) {
-    //   console.log("Bump");
-    //   console.log(`Prevpos: ${prevPos}`);
-    //   console.log(`Nextpos: ${[x, y]}`);
-    //   let distance =
-    //     prevSpeed[0] > 0 ? canvas!.current!.width - prevPos[0] : prevPos[0];
-    //   let t = distance / prevSpeed[0];
-    //   contractBallTrace.push([
-    //     prevPos[0] + t * prevSpeed[0],
-    //     prevPos[1] + t * prevSpeed[1],
-    //   ]);
-    // }
+    if (prevSpeed[0] == -newSpeed[0] || prevSpeed[1] == -newSpeed[1]) {
+      console.log("Have collision");
+      contractBallTrace.push(getCollisionPoint(prevPos, prevSpeed));
+    }
 
-    // // Horisontal bump
-    // if (!prevSpeed.y.equals(newSpeed.y)) {
-
-    // }
     contractBallTrace.push([contractBall.x, contractBall.y]);
-    console.log(contractBallTrace);
+    // console.log(contractBallTrace);
   };
 
   return (

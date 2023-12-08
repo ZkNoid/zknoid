@@ -160,12 +160,15 @@ export class GameContext extends Struct({
         // If bumf - just return it and change speed
         this.ball.position.x = Provable.if(
             leftBump,
-            Int64.from(0),
+            this.ball.position.x.neg(),
             this.ball.position.x
         );
+
         this.ball.position.x = Provable.if(
             rightBump,
-            Int64.from(FIELD_PIXEL_WIDTH),
+            Int64.from(FIELD_PIXEL_WIDTH).sub(
+                this.ball.position.x.sub(Int64.from(FIELD_PIXEL_WIDTH))
+            ),
             this.ball.position.x
         );
 
@@ -177,12 +180,14 @@ export class GameContext extends Struct({
 
         this.ball.position.y = Provable.if(
             topBump,
-            Int64.from(FIELD_PIXEL_HEIGHT),
+            Int64.from(FIELD_PIXEL_HEIGHT).sub(
+                this.ball.position.y.sub(Int64.from(FIELD_PIXEL_HEIGHT))
+            ),
             this.ball.position.y
         );
         this.ball.position.y = Provable.if(
             bottomBump,
-            Int64.from(0),
+            this.ball.position.y.neg(),
             this.ball.position.y
         );
 
