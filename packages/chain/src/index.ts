@@ -15,17 +15,18 @@ import {
 } from './GameHub.js';
 
 import {
-    FIELD_SIZE, 
-    GAME_LENGTH, 
-    MAX_BRICKS, 
-    BRICK_SIZE, 
-    FIELD_WIDTH, 
-    FIELD_HEIGHT, 
-    DEFAULT_BALL_LOCATION_X, 
+    BRICK_HALF_WIDTH,
+    FIELD_SIZE,
+    GAME_LENGTH,
+    MAX_BRICKS,
+    BRICK_SIZE,
+    FIELD_WIDTH,
+    FIELD_HEIGHT,
+    DEFAULT_BALL_LOCATION_X,
     DEFAULT_BALL_LOCATION_Y,
     DEFAULT_BALL_SPEED_X,
     DEFAULT_BALL_SPEED_Y,
-    TICK_PERIOD
+    TICK_PERIOD,
 } from './constants.js';
 import { defaultLevel } from './levels.js';
 
@@ -42,6 +43,7 @@ export {
     GameRecordKey,
     Brick,
     Bricks,
+    BRICK_HALF_WIDTH,
     MAX_BRICKS,
     BRICK_SIZE,
     FIELD_WIDTH,
@@ -52,5 +54,5 @@ export {
     DEFAULT_BALL_SPEED_Y,
     IntPoint,
     defaultLevel,
-    TICK_PERIOD
+    TICK_PERIOD,
 };

@@ -7,6 +7,7 @@ import {
   Tick,
   loadGameContext,
   defaultLevel,
+  BRICK_HALF_WIDTH,
   MAX_BRICKS,
   FIELD_HEIGHT,
   FIELD_WIDTH,
@@ -51,6 +52,7 @@ export const GameView = (props: IGameViewProps) => {
   let contractBall: Ball;
   let cart: Cart;
   let bricks: IBrick[] = [];
+  let contractBricks: IBrick[] = [];
   let stopped: boolean = false;
 
   let ballTrace: [[number, number]] = [];
@@ -87,6 +89,7 @@ export const GameView = (props: IGameViewProps) => {
     drawCart();
 
     drawBallsTraces();
+    drawContractBricks();
 
     if (Date.now() - lastUpdateTime > tickPeriod) {
       pushTick(1);
@@ -193,6 +196,19 @@ export const GameView = (props: IGameViewProps) => {
       ctx!.fill();
       ctx!.closePath();
     });
+  };
+
+  const drawContractBricks = () => {
+    ctx!.strokeStyle = "red";
+    ctx!.setLineDash([5, 5]);
+
+    contractBricks.forEach((brick) => {
+      ctx!.beginPath();
+      ctx!.rect(brick.x, brick.y, brick.w, brick.h);
+      ctx!.stroke();
+      ctx!.closePath();
+    });
+    ctx!.setLineDash([]);
   };
 
   const drawCart = () => {
@@ -348,7 +364,7 @@ export const GameView = (props: IGameViewProps) => {
           x: Int64.from(bricks[i].x),
           y: Int64.from(bricks[i].y),
         },
-        value: UInt64.from(2),
+        value: UInt64.from(bricks[i].value),
       });
     }
 
@@ -468,6 +484,22 @@ export const GameView = (props: IGameViewProps) => {
 
     contractBallTrace.push([contractBall.x, contractBall.y]);
     // console.log(contractBallTrace);
+
+    contractBricks = gameContext.bricks.bricks
+      .map((brick) => {
+        let x = +brick.pos.x.toString() - BRICK_HALF_WIDTH;
+        let y = +brick.pos.y.toString() - BRICK_HALF_WIDTH;
+        return {
+          x,
+          y,
+          w: 2 * BRICK_HALF_WIDTH,
+          h: 2 * BRICK_HALF_WIDTH,
+          value: +brick.value.toString(),
+        };
+      })
+      .filter((brick) => brick.value > 1);
+
+    console.log(contractBricks);
   };
 
   return (

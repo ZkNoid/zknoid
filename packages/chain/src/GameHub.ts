@@ -115,6 +115,33 @@ class Platform extends Struct({
 
 ////////////////////////////////// Game logic structs end ////////////////////////////////
 
+const getSign = (x: Int64): Int64 => {
+    return Provable.if(x.isPositive(), Int64.from(1), Int64.from(-1));
+};
+
+const gr = (a: Int64, b: Int64): Bool => {
+    return a.sub(b).isPositive();
+};
+
+const inRange = (
+    x: Int64 | number,
+    left: Int64 | number,
+    right: Int64 | number
+): Bool => {
+    left = Int64.from(left);
+    right = Int64.from(right);
+    x = Int64.from(x);
+
+    let order = gr(right, left);
+    [left, right] = [
+        Provable.if(order, left, right),
+        Provable.if(order, right, left),
+    ];
+    let rightVal = right.sub(x);
+    let leftVal = x.sub(left);
+    return rightVal.isPositive().and(leftVal.isPositive());
+};
+
 export class GameContext extends Struct({
     bricks: Bricks,
     totalLeft: UInt64,
@@ -246,6 +273,8 @@ export class GameContext extends Struct({
                 horizontalCollision.and(verticalCollision)
             );
 
+            console.log(collisionHappen);
+
             /*
                 Detect where collision ocured
                 /////////////// vertical part of a brick //////////////////////////
@@ -276,14 +305,6 @@ export class GameContext extends Struct({
                 bd + c \incl [ a(brick.pos.y - BRICK_HALF_WIDTH), a(brick.pos.y + BRICK_HALF_WIDTH)]
             */
 
-            const getSign = (x: Int64) => {
-                return Provable.if(
-                    x.isPositive(),
-                    Int64.from(1),
-                    Int64.from(-1)
-                );
-            };
-
             let a = this.ball.speed.x;
             let b = this.ball.speed.y;
             let c = a
@@ -296,12 +317,13 @@ export class GameContext extends Struct({
             // Top horizontal
             let d1 = topBorder;
             let adc1 = a.mul(d1).sub(c);
-            let adc1Sign = getSign(adc1);
-            let crossBrickTop = adc1
-                .sub(leftEnd)
-                .mul(adc1Sign)
-                .isPositive()
-                .and(rightEnd.sub(adc1).mul(adc1Sign).isPositive());
+            // let adc1Sign = getSign(adc1);
+            let crossBrickTop = inRange(adc1, leftEnd, rightEnd);
+            // let crossBrickTop = adc1
+            //     .sub(leftEnd)
+            //     .mul(adc1Sign)
+            //     .isPositive()
+            //     .and(rightEnd.sub(adc1).mul(adc1Sign).isPositive());
             let hasTopBump = crossBrickTop.and(
                 prevBallPos.y.sub(topBorder).isPositive()
             );
@@ -309,12 +331,13 @@ export class GameContext extends Struct({
             // Bottom horisontal
             let d2 = bottomBorder;
             let adc2 = a.mul(d2).sub(c);
-            let adc2Sign = getSign(adc2);
-            let crossBrickBottom = adc2
-                .sub(leftEnd)
-                .mul(adc2Sign)
-                .isPositive()
-                .and(rightEnd.sub(adc2).mul(adc2Sign).isPositive());
+            // let adc2Sign = getSign(adc2);
+            let crossBrickBottom = inRange(adc2, leftEnd, rightEnd);
+            // let crossBrickBottom = adc2
+            //     .sub(leftEnd)
+            //     .mul(adc2Sign)
+            //     .isPositive()
+            //     .and(rightEnd.sub(adc2).mul(adc2Sign).isPositive());
             let hasBottomBump = crossBrickBottom.and(
                 bottomBorder.sub(prevBallPos.y).isPositive()
             );
@@ -325,12 +348,13 @@ export class GameContext extends Struct({
             // Left vertical
             let d3 = leftBorder;
             let bdc1 = b.mul(d3).add(c);
-            let bdc1Sign = getSign(bdc1);
-            let crossBrickLeft = topEnd
-                .sub(bdc1)
-                .mul(bdc1Sign)
-                .isPositive()
-                .and(bdc1.sub(bottomEnd).mul(bdc1Sign).isPositive());
+            // let bdc1Sign = getSign(bdc1);
+            let crossBrickLeft = inRange(bdc1, bottomEnd, topEnd);
+            // let crossBrickLeft = topEnd
+            //     .sub(bdc1)
+            //     .mul(bdc1Sign)
+            //     .isPositive()
+            //     .and(bdc1.sub(bottomEnd).mul(bdc1Sign).isPositive());
             let hasLeftBump = crossBrickLeft.and(
                 leftBorder.sub(prevBallPos.x).isPositive()
             );
@@ -338,12 +362,13 @@ export class GameContext extends Struct({
             // Right vertical
             let d4 = rightBorder;
             let bdc2 = b.mul(d4).add(c);
-            let bdc2Sign = getSign(bdc2);
-            let crossBrickRight = topEnd
-                .sub(bdc2)
-                .mul(bdc2Sign)
-                .isPositive()
-                .and(bdc2.sub(bottomEnd).mul(bdc2Sign).isPositive());
+            // let bdc2Sign = getSign(bdc2);
+            let crossBrickRight = inRange(bdc2, bottomEnd, topEnd);
+            // let crossBrickRight = topEnd
+            //     .sub(bdc2)
+            //     .mul(bdc2Sign)
+            //     .isPositive()
+            //     .and(bdc2.sub(bottomEnd).mul(bdc2Sign).isPositive());
             let hasRightBump = crossBrickRight.and(
                 prevBallPos.x.sub(rightBorder).isPositive()
             );
@@ -374,10 +399,35 @@ export class GameContext extends Struct({
                 this.ball.speed.x
             );
 
+            // Update position on bump
+            this.ball.position.x = Provable.if(
+                collisionHappen.and(hasLeftBump),
+                leftBorder.mul(2).sub(this.ball.position.x),
+                this.ball.position.x
+            );
+
+            this.ball.position.x = Provable.if(
+                collisionHappen.and(hasRightBump),
+                rightBorder.mul(2).sub(this.ball.position.x),
+                this.ball.position.x
+            );
+
             this.ball.speed.y = Provable.if(
                 collisionHappen.and(hasBottomBump.or(hasTopBump)),
                 this.ball.speed.y.neg(),
                 this.ball.speed.y
+            );
+
+            this.ball.position.y = Provable.if(
+                collisionHappen.and(topBump),
+                topBorder.mul(2).sub(this.ball.position.y),
+                this.ball.position.y
+            );
+
+            this.ball.position.y = Provable.if(
+                collisionHappen.and(bottomBump),
+                bottomBorder.mul(2).sub(this.ball.position.y),
+                this.ball.position.y
             );
         }
 
