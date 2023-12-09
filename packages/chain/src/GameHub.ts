@@ -247,10 +247,10 @@ export class GameContext extends Struct({
             const currentBrick = this.bricks.bricks[j];
             let isAlive = currentBrick.value.greaterThan(UInt64.from(1)); // 1 just so UInt64.sub do not underflow
 
-            let leftBorder = currentBrick.pos.x.sub(BRICK_HALF_WIDTH);
-            let rightBorder = currentBrick.pos.x.add(BRICK_HALF_WIDTH);
-            let topBorder = currentBrick.pos.y.add(BRICK_HALF_WIDTH);
-            let bottomBorder = currentBrick.pos.y.sub(BRICK_HALF_WIDTH);
+            let leftBorder = currentBrick.pos.x;
+            let rightBorder = currentBrick.pos.x.add(BRICK_HALF_WIDTH * 2);
+            let topBorder = currentBrick.pos.y.add(BRICK_HALF_WIDTH * 2);
+            let bottomBorder = currentBrick.pos.y;
 
             /*
             Collision
@@ -286,9 +286,9 @@ export class GameContext extends Struct({
                 bx = ay - c
                 bx = ad - c;
 
-                x \incl [ brick.pos.x - BRICK_HALF_WIDTH, brick.pos.x + BRICK_HALF_WIDTH ]
-                bx \incl [b(brics.pos.x - BRICK_HALF_WIDTH, b(brick.pos.x + BRICK_HALF_WIDTH))]
-                ad - c \incl [b(brics.pos.x - BRICK_HALF_WIDTH, b(brick.pos.x + BRICK_HALF_WIDTH))]
+                x \incl [ brick.pos.x, brick.pos.x + 2 * BRICK_HALF_WIDTH ]
+                bx \incl [b(brics.pos.x, b(brick.pos.x + 2 * BRICK_HALF_WIDTH))]
+                ad - c \incl [b(brics.pos.x), b(brick.pos.x + 2 * BRICK_HALF_WIDTH))]
                 
 
 
@@ -300,9 +300,9 @@ export class GameContext extends Struct({
                     b - ball.speed.y
                 ay = bd + c
 
-                y \incl [ brick.pos.y - BRICK_HALF_WIDTH, brick.pos.y + BRICK_HALF_WIDTH]
-                ay \incl [ a(brick.pos.y - BRICK_HALF_WIDTH), a(brick.pos.y + BRICK_HALF_WIDTH)]
-                bd + c \incl [ a(brick.pos.y - BRICK_HALF_WIDTH), a(brick.pos.y + BRICK_HALF_WIDTH)]
+                y \incl [ brick.pos.y, brick.pos.y + 2 * BRICK_HALF_WIDTH]
+                ay \incl [ a(brick.pos.y), a(brick.pos.y + 2 * BRICK_HALF_WIDTH)]
+                bd + c \incl [ a(brick.pos.y), a(brick.pos.y + 2 * BRICK_HALF_WIDTH)]
             */
 
             let a = this.ball.speed.x;
@@ -311,8 +311,10 @@ export class GameContext extends Struct({
                 .mul(this.ball.position.y)
                 .sub(b.mul(this.ball.position.x));
 
-            let leftEnd = b.mul(this.ball.position.x.sub(BRICK_HALF_WIDTH));
-            let rightEnd = b.mul(this.ball.position.x.add(BRICK_HALF_WIDTH));
+            let leftEnd = b.mul(this.ball.position.x);
+            let rightEnd = b.mul(
+                this.ball.position.x.add(2 * BRICK_HALF_WIDTH)
+            );
 
             // Top horizontal
             let d1 = topBorder;
@@ -342,8 +344,8 @@ export class GameContext extends Struct({
                 bottomBorder.sub(prevBallPos.y).isPositive()
             );
 
-            let topEnd = a.mul(this.ball.position.y.add(BRICK_HALF_WIDTH));
-            let bottomEnd = a.mul(this.ball.position.y.sub(BRICK_HALF_WIDTH));
+            let topEnd = a.mul(this.ball.position.y.add(2 * BRICK_HALF_WIDTH));
+            let bottomEnd = a.mul(this.ball.position.y);
 
             // Left vertical
             let d3 = leftBorder;

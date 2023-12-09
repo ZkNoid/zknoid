@@ -377,8 +377,6 @@ export const GameView = (props: IGameViewProps) => {
       radius: 3,
     };
 
-    console.log(gameContext.bricks);
-
     if (
       ball.x - ball.radius > cart.x &&
       ball.x + ball.radius < cart.x + cart.w &&
@@ -487,8 +485,8 @@ export const GameView = (props: IGameViewProps) => {
 
     contractBricks = gameContext.bricks.bricks
       .map((brick) => {
-        let x = +brick.pos.x.toString() - BRICK_HALF_WIDTH;
-        let y = +brick.pos.y.toString() - BRICK_HALF_WIDTH;
+        let x = +brick.pos.x.toString();
+        let y = +brick.pos.y.toString();
         return {
           x,
           y,
