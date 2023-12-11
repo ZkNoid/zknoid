@@ -26,6 +26,7 @@ export default function Home() {
   const [gameState, setGameState] = useState(GameState.NotStarted);
   const [lastTicks, setLastTicks] = useState<number[]>([]);
   let [gameId, setGameId] = useState(0);
+  let [debug, setDebug] = useState(true);
   const level: Bricks = useMemo(() => defaultLevel(), []);
 
   const connectWallet = async () => {
@@ -61,7 +62,7 @@ export default function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-5">
+    <main className="grow flex flex-col items-center p-5 gap-5">
       {address ? (
         <div className="flex flex-col gap-5">
           {gameState == GameState.Won && (
@@ -119,7 +120,12 @@ export default function Home() {
         }} 
         level={level}
         gameId={gameId} 
+        debug={debug}
       />
+      <div className="grow"></div>
+      <div className="w-full text-end">
+        Debug: <input type="checkbox" checked={debug} onChange={(event => {setDebug(event.target.checked)})}></input>
+      </div>
     </main>
   );
 }

@@ -16,6 +16,7 @@ import {
   TICK_PERIOD,
   DEFAULT_BALL_SPEED_X,
   DEFAULT_BALL_SPEED_Y,
+  IntPoint,
 } from "zknoid-chain-dev";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Int64, PublicKey, UInt64, Bool, AccountUpdate } from "o1js";
@@ -28,6 +29,20 @@ interface IGameViewProps {
   onWin: (ticks: number[]) => void;
   onLost: (ticks: number[]) => void;
   level: Bricks;
+  debug: boolean
+}
+
+interface IContractBrick {
+  pos: IntPoint;
+  value: UInt64;
+}
+
+interface IContractBrickPorted {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  value: number;
 }
 
 export const GameView = (props: IGameViewProps) => {
@@ -54,11 +69,14 @@ export const GameView = (props: IGameViewProps) => {
   let bricks: IBrick[] = [];
   let contractBricks: IBrick[] = [];
   let stopped: boolean = false;
+  const debugMode = props.debug;
 
-  let ballTrace: [[number, number]] = [];
-  let contractBallTrace: [[number, number]] = [];
+  let ballTrace: [number, number][] = [];
+  let contractBallTrace: [number, number][] = [];
 
-  let debugMode = true;
+  useEffect(() => {
+    if (props.gameId > 0) startGame();
+  }, [props.gameId]);
 
   useEffect(() => {
     if (props.gameId > 0) startGame();
@@ -374,8 +392,8 @@ export const GameView = (props: IGameViewProps) => {
 
     gameContext = loadGameContext(contractBricks, new Bool(false));
     contractBall = {
-      x: +gameContext.ball.position.x.toString(),
-      y: +gameContext.ball.position.y.toString(),
+      x: gameContext.ball.position.x * 1,
+      y: gameContext.ball.position.y * 1,
       dx: 0,
       dy: 0,
       radius: 3,
@@ -461,25 +479,25 @@ export const GameView = (props: IGameViewProps) => {
         contractBallTrace.length > 0
           ? contractBallTrace[contractBallTrace.length - 1]
           : [
-              +gameContext.ball.position.x.toString(),
-              +gameContext.ball.position.y.toString(),
+              gameContext.ball.position.x * 1,
+              gameContext.ball.position.y * 1,
             ];
 
       let prevSpeed: [number, number] = [
-        +gameContext.ball.speed.x.toString(),
-        +gameContext.ball.speed.y.toString(),
+        gameContext.ball.speed.x * 1,
+        gameContext.ball.speed.y * 1,
       ];
       //@ts-ignore
       gameContext.processTick(new Tick({ action: UInt64.from(action) }));
       let [x, y] = [
-        +gameContext.ball.position.x.toString(),
-        +gameContext.ball.position.y.toString(),
+        gameContext.ball.position.x * 1,
+        gameContext.ball.position.y * 1,
       ];
       contractBall.x = x;
       contractBall.y = y;
       let newSpeed = [
-        +gameContext.ball.speed.x.toString(),
-        +gameContext.ball.speed.y.toString(),
+        gameContext.ball.speed.x * 1,
+        gameContext.ball.speed.y * 1,
       ];
 
       // Should add additional point to points, because collision point is ommited
@@ -491,18 +509,18 @@ export const GameView = (props: IGameViewProps) => {
       contractBallTrace.push([x, y]);
 
       contractBricks = gameContext.bricks.bricks
-        .map((brick) => {
-          let x = +brick.pos.x.toString();
-          let y = +brick.pos.y.toString();
+        .map((brick: IContractBrick) => {
+          let x = brick.pos.x * 1;
+          let y = brick.pos * 1;
           return {
             x,
             y,
             w: 2 * BRICK_HALF_WIDTH,
             h: 2 * BRICK_HALF_WIDTH,
             value: +brick.value.toString(),
-          };
+          } as IContractBrickPorted;
         })
-        .filter((brick) => brick.value > 1);
+        .filter((brick: IContractBrickPorted) => brick.value > 1);
     }
   };
 
