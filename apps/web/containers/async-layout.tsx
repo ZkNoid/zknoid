@@ -27,13 +27,13 @@ export default function AsyncLayout({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <>
+    <div className={"flex flex-col min-h-screen"}>
       <Header
         address={wallet.wallet}
         onConnectWallet={wallet.connectWallet}
       />
       {children}
       {/* <Toaster /> */}
-    </>
+    </div>
   );
 }
