@@ -58,6 +58,8 @@ export const GameView = (props: IGameViewProps) => {
   let ballTrace: [[number, number]] = [];
   let contractBallTrace: [[number, number]] = [];
 
+  let debugMode = true;
+
   useEffect(() => {
     if (props.gameId > 0) startGame();
   }, [props.gameId]);
@@ -83,13 +85,15 @@ export const GameView = (props: IGameViewProps) => {
     moveBall(elapsed);
 
     drawBall();
-    drawContractBall();
     drawBricks();
 
     drawCart();
 
-    drawBallsTraces();
-    drawContractBricks();
+    if (debugMode) {
+      drawContractBall();
+      drawContractBricks();
+      drawBallsTraces();
+    }
 
     if (Date.now() - lastUpdateTime > tickPeriod) {
       pushTick(1);
@@ -426,7 +430,6 @@ export const GameView = (props: IGameViewProps) => {
     speed: [number, number],
   ): [number, number] => {
     let overflowPoint = [pos[0] + speed[0], pos[1] + speed[1]];
-    console.log(overflowPoint);
     let t: number = 1;
     if (overflowPoint[0] > FIELD_WIDTH) {
       t = (FIELD_WIDTH - pos[0]) / speed[0];
@@ -448,56 +451,59 @@ export const GameView = (props: IGameViewProps) => {
   };
 
   const pushTick = (action: number) => {
-    // console.log(`Push ${action}`);
     ticksCache.push(action);
-    let prevPos: [number, number] =
-      contractBallTrace.length > 0
-        ? contractBallTrace[contractBallTrace.length - 1]
-        : [
-            +gameContext.ball.position.x.toString(),
-            +gameContext.ball.position.y.toString(),
-          ];
+    if (!debugMode) {
+      // Is not in debug mode - just process tick
+      //@ts-ignore
+      gameContext.processTick(new Tick({ action: UInt64.from(action) }));
+    } else {
+      let prevPos: [number, number] =
+        contractBallTrace.length > 0
+          ? contractBallTrace[contractBallTrace.length - 1]
+          : [
+              +gameContext.ball.position.x.toString(),
+              +gameContext.ball.position.y.toString(),
+            ];
 
-    let prevSpeed: [number, number] = [
-      +gameContext.ball.speed.x.toString(),
-      +gameContext.ball.speed.y.toString(),
-    ];
-    //@ts-ignore
-    gameContext.processTick(new Tick({ action: UInt64.from(action) }));
-    let [x, y] = [
-      +gameContext.ball.position.x.toString(),
-      +gameContext.ball.position.y.toString(),
-    ];
-    contractBall.x = x;
-    contractBall.y = y;
-    let newSpeed = [
-      +gameContext.ball.speed.x.toString(),
-      +gameContext.ball.speed.y.toString(),
-    ];
+      let prevSpeed: [number, number] = [
+        +gameContext.ball.speed.x.toString(),
+        +gameContext.ball.speed.y.toString(),
+      ];
+      //@ts-ignore
+      gameContext.processTick(new Tick({ action: UInt64.from(action) }));
+      let [x, y] = [
+        +gameContext.ball.position.x.toString(),
+        +gameContext.ball.position.y.toString(),
+      ];
+      contractBall.x = x;
+      contractBall.y = y;
+      let newSpeed = [
+        +gameContext.ball.speed.x.toString(),
+        +gameContext.ball.speed.y.toString(),
+      ];
 
-    if (prevSpeed[0] == -newSpeed[0] || prevSpeed[1] == -newSpeed[1]) {
-      console.log("Have collision");
-      contractBallTrace.push(getCollisionPoint(prevPos, prevSpeed));
+      // Should add additional point to points, because collision point is ommited
+      // #TODO: Change calculation for brick collision. For now works only with border collisions, but works bad for brick collision.
+      if (prevSpeed[0] == -newSpeed[0] || prevSpeed[1] == -newSpeed[1]) {
+        contractBallTrace.push(getCollisionPoint(prevPos, prevSpeed));
+      }
+
+      contractBallTrace.push([x, y]);
+
+      contractBricks = gameContext.bricks.bricks
+        .map((brick) => {
+          let x = +brick.pos.x.toString();
+          let y = +brick.pos.y.toString();
+          return {
+            x,
+            y,
+            w: 2 * BRICK_HALF_WIDTH,
+            h: 2 * BRICK_HALF_WIDTH,
+            value: +brick.value.toString(),
+          };
+        })
+        .filter((brick) => brick.value > 1);
     }
-
-    contractBallTrace.push([contractBall.x, contractBall.y]);
-    // console.log(contractBallTrace);
-
-    contractBricks = gameContext.bricks.bricks
-      .map((brick) => {
-        let x = +brick.pos.x.toString();
-        let y = +brick.pos.y.toString();
-        return {
-          x,
-          y,
-          w: 2 * BRICK_HALF_WIDTH,
-          h: 2 * BRICK_HALF_WIDTH,
-          value: +brick.value.toString(),
-        };
-      })
-      .filter((brick) => brick.value > 1);
-
-    console.log(contractBricks);
   };
 
   return (
