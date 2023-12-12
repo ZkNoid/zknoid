@@ -29,7 +29,7 @@ interface IGameViewProps {
   onWin: (ticks: number[]) => void;
   onLost: (ticks: number[]) => void;
   level: Bricks;
-  debug: boolean
+  debug: boolean;
 }
 
 interface IContractBrick {
@@ -71,6 +71,8 @@ export const GameView = (props: IGameViewProps) => {
   let stopped: boolean = false;
   const debugMode = props.debug;
 
+  const debugModeRef = useRef(debugMode);
+
   let ballTrace: [number, number][] = [];
   let contractBallTrace: [number, number][] = [];
 
@@ -79,8 +81,8 @@ export const GameView = (props: IGameViewProps) => {
   }, [props.gameId]);
 
   useEffect(() => {
-    if (props.gameId > 0) startGame();
-  }, [props.gameId]);
+    debugModeRef.current = debugMode;
+  }, [debugMode]);
 
   useEffect(() => {
     const ctx = canvas!.current?.getContext("2d");
@@ -107,7 +109,7 @@ export const GameView = (props: IGameViewProps) => {
 
     drawCart();
 
-    if (debugMode) {
+    if (debugModeRef.current) {
       drawContractBall();
       drawContractBricks();
       drawBallsTraces();
@@ -470,18 +472,16 @@ export const GameView = (props: IGameViewProps) => {
 
   const pushTick = (action: number) => {
     ticksCache.push(action);
-    if (!debugMode) {
+    if (!debugModeRef.current) {
       // Is not in debug mode - just process tick
       //@ts-ignore
       gameContext.processTick(new Tick({ action: UInt64.from(action) }));
+      contractBallTrace = [];
     } else {
       let prevPos: [number, number] =
         contractBallTrace.length > 0
           ? contractBallTrace[contractBallTrace.length - 1]
-          : [
-              gameContext.ball.position.x * 1,
-              gameContext.ball.position.y * 1,
-            ];
+          : [gameContext.ball.position.x * 1, gameContext.ball.position.y * 1];
 
       let prevSpeed: [number, number] = [
         gameContext.ball.speed.x * 1,
@@ -511,7 +511,7 @@ export const GameView = (props: IGameViewProps) => {
       contractBricks = gameContext.bricks.bricks
         .map((brick: IContractBrick) => {
           let x = brick.pos.x * 1;
-          let y = brick.pos * 1;
+          let y = brick.pos.y * 1;
           return {
             x,
             y,
