@@ -100,7 +100,7 @@ export const GameView = (props: IGameViewProps) => {
 
     lastTime = time;
 
-    ctx!.clearRect(0, 0, canvas.current!.width, canvas.current!.height);
+    ctx!.clearRect(0, 0, FIELD_WIDTH, FIELD_HEIGHT);
     moveCart(elapsed);
     moveBall(elapsed);
 
@@ -128,8 +128,8 @@ export const GameView = (props: IGameViewProps) => {
   const moveCart = (elapsed: number) => {
     cart.x += cart.dx;
 
-    if (cart.x > canvas!.current!.width - cart.w) {
-      cart.x = canvas!.current!.width - cart.w;
+    if (cart.x > FIELD_WIDTH - cart.w) {
+      cart.x = FIELD_WIDTH - cart.w;
     }
 
     if (cart.x < 0) {
@@ -142,20 +142,20 @@ export const GameView = (props: IGameViewProps) => {
     ball.y += (ball.dy * elapsed) / 1000;
 
     if (
-      ball.x + ball.radius > canvas!.current!.width ||
+      ball.x + ball.radius > FIELD_WIDTH ||
       ball.x - ball.radius < 0
     ) {
       ball.dx *= -1;
     }
 
     if (
-      ball.y + ball.radius > canvas!.current!.height ||
+      ball.y + ball.radius > FIELD_HEIGHT ||
       ball.y - ball.radius < 0
     ) {
       ball.dy *= -1;
     }
 
-    if (ball.y + ball.radius > canvas!.current!.height) {
+    if (ball.y + ball.radius > FIELD_HEIGHT) {
       return onLost();
     }
 
@@ -335,8 +335,8 @@ export const GameView = (props: IGameViewProps) => {
     console.log(ball);
 
     cart = {
-      x: canvas!.current!.width / 2,
-      y: canvas!.current!.height - 10,
+      x: FIELD_WIDTH / 2,
+      y: FIELD_HEIGHT - 10,
       w: 100,
       h: 20,
       dx: 0,
