@@ -141,21 +141,35 @@ export const GameView = (props: IGameViewProps) => {
     ball.x += (ball.dx * elapsed) / 1000;
     ball.y += (ball.dy * elapsed) / 1000;
 
+    const leftBump = ball.x - ball.radius < 0;
+    const rightBump = ball.x - FIELD_WIDTH > 0;
+    const topBump = ball.y < 0;
+    const bottomBump = ball.y - FIELD_HEIGHT > 0;
+
+    if (leftBump) {
+      ball.x *= -1;
+    }
+
+    if (rightBump) {
+      ball.x = FIELD_WIDTH - (ball.x - FIELD_WIDTH);
+    }
+
+    if (rightBump) {
+      ball.x = FIELD_WIDTH - (ball.x - FIELD_WIDTH);
+    }
+
     if (
-      ball.x + ball.radius > FIELD_WIDTH ||
-      ball.x - ball.radius < 0
+      leftBump || rightBump
     ) {
       ball.dx *= -1;
     }
 
-    if (
-      ball.y + ball.radius > FIELD_HEIGHT ||
-      ball.y - ball.radius < 0
-    ) {
+    if (topBump) {
+      ball.y *= 1;
       ball.dy *= -1;
     }
 
-    if (ball.y + ball.radius > FIELD_HEIGHT) {
+    if (bottomBump) {
       return onLost();
     }
 
