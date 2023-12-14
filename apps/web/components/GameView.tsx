@@ -191,7 +191,20 @@ export const GameView = (props: IGameViewProps) => {
           ball.y + ball.radius > brick.y &&
           ball.y - ball.radius < brick.y + brick.h
         ) {
-          ball.dy *= -1;
+          let leftBorderDist = Math.abs(ball.x - brick.x);
+          let rightBorderDist = Math.abs(ball.x - (brick.x + brick.w));
+          let topBorderDist = Math.abs(ball.y - brick.y);
+          let bottomBorderDist = Math.abs(ball.y - (brick.y + brick.h));
+
+          let minVerticalDist = Math.min(topBorderDist, bottomBorderDist);
+          let minHorizontalDist = Math.min(leftBorderDist, rightBorderDist);
+
+          if (minHorizontalDist < minVerticalDist) {
+            ball.dx *= -1;
+          } else {
+            ball.dy *= -1;
+          }
+
           brick.value = 0;
           bricksLeft -= 1;
 
