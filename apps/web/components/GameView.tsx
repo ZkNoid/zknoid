@@ -100,7 +100,7 @@ export const GameView = (props: IGameViewProps) => {
 
     lastTime = time;
 
-    ctx!.clearRect(0, 0, FIELD_WIDTH, FIELD_HEIGHT);
+    ctx!.clearRect(0, 0, FIELD_WIDTH, FIELD_HEIGHT + 10);
     moveCart(elapsed);
     moveBall(elapsed);
 
@@ -144,7 +144,7 @@ export const GameView = (props: IGameViewProps) => {
     const leftBump = ball.x - ball.radius < 0;
     const rightBump = ball.x - FIELD_WIDTH > 0;
     const topBump = ball.y < 0;
-    const bottomBump = ball.y - FIELD_HEIGHT > 0;
+    let bottomBump = ball.y - FIELD_HEIGHT > 0; // Undo bump if hiy cart
 
     if (leftBump) {
       ball.x *= -1;
@@ -158,9 +158,7 @@ export const GameView = (props: IGameViewProps) => {
       ball.x = FIELD_WIDTH - (ball.x - FIELD_WIDTH);
     }
 
-    if (
-      leftBump || rightBump
-    ) {
+    if (leftBump || rightBump) {
       ball.dx *= -1;
     }
 
@@ -169,16 +167,18 @@ export const GameView = (props: IGameViewProps) => {
       ball.dy *= -1;
     }
 
-    if (bottomBump) {
-      return onLost();
-    }
-
     if (
       ball.x - ball.radius > cart.x &&
       ball.x + ball.radius < cart.x + cart.w &&
       ball.y + ball.radius > cart.y
     ) {
+      ball.y = 2 * cart.y - ball.y;
       ball.dy *= -1;
+      bottomBump = false;
+    }
+
+    if (bottomBump) {
+      return onLost();
     }
 
     ballTrace.push([ball.x, ball.y]);
@@ -191,17 +191,32 @@ export const GameView = (props: IGameViewProps) => {
           ball.y + ball.radius > brick.y &&
           ball.y - ball.radius < brick.y + brick.h
         ) {
-          let leftBorderDist = Math.abs(ball.x - brick.x);
-          let rightBorderDist = Math.abs(ball.x - (brick.x + brick.w));
-          let topBorderDist = Math.abs(ball.y - brick.y);
-          let bottomBorderDist = Math.abs(ball.y - (brick.y + brick.h));
+          let leftBorder = brick.x;
+          let rightBorder = brick.x + brick.w;
+          let topBorder = brick.y;
+          let bottomBorder = brick.y + brick.h;
+
+          let leftBorderDist = Math.abs(ball.x - leftBorder);
+          let rightBorderDist = Math.abs(ball.x - rightBorder);
+          let topBorderDist = Math.abs(ball.y - topBorder);
+          let bottomBorderDist = Math.abs(ball.y - bottomBorder);
 
           let minVerticalDist = Math.min(topBorderDist, bottomBorderDist);
           let minHorizontalDist = Math.min(leftBorderDist, rightBorderDist);
 
           if (minHorizontalDist < minVerticalDist) {
+            if (leftBorderDist < rightBorderDist) {
+              ball.x = 2 * leftBorder - ball.x;
+            } else {
+              ball.x = 2 * rightBorder - ball.x;
+            }
             ball.dx *= -1;
           } else {
+            if (topBorderDist < bottomBorderDist) {
+              ball.y = 2 * topBorder - ball.y;
+            } else {
+              ball.y = 2 * bottomBorder - ball.y;
+            }
             ball.dy *= -1;
           }
 
@@ -363,9 +378,9 @@ export const GameView = (props: IGameViewProps) => {
 
     cart = {
       x: FIELD_WIDTH / 2,
-      y: FIELD_HEIGHT - 10,
+      y: FIELD_HEIGHT,
       w: 100,
-      h: 20,
+      h: 10,
       dx: 0,
     };
 
@@ -497,12 +512,23 @@ export const GameView = (props: IGameViewProps) => {
     return [pos[0] + speed[0] * t, pos[1] + speed[1] * t];
   };
 
+  const syncBalls = () => {
+    ball.x = contractBall.x;
+    ball.y = contractBall.y;
+  };
+
   const pushTick = (action: number) => {
     ticksCache.push(action);
     if (!debugModeRef.current) {
       // Is not in debug mode - just process tick
       //@ts-ignore
       gameContext.processTick(new Tick({ action: UInt64.from(action) }));
+      let [x, y] = [
+        gameContext.ball.position.x * 1,
+        gameContext.ball.position.y * 1,
+      ];
+      contractBall.x = x;
+      contractBall.y = y;
       contractBallTrace = [];
     } else {
       let prevPos: [number, number] =
@@ -549,13 +575,15 @@ export const GameView = (props: IGameViewProps) => {
         })
         .filter((brick: IContractBrickPorted) => brick.value > 1);
     }
+
+    syncBalls();
   };
 
   return (
     <canvas
       id="canvas"
       width={`${FIELD_WIDTH}`}
-      height={`${FIELD_HEIGHT}`}
+      height={`${FIELD_HEIGHT + 10}`}
       ref={canvas}
     ></canvas>
   );
