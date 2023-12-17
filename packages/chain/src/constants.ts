@@ -24,5 +24,7 @@ export const DEFAULT_BALL_SPEED_X = 4 * 10;
 export const DEFAULT_BALL_SPEED_Y = -3 * 10;
 
 export const DEFAULT_PLATFORM_X = 100;
+export const DEFAULT_PLATFORM_SPEED = 16 * 10;
+
 
 export const TICK_PERIOD = 1000;

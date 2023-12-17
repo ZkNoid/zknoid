@@ -21,9 +21,11 @@ import {
     DEFAULT_BALL_LOCATION_Y,
     DEFAULT_BALL_SPEED_X,
     DEFAULT_BALL_SPEED_Y,
+    DEFAULT_PLATFORM_SPEED,
     DEFAULT_PLATFORM_X,
     FIELD_PIXEL_HEIGHT,
     FIELD_PIXEL_WIDTH,
+    FIELD_WIDTH,
     GAME_LENGTH,
     INITIAL_SCORE,
     MAX_BRICKS,
@@ -160,8 +162,16 @@ export class GameContext extends Struct({
             this.score.sub(SCORE_PER_TICKS)
         );
 
+        const cartAtStop = this.platform.position.sub(Int64.from(FIELD_WIDTH).sub(Int64.from(PLATFORM_HALF_WIDTH))).isPositive();
+
         /// 2) Update platform position
-        this.platform.position = this.platform.position.add(1).sub(tick.action);
+        this.platform.position = Provable.if(
+            cartAtStop,
+            Int64.from(FIELD_WIDTH).sub(Int64.from(PLATFORM_HALF_WIDTH)),
+            this.platform.position
+        ); 
+        
+        this.platform.position.add(1).sub(tick.action).mul(DEFAULT_PLATFORM_SPEED);
 
         /// 3) Update ball position
         const prevBallPos = new IntPoint({
