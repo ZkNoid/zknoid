@@ -27,6 +27,7 @@ import {
     DEFAULT_BALL_SPEED_X,
     DEFAULT_BALL_SPEED_Y,
     TICK_PERIOD,
+    DEFAULT_PLATFORM_SPEED
 } from './constants.js';
 import { defaultLevel } from './levels.js';
 
@@ -55,4 +56,5 @@ export {
     IntPoint,
     defaultLevel,
     TICK_PERIOD,
+    DEFAULT_PLATFORM_SPEED
 };

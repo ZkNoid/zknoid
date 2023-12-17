@@ -17,6 +17,7 @@ import {
   DEFAULT_BALL_SPEED_X,
   DEFAULT_BALL_SPEED_Y,
   IntPoint,
+  DEFAULT_PLATFORM_SPEED,
 } from "zknoid-chain-dev";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Int64, PublicKey, UInt64, Bool, AccountUpdate } from "o1js";
@@ -126,7 +127,7 @@ export const GameView = (props: IGameViewProps) => {
   };
 
   const moveCart = (elapsed: number) => {
-    cart.x += cart.dx;
+    cart.x += cart.dx * elapsed / 1000;
 
     if (cart.x > FIELD_WIDTH - cart.w) {
       cart.x = FIELD_WIDTH - cart.w;
@@ -316,7 +317,7 @@ export const GameView = (props: IGameViewProps) => {
         lastUpdateTime = Date.now();
       }
 
-      cart.dx = 4;
+      cart.dx = DEFAULT_PLATFORM_SPEED;
     } else if (e.key === "Left" || e.key === "ArrowLeft") {
       if (
         Date.now() - lastUpdateTime >
@@ -329,7 +330,7 @@ export const GameView = (props: IGameViewProps) => {
         lastUpdateTime = Date.now();
       }
 
-      cart.dx = -4;
+      cart.dx = -DEFAULT_PLATFORM_SPEED;
     }
   };
 
