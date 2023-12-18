@@ -59,7 +59,7 @@ export const useWalletStore = create<WalletState, [["zustand/immer", never]]>(
     pendingTransactions: [] as PendingTransaction[],
     addPendingTransaction(pendingTransaction) {
       set((state) => {
-        // @ts-expect-error
+        // @ts-ignore
         state.pendingTransactions.push(pendingTransaction);
       });
     },
