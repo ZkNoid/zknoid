@@ -18,7 +18,7 @@ import {
   DEFAULT_BALL_SPEED_Y,
   IntPoint,
   DEFAULT_PLATFORM_SPEED,
-} from "zknoid-chain-dev";
+} from "zknoid-chain";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Int64, PublicKey, UInt64, Bool, AccountUpdate } from "o1js";
 import { DUMMY_PROOF } from "@/constants";
