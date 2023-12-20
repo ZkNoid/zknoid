@@ -23,7 +23,7 @@ export default function Home() {
       </div>
       <div className='bg-white p-10 rounded-xl border-gray-300 bg-gradient-to-b from-zinc-200'>
 
-        <Link className='flex gap-5 flex-col m-5' href={'/arkanoid'}>
+        <Link className='flex gap-5 flex-col m-5' href={'/arkanoid/global'}>
           <Image src={'/Arkanoid.png'} alt='Akranoid' width={220} height={251}></Image>
           <div className='text-xl'>Arcanoid game</div>
           <div className='text-base w-36'>Old but gold game. Beat all the bricks and protect the ball from falling</div>
