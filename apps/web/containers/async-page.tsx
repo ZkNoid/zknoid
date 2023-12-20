@@ -21,10 +21,24 @@ enum GameState {
   Proofing
 }
 
-export default function Home() {
+interface UserTop {
+  address: `0x${string}`,
+  score: number
+}
+
+export default function Home({ params }: { params: { competitionId: string } }) {
   const [address, setAddress] = useState("");
   const [gameState, setGameState] = useState(GameState.NotStarted);
   const [lastTicks, setLastTicks] = useState<number[]>([]);
+  const [topUsers, setTopUsers] = useState<UserTop[]>([{
+    address: '0x2836eC28C32E232280F984d3980BA4e05d6BF68f',
+    score: 100
+  },
+  {
+    address: '0xE314CE1514B21f4dc39C546b3c3bca317652d0Ac',
+    score: 70
+  }]);
+
   let [gameId, setGameId] = useState(0);
   let [debug, setDebug] = useState(true);
   const level: Bricks = useMemo(() => defaultLevel(), []);
@@ -53,7 +67,7 @@ export default function Home() {
     try {
       const gameContext = loadGameContext(level, new Bool(true));
       for (let i = 0; i < userInput.tiks.length; i++) {
-          gameContext.processTick(userInput.tiks[i]);
+        gameContext.processTick(userInput.tiks[i]);
       }
     } catch (e) {
       console.log("Error while generating ZK proof");
@@ -117,14 +131,20 @@ export default function Home() {
         onLost={(ticks) => {
           setLastTicks(ticks);
           setGameState(GameState.Lost)
-        }} 
+        }}
         level={level}
-        gameId={gameId} 
+        gameId={gameId}
         debug={debug}
       />
       <div className="grow"></div>
+      <div>
+        Leaderboard {params.competitionId}:
+        <div>
+          {topUsers.map(user => <div>{user.address} – {user.score} pts</div>)}
+        </div>
+      </div>
       <div className="w-full text-end">
-        Debug: <input type="checkbox" checked={debug} onChange={(event => {setDebug(event.target.checked)})}></input>
+        Debug: <input type="checkbox" checked={debug} onChange={(event => { setDebug(event.target.checked) })}></input>
       </div>
     </main>
   );
