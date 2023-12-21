@@ -34,6 +34,8 @@ export default function Home({
   const [address, setAddress] = useState('');
   const [gameState, setGameState] = useState(GameState.NotStarted);
   const [lastTicks, setLastTicks] = useState<number[]>([]);
+  const [score, setScore] = useState<number>(0);
+
   const [topUsers, setTopUsers] = useState<UserTop[]>([
     {
       address: '0x2836eC28C32E232280F984d3980BA4e05d6BF68f',
@@ -48,7 +50,6 @@ export default function Home({
   let [gameId, setGameId] = useState(0);
   let [debug, setDebug] = useState(true);
   const level: Bricks = useMemo(() => defaultLevel(), []);
-  let score = 0;
 
   const connectWallet = async () => {
     const accounts = await (window as any).mina.requestAccounts();
@@ -76,7 +77,6 @@ export default function Home({
       for (let i = 0; i < userInput.tiks.length; i++) {
         gameContext.processTick(userInput.tiks[i]);
         console.log('Game ctx', gameContext);
-        score = gameContext.score;
       }
     } catch (e) {
       console.log('Error while generating ZK proof');
@@ -150,6 +150,7 @@ export default function Home({
         level={level}
         gameId={gameId}
         debug={debug}
+        setScore={setScore}
       />
       <div>
         Score: {score}

@@ -29,6 +29,7 @@ interface IGameViewProps {
   gameId: number;
   onWin: (ticks: number[]) => void;
   onLost: (ticks: number[]) => void;
+  setScore: (score: number) => void;
   level: Bricks;
   debug: boolean;
 }
@@ -605,6 +606,8 @@ export const GameView = (props: IGameViewProps) => {
         x: gameContext.platform.position * 1,
       };
     }
+
+    props.setScore(gameContext.score * 1);
 
     sync();
   };
