@@ -1,5 +1,5 @@
-"use client";
-import { useWalletStore } from "@/lib/stores/wallet";
+'use client';
+import { useWalletStore } from '@/lib/stores/wallet';
 import {
   Brick,
   Bricks,
@@ -18,12 +18,12 @@ import {
   DEFAULT_BALL_SPEED_Y,
   IntPoint,
   DEFAULT_PLATFORM_SPEED,
-} from "zknoid-chain";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Int64, PublicKey, UInt64, Bool, AccountUpdate } from "o1js";
-import { DUMMY_PROOF } from "@/constants";
-import { Ball, Cart, IBrick } from "@/lib/types";
-import { GameContext } from "zknoid-chain/dist/GameHub";
+} from 'zknoid-chain-dev';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Int64, PublicKey, UInt64, Bool, AccountUpdate } from 'o1js';
+import { DUMMY_PROOF } from '@/constants';
+import { Ball, Cart, IBrick } from '@/lib/types';
+import { GameContext } from 'zknoid-chain/dist/GameHub';
 
 interface IGameViewProps {
   gameId: number;
@@ -67,6 +67,8 @@ export const GameView = (props: IGameViewProps) => {
   let ball: Ball;
   let contractBall: Ball;
   let cart: Cart;
+  let prevCartPos: number;
+  let contractCart: Cart;
   let bricks: IBrick[] = [];
   let contractBricks: IBrick[] = [];
   let stopped: boolean = false;
@@ -86,7 +88,7 @@ export const GameView = (props: IGameViewProps) => {
   }, [debugMode]);
 
   useEffect(() => {
-    const ctx = canvas!.current?.getContext("2d");
+    const ctx = canvas!.current?.getContext('2d');
     setContext(ctx);
   }, [canvas]);
 
@@ -113,11 +115,13 @@ export const GameView = (props: IGameViewProps) => {
     if (debugModeRef.current) {
       drawContractBall();
       drawContractBricks();
+      drawContractCart();
       drawBallsTraces();
     }
 
     if (Date.now() - lastUpdateTime > tickPeriod) {
-      pushTick(1);
+      pushTick(Math.round(cart.x - prevCartPos));
+      prevCartPos = cart.x;
       // ticksCache.push(1);
       // setTicks([...ticksCache, 1]);
       lastUpdateTime = Date.now();
@@ -127,7 +131,7 @@ export const GameView = (props: IGameViewProps) => {
   };
 
   const moveCart = (elapsed: number) => {
-    cart.x += cart.dx * elapsed / 1000;
+    cart.x += (cart.dx * elapsed) / 1000;
 
     if (cart.x > FIELD_WIDTH - cart.w) {
       cart.x = FIELD_WIDTH - cart.w;
@@ -236,7 +240,7 @@ export const GameView = (props: IGameViewProps) => {
   const drawBall = () => {
     ctx!.beginPath();
     ctx!.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-    ctx!.fillStyle = "black";
+    ctx!.fillStyle = 'black';
     ctx!.fill();
     ctx!.closePath();
   };
@@ -250,7 +254,7 @@ export const GameView = (props: IGameViewProps) => {
       0,
       Math.PI * 2,
     );
-    ctx!.strokeStyle = "red";
+    ctx!.strokeStyle = 'red';
     ctx!.stroke();
     ctx!.closePath();
   };
@@ -266,7 +270,7 @@ export const GameView = (props: IGameViewProps) => {
   };
 
   const drawContractBricks = () => {
-    ctx!.strokeStyle = "red";
+    ctx!.strokeStyle = 'red';
     ctx!.setLineDash([5, 5]);
 
     contractBricks.forEach((brick) => {
@@ -281,9 +285,19 @@ export const GameView = (props: IGameViewProps) => {
   const drawCart = () => {
     ctx!.beginPath();
     ctx!.rect(cart.x, cart.y, cart.w, cart.h);
-    ctx!.fillStyle = "red";
+    ctx!.fillStyle = 'red';
     ctx!.fill();
     ctx!.closePath();
+  };
+
+  const drawContractCart = () => {
+    ctx!.setLineDash([5, 5]);
+    ctx!.beginPath();
+    ctx!.rect(contractCart.x, contractCart.y, contractCart.w, contractCart.h);
+    ctx!.strokeStyle = 'green';
+    ctx!.stroke();
+    ctx!.closePath();
+    ctx!.setLineDash([]);
   };
 
   const drawBallsTraces = () => {
@@ -293,7 +307,7 @@ export const GameView = (props: IGameViewProps) => {
 
     // Ball trace
     ctx!.beginPath();
-    ctx!.strokeStyle = "black";
+    ctx!.strokeStyle = 'black';
     if (ballTrace.length > 0) {
       ctx!.moveTo(ballTrace[0][0], ballTrace[0][1]);
     }
@@ -305,7 +319,7 @@ export const GameView = (props: IGameViewProps) => {
 
     // Contract ball trace
     ctx!.beginPath();
-    ctx!.strokeStyle = "red";
+    ctx!.strokeStyle = 'red';
     if (contractBallTrace.length > 0) {
       ctx!.moveTo(contractBallTrace[0][0], contractBallTrace[0][1]);
     }
@@ -320,26 +334,26 @@ export const GameView = (props: IGameViewProps) => {
   };
 
   const keyDown = (e: KeyboardEvent) => {
-    if (e.key === "Right" || e.key === "ArrowRight") {
+    if (e.key === 'Right' || e.key === 'ArrowRight') {
       if (
         Date.now() - lastUpdateTime >
         tickPeriod
         // ticksCache[ticksCache.length - 1] != 2
       ) {
-        pushTick(2);
+        // pushTick(DEFAULT_PLATFORM_SPEED);
         // ticksCache.push(2);
         //   setTicks([...ticksCache, 2]);
         lastUpdateTime = Date.now();
       }
 
       cart.dx = DEFAULT_PLATFORM_SPEED;
-    } else if (e.key === "Left" || e.key === "ArrowLeft") {
+    } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
       if (
         Date.now() - lastUpdateTime >
         tickPeriod
         // ticksCache[ticksCache.length - 1] != 0
       ) {
-        pushTick(0);
+        // pushTick(-DEFAULT_PLATFORM_SPEED);
         // ticksCache.push(0);
         //   setTicks([...ticksCache, 0]);
         lastUpdateTime = Date.now();
@@ -351,10 +365,10 @@ export const GameView = (props: IGameViewProps) => {
 
   const keyUp = (e: KeyboardEvent) => {
     if (
-      e.key === "Right" ||
-      e.key === "ArrowRight" ||
-      e.key === "Left" ||
-      e.key === "ArrowLeft"
+      e.key === 'Right' ||
+      e.key === 'ArrowRight' ||
+      e.key === 'Left' ||
+      e.key === 'ArrowLeft'
     ) {
       cart.dx = 0;
     }
@@ -384,6 +398,7 @@ export const GameView = (props: IGameViewProps) => {
       h: 10,
       dx: 0,
     };
+    prevCartPos = cart.x;
 
     const commonBrick = {
       w: 30,
@@ -393,7 +408,7 @@ export const GameView = (props: IGameViewProps) => {
 
     for (let i = 0; i < bricks.length; i++) {}
 
-    console.log("Level bricks", props.level.bricks);
+    console.log('Level bricks', props.level.bricks);
 
     for (let i = 0; i < props.level.bricks.length; i++) {
       const brickValue = props.level.bricks[i].value * 1;
@@ -406,7 +421,7 @@ export const GameView = (props: IGameViewProps) => {
         };
     }
 
-    console.log(" bricks", bricks);
+    console.log(' bricks', bricks);
 
     /// Contract context init
     //@ts-ignore
@@ -444,6 +459,11 @@ export const GameView = (props: IGameViewProps) => {
       radius: 3,
     };
 
+    contractCart = {
+      ...cart,
+      x: gameContext.platform.position * 1,
+    };
+
     if (
       ball.x - ball.radius > cart.x &&
       ball.x + ball.radius < cart.x + cart.w &&
@@ -454,8 +474,8 @@ export const GameView = (props: IGameViewProps) => {
 
     requestAnimationFrame(gameLoop);
 
-    document.addEventListener("keydown", keyDown);
-    document.addEventListener("keyup", keyUp);
+    document.addEventListener('keydown', keyDown);
+    document.addEventListener('keyup', keyUp);
   };
   const onWin = async () => {
     stopped = true;
@@ -513,17 +533,21 @@ export const GameView = (props: IGameViewProps) => {
     return [pos[0] + speed[0] * t, pos[1] + speed[1] * t];
   };
 
-  const syncBalls = () => {
+  const sync = () => {
     ball.x = contractBall.x;
     ball.y = contractBall.y;
+
+    cart.x = contractCart.x;
   };
 
   const pushTick = (action: number) => {
+    action = Math.min(action, DEFAULT_PLATFORM_SPEED);
+    action = Math.max(action, -DEFAULT_PLATFORM_SPEED);
     ticksCache.push(action);
     if (!debugModeRef.current) {
       // Is not in debug mode - just process tick
       //@ts-ignore
-      gameContext.processTick(new Tick({ action: UInt64.from(action) }));
+      gameContext.processTick(new Tick({ action: Int64.from(action) }));
       let [x, y] = [
         gameContext.ball.position.x * 1,
         gameContext.ball.position.y * 1,
@@ -542,7 +566,7 @@ export const GameView = (props: IGameViewProps) => {
         gameContext.ball.speed.y * 1,
       ];
       //@ts-ignore
-      gameContext.processTick(new Tick({ action: UInt64.from(action) }));
+      gameContext.processTick(new Tick({ action: Int64.from(action) }));
       let [x, y] = [
         gameContext.ball.position.x * 1,
         gameContext.ball.position.y * 1,
@@ -575,9 +599,14 @@ export const GameView = (props: IGameViewProps) => {
           } as IContractBrickPorted;
         })
         .filter((brick: IContractBrickPorted) => brick.value > 1);
+
+      contractCart = {
+        ...cart,
+        x: gameContext.platform.position * 1,
+      };
     }
 
-    syncBalls();
+    sync();
   };
 
   return (

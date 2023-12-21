@@ -58,7 +58,7 @@ export class Point extends Struct({
 }
 
 export class Tick extends Struct({
-    action: UInt64,
+    action: Int64,
 }) {}
 
 export class GameInputs extends Struct({
@@ -162,16 +162,16 @@ export class GameContext extends Struct({
             this.score.sub(SCORE_PER_TICKS)
         );
 
-        const cartAtStop = this.platform.position.sub(Int64.from(FIELD_WIDTH).sub(Int64.from(PLATFORM_HALF_WIDTH))).isPositive();
-
         /// 2) Update platform position
-        this.platform.position = Provable.if(
-            cartAtStop,
-            Int64.from(FIELD_WIDTH).sub(Int64.from(PLATFORM_HALF_WIDTH)),
-            this.platform.position
-        ); 
-        
-        this.platform.position.add(1).sub(tick.action).mul(DEFAULT_PLATFORM_SPEED);
+        inRange(Int64.from(tick.action), 0, FIELD_WIDTH);
+
+        inRange(
+            Int64.from(tick.action), // Overflow?
+            -DEFAULT_PLATFORM_SPEED,
+            DEFAULT_PLATFORM_SPEED
+        ).assertTrue();
+
+        this.platform.position = this.platform.position.add(tick.action);
 
         /// 3) Update ball position
         const prevBallPos = new IntPoint({
