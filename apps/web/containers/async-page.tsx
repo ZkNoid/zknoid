@@ -42,6 +42,7 @@ export default function Home({ params }: { params: { competitionId: string } }) 
   let [gameId, setGameId] = useState(0);
   let [debug, setDebug] = useState(true);
   const level: Bricks = useMemo(() => defaultLevel(), []);
+  let score = 0;
 
   const connectWallet = async () => {
     const accounts = await (window as any).mina.requestAccounts();
@@ -68,6 +69,8 @@ export default function Home({ params }: { params: { competitionId: string } }) 
       const gameContext = loadGameContext(level, new Bool(true));
       for (let i = 0; i < userInput.tiks.length; i++) {
         gameContext.processTick(userInput.tiks[i]);
+        console.log('Game ctx', gameContext);
+        score = gameContext.score;
       }
     } catch (e) {
       console.log("Error while generating ZK proof");
@@ -136,6 +139,9 @@ export default function Home({ params }: { params: { competitionId: string } }) 
         gameId={gameId}
         debug={debug}
       />
+      <div>
+        Score: {score}
+      </div>
       <div className="grow"></div>
       <div>
         Leaderboard {params.competitionId}:

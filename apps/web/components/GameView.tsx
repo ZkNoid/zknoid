@@ -185,7 +185,7 @@ export const GameView = (props: IGameViewProps) => {
     ballTrace.push([ball.x, ball.y]);
 
     bricks.forEach((brick) => {
-      if (brick.value > 0) {
+      if (brick.value > 1) {
         if (
           ball.x - ball.radius > brick.x &&
           ball.x + ball.radius < brick.x + brick.w &&
@@ -221,7 +221,7 @@ export const GameView = (props: IGameViewProps) => {
             ball.dy *= -1;
           }
 
-          brick.value = 0;
+          brick.value = 1;
           bricksLeft -= 1;
 
           if (bricksLeft == 0) {
@@ -259,7 +259,7 @@ export const GameView = (props: IGameViewProps) => {
     bricks.forEach((brick) => {
       ctx!.beginPath();
       ctx!.rect(brick.x, brick.y, brick.w, brick.h);
-      ctx!.fillStyle = brick.value > 0 ? "#0095dd" : "transparent";
+      ctx!.fillStyle = brick.value > 1 ? "#0095dd" : "transparent";
       ctx!.fill();
       ctx!.closePath();
     });
