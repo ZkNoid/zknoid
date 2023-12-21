@@ -1,16 +1,16 @@
-"use client";
-import { useWalletStore } from "@/lib/stores/wallet";
+'use client';
+import { useWalletStore } from '@/lib/stores/wallet';
 
-import { useMemo, useState } from "react";
-import { GameView } from "@/components/GameView";
+import { useMemo, useState } from 'react';
+import { GameView } from '@/components/GameView';
 import {
   Bricks,
   GameInputs,
   Tick,
   loadGameContext,
-  defaultLevel
-} from "zknoid-chain";
-import { Bool, UInt64 } from "o1js";
+  defaultLevel,
+} from 'zknoid-chain';
+import { Bool, UInt64 } from 'o1js';
 
 enum GameState {
   NotStarted,
@@ -18,26 +18,32 @@ enum GameState {
   Won,
   Lost,
   Replay,
-  Proofing
+  Proofing,
 }
 
 interface UserTop {
-  address: `0x${string}`,
-  score: number
+  address: `0x${string}`;
+  score: number;
 }
 
-export default function Home({ params }: { params: { competitionId: string } }) {
-  const [address, setAddress] = useState("");
+export default function Home({
+  params,
+}: {
+  params: { competitionId: string };
+}) {
+  const [address, setAddress] = useState('');
   const [gameState, setGameState] = useState(GameState.NotStarted);
   const [lastTicks, setLastTicks] = useState<number[]>([]);
-  const [topUsers, setTopUsers] = useState<UserTop[]>([{
-    address: '0x2836eC28C32E232280F984d3980BA4e05d6BF68f',
-    score: 100
-  },
-  {
-    address: '0xE314CE1514B21f4dc39C546b3c3bca317652d0Ac',
-    score: 70
-  }]);
+  const [topUsers, setTopUsers] = useState<UserTop[]>([
+    {
+      address: '0x2836eC28C32E232280F984d3980BA4e05d6BF68f',
+      score: 100,
+    },
+    {
+      address: '0xE314CE1514B21f4dc39C546b3c3bca317652d0Ac',
+      score: 70,
+    },
+  ]);
 
   let [gameId, setGameId] = useState(0);
   let [debug, setDebug] = useState(true);
@@ -52,10 +58,10 @@ export default function Home({ params }: { params: { competitionId: string } }) 
   const startGame = () => {
     setGameState(GameState.Active);
     setGameId(gameId + 1);
-  }
+  };
 
   const proof = () => {
-    console.log('Ticks', lastTicks)
+    console.log('Ticks', lastTicks);
 
     // @ts-expect-error
     let userInput = new GameInputs({
@@ -73,22 +79,28 @@ export default function Home({ params }: { params: { competitionId: string } }) 
         score = gameContext.score;
       }
     } catch (e) {
-      console.log("Error while generating ZK proof");
+      console.log('Error while generating ZK proof');
       console.log(e);
     }
-  }
+  };
 
   return (
-    <main className="grow flex flex-col items-center p-5 gap-5">
+    <main className="flex grow flex-col items-center gap-5 p-5">
       {address ? (
         <div className="flex flex-col gap-5">
           {gameState == GameState.Won && (
             <div>
-              You won! Ticks verification:{" "}
-              <input type="text" value={JSON.stringify(lastTicks)} readOnly></input>
+              You won! Ticks verification:{' '}
+              <input
+                type="text"
+                value={JSON.stringify(lastTicks)}
+                readOnly
+              ></input>
             </div>
           )}
-          {gameState == GameState.Lost && <div>You've lost! Nothing to prove</div>}
+          {gameState == GameState.Lost && (
+            <div>You've lost! Nothing to prove</div>
+          )}
 
           <div className="flex flex-row items-center justify-center gap-5">
             {(gameState == GameState.Won || gameState == GameState.Lost) && (
@@ -127,13 +139,13 @@ export default function Home({ params }: { params: { competitionId: string } }) 
       )}
       <GameView
         onWin={(ticks) => {
-          console.log('Ticks', ticks)
+          console.log('Ticks', ticks);
           setLastTicks(ticks);
           setGameState(GameState.Won);
         }}
         onLost={(ticks) => {
           setLastTicks(ticks);
-          setGameState(GameState.Lost)
+          setGameState(GameState.Lost);
         }}
         level={level}
         gameId={gameId}
@@ -146,11 +158,22 @@ export default function Home({ params }: { params: { competitionId: string } }) 
       <div>
         Leaderboard {params.competitionId}:
         <div>
-          {topUsers.map(user => <div>{user.address} – {user.score} pts</div>)}
+          {topUsers.map((user) => (
+            <div key={user.address}>
+              {user.address} – {user.score} pts
+            </div>
+          ))}
         </div>
       </div>
       <div className="w-full text-end">
-        Debug: <input type="checkbox" checked={debug} onChange={(event => { setDebug(event.target.checked) })}></input>
+        Debug:{' '}
+        <input
+          type="checkbox"
+          checked={debug}
+          onChange={(event) => {
+            setDebug(event.target.checked);
+          }}
+        ></input>
       </div>
     </main>
   );
