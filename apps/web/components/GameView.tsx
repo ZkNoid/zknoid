@@ -1,5 +1,5 @@
-"use client";
-import { useWalletStore } from "@/lib/stores/wallet";
+'use client';
+import { useWalletStore } from '@/lib/stores/wallet';
 import {
   Brick,
   Bricks,
@@ -18,12 +18,12 @@ import {
   DEFAULT_BALL_SPEED_Y,
   IntPoint,
   DEFAULT_PLATFORM_SPEED,
-} from "zknoid-chain";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Int64, PublicKey, UInt64, Bool, AccountUpdate } from "o1js";
-import { DUMMY_PROOF } from "@/constants";
-import { Ball, Cart, IBrick } from "@/lib/types";
-import { GameContext } from "zknoid-chain/dist/GameHub";
+} from 'zknoid-chain-dev';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Int64, PublicKey, UInt64, Bool, AccountUpdate } from 'o1js';
+import { DUMMY_PROOF } from '@/constants';
+import { Ball, Cart, IBrick } from '@/lib/types';
+import { GameContext } from 'zknoid-chain/dist/GameHub';
 
 interface IGameViewProps {
   gameId: number;
@@ -86,7 +86,7 @@ export const GameView = (props: IGameViewProps) => {
   }, [debugMode]);
 
   useEffect(() => {
-    const ctx = canvas!.current?.getContext("2d");
+    const ctx = canvas!.current?.getContext('2d');
     setContext(ctx);
   }, [canvas]);
 
@@ -127,7 +127,7 @@ export const GameView = (props: IGameViewProps) => {
   };
 
   const moveCart = (elapsed: number) => {
-    cart.x += cart.dx * elapsed / 1000;
+    cart.x += (cart.dx * elapsed) / 1000;
 
     if (cart.x > FIELD_WIDTH - cart.w) {
       cart.x = FIELD_WIDTH - cart.w;
@@ -236,7 +236,7 @@ export const GameView = (props: IGameViewProps) => {
   const drawBall = () => {
     ctx!.beginPath();
     ctx!.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-    ctx!.fillStyle = "black";
+    ctx!.fillStyle = 'black';
     ctx!.fill();
     ctx!.closePath();
   };
@@ -250,7 +250,7 @@ export const GameView = (props: IGameViewProps) => {
       0,
       Math.PI * 2,
     );
-    ctx!.strokeStyle = "red";
+    ctx!.strokeStyle = 'red';
     ctx!.stroke();
     ctx!.closePath();
   };
@@ -259,14 +259,14 @@ export const GameView = (props: IGameViewProps) => {
     bricks.forEach((brick) => {
       ctx!.beginPath();
       ctx!.rect(brick.x, brick.y, brick.w, brick.h);
-      ctx!.fillStyle = brick.value > 0 ? "#0095dd" : "transparent";
+      ctx!.fillStyle = brick.value > 0 ? '#0095dd' : 'transparent';
       ctx!.fill();
       ctx!.closePath();
     });
   };
 
   const drawContractBricks = () => {
-    ctx!.strokeStyle = "red";
+    ctx!.strokeStyle = 'red';
     ctx!.setLineDash([5, 5]);
 
     contractBricks.forEach((brick) => {
@@ -281,7 +281,7 @@ export const GameView = (props: IGameViewProps) => {
   const drawCart = () => {
     ctx!.beginPath();
     ctx!.rect(cart.x, cart.y, cart.w, cart.h);
-    ctx!.fillStyle = "red";
+    ctx!.fillStyle = 'red';
     ctx!.fill();
     ctx!.closePath();
   };
@@ -293,7 +293,7 @@ export const GameView = (props: IGameViewProps) => {
 
     // Ball trace
     ctx!.beginPath();
-    ctx!.strokeStyle = "black";
+    ctx!.strokeStyle = 'black';
     if (ballTrace.length > 0) {
       ctx!.moveTo(ballTrace[0][0], ballTrace[0][1]);
     }
@@ -305,7 +305,7 @@ export const GameView = (props: IGameViewProps) => {
 
     // Contract ball trace
     ctx!.beginPath();
-    ctx!.strokeStyle = "red";
+    ctx!.strokeStyle = 'red';
     if (contractBallTrace.length > 0) {
       ctx!.moveTo(contractBallTrace[0][0], contractBallTrace[0][1]);
     }
@@ -320,7 +320,7 @@ export const GameView = (props: IGameViewProps) => {
   };
 
   const keyDown = (e: KeyboardEvent) => {
-    if (e.key === "Right" || e.key === "ArrowRight") {
+    if (e.key === 'Right' || e.key === 'ArrowRight') {
       if (
         Date.now() - lastUpdateTime >
         tickPeriod
@@ -333,7 +333,7 @@ export const GameView = (props: IGameViewProps) => {
       }
 
       cart.dx = DEFAULT_PLATFORM_SPEED;
-    } else if (e.key === "Left" || e.key === "ArrowLeft") {
+    } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
       if (
         Date.now() - lastUpdateTime >
         tickPeriod
@@ -351,10 +351,10 @@ export const GameView = (props: IGameViewProps) => {
 
   const keyUp = (e: KeyboardEvent) => {
     if (
-      e.key === "Right" ||
-      e.key === "ArrowRight" ||
-      e.key === "Left" ||
-      e.key === "ArrowLeft"
+      e.key === 'Right' ||
+      e.key === 'ArrowRight' ||
+      e.key === 'Left' ||
+      e.key === 'ArrowLeft'
     ) {
       cart.dx = 0;
     }
@@ -393,7 +393,7 @@ export const GameView = (props: IGameViewProps) => {
 
     for (let i = 0; i < bricks.length; i++) {}
 
-    console.log("Level bricks", props.level.bricks);
+    console.log('Level bricks', props.level.bricks);
 
     for (let i = 0; i < props.level.bricks.length; i++) {
       const brickValue = props.level.bricks[i].value * 1;
@@ -406,7 +406,7 @@ export const GameView = (props: IGameViewProps) => {
         };
     }
 
-    console.log(" bricks", bricks);
+    console.log(' bricks', bricks);
 
     /// Contract context init
     //@ts-ignore
@@ -454,8 +454,8 @@ export const GameView = (props: IGameViewProps) => {
 
     requestAnimationFrame(gameLoop);
 
-    document.addEventListener("keydown", keyDown);
-    document.addEventListener("keyup", keyUp);
+    document.addEventListener('keydown', keyDown);
+    document.addEventListener('keyup', keyUp);
   };
   const onWin = async () => {
     stopped = true;
