@@ -4,12 +4,14 @@ import Image from "next/image";
 import truncateMiddle from "truncate-middle";
 
 export interface HeaderProps {
+    balance?: number;
     address?: string;
     onConnectWallet: () => void;
 }
 
 export default function Header({
     address,
+    balance,
     onConnectWallet,
 }: HeaderProps) {
     return (
@@ -22,6 +24,9 @@ export default function Header({
                     <div className="w-44" onClick={onConnectWallet}>
                         <div>
                             {address ? truncateMiddle(address, 7, 7, "...") : "Connect wallet"}
+                        </div>
+                        <div>
+                            Balance: {balance || 0} 🪙
                         </div>
                     </div>
                 </div>

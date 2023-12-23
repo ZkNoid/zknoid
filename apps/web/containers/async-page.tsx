@@ -11,6 +11,7 @@ import {
   defaultLevel,
 } from 'zknoid-chain';
 import { Bool, UInt64 } from 'o1js';
+import { ROUND_PRICE } from '@/app/constants';
 
 enum GameState {
   NotStarted,
@@ -116,7 +117,7 @@ export default function Home({
                 className="rounded-xl bg-slate-300 p-5"
                 onClick={() => startGame()}
               >
-                Start
+                Start for {ROUND_PRICE} 🪙
               </div>
             )}
             {gameState == GameState.Won && (
