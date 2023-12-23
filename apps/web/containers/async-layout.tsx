@@ -31,6 +31,7 @@ export default function AsyncLayout({ children }: { children: ReactNode }) {
       <Header
         address={wallet.wallet}
         onConnectWallet={wallet.connectWallet}
+        balance={parseInt(balance)}
       />
       {children}
       {/* <Toaster /> */}
