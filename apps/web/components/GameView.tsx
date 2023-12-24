@@ -189,6 +189,19 @@ export const GameView = (props: IGameViewProps) => {
 
     ballTrace.push([ball.x, ball.y]);
 
+    const bricksNum = gameContext.bricks.bricks
+    .map((brick: IContractBrick) => {
+      return {
+        value: +brick.value.toString(),
+      } as IContractBrickPorted;
+    })
+    .filter((brick: IContractBrickPorted) => brick.value > 1).length;
+
+    if (bricksNum == 0) {
+      stopped = true;
+      return onWin();
+    }
+
     bricks.forEach((brick) => {
       if (brick.value > 1) {
         if (
@@ -228,11 +241,6 @@ export const GameView = (props: IGameViewProps) => {
 
           brick.value = 1;
           bricksLeft -= 1;
-
-          if (bricksLeft == 0) {
-            stopped = true;
-            return onWin();
-          }
         }
       }
     });

@@ -17,8 +17,9 @@ export default function Header({
     return (
         <div className="flex items-center justify-between border-b p-2 shadow-sm">
             <div className="container flex">
-                <div className="flex basis-6/12 items-center justify-start">
+                <div className="flex basis-6/12 items-center justify-start gap-10">
                     <Image className="h-8 w-8" src={protokit} alt={"Protokit logo"} />
+                    <div className="cursor-pointer">Competitions</div>
                 </div>
                 <div className="flex basis-6/12 flex-row items-center justify-end">
                     <div className="w-44" onClick={onConnectWallet}>
