@@ -396,14 +396,16 @@ export class GameContext extends Struct({
             );
         }
 
-        if (this.debug.toBoolean()) {
-            console.log(
-                `Ball position: <${this.ball.position.x} : ${this.ball.position.y}>`
-            );
-            console.log(
-                `Ball speed: ${this.ball.speed.x} : ${this.ball.speed.y}`
-            );
-        }
+        Provable.asProver(() => {
+            if (this.debug.toBoolean()) {
+                console.log(
+                    `Ball position: <${this.ball.position.x} : ${this.ball.position.y}>`
+                );
+                console.log(
+                    `Ball speed: ${this.ball.speed.x} : ${this.ball.speed.y}`
+                );
+            }
+        });
     }
 }
 
