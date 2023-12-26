@@ -8,6 +8,7 @@ import truncateMiddle from "truncate-middle";
 import { usePrevious } from "@uidotdev/usehooks";
 // import { useClientStore } from "./client";
 import { Field, PublicKey, Signature, UInt64 } from "o1js";
+import { walletInstalled } from "../utils";
 
 export interface WalletState {
   wallet?: string;
@@ -23,33 +24,33 @@ export interface WalletState {
 export const useWalletStore = create<WalletState, [["zustand/immer", never]]>(
   immer((set) => ({
     async initializeWallet() {
-      if (typeof mina === 'undefined') {
+      if (!walletInstalled()) {
         throw new Error("Auro wallet not installed");
       }
 
-      const [wallet] = await mina.getAccounts();
+      const [wallet] = await mina!.getAccounts();
 
       set((state) => {
         state.wallet = wallet;
       });
     },
     async connectWallet() {
-      if (typeof mina === 'undefined') {
+      if (!walletInstalled()) {
         throw new Error("Auro wallet not installed");
       }
 
-      const [wallet] = await mina.requestAccounts();
+      const [wallet] = await mina!.requestAccounts();
 
       set((state) => {
         state.wallet = wallet;
       });
     },
     observeWalletChange() {
-      if (typeof mina === 'undefined') {
+      if (!walletInstalled()) {
         throw new Error("Auro wallet not installed");
       }
 
-      mina.on("accountsChanged", ([wallet]) => {
+      mina!.on("accountsChanged", ([wallet]) => {
         set((state) => {
           state.wallet = wallet;
         });
