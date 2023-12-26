@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import { useClientStore } from "@/lib/stores/client";
 import { useNotifyTransactions, useWalletStore } from "@/lib/stores/wallet";
+import { walletInstalled } from "@/lib/utils";
 import { PublicKey } from "o1js";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
@@ -22,6 +23,9 @@ export default function AsyncLayout({ children }: { children: ReactNode }) {
 
 
   useEffect(() => {
+    if (!walletInstalled()) {
+      return;
+    }
     wallet.initializeWallet();
     wallet.observeWalletChange();
   }, []);
@@ -32,6 +36,7 @@ export default function AsyncLayout({ children }: { children: ReactNode }) {
         address={wallet.wallet}
         onConnectWallet={wallet.connectWallet}
         balance={parseInt(balance)}
+        walletInstalled={walletInstalled()}
       />
       {children}
       {/* <Toaster /> */}
