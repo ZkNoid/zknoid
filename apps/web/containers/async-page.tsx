@@ -32,7 +32,7 @@ interface ActiveCompetition {
   name: string;
   address: `0x${string}` | string | undefined;
   fund: number;
-} 
+}
 
 export default function Home({
   params,
@@ -43,6 +43,7 @@ export default function Home({
   const [gameState, setGameState] = useState(GameState.NotStarted);
   const [lastTicks, setLastTicks] = useState<number[]>([]);
   const [score, setScore] = useState<number>(0);
+  const [ticksAmount, setTicksAmount] = useState<number>(0);
 
   const [topUsers, setTopUsers] = useState<UserTop[]>([
     {
@@ -55,7 +56,9 @@ export default function Home({
     },
   ]);
 
-  const [activeCompetitions, setActiveCompetitions] = useState<ActiveCompetition[]>([
+  const [activeCompetitions, setActiveCompetitions] = useState<
+    ActiveCompetition[]
+  >([
     {
       name: 'Global',
       address: 'global',
@@ -172,12 +175,12 @@ export default function Home({
         gameId={gameId}
         debug={debug}
         setScore={setScore}
+        setTicksAmount={setTicksAmount}
       />
-      <div>
-        Score: {score}
-      </div>
+      <div>Score: {score}</div>
+      <div>Ticks: {ticksAmount}</div>
       <div className="grow"></div>
-      <div className='flex flex-col gap-10'>
+      <div className="flex flex-col gap-10">
         <div>
           Leaderboard {params.competitionId}:
           <div>
@@ -187,15 +190,17 @@ export default function Home({
               </div>
             ))}
           </div>
-          </div>
+        </div>
         <div>
           Active competitions:
-          <div className='flex flex-col'>
-            {activeCompetitions.map((competition) => 
-              <Link href={`/arkanoid/${competition.address}`}>{competition.name} – {competition.fund} 🪙</Link>
-            )}
+          <div className="flex flex-col">
+            {activeCompetitions.map((competition) => (
+              <Link href={`/arkanoid/${competition.address}`}>
+                {competition.name} – {competition.fund} 🪙
+              </Link>
+            ))}
           </div>
-        </div> 
+        </div>
       </div>
       <div className="w-full text-end">
         Debug:{' '}

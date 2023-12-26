@@ -1,10 +1,5 @@
-import { Int64, UInt64 } from "o1js";
-import {
-    Brick,
-    Bricks,
-    IntPoint,
-} from "./GameHub.js";
-
+import { Int64, UInt64 } from 'o1js';
+import { Brick, Bricks, IntPoint } from './types.js';
 
 export const defaultLevel = (): Bricks => {
     const MAX_BRICKS = 10;
@@ -18,7 +13,7 @@ export const defaultLevel = (): Bricks => {
                         y: Int64.from(0),
                     },
                     value: UInt64.from(1),
-                }),
+                })
         ),
     });
     bricks.bricks[0] = new Brick({
@@ -45,4 +40,4 @@ export const defaultLevel = (): Bricks => {
         value: UInt64.from(2),
     });
     return bricks;
-}
+};
