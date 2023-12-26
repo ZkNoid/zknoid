@@ -32,40 +32,17 @@ import {
     PLATFORM_HALF_WIDTH,
     SCORE_PER_TICKS,
 } from './constants';
-
-export class GameRecordKey extends Struct({
-    seed: UInt64,
-    player: PublicKey,
-}) {}
-
-export class Point extends Struct({
-    x: UInt64,
-    y: UInt64,
-}) {
-    static from(_x: number, _y: number): Point {
-        return new Point({
-            x: new UInt64(_x),
-            y: new UInt64(_y),
-        });
-    }
-
-    add(p: Point): Point {
-        return new Point({
-            x: this.x.add(p.x),
-            y: this.y.add(p.y),
-        });
-    }
-}
-
-export class Tick extends Struct({
-    action: Int64,
-}) {}
-
-export class GameInputs extends Struct({
-    tiks: Provable.Array(Tick, GAME_LENGTH),
-}) {}
-
-class MapGenerationPublicOutput extends Struct({}) {}
+import {
+    Ball,
+    Bricks,
+    GameInputs,
+    GameRecordKey,
+    GameRecordPublicOutput,
+    IntPoint,
+    MapGenerationPublicOutput,
+    Platform,
+    Tick,
+} from './types';
 
 export function checkMapGeneration(
     seed: Field,
@@ -73,49 +50,6 @@ export function checkMapGeneration(
 ): MapGenerationPublicOutput {
     return new MapGenerationPublicOutput({});
 }
-
-export class GameRecordPublicOutput extends Struct({
-    score: UInt64,
-}) {}
-
-/////////////////////////////////// Game logic structs //////////////////////////////////
-
-export class IntPoint extends Struct({
-    x: Int64,
-    y: Int64,
-}) {
-    static from(_x: number, _y: number): IntPoint {
-        return new IntPoint({
-            x: Int64.from(_x),
-            y: Int64.from(_y),
-        });
-    }
-}
-
-export class Brick extends Struct({
-    pos: IntPoint, //
-    value: UInt64,
-}) {}
-
-export class Bricks extends Struct({
-    bricks: Provable.Array(Brick, MAX_BRICKS),
-}) {}
-
-class Ball extends Struct({
-    position: IntPoint,
-    speed: IntPoint,
-}) {
-    move(): void {
-        this.position.x = this.position.x.add(this.speed.x);
-        this.position.y = this.position.y.add(this.speed.y);
-    }
-}
-
-class Platform extends Struct({
-    position: Int64,
-}) {}
-
-////////////////////////////////// Game logic structs end ////////////////////////////////
 
 const getSign = (x: Int64): Int64 => {
     return Provable.if(x.isPositive(), Int64.from(1), Int64.from(-1));
@@ -252,7 +186,6 @@ export class GameContext extends Struct({
         this.winable = this.winable.and(isFail.not());
 
         //6) Check bricks bump
-
         for (let j = 0; j < MAX_BRICKS; j++) {
             const currentBrick = this.bricks.bricks[j];
             let isAlive = currentBrick.value.greaterThan(UInt64.from(1)); // 1 just so UInt64.sub do not underflow
@@ -463,14 +396,16 @@ export class GameContext extends Struct({
             );
         }
 
-        if (this.debug.toBoolean()) {
-            console.log(
-                `Ball position: <${this.ball.position.x} : ${this.ball.position.y}>`
-            );
-            console.log(
-                `Ball speed: ${this.ball.speed.x} : ${this.ball.speed.y}`
-            );
-        }
+        Provable.asProver(() => {
+            if (this.debug.toBoolean()) {
+                console.log(
+                    `Ball position: <${this.ball.position.x} : ${this.ball.position.y}>`
+                );
+                console.log(
+                    `Ball speed: ${this.ball.speed.x} : ${this.ball.speed.y}`
+                );
+            }
+        });
     }
 }
 

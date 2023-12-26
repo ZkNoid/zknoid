@@ -3,16 +3,30 @@ export * from './client.config.js';
 import {
     GameHub,
     GameRecordProof,
-    GameRecordPublicOutput,
+    // GameRecordPublicOutput,
     checkGameRecord,
     loadGameContext,
+    // GameInputs,
+    // Tick,
+    // GameRecordKey,
+    // Brick,
+    // Bricks,
+    // IntPoint,
+} from './GameHub.js';
+
+import {
+    // GameHub,
+    // GameRecordProof,
+    GameRecordPublicOutput,
+    // checkGameRecord,
+    // loadGameContext,
     GameInputs,
     Tick,
     GameRecordKey,
     Brick,
     Bricks,
     IntPoint,
-} from './GameHub.js';
+} from './types.js';
 
 import {
     BRICK_HALF_WIDTH,
@@ -27,7 +41,7 @@ import {
     DEFAULT_BALL_SPEED_X,
     DEFAULT_BALL_SPEED_Y,
     TICK_PERIOD,
-    DEFAULT_PLATFORM_SPEED
+    DEFAULT_PLATFORM_SPEED,
 } from './constants.js';
 import { defaultLevel } from './levels.js';
 
@@ -56,5 +70,5 @@ export {
     IntPoint,
     defaultLevel,
     TICK_PERIOD,
-    DEFAULT_PLATFORM_SPEED
+    DEFAULT_PLATFORM_SPEED,
 };
