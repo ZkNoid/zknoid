@@ -1,4 +1,4 @@
-import { PublicKey, UInt64, Struct, Provable, Int64 } from 'o1js';
+import { PublicKey, UInt64, Struct, Provable, Int64, Bool } from 'o1js';
 
 import { GAME_LENGTH, MAX_BRICKS } from './constants';
 
@@ -47,6 +47,10 @@ export class IntPoint extends Struct({
             x: Int64.from(_x),
             y: Int64.from(_y),
         });
+    }
+
+    equal(b: IntPoint): Bool {
+        return this.x.equals(b.x).and(this.y.equals(b.y));
     }
 }
 
