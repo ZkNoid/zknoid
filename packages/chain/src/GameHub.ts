@@ -29,11 +29,13 @@ import {
     GAME_LENGTH,
     INITIAL_SCORE,
     MAX_BRICKS,
+    NEAREST_BRICKS_NUM,
     PLATFORM_HALF_WIDTH,
     SCORE_PER_TICKS,
 } from './constants';
 import {
     Ball,
+    Brick,
     Bricks,
     GameInputs,
     GameRecordKey,
@@ -80,6 +82,7 @@ const inRange = (
 
 export class GameContext extends Struct({
     bricks: Bricks,
+    nearestBricks: Provable.Array(Brick, NEAREST_BRICKS_NUM),
     totalLeft: UInt64,
     ball: Ball,
     platform: Platform,
@@ -186,8 +189,8 @@ export class GameContext extends Struct({
         this.winable = this.winable.and(isFail.not());
 
         //6) Check bricks bump
-        for (let j = 0; j < MAX_BRICKS; j++) {
-            const currentBrick = this.bricks.bricks[j];
+        for (let j = 0; j < NEAREST_BRICKS_NUM; j++) {
+            const currentBrick = this.nearestBricks[j];
             let isAlive = currentBrick.value.greaterThan(UInt64.from(1)); // 1 just so UInt64.sub do not underflow
 
             let leftBorder = currentBrick.pos.x;
@@ -396,6 +399,8 @@ export class GameContext extends Struct({
             );
         }
 
+        // this.updateNearestBricks();
+
         Provable.asProver(() => {
             if (this.debug.toBoolean()) {
                 console.log(
@@ -406,6 +411,58 @@ export class GameContext extends Struct({
                 );
             }
         });
+    }
+
+    // Is it provable? ...
+    updateNearestBricks(): void {
+        this.nearestBricks = this.bricks.bricks.slice(0, NEAREST_BRICKS_NUM); // Is it provable?
+        let firstDist = this.distPow2ToBrick(this.bricks.bricks[0]);
+        let secondDist = this.distPow2ToBrick(this.bricks.bricks[1]);
+
+        for (let i = 2; i < MAX_BRICKS; i++) {
+            let cur = this.bricks.bricks[i];
+            let curDist = this.distPow2ToBrick(cur);
+            let secondGreater = gr(secondDist, curDist);
+            let firstGreater = gr(firstDist, curDist);
+
+            this.nearestBricks[0] = Provable.if(
+                firstGreater,
+                Brick,
+                cur,
+                this.nearestBricks[0]
+            );
+            firstDist = Provable.if(firstGreater, curDist, firstDist);
+
+            let secondChange = secondGreater.and(firstGreater.not());
+            this.nearestBricks[1] = Provable.if(
+                secondChange,
+                Brick,
+                cur,
+                this.nearestBricks[0]
+            );
+            secondDist = Provable.if(secondChange, curDist, secondDist);
+
+            // let curDistLess = gr(secondDist, curDist);
+            // this.nearestBricks[1] = Provable.if(
+            //     curDistLess,
+            //     Brick,
+            //     cur,
+            //     this.nearestBricks[1]
+            // );
+            // secondDist = Provable.if(curDistLess, curDist, secondDist);
+
+            // let secondDistLess = gr(firstDist, secondDist);
+
+            // this.nearestBricks[0] = Provable.if(secondDistLess, Brick, this.nearestBricks[1], this.nearestBricks[0]);
+            // firstDist = Provable.if(secondDistLess, secondDist, firstDist);
+        }
+    }
+
+    distPow2ToBrick(brick: Brick): Int64 {
+        let xDist = brick.pos.x.sub(this.ball.position.x);
+        let yDist = brick.pos.y.sub(this.ball.position.y);
+
+        return xDist.mul(xDist).add(yDist.mul(yDist));
     }
 }
 
@@ -428,8 +485,11 @@ export function loadGameContext(bricks: Bricks, debug: Bool) {
         totalLeft = totalLeft.add(bricks.bricks[i].value.sub(1)); // Sub(1), because 1 = 0. (Workaround UInt64.sub(1))
     }
 
+    let nearestBricks = bricks.bricks.slice(0, 2);
+
     return new GameContext({
         bricks,
+        nearestBricks,
         totalLeft,
         ball,
         platform,
