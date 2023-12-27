@@ -8,10 +8,10 @@ export const defaultLevel = (): Bricks => {
         bricks: [...new Array(MAX_BRICKS)].map(
             (elem) =>
                 new Brick({
-                    pos: {
+                    pos: new IntPoint({
                         x: Int64.from(0),
                         y: Int64.from(0),
-                    },
+                    }),
                     value: UInt64.from(1),
                 })
         ),
