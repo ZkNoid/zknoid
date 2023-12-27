@@ -9,8 +9,9 @@ import {
   Tick,
   loadGameContext,
   defaultLevel,
+  client,
 } from 'zknoid-chain';
-import { Bool, UInt64 } from 'o1js';
+import { Bool, Int64, PublicKey } from 'o1js';
 import { ROUND_PRICE } from '@/app/constants';
 import Link from 'next/link';
 
@@ -92,16 +93,42 @@ export default function Home({
     let userInput = new GameInputs({
       tiks: lastTicks.map(
         // @ts-expect-error
-        (elem) => new Tick({ action: UInt64.from(elem) }),
+        (elem) => new Tick({ action: Int64.from(elem) }),
       ),
     });
 
     try {
+      client.start();
+
+      const sender = PublicKey.fromBase58(address);
+
       const gameContext = loadGameContext(level, new Bool(true));
-      for (let i = 0; i < userInput.tiks.length; i++) {
-        gameContext.processTick(userInput.tiks[i]);
-        console.log('Game ctx', gameContext);
-      }
+        for (let i = 0; i < userInput.tiks.length; i++) {
+          gameContext.processTick(userInput.tiks[i]);
+          console.log('Game ctx', gameContext);
+        }
+
+      const gameHub = client.runtime.resolve('GameHub');
+
+      client.transaction(sender, () => {
+        gameHub.addGameResult({
+          publicInput: undefined,
+          publicOutput: [],
+          proof: undefined,
+          maxProofsVerified: 0,
+          shouldVerify: undefined,
+          verify: function (): void {
+            throw new Error('Function not implemented.');
+          },
+          verifyIf: function (condition: any): void {
+            throw new Error('Function not implemented.');
+          },
+          toJSON: function () {
+            throw new Error('Function not implemented.');
+          }
+        });
+      })
+      
     } catch (e) {
       console.log('Error while generating ZK proof');
       console.log(e);

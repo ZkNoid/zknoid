@@ -60,7 +60,7 @@ describe('game hub', () => {
 
         let userInput = new GameInputs({
             tiks: uiUserInput.map(
-                (elem) => new Tick({ action: UInt64.from(elem) })
+                (elem) => new Tick({ action: Int64.from(elem) })
             ),
         });
 
