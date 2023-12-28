@@ -13,10 +13,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <link
+        rel="shortcut icon"
+        type="image/x-icon"
+        href={"/favicon.ico"}
+      />
       <body className='font-mono'>
-      <AsyncLayoutDynamic>{children}</AsyncLayoutDynamic>
-
-        </body>
+        <AsyncLayoutDynamic>{children}</AsyncLayoutDynamic>
+      </body>
     </html>
   )
 }
