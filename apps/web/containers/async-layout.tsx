@@ -1,3 +1,4 @@
+import { GameType } from "@/app/constants/games";
 import { Footer } from "@/components/Footer";
 import Header from "@/components/Header";
 import { useClientStore } from "@/lib/stores/client";
@@ -38,6 +39,7 @@ export default function AsyncLayout({ children }: { children: ReactNode }) {
         onConnectWallet={wallet.connectWallet}
         balance={parseInt(balance)}
         walletInstalled={walletInstalled()}
+        currentGame={GameType.Arkanoid}
       />
       {children}
       {/* <Toaster /> */}
