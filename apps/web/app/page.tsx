@@ -1,21 +1,9 @@
 import { Footer } from '@/components/Footer'
 import Image from 'next/image'
 import Link from 'next/link'
-
-interface IGame {
-  logo: string;
-  name: string;
-  description: string;
-}
+import { games } from './constants/games'
 
 export default function Home() {
-  const games: IGame[] = [
-    {
-      logo: '/Arkanoid.png',
-      name: 'Arcanoid game',
-      description: 'Old but gold game. Beat all the bricks and protect the ball from falling'
-    }
-  ]
   return (
     <>
       <main className="flex min-h-screen flex-col items-center px-24 py-10">
@@ -44,7 +32,6 @@ export default function Home() {
           </div>
         ))}
         </div>
-        
       </main>
       <Footer />
     </>
