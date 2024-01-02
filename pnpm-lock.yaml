@@ -84,8 +84,8 @@ importers:
         specifier: ^1.0.6
         version: 1.0.6
       zknoid-chain:
-        specifier: ^1.4.3
-        version: 1.4.3
+        specifier: ^1.4.1
+        version: 1.4.1
       zknoid-chain-dev:
         specifier: workspace:^
         version: link:../../packages/chain
@@ -98,16 +98,16 @@ importers:
     devDependencies:
       '@proto-kit/module':
         specifier: '*'
-        version: 0.1.1-develop.153(snarkyjs@0.11.0)(tsyringe@4.8.0)
+        version: 0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(@proto-kit/protocol@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0)
       '@proto-kit/protocol':
         specifier: 0.1.1-develop.340
-        version: 0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(o1js@0.15.2)(tsyringe@4.8.0)
+        version: 0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0)
       '@proto-kit/sdk':
         specifier: '*'
-        version: 0.1.1-develop.153(snarkyjs@0.11.0)(tsyringe@4.8.0)
+        version: 0.1.1-develop.340(@proto-kit/api@0.1.1-develop.340)(@proto-kit/common@0.1.1-develop.340)(@proto-kit/module@0.1.1-develop.340)(@proto-kit/protocol@0.1.1-develop.340)(@proto-kit/sequencer@0.1.1-develop.340)(graphql@16.6.0)(o1js@0.13.1)(reflect-metadata@0.1.13)(tsyringe@4.8.0)
       '@proto-kit/sequencer':
         specifier: '*'
-        version: 0.1.1-develop.153(snarkyjs@0.11.0)(tsyringe@4.8.0)
+        version: 0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(@proto-kit/module@0.1.1-develop.340)(@proto-kit/protocol@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0)
       '@types/node':
         specifier: ^20
         version: 20.8.10
@@ -130,8 +130,8 @@ importers:
         specifier: ^9.0.0
         version: 9.0.0(eslint@8.53.0)
       o1js:
-        specifier: 0.15.2
-        version: 0.15.2
+        specifier: 0.13.1
+        version: 0.13.1
       postcss:
         specifier: ^8
         version: 8.4.31
@@ -152,10 +152,10 @@ importers:
         version: 29.7.0
       '@proto-kit/api':
         specifier: '*'
-        version: 0.1.1-develop.334(@proto-kit/common@0.1.1-develop.153)(@proto-kit/sequencer@0.1.1-develop.153)(o1js@0.15.2)(tsyringe@4.8.0)
+        version: 0.1.1-develop.334(@proto-kit/common@0.1.1-develop.153)(@proto-kit/sequencer@0.1.1-develop.153)(o1js@0.13.1)(tsyringe@4.8.0)
       '@proto-kit/cli':
         specifier: '*'
-        version: 0.1.1-develop.334(@proto-kit/api@0.1.1-develop.334)(@proto-kit/common@0.1.1-develop.153)(@proto-kit/module@0.1.1-develop.153)(@proto-kit/protocol@0.1.1-develop.153)(@proto-kit/sdk@0.1.1-develop.153)(@proto-kit/sequencer@0.1.1-develop.153)(o1js@0.15.2)
+        version: 0.1.1-develop.334(@proto-kit/api@0.1.1-develop.334)(@proto-kit/common@0.1.1-develop.153)(@proto-kit/module@0.1.1-develop.153)(@proto-kit/protocol@0.1.1-develop.153)(@proto-kit/sdk@0.1.1-develop.153)(@proto-kit/sequencer@0.1.1-develop.153)(o1js@0.13.1)
       '@proto-kit/common':
         specifier: '*'
         version: 0.1.1-develop.153(snarkyjs@0.11.0)(tsyringe@4.8.0)
@@ -208,8 +208,8 @@ importers:
         specifier: ^0.11.0
         version: 0.11.0
       o1js:
-        specifier: 0.15.2
-        version: 0.15.2
+        specifier: 0.13.1
+        version: 0.13.1
       path-browserify:
         specifier: ^1.0.1
         version: 1.0.1
@@ -259,6 +259,17 @@ importers:
   packages/tsconfig: {}
 
 packages:
+
+  /@0no-co/graphql.web@1.0.4(graphql@16.6.0):
+    resolution: {integrity: sha512-W3ezhHGfO0MS1PtGloaTpg0PbaT8aZSmmaerL7idtU5F7oCI+uu25k+MsMS31BVFlp4aMkHSrNRxiD72IlK8TA==}
+    peerDependencies:
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
+    peerDependenciesMeta:
+      graphql:
+        optional: true
+    dependencies:
+      graphql: 16.6.0
+    dev: true
 
   /@aashutoshrathi/word-wrap@1.2.6:
     resolution: {integrity: sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==}
@@ -716,6 +727,21 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
+  /@envelop/core@5.0.0:
+    resolution: {integrity: sha512-aJdnH/ptv+cvwfvciCBe7TSvccBwo9g0S5f6u35TBVzRVqIGkK03lFlIL+x1cnfZgN9EfR2b1PH2galrT1CdCQ==}
+    engines: {node: '>=18.0.0'}
+    dependencies:
+      '@envelop/types': 5.0.0
+      tslib: 2.6.2
+    dev: true
+
+  /@envelop/types@5.0.0:
+    resolution: {integrity: sha512-IPjmgSc4KpQRlO4qbEDnBEixvtb06WDmjKfi/7fkZaryh5HuOmTtixe1EupQI5XfXO8joc3d27uUZ0QdC++euA==}
+    engines: {node: '>=18.0.0'}
+    dependencies:
+      tslib: 2.6.2
+    dev: true
+
   /@esbuild/aix-ppc64@0.19.10:
     resolution: {integrity: sha512-Q+mk96KJ+FZ30h9fsJl+67IjNJm3x2eX+GBWGmocAKgzp27cowCOOqSdscX80s0SpdFXZnIv/+1xD1EctFx96Q==}
     engines: {node: '>=12'}
@@ -989,7 +1015,7 @@ packages:
   /@fastify/fast-json-stringify-compiler@4.3.0:
     resolution: {integrity: sha512-aZAXGYo6m22Fk1zZzEUKBvut/CIIQe/BapEORnxiD5Qr0kPHqqI69NtEMCme74h+at72sPhbkb4ZrLd1W3KRLA==}
     dependencies:
-      fast-json-stringify: 5.9.2
+      fast-json-stringify: 5.9.1
     dev: true
 
   /@fastify/send@2.1.0:
@@ -1013,8 +1039,8 @@ packages:
       p-limit: 3.1.0
     dev: true
 
-  /@fastify/websocket@8.3.1:
-    resolution: {integrity: sha512-hsQYHHJme/kvP3ZS4v/WMUznPBVeeQHHwAoMy1LiN6m/HuPfbdXq1MBJ4Nt8qX1YI+eVbog4MnOsU7MTozkwYA==}
+  /@fastify/websocket@8.3.0:
+    resolution: {integrity: sha512-i9lVHk6nKKQUMETdX5IDVrSxODJxy2mYU7CJ9BLWVtUZVuvB2a69CTuFyoapNWzLDuv0Z0DpAa2QyaTGPCIHZA==}
     dependencies:
       fastify-plugin: 4.5.1
       ws: 8.14.2
@@ -1182,6 +1208,31 @@ packages:
       graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
       graphql: 16.6.0
+    dev: true
+
+  /@graphql-yoga/logger@2.0.0:
+    resolution: {integrity: sha512-Mg8psdkAp+YTG1OGmvU+xa6xpsAmSir0hhr3yFYPyLNwzUj95DdIwsMpKadDj9xDpYgJcH3Hp/4JMal9DhQimA==}
+    engines: {node: '>=18.0.0'}
+    dependencies:
+      tslib: 2.6.2
+    dev: true
+
+  /@graphql-yoga/subscription@5.0.0:
+    resolution: {integrity: sha512-Ri7sK8hmxd/kwaEa0YT8uqQUb2wOLsmBMxI90QDyf96lzOMJRgBuNYoEkU1pSgsgmW2glceZ96sRYfaXqwVxUw==}
+    engines: {node: '>=18.0.0'}
+    dependencies:
+      '@graphql-yoga/typed-event-target': 3.0.0
+      '@repeaterjs/repeater': 3.0.5
+      '@whatwg-node/events': 0.1.1
+      tslib: 2.6.2
+    dev: true
+
+  /@graphql-yoga/typed-event-target@3.0.0:
+    resolution: {integrity: sha512-w+liuBySifrstuHbFrHoHAEyVnDFVib+073q8AeAJ/qqJfvFvAwUPLLtNohR/WDVRgSasfXtl3dcNuVJWN+rjg==}
+    engines: {node: '>=18.0.0'}
+    dependencies:
+      '@repeaterjs/repeater': 3.0.5
+      tslib: 2.6.2
     dev: true
 
   /@hookform/resolvers@3.3.2(react-hook-form@7.48.2):
@@ -1677,7 +1728,7 @@ packages:
       tslib: 2.6.2
     dev: true
 
-  /@proto-kit/api@0.1.1-develop.334(@proto-kit/common@0.1.1-develop.153)(@proto-kit/sequencer@0.1.1-develop.153)(o1js@0.15.2)(tsyringe@4.8.0):
+  /@proto-kit/api@0.1.1-develop.334(@proto-kit/common@0.1.1-develop.153)(@proto-kit/sequencer@0.1.1-develop.153)(o1js@0.13.1)(tsyringe@4.8.0):
     resolution: {integrity: sha512-+eM9oQIhEcGx2bBpjLpEZrvsRMamB5Q2Eq/c0L/5wL5HBXatPF2UNPihwYIpPgzJnrJKIdtpBWHrzbQDBuVeQw==}
     peerDependencies:
       '@proto-kit/common': '*'
@@ -1695,7 +1746,7 @@ packages:
       humanize-duration: 3.31.0
       koa: 2.14.2
       lodash: 4.17.21
-      o1js: 0.15.2
+      o1js: 0.13.1
       reflect-metadata: 0.1.13
       tsyringe: 4.8.0
       type-graphql: 2.0.0-beta.1(class-validator@0.14.0)(graphql@16.6.0)
@@ -1703,7 +1754,34 @@ packages:
       - supports-color
     dev: true
 
-  /@proto-kit/cli@0.1.1-develop.334(@proto-kit/api@0.1.1-develop.334)(@proto-kit/common@0.1.1-develop.153)(@proto-kit/module@0.1.1-develop.153)(@proto-kit/protocol@0.1.1-develop.153)(@proto-kit/sdk@0.1.1-develop.153)(@proto-kit/sequencer@0.1.1-develop.153)(o1js@0.15.2):
+  /@proto-kit/api@0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(@proto-kit/sequencer@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0):
+    resolution: {integrity: sha512-LT73IZfdKFO5s+BZ/3CbEpKo2bZ7zL0vFcmjveYFk976b3qohMXVzAkc4LMZtKVojWywKAdVPwjQHz0h/1wAEA==}
+    peerDependencies:
+      '@proto-kit/common': '*'
+      '@proto-kit/sequencer': '*'
+      o1js: 0.13.1
+      tsyringe: ^4.7.0
+    dependencies:
+      '@graphql-tools/stitch': 9.0.3(graphql@16.6.0)
+      '@proto-kit/common': 0.1.1-develop.340(o1js@0.13.1)(tsyringe@4.8.0)
+      '@proto-kit/sequencer': 0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(@proto-kit/module@0.1.1-develop.340)(@proto-kit/protocol@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0)
+      '@types/humanize-duration': 3.27.3
+      class-validator: 0.14.0
+      graphql: 16.6.0
+      graphql-scalars: 1.22.4(graphql@16.6.0)
+      graphql-yoga: 5.0.0(graphql@16.6.0)
+      humanize-duration: 3.31.0
+      koa: 2.14.2
+      lodash: 4.17.21
+      o1js: 0.13.1
+      reflect-metadata: 0.1.13
+      tsyringe: 4.8.0
+      type-graphql: 2.0.0-beta.1(class-validator@0.14.0)(graphql@16.6.0)
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /@proto-kit/cli@0.1.1-develop.334(@proto-kit/api@0.1.1-develop.334)(@proto-kit/common@0.1.1-develop.153)(@proto-kit/module@0.1.1-develop.153)(@proto-kit/protocol@0.1.1-develop.153)(@proto-kit/sdk@0.1.1-develop.153)(@proto-kit/sequencer@0.1.1-develop.153)(o1js@0.13.1):
     resolution: {integrity: sha512-Dyb3gCXrxtQi3HCS6TpGNjh/DfNBQRk4i0ET8Ei8KLV46iZ8RPv8WMD+cW0GIVmhMPEgso2dzRG5Xh81HEzmLA==}
     hasBin: true
     peerDependencies:
@@ -1716,7 +1794,7 @@ packages:
       o1js: 0.13.1
     dependencies:
       '@inkjs/ui': 1.0.0(ink@4.4.1)
-      '@proto-kit/api': 0.1.1-develop.334(@proto-kit/common@0.1.1-develop.153)(@proto-kit/sequencer@0.1.1-develop.153)(o1js@0.15.2)(tsyringe@4.8.0)
+      '@proto-kit/api': 0.1.1-develop.334(@proto-kit/common@0.1.1-develop.153)(@proto-kit/sequencer@0.1.1-develop.153)(o1js@0.13.1)(tsyringe@4.8.0)
       '@proto-kit/common': 0.1.1-develop.153(snarkyjs@0.11.0)(tsyringe@4.8.0)
       '@proto-kit/module': 0.1.1-develop.153(snarkyjs@0.11.0)(tsyringe@4.8.0)
       '@proto-kit/protocol': 0.1.1-develop.153(snarkyjs@0.11.0)(tsyringe@4.8.0)
@@ -1726,7 +1804,7 @@ packages:
       figlet: 1.7.0
       ink: 4.4.1(react@18.2.0)
       ink-ascii: 0.0.4(ink@4.4.1)(react@18.2.0)
-      o1js: 0.15.2
+      o1js: 0.13.1
       react: 18.2.0
       reflect-metadata: 0.1.13
       yargs: 17.7.2
@@ -1751,7 +1829,7 @@ packages:
       typescript-memoize: 1.1.1
     dev: true
 
-  /@proto-kit/common@0.1.1-develop.340(o1js@0.15.2)(tsyringe@4.8.0):
+  /@proto-kit/common@0.1.1-develop.340(o1js@0.13.1)(tsyringe@4.8.0):
     resolution: {integrity: sha512-aTjGtRA5rKL0lpGyZJgos8KWhX0CEsd0mhllLegxSNwXtahVj3zMldwSByaXwyZ5UrkhPYpJ3zPKK8HXMp2DQg==}
     peerDependencies:
       o1js: 0.13.1
@@ -1759,7 +1837,7 @@ packages:
     dependencies:
       lodash: 4.17.21
       loglevel: 1.8.1
-      o1js: 0.15.2
+      o1js: 0.13.1
       reflect-metadata: 0.1.13
       tsyringe: 4.8.0
       typescript-memoize: 1.1.1
@@ -1781,6 +1859,23 @@ packages:
       tsyringe: 4.8.0
     dev: true
 
+  /@proto-kit/module@0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(@proto-kit/protocol@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0):
+    resolution: {integrity: sha512-X93rHK53v1tyYJnSECNzqBLgwJDD7C6sULpyVZY8y5HZjxWZt/4fgxHV99U0AxLA7DNJwKTN/r7Xbjqj1axlJg==}
+    peerDependencies:
+      '@proto-kit/common': '*'
+      '@proto-kit/protocol': '*'
+      o1js: 0.13.1
+      tsyringe: ^4.7.0
+    dependencies:
+      '@proto-kit/common': 0.1.1-develop.340(o1js@0.13.1)(tsyringe@4.8.0)
+      '@proto-kit/protocol': 0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0)
+      lodash: 4.17.21
+      loglevel: 1.8.1
+      o1js: 0.13.1
+      reflect-metadata: 0.1.13
+      tsyringe: 4.8.0
+    dev: true
+
   /@proto-kit/protocol@0.1.1-develop.153(snarkyjs@0.11.0)(tsyringe@4.8.0):
     resolution: {integrity: sha512-8FCdsg4czt8ROVZa6YyFbOyvPxsYpoWmid7oajy53qgQTZWiarokYewfFqBrrYvX55HdrEi2J5VGDhHWDoIIwA==}
     peerDependencies:
@@ -1795,17 +1890,17 @@ packages:
       tsyringe: 4.8.0
     dev: true
 
-  /@proto-kit/protocol@0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(o1js@0.15.2)(tsyringe@4.8.0):
+  /@proto-kit/protocol@0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0):
     resolution: {integrity: sha512-FzOpJHwfOqXWG3YrmuZB9xXG7a5kz94kMj4v+zRbLqzbZKilonSjf8e9ttcC4iubtG+2yAyseOtGNYP4AQ6N3A==}
     peerDependencies:
       '@proto-kit/common': '*'
       o1js: 0.13.1
       tsyringe: ^4.7.0
     dependencies:
-      '@proto-kit/common': 0.1.1-develop.340(o1js@0.15.2)(tsyringe@4.8.0)
+      '@proto-kit/common': 0.1.1-develop.340(o1js@0.13.1)(tsyringe@4.8.0)
       lodash: 4.17.21
       loglevel: 1.8.1
-      o1js: 0.15.2
+      o1js: 0.13.1
       reflect-metadata: 0.1.13
       ts-mixer: 6.0.3
       tsyringe: 4.8.0
@@ -1832,6 +1927,34 @@ packages:
       - utf-8-validate
     dev: true
 
+  /@proto-kit/sdk@0.1.1-develop.340(@proto-kit/api@0.1.1-develop.340)(@proto-kit/common@0.1.1-develop.340)(@proto-kit/module@0.1.1-develop.340)(@proto-kit/protocol@0.1.1-develop.340)(@proto-kit/sequencer@0.1.1-develop.340)(graphql@16.6.0)(o1js@0.13.1)(reflect-metadata@0.1.13)(tsyringe@4.8.0):
+    resolution: {integrity: sha512-oeJ9wzWfsxwSgU+fwuSTFzUp2XfwklB/SSFgyUzUYd9ZxlG5CjuSNlHlfN0Ng1DbDgP3bz6vMDSAs+s+busWpg==}
+    peerDependencies:
+      '@proto-kit/api': '*'
+      '@proto-kit/common': '*'
+      '@proto-kit/module': '*'
+      '@proto-kit/protocol': '*'
+      '@proto-kit/sequencer': '*'
+      o1js: 0.13.1
+      reflect-metadata: ^0.1.13
+      tsyringe: ^4.7.0
+    dependencies:
+      '@proto-kit/api': 0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(@proto-kit/sequencer@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0)
+      '@proto-kit/common': 0.1.1-develop.340(o1js@0.13.1)(tsyringe@4.8.0)
+      '@proto-kit/module': 0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(@proto-kit/protocol@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0)
+      '@proto-kit/protocol': 0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0)
+      '@proto-kit/sequencer': 0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(@proto-kit/module@0.1.1-develop.340)(@proto-kit/protocol@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0)
+      '@urql/core': 4.2.0(graphql@16.6.0)
+      comlink: 4.4.1
+      lodash: 4.17.21
+      loglevel: 1.8.1
+      o1js: 0.13.1
+      reflect-metadata: 0.1.13
+      tsyringe: 4.8.0
+    transitivePeerDependencies:
+      - graphql
+    dev: true
+
   /@proto-kit/sequencer@0.1.1-develop.153(snarkyjs@0.11.0)(tsyringe@4.8.0):
     resolution: {integrity: sha512-EERowgvneIev1JK/GhS+wfEUWHfEJleU1vDTY7VtcmuS2Cr69kTM7WXnU5gDKkjn+CXD5KulQ+eC5giO6hmeVQ==}
     peerDependencies:
@@ -1846,7 +1969,7 @@ packages:
       class-validator: 0.14.0
       fastify: 4.25.2
       graphql: 16.6.0
-      mercurius: 13.3.3(graphql@16.6.0)
+      mercurius: 13.3.2(graphql@16.6.0)
       reflect-metadata: 0.1.13
       snarkyjs: 0.11.0
       tsyringe: 4.8.0
@@ -1855,6 +1978,27 @@ packages:
       - bufferutil
       - supports-color
       - utf-8-validate
+    dev: true
+
+  /@proto-kit/sequencer@0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(@proto-kit/module@0.1.1-develop.340)(@proto-kit/protocol@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0):
+    resolution: {integrity: sha512-pLdBntboxXZyojT3kgU+4mdXdbO8j1RJjRt8EivZa58mfr5rZPngYSxSSzh3QMS+9warQa4aPGSBZJSBAW3Wbg==}
+    peerDependencies:
+      '@proto-kit/common': '*'
+      '@proto-kit/module': '*'
+      '@proto-kit/protocol': '*'
+      o1js: 0.13.1
+      tsyringe: ^4.7.0
+    dependencies:
+      '@proto-kit/common': 0.1.1-develop.340(o1js@0.13.1)(tsyringe@4.8.0)
+      '@proto-kit/module': 0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(@proto-kit/protocol@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0)
+      '@proto-kit/protocol': 0.1.1-develop.340(@proto-kit/common@0.1.1-develop.340)(o1js@0.13.1)(tsyringe@4.8.0)
+      bullmq: 3.15.8
+      lodash: 4.17.21
+      o1js: 0.13.1
+      reflect-metadata: 0.1.13
+      tsyringe: 4.8.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /@radix-ui/primitive@1.0.1:
@@ -2820,6 +2964,15 @@ packages:
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
     dev: true
 
+  /@urql/core@4.2.0(graphql@16.6.0):
+    resolution: {integrity: sha512-GRkZ4kECR9UohWAjiSk2UYUetco6/PqSrvyC4AH6g16tyqEShA63M232cfbE1J9XJPaGNjia14Gi+oOqzp144w==}
+    dependencies:
+      '@0no-co/graphql.web': 1.0.4(graphql@16.6.0)
+      wonka: 6.3.4
+    transitivePeerDependencies:
+      - graphql
+    dev: true
+
   /@vercel/style-guide@5.0.1(eslint@8.53.0)(prettier@3.1.0)(typescript@4.9.4):
     resolution: {integrity: sha512-3J/5xpwJ2Wk+cKB3EGY2KCdVQycaThLKhjBmgXPfIKb+E74lPpXVIDfaQE0D2JoAyIzGsqdH7Lbmr+DojwofxQ==}
     engines: {node: '>=16'}
@@ -2865,6 +3018,38 @@ packages:
       - eslint-import-resolver-webpack
       - jest
       - supports-color
+    dev: true
+
+  /@whatwg-node/events@0.1.1:
+    resolution: {integrity: sha512-AyQEn5hIPV7Ze+xFoXVU3QTHXVbWPrzaOkxtENMPMuNL6VVHrp4hHfDt9nrQpjO7BgvuM95dMtkycX5M/DZR3w==}
+    engines: {node: '>=16.0.0'}
+    dev: true
+
+  /@whatwg-node/fetch@0.9.14:
+    resolution: {integrity: sha512-wurZC82zzZwXRDSW0OS9l141DynaJQh7Yt0FD1xZ8niX7/Et/7RoiLiltbVU1fSF1RR9z6ndEaTUQBAmddTm1w==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      '@whatwg-node/node-fetch': 0.5.0
+      urlpattern-polyfill: 9.0.0
+    dev: true
+
+  /@whatwg-node/node-fetch@0.5.0:
+    resolution: {integrity: sha512-q76lDAafvHNGWedNAVHrz/EyYTS8qwRLcwne8SJQdRN5P3HydxU6XROFvJfTML6KZXQX2FDdGY4/SnaNyd7M0Q==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      '@whatwg-node/events': 0.1.1
+      busboy: 1.6.0
+      fast-querystring: 1.1.2
+      fast-url-parser: 1.1.3
+      tslib: 2.6.2
+    dev: true
+
+  /@whatwg-node/server@0.9.16:
+    resolution: {integrity: sha512-gktQkRyONEw2EGpx7UZaC6zNlUm21CGlqAHQXU3QC6W0zlLM5ZQNDCeD66q/nsPHDV08X2NTHlABsuAEk5rh/w==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      '@whatwg-node/fetch': 0.9.14
+      tslib: 2.6.2
     dev: true
 
   /abbrev@1.1.1:
@@ -3430,7 +3615,6 @@ packages:
     engines: {node: '>=10.16.0'}
     dependencies:
       streamsearch: 1.1.0
-    dev: false
 
   /cache-content-type@1.0.1:
     resolution: {integrity: sha512-IKufZ1o4Ut42YUrZSo8+qnMTrFuKkvyoLXUywKz9GJ5BrhOFGhLdkx9sG4KAnVvbY6kEcSFjLQul+DVmBm2bgA==}
@@ -3438,11 +3622,6 @@ packages:
     dependencies:
       mime-types: 2.1.35
       ylru: 1.3.2
-    dev: true
-
-  /cachedir@2.4.0:
-    resolution: {integrity: sha512-9EtFOZR8g22CL7BWjJ9BUx1+A/djkofnyW3aOXZORNW2kxoUpx2h+uN2cOqwPmFhnpVmxg+KW2OjOSgChTEvsQ==}
-    engines: {node: '>=6'}
     dev: true
 
   /call-bind@1.0.5:
@@ -3641,6 +3820,10 @@ packages:
 
   /color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
+    dev: true
+
+  /comlink@4.4.1:
+    resolution: {integrity: sha512-+1dlx0aY5Jo1vHy/tSsIGpSkN4tS9rZSW8FIhG0JH/crs9wwweswIo/POr451r7bZww3hFbPAKnTpimzL/mm4Q==}
     dev: true
 
   /commander@4.1.1:
@@ -4813,8 +4996,8 @@ packages:
     resolution: {integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==}
     dev: true
 
-  /fast-json-stringify@5.9.2:
-    resolution: {integrity: sha512-SwHnT5PL2BawF0ccL+8b800QovvopUPgV/qzhBY+vw5ZniDH9boewbzBXYox+SetfD2dlxAgeZKSnELzrA+2hg==}
+  /fast-json-stringify@5.9.1:
+    resolution: {integrity: sha512-NMrf+uU9UJnTzfxaumMDXK1NWqtPCfGoM9DYIE+ESlaTQqjlANFBy0VAbsm6FB88Mx0nceyi18zTo5kIEUlzxg==}
     dependencies:
       '@fastify/deepmerge': 1.3.0
       ajv: 8.12.0
@@ -4844,6 +5027,12 @@ packages:
     resolution: {integrity: sha512-eel5UKGn369gGEWOqBShmFJWfq/xSJvsgDzgLYC845GneayWvXBf0lJCBn5qTABfewy1ZDPoaR5OZCP+kssfuw==}
     dev: true
 
+  /fast-url-parser@1.1.3:
+    resolution: {integrity: sha512-5jOCVXADYNuRkKFzNJ0dCCewsZiYo0dz8QNYljkOpFC6r2U4OBmKtvm/Tsuh4w1YYdDqDb31a8TVhBJ2OJKdqQ==}
+    dependencies:
+      punycode: 1.4.1
+    dev: true
+
   /fastify-plugin@4.5.1:
     resolution: {integrity: sha512-stRHYGeuqpEZTL1Ef0Ovr2ltazUT9g844X5z/zEBFLG8RYlpDiOCIG+ATvYEp+/zmc7sN29mcIMp8gvYplYPIQ==}
     dev: true
@@ -4857,10 +5046,10 @@ packages:
       abstract-logging: 2.0.1
       avvio: 8.2.1
       fast-content-type-parse: 1.1.0
-      fast-json-stringify: 5.9.2
+      fast-json-stringify: 5.9.1
       find-my-way: 7.7.0
       light-my-request: 5.11.0
-      pino: 8.17.2
+      pino: 8.17.1
       process-warning: 3.0.0
       proxy-addr: 2.0.7
       rfdc: 1.3.0
@@ -5179,7 +5368,7 @@ packages:
       graphql: '>=15'
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.6.0)
-      fast-json-stringify: 5.9.2
+      fast-json-stringify: 5.9.1
       generate-function: 2.3.1
       graphql: 16.6.0
       lodash.memoize: 4.1.2
@@ -5213,6 +5402,26 @@ packages:
     dependencies:
       graphql: 16.6.0
       iterall: 1.3.0
+    dev: true
+
+  /graphql-yoga@5.0.0(graphql@16.6.0):
+    resolution: {integrity: sha512-ZvZlO8MHMDWuLRoDhvJQnXg8SOJD0iDaCA+M/zWuD26AlhEugOEbpnhw/645oqXTYtvHsM91WyxtV7p5XJWYMg==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      graphql: ^15.2.0 || ^16.0.0
+    dependencies:
+      '@envelop/core': 5.0.0
+      '@graphql-tools/executor': 1.2.0(graphql@16.6.0)
+      '@graphql-tools/schema': 10.0.0(graphql@16.6.0)
+      '@graphql-tools/utils': 10.0.8(graphql@16.6.0)
+      '@graphql-yoga/logger': 2.0.0
+      '@graphql-yoga/subscription': 5.0.0
+      '@whatwg-node/fetch': 0.9.14
+      '@whatwg-node/server': 0.9.16
+      dset: 3.1.3
+      graphql: 16.6.0
+      lru-cache: 10.0.2
+      tslib: 2.6.2
     dev: true
 
   /graphql@16.6.0:
@@ -6520,6 +6729,13 @@ packages:
     dependencies:
       js-tokens: 4.0.0
 
+  /lru-cache@10.0.2:
+    resolution: {integrity: sha512-Yj9mA8fPiVgOUpByoTZO5pNrcl5Yk37FcSHsUINpAsaBIEZIuqcCclDZJCVxqQShDsmYX8QG63svJiTbOATZwg==}
+    engines: {node: 14 || >=16.14}
+    dependencies:
+      semver: 7.5.4
+    dev: true
+
   /lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
     dependencies:
@@ -6576,26 +6792,26 @@ packages:
     engines: {node: '>= 0.6'}
     dev: true
 
-  /mercurius@13.3.3(graphql@16.6.0):
-    resolution: {integrity: sha512-42IWxrvKjzOwdd+HdwV8AgYL8kpARJ0BzcqczWDFFsxgDM3MDlGm7PpesT1BsohvnYCN+5OU6Xk5vySkd2x9Eg==}
+  /mercurius@13.3.2(graphql@16.6.0):
+    resolution: {integrity: sha512-NVTu7+qPbo+bNqY5VFRkLKqdCuHZHn3bDMu0IiRDIJcwHfVPgkyBU1p9Qp0idIQYypNSESEzh+z7F1iEK0ESEA==}
     engines: {node: '>=14.19.3'}
     peerDependencies:
       graphql: ^16.0.0
     dependencies:
       '@fastify/error': 3.4.1
       '@fastify/static': 6.12.0
-      '@fastify/websocket': 8.3.1
+      '@fastify/websocket': 8.3.0
       fastify-plugin: 4.5.1
       graphql: 16.6.0
       graphql-jit: 0.8.4(graphql@16.6.0)
       mqemitter: 5.0.0
       p-map: 4.0.0
-      readable-stream: 4.5.2
+      readable-stream: 4.5.1
       safe-stable-stringify: 2.4.3
       secure-json-parse: 2.7.0
       single-user-cache: 0.6.0
       tiny-lru: 11.2.5
-      undici: 5.28.1
+      undici: 6.2.1
       ws: 8.14.2
     transitivePeerDependencies:
       - bufferutil
@@ -6871,13 +7087,12 @@ packages:
       through2: 4.0.2
     dev: true
 
-  /o1js@0.15.2:
-    resolution: {integrity: sha512-EbbXhbozScP3SzbFt0yA509cwcDC0mfa+6D0w2xzMYIerVOyUjzhSFQjy/dUJjQ8VZEffcuDedmIhVv+fqR7dw==}
+  /o1js@0.13.1:
+    resolution: {integrity: sha512-7QHHRRLmmyR8e+YmIFcgatS2q1on+SDD9h4NIK8JR/82eim7w8bQyBZqAwfCU2PmaQtqlZhkLoL4PmZRnxDzQQ==}
     engines: {node: '>=16.4.0'}
     hasBin: true
     dependencies:
       blakejs: 1.2.1
-      cachedir: 2.4.0
       detect-gpu: 5.0.37
       isomorphic-fetch: 3.0.0
       js-sha256: 0.9.0
@@ -7167,7 +7382,7 @@ packages:
   /pino-abstract-transport@1.1.0:
     resolution: {integrity: sha512-lsleG3/2a/JIWUtf9Q5gUNErBqwIu1tUKTT3dUzaf5DySw9ra1wcqKjJjLX1VTY64Wk1eEOYsVGSaGfCK85ekA==}
     dependencies:
-      readable-stream: 4.5.2
+      readable-stream: 4.5.1
       split2: 4.2.0
     dev: true
 
@@ -7175,8 +7390,8 @@ packages:
     resolution: {integrity: sha512-cHjPPsE+vhj/tnhCy/wiMh3M3z3h/j15zHQX+S9GkTBgqJuTuJzYJ4gUyACLhDaJ7kk9ba9iRDmbH2tJU03OiA==}
     dev: true
 
-  /pino@8.17.2:
-    resolution: {integrity: sha512-LA6qKgeDMLr2ux2y/YiUt47EfgQ+S9LznBWOJdN3q1dx2sv0ziDLUBeVpyVv17TEcGCBuWf0zNtg3M5m1NhhWQ==}
+  /pino@8.17.1:
+    resolution: {integrity: sha512-YoN7/NJgnsJ+fkADZqjhRt96iepWBndQHeClmSBH0sQWCb8zGD74t00SK4eOtKFi/f8TUmQnfmgglEhd2kI1RQ==}
     hasBin: true
     dependencies:
       atomic-sleep: 1.0.0
@@ -7184,7 +7399,7 @@ packages:
       on-exit-leak-free: 2.1.2
       pino-abstract-transport: 1.1.0
       pino-std-serializers: 6.2.2
-      process-warning: 3.0.0
+      process-warning: 2.3.2
       quick-format-unescaped: 4.0.4
       real-require: 0.2.0
       safe-stable-stringify: 2.4.3
@@ -7541,8 +7756,8 @@ packages:
       util-deprecate: 1.0.2
     dev: true
 
-  /readable-stream@4.5.2:
-    resolution: {integrity: sha512-yjavECdqeZ3GLXNgRXgeQEdz9fvDDkNKyHnbHRFtOr7/LcfgBcmct7t/ET+HaCTqfh06OzoAxrkN/IfjJBVe+g==}
+  /readable-stream@4.5.1:
+    resolution: {integrity: sha512-uQjbf34vmf/asGnOHQEw07Q4llgMACQZTWWa4MmICS0IKJoHbLwKCy71H3eR99Dw5iYejc6W+pqZZEeqRtUFAw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
       abort-controller: 3.0.0
@@ -8021,7 +8236,6 @@ packages:
   /streamsearch@1.1.0:
     resolution: {integrity: sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==}
     engines: {node: '>=10.0.0'}
-    dev: false
 
   /string-length@4.0.2:
     resolution: {integrity: sha512-+l6rNN5fYHNhZZy41RXsYptCjA2Igmq4EG7kZAYFQI1E1VTXarr6ZPXBg6eq7Y6eK4FEhY6AJlyuFIb/v/S0VQ==}
@@ -8647,9 +8861,9 @@ packages:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
     dev: true
 
-  /undici@5.28.1:
-    resolution: {integrity: sha512-xcIIvj1LOQH9zAL54iWFkuDEaIVEjLrru7qRpa3GrEEHk6OBhb/LycuUY2m7VCcTuDeLziXCxobQVyKExyGeIA==}
-    engines: {node: '>=14.0'}
+  /undici@6.2.1:
+    resolution: {integrity: sha512-7Wa9thEM6/LMnnKtxJHlc8SrTlDmxqJecgz1iy8KlsN0/iskQXOQCuPkrZLXbElPaSw5slFFyKIKXyJ3UtbApw==}
+    engines: {node: '>=18.0'}
     dependencies:
       '@fastify/busboy': 2.1.0
     dev: true
@@ -8681,6 +8895,10 @@ packages:
     dependencies:
       punycode: 1.4.1
       qs: 6.11.2
+    dev: true
+
+  /urlpattern-polyfill@9.0.0:
+    resolution: {integrity: sha512-WHN8KDQblxd32odxeIgo83rdVDE2bvdkb86it7bMhYZwWKJz0+O0RK/eZiHYnM+zgt/U7hAHOlCQGfjjvSkw2g==}
     dev: true
 
   /use-sync-external-store@1.2.0(react@18.2.0):
@@ -8836,6 +9054,10 @@ packages:
       string-width: 5.1.2
     dev: true
 
+  /wonka@6.3.4:
+    resolution: {integrity: sha512-CjpbqNtBGNAeyNS/9W6q3kSkKE52+FjIj7AkFlLr11s/VWGUu6a2CdYSdGxocIhIVjaW/zchesBQUKPVU69Cqg==}
+    dev: true
+
   /wrap-ansi@7.0.0:
     resolution: {integrity: sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==}
     engines: {node: '>=10'}
@@ -8932,8 +9154,8 @@ packages:
     resolution: {integrity: sha512-N+d4UJSJbt/R3wqY7Coqs5pcV0aUj2j9IaQ3rNj9bVCLld8tTGKRa2USARjnvZJWVx1NDmQev8EknoczaOQDOA==}
     dev: true
 
-  /zknoid-chain@1.4.3:
-    resolution: {integrity: sha512-ksKFYlXwtFoYPQJ3ItZx8WPfeKzcCZDxqJ1zx08FCT7rTBCfOUb//tJsIID65zXw1CGto1stkV0cQgRjgboulw==}
+  /zknoid-chain@1.4.1:
+    resolution: {integrity: sha512-9Cj9DOPNXGzvPg/QYweuWtgnofo0ZbO2SOGlGmnyq8fB4ffUmpQ6D31kjE1HnkVY6KnTESA2H2qnsPD+IF7YqQ==}
     dev: false
 
   /zod@3.22.4:

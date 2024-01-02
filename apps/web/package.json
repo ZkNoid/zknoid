@@ -47,7 +47,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.0.1",
     "eslint-config-prettier": "^9.0.0",
-    "o1js": "0.15.2",
+    "o1js": "0.13.1",
     "postcss": "^8",
     "prettier-plugin-tailwindcss": "^0.5.6",
     "tailwindcss": "^3.3.0",
@@ -57,6 +57,6 @@
     "@proto-kit/module": "*",
     "@proto-kit/sdk": "*",
     "@proto-kit/sequencer": "*",
-    "o1js": "0.15.2"
+    "o1js": "0.13.1"
   }
 }
