@@ -1,7 +1,7 @@
 'use client';
 import { useWalletStore } from '@/lib/stores/wallet';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { GameView } from '@/components/GameView';
 import {
   Bricks,
@@ -14,6 +14,9 @@ import {
 import { Bool, Int64, PublicKey } from 'o1js';
 import { ROUND_PRICE } from '@/app/constants';
 import Link from 'next/link';
+import { checkGameRecord } from 'zknoid-chain-dev';
+import { gameRecord } from 'zknoid-chain-dev/dist/GameHub';
+import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
 
 enum GameState {
   NotStarted,
@@ -75,6 +78,7 @@ export default function Home({
   let [gameId, setGameId] = useState(0);
   let [debug, setDebug] = useState(true);
   const level: Bricks = useMemo(() => defaultLevel(), []);
+  const [workerClient, setWorkerClient] = useState<ZknoidWorkerClient | null>(null)
 
   const connectWallet = async () => {
     const accounts = await (window as any).mina.requestAccounts();
@@ -86,7 +90,40 @@ export default function Home({
     setGameId(gameId + 1);
   };
 
-  const proof = () => {
+  useEffect(() => {
+    async function timeout(seconds: number): Promise<void> {
+      return new Promise<void>((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, seconds * 1000);
+      });
+    }
+
+    (async () => {
+        console.log('Loading web worker...');
+        console.log('Loading web worker...');
+        const zkappWorkerClient = new ZknoidWorkerClient();
+        await timeout(5);
+
+        console.log('Done loading web worker');
+        console.log('Loading contracts in web worker');
+
+        await zkappWorkerClient.loadContracts();
+
+        console.log('Compiling contracts in web worker');
+
+        await zkappWorkerClient.compileContracts();
+
+        console.log('Contracts compilation finished');
+
+        setWorkerClient(zkappWorkerClient);
+
+        // TODO
+    })();
+  }, []);
+
+
+  const proof = async () => {
     console.log('Ticks', lastTicks);
 
     // @ts-expect-error
@@ -98,36 +135,28 @@ export default function Home({
     });
 
     try {
-      client.start();
+      const proof = await workerClient?.proveGameRecord({bricks: level, inputs: userInput, debug: Bool(false)});
 
-      const sender = PublicKey.fromBase58(address);
+      console.log('Level proof', proof);
 
-      const gameContext = loadGameContext(level, new Bool(true));
-        for (let i = 0; i < userInput.tiks.length; i++) {
-          gameContext.processTick(userInput.tiks[i]);
-          console.log('Game ctx', gameContext);
-        }
-
-      const gameHub = client.runtime.resolve('GameHub');
-
-      client.transaction(sender, () => {
-        gameHub.addGameResult({
-          publicInput: undefined,
-          publicOutput: [],
-          proof: undefined,
-          maxProofsVerified: 0,
-          shouldVerify: undefined,
-          verify: function (): void {
-            throw new Error('Function not implemented.');
-          },
-          verifyIf: function (condition: any): void {
-            throw new Error('Function not implemented.');
-          },
-          toJSON: function () {
-            throw new Error('Function not implemented.');
-          }
-        });
-      })
+      // client.transaction(sender, () => {
+      //   gameHub.addGameResult({
+      //     publicInput: undefined,
+      //     publicOutput: [],
+      //     proof: undefined,
+      //     maxProofsVerified: 0,
+      //     shouldVerify: undefined,
+      //     verify: function (): void {
+      //       throw new Error('Function not implemented.');
+      //     },
+      //     verifyIf: function (condition: any): void {
+      //       throw new Error('Function not implemented.');
+      //     },
+      //     toJSON: function () {
+      //       throw new Error('Function not implemented.');
+      //     }
+      //   });
+      // })
       
     } catch (e) {
       console.log('Error while generating ZK proof');
