@@ -15,7 +15,7 @@ import { Bool, Int64, PublicKey } from 'o1js';
 import { ROUND_PRICE } from '@/app/constants';
 import Link from 'next/link';
 import { checkGameRecord } from 'zknoid-chain-dev';
-import { gameRecord } from 'zknoid-chain-dev/dist/GameHub';
+import { GameRecord } from 'zknoid-chain-dev/dist/GameHub';
 import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
 import { mockGameRecordProof } from '@/lib/utils';
 

@@ -1,3 +1,3 @@
-import { gameRecord } from '../src/GameHub';
+import { GameRecord } from '../src/GameHub';
 
-console.log(await gameRecord.compile());
+console.log(await GameRecord.compile());

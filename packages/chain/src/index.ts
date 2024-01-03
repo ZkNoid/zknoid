@@ -12,7 +12,7 @@ import {
     // Brick,
     // Bricks,
     // IntPoint,
-    gameRecord,
+    GameRecord,
 } from './GameHub.js';
 
 import {
@@ -72,5 +72,5 @@ export {
     defaultLevel,
     TICK_PERIOD,
     DEFAULT_PLATFORM_SPEED,
-    gameRecord
+    GameRecord
 };
