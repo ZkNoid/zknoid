@@ -513,7 +513,6 @@ export function loadGameContext(bricks: Bricks, debug: Bool) {
 }
 
 export function checkGameRecord(
-    // publicInput: Bricks
     bricks: Bricks,
     gameInputs: GameInputs,
     debug: Bool
@@ -538,7 +537,6 @@ export const gameRecord = Experimental.ZkProgram({
     publicOutput: GameRecordPublicOutput,
     methods: {
         checkGameRecord: {
-            // privateInputs: [],
             privateInputs: [Bricks, GameInputs, Bool],
             method: checkGameRecord,
         },

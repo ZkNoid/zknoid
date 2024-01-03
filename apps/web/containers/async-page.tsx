@@ -17,6 +17,7 @@ import Link from 'next/link';
 import { checkGameRecord } from 'zknoid-chain-dev';
 import { gameRecord } from 'zknoid-chain-dev/dist/GameHub';
 import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
+import { mockGameRecordProof } from '@/lib/utils';
 
 enum GameState {
   NotStarted,
@@ -133,10 +134,10 @@ export default function Home({
         (elem) => new Tick({ action: Int64.from(elem) }),
       ),
     });
-
+    
     try {
       const proof = await workerClient?.proveGameRecord({bricks: level, inputs: userInput, debug: Bool(false)});
-
+      // const proof = await mockGameRecordProof(checkGameRecord(level, userInput, Bool(false)));
       console.log('Level proof', proof);
 
       // client.transaction(sender, () => {
