@@ -24,7 +24,7 @@ const functions = {
   proveGameRecord: async (args: {bricks: any, inputs: any, debug: any}) => {
     console.log('[Worker] proof checking');
     console.log('args', Bricks.fromJSON(args.bricks), GameInputs.fromJSON(args.inputs), Bool.fromJSON(args.debug));
-    // return await state.gameRecord?.checkGameRecord(args.bricks, args.inputs, args.debug);
+    
     return await mockGameRecordProof(checkGameRecord(Bricks.fromJSON(args.bricks), GameInputs.fromJSON(args.inputs), Bool.fromJSON(args.debug)));
   },
 };

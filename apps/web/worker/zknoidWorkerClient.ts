@@ -25,14 +25,10 @@ export default class ZknoidWorkerClient {
   }: {
     bricks: Bricks, inputs: GameInputs, debug: Bool
   }) {
-    console.log('Args on frontend', bricks, inputs, debug);
-    const proof = await mockGameRecordProof(checkGameRecord(bricks, inputs, debug));
-    return proof;
-
-    // const result = this._call('proveGameRecord', {
-    //   bricks: Bricks.toJSON(bricks), inputs: GameInputs.toJSON(inputs), debug: Bool.toJSON(debug)
-    // });
-    // return result;
+    const result = this._call('proveGameRecord', {
+      bricks: Bricks.toJSON(bricks), inputs: GameInputs.toJSON(inputs), debug: Bool.toJSON(debug)
+    });
+    return result;
   }
 
   worker: Worker;
