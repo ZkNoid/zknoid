@@ -93,6 +93,11 @@ export class GameContext extends Struct({
     debug: Bool,
 }) {
     processTick(tick: Tick): void {
+        // 0) Get tick variables
+        let a = this.ball.speed.x;
+        let b = this.ball.speed.y;
+        let c = a.mul(this.ball.position.y).sub(b.mul(this.ball.position.x));
+
         // 1) Update score
         this.score = Provable.if(
             this.alreadyWon,
@@ -173,18 +178,12 @@ export class GameContext extends Struct({
         );
 
         /// 5) Check platform bump
+        let adc0 = a.mul(FIELD_PIXEL_HEIGHT).sub(c);
+        let platformLeft = b.mul(this.platform.position);
+        let platformRight = b.mul(this.platform.position.add(PLATFORM_WIDTH));
+
         let isFail = bottomBump.and(
-            /// Too left from the platform
-            this.ball.position.x
-                .sub(this.platform.position)
-                .isPositive()
-                .not()
-                .or(
-                    // Too right from the platform
-                    this.ball.position.x
-                        .sub(this.platform.position.add(PLATFORM_WIDTH))
-                        .isPositive()
-                )
+            inRange(adc0, platformLeft, platformRight).not()
         );
 
         this.winable = this.winable.and(isFail.not());
@@ -262,12 +261,6 @@ export class GameContext extends Struct({
 
             let moveRight = this.ball.speed.x.isPositive();
             let moveTop = this.ball.speed.y.isPositive();
-
-            let a = this.ball.speed.x;
-            let b = this.ball.speed.y;
-            let c = a
-                .mul(this.ball.position.y)
-                .sub(b.mul(this.ball.position.x));
 
             let leftEnd = b.mul(currentBrick.pos.x);
             let rightEnd = b.mul(currentBrick.pos.x.add(2 * BRICK_HALF_WIDTH));
