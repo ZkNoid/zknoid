@@ -5,12 +5,9 @@ import type {
   ZknoidWorkerReponse,
   WorkerFunctions,
 } from './zknoidWorker';
-import { checkGameRecord } from 'zknoid-chain-dev';
+import { Bricks, GameInputs, checkGameRecord } from 'zknoid-chain-dev';
 import { mockGameRecordProof } from '@/lib/utils';
-// import { Bricks, GameInputs } from 'zknoid-chain';
 
-type Bricks = any;
-type GameInputs = any;
 
 export default class ZknoidWorkerClient {
   // ---------------------------------------------------------------------------------------
@@ -24,23 +21,18 @@ export default class ZknoidWorkerClient {
   }
 
   async proveGameRecord({
-    bricks,
-    inputs,
-    debug,
+    bricks, inputs, debug
   }: {
-    bricks: Bricks;
-    inputs: GameInputs;
-    debug: Bool;
+    bricks: Bricks, inputs: GameInputs, debug: Bool
   }) {
     console.log('Args on frontend', bricks, inputs, debug);
-    return await mockGameRecordProof(checkGameRecord(bricks, inputs, debug));
+    const proof = await mockGameRecordProof(checkGameRecord(bricks, inputs, debug));
+    return proof;
 
-    const result = this._call('proveGameRecord', {
-      bricks,
-      inputs,
-      debug,
-    });
-    return result;
+    // const result = this._call('proveGameRecord', {
+    //   bricks: Bricks.toJSON(bricks), inputs: GameInputs.toJSON(inputs), debug: Bool.toJSON(debug)
+    // });
+    // return result;
   }
 
   worker: Worker;
@@ -53,7 +45,7 @@ export default class ZknoidWorkerClient {
 
   constructor() {
     this.worker = new Worker(new URL('./zknoidWorker.ts', import.meta.url));
-    (window as any).workerNoid = this.worker;
+    (window as any).workerNoid = this.worker
     this.promises = {};
     this.nextId = 0;
 
