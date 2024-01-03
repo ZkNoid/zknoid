@@ -533,7 +533,7 @@ export function checkGameRecord(
     return new GameRecordPublicOutput({ score: gameContext.score });
 }
 
-export const gameRecord = Experimental.ZkProgram({
+export const GameRecord = Experimental.ZkProgram({
     publicOutput: GameRecordPublicOutput,
     methods: {
         checkGameRecord: {
@@ -543,7 +543,7 @@ export const gameRecord = Experimental.ZkProgram({
     },
 });
 
-export class GameRecordProof extends Experimental.ZkProgram.Proof(gameRecord) {}
+export class GameRecordProof extends Experimental.ZkProgram.Proof(GameRecord) {}
 
 @runtimeModule()
 export class GameHub extends RuntimeModule<unknown> {

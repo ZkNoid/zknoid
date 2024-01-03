@@ -6,7 +6,7 @@ type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
 // ---------------------------------------------------------------------------------------
 
-import { Bricks, GameInputs, gameRecord as GameRecord } from 'zknoid-chain-dev';
+import { Bricks, GameInputs, GameRecord } from 'zknoid-chain-dev';
 
 const state = {
   gameRecord: null as null | typeof GameRecord,

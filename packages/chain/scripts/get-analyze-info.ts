@@ -1,3 +1,3 @@
-import { gameRecord } from '../src/GameHub';
+import { GameRecord } from '../src/GameHub';
 
-console.log(gameRecord.analyzeMethods());
+console.log(GameRecord.analyzeMethods());
