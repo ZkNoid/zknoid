@@ -25,11 +25,3 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
-
-.canvas-winnable {
-  border: 1px solid black;
-}
-
-.canvas-lost {
-  border: 1px solid red;
-}

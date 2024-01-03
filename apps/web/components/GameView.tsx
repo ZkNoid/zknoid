@@ -56,7 +56,7 @@ export const GameView = (props: IGameViewProps) => {
   const [win, setWin] = useState(false);
   const [lost, setLost] = useState(false);
 
-  let [canvasClass, setCanvasClass] = useState('canvas-winnable');
+  let [winable, setWinable] = useState(true);
 
   let ticksCache: number[] = [];
   let bricksLeft: number = 0;
@@ -621,7 +621,7 @@ export const GameView = (props: IGameViewProps) => {
     props.setTicksAmount(ticksCache.length);
     props.setScore(gameContext.score * 1);
     if (!gameContext.winable.toBoolean()) {
-      setCanvasClass('canvas-lost');
+      setWinable(false);
     }
 
     sync();
@@ -633,7 +633,7 @@ export const GameView = (props: IGameViewProps) => {
       width={`${FIELD_WIDTH}`}
       height={`${FIELD_HEIGHT + 10}`}
       ref={canvas}
-      className={`${canvasClass}`}
+      className={winable ? 'border border-black' : 'border border-red-500'}
     ></canvas>
   );
 };
