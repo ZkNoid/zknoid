@@ -124,10 +124,10 @@ export class GameContext extends Struct({
         const rightBump = this.ball.position.x
             .sub(FIELD_PIXEL_WIDTH)
             .isPositive();
-        const topBump = this.ball.position.y
+        const bottomBump = this.ball.position.y
             .sub(FIELD_PIXEL_HEIGHT)
             .isPositive();
-        const bottomBump = this.ball.position.y.isPositive().not();
+        const topBump = this.ball.position.y.isPositive().not();
 
         /// Add come constrains just in case
 
@@ -153,14 +153,14 @@ export class GameContext extends Struct({
         );
 
         this.ball.position.y = Provable.if(
-            topBump,
+            bottomBump,
             Int64.from(FIELD_PIXEL_HEIGHT).sub(
                 this.ball.position.y.sub(Int64.from(FIELD_PIXEL_HEIGHT))
             ),
             this.ball.position.y
         );
         this.ball.position.y = Provable.if(
-            bottomBump,
+            topBump,
             this.ball.position.y.neg(),
             this.ball.position.y
         );
@@ -353,7 +353,7 @@ export class GameContext extends Struct({
             );
 
             this.alreadyWon = Provable.if(
-                this.totalLeft.equals(UInt64.from(1)),
+                this.totalLeft.equals(UInt64.from(1)).and(this.winable),
                 Bool(true),
                 this.alreadyWon
             );
@@ -523,12 +523,7 @@ export function checkGameRecord(
         gameContext.processTick(gameInputs.tiks[i]);
     }
 
-    gameContext.winable.assertTrue();
-
-    for (let i = 0; i < gameContext.bricks.bricks.length; i++) {
-        /// Check that all bricks is destroyed
-        gameContext.bricks.bricks[i].value.assertEquals(UInt64.from(1));
-    }
+    gameContext.alreadyWon.assertTrue();
 
     return new GameRecordPublicOutput({ score: gameContext.score });
 }
