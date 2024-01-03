@@ -7,6 +7,7 @@ export const BRICK_HALF_WIDTH = 15;
 export const FIELD_PIXEL_WIDTH = 500;
 export const FIELD_PIXEL_HEIGHT = 500;
 export const PLATFORM_HALF_WIDTH = 50;
+export const PLATFORM_WIDTH = 100;
 
 export const FIELD_WIDTH = FIELD_PIXEL_WIDTH;
 export const FIELD_HEIGHT = FIELD_PIXEL_HEIGHT;
