@@ -1,6 +1,6 @@
 {
     "name": "zknoid-chain-dev",
-    "version": "1.3.0",
+    "version": "1.4.5",
     "type": "module",
     "main": "dist/index.js",
     "watch": {
@@ -25,13 +25,13 @@
     },
     "devDependencies": {
         "@jest/globals": "^29.6.1",
-        "@proto-kit/api": "*",
-        "@proto-kit/cli": "*",
-        "@proto-kit/common": "*",
-        "@proto-kit/module": "*",
-        "@proto-kit/protocol": "*",
-        "@proto-kit/sdk": "*",
-        "@proto-kit/sequencer": "*",
+        "@proto-kit/api": "0.1.1-develop.340",
+        "@proto-kit/cli": "0.1.1-develop.340",
+        "@proto-kit/common": "0.1.1-develop.340",
+        "@proto-kit/module": "0.1.1-develop.340",
+        "@proto-kit/protocol": "0.1.1-develop.340",
+        "@proto-kit/sdk": "0.1.1-develop.340",
+        "@proto-kit/sequencer": "0.1.1-develop.340",
         "@types/jest": "^29.5.7",
         "@types/node": "^20.8.10",
         "@types/react-dom": "^18.2.7",

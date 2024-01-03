@@ -1,12 +1,10 @@
 import { mockGameRecordProof } from '@/lib/utils';
 import { Bool, Mina, fetchAccount } from 'o1js';
-import { checkGameRecord } from 'zknoid-chain';
+import { checkGameRecord, Bricks, GameInputs, GameRecord } from 'zknoid-chain-dev';
 
 type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
 // ---------------------------------------------------------------------------------------
-
-import { Bricks, GameInputs, GameRecord } from 'zknoid-chain-dev';
 
 const state = {
   gameRecord: null as null | typeof GameRecord,
@@ -23,11 +21,11 @@ const functions = {
     console.log('[Worker] compiling contracts');
     // await state.gameRecord!.compile();
   },
-  proveGameRecord: async (args: {bricks: Bricks, inputs: GameInputs, debug: Bool}) => {
+  proveGameRecord: async (args: {bricks: any, inputs: any, debug: any}) => {
     console.log('[Worker] proof checking');
-    console.log('args', args);
-    return await state.gameRecord?.checkGameRecord(args.bricks, args.inputs, args.debug);
-    // return await mockGameRecordProof(checkGameRecord(args.bricks, args.inputs, args.debug));
+    console.log('args', Bricks.fromJSON(args.bricks), GameInputs.fromJSON(args.inputs), Bool.fromJSON(args.debug));
+    // return await state.gameRecord?.checkGameRecord(args.bricks, args.inputs, args.debug);
+    return await mockGameRecordProof(checkGameRecord(Bricks.fromJSON(args.bricks), GameInputs.fromJSON(args.inputs), Bool.fromJSON(args.debug)));
   },
 };
 

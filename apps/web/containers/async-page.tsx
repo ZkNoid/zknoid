@@ -10,7 +10,7 @@ import {
   loadGameContext,
   defaultLevel,
   client,
-} from 'zknoid-chain';
+} from 'zknoid-chain-dev';
 import { Bool, Int64, PublicKey } from 'o1js';
 import { ROUND_PRICE } from '@/app/constants';
 import Link from 'next/link';
