@@ -1,10 +1,12 @@
-import { fetchAccount, PublicKey, Field, Bool } from 'o1js';
+import { fetchAccount, Field, Bool } from 'o1js';
 
 import type {
   ZknoidWorkerRequest,
   ZknoidWorkerReponse,
   WorkerFunctions,
 } from './zknoidWorker';
+import { checkGameRecord } from 'zknoid-chain';
+import { mockGameRecordProof } from '@/lib/utils';
 // import { Bricks, GameInputs } from 'zknoid-chain';
 
 type Bricks = any;
@@ -21,11 +23,14 @@ export default class ZknoidWorkerClient {
     return this._call('compileContracts', {});
   }
 
-  proveGameRecord({
+  async proveGameRecord({
     bricks, inputs, debug
   }: {
     bricks: Bricks, inputs: GameInputs, debug: Bool
   }) {
+    console.log('Args on frontend', bricks, inputs, debug);
+    return await mockGameRecordProof(checkGameRecord(bricks, inputs, debug));
+
     const result = this._call('proveGameRecord', {
         bricks, inputs, debug
     });

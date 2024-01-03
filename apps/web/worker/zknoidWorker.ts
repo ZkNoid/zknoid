@@ -1,4 +1,6 @@
-import { Bool, Mina, PublicKey, fetchAccount } from 'o1js';
+import { mockGameRecordProof } from '@/lib/utils';
+import { Bool, Mina, fetchAccount } from 'o1js';
+import { checkGameRecord } from 'zknoid-chain';
 
 type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
@@ -19,11 +21,13 @@ const functions = {
   },
   compileContracts: async (args: {}) => {
     console.log('[Worker] compiling contracts');
-    await state.gameRecord!.compile();
+    // await state.gameRecord!.compile();
   },
   proveGameRecord: async (args: {bricks: Bricks, inputs: GameInputs, debug: Bool}) => {
     console.log('[Worker] proof checking');
+    console.log('args', args);
     return await state.gameRecord?.checkGameRecord(args.bricks, args.inputs, args.debug);
+    // return await mockGameRecordProof(checkGameRecord(args.bricks, args.inputs, args.debug));
   },
 };
 

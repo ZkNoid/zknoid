@@ -29,7 +29,15 @@ async function mockProof(
 }
 
 describe('game hub', () => {
+    it.skip('Log proof', async () => {
+        const [, proof] = Pickles.proofOfBase64(await dummyBase64Proof(), 2);
+
+        console.log('Proof', JSON.stringify(proof, (key, value) =>
+        typeof value === "bigint" ? value.toString() + "n" : value
+        ));
+    })
     it('Check if cheet codes works', async () => {
+        
         const appChain = TestingAppChain.fromRuntime({
             modules: {
                 GameHub,
