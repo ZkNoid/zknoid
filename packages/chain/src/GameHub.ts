@@ -31,6 +31,7 @@ import {
     MAX_BRICKS,
     NEAREST_BRICKS_NUM,
     PLATFORM_HALF_WIDTH,
+    PLATFORM_WIDTH,
     SCORE_PER_TICKS,
 } from './constants';
 import {
@@ -175,13 +176,13 @@ export class GameContext extends Struct({
         let isFail = bottomBump.and(
             /// Too left from the platform
             this.ball.position.x
-                .sub(this.platform.position.sub(PLATFORM_HALF_WIDTH))
+                .sub(this.platform.position)
                 .isPositive()
                 .not()
                 .or(
                     // Too right from the platform
                     this.ball.position.x
-                        .sub(this.platform.position.add(PLATFORM_HALF_WIDTH))
+                        .sub(this.platform.position.add(PLATFORM_WIDTH))
                         .isPositive()
                 )
         );
