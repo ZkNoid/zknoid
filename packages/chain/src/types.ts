@@ -34,8 +34,6 @@ export class GameInputs extends Struct({
     tiks: Provable.Array(Tick, GAME_LENGTH),
 }) {}
 
-export class MapGenerationPublicOutput extends Struct({}) {}
-
 /////////////////////////////////// Game logic structs //////////////////////////////////
 
 export class IntPoint extends Struct({
