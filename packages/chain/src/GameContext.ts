@@ -392,7 +392,7 @@ export class GameContext extends Struct({
                 Brick,
                 this.nearestBricks[0],
                 Provable.if(secondGreater, Brick, cur, this.nearestBricks[1])
-            );
+            ) as Brick; // WTF
 
             secondDist = Provable.if(
                 firstGreater,
@@ -405,7 +405,7 @@ export class GameContext extends Struct({
                 Brick,
                 cur,
                 this.nearestBricks[0]
-            );
+            ) as Brick;
 
             firstDist = Provable.if(firstGreater, curDist, firstDist);
         }
