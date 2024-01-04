@@ -5,7 +5,6 @@ import {
     GameRecordProof,
     // GameRecordPublicOutput,
     checkGameRecord,
-    loadGameContext,
     // GameInputs,
     // Tick,
     // GameRecordKey,
@@ -15,12 +14,13 @@ import {
     GameRecord,
 } from './GameHub.js';
 
+import { loadGameContext } from './GameContext.js';
+
 import {
     // GameHub,
     // GameRecordProof,
     GameRecordPublicOutput,
     // checkGameRecord,
-    // loadGameContext,
     GameInputs,
     Tick,
     GameRecordKey,
@@ -72,5 +72,5 @@ export {
     defaultLevel,
     TICK_PERIOD,
     DEFAULT_PLATFORM_SPEED,
-    GameRecord
+    GameRecord,
 };
