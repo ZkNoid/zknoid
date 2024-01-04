@@ -1,4 +1,4 @@
-interface Network {
+export interface Network {
     chainId: string;
     name: string;
     graphql: string;

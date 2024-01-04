@@ -18,6 +18,7 @@ import { checkGameRecord } from 'zknoid-chain-dev';
 import { GameRecord } from 'zknoid-chain-dev/dist/GameHub';
 import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
 import { mockGameRecordProof } from '@/lib/utils';
+import { useNetworkStore } from '@/lib/stores/network';
 
 enum GameState {
   NotStarted,
@@ -80,11 +81,7 @@ export default function Home({
   let [debug, setDebug] = useState(true);
   const level: Bricks = useMemo(() => defaultLevel(), []);
   const [workerClient, setWorkerClient] = useState<ZknoidWorkerClient | null>(null)
-
-  const connectWallet = async () => {
-    const accounts = await (window as any).mina.requestAccounts();
-    setAddress(accounts[0]);
-  };
+  const networkStore = useNetworkStore();
 
   const startGame = () => {
     setGameState(GameState.Active);
@@ -101,7 +98,6 @@ export default function Home({
     }
 
     (async () => {
-        console.log('Loading web worker...');
         console.log('Loading web worker...');
         const zkappWorkerClient = new ZknoidWorkerClient();
         await timeout(5);
@@ -213,7 +209,7 @@ export default function Home({
       ) : (
         <div
           className="rounded-xl bg-slate-300 p-5"
-          onClick={() => connectWallet()}
+          onClick={async () => networkStore.connectWallet()}
         >
           Connect wallet
         </div>
