@@ -15,7 +15,6 @@ import {
 } from './types';
 
 import { GameContext, loadGameContext } from './GameContext';
-import { assert } from 'console';
 
 export function checkMapGeneration(seed: Field, bricks: Bricks): GameContext {
     return loadGameContext(bricks, Bool(false));
@@ -56,7 +55,17 @@ export const GameProcess = Experimental.ZkProgram({
                 prevProof: SelfProof<void, GameProcessPublicOutput>,
                 inputs: GameInputs
             ): GameProcessPublicOutput {
-                return prevProof.publicOutput;
+                prevProof.verify();
+
+                let gameContext = prevProof.publicOutput.currentState;
+                for (let i = 0; i < inputs.tiks.length; i++) {
+                    gameContext.processTick(inputs.tiks[i]);
+                }
+
+                return new GameProcessPublicOutput({
+                    initialState: prevProof.publicOutput.initialState,
+                    currentState: gameContext,
+                });
             },
         },
     },
