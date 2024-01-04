@@ -12,6 +12,7 @@ export const NetworkPicker = ({autoconnect}: {autoconnect: boolean}) => {
         });
 
         networkStore.setNetwork(chainId);
+        setExpanded(false);
     }
 
     useEffect(() => {
@@ -58,7 +59,7 @@ export const NetworkPicker = ({autoconnect}: {autoconnect: boolean}) => {
 
     return (
         <div>
-            <div className="cursor-pointer" onClick={() => setExpanded(!expanded)}>{networkStore.minaNetwork?.name}</div>
+            <div className="cursor-pointer" onClick={() => setExpanded(!expanded)}>{networkStore.minaNetwork?.name || 'Unsupported network'}</div>
             {expanded && (
                 <div className="flex flex-col items-center w-40 py-5 absolute bg-slate-300  text-xs rounded-xl right-5 top-20">
                     {NETWORKS.map(network => (

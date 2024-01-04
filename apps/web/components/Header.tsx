@@ -5,10 +5,12 @@ import Link from "next/link";
 // @ts-ignore
 import truncateMiddle from "truncate-middle";
 import { NetworkPicker } from "./NetworkPicker";
+import { usePollBlockHeight } from "@/lib/stores/minaChain";
+import { useBalancesStore, useObserveBalance } from "@/lib/stores/minaBalances";
 
 export interface HeaderProps {
     walletInstalled: boolean;
-    balance?: number;
+    balance?: string;
     address?: string;
     connectWallet: () => void;
     currentGame: string
@@ -47,7 +49,7 @@ export default function Header({
                             }
                         </div>
                         <div>
-                            Balance: {balance || 0} 🪙
+                            Balance: {balance ? (parseInt(balance) / 10**9).toFixed(2) : 0} 🪙
                         </div>
                     </div>
                     <NetworkPicker autoconnect={true} />
