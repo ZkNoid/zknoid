@@ -45,7 +45,6 @@ export default function Home({
 }: {
   params: { competitionId: string };
 }) {
-  const [address, setAddress] = useState('');
   const [gameState, setGameState] = useState(GameState.NotStarted);
   const [lastTicks, setLastTicks] = useState<number[]>([]);
   const [score, setScore] = useState<number>(0);
@@ -163,7 +162,7 @@ export default function Home({
 
   return (
     <main className="flex grow flex-col items-center gap-5 p-5">
-      {address ? (
+      {networkStore.adderss ? (
         <div className="flex flex-col gap-5">
           {gameState == GameState.Won && (
             <div>
