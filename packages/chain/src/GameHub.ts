@@ -9,11 +9,13 @@ import { Experimental, Field, UInt64, Bool, SelfProof } from 'o1js';
 import {
     Bricks,
     GameInputs,
+    GameProcessPublicOutput,
     GameRecordKey,
     GameRecordPublicOutput,
 } from './types';
 
 import { GameContext, loadGameContext } from './GameContext';
+import { assert } from 'console';
 
 export function checkMapGeneration(seed: Field, bricks: Bricks): GameContext {
     return loadGameContext(bricks, Bool(false));
@@ -35,12 +37,15 @@ export class MapGenerationProof extends Experimental.ZkProgram.Proof(
 ) {}
 
 export const GameProcess = Experimental.ZkProgram({
-    publicOutput: GameContext, // change
+    publicOutput: GameProcessPublicOutput,
     methods: {
         init: {
             privateInputs: [GameContext],
-            method(gameContext: GameContext): GameContext {
-                return gameContext;
+            method(initial: GameContext): GameProcessPublicOutput {
+                return new GameProcessPublicOutput({
+                    initialState: initial,
+                    currentState: initial,
+                });
             },
         },
 
@@ -48,9 +53,9 @@ export const GameProcess = Experimental.ZkProgram({
             privateInputs: [SelfProof, GameInputs],
 
             method(
-                prevProof: SelfProof<GameContext, GameContext>,
+                prevProof: SelfProof<void, GameProcessPublicOutput>,
                 inputs: GameInputs
-            ): GameContext {
+            ): GameProcessPublicOutput {
                 return prevProof.publicOutput;
             },
         },
@@ -62,26 +67,34 @@ export class GameProcessProof extends Experimental.ZkProgram.Proof(
 ) {}
 
 export function checkGameRecord(
-    bricks: Bricks,
-    gameInputs: GameInputs,
-    debug: Bool
+    mapGenerationProof: MapGenerationProof,
+    gameProcessProof: GameProcessProof
 ): GameRecordPublicOutput {
-    const gameContext = loadGameContext(bricks, debug);
+    // Verify map generation
+    mapGenerationProof.verify();
 
-    for (let i = 0; i < gameInputs.tiks.length; i++) {
-        gameContext.processTick(gameInputs.tiks[i]);
-    }
+    // Check if map generation output equal game process initial state
+    mapGenerationProof.publicOutput
+        .equals(gameProcessProof.publicOutput.initialState)
+        .assertTrue();
 
-    gameContext.alreadyWon.assertTrue();
+    // Verify game process
+    gameProcessProof.verify();
 
-    return new GameRecordPublicOutput({ score: gameContext.score });
+    // Check if game is won
+    gameProcessProof.publicOutput.currentState.alreadyWon.assertTrue();
+
+    // Get score
+    return new GameRecordPublicOutput({
+        score: gameProcessProof.publicOutput.currentState.score,
+    });
 }
 
 export const GameRecord = Experimental.ZkProgram({
     publicOutput: GameRecordPublicOutput,
     methods: {
         checkGameRecord: {
-            privateInputs: [Bricks, GameInputs, Bool],
+            privateInputs: [MapGenerationProof, GameProcessProof],
             method: checkGameRecord,
         },
     },

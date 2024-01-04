@@ -30,6 +30,33 @@ export class GameContext extends Struct({
     alreadyWon: Bool,
     debug: Bool,
 }) {
+    equals(other: GameContext): Bool {
+        let bricksEquals = this.bricks.equals(other.bricks);
+        let nearestBricksEquals = Bool(true);
+        for (let i = 0; i < this.nearestBricks.length; i++) {
+            nearestBricksEquals = nearestBricksEquals.and(
+                this.nearestBricks[i].equals(other.nearestBricks[i])
+            );
+        }
+        let totalLeftEquals = this.totalLeft.equals(other.totalLeft);
+        let ballEquals = this.ball.equals(other.ball);
+        let platformEquals = this.platform.equals(other.platform);
+        let scoreEquals = this.score.equals(other.score);
+        let winableEquals = this.winable.equals(other.winable);
+        let alreadyWonEquals = this.alreadyWon.equals(other.alreadyWon);
+        let debugEquals = this.debug.equals(other.debug);
+
+        return bricksEquals
+            .and(nearestBricksEquals)
+            .and(totalLeftEquals)
+            .and(ballEquals)
+            .and(platformEquals)
+            .and(scoreEquals)
+            .and(winableEquals)
+            .and(alreadyWonEquals)
+            .and(debugEquals);
+    }
+
     processTick(tick: Tick): void {
         // 0) Get tick variables
         let a = this.ball.speed.x;
@@ -402,7 +429,7 @@ export class GameContext extends Struct({
     updateBrick(pos: IntPoint, value: UInt64): void {
         for (let i = 0; i < MAX_BRICKS; i++) {
             this.bricks.bricks[i].value = Provable.if(
-                pos.equal(this.bricks.bricks[i].pos),
+                pos.equals(this.bricks.bricks[i].pos),
                 value,
                 this.bricks.bricks[i].value
             );
