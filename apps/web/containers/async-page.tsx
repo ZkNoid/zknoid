@@ -1,5 +1,4 @@
 'use client';
-import { useWalletStore } from '@/lib/stores/wallet';
 
 import { useEffect, useMemo, useState } from 'react';
 import { GameView } from '@/components/GameView';
@@ -162,7 +161,7 @@ export default function Home({
 
   return (
     <main className="flex grow flex-col items-center gap-5 p-5">
-      {networkStore.adderss ? (
+      {networkStore.address ? (
         <div className="flex flex-col gap-5">
           {gameState == GameState.Won && (
             <div>

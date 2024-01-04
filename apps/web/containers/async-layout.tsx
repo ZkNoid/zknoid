@@ -2,6 +2,8 @@ import { GameType } from "@/app/constants/games";
 import { Footer } from "@/components/Footer";
 import Header from "@/components/Header";
 import { useClientStore } from "@/lib/stores/client";
+import { useBalancesStore, useObserveBalance } from "@/lib/stores/minaBalances";
+import { usePollBlockHeight } from "@/lib/stores/minaChain";
 import { useNetworkStore } from "@/lib/stores/network";
 import { useNotifyTransactions, useWalletStore } from "@/lib/stores/wallet";
 import { PublicKey } from "o1js";
@@ -18,18 +20,22 @@ export default function AsyncLayout({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (client.client && networkStore.adderss)
-      client.client!.query.runtime.Balances.balances.get(PublicKey.fromBase58(networkStore.adderss))
+    if (client.client && networkStore.address)
+      client.client!.query.runtime.Balances.balances.get(PublicKey.fromBase58(networkStore.address))
     .then(balance => setBalance(balance?.toString() || "0"));
   }, [client]);
 
+  usePollBlockHeight();
+  useObserveBalance();
+
+  const balances = useBalancesStore();
 
   return (
     <div className={"flex flex-col min-h-screen"}>
       <Header
-        address={networkStore.adderss}
+        address={networkStore.address}
         connectWallet={networkStore.connectWallet}
-        balance={parseInt(balance)}
+        balance={networkStore.address ? balances.balances[networkStore.address] : "0"}
         walletInstalled={networkStore.walletInstalled()}
         currentGame={GameType.Arkanoid}
       />

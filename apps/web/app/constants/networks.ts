@@ -8,22 +8,22 @@ export const NETWORKS: Network[] = [
     {
         "chainId": "testworld2",
         "name": "Testworld2",
-        "graphql": "https://mina-testworld2-graphql.aurowallet.com/graphql",
+        "graphql": "https://proxy.testworld.minaexplorer.com/graphql",
     },
-    {
-        "chainId": "mainnet",
-        "name": "Mainnet",
-        "graphql": "https://mina-mainnet-graphql.aurowallet.com/graphql"
+    // {
+    //     "chainId": "mainnet",
+    //     "name": "Mainnet",
+    //     "graphql": "https://proxy.mainnet.minaexplorer.com/graphql"
 
-    },
+    // },
     {
         "chainId": "berkeley",
         "name": "Berkeley",
-        "graphql": "https://mina-berkeley-archive.aurowallet.com/graphql",
+        "graphql": "https://proxy.berkeley.minaexplorer.com/graphql",
     },
     {
         "chainId": "devnet",
         "name": "Devnet",
-        "graphql": "https://mina-devnet-graphql.aurowallet.com/graphql  "
+        "graphql": "https://proxy.devnet.minaexplorer.com/graphql  "
     }
 ]
