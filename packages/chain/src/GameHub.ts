@@ -5,7 +5,7 @@ import {
     runtimeMethod,
 } from '@proto-kit/module';
 import { State, StateMap } from '@proto-kit/protocol';
-import { Experimental, Field, UInt64, Bool } from 'o1js';
+import { Experimental, Field, UInt64, Bool, SelfProof } from 'o1js';
 import {
     Bricks,
     GameInputs,
@@ -14,7 +14,7 @@ import {
     MapGenerationPublicOutput,
 } from './types';
 
-import { loadGameContext } from './GameContext';
+import { GameContext, loadGameContext } from './GameContext';
 
 export function checkMapGeneration(
     seed: Field,
@@ -38,6 +38,48 @@ export function checkGameRecord(
 
     return new GameRecordPublicOutput({ score: gameContext.score });
 }
+
+export const MapGeneration = Experimental.ZkProgram({
+    publicInput: Field,
+    publicOutput: MapGenerationPublicOutput,
+    methods: {
+        checkMapGeneration: {
+            privateInputs: [Bricks],
+            method: checkMapGeneration,
+        },
+    },
+});
+
+export class MapGenerationProof extends Experimental.ZkProgram.Proof(
+    MapGeneration
+) {}
+
+export const GameProcess = Experimental.ZkProgram({
+    publicOutput: GameContext, // change
+    methods: {
+        init: {
+            privateInputs: [GameContext],
+            method(gameContext: GameContext): GameContext {
+                return gameContext;
+            },
+        },
+
+        processTicks: {
+            privateInputs: [SelfProof, GameInputs],
+
+            method(
+                prevProof: SelfProof<GameContext, GameContext>,
+                inputs: GameInputs
+            ): GameContext {
+                return prevProof.publicOutput;
+            },
+        },
+    },
+});
+
+export class GameProcessProof extends Experimental.ZkProgram.Proof(
+    GameProcess
+) {}
 
 export const GameRecord = Experimental.ZkProgram({
     publicOutput: GameRecordPublicOutput,
