@@ -10,7 +10,7 @@ import {
   defaultLevel,
   client,
 } from 'zknoid-chain-dev';
-import { Bool, Int64, PublicKey } from 'o1js';
+import { Bool, Int64, PublicKey, Mina } from 'o1js';
 import Link from 'next/link';
 import { checkGameRecord } from 'zknoid-chain-dev';
 import { GameRecord } from 'zknoid-chain-dev/dist/GameHub';
@@ -18,7 +18,6 @@ import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
 import { mockGameRecordProof } from '@/lib/utils';
 import { useNetworkStore } from '@/lib/stores/network';
 import { arkanoidCompetitions } from '@/app/constants/akanoidCompetitions';
-
 enum GameState {
   NotStarted,
   Active,
@@ -61,21 +60,6 @@ export default function Home({
     },
   ]);
 
-  const [activeCompetitions, setActiveCompetitions] = useState<
-    ActiveCompetition[]
-  >([
-    {
-      name: 'Global',
-      address: 'global',
-      fund: 100,
-    },
-    {
-      name: 'Mina competition',
-      address: undefined,
-      fund: 50,
-    },
-  ]);
-
   let [gameId, setGameId] = useState(0);
   let [debug, setDebug] = useState(true);
   const level: Bricks = useMemo(() => defaultLevel(), []);
@@ -83,6 +67,9 @@ export default function Home({
   const networkStore = useNetworkStore();
 
   const startGame = () => {
+
+    competition?.enteringPrice
+
     setGameState(GameState.Active);
     setGameId(gameId + 1);
   };
@@ -108,13 +95,16 @@ export default function Home({
 
         console.log('Compiling contracts in web worker');
 
-        await zkappWorkerClient.compileContracts();
+        // @todo wait for protokit support for 0.15.x
+        // await zkappWorkerClient.compileContracts();
 
-        console.log('Contracts compilation finished');
+        // console.log('Contracts compilation finished');
+
+        // await zkappWorkerClient.initZkappInstance("B62qr9UxamCE5PaEZCZnKsb6jX85W1JVCYpdB8CFE7rNZzSvusaW7sb");
+
+        // console.log('Contracts initialization finished');
 
         setWorkerClient(zkappWorkerClient);
-
-        // TODO
     })();
   }, []);
 
@@ -246,9 +236,9 @@ export default function Home({
         <div>
           Active competitions:
           <div className="flex flex-col">
-            {activeCompetitions.map((competition) => (
-              <Link href={`/arkanoid/${competition.address}`}>
-                {competition.name} – {competition.fund} 🪙
+            {arkanoidCompetitions.map((competition) => (
+              <Link href={`/arkanoid/${competition.id}`}>
+                {competition.name} – {competition.prizeFund} 🪙
               </Link>
             ))}
           </div>

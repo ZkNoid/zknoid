@@ -1,5 +1,4 @@
 import { GameType } from "@/app/constants/games";
-import { Footer } from "@/components/Footer";
 import Header from "@/components/Header";
 import { useClientStore } from "@/lib/stores/client";
 import { useBalancesStore, useObserveBalance } from "@/lib/stores/minaBalances";
@@ -10,7 +9,6 @@ import { PublicKey } from "o1js";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
 export default function AsyncLayout({ children }: { children: ReactNode }) {
-  const [balance, setBalance] = useState("0");
   const client = useClientStore();
   const networkStore = useNetworkStore();
   useNotifyTransactions();
@@ -18,12 +16,6 @@ export default function AsyncLayout({ children }: { children: ReactNode }) {
   useEffect(() => {
     client.start();
   }, []);
-
-  useEffect(() => {
-    if (client.client && networkStore.address)
-      client.client!.query.runtime.Balances.balances.get(PublicKey.fromBase58(networkStore.address))
-    .then(balance => setBalance(balance?.toString() || "0"));
-  }, [client]);
 
   usePollBlockHeight();
   useObserveBalance();
