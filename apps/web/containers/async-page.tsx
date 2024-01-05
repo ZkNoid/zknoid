@@ -11,13 +11,13 @@ import {
   client,
 } from 'zknoid-chain-dev';
 import { Bool, Int64, PublicKey } from 'o1js';
-import { ROUND_PRICE } from '@/app/constants';
 import Link from 'next/link';
 import { checkGameRecord } from 'zknoid-chain-dev';
 import { GameRecord } from 'zknoid-chain-dev/dist/GameHub';
 import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
 import { mockGameRecordProof } from '@/lib/utils';
 import { useNetworkStore } from '@/lib/stores/network';
+import { arkanoidCompetitions } from '@/app/constants/akanoidCompetitions';
 
 enum GameState {
   NotStarted,
@@ -48,6 +48,7 @@ export default function Home({
   const [lastTicks, setLastTicks] = useState<number[]>([]);
   const [score, setScore] = useState<number>(0);
   const [ticksAmount, setTicksAmount] = useState<number>(0);
+  const competition = arkanoidCompetitions.find(x => x.id == params.competitionId);
 
   const [topUsers, setTopUsers] = useState<UserTop[]>([
     {
@@ -191,7 +192,7 @@ export default function Home({
                 className="rounded-xl bg-slate-300 p-5"
                 onClick={() => startGame()}
               >
-                Start for {ROUND_PRICE} 🪙
+                Start for {competition?.enteringPrice} 🪙
               </div>
             )}
             {gameState == GameState.Won && (
