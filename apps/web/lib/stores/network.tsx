@@ -1,5 +1,6 @@
 'use client'
 import { NETWORKS, Network } from "@/app/constants/networks";
+import { Mina } from "o1js";
 import { client } from "zknoid-chain";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
@@ -20,7 +21,12 @@ export const useNetworkStore = create<NetworkState, [["zustand/immer", never]]>(
     minaNetwork: undefined,
     async setNetwork(chainId: string) {
       set((state) => {
-        state.minaNetwork = NETWORKS.find(x => x.chainId == chainId);
+        const minaNetwork = NETWORKS.find(x => x.chainId == chainId);
+        state.minaNetwork = minaNetwork;
+        if (minaNetwork) {
+          const Network = Mina.Network(minaNetwork?.graphql);
+          Mina.setActiveInstance(Network);  
+        }
       });
     },
     address: undefined,
