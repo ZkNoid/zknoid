@@ -59,7 +59,6 @@ export default function Header({
                                 <div>
                                     {protokitBalance ? (parseInt(protokitBalance) / 10 ** 9).toFixed(2) : 0} 🪙 
                                         <div className="inline ml-3 bg-slate-300 cursor-pointer">[DEPOSIT]</div>
-                                        
                                 </div>
                             </div>
                         </div>

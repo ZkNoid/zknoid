@@ -74,16 +74,3 @@ export const useWalletStore = create<WalletState, [["zustand/immer", never]]>(
   })),
 );
 
-export const useNotifyTransactions = () => {
-  const wallet = useWalletStore();
-  // const client = useClientStore();
-
-  const previousPendingTransactions = usePrevious(wallet.pendingTransactions);
-  const newPendingTransactions = useMemo(() => {
-    return wallet.pendingTransactions.filter(
-      (pendingTransaction) =>
-        !(previousPendingTransactions ?? []).includes(pendingTransaction),
-    );
-  }, [wallet.pendingTransactions, previousPendingTransactions]);
-
-};

@@ -1,5 +1,6 @@
 'use client'
 import { NETWORKS, Network } from "@/app/constants/networks";
+import { PendingTransaction } from "@proto-kit/sequencer";
 import { Mina } from "o1js";
 import { client } from "zknoid-chain";
 import { create } from "zustand";
@@ -14,6 +15,11 @@ export interface NetworkState {
   setAddress: (address: string | undefined) => Promise<void>;
   connectWallet: () => Promise<void>;
   walletInstalled: () => boolean;
+
+  pendingL2Transactions: PendingTransaction[];
+  addPendingL2Transaction: (pendingTransaction: PendingTransaction) => void;
+  removePendingL2Transaction: (pendingTransaction: PendingTransaction) => void;
+
 }
 
 export const useNetworkStore = create<NetworkState, [["zustand/immer", never]]>(
@@ -43,6 +49,20 @@ export const useNetworkStore = create<NetworkState, [["zustand/immer", never]]>(
     },
     walletInstalled() {
       return typeof mina !== 'undefined';
+    },
+    pendingL2Transactions: [],
+    addPendingL2Transaction(pendingTransaction) {
+      set((state) => {
+        // @ts-ignore
+        state.pendingL2Transactions.push(pendingTransaction);
+      });
+    },
+    removePendingL2Transaction(pendingTransaction) {
+      set((state) => {
+        state.pendingL2Transactions = state.pendingL2Transactions.filter((tx) => {
+          return tx.hash().toString() !== pendingTransaction.hash().toString();
+        });
+      });
     },
   })),
 );
