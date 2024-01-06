@@ -1,4 +1,4 @@
-import { fetchAccount, Field, Bool } from 'o1js';
+import { fetchAccount, Field, Bool, UInt64 } from 'o1js';
 
 import type {
   ZknoidWorkerRequest,
@@ -10,16 +10,18 @@ import { mockGameRecordProof } from '@/lib/utils';
 
 
 export default class ZknoidWorkerClient {
-  // ---------------------------------------------------------------------------------------
-
   loadContracts() {
     return this._call('loadContracts', {});
   }
-
   compileContracts() {
     return this._call('compileContracts', {});
   }
-
+  initZkappInstance(bridgePublicKey58: string) {
+    return this._call('initZkappInstance', {bridgePublicKey58});
+  }
+  bridge(amount: UInt64) {
+    return this._call('bridge', {amount});
+  }
   async proveGameRecord({
     bricks, inputs, debug
   }: {

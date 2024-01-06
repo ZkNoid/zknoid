@@ -86,6 +86,9 @@ importers:
       zknoid-chain-dev:
         specifier: workspace:^
         version: link:../../packages/chain
+      zknoidcontractsl1:
+        specifier: ^0.1.1
+        version: 0.1.1
       zod:
         specifier: ^3.22.4
         version: 3.22.4
@@ -8508,6 +8511,10 @@ packages:
 
   /zknoid-chain@1.4.5:
     resolution: {integrity: sha512-qgk9HrPjFtBOcUDTkbno4yshO0/DA5DWuqXiUE0HTpuwl8h+xR/RKXyYLUP/Nt7GUqVl294cQTbwCKEpvSLIaw==}
+    dev: false
+
+  /zknoidcontractsl1@0.1.1:
+    resolution: {integrity: sha512-kMogwftwSqSgauRJL6xheYb/rmHuSjCug+sekopKE55SO9f5vVSH2OAXZtXmhZnfRzssTUzsuoxKlaETmf5MWg==}
     dev: false
 
   /zod@3.22.4:
