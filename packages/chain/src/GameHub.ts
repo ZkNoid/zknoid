@@ -5,16 +5,19 @@ import {
     runtimeMethod,
 } from '@proto-kit/module';
 import { State, StateMap } from '@proto-kit/protocol';
-import { Experimental, Field, UInt64, Bool, SelfProof } from 'o1js';
-import {
-    Bricks,
-    GameInputs,
-    GameProcessPublicOutput,
-    GameRecordKey,
-    GameRecordPublicOutput,
-} from './types';
+import { Experimental, Field, UInt64, Bool, SelfProof, Struct } from 'o1js';
+import { Bricks, GameInputs, GameRecordKey } from './types';
 
 import { GameContext, loadGameContext } from './GameContext';
+
+export class GameRecordPublicOutput extends Struct({
+    score: UInt64,
+}) {}
+
+export class GameProcessPublicOutput extends Struct({
+    initialState: GameContext,
+    currentState: GameContext,
+}) {}
 
 export function checkMapGeneration(seed: Field, bricks: Bricks): GameContext {
     return loadGameContext(bricks, Bool(false));
@@ -35,38 +38,42 @@ export class MapGenerationProof extends Experimental.ZkProgram.Proof(
     MapGeneration
 ) {}
 
+export function initGameProcess(initial: GameContext): GameProcessPublicOutput {
+    return new GameProcessPublicOutput({
+        initialState: initial,
+        currentState: initial,
+    });
+}
+
+export function processTicks(
+    prevProof: SelfProof<void, GameProcessPublicOutput>,
+    inputs: GameInputs
+): GameProcessPublicOutput {
+    prevProof.verify();
+
+    let gameContext = prevProof.publicOutput.currentState;
+    for (let i = 0; i < inputs.ticks.length; i++) {
+        gameContext.processTick(inputs.ticks[i]);
+    }
+
+    return new GameProcessPublicOutput({
+        initialState: prevProof.publicOutput.initialState,
+        currentState: gameContext,
+    });
+}
+
 export const GameProcess = Experimental.ZkProgram({
     publicOutput: GameProcessPublicOutput,
     methods: {
         init: {
             privateInputs: [GameContext],
-            method(initial: GameContext): GameProcessPublicOutput {
-                return new GameProcessPublicOutput({
-                    initialState: initial,
-                    currentState: initial,
-                });
-            },
+            method: initGameProcess,
         },
 
         processTicks: {
             privateInputs: [SelfProof, GameInputs],
 
-            method(
-                prevProof: SelfProof<void, GameProcessPublicOutput>,
-                inputs: GameInputs
-            ): GameProcessPublicOutput {
-                prevProof.verify();
-
-                let gameContext = prevProof.publicOutput.currentState;
-                for (let i = 0; i < inputs.tiks.length; i++) {
-                    gameContext.processTick(inputs.tiks[i]);
-                }
-
-                return new GameProcessPublicOutput({
-                    initialState: prevProof.publicOutput.initialState,
-                    currentState: gameContext,
-                });
-            },
+            method: processTicks,
         },
     },
 });

@@ -12,6 +12,7 @@ import {
     // Bricks,
     // IntPoint,
     GameRecord,
+    GameRecordPublicOutput,
 } from './GameHub.js';
 
 import { loadGameContext } from './GameContext.js';
@@ -19,7 +20,6 @@ import { loadGameContext } from './GameContext.js';
 import {
     // GameHub,
     // GameRecordProof,
-    GameRecordPublicOutput,
     // checkGameRecord,
     GameInputs,
     Tick,
