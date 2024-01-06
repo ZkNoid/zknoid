@@ -1,6 +1,6 @@
 import { PublicKey, UInt64, Struct, Provable, Int64, Bool } from 'o1js';
 
-import { GAME_LENGTH, MAX_BRICKS } from './constants';
+import { CHUNK_LENGTH, GAME_LENGTH, MAX_BRICKS } from './constants';
 
 export class GameRecordKey extends Struct({
     seed: UInt64,
@@ -31,10 +31,8 @@ export class Tick extends Struct({
 }) {}
 
 export class GameInputs extends Struct({
-    tiks: Provable.Array(Tick, GAME_LENGTH),
+    ticks: Provable.Array(Tick, CHUNK_LENGTH),
 }) {}
-
-export class MapGenerationPublicOutput extends Struct({}) {}
 
 /////////////////////////////////// Game logic structs //////////////////////////////////
 
@@ -49,7 +47,7 @@ export class IntPoint extends Struct({
         });
     }
 
-    equal(b: IntPoint): Bool {
+    equals(b: IntPoint): Bool {
         return this.x.equals(b.x).and(this.y.equals(b.y));
     }
 }
@@ -57,16 +55,35 @@ export class IntPoint extends Struct({
 export class Brick extends Struct({
     pos: IntPoint, //
     value: UInt64,
-}) {}
+}) {
+    equals(other: Brick): Bool {
+        return this.pos.equals(other.pos).and(this.value.equals(other.value));
+    }
+}
 
 export class Bricks extends Struct({
     bricks: Provable.Array(Brick, MAX_BRICKS),
-}) {}
+}) {
+    equals(other: Bricks): Bool {
+        let result = Bool(true);
+
+        for (let i = 0; i < this.bricks.length; i++) {
+            result = result.and(this.bricks[i].equals(other.bricks[i]));
+        }
+
+        return result;
+    }
+}
 
 export class Ball extends Struct({
     position: IntPoint,
     speed: IntPoint,
 }) {
+    equals(other: Ball): Bool {
+        return this.position
+            .equals(other.position)
+            .and(this.speed.equals(other.speed));
+    }
     move(): void {
         this.position.x = this.position.x.add(this.speed.x);
         this.position.y = this.position.y.add(this.speed.y);
@@ -75,8 +92,8 @@ export class Ball extends Struct({
 
 export class Platform extends Struct({
     position: Int64,
-}) {}
-
-export class GameRecordPublicOutput extends Struct({
-    score: UInt64,
-}) {}
+}) {
+    equals(other: Platform): Bool {
+        return this.position.equals(other.position);
+    }
+}
