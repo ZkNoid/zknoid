@@ -31,7 +31,7 @@
     "truncate-middle": "^1.0.6",
     "zknoid-chain": "^1.4.5",
     "zknoid-chain-dev": "workspace:^",
-    "zknoidcontractsl1": "^0.1.1",
+    "zknoidcontractsl1": "^0.1.2",
     "zod": "^3.22.4",
     "zustand": "^4.4.6"
   },

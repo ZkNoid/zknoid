@@ -5,12 +5,11 @@ import Link from "next/link";
 // @ts-ignore
 import truncateMiddle from "truncate-middle";
 import { NetworkPicker } from "./NetworkPicker";
-import { usePollBlockHeight } from "@/lib/stores/minaChain";
-import { useBalancesStore, useObserveBalance } from "@/lib/stores/minaBalances";
 
 export interface HeaderProps {
     walletInstalled: boolean;
-    balance?: string;
+    minaBalance?: string;
+    protokitBalance?: string;
     address?: string;
     connectWallet: () => void;
     currentGame: string
@@ -18,7 +17,8 @@ export interface HeaderProps {
 
 export default function Header({
     address,
-    balance,
+    minaBalance,
+    protokitBalance,
     connectWallet,
     walletInstalled,
     currentGame
@@ -48,10 +48,21 @@ export default function Header({
                                     )
                             }
                         </div>
-                        <div>
-                            Balance: {balance ? (parseInt(balance) / 10**9).toFixed(2) : 0} 🪙
-                        </div>
+                        
                     </div>
+                    <div className="flex gap-5 items-center">
+                            {/* Balance: */}
+                            <div className="flex flex-col w-40">
+                                <div className="no-wrap">
+                                    {minaBalance ? (parseInt(minaBalance) / 10 ** 9).toFixed(2) : 0} MINA
+                                </div>
+                                <div>
+                                    {protokitBalance ? (parseInt(protokitBalance) / 10 ** 9).toFixed(2) : 0} 🪙 
+                                        <div className="inline ml-3 bg-slate-300 cursor-pointer">[DEPOSIT]</div>
+                                        
+                                </div>
+                            </div>
+                        </div>
                     <NetworkPicker autoconnect={true} />
                 </div>
             </div>
