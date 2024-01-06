@@ -1,5 +1,4 @@
 'use client';
-import { useWalletStore } from '@/lib/stores/wallet';
 import {
   Brick,
   Bricks,

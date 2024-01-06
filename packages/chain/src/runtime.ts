@@ -9,8 +9,6 @@ export default {
     },
     config: {
         GameHub: {},
-        Balances: {
-            totalSupply: UInt64.from(10000),
-          },
+        Balances: {},
     },
 };

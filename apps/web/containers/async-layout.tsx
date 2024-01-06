@@ -4,16 +4,14 @@ import { useClientStore } from "@/lib/stores/client";
 import { useMinaBalancesStore, useObserveMinaBalance } from "@/lib/stores/minaBalances";
 import { usePollMinaBlockHeight } from "@/lib/stores/minaChain";
 import { useNetworkStore } from "@/lib/stores/network";
-import { useProtokitBalancesStore } from "@/lib/stores/protokitBalances";
+import { useObserveProtokitBalance, useProtokitBalancesStore } from "@/lib/stores/protokitBalances";
 import { usePollProtokitBlockHeight } from "@/lib/stores/protokitChain";
-import { useNotifyTransactions, useWalletStore } from "@/lib/stores/wallet";
 import { PublicKey } from "o1js";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
 export default function AsyncLayout({ children }: { children: ReactNode }) {
   const client = useClientStore();
   const networkStore = useNetworkStore();
-  useNotifyTransactions();
 
   useEffect(() => {
     client.start();
@@ -22,6 +20,7 @@ export default function AsyncLayout({ children }: { children: ReactNode }) {
   usePollMinaBlockHeight();
   usePollProtokitBlockHeight();
   useObserveMinaBalance();
+  useObserveProtokitBalance();
 
   const minaBalances = useMinaBalancesStore();
   const protokitBalances = useProtokitBalancesStore();

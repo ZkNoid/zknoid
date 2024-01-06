@@ -18,6 +18,7 @@ import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
 import { mockGameRecordProof } from '@/lib/utils';
 import { useNetworkStore } from '@/lib/stores/network';
 import { arkanoidCompetitions } from '@/app/constants/akanoidCompetitions';
+import { useMinaBridge } from '@/lib/stores/protokitBalances';
 enum GameState {
   NotStarted,
   Active,
@@ -48,7 +49,6 @@ export default function Home({
   const [score, setScore] = useState<number>(0);
   const [ticksAmount, setTicksAmount] = useState<number>(0);
   const competition = arkanoidCompetitions.find(x => x.id == params.competitionId);
-  const gameFeeCollector = 'B62qkh5QbigkTTXF464h5k6GW76SHL7wejUbKxKy5vZ9qr9dEcowe6G';
 
   const [topUsers, setTopUsers] = useState<UserTop[]>([
     {
@@ -67,25 +67,14 @@ export default function Home({
   const [workerClient, setWorkerClient] = useState<ZknoidWorkerClient | null>(null)
   const networkStore = useNetworkStore();
 
+  const bridge = useMinaBridge(competition?.enteringPrice! * 10 ** 9);
+
   const startGame = async () => {
+    console.log('BBefore')
     if (competition!.enteringPrice > 0) {
-      const tx = await Mina.transaction(() => {
-        let senderUpdate = AccountUpdate.create(PublicKey.fromBase58(networkStore.address!));
-        senderUpdate.requireSignature();
-        senderUpdate.send({ to: PublicKey.fromBase58(gameFeeCollector), amount: 1 * 10**9 });
-      })
-
-      await tx.prove();
-
-      const transactionJSON = tx.toJSON();
-
-      await (window as any).mina.sendTransaction({
-        transaction: transactionJSON,
-        feePayer: {
-          fee: 0.1,
-          memo: 'zknoid.io'
-        }
-      });
+      console.log('BBR')
+      await bridge();
+      console.log('BBRend')
     }
 
     setGameState(GameState.Active);
