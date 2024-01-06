@@ -1,5 +1,4 @@
 'use client';
-import { useWalletStore } from '@/lib/stores/wallet';
 
 import { useEffect, useMemo, useState } from 'react';
 import { GameView } from '@/components/GameView';
@@ -11,14 +10,14 @@ import {
   defaultLevel,
   client,
 } from 'zknoid-chain-dev';
-import { Bool, Int64, PublicKey } from 'o1js';
-import { ROUND_PRICE } from '@/app/constants';
+import { Bool, Int64, PublicKey, Mina, AccountUpdate } from 'o1js';
 import Link from 'next/link';
 import { checkGameRecord } from 'zknoid-chain-dev';
 import { GameRecord } from 'zknoid-chain-dev/dist/GameHub';
 import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
 import { mockGameRecordProof } from '@/lib/utils';
-
+import { useNetworkStore } from '@/lib/stores/network';
+import { arkanoidCompetitions } from '@/app/constants/akanoidCompetitions';
 enum GameState {
   NotStarted,
   Active,
@@ -44,11 +43,12 @@ export default function Home({
 }: {
   params: { competitionId: string };
 }) {
-  const [address, setAddress] = useState('');
   const [gameState, setGameState] = useState(GameState.NotStarted);
   const [lastTicks, setLastTicks] = useState<number[]>([]);
   const [score, setScore] = useState<number>(0);
   const [ticksAmount, setTicksAmount] = useState<number>(0);
+  const competition = arkanoidCompetitions.find(x => x.id == params.competitionId);
+  const gameFeeCollector = 'B62qkh5QbigkTTXF464h5k6GW76SHL7wejUbKxKy5vZ9qr9dEcowe6G';
 
   const [topUsers, setTopUsers] = useState<UserTop[]>([
     {
@@ -61,32 +61,33 @@ export default function Home({
     },
   ]);
 
-  const [activeCompetitions, setActiveCompetitions] = useState<
-    ActiveCompetition[]
-  >([
-    {
-      name: 'Global',
-      address: 'global',
-      fund: 100,
-    },
-    {
-      name: 'Mina competition',
-      address: undefined,
-      fund: 50,
-    },
-  ]);
-
   let [gameId, setGameId] = useState(0);
   let [debug, setDebug] = useState(true);
   const level: Bricks = useMemo(() => defaultLevel(), []);
   const [workerClient, setWorkerClient] = useState<ZknoidWorkerClient | null>(null)
+  const networkStore = useNetworkStore();
 
-  const connectWallet = async () => {
-    const accounts = await (window as any).mina.requestAccounts();
-    setAddress(accounts[0]);
-  };
+  const startGame = async () => {
+    if (competition!.enteringPrice > 0) {
+      const tx = await Mina.transaction(() => {
+        let senderUpdate = AccountUpdate.create(PublicKey.fromBase58(networkStore.address!));
+        senderUpdate.requireSignature();
+        senderUpdate.send({ to: PublicKey.fromBase58(gameFeeCollector), amount: 1 * 10**9 });
+      })
 
-  const startGame = () => {
+      await tx.prove();
+
+      const transactionJSON = tx.toJSON();
+
+      await (window as any).mina.sendTransaction({
+        transaction: transactionJSON,
+        feePayer: {
+          fee: 0.1,
+          memo: ''
+        }
+      });
+    }
+
     setGameState(GameState.Active);
     setGameId(gameId + 1);
   };
@@ -102,7 +103,6 @@ export default function Home({
 
     (async () => {
         console.log('Loading web worker...');
-        console.log('Loading web worker...');
         const zkappWorkerClient = new ZknoidWorkerClient();
         await timeout(5);
 
@@ -113,13 +113,16 @@ export default function Home({
 
         console.log('Compiling contracts in web worker');
 
-        await zkappWorkerClient.compileContracts();
+        // @todo wait for protokit support for 0.15.x
+        // await zkappWorkerClient.compileContracts();
 
-        console.log('Contracts compilation finished');
+        // console.log('Contracts compilation finished');
+
+        // await zkappWorkerClient.initZkappInstance("B62qr9UxamCE5PaEZCZnKsb6jX85W1JVCYpdB8CFE7rNZzSvusaW7sb");
+
+        // console.log('Contracts initialization finished');
 
         setWorkerClient(zkappWorkerClient);
-
-        // TODO
     })();
   }, []);
 
@@ -167,7 +170,7 @@ export default function Home({
 
   return (
     <main className="flex grow flex-col items-center gap-5 p-5">
-      {address ? (
+      {networkStore.address ? (
         <div className="flex flex-col gap-5">
           {gameState == GameState.Won && (
             <div>
@@ -197,7 +200,7 @@ export default function Home({
                 className="rounded-xl bg-slate-300 p-5"
                 onClick={() => startGame()}
               >
-                Start for {ROUND_PRICE} 🪙
+                Start for {competition?.enteringPrice} 🪙
               </div>
             )}
             {gameState == GameState.Won && (
@@ -213,7 +216,7 @@ export default function Home({
       ) : (
         <div
           className="rounded-xl bg-slate-300 p-5"
-          onClick={() => connectWallet()}
+          onClick={async () => networkStore.connectWallet()}
         >
           Connect wallet
         </div>
@@ -251,9 +254,9 @@ export default function Home({
         <div>
           Active competitions:
           <div className="flex flex-col">
-            {activeCompetitions.map((competition) => (
-              <Link href={`/arkanoid/${competition.address}`}>
-                {competition.name} – {competition.fund} 🪙
+            {arkanoidCompetitions.map((competition) => (
+              <Link href={`/arkanoid/${competition.id}`}>
+                {competition.name} – {competition.prizeFund} 🪙
               </Link>
             ))}
           </div>
