@@ -18,6 +18,7 @@ export const BRICK_SIZE = FIELD_PIXEL_WIDTH / FIELD_WIDTH;
 export const FIELD_SIZE = FIELD_WIDTH * FIELD_HEIGHT;
 
 export const GAME_LENGTH = 100;
+export const CHUNK_LENGTH = 10;
 
 export const DEFAULT_BALL_LOCATION_X = 250;
 export const DEFAULT_BALL_LOCATION_Y = 250;

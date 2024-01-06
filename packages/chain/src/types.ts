@@ -1,7 +1,6 @@
 import { PublicKey, UInt64, Struct, Provable, Int64, Bool } from 'o1js';
 
-import { GAME_LENGTH, MAX_BRICKS } from './constants';
-import { GameContext } from './GameContext';
+import { CHUNK_LENGTH, GAME_LENGTH, MAX_BRICKS } from './constants';
 
 export class GameRecordKey extends Struct({
     seed: UInt64,
@@ -32,7 +31,7 @@ export class Tick extends Struct({
 }) {}
 
 export class GameInputs extends Struct({
-    tiks: Provable.Array(Tick, GAME_LENGTH),
+    ticks: Provable.Array(Tick, CHUNK_LENGTH),
 }) {}
 
 /////////////////////////////////// Game logic structs //////////////////////////////////
@@ -98,12 +97,3 @@ export class Platform extends Struct({
         return this.position.equals(other.position);
     }
 }
-
-export class GameRecordPublicOutput extends Struct({
-    score: UInt64,
-}) {}
-
-export class GameProcessPublicOutput extends Struct({
-    initialState: GameContext,
-    currentState: GameContext,
-}) {}
