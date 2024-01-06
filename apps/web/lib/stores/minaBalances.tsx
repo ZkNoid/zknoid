@@ -25,7 +25,7 @@ export interface BalanceQueryResponse {
   };
 }
 
-export const useBalancesStore = create<
+export const useMinaBalancesStore = create<
   BalancesState,
   [["zustand/immer", never]]
 >(
@@ -68,11 +68,10 @@ export const useBalancesStore = create<
   })),
 );
 
-export const useObserveBalance = () => {
-  console.log('Observing')
+export const useObserveMinaBalance = () => {
   const client = useClientStore();
   const chain = useChainStore();
-  const balances = useBalancesStore();
+  const balances = useMinaBalancesStore();
   const network = useNetworkStore();
 
   useEffect(() => {

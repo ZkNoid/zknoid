@@ -83,7 +83,7 @@ export default function Home({
         transaction: transactionJSON,
         feePayer: {
           fee: 0.1,
-          memo: ''
+          memo: 'zknoid.io'
         }
       });
     }
