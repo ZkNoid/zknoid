@@ -10,7 +10,7 @@ import {
   defaultLevel,
   client,
 } from 'zknoid-chain-dev';
-import { Bool, Int64, PublicKey, Mina } from 'o1js';
+import { Bool, Int64, PublicKey, Mina, AccountUpdate } from 'o1js';
 import Link from 'next/link';
 import { checkGameRecord } from 'zknoid-chain-dev';
 import { GameRecord } from 'zknoid-chain-dev/dist/GameHub';
@@ -48,6 +48,7 @@ export default function Home({
   const [score, setScore] = useState<number>(0);
   const [ticksAmount, setTicksAmount] = useState<number>(0);
   const competition = arkanoidCompetitions.find(x => x.id == params.competitionId);
+  const gameFeeCollector = 'B62qkh5QbigkTTXF464h5k6GW76SHL7wejUbKxKy5vZ9qr9dEcowe6G';
 
   const [topUsers, setTopUsers] = useState<UserTop[]>([
     {
@@ -66,9 +67,26 @@ export default function Home({
   const [workerClient, setWorkerClient] = useState<ZknoidWorkerClient | null>(null)
   const networkStore = useNetworkStore();
 
-  const startGame = () => {
+  const startGame = async () => {
+    if (competition!.enteringPrice > 0) {
+      const tx = await Mina.transaction(() => {
+        let senderUpdate = AccountUpdate.create(PublicKey.fromBase58(networkStore.address!));
+        senderUpdate.requireSignature();
+        senderUpdate.send({ to: PublicKey.fromBase58(gameFeeCollector), amount: 1 * 10**9 });
+      })
 
-    competition?.enteringPrice
+      await tx.prove();
+
+      const transactionJSON = tx.toJSON();
+
+      await (window as any).mina.sendTransaction({
+        transaction: transactionJSON,
+        feePayer: {
+          fee: 0.1,
+          memo: ''
+        }
+      });
+    }
 
     setGameState(GameState.Active);
     setGameId(gameId + 1);
