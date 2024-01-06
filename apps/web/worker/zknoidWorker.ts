@@ -1,6 +1,25 @@
-import { mockGameRecordProof } from '@/lib/utils';
-import { Bool, Mina, PublicKey, UInt64, fetchAccount } from 'o1js';
-import { checkGameRecord, Bricks, GameInputs, GameRecord } from 'zknoid-chain-dev';
+import { mockProof } from '@/lib/utils';
+import {
+  Field,
+  Bool,
+  Mina,
+  PublicKey,
+  UInt64,
+  fetchAccount,
+  Int64,
+} from 'o1js';
+import {
+  checkMapGeneration,
+  checkGameRecord,
+  Bricks,
+  GameInputs,
+  GameRecord,
+  MapGenerationProof,
+  initGameProcess,
+  GameProcessProof,
+  processTicks,
+  GameRecordProof,
+} from 'zknoid-chain-dev';
 import { DummyBridge } from 'zknoidcontractsl1';
 
 type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
@@ -10,7 +29,7 @@ type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 const state = {
   gameRecord: null as null | typeof GameRecord,
   dummyBridge: null as null | typeof DummyBridge,
-  dummyBridgeApp: null as null |  DummyBridge,
+  dummyBridgeApp: null as null | DummyBridge,
   transaction: null as null | Transaction,
 };
 
@@ -38,11 +57,42 @@ const functions = {
 
     state.transaction = transaction;
   },
-  proveGameRecord: async (args: {bricks: any, inputs: any, debug: any}) => {
+  proveGameRecord: async (args: { bricks: any; inputs: any; debug: any }) => {
+    let bricks = Bricks.fromJSON(args.bricks);
+    let userInputs = (<string[]>JSON.parse(args.inputs)).map((elem) =>
+      GameInputs.fromJSON(elem),
+    );
     console.log('[Worker] proof checking');
-    console.log('args', Bricks.fromJSON(args.bricks), GameInputs.fromJSON(args.inputs), Bool.fromJSON(args.debug));
-    
-    return await mockGameRecordProof(checkGameRecord(Bricks.fromJSON(args.bricks), GameInputs.fromJSON(args.inputs), Bool.fromJSON(args.debug)));
+    console.log('args', bricks, userInputs, Bool.fromJSON(args.debug));
+
+    console.log('Generating map proof');
+    let gameContext = checkMapGeneration(Field.from(0), bricks);
+    const mapGenerationProof = await mockProof(gameContext, MapGenerationProof);
+
+    console.log('Generating gameProcess proof');
+    let currentGameState = initGameProcess(gameContext);
+    let currentGameStateProof = await mockProof(
+      currentGameState,
+      GameProcessProof,
+    );
+
+    for (let i = 0; i < userInputs.length; i++) {
+      currentGameState = processTicks(
+        currentGameStateProof,
+        userInputs[i] as GameInputs,
+      );
+      currentGameStateProof = await mockProof(
+        currentGameState,
+        GameProcessProof,
+      );
+    }
+
+    console.log('Generating game proof');
+
+    return await mockProof(
+      checkGameRecord(mapGenerationProof, currentGameStateProof),
+      GameRecordProof,
+    );
   },
 };
 
@@ -72,7 +122,7 @@ if (typeof window !== 'undefined') {
         data: returnData,
       };
       postMessage(message);
-    }
+    },
   );
 }
 
