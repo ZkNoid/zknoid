@@ -13,6 +13,11 @@ import {
     // IntPoint,
     GameRecord,
     GameRecordPublicOutput,
+    MapGenerationProof,
+    initGameProcess,
+    GameProcessProof,
+    checkMapGeneration,
+    processTicks,
 } from './GameHub.js';
 
 import { loadGameContext } from './GameContext.js';
@@ -43,6 +48,7 @@ import {
     DEFAULT_BALL_SPEED_Y,
     TICK_PERIOD,
     DEFAULT_PLATFORM_SPEED,
+    CHUNK_LENGTH,
 } from './constants.js';
 import { defaultLevel } from './levels.js';
 
@@ -50,8 +56,13 @@ export {
     GameHub,
     GameRecordProof,
     GameRecordPublicOutput,
+    MapGenerationProof,
+    GameProcessProof,
+    initGameProcess,
     checkGameRecord,
+    checkMapGeneration,
     loadGameContext,
+    processTicks,
     FIELD_SIZE,
     GAME_LENGTH,
     GameInputs,
@@ -59,6 +70,7 @@ export {
     GameRecordKey,
     Brick,
     Bricks,
+    CHUNK_LENGTH,
     BRICK_HALF_WIDTH,
     MAX_BRICKS,
     BRICK_SIZE,
