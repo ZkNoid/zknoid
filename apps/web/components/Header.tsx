@@ -51,9 +51,8 @@ export default function Header({
                         
                     </div>
                     <div className="flex gap-5 items-center">
-                            {/* Balance: */}
-                            <div className="flex flex-col w-40">
-                                <div className="no-wrap">
+                            <div className="flex flex-col w-50">
+                                <div>
                                     {minaBalance ? (parseInt(minaBalance) / 10 ** 9).toFixed(2) : 0} MINA
                                 </div>
                                 <div>
