@@ -185,7 +185,7 @@ export default function Home({
           <div className="flex flex-row items-center justify-center gap-5">
             {(gameState == GameState.Won || gameState == GameState.Lost) && (
               <div
-                className="rounded-xl bg-slate-300 p-5"
+                className="rounded-xl bg-slate-300 hover:bg-slate-400 p-5"
                 onClick={() => startGame()}
               >
                 Restart
@@ -193,7 +193,7 @@ export default function Home({
             )}
             {gameState == GameState.NotStarted && (
               <div
-                className="rounded-xl bg-slate-300 p-5"
+                className="rounded-xl bg-slate-300 hover:bg-slate-400 p-5"
                 onClick={() => startGame()}
               >
                 Start for {competition?.enteringPrice} 🪙
@@ -201,7 +201,7 @@ export default function Home({
             )}
             {gameState == GameState.Won && (
               <div
-                className="rounded-xl bg-slate-300 p-5"
+                className="rounded-xl bg-slate-300 hover:bg-slate-400 p-5"
                 onClick={() => proof()}
               >
                 Send proof
