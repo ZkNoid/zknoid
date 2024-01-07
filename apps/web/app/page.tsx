@@ -21,16 +21,27 @@ export default function Home() {
           Nobody belives in your speedrun results? <br />
           <div><div className='font-bold inline'>- Proofs can't be tricked</div> (c) ZK proof verifier</div>
         </div>
-        <div className='grid py-10'>
-        {games.map(game => (
-          <div className='bg-white p-10 rounded-xl border-gray-200 bg-gradient-to-b from-zinc-100'>
-            <Link className='flex gap-5 flex-col m-5' href={'/arkanoid/global'}>
-              <Image src={game.logo} alt='Game logo' width={220} height={251} />
-              <div className='text-xl'>{game.name}</div>
-              <div className='text-base w-36'>{game.description}</div>
-            </Link>
-          </div>
-        ))}
+        <div className='grid grid-cols-2 gap-5 py-10'>
+          {games.map(game => (
+            game.active ? (
+              <div className='p-10 rounded-xl bg-white bg-gradient-to-b from-zinc-100'>
+                <Link className='flex gap-5 flex-col m-5 h-full' href={`/${game.type}/global`}>
+                  <Image src={game.logo} alt='Game logo' width={220} height={251} />
+                  <div className='text-xl'>{game.name}</div>
+                  <div className='text-base w-36'>{game.description}</div>
+                </Link>
+              </div>
+            ) : (
+              <div className='p-10 rounded-xl bg-gray-100 bg-gradient-to-b from-gray-200'>
+                <div className='flex gap-5 flex-col m-5 h-full cursor-default'>
+                  <Image src={game.logo} alt='Game logo' width={220} height={251} />
+                  <div className='text-xl'>{game.name}</div>
+                  <div className='text-base w-36'>{game.description}</div>
+                  <div className='text-xl w-full text-center flex items-center justify-center'>Coming soon</div>
+                </div>
+              </div>
+            )
+          ))}
         </div>
       </main>
       <Footer />
