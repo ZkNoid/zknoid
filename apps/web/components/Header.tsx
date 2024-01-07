@@ -5,6 +5,7 @@ import Link from "next/link";
 // @ts-ignore
 import truncateMiddle from "truncate-middle";
 import { NetworkPicker } from "./NetworkPicker";
+import { DepositMenuItem } from "./DepositMenuItem";
 
 export interface HeaderProps {
     walletInstalled: boolean;
@@ -51,13 +52,13 @@ export default function Header({
                         
                     </div>
                     <div className="flex gap-5 items-center">
-                            <div className="flex flex-col w-50">
+                            <div className="flex flex-col w-60">
                                 <div>
                                     {minaBalance ? (parseInt(minaBalance) / 10 ** 9).toFixed(2) : 0} MINA
                                 </div>
                                 <div>
                                     {protokitBalance ? (parseInt(protokitBalance) / 10 ** 9).toFixed(2) : 0} 🪙 
-                                        <div className="inline ml-3 bg-slate-300 cursor-pointer">[DEPOSIT]</div>
+                                    <DepositMenuItem />
                                 </div>
                             </div>
                         </div>
