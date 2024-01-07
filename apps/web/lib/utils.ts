@@ -1,7 +1,7 @@
-import { dummyProof } from '@/app/constants/dummyProof';
+import { dummyProofBase64 } from '@/app/constants/dummyProofBase64';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { GameRecordProof, GameRecordPublicOutput } from 'zknoid-chain';
+import { GameRecordProof } from 'zknoid-chain';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -10,6 +10,13 @@ export function cn(...inputs: ClassValue[]) {
 export function walletInstalled() {
   return typeof mina !== 'undefined';
 }
+
+const dummy = GameRecordProof.fromJSON({
+  publicInput: [],
+  publicOutput: [''],
+  maxProofsVerified: 2,
+  proof: dummyProofBase64
+})
 
 export async function mockProof<O, P>(
   publicOutput: O,
@@ -26,7 +33,7 @@ export async function mockProof<O, P>(
   }) => P,
 ): Promise<P> {
   return new ProofType({
-    proof: dummyProof,
+    proof: dummy.proof,
     maxProofsVerified: 2,
     publicInput: undefined,
     publicOutput,

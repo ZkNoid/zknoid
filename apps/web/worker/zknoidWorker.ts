@@ -1,3 +1,4 @@
+import { dummyProofBase64 } from '@/app/constants/dummyProofBase64';
 import { mockProof } from '@/lib/utils';
 import {
   Field,
@@ -7,6 +8,8 @@ import {
   UInt64,
   fetchAccount,
   Int64,
+  JsonProof,
+  Proof,
 } from 'o1js';
 import {
   checkMapGeneration,
@@ -19,6 +22,7 @@ import {
   GameProcessProof,
   processTicks,
   GameRecordProof,
+  client,
 } from 'zknoid-chain-dev';
 import { DummyBridge } from 'zknoidcontractsl1';
 
@@ -89,10 +93,20 @@ const functions = {
 
     console.log('Generating game proof');
 
-    return await mockProof(
+    const gameProof =  await mockProof(
       checkGameRecord(mapGenerationProof, currentGameStateProof),
       GameRecordProof,
     );
+
+    console.log('Proof generated', gameProof);
+
+    gameProof.verify();
+
+    console.log('Proof verified');
+
+    console.log('Proof generated json', gameProof.toJSON());
+
+    return gameProof.toJSON();
   },
 };
 
