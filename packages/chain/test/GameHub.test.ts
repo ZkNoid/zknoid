@@ -62,14 +62,7 @@ async function mockProof<O, P>(
 
 describe('game hub', () => {
     it.skip('Log proof', async () => {
-        const [, proof] = Pickles.proofOfBase64(await dummyBase64Proof(), 2);
-
-        console.log(
-            'Proof',
-            JSON.stringify(proof, (key, value) =>
-                typeof value === 'bigint' ? value.toString() + 'n' : value
-            )
-        );
+        console.log(await dummyBase64Proof())
     });
     it('Check if cheet codes works', async () => {
         const appChain = TestingAppChain.fromRuntime({

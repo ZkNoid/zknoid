@@ -24,7 +24,7 @@ export default function Home() {
         <div className='grid grid-cols-2 gap-5 py-10'>
           {games.map(game => (
             game.active ? (
-              <div className='p-10 rounded-xl bg-white bg-gradient-to-b from-zinc-100'>
+              <div className='p-10 rounded-xl bg-white bg-gradient-to-b from-zinc-100' key={game.type}>
                 <Link className='flex gap-5 flex-col m-5 h-full' href={`/${game.type}/global`}>
                   <Image src={game.logo} alt='Game logo' width={220} height={251} />
                   <div className='text-xl'>{game.name}</div>
@@ -32,7 +32,7 @@ export default function Home() {
                 </Link>
               </div>
             ) : (
-              <div className='p-10 rounded-xl bg-gray-100 bg-gradient-to-b from-gray-200'>
+              <div className='p-10 rounded-xl bg-gray-100 bg-gradient-to-b from-gray-200' key={game.type}>
                 <div className='flex gap-5 flex-col m-5 h-full cursor-default'>
                   <Image src={game.logo} alt='Game logo' width={220} height={251} />
                   <div className='text-xl'>{game.name}</div>

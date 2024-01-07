@@ -11,7 +11,7 @@ import {
   client,
   CHUNK_LENGTH,
 } from 'zknoid-chain-dev';
-import { Bool, Int64, PublicKey, Mina, AccountUpdate } from 'o1js';
+import { Bool, Int64, PublicKey, Mina, AccountUpdate, JsonProof } from 'o1js';
 import Link from 'next/link';
 import { checkGameRecord } from 'zknoid-chain-dev';
 import { GameRecord } from 'zknoid-chain-dev/dist/GameHub';
@@ -137,27 +137,19 @@ export default function Home({
         inputs: userInputs,
         debug: Bool(false),
       });
-      // const proof = await mockGameRecordProof(checkGameRecord(level, userInput, Bool(false)));
+
       console.log('Level proof', proof);
 
-      // client.transaction(sender, () => {
-      //   gameHub.addGameResult({
-      //     publicInput: undefined,
-      //     publicOutput: [],
-      //     proof: undefined,
-      //     maxProofsVerified: 0,
-      //     shouldVerify: undefined,
-      //     verify: function (): void {
-      //       throw new Error('Function not implemented.');
-      //     },
-      //     verifyIf: function (condition: any): void {
-      //       throw new Error('Function not implemented.');
-      //     },
-      //     toJSON: function () {
-      //       throw new Error('Function not implemented.');
-      //     }
-      //   });
-      // })
+      await client.start();
+
+      const gameHub = client.runtime.resolve('GameHub');
+
+      const tx = await client.transaction(PublicKey.fromBase58(networkStore.address!), () => {
+        gameHub.addGameResult(proof!);
+      });
+
+      await tx.sign();
+      await tx.send();
     } catch (e) {
       console.log('Error while generating ZK proof');
       console.log(e);
@@ -251,7 +243,7 @@ export default function Home({
           Active competitions:
           <div className="flex flex-col">
             {arkanoidCompetitions.map((competition) => (
-              <Link href={`/arkanoid/${competition.id}`}>
+              <Link href={`/arkanoid/${competition.id}`} key={competition.id}>
                 {competition.name} – {competition.prizeFund} 🪙
               </Link>
             ))}

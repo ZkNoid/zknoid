@@ -6,6 +6,7 @@ import type {
   WorkerFunctions,
 } from './zknoidWorker';
 import { Bricks, GameInputs, checkGameRecord } from 'zknoid-chain-dev';
+import { GameRecordProof } from 'zknoid-chain';
 
 export default class ZknoidWorkerClient {
   loadContracts() {
@@ -29,12 +30,15 @@ export default class ZknoidWorkerClient {
     inputs: GameInputs[];
     debug: Bool;
   }) {
-    const result = this._call('proveGameRecord', {
+    const result = await this._call('proveGameRecord', {
       bricks: Bricks.toJSON(bricks),
       inputs: JSON.stringify(inputs.map((elem) => GameInputs.toJSON(elem))),
       debug: Bool.toJSON(debug),
     });
-    return result;
+    console.log('Restoring', result);
+    const restoredProof = GameRecordProof.fromJSON(result);
+
+    return restoredProof;
   }
 
   worker: Worker;
