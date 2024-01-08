@@ -1,5 +1,5 @@
 'use client'
-import { client } from "zknoid-chain";
+import { client } from "zknoid-chain-dev";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
@@ -10,7 +10,6 @@ export interface ClientState {
   client?: Client;
   start: () => Promise<void>;
 }
-
 
 export const useClientStore = create<ClientState, [["zustand/immer", never]]>(
   immer((set) => ({
