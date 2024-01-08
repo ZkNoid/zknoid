@@ -7,14 +7,20 @@ export class GameRecordKey extends Struct({
     player: PublicKey,
 }) {}
 
+export class LeaderboardScore extends Struct({
+    score: UInt64,
+    player: PublicKey,
+}) {}
+
+
 export class Point extends Struct({
     x: UInt64,
     y: UInt64,
 }) {
     static from(_x: number, _y: number): Point {
         return new Point({
-            x: new UInt64(_x),
-            y: new UInt64(_y),
+            x: UInt64.from(_x),
+            y: UInt64.from(_y),
         });
     }
 

@@ -40,8 +40,6 @@ export const useProtokitBalancesStore = create<
                 PublicKey.fromBase58(address),
             );
 
-            console.log("Protokit balance", balance, address, client);
-
             set((state) => {
                 state.loading = false;
                 state.balances[address] = balance?.toString() ?? "0";

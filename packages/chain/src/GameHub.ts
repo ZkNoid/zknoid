@@ -5,8 +5,8 @@ import {
     runtimeMethod,
 } from '@proto-kit/module';
 import { State, StateMap } from '@proto-kit/protocol';
-import { Experimental, Field, UInt64, Bool, SelfProof, Struct } from 'o1js';
-import { Bricks, GameInputs, GameRecordKey } from './types';
+import { Experimental, Field, UInt64, Bool, SelfProof, Struct, PublicKey, Provable } from 'o1js';
+import { Bricks, GameInputs, GameRecordKey, LeaderboardScore } from './types';
 
 import { GameContext, loadGameContext } from './GameContext';
 
@@ -118,12 +118,19 @@ export const GameRecord = Experimental.ZkProgram({
 
 export class GameRecordProof extends Experimental.ZkProgram.Proof(GameRecord) {}
 
+const LEADERBOARD_SIZE = 10;
+
 @runtimeModule()
 export class GameHub extends RuntimeModule<unknown> {
     /// Seed + User => Record
     @state() public gameRecords = StateMap.from<GameRecordKey, UInt64>(
         GameRecordKey,
         UInt64
+    );
+    /// Unsorted index => user result
+    @state() public leaderboard = StateMap.from<UInt64, LeaderboardScore>(
+        UInt64,
+        LeaderboardScore
     );
     @state() public seeds = StateMap.from<UInt64, UInt64>(UInt64, UInt64);
     @state() public lastSeed = State.from<UInt64>(UInt64);
@@ -148,8 +155,26 @@ export class GameHub extends RuntimeModule<unknown> {
         const currentScore = this.gameRecords.get(gameKey).value;
         const newScore = gameRecordProof.publicOutput.score;
 
+
         if (currentScore < newScore) {
             this.gameRecords.set(gameKey, newScore);
+
+            let looserIndex = UInt64.from(0);
+            let looserScore = UInt64.from(0);
+
+            for (let i = 0; i < LEADERBOARD_SIZE; i++) {
+                const gameRecord = this.leaderboard.get(UInt64.from(i));
+
+                const result = gameRecord.orElse(new LeaderboardScore({score: UInt64.from(0), player: PublicKey.empty()}));
+
+                looserIndex = Provable.if(result.score.lessThan(looserScore), UInt64.from(i), looserIndex);
+                looserScore = Provable.if(result.score.lessThan(looserScore), UInt64.from(i), looserScore);
+            }
+
+            this.leaderboard.set(looserIndex, new LeaderboardScore({
+                score: newScore,
+                player: this.transaction.sender
+            }))
         }
     }
 }

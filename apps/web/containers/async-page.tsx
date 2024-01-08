@@ -19,6 +19,7 @@ import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
 import { useNetworkStore } from '@/lib/stores/network';
 import { arkanoidCompetitions } from '@/app/constants/akanoidCompetitions';
 import { useMinaBridge } from '@/lib/stores/protokitBalances';
+import { useObserveProtokitLeaderboard, useProtokitLeaderboardStore } from '@/lib/stores/protokitLeaderboard';
 enum GameState {
   NotStarted,
   Active,
@@ -55,16 +56,9 @@ export default function Home({
   const [ticksAmount, setTicksAmount] = useState<number>(0);
   const competition = arkanoidCompetitions.find(x => x.id == params.competitionId);
 
-  const [topUsers, setTopUsers] = useState<UserTop[]>([
-    {
-      address: '0x2836eC28C32E232280F984d3980BA4e05d6BF68f',
-      score: 100,
-    },
-    {
-      address: '0xE314CE1514B21f4dc39C546b3c3bca317652d0Ac',
-      score: 70,
-    },
-  ]);
+  useObserveProtokitLeaderboard(params.competitionId);
+
+  const leaderboardStore = useProtokitLeaderboardStore();
 
   let [gameId, setGameId] = useState(0);
   let [debug, setDebug] = useState(true);
@@ -232,9 +226,9 @@ export default function Home({
         <div>
           Leaderboard {params.competitionId}:
           <div>
-            {topUsers.map((user) => (
-              <div key={user.address}>
-                {user.address} – {user.score} pts
+            {leaderboardStore.getLeaderboard(params.competitionId).map((user, i) => (
+              <div key={i}>
+                {user.player.toBase58()} – {user.score.toString()} pts
               </div>
             ))}
           </div>
