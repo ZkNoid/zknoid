@@ -12,7 +12,6 @@ export class LeaderboardScore extends Struct({
     player: PublicKey,
 }) {}
 
-
 export class Point extends Struct({
     x: UInt64,
     y: UInt64,
@@ -34,6 +33,7 @@ export class Point extends Struct({
 
 export class Tick extends Struct({
     action: Int64,
+    momentum: Int64,
 }) {}
 
 export class GameInputs extends Struct({

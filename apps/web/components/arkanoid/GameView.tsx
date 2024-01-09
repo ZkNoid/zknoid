@@ -15,11 +15,11 @@ import {
   DEFAULT_BALL_SPEED_Y,
   IntPoint,
   DEFAULT_PLATFORM_SPEED,
+  GameContext,
 } from 'zknoid-chain-dev';
 import { useEffect, useRef, useState } from 'react';
 import { Int64, UInt64, Bool } from 'o1js';
 import { Ball, Cart, IBrick } from '@/lib/types';
-import { GameContext } from 'zknoid-chain-dev';
 
 interface IGameViewProps {
   gameId: number;
@@ -120,7 +120,7 @@ export const GameView = (props: IGameViewProps) => {
     }
 
     if (Date.now() - lastUpdateTime > tickPeriod) {
-      pushTick(Math.round(cart.x - prevCartPos));
+      pushTick(Math.round(cart.x - prevCartPos), cart.hitMomentum);
       prevCartPos = cart.x;
       // ticksCache.push(1);
       // setTicks([...ticksCache, 1]);
@@ -175,10 +175,12 @@ export const GameView = (props: IGameViewProps) => {
     if (
       ball.x - ball.radius > cart.x &&
       ball.x + ball.radius < cart.x + cart.w &&
-      ball.y + ball.radius > cart.y
+      ball.y > cart.y
     ) {
       ball.y = 2 * cart.y - ball.y;
       ball.dy *= -1;
+      cart.hitMomentum = cart.dx / 10;
+      ball.dx += cart.hitMomentum;
       bottomBump = false;
     }
 
@@ -405,6 +407,7 @@ export const GameView = (props: IGameViewProps) => {
       w: 100,
       h: 10,
       dx: 0,
+      hitMomentum: 0,
     };
     prevCartPos = cart.x;
 
@@ -544,24 +547,34 @@ export const GameView = (props: IGameViewProps) => {
   const sync = () => {
     ball.x = contractBall.x;
     ball.y = contractBall.y;
+    ball.dx = contractBall.dx;
+    ball.dy = contractBall.dy;
 
     cart.x = contractCart.x;
   };
 
-  const pushTick = (action: number) => {
+  //  #TODO: refactor
+  const pushTick = (action: number, momentum: number) => {
     action = Math.min(action, DEFAULT_PLATFORM_SPEED);
     action = Math.max(action, -DEFAULT_PLATFORM_SPEED);
     ticksCache.push(action);
     if (!debugModeRef.current) {
       // Is not in debug mode - just process tick
-      //@ts-ignore
-      gameContext.processTick(new Tick({ action: Int64.from(action) }));
+      gameContext.processTick(
+        //@ts-ignore
+        new Tick({
+          action: Int64.from(action),
+          momentum: Int64.from(momentum),
+        }),
+      );
       let [x, y] = [
         gameContext.ball.position.x * 1,
         gameContext.ball.position.y * 1,
       ];
       contractBall.x = x;
       contractBall.y = y;
+      contractBall.dx = gameContext.ball.speed.x * 1;
+      contractBall.dy = gameContext.ball.speed.y * 1;
       contractBallTrace = [];
     } else {
       let prevPos: [number, number] =
@@ -573,14 +586,22 @@ export const GameView = (props: IGameViewProps) => {
         gameContext.ball.speed.x * 1,
         gameContext.ball.speed.y * 1,
       ];
-      //@ts-ignore
-      gameContext.processTick(new Tick({ action: Int64.from(action) }));
+      gameContext.processTick(
+        //@ts-ignore
+        new Tick({
+          action: Int64.from(action),
+          momentum: Int64.from(momentum),
+        }),
+      );
       let [x, y] = [
         gameContext.ball.position.x * 1,
         gameContext.ball.position.y * 1,
       ];
       contractBall.x = x;
       contractBall.y = y;
+      contractBall.dx = gameContext.ball.speed.x * 1;
+      contractBall.dy = gameContext.ball.speed.y * 1;
+
       let newSpeed = [
         gameContext.ball.speed.x * 1,
         gameContext.ball.speed.y * 1,
