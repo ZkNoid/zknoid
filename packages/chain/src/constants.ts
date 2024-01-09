@@ -27,6 +27,8 @@ export const DEFAULT_BALL_SPEED_X = 4 * 10;
 export const DEFAULT_BALL_SPEED_Y = -3 * 10;
 
 export const DEFAULT_PLATFORM_X = FIELD_WIDTH / 2;
-export const DEFAULT_PLATFORM_SPEED = 16 * 10;
+export const ACCELERATION = 16 * 10;
+export const ACCELERATION_TIME = 3;
+export const DEFAULT_PLATFORM_SPEED = ACCELERATION_TIME * ACCELERATION;
 
 export const TICK_PERIOD = 1000;

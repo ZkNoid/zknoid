@@ -20,6 +20,7 @@ export interface Cart {
   w: number;
   h: number;
   dx: number;
+  ddx: number;
   hitMomentum: number;
 }
 
