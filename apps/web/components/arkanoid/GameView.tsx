@@ -21,10 +21,15 @@ import { useEffect, useRef, useState } from 'react';
 import { Int64, UInt64, Bool } from 'o1js';
 import { Ball, Cart, IBrick } from '@/lib/types';
 
+export interface ITick {
+  action: number;
+  momentum: number;
+}
+
 interface IGameViewProps {
   gameId: number;
-  onWin: (ticks: number[]) => void;
-  onLost: (ticks: number[]) => void;
+  onWin: (ticks: ITick[]) => void;
+  onLost: (ticks: ITick[]) => void;
   setScore: (score: number) => void;
   setTicksAmount: (ticksAmount: number) => void;
   level: Bricks;
@@ -54,7 +59,7 @@ export const GameView = (props: IGameViewProps) => {
 
   let [winable, setWinable] = useState(true);
 
-  let ticksCache: number[] = [];
+  let ticksCache: ITick[] = [];
   let bricksLeft: number = 0;
 
   // const [ticks, setTicks] = useState<number[]>([]);
@@ -557,7 +562,7 @@ export const GameView = (props: IGameViewProps) => {
   const pushTick = (action: number, momentum: number) => {
     action = Math.min(action, DEFAULT_PLATFORM_SPEED);
     action = Math.max(action, -DEFAULT_PLATFORM_SPEED);
-    ticksCache.push(action);
+    ticksCache.push({ action, momentum });
     if (!debugModeRef.current) {
       // Is not in debug mode - just process tick
       gameContext.processTick(
