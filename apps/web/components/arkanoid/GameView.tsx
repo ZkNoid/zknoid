@@ -16,6 +16,7 @@ import {
   IntPoint,
   DEFAULT_PLATFORM_SPEED,
   GameContext,
+  ACCELERATION,
 } from 'zknoid-chain-dev';
 import { useEffect, useRef, useState } from 'react';
 import { Int64, UInt64, Bool } from 'o1js';
@@ -136,6 +137,8 @@ export const GameView = (props: IGameViewProps) => {
   };
 
   const moveCart = (elapsed: number) => {
+    cart.dx += (cart.ddx * elapsed) / 1000;
+    cart.dx = Math.min(cart.dx, DEFAULT_PLATFORM_SPEED);
     cart.x += (cart.dx * elapsed) / 1000;
 
     if (cart.x > FIELD_WIDTH - cart.w) {
@@ -184,7 +187,7 @@ export const GameView = (props: IGameViewProps) => {
     ) {
       ball.y = 2 * cart.y - ball.y;
       ball.dy *= -1;
-      cart.hitMomentum = cart.dx / 10;
+      cart.hitMomentum = Math.round(cart.dx / 10);
       ball.dx += cart.hitMomentum;
       bottomBump = false;
     }
@@ -350,31 +353,31 @@ export const GameView = (props: IGameViewProps) => {
 
   const keyDown = (e: KeyboardEvent) => {
     if (e.key === 'Right' || e.key === 'ArrowRight') {
-      if (
-        Date.now() - lastUpdateTime >
-        tickPeriod
-        // ticksCache[ticksCache.length - 1] != 2
-      ) {
-        // pushTick(DEFAULT_PLATFORM_SPEED);
-        // ticksCache.push(2);
-        //   setTicks([...ticksCache, 2]);
-        lastUpdateTime = Date.now();
-      }
+      // if (
+      //   Date.now() - lastUpdateTime >
+      //   tickPeriod
+      //   // ticksCache[ticksCache.length - 1] != 2
+      // ) {
+      //   // pushTick(DEFAULT_PLATFORM_SPEED);
+      //   // ticksCache.push(2);
+      //   //   setTicks([...ticksCache, 2]);
+      //   lastUpdateTime = Date.now();
+      // }
 
-      cart.dx = DEFAULT_PLATFORM_SPEED;
+      cart.ddx = ACCELERATION;
     } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
-      if (
-        Date.now() - lastUpdateTime >
-        tickPeriod
-        // ticksCache[ticksCache.length - 1] != 0
-      ) {
-        // pushTick(-DEFAULT_PLATFORM_SPEED);
-        // ticksCache.push(0);
-        //   setTicks([...ticksCache, 0]);
-        lastUpdateTime = Date.now();
-      }
+      // if (
+      //   Date.now() - lastUpdateTime >
+      //   tickPeriod
+      //   // ticksCache[ticksCache.length - 1] != 0
+      // ) {
+      //   // pushTick(-DEFAULT_PLATFORM_SPEED);
+      //   // ticksCache.push(0);
+      //   //   setTicks([...ticksCache, 0]);
+      //   lastUpdateTime = Date.now();
+      // }
 
-      cart.dx = -DEFAULT_PLATFORM_SPEED;
+      cart.ddx = -ACCELERATION;
     }
   };
 
@@ -385,6 +388,7 @@ export const GameView = (props: IGameViewProps) => {
       e.key === 'Left' ||
       e.key === 'ArrowLeft'
     ) {
+      cart.ddx = 0;
       cart.dx = 0;
     }
   };
@@ -412,6 +416,7 @@ export const GameView = (props: IGameViewProps) => {
       w: 100,
       h: 10,
       dx: 0,
+      ddx: 0,
       hitMomentum: 0,
     };
     prevCartPos = cart.x;

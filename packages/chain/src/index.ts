@@ -49,6 +49,8 @@ import {
     TICK_PERIOD,
     DEFAULT_PLATFORM_SPEED,
     CHUNK_LENGTH,
+    ACCELERATION_TIME,
+    ACCELERATION,
 } from './constants.js';
 import { defaultLevel } from './levels.js';
 
@@ -84,6 +86,8 @@ export {
     IntPoint,
     defaultLevel,
     TICK_PERIOD,
+    ACCELERATION,
+    ACCELERATION_TIME,
     DEFAULT_PLATFORM_SPEED,
     GameRecord,
 };
