@@ -73,6 +73,7 @@ export class GameContext extends Struct({
         /// 2) Update platform position
         inRange(Int64.from(tick.action), 0, FIELD_WIDTH);
 
+        // Move sanity checks to separate function
         inRange(
             Int64.from(tick.action), // Overflow?
             -DEFAULT_PLATFORM_SPEED,
@@ -140,6 +141,19 @@ export class GameContext extends Struct({
             topBump.or(bottomBump),
             this.ball.speed.y.neg(),
             this.ball.speed.y
+        );
+
+        /// 4') Update ball speed
+        inRange(
+            Int64.from(tick.momentum), // Overflow?
+            -DEFAULT_PLATFORM_SPEED,
+            DEFAULT_PLATFORM_SPEED
+        ).assertTrue();
+
+        this.ball.speed.x = Provable.if(
+            bottomBump,
+            this.ball.speed.x.add(tick.momentum),
+            this.ball.speed.x
         );
 
         /// 5) Check platform bump

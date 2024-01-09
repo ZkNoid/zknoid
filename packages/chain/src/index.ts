@@ -54,6 +54,7 @@ import { defaultLevel } from './levels.js';
 
 export {
     GameHub,
+    GameContext,
     GameRecordProof,
     GameRecordPublicOutput,
     MapGenerationProof,
@@ -85,5 +86,4 @@ export {
     TICK_PERIOD,
     DEFAULT_PLATFORM_SPEED,
     GameRecord,
-    GameContext
 };

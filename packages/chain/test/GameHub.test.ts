@@ -62,7 +62,7 @@ async function mockProof<O, P>(
 
 describe('game hub', () => {
     it.skip('Log proof', async () => {
-        console.log(await dummyBase64Proof())
+        console.log(await dummyBase64Proof());
     });
     it('Check if cheet codes works', async () => {
         const appChain = TestingAppChain.fromRuntime({
@@ -89,7 +89,11 @@ describe('game hub', () => {
             (chunk) =>
                 new GameInputs({
                     ticks: chunk.map(
-                        (elem) => new Tick({ action: Int64.from(elem) })
+                        (elem) =>
+                            new Tick({
+                                action: Int64.from(elem),
+                                momentum: Int64.from(0),
+                            })
                     ),
                 })
         );
