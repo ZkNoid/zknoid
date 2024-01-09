@@ -25,7 +25,7 @@ export default function Home() {
           {games.map(game => (
             game.active ? (
               <div className='p-10 rounded-xl bg-white bg-gradient-to-b from-zinc-100' key={game.type}>
-                <Link className='flex gap-5 flex-col m-5 h-full' href={`/${game.type}/global`}>
+                <Link className='flex gap-5 flex-col m-5 h-full' href={`/games/${game.type}/global`}>
                   <Image src={game.logo} alt='Game logo' width={220} height={251} />
                   <div className='text-xl'>{game.name}</div>
                   <div className='text-base w-36'>{game.description}</div>

@@ -2,10 +2,8 @@
 import {
   Brick,
   Bricks,
-  GameInputs,
   Tick,
   loadGameContext,
-  defaultLevel,
   BRICK_HALF_WIDTH,
   MAX_BRICKS,
   FIELD_HEIGHT,
@@ -18,11 +16,10 @@ import {
   IntPoint,
   DEFAULT_PLATFORM_SPEED,
 } from 'zknoid-chain-dev';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Int64, PublicKey, UInt64, Bool, AccountUpdate } from 'o1js';
-import { DUMMY_PROOF } from '@/constants';
+import { useEffect, useRef, useState } from 'react';
+import { Int64, UInt64, Bool } from 'o1js';
 import { Ball, Cart, IBrick } from '@/lib/types';
-import { GameContext } from 'zknoid-chain/dist/GameHub';
+import { GameContext } from 'zknoid-chain-dev';
 
 interface IGameViewProps {
   gameId: number;
