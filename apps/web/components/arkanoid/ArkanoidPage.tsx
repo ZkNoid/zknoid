@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { GameView } from '@/components/arkanoid/GameView';
+import { GameView, ITick } from '@/components/arkanoid/GameView';
 import {
   Bricks,
   GameInputs,
@@ -16,7 +16,10 @@ import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
 import { useNetworkStore } from '@/lib/stores/network';
 import { arkanoidCompetitions } from '@/app/constants/akanoidCompetitions';
 import { useMinaBridge } from '@/lib/stores/protokitBalances';
-import { useObserveProtokitLeaderboard, useProtokitLeaderboardStore } from '@/lib/stores/protokitLeaderboard';
+import {
+  useObserveProtokitLeaderboard,
+  useProtokitLeaderboardStore,
+} from '@/lib/stores/protokitLeaderboard';
 
 enum GameState {
   NotStarted,
@@ -38,10 +41,12 @@ export default function ArkanoidPage({
   params: { competitionId: string };
 }) {
   const [gameState, setGameState] = useState(GameState.NotStarted);
-  const [lastTicks, setLastTicks] = useState<number[]>([]);
+  const [lastTicks, setLastTicks] = useState<ITick[]>([]);
   const [score, setScore] = useState<number>(0);
   const [ticksAmount, setTicksAmount] = useState<number>(0);
-  const competition = arkanoidCompetitions.find(x => x.id == params.competitionId);
+  const competition = arkanoidCompetitions.find(
+    (x) => x.id == params.competitionId,
+  );
 
   useObserveProtokitLeaderboard(params.competitionId);
 
@@ -104,8 +109,14 @@ export default function ArkanoidPage({
     console.log('Ticks', lastTicks);
 
     let chunks = chunkenize(
-      // @ts-expect-error
-      lastTicks.map((elem) => new Tick({ action: Int64.from(elem) })),
+      lastTicks.map(
+        (elem) =>
+          // @ts-expect-error
+          new Tick({
+            action: Int64.from(elem.action),
+            momentum: Int64.from(elem.momentum),
+          }),
+      ),
       CHUNK_LENGTH,
     );
 
@@ -125,9 +136,12 @@ export default function ArkanoidPage({
 
       const gameHub = client.runtime.resolve('GameHub');
 
-      const tx = await client.transaction(PublicKey.fromBase58(networkStore.address!), () => {
-        gameHub.addGameResult(proof!);
-      });
+      const tx = await client.transaction(
+        PublicKey.fromBase58(networkStore.address!),
+        () => {
+          gameHub.addGameResult(proof!);
+        },
+      );
 
       await tx.sign();
       await tx.send();
@@ -158,7 +172,7 @@ export default function ArkanoidPage({
           <div className="flex flex-row items-center justify-center gap-5">
             {(gameState == GameState.Won || gameState == GameState.Lost) && (
               <div
-                className="rounded-xl bg-slate-300 hover:bg-slate-400 p-5"
+                className="rounded-xl bg-slate-300 p-5 hover:bg-slate-400"
                 onClick={() => startGame()}
               >
                 Restart
@@ -166,7 +180,7 @@ export default function ArkanoidPage({
             )}
             {gameState == GameState.NotStarted && (
               <div
-                className="rounded-xl bg-slate-300 hover:bg-slate-400 p-5"
+                className="rounded-xl bg-slate-300 p-5 hover:bg-slate-400"
                 onClick={() => startGame()}
               >
                 Start for {competition?.enteringPrice} 🪙
@@ -174,7 +188,7 @@ export default function ArkanoidPage({
             )}
             {gameState == GameState.Won && (
               <div
-                className="rounded-xl bg-slate-300 hover:bg-slate-400 p-5"
+                className="rounded-xl bg-slate-300 p-5 hover:bg-slate-400"
                 onClick={() => proof()}
               >
                 Send proof
@@ -213,18 +227,23 @@ export default function ArkanoidPage({
         <div>
           Leaderboard {params.competitionId}:
           <div>
-            {leaderboardStore.getLeaderboard(params.competitionId).map((user, i) => (
-              <div key={i}>
-                {user.player.toBase58()} – {user.score.toString()} pts
-              </div>
-            ))}
+            {leaderboardStore
+              .getLeaderboard(params.competitionId)
+              .map((user, i) => (
+                <div key={i}>
+                  {user.player.toBase58()} – {user.score.toString()} pts
+                </div>
+              ))}
           </div>
         </div>
         <div>
           Active competitions:
           <div className="flex flex-col">
             {arkanoidCompetitions.map((competition) => (
-              <Link href={`/games/arkanoid/${competition.id}`} key={competition.id}>
+              <Link
+                href={`/games/arkanoid/${competition.id}`}
+                key={competition.id}
+              >
                 {competition.name} – {competition.prizeFund} 🪙
               </Link>
             ))}
