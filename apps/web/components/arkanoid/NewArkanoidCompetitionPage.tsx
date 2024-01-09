@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 
-export default function NewCompetitionPage() {
+export default function NewArkanoidCompetitionPage() {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [seed, setSeed] = useState(0);

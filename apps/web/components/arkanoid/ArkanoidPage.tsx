@@ -1,25 +1,23 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { GameView } from '@/components/GameView';
+import { GameView } from '@/components/arkanoid/GameView';
 import {
   Bricks,
   GameInputs,
   Tick,
-  loadGameContext,
   defaultLevel,
   client,
   CHUNK_LENGTH,
 } from 'zknoid-chain-dev';
-import { Bool, Int64, PublicKey, Mina, AccountUpdate, JsonProof } from 'o1js';
+import { Bool, Int64, PublicKey } from 'o1js';
 import Link from 'next/link';
-import { checkGameRecord } from 'zknoid-chain-dev';
-import { GameRecord } from 'zknoid-chain-dev/dist/GameHub';
 import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
 import { useNetworkStore } from '@/lib/stores/network';
 import { arkanoidCompetitions } from '@/app/constants/akanoidCompetitions';
 import { useMinaBridge } from '@/lib/stores/protokitBalances';
 import { useObserveProtokitLeaderboard, useProtokitLeaderboardStore } from '@/lib/stores/protokitLeaderboard';
+
 enum GameState {
   NotStarted,
   Active,
@@ -29,23 +27,12 @@ enum GameState {
   Proofing,
 }
 
-interface UserTop {
-  address: `0x${string}`;
-  score: number;
-}
-
-interface ActiveCompetition {
-  name: string;
-  address: `0x${string}` | string | undefined;
-  fund: number;
-}
-
 const chunkenize = (arr: any[], size: number) =>
   Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
     arr.slice(i * size, i * size + size),
   );
 
-export default function Home({
+export default function ArkanoidPage({
   params,
 }: {
   params: { competitionId: string };
@@ -237,7 +224,7 @@ export default function Home({
           Active competitions:
           <div className="flex flex-col">
             {arkanoidCompetitions.map((competition) => (
-              <Link href={`/arkanoid/${competition.id}`} key={competition.id}>
+              <Link href={`/games/arkanoid/${competition.id}`} key={competition.id}>
                 {competition.name} – {competition.prizeFund} 🪙
               </Link>
             ))}

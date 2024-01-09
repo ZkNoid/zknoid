@@ -1,5 +1,6 @@
 export enum GameType {
     Arkanoid = 'arkanoid',
+    Randzu = 'randzu',
     Checkers = 'checkers'
 }
 
@@ -19,6 +20,14 @@ export const games: IGame[] = [
         name: 'Arkanoid game',
         description: 'Old but gold game. Beat all the bricks and protect the ball from falling',
         tags: ['L2 game', 'singleplayer', 'retro'],
+        active: true
+    },
+    {
+        type: GameType.Randzu,
+        logo: '/randzu.jpeg',
+        name: 'Randzu game',
+        description: 'Two players take turns placing pieces on the board attempting to create lines of 5 of their own color',
+        tags: ['L2 game', 'multiplayer', 'board games'],
         active: true
     },
     {

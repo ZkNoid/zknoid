@@ -20,7 +20,7 @@ import {
     processTicks,
 } from './GameHub.js';
 
-import { loadGameContext } from './GameContext.js';
+import { GameContext, loadGameContext } from './GameContext.js';
 
 import {
     // GameHub,
@@ -85,4 +85,5 @@ export {
     TICK_PERIOD,
     DEFAULT_PLATFORM_SPEED,
     GameRecord,
+    GameContext
 };
