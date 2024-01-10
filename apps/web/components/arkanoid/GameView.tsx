@@ -137,9 +137,13 @@ export const GameView = (props: IGameViewProps) => {
   };
 
   const moveCart = (elapsed: number) => {
-    cart.dx += (cart.ddx * elapsed) / 1000;
-    cart.dx = Math.min(cart.dx, DEFAULT_PLATFORM_SPEED);
-    cart.x += (cart.dx * elapsed) / 1000;
+    cart.dx += (cart.ddx * elapsed) / TICK_PERIOD;
+    if (cart.dx > 0) {
+      cart.dx = Math.min(cart.dx, DEFAULT_PLATFORM_SPEED);
+    } else {
+      cart.dx = Math.max(cart.dx, -DEFAULT_PLATFORM_SPEED);
+    }
+    cart.x += (cart.dx * elapsed) / TICK_PERIOD;
 
     if (cart.x > FIELD_WIDTH - cart.w) {
       cart.x = FIELD_WIDTH - cart.w;
@@ -151,8 +155,8 @@ export const GameView = (props: IGameViewProps) => {
   };
 
   const moveBall = (elapsed: number) => {
-    ball.x += (ball.dx * elapsed) / 1000;
-    ball.y += (ball.dy * elapsed) / 1000;
+    ball.x += (ball.dx * elapsed) / TICK_PERIOD;
+    ball.y += (ball.dy * elapsed) / TICK_PERIOD;
 
     const leftBump = ball.x - ball.radius < 0;
     const rightBump = ball.x - FIELD_WIDTH > 0;
