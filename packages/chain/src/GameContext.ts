@@ -71,6 +71,7 @@ export class GameContext extends Struct({
         );
 
         /// 2) Update platform position
+        let prevPlatformPosition = this.platform.position;
         inRange(Int64.from(tick.action), 0, FIELD_WIDTH);
 
         // Move sanity checks to separate function
@@ -81,6 +82,8 @@ export class GameContext extends Struct({
         ).assertTrue();
 
         this.platform.position = this.platform.position.add(tick.action);
+
+        let movedLeft = gr(prevPlatformPosition, this.platform.position);
 
         /// 3) Update ball position
         const prevBallPos = new IntPoint({
@@ -157,9 +160,26 @@ export class GameContext extends Struct({
         );
 
         /// 5) Check platform bump
+
+        /// #TODO: Think how to do it better.
+        /// Extended is temporary solution. During tick platform is "extending" and fill
+        /// all space between old position and new position. It helps to solve problem, when platform
+        /// collision happen in the begining of the tick, and in the end of the tick platform located
+        /// somwhere else, so contract count is as loss.
+        let platformLeftEndExtended = Provable.if(
+            movedLeft,
+            this.platform.position,
+            prevPlatformPosition
+        );
+        let platformRightEndExtended = Provable.if(
+            movedLeft,
+            prevPlatformPosition.add(PLATFORM_WIDTH),
+            this.platform.position.add(PLATFORM_WIDTH)
+        );
+
         let adc0 = a.mul(FIELD_PIXEL_HEIGHT).sub(c);
-        let platformLeft = b.mul(this.platform.position);
-        let platformRight = b.mul(this.platform.position.add(PLATFORM_WIDTH));
+        let platformLeft = b.mul(platformLeftEndExtended);
+        let platformRight = b.mul(platformRightEndExtended);
 
         let isFail = bottomBump.and(
             inRange(adc0, platformLeft, platformRight).not()
