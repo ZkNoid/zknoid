@@ -398,6 +398,7 @@ export const GameView = (props: IGameViewProps) => {
   };
 
   const startGame = () => {
+    setWinable(true);
     setLost(false);
     setWin(false);
     lastTime = undefined;
