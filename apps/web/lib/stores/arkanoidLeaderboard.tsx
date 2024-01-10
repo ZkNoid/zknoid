@@ -30,7 +30,7 @@ function isPendingTransaction(
         throw new Error("Transaction is not a PendingTransaction");
 }
 
-export const useProtokitLeaderboardStore = create<
+export const useArkanoidLeaderboardStore = create<
     LeaderboardState,
     [["zustand/immer", never]]
 >(
@@ -68,11 +68,11 @@ export const useProtokitLeaderboardStore = create<
     })),
 );
 
-export const useObserveProtokitLeaderboard = (competitionId: string) => {
+export const useObserveArkanoidLeaderboard = (competitionId: string) => {
     const client = useClientStore();
     const chain = useProtokitChainStore();
     const network = useNetworkStore();
-    const leaderboard = useProtokitLeaderboardStore();
+    const leaderboard = useArkanoidLeaderboardStore();
 
     useEffect(() => {
         if (!client.client || !network.address) return;

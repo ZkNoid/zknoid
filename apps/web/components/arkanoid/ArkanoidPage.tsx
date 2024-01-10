@@ -16,9 +16,9 @@ import { useNetworkStore } from '@/lib/stores/network';
 import { arkanoidCompetitions } from '@/app/constants/akanoidCompetitions';
 import { useMinaBridge, useObserveProtokitBalance, useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
 import {
-  useObserveProtokitLeaderboard,
-  useProtokitLeaderboardStore,
-} from '@/lib/stores/protokitLeaderboard';
+  useArkanoidLeaderboardStore,
+  useObserveArkanoidLeaderboard,
+} from '@/lib/stores/arkanoidLeaderboard';
 import { useClientStore } from '@/lib/stores/client';
 import { usePollMinaBlockHeight } from '@/lib/stores/minaChain';
 import { usePollProtokitBlockHeight } from '@/lib/stores/protokitChain';
@@ -53,9 +53,9 @@ export default function ArkanoidPage({
     (x) => x.id == params.competitionId,
   );
 
-  useObserveProtokitLeaderboard(params.competitionId);
   const client = useClientStore();
 
+  useObserveArkanoidLeaderboard(params.competitionId);
   usePollMinaBlockHeight();
   usePollProtokitBlockHeight();
   useObserveMinaBalance();
@@ -65,7 +65,7 @@ export default function ArkanoidPage({
   const protokitBalances = useProtokitBalancesStore();
 
 
-  const leaderboardStore = useProtokitLeaderboardStore();
+  const leaderboardStore = useArkanoidLeaderboardStore();
 
   let [gameId, setGameId] = useState(0);
   let [debug, setDebug] = useState(true);
