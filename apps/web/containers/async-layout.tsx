@@ -10,31 +10,9 @@ import { PublicKey } from "o1js";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
 export default function AsyncLayout({ children }: { children: ReactNode }) {
-  const client = useClientStore();
-  const networkStore = useNetworkStore();
-
-  useEffect(() => {
-    client.start();
-  }, []);
-
-  usePollMinaBlockHeight();
-  usePollProtokitBlockHeight();
-  useObserveMinaBalance();
-  useObserveProtokitBalance();
-
-  const minaBalances = useMinaBalancesStore();
-  const protokitBalances = useProtokitBalancesStore();
 
   return (
     <div className={"flex flex-col min-h-screen"}>
-      <Header
-        address={networkStore.address}
-        connectWallet={networkStore.connectWallet}
-        minaBalance={networkStore.address ? minaBalances.balances[networkStore.address] : "0"}
-        protokitBalance={networkStore.address ? protokitBalances.balances[networkStore.address] : "0"}
-        walletInstalled={networkStore.walletInstalled()}
-        currentGame={GameType.Arkanoid}
-      />
       {children}
       {/* <Toaster /> */}
     </div>
