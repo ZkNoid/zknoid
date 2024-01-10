@@ -77,6 +77,7 @@ export const GameView = (props: IGameViewProps) => {
   let contractCart: Cart;
   let bricks: IBrick[] = [];
   let contractBricks: IBrick[] = [];
+  let contractNearestBricks: IBrick[] = [];
   let stopped: boolean = false;
   const debugMode = props.debug;
 
@@ -121,6 +122,7 @@ export const GameView = (props: IGameViewProps) => {
     if (debugModeRef.current) {
       drawContractBall();
       drawContractBricks();
+      // drawContractNearestBricks();
       drawContractCart();
       drawBallsTraces();
     }
@@ -296,6 +298,19 @@ export const GameView = (props: IGameViewProps) => {
     ctx!.setLineDash([5, 5]);
 
     contractBricks.forEach((brick) => {
+      ctx!.beginPath();
+      ctx!.rect(brick.x, brick.y, brick.w, brick.h);
+      ctx!.stroke();
+      ctx!.closePath();
+    });
+    ctx!.setLineDash([]);
+  };
+
+  const drawContractNearestBricks = () => {
+    ctx!.strokeStyle = 'orange';
+    ctx!.setLineDash([]);
+
+    contractNearestBricks.forEach((brick) => {
       ctx!.beginPath();
       ctx!.rect(brick.x, brick.y, brick.w, brick.h);
       ctx!.stroke();
@@ -630,19 +645,24 @@ export const GameView = (props: IGameViewProps) => {
 
       contractBallTrace.push([x, y]);
 
+      const contractBrickToBrick = (brick: IContractBrick) => {
+        let x = brick.pos.x * 1;
+        let y = brick.pos.y * 1;
+        return {
+          x,
+          y,
+          w: 2 * BRICK_HALF_WIDTH,
+          h: 2 * BRICK_HALF_WIDTH,
+          value: +brick.value.toString(),
+        } as IContractBrickPorted;
+      };
+
       contractBricks = gameContext.bricks.bricks
-        .map((brick: IContractBrick) => {
-          let x = brick.pos.x * 1;
-          let y = brick.pos.y * 1;
-          return {
-            x,
-            y,
-            w: 2 * BRICK_HALF_WIDTH,
-            h: 2 * BRICK_HALF_WIDTH,
-            value: +brick.value.toString(),
-          } as IContractBrickPorted;
-        })
+        .map(contractBrickToBrick)
         .filter((brick: IContractBrickPorted) => brick.value > 1);
+
+      contractNearestBricks =
+        gameContext.nearestBricks.map(contractBrickToBrick);
 
       contractCart = {
         ...cart,
