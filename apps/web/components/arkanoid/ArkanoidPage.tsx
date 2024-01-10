@@ -7,7 +7,6 @@ import {
   GameInputs,
   Tick,
   defaultLevel,
-  client,
   CHUNK_LENGTH,
 } from 'zknoid-chain-dev';
 import { Bool, Int64, PublicKey } from 'o1js';
@@ -15,11 +14,17 @@ import Link from 'next/link';
 import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
 import { useNetworkStore } from '@/lib/stores/network';
 import { arkanoidCompetitions } from '@/app/constants/akanoidCompetitions';
-import { useMinaBridge } from '@/lib/stores/protokitBalances';
+import { useMinaBridge, useObserveProtokitBalance, useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
 import {
   useObserveProtokitLeaderboard,
   useProtokitLeaderboardStore,
 } from '@/lib/stores/protokitLeaderboard';
+import { useClientStore } from '@/lib/stores/client';
+import { usePollMinaBlockHeight } from '@/lib/stores/minaChain';
+import { usePollProtokitBlockHeight } from '@/lib/stores/protokitChain';
+import { useMinaBalancesStore, useObserveMinaBalance } from '@/lib/stores/minaBalances';
+import Header from '../Header';
+import { GameType } from '@/app/constants/games';
 
 enum GameState {
   NotStarted,
@@ -49,6 +54,16 @@ export default function ArkanoidPage({
   );
 
   useObserveProtokitLeaderboard(params.competitionId);
+  const client = useClientStore();
+
+  usePollMinaBlockHeight();
+  usePollProtokitBlockHeight();
+  useObserveMinaBalance();
+  useObserveProtokitBalance();
+
+  const minaBalances = useMinaBalancesStore();
+  const protokitBalances = useProtokitBalancesStore();
+
 
   const leaderboardStore = useProtokitLeaderboardStore();
 
@@ -134,9 +149,9 @@ export default function ArkanoidPage({
 
       await client.start();
 
-      const gameHub = client.runtime.resolve('GameHub');
+      const gameHub = client.client!.runtime.resolve('GameHub');
 
-      const tx = await client.transaction(
+      const tx = await client.client!.transaction(
         PublicKey.fromBase58(networkStore.address!),
         () => {
           gameHub.addGameResult(proof!);
@@ -152,114 +167,124 @@ export default function ArkanoidPage({
   };
 
   return (
-    <main className="flex grow flex-col items-center gap-5 p-5">
-      {networkStore.address ? (
-        <div className="flex flex-col gap-5">
-          {gameState == GameState.Won && (
-            <div>
-              You won! Ticks verification:{' '}
-              <input
-                type="text"
-                value={JSON.stringify(lastTicks)}
-                readOnly
-              ></input>
-            </div>
-          )}
-          {gameState == GameState.Lost && (
-            <div>You've lost! Nothing to prove</div>
-          )}
-
-          <div className="flex flex-row items-center justify-center gap-5">
-            {(gameState == GameState.Won || gameState == GameState.Lost) && (
-              <div
-                className="rounded-xl bg-slate-300 p-5 hover:bg-slate-400"
-                onClick={() => startGame()}
-              >
-                Restart
-              </div>
-            )}
-            {gameState == GameState.NotStarted && (
-              <div
-                className="rounded-xl bg-slate-300 p-5 hover:bg-slate-400"
-                onClick={() => startGame()}
-              >
-                Start for {competition?.enteringPrice} 🪙
-              </div>
-            )}
-            {gameState == GameState.Won && (
-              <div
-                className="rounded-xl bg-slate-300 p-5 hover:bg-slate-400"
-                onClick={() => proof()}
-              >
-                Send proof
-              </div>
-            )}
-          </div>
-        </div>
-      ) : (
-        <div
-          className="rounded-xl bg-slate-300 p-5"
-          onClick={async () => networkStore.connectWallet()}
-        >
-          Connect wallet
-        </div>
-      )}
-      <GameView
-        onWin={(ticks) => {
-          console.log('Ticks', ticks);
-          setLastTicks(ticks);
-          setGameState(GameState.Won);
-        }}
-        onLost={(ticks) => {
-          setLastTicks(ticks);
-          setGameState(GameState.Lost);
-        }}
-        level={level}
-        gameId={gameId}
-        debug={debug}
-        setScore={setScore}
-        setTicksAmount={setTicksAmount}
+    <>
+      <Header
+        address={networkStore.address}
+        connectWallet={networkStore.connectWallet}
+        minaBalance={networkStore.address ? minaBalances.balances[networkStore.address] : "0"}
+        protokitBalance={networkStore.address ? protokitBalances.balances[networkStore.address] : "0"}
+        walletInstalled={networkStore.walletInstalled()}
+        currentGame={GameType.Arkanoid}
       />
-      <div>Score: {score}</div>
-      <div>Ticks: {ticksAmount}</div>
-      <div className="grow"></div>
-      <div className="flex flex-col gap-10">
-        <div>
-          Leaderboard {params.competitionId}:
-          <div>
-            {leaderboardStore
-              .getLeaderboard(params.competitionId)
-              .map((user, i) => (
-                <div key={i}>
-                  {user.player.toBase58()} – {user.score.toString()} pts
+      <main className="flex grow flex-col items-center gap-5 p-5">
+        {networkStore.address ? (
+          <div className="flex flex-col gap-5">
+            {gameState == GameState.Won && (
+              <div>
+                You won! Ticks verification:{' '}
+                <input
+                  type="text"
+                  value={JSON.stringify(lastTicks)}
+                  readOnly
+                ></input>
+              </div>
+            )}
+            {gameState == GameState.Lost && (
+              <div>You've lost! Nothing to prove</div>
+            )}
+
+            <div className="flex flex-row items-center justify-center gap-5">
+              {(gameState == GameState.Won || gameState == GameState.Lost) && (
+                <div
+                  className="rounded-xl bg-slate-300 p-5 hover:bg-slate-400"
+                  onClick={() => startGame()}
+                >
+                  Restart
                 </div>
-              ))}
+              )}
+              {gameState == GameState.NotStarted && (
+                <div
+                  className="rounded-xl bg-slate-300 p-5 hover:bg-slate-400"
+                  onClick={() => startGame()}
+                >
+                  Start for {competition?.enteringPrice} 🪙
+                </div>
+              )}
+              {gameState == GameState.Won && (
+                <div
+                  className="rounded-xl bg-slate-300 p-5 hover:bg-slate-400"
+                  onClick={() => proof()}
+                >
+                  Send proof
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-        <div>
-          Active competitions:
-          <div className="flex flex-col">
-            {arkanoidCompetitions.map((competition) => (
-              <Link
-                href={`/games/arkanoid/${competition.id}`}
-                key={competition.id}
-              >
-                {competition.name} – {competition.prizeFund} 🪙
-              </Link>
-            ))}
+        ) : (
+          <div
+            className="rounded-xl bg-slate-300 p-5"
+            onClick={async () => networkStore.connectWallet()}
+          >
+            Connect wallet
           </div>
-        </div>
-      </div>
-      <div className="w-full text-end">
-        Debug:{' '}
-        <input
-          type="checkbox"
-          checked={debug}
-          onChange={(event) => {
-            setDebug(event.target.checked);
+        )}
+        <GameView
+          onWin={(ticks) => {
+            console.log('Ticks', ticks);
+            setLastTicks(ticks);
+            setGameState(GameState.Won);
           }}
-        ></input>
-      </div>
-    </main>
+          onLost={(ticks) => {
+            setLastTicks(ticks);
+            setGameState(GameState.Lost);
+          }}
+          level={level}
+          gameId={gameId}
+          debug={debug}
+          setScore={setScore}
+          setTicksAmount={setTicksAmount}
+        />
+        <div>Score: {score}</div>
+        <div>Ticks: {ticksAmount}</div>
+        <div className="grow"></div>
+        <div className="flex flex-col gap-10">
+          <div>
+            Leaderboard {params.competitionId}:
+            <div>
+              {leaderboardStore
+                .getLeaderboard(params.competitionId)
+                .map((user, i) => (
+                  <div key={i}>
+                    {user.player.toBase58()} – {user.score.toString()} pts
+                  </div>
+                ))}
+            </div>
+          </div>
+          <div>
+            Active competitions:
+            <div className="flex flex-col">
+              {arkanoidCompetitions.map((competition) => (
+                <Link
+                  href={`/games/arkanoid/${competition.id}`}
+                  key={competition.id}
+                >
+                  {competition.name} – {competition.prizeFund} 🪙
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="w-full text-end">
+          Debug:{' '}
+          <input
+            type="checkbox"
+            checked={debug}
+            onChange={(event) => {
+              setDebug(event.target.checked);
+            }}
+          ></input>
+        </div>
+      </main>
+    </>
   );
 }

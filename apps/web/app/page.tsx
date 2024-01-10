@@ -6,7 +6,7 @@ import { games } from './constants/games'
 export default function Home() {
   return (
     <>
-      <main className="flex min-h-screen flex-col items-center px-24 py-10">
+      <main className="flex min-h-screen flex-col items-center px-24 py-10 mt-20">
         <div className='z-10 max-w-5xl w-full items-center justify-between text-sm flex'>
           <div className='fixed left-0 top-0 flex w-full justify-around border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl'>
             <div className='flex basis-6/12 text-xl flex-row px-4'>ZkNoid<div className='text-sm pl-4 pt-2'>the bot free gaming</div></div>
