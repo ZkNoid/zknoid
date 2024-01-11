@@ -63,8 +63,6 @@ export default function ArkanoidPage({
 
   const minaBalances = useMinaBalancesStore();
   const protokitBalances = useProtokitBalancesStore();
-
-
   const leaderboardStore = useArkanoidLeaderboardStore();
 
   let [gameId, setGameId] = useState(0);
@@ -120,6 +118,10 @@ export default function ArkanoidPage({
     })();
   }, []);
 
+  useEffect(() => {
+    client.start();
+  }, []);
+
   const proof = async () => {
     console.log('Ticks', lastTicks);
 
@@ -146,8 +148,6 @@ export default function ArkanoidPage({
       });
 
       console.log('Level proof', proof);
-
-      await client.start();
 
       const gameHub = client.client!.runtime.resolve('GameHub');
 
