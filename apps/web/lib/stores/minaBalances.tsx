@@ -57,6 +57,8 @@ export const useMinaBalancesStore = create<
         }),
       });
 
+      console.log('Balance resp', response)
+
       const { data } = (await response.json()) as BalanceQueryResponse;
       const balance = data.account?.balance.total;
 
@@ -75,7 +77,8 @@ export const useObserveMinaBalance = () => {
   const network = useNetworkStore();
 
   useEffect(() => {
-    if (!client.client || !network.address) return;
+    console.log('Observing mina balance ',client,network)
+    if (!network.address) return;
 
     balances.loadBalance(network.minaNetwork?.chainId!, network.address);
   }, [client.client, chain.block?.height, network.address, network.minaNetwork?.chainId]);
