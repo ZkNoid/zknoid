@@ -77,6 +77,7 @@ export const GameView = (props: IGameViewProps) => {
   let contractCart: Cart;
   let bricks: IBrick[] = [];
   let contractBricks: IBrick[] = [];
+  let contractNearestBricks: IBrick[] = [];
   let stopped: boolean = false;
   const debugMode = props.debug;
 
@@ -121,6 +122,7 @@ export const GameView = (props: IGameViewProps) => {
     if (debugModeRef.current) {
       drawContractBall();
       drawContractBricks();
+      // drawContractNearestBricks();
       drawContractCart();
       drawBallsTraces();
     }
@@ -137,9 +139,13 @@ export const GameView = (props: IGameViewProps) => {
   };
 
   const moveCart = (elapsed: number) => {
-    cart.dx += (cart.ddx * elapsed) / 1000;
-    cart.dx = Math.min(cart.dx, DEFAULT_PLATFORM_SPEED);
-    cart.x += (cart.dx * elapsed) / 1000;
+    cart.dx += (cart.ddx * elapsed) / TICK_PERIOD;
+    if (cart.dx > 0) {
+      cart.dx = Math.min(cart.dx, DEFAULT_PLATFORM_SPEED);
+    } else {
+      cart.dx = Math.max(cart.dx, -DEFAULT_PLATFORM_SPEED);
+    }
+    cart.x += (cart.dx * elapsed) / TICK_PERIOD;
 
     if (cart.x > FIELD_WIDTH - cart.w) {
       cart.x = FIELD_WIDTH - cart.w;
@@ -151,8 +157,8 @@ export const GameView = (props: IGameViewProps) => {
   };
 
   const moveBall = (elapsed: number) => {
-    ball.x += (ball.dx * elapsed) / 1000;
-    ball.y += (ball.dy * elapsed) / 1000;
+    ball.x += (ball.dx * elapsed) / TICK_PERIOD;
+    ball.y += (ball.dy * elapsed) / TICK_PERIOD;
 
     const leftBump = ball.x - ball.radius < 0;
     const rightBump = ball.x - FIELD_WIDTH > 0;
@@ -300,6 +306,19 @@ export const GameView = (props: IGameViewProps) => {
     ctx!.setLineDash([]);
   };
 
+  const drawContractNearestBricks = () => {
+    ctx!.strokeStyle = 'orange';
+    ctx!.setLineDash([]);
+
+    contractNearestBricks.forEach((brick) => {
+      ctx!.beginPath();
+      ctx!.rect(brick.x, brick.y, brick.w, brick.h);
+      ctx!.stroke();
+      ctx!.closePath();
+    });
+    ctx!.setLineDash([]);
+  };
+
   const drawCart = () => {
     ctx!.beginPath();
     ctx!.rect(cart.x, cart.y, cart.w, cart.h);
@@ -394,6 +413,7 @@ export const GameView = (props: IGameViewProps) => {
   };
 
   const startGame = () => {
+    setWinable(true);
     setLost(false);
     setWin(false);
     lastTime = undefined;
@@ -625,19 +645,24 @@ export const GameView = (props: IGameViewProps) => {
 
       contractBallTrace.push([x, y]);
 
+      const contractBrickToBrick = (brick: IContractBrick) => {
+        let x = brick.pos.x * 1;
+        let y = brick.pos.y * 1;
+        return {
+          x,
+          y,
+          w: 2 * BRICK_HALF_WIDTH,
+          h: 2 * BRICK_HALF_WIDTH,
+          value: +brick.value.toString(),
+        } as IContractBrickPorted;
+      };
+
       contractBricks = gameContext.bricks.bricks
-        .map((brick: IContractBrick) => {
-          let x = brick.pos.x * 1;
-          let y = brick.pos.y * 1;
-          return {
-            x,
-            y,
-            w: 2 * BRICK_HALF_WIDTH,
-            h: 2 * BRICK_HALF_WIDTH,
-            value: +brick.value.toString(),
-          } as IContractBrickPorted;
-        })
+        .map(contractBrickToBrick)
         .filter((brick: IContractBrickPorted) => brick.value > 1);
+
+      contractNearestBricks =
+        gameContext.nearestBricks.map(contractBrickToBrick);
 
       contractCart = {
         ...cart,
