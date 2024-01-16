@@ -9,7 +9,7 @@ import {
   defaultLevel,
   CHUNK_LENGTH,
 } from 'zknoid-chain-dev';
-import { Bool, Int64, PublicKey } from 'o1js';
+import { Bool, Int64, PrivateKey, PublicKey } from 'o1js';
 import Link from 'next/link';
 import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
 import { useNetworkStore } from '@/lib/stores/network';
@@ -25,6 +25,7 @@ import { useMinaBalancesStore, useObserveMinaBalance } from '@/lib/stores/minaBa
 import Header from '../Header';
 import { GameType } from '@/app/constants/games';
 import { randzuCompetitions } from '@/app/constants/randzuCompetitions';
+import { useObserveRandzuMatchQueue, useRandzuMatchQueueStore } from '@/lib/stores/randzu/matchQueue';
 
 enum GameState {
   NotStarted,
@@ -62,6 +63,7 @@ export default function RandzuPage({
   usePollProtokitBlockHeight();
   useObserveMinaBalance();
   useObserveProtokitBalance();
+  useObserveRandzuMatchQueue();
 
   const minaBalances = useMinaBalancesStore();
   const protokitBalances = useProtokitBalancesStore();
@@ -74,16 +76,30 @@ export default function RandzuPage({
     null,
   );
   const networkStore = useNetworkStore();
+  const matchQueue = useRandzuMatchQueueStore();
 
   const bridge = useMinaBridge(competition?.enteringPrice! * 10 ** 9);
 
   const startGame = async () => {
-    console.log(competition!.enteringPrice);
     if (competition!.enteringPrice > 0) {
       console.log(await bridge());
     }
 
+    const matchMaker = client.client!.runtime.resolve('MatchMaker');
+    const key = PrivateKey.random();
+
+    const tx = await client.client!.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        matchMaker.register(key.toPublicKey());
+      },
+    );
+
+    await tx.sign();
+    await tx.send();
+
     setGameState(GameState.MatchRegistration);
+
     // setGameId(gameId + 1);
   };
 
@@ -258,7 +274,7 @@ export default function RandzuPage({
           setScore={setScore}
           setTicksAmount={setTicksAmount}
         />
-        <div>Players in queue: {0}</div>
+        <div>Players in queue: {matchQueue.getQueueLength()}</div>
         <div className="grow"></div>
         <div className="flex flex-col gap-10">
           <div>
