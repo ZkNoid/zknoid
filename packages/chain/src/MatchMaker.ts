@@ -12,9 +12,9 @@ import {
   
   const PENDING_BLOCKS_NUM = UInt64.from(5);
 
-  export class RoundIdxKey extends Struct({
+  export class RoundIdxUser extends Struct({
     roundId: UInt64,
-    sessionKey: PublicKey
+    userAddress: PublicKey
   }) { }
 
   export class RoundIdxIndex extends Struct({
@@ -29,13 +29,13 @@ import {
       PublicKey,
       PublicKey
     );
-    // mapping(roundId => mapping(registered session key => bool))
-    @state() public queueRegisteredRoundSessionKeys = StateMap.from<RoundIdxKey, Bool>(
-      RoundIdxKey,
+    // mapping(roundId => mapping(registered user address => bool))
+    @state() public queueRegisteredRoundUsers = StateMap.from<RoundIdxUser, Bool>(
+      RoundIdxUser,
       Bool
     );
     // mapping(roundId => SessionKey[])
-    @state() public queueRoundSessionKeysList = StateMap.from<RoundIdxIndex, PublicKey>(
+    @state() public queueRoundUsersList = StateMap.from<RoundIdxIndex, PublicKey>(
       RoundIdxIndex,
       PublicKey
     );
@@ -56,16 +56,16 @@ import {
       const queueLength = this.queueLength.get(roundId).orElse(UInt64.from(0));
 
       // If already registered place player on 99999999999 place in queue
-      const nextIndex = Provable.if(this.queueRegisteredRoundSessionKeys.get(
-        new RoundIdxKey({roundId, sessionKey})).isSome.not(),
+      const nextIndex = Provable.if(this.queueRegisteredRoundUsers.get(
+        new RoundIdxUser({roundId, userAddress: this.transaction.sender})).isSome.not(),
         queueLength, UInt64.from(99999999999)
       );
-      const queueLengthDiff = Provable.if(this.queueRegisteredRoundSessionKeys.get(
-        new RoundIdxKey({roundId, sessionKey})).isSome.not(),
+      const queueLengthDiff = Provable.if(this.queueRegisteredRoundUsers.get(
+        new RoundIdxUser({roundId, userAddress: this.transaction.sender})).isSome.not(),
         UInt64.from(1), UInt64.from(0)
       );
-      this.queueRoundSessionKeysList.set(new RoundIdxIndex({roundId, index: nextIndex}), sessionKey);
-      this.queueRegisteredRoundSessionKeys.set(new RoundIdxKey({roundId, sessionKey}), Bool(true));
+      this.queueRoundUsersList.set(new RoundIdxIndex({roundId, index: nextIndex}), sessionKey);
+      this.queueRegisteredRoundUsers.set(new RoundIdxUser({roundId, userAddress: this.transaction.sender}), Bool(true));
       this.queueLength.set(roundId, queueLength.add(queueLengthDiff));
     }
 
