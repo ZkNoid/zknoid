@@ -2,7 +2,7 @@
 import { NETWORKS, Network } from "@/app/constants/networks";
 import { PendingTransaction } from "@proto-kit/sequencer";
 import { Mina } from "o1js";
-import { client } from "zknoid-chain";
+import { client } from "zknoid-chain-dev";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 

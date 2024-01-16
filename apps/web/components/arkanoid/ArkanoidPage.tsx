@@ -244,8 +244,7 @@ export default function ArkanoidPage({
           setScore={setScore}
           setTicksAmount={setTicksAmount}
         />
-        <div>Score: {score}</div>
-        <div>Ticks: {ticksAmount}</div>
+        <div>Score: {score}    Ticks: {ticksAmount}</div>
         <div className="grow"></div>
         <div className="flex flex-col gap-10">
           <div>
