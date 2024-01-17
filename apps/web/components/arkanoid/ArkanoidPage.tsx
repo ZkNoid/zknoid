@@ -171,8 +171,8 @@ export default function ArkanoidPage({
       <Header
         address={networkStore.address}
         connectWallet={networkStore.connectWallet}
-        minaBalance={networkStore.address ? minaBalances.balances[networkStore.address] : "0"}
-        protokitBalance={networkStore.address ? protokitBalances.balances[networkStore.address] : "0"}
+        minaBalance={networkStore.address ? minaBalances.balances[networkStore.address] : 0n}
+        protokitBalance={networkStore.address ? protokitBalances.balances[networkStore.address] : 0n}
         walletInstalled={networkStore.walletInstalled()}
         currentGame={GameType.Arkanoid}
       />

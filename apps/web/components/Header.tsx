@@ -9,8 +9,8 @@ import { DepositMenuItem } from "./DepositMenuItem";
 
 export interface HeaderProps {
     walletInstalled: boolean;
-    minaBalance?: string;
-    protokitBalance?: string;
+    minaBalance?: bigint;
+    protokitBalance?: bigint;
     address?: string;
     connectWallet: () => void;
     currentGame: string
@@ -54,10 +54,10 @@ export default function Header({
                     <div className="flex gap-5 items-center">
                             <div className="flex flex-col w-60">
                                 <div>
-                                    {minaBalance ? (parseInt(minaBalance) / 10 ** 9).toFixed(2) : 0} MINA
+                                    {minaBalance ? (Number(minaBalance) / 10 ** 9).toFixed(2) : 0} MINA
                                 </div>
                                 <div>
-                                    {protokitBalance ? (parseInt(protokitBalance) / 10 ** 9).toFixed(2) : 0} 🪙 
+                                    {protokitBalance ? (Number(protokitBalance) / 10 ** 9).toFixed(2) : 0} 🪙 
                                     <DepositMenuItem />
                                 </div>
                             </div>

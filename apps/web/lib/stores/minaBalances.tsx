@@ -10,7 +10,7 @@ export interface BalancesState {
   loading: boolean;
   balances: {
     // address - balance
-    [key: string]: string;
+    [key: string]: bigint;
   };
   loadBalance: (chainId: string, address: string) => Promise<void>;
 }
@@ -57,14 +57,12 @@ export const useMinaBalancesStore = create<
         }),
       });
 
-      console.log('Balance resp', response)
-
       const { data } = (await response.json()) as BalanceQueryResponse;
-      const balance = data.account?.balance.total;
+      const balance = BigInt(data.account?.balance.total ?? "0");
 
       set((state) => {
         state.loading = false;
-        state.balances[address] = balance ?? "0";
+        state.balances[address] = balance ?? 0n;
       });
     },
   })),

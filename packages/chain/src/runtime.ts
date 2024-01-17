@@ -7,11 +7,11 @@ export default {
     modules: {
         GameHub,
         Balances,
-        MatchMaker
+        // MatchMaker
     },
     config: {
         GameHub: {},
         Balances: {},
-        MatchMaker: {}
+        // MatchMaker: {}
     },
 };

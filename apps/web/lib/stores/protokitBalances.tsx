@@ -12,7 +12,7 @@ export interface BalancesState {
     loading: boolean;
     balances: {
         // address - balance
-        [key: string]: string;
+        [key: string]: bigint;
     };
     loadBalance: (client: Client, address: string) => Promise<void>;
 }
@@ -42,10 +42,9 @@ export const useProtokitBalancesStore = create<
 
             set((state) => {
                 state.loading = false;
-                state.balances[address] = balance?.toString() ?? "0";
+                state.balances[address] = balance?.toBigInt() ?? BigInt(0);
             });
         },
-        
     })),
 );
 
@@ -64,11 +63,12 @@ export const useObserveProtokitBalance = () => {
 
 export const useMinaBridge = (amount: number) => {
     const client = useClientStore();
-    // const balances = useProtokitBalancesStore();
+    const balancesStore = useProtokitBalancesStore();
     const network = useNetworkStore();
 
     return useCallback(async () => {
         if (!client.client || !network.address) return;
+        if (balancesStore.balances[network.address]) return;
 
         const l1tx = await Mina.transaction(() => {
             let senderUpdate = AccountUpdate.create(PublicKey.fromBase58(network.address!));
@@ -102,5 +102,5 @@ export const useMinaBridge = (amount: number) => {
 
         network.addPendingL2Transaction(l2tx!.transaction!);
 
-    }, [client.client, network.address]);
+    }, [client.client, network.address, balancesStore.balances]);
 };
