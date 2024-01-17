@@ -5,12 +5,12 @@ import {
     runtimeMethod,
   } from "@proto-kit/module";
   import { State, StateMap, assert } from "@proto-kit/protocol";
-  import { PublicKey, Struct, UInt64, Provable, Bool } from "o1js";
+  import { PublicKey, Struct, UInt64, Provable, Bool, UInt32, U } from "o1js";
   
-  interface MatchMakerConfig {
-  }
+  interface MatchMakerConfig { }
   
   const PENDING_BLOCKS_NUM = UInt64.from(5);
+  const RANDZU_FIELD_SIZE = 15 * 15;
 
   export class RoundIdxUser extends Struct({
     roundId: UInt64,
@@ -20,6 +20,20 @@ import {
   export class RoundIdxIndex extends Struct({
     roundId: UInt64,
     index: UInt64
+  }) { }
+
+  export class AddressxAddress extends Struct({
+    user1: PublicKey,
+    user2: PublicKey
+  }) { }
+
+  export class RandzuField extends Struct({
+    field: Provable.Array(UInt32, RANDZU_FIELD_SIZE),
+  }) { }
+
+  export class QueueListItem extends Struct({
+    userAddress: PublicKey,
+    registrationTimestamp: UInt64
   }) { }
 
   @runtimeModule()
@@ -35,52 +49,76 @@ import {
       Bool
     );
     // mapping(roundId => SessionKey[])
-    @state() public queueRoundUsersList = StateMap.from<RoundIdxIndex, PublicKey>(
+    @state() public queueRoundUsersList = StateMap.from<RoundIdxIndex, QueueListItem>(
       RoundIdxIndex,
-      PublicKey
+      QueueListItem
     );
     @state() public queueLength = StateMap.from<UInt64, UInt64>(
       UInt64,
       UInt64
     );
-    @state() public confirmations = StateMap.from<PublicKey, PublicKey>(
+
+    @state() public inGame = StateMap.from<PublicKey, Bool>(
       PublicKey,
-      PublicKey
+      Bool
+    );
+
+    @state() public activeGames = StateMap.from<AddressxAddress, RandzuField>(
+      AddressxAddress,
+      RandzuField
     );
   
     @runtimeMethod()
-    public register(sessionKey: PublicKey): void {
+    public register(sessionKey: PublicKey, timestamp: UInt64): void {
+      // If player in game – revert
+      this.inGame.get(this.transaction.sender).orElse(Bool(false)).assertEquals(false);
+
+      // Registering player session key
       this.sesions.set(sessionKey, this.transaction.sender);
       const roundId = this.network.block.height.div(PENDING_BLOCKS_NUM);
-      
+
+      // User can't re-register in round queue if already registered
+      this.queueRegisteredRoundUsers.get(new RoundIdxUser({roundId, userAddress: this.transaction.sender})).isSome.not();
+
       const queueLength = this.queueLength.get(roundId).orElse(UInt64.from(0));
 
-      // If already registered place player on 99999999999 place in queue
-      const nextIndex = Provable.if(this.queueRegisteredRoundUsers.get(
-        new RoundIdxUser({roundId, userAddress: this.transaction.sender})).isSome.not(),
-        queueLength, UInt64.from(99999999999)
+      const opponentReady = queueLength.greaterThan(UInt64.from(0));
+      const opponent = this.queueRoundUsersList.get(new RoundIdxIndex({ roundId, index: queueLength.sub(1) }));
+
+      // Setting that player is in game
+      this.inGame.set(this.transaction.sender, Bool(true));
+
+      // Setting that opponent is in game if opponent found
+      this.inGame.set(Provable.if(opponentReady, opponent.value.userAddress, PublicKey.empty()), Bool(true));
+
+      // Setting active game if opponent found
+      this.activeGames.set(
+        Provable.if(
+          opponentReady,
+          AddressxAddress,
+          new AddressxAddress({ user1: this.transaction.sender, user2: opponent.value.userAddress }), 
+          new AddressxAddress({ user1: PublicKey.empty(), user2: PublicKey.empty() })
+        ),
+        new RandzuField({
+          field: Array(RANDZU_FIELD_SIZE)
+        })
       );
-      const queueLengthDiff = Provable.if(this.queueRegisteredRoundUsers.get(
-        new RoundIdxUser({roundId, userAddress: this.transaction.sender})).isSome.not(),
-        UInt64.from(1), UInt64.from(0)
+
+      // If opponent not found – adding current user to the list
+      this.queueRoundUsersList.set(
+        new RoundIdxIndex({roundId, index: queueLength}), 
+        new QueueListItem({userAddress: Provable.if(opponentReady, PublicKey.empty(), this.transaction.sender), registrationTimestamp: timestamp})
       );
-      this.queueRoundUsersList.set(new RoundIdxIndex({roundId, index: nextIndex}), sessionKey);
-      this.queueRegisteredRoundUsers.set(new RoundIdxUser({roundId, userAddress: this.transaction.sender}), Bool(true));
-      this.queueLength.set(roundId, queueLength.add(queueLengthDiff));
-    }
 
-    @runtimeMethod()
-    public keepSession(): void {
-    }
+      // If opponent not found – registeting current user in the list
+      this.queueRegisteredRoundUsers.set(
+        new RoundIdxUser(
+          {roundId, userAddress: Provable.if(opponentReady, PublicKey.empty(), this.transaction.sender)}
+        ), 
+        Bool(true)
+      );
 
-    @runtimeMethod()
-    public requestMatch(opponentKey: PublicKey): void {
-      this.confirmations.set(this.transaction.sender, opponentKey);
+      // If opponent not found – incrementing queue length
+      this.queueLength.set(roundId, queueLength.add(Provable.if(opponentReady, UInt64.from(0), UInt64.from(1))));
     }
-
-    @runtimeMethod()
-    public confirmMatch(opponentKey: PublicKey): void {
-      this.confirmations.set(this.transaction.sender, opponentKey);
-    }
-
   }
