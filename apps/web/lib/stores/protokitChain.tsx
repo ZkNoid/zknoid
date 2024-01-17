@@ -33,8 +33,10 @@ export interface ChainState {
 export interface BlockQueryResponse {
   data: {
     network: {
-      block: {
-        height: string;
+      unproven?: {
+        block: {
+          height: string;
+        };
       };
     };
     block: ComputedBlockJSON;
@@ -56,31 +58,33 @@ export const useProtokitChainStore = create<ChainState, [["zustand/immer", never
         },
         body: JSON.stringify({
           query: `
-            query GetBlock {
-              block {
-                txs {
-                  tx {
-                    argsFields
-                    argsJSON
-                    methodId
-                    nonce
-                    sender
-                    signature {
-                      r
-                      s
-                    }
+          query GetBlock {
+            block {
+              txs {
+                tx {
+                  argsFields
+                  argsJSON
+                  methodId
+                  nonce
+                  sender
+                  signature {
+                    r
+                    s
                   }
-                  status
-                  statusMessage
                 }
+                status
+                statusMessage
               }
-              network {
+            }
+            network {
+              unproven {
                 block {
                   height
                 }
               }
             }
-          `,
+          }
+        `,
         }),
       });
 
@@ -88,10 +92,12 @@ export const useProtokitChainStore = create<ChainState, [["zustand/immer", never
 
       set((state) => {
         state.loading = false;
-        state.block = {
-          height: data.network.block.height,
-          ...data.block,
-        };
+        state.block = data.network.unproven
+        ? {
+            height: data.network.unproven.block.height,
+            ...data.block,
+          }
+        : undefined;
       });
     },
   })),

@@ -36,10 +36,10 @@
     "zustand": "^4.4.6"
   },
   "devDependencies": {
-    "@proto-kit/module": "0.1.1-develop.340",
-    "@proto-kit/protocol": "0.1.1-develop.340",
-    "@proto-kit/sdk": "0.1.1-develop.340",
-    "@proto-kit/sequencer": "0.1.1-develop.340",
+    "@proto-kit/module": "0.1.1-develop.457",
+    "@proto-kit/protocol": "0.1.1-develop.457",
+    "@proto-kit/sdk": "0.1.1-develop.457",
+    "@proto-kit/sequencer": "0.1.1-develop.457",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -54,9 +54,9 @@
     "typescript": "^5"
   },
   "peerDependencies": {
-    "@proto-kit/module": "0.1.1-develop.340",
-    "@proto-kit/sdk": "0.1.1-develop.340",
-    "@proto-kit/sequencer": "0.1.1-develop.340",
+    "@proto-kit/module": "0.1.1-develop.457",
+    "@proto-kit/sdk": "0.1.1-develop.457",
+    "@proto-kit/sequencer": "0.1.1-develop.457",
     "o1js": "0.13.1"
   }
 }
