@@ -91,7 +91,7 @@ export default function RandzuPage({
     const tx = await client.client!.transaction(
       PublicKey.fromBase58(networkStore.address!),
       () => {
-        matchMaker.register(key.toPublicKey(), UInt64.from(Date.now() / 1000));
+        matchMaker.register(key.toPublicKey(), UInt64.from(Math.round(Date.now() / 1000)));
       },
     );
 

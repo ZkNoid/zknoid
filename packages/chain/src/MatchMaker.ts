@@ -83,7 +83,7 @@ import {
       const queueLength = this.queueLength.get(roundId).orElse(UInt64.from(0));
 
       const opponentReady = queueLength.greaterThan(UInt64.from(0));
-      const opponent = this.queueRoundUsersList.get(new RoundIdxIndex({ roundId, index: queueLength.sub(1) }));
+      const opponent = this.queueRoundUsersList.get(new RoundIdxIndex({ roundId, index: queueLength.sub(Provable.if(opponentReady, UInt64.from(1), UInt64.from(0))) }));
 
       // Setting that player is in game
       this.inGame.set(this.transaction.sender, Bool(true));
