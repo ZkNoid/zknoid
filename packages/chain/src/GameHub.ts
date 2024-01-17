@@ -155,7 +155,6 @@ export class GameHub extends RuntimeModule<unknown> {
         const currentScore = this.gameRecords.get(gameKey).value;
         const newScore = gameRecordProof.publicOutput.score;
 
-
         if (currentScore < newScore) {
             this.gameRecords.set(gameKey, newScore);
 

@@ -9,7 +9,7 @@ import {
   defaultLevel,
   CHUNK_LENGTH,
 } from 'zknoid-chain-dev';
-import { Bool, Int64, PrivateKey, PublicKey } from 'o1js';
+import { Bool, Int64, PrivateKey, PublicKey, UInt64 } from 'o1js';
 import Link from 'next/link';
 import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
 import { useNetworkStore } from '@/lib/stores/network';
@@ -91,7 +91,7 @@ export default function RandzuPage({
     const tx = await client.client!.transaction(
       PublicKey.fromBase58(networkStore.address!),
       () => {
-        matchMaker.register(key.toPublicKey());
+        matchMaker.register(key.toPublicKey(), UInt64.from(Date.now() / 1000));
       },
     );
 
