@@ -118,7 +118,7 @@ import {
         Bool(true)
       );
 
-      // If opponent not found – incrementing queue length
-      this.queueLength.set(roundId, queueLength.add(Provable.if(opponentReady, UInt64.from(0), UInt64.from(1))));
+      // If opponent not found – incrementing queue length. If found – removing opponent by length decreasing 
+      this.queueLength.set(roundId, (Provable.if(opponentReady, queueLength.sub(1), queueLength.add(1))));
     }
   }
