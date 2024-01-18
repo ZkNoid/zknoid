@@ -1,5 +1,6 @@
 import { NETWORKS } from "@/app/constants/networks";
 import { useNetworkStore } from "@/lib/stores/network";
+import { walletInstalled } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 export const NetworkPicker = ({autoconnect}: {autoconnect: boolean}) => {
@@ -16,6 +17,8 @@ export const NetworkPicker = ({autoconnect}: {autoconnect: boolean}) => {
     }
 
     useEffect(() => {
+        if (!walletInstalled()) return;
+
         (async () => {
             const network = await (window as any).mina.requestNetwork();
             networkStore.setNetwork(network.chainId);
@@ -33,6 +36,8 @@ export const NetworkPicker = ({autoconnect}: {autoconnect: boolean}) => {
     }, []);
 
     useEffect(() => {
+        if (!walletInstalled()) return;
+
         (async () => {
             const [account] = await (window as any).mina.requestAccounts();
 
@@ -52,6 +57,8 @@ export const NetworkPicker = ({autoconnect}: {autoconnect: boolean}) => {
     }, []);
 
     useEffect(() => {
+        if (!walletInstalled()) return;
+
         if (autoconnect) {
             networkStore.connectWallet();
         }

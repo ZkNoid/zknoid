@@ -26,6 +26,7 @@ import Header from '../Header';
 import { GameType } from '@/app/constants/games';
 import { randzuCompetitions } from '@/app/constants/randzuCompetitions';
 import { useObserveRandzuMatchQueue, useRandzuMatchQueueStore } from '@/lib/stores/randzu/matchQueue';
+import { walletInstalled } from '@/lib/utils';
 
 enum GameState {
   NotStarted,
@@ -239,14 +240,22 @@ export default function RandzuPage({
               )}
             </div>
           </div>
-        ) : (
-          <div
-            className="rounded-xl bg-slate-300 p-5"
-            onClick={async () => networkStore.connectWallet()}
-          >
-            Connect wallet
-          </div>
-        )}
+        ) : 
+          walletInstalled() ? (
+            <div
+              className="rounded-xl bg-slate-300 p-5"
+              onClick={async () => networkStore.connectWallet()}
+            >
+              Connect wallet
+            </div>
+          ) : (
+            <Link href="https://www.aurowallet.com/"
+              className="rounded-xl bg-slate-300 p-5"
+              rel="noopener noreferrer" target="_blank"
+            >
+                Install wallet
+            </Link>
+          )}
 
         {gameState == GameState.MatchRegistration && (
           <div>
