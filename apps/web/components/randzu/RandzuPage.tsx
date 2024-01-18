@@ -186,6 +186,17 @@ export default function RandzuPage({
     }
   };
 
+  useEffect(() => {
+    if (matchQueue.inQueue && !matchQueue.activeGameId) {
+      setGameState(GameState.Matchmaking);
+    }
+
+    if (matchQueue.activeGameId) {
+      setGameState(GameState.Active);
+    }
+
+  }, [matchQueue.activeGameId, matchQueue.inQueue]);
+
   return (
     <>
       <Header
@@ -265,6 +276,11 @@ export default function RandzuPage({
         {gameState == GameState.Matchmaking && (
           <div>
             Searching for opponents 🔍 ...
+          </div>
+        )} 
+        {gameState == GameState.Active && (
+          <div>
+            Game started
           </div>
         )} 
 

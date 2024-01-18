@@ -6,13 +6,18 @@ import { PublicKey, UInt64 } from "o1js";
 import { useEffect } from "react";
 import { useProtokitChainStore } from "../protokitChain";
 import { useNetworkStore } from "../network";
+import { RoundIdxUser } from "zknoid-chain-dev/dist/MatchMaker";
 
 
 export interface MatchQueueState {
     loading: boolean;
     queueLength: number;
+    inQueue: boolean;
+    activeGameId: BigInt;
     getQueueLength: () => number;
     loadMatchQueue: (client: Client, blockHeight: number) => Promise<void>;
+    loadActiveGame: (client: Client, blockHeight: number, address: PublicKey) => Promise<void>;
+
 }
 
 function isPendingTransaction(
@@ -32,6 +37,8 @@ export const useRandzuMatchQueueStore = create<
         loading: Boolean(false),
         leaderboard: {},
         queueLength: 0,
+        activeGameId: BigInt(0),
+        inQueue: false,
         getQueueLength() {
             return this.queueLength;
         },
@@ -50,7 +57,33 @@ export const useRandzuMatchQueueStore = create<
                 state.loading = false;
             });
         },
-        
+        async loadActiveGame(client: Client, blockHeight: number, address: PublicKey) {
+            set((state) => {
+                state.loading = true;
+            });
+
+            const activeGameId = await client.query.runtime.MatchMaker.activeGameId.get(
+                address
+            );
+            console.log(client.query.runtime.MatchMaker.queueRegisteredRoundUsers, address);
+            const inQueue = await client.query.runtime.MatchMaker.queueRegisteredRoundUsers.get(
+                // @ts-expect-error
+                new RoundIdxUser({
+                    roundId: UInt64.from(blockHeight).div(PENDING_BLOCKS_NUM),
+                    userAddress: address
+                })
+            );
+
+            console.log('Active game id', activeGameId?.toBigInt());
+            console.log('In queue', inQueue?.toBoolean());
+
+            set((state) => {
+                // @ts-ignore
+                state.activeGameId = activeGameId?.toBigInt() || 0;
+                state.inQueue = inQueue?.toBoolean();
+                state.loading = false;
+            });
+        },
     })),
 );
 
@@ -64,5 +97,6 @@ export const useObserveRandzuMatchQueue = () => {
         if (!client.client || !network.address) return;
 
         matchQueue.loadMatchQueue(client.client, parseInt(chain.block?.height ?? "0"));
+        matchQueue.loadActiveGame(client.client, parseInt(chain.block?.height ?? "0"), PublicKey.fromBase58(network.address));
     }, [client.client, chain.block?.height, network.address]);
 };

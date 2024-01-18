@@ -27,7 +27,10 @@ import {
     user2: PublicKey
   }) { }
 
-  export class RandzuField extends Struct({
+  export class GameInfo extends Struct({
+    player1: PublicKey,
+    player2: PublicKey,
+    currentMoveUser: PublicKey,
     field: Provable.Array(UInt32, RANDZU_FIELD_SIZE),
   }) { }
 
@@ -58,51 +61,62 @@ import {
       UInt64
     );
 
-    @state() public inGame = StateMap.from<PublicKey, Bool>(
+    @state() public activeGameId = StateMap.from<PublicKey, UInt64>(
       PublicKey,
-      Bool
+      UInt64
     );
 
-    @state() public activeGames = StateMap.from<AddressxAddress, RandzuField>(
-      AddressxAddress,
-      RandzuField
+    // Game ids start from 1
+    @state() public games = StateMap.from<UInt64, GameInfo>(
+      UInt64,
+      GameInfo
     );
+
+    @state() public gamesNum = State.from<UInt64>(UInt64);
   
     @runtimeMethod()
     public register(sessionKey: PublicKey, timestamp: UInt64): void {
       // If player in game – revert
-      this.inGame.get(this.transaction.sender).orElse(Bool(false)).assertEquals(false);
+      assert(this.activeGameId.get(this.transaction.sender).orElse(UInt64.from(0)).equals(UInt64.from(0)), "Player already in game");
 
       // Registering player session key
       this.sesions.set(sessionKey, this.transaction.sender);
       const roundId = this.network.block.height.div(PENDING_BLOCKS_NUM);
 
       // User can't re-register in round queue if already registered
-      this.queueRegisteredRoundUsers.get(new RoundIdxUser({roundId, userAddress: this.transaction.sender})).isSome.not();
+      assert(
+        this.queueRegisteredRoundUsers.get(new RoundIdxUser({roundId, userAddress: this.transaction.sender})).isSome.not(),
+        "User already in queue"
+      );
 
       const queueLength = this.queueLength.get(roundId).orElse(UInt64.from(0));
 
       const opponentReady = queueLength.greaterThan(UInt64.from(0));
-      const opponent = this.queueRoundUsersList.get(new RoundIdxIndex({ roundId, index: queueLength.sub(Provable.if(opponentReady, UInt64.from(1), UInt64.from(0))) }));
+      const opponent = this.queueRoundUsersList.get(
+        new RoundIdxIndex({ roundId, index: queueLength.sub(Provable.if(opponentReady, UInt64.from(1), UInt64.from(0))) })
+      );
 
-      // Setting that player is in game
-      this.inGame.set(this.transaction.sender, Bool(true));
-
-      // Setting that opponent is in game if opponent found
-      this.inGame.set(Provable.if(opponentReady, opponent.value.userAddress, PublicKey.empty()), Bool(true));
-
+      const gameId = this.gamesNum.get().orElse(UInt64.from(0)).add(UInt64.from(1));
       // Setting active game if opponent found
-      this.activeGames.set(
+      this.games.set(
         Provable.if(
           opponentReady,
-          AddressxAddress,
-          new AddressxAddress({ user1: this.transaction.sender, user2: opponent.value.userAddress }), 
-          new AddressxAddress({ user1: PublicKey.empty(), user2: PublicKey.empty() })
+          gameId,
+          UInt64.from(0)
         ),
-        new RandzuField({
+        new GameInfo({
+          player1: this.transaction.sender,
+          player2: opponent.value.userAddress,
+          currentMoveUser: this.transaction.sender,
           field: Array(RANDZU_FIELD_SIZE)
         })
       );
+
+      // Assigning new game to player if opponent found
+      this.activeGameId.set(this.transaction.sender, Provable.if(opponentReady, gameId, UInt64.from(0)));
+
+      // Setting that opponent is in game if opponent found
+      this.activeGameId.set(Provable.if(opponentReady, opponent.value.userAddress, PublicKey.empty()), gameId);
 
       // If opponent not found – adding current user to the list
       this.queueRoundUsersList.set(
