@@ -25,6 +25,7 @@ import { usePollProtokitBlockHeight } from '@/lib/stores/protokitChain';
 import { useMinaBalancesStore, useObserveMinaBalance } from '@/lib/stores/minaBalances';
 import Header from '../Header';
 import { GameType } from '@/app/constants/games';
+import { walletInstalled } from '@/lib/utils';
 
 enum GameState {
   NotStarted,
@@ -220,13 +221,19 @@ export default function ArkanoidPage({
               )}
             </div>
           </div>
-        ) : (
+        ) : walletInstalled() ? (
           <div
             className="rounded-xl bg-slate-300 p-5"
             onClick={async () => networkStore.connectWallet()}
           >
             Connect wallet
           </div>
+        ) : (
+          <Link href="https://www.aurowallet.com/"
+          className="rounded-xl bg-slate-300 p-5"
+              rel="noopener noreferrer" target="_blank">
+              Install wallet
+          </Link>
         )}
         <GameView
           onWin={(ticks) => {
