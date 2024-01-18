@@ -8,12 +8,20 @@ import { useProtokitChainStore } from "../protokitChain";
 import { useNetworkStore } from "../network";
 import { RoundIdxUser } from "zknoid-chain-dev/dist/MatchMaker";
 
+interface IGameInfo{
+    player1: PublicKey,
+    player2: PublicKey,
+    currentMoveUser: PublicKey,
+    field: number[],
+  }
 
 export interface MatchQueueState {
     loading: boolean;
     queueLength: number;
     inQueue: boolean;
     activeGameId: BigInt;
+    gameInfo: IGameInfo | undefined;
+
     getQueueLength: () => number;
     loadMatchQueue: (client: Client, blockHeight: number) => Promise<void>;
     loadActiveGame: (client: Client, blockHeight: number, address: PublicKey) => Promise<void>;
@@ -39,6 +47,7 @@ export const useRandzuMatchQueueStore = create<
         queueLength: 0,
         activeGameId: BigInt(0),
         inQueue: false,
+        gameInfo: undefined,
         getQueueLength() {
             return this.queueLength;
         },
@@ -76,6 +85,9 @@ export const useRandzuMatchQueueStore = create<
 
             console.log('Active game id', activeGameId?.toBigInt());
             console.log('In queue', inQueue?.toBoolean());
+
+            const gameInfo = await client.query.runtime.MatchMaker.games.get(UInt64.from(0));
+            console.log('Game info', gameInfo);
 
             set((state) => {
                 // @ts-ignore

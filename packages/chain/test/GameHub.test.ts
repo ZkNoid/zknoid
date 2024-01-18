@@ -69,9 +69,6 @@ describe('game hub', () => {
             modules: {
                 GameHub,
             },
-            config: {
-                GameHub: {},
-            },
         });
         const alicePrivateKey = PrivateKey.random();
         const alice = alicePrivateKey.toPublicKey();
