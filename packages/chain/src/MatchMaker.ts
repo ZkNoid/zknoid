@@ -108,7 +108,7 @@ import {
           player1: this.transaction.sender,
           player2: opponent.value.userAddress,
           currentMoveUser: this.transaction.sender,
-          field: Array(RANDZU_FIELD_SIZE)
+          field: Array(RANDZU_FIELD_SIZE).fill(UInt32.from(0))
         })
       );
 

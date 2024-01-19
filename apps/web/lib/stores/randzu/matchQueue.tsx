@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { Client, useClientStore } from "../client";
 import { immer } from "zustand/middleware/immer";
 import { PendingTransaction, UnsignedTransaction } from "@proto-kit/sequencer";
-import { PublicKey, UInt64 } from "o1js";
+import { PublicKey, UInt32, UInt64 } from "o1js";
 import { useEffect } from "react";
 import { useProtokitChainStore } from "../protokitChain";
 import { useNetworkStore } from "../network";
@@ -13,6 +13,7 @@ interface IGameInfo{
     player2: PublicKey,
     currentMoveUser: PublicKey,
     field: number[],
+    currentUserId: number
   }
 
 export interface MatchQueueState {
@@ -87,7 +88,21 @@ export const useRandzuMatchQueueStore = create<
             console.log('In queue', inQueue?.toBoolean());
 
             const gameInfo = await client.query.runtime.MatchMaker.games.get(UInt64.from(0));
-            console.log('Game info', gameInfo);
+
+            if (gameInfo) {    
+                set((state) => {
+                    // @ts-ignore
+                    state.gameInfo = {
+                        player1: gameInfo.player1 as PublicKey,
+                        player2: gameInfo.player2 as PublicKey,
+                        currentMoveUser: gameInfo.currentMoveUser as PublicKey,
+                        field: gameInfo.field.map((x: UInt32) => x.toBigint()),
+                        currentUserId: address.equals(gameInfo.player1 as PublicKey).toBoolean() ? 0 : 1
+                    }
+                    console.log(address.toBase58());
+                    console.log('Parsed game info', state.gameInfo);
+                })
+            }
 
             set((state) => {
                 // @ts-ignore
