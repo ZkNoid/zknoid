@@ -245,6 +245,7 @@ export default function ArkanoidPage({
             setLastTicks(ticks);
             setGameState(GameState.Lost);
           }}
+          onRestart={() => startGame()}
           level={level}
           gameId={gameId}
           debug={debug}

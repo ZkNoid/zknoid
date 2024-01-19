@@ -30,6 +30,7 @@ export interface ITick {
 interface IGameViewProps {
   gameId: number;
   onWin: (ticks: ITick[]) => void;
+  onRestart: () => void;
   onLost: (ticks: ITick[]) => void;
   setScore: (score: number) => void;
   setTicksAmount: (ticksAmount: number) => void;
@@ -398,6 +399,10 @@ export const GameView = (props: IGameViewProps) => {
 
       cart.ddx = -ACCELERATION;
     }
+
+    if (e.key.toLowerCase() === 'r') {
+      onRestart();
+    }
   };
 
   const keyUp = (e: KeyboardEvent) => {
@@ -523,6 +528,11 @@ export const GameView = (props: IGameViewProps) => {
 
     props.onWin(ticksCache);
     return;
+  };
+
+  const onRestart = async () => {
+    stopped = true;
+    props.onRestart();
   };
 
   const onLost = async () => {
