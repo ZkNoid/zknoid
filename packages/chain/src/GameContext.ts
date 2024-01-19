@@ -324,7 +324,7 @@ export class GameContext extends Struct({
             const collisionHappen = isAlive.and(
                 hasRightPass
                     .and(hasRightBump)
-                    .or(hasLeftPass.and(hasRightBump))
+                    .or(hasLeftPass.and(hasLeftBump))
                     .or(hasTopPass.and(hasTopBump))
                     .or(hasBottomPass.and(hasBottomBump))
             );
