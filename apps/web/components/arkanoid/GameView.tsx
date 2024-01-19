@@ -30,6 +30,7 @@ export interface ITick {
 interface IGameViewProps {
   gameId: number;
   onWin: (ticks: ITick[]) => void;
+  onRestart: (ticks: ITick[]) => void;
   onLost: (ticks: ITick[]) => void;
   setScore: (score: number) => void;
   setTicksAmount: (ticksAmount: number) => void;
@@ -354,7 +355,7 @@ export const GameView = (props: IGameViewProps) => {
     ctx!.stroke();
     ctx!.closePath();
 
-    // Contract ball trace
+    // Contract ball trace line
     ctx!.beginPath();
     ctx!.strokeStyle = 'red';
     if (contractBallTrace.length > 0) {
@@ -365,6 +366,14 @@ export const GameView = (props: IGameViewProps) => {
     }
     ctx!.stroke();
     ctx!.closePath();
+
+    // // Contract ball position trace
+    // for (const point of contractBallTrace) {
+    //   ctx!.beginPath();
+    //   ctx!.arc(point[0], point[1], 3, 0, Math.PI * 2);
+    //   ctx!.fill();
+    //   ctx!.closePath();
+    // }
 
     ctx!.lineWidth = prevLineWidth;
     ctx!.setLineDash([]);
@@ -397,6 +406,11 @@ export const GameView = (props: IGameViewProps) => {
       // }
 
       cart.ddx = -ACCELERATION;
+    }
+
+    if (e.key.toLowerCase() === 'r') {
+      // #TODO restarts. Now starts to freeze after several restarts
+      // onRestart();
     }
   };
 
@@ -523,6 +537,11 @@ export const GameView = (props: IGameViewProps) => {
 
     props.onWin(ticksCache);
     return;
+  };
+
+  const onRestart = async () => {
+    stopped = true;
+    props.onRestart(ticksCache);
   };
 
   const onLost = async () => {

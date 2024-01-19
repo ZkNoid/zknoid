@@ -14,7 +14,11 @@ import Link from 'next/link';
 import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
 import { useNetworkStore } from '@/lib/stores/network';
 import { arkanoidCompetitions } from '@/app/constants/akanoidCompetitions';
-import { useMinaBridge, useObserveProtokitBalance, useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
+import {
+  useMinaBridge,
+  useObserveProtokitBalance,
+  useProtokitBalancesStore,
+} from '@/lib/stores/protokitBalances';
 import {
   useArkanoidLeaderboardStore,
   useObserveArkanoidLeaderboard,
@@ -22,7 +26,10 @@ import {
 import { useClientStore } from '@/lib/stores/client';
 import { usePollMinaBlockHeight } from '@/lib/stores/minaChain';
 import { usePollProtokitBlockHeight } from '@/lib/stores/protokitChain';
-import { useMinaBalancesStore, useObserveMinaBalance } from '@/lib/stores/minaBalances';
+import {
+  useMinaBalancesStore,
+  useObserveMinaBalance,
+} from '@/lib/stores/minaBalances';
 import Header from '../Header';
 import { GameType } from '@/app/constants/games';
 import { walletInstalled } from '@/lib/utils';
@@ -172,8 +179,16 @@ export default function ArkanoidPage({
       <Header
         address={networkStore.address}
         connectWallet={networkStore.connectWallet}
-        minaBalance={networkStore.address ? minaBalances.balances[networkStore.address] : 0n}
-        protokitBalance={networkStore.address ? protokitBalances.balances[networkStore.address] : 0n}
+        minaBalance={
+          networkStore.address
+            ? minaBalances.balances[networkStore.address]
+            : 0n
+        }
+        protokitBalance={
+          networkStore.address
+            ? protokitBalances.balances[networkStore.address]
+            : 0n
+        }
         walletInstalled={networkStore.walletInstalled()}
         currentGame={GameType.Arkanoid}
       />
@@ -229,10 +244,13 @@ export default function ArkanoidPage({
             Connect wallet
           </div>
         ) : (
-          <Link href="https://www.aurowallet.com/"
-          className="rounded-xl bg-slate-300 p-5"
-              rel="noopener noreferrer" target="_blank">
-              Install wallet
+          <Link
+            href="https://www.aurowallet.com/"
+            className="rounded-xl bg-slate-300 p-5"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Install wallet
           </Link>
         )}
         <GameView
@@ -245,13 +263,19 @@ export default function ArkanoidPage({
             setLastTicks(ticks);
             setGameState(GameState.Lost);
           }}
+          onRestart={(ticks) => {
+            setLastTicks(ticks);
+            startGame();
+          }}
           level={level}
           gameId={gameId}
           debug={debug}
           setScore={setScore}
           setTicksAmount={setTicksAmount}
         />
-        <div>Score: {score}    Ticks: {ticksAmount}</div>
+        <div>
+          Score: {score} Ticks: {ticksAmount}
+        </div>
         <div className="grow"></div>
         <div className="flex flex-col gap-10">
           <div>
