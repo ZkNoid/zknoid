@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { GameView, ITick } from '@/components/randzu/GameView';
+import { GameView } from '@/components/randzu/GameView';
 import {
   Bricks,
   GameInputs,
@@ -50,7 +50,6 @@ export default function RandzuPage({
   params: { competitionId: string };
 }) {
   const [gameState, setGameState] = useState(GameState.NotStarted);
-  const [lastTicks, setLastTicks] = useState<ITick[]>([]);
   const [score, setScore] = useState<number>(0);
   const [ticksAmount, setTicksAmount] = useState<number>(0);
   const competition = randzuCompetitions.find(
@@ -142,50 +141,6 @@ export default function RandzuPage({
     client.start();
   }, []);
 
-  const proof = async () => {
-    console.log('Ticks', lastTicks);
-
-    let chunks = chunkenize(
-      lastTicks.map(
-        (elem) =>
-          // @ts-expect-error
-          new Tick({
-            action: Int64.from(elem.action),
-            momentum: Int64.from(elem.momentum),
-          }),
-      ),
-      CHUNK_LENGTH,
-    );
-
-    // @ts-expect-error
-    let userInputs = chunks.map((chunk) => new GameInputs({ ticks: chunk }));
-
-    try {
-      const proof = await workerClient?.proveGameRecord({
-        bricks: level,
-        inputs: userInputs,
-        debug: Bool(false),
-      });
-
-      console.log('Level proof', proof);
-
-      const gameHub = client.client!.runtime.resolve('GameHub');
-
-      const tx = await client.client!.transaction(
-        PublicKey.fromBase58(networkStore.address!),
-        () => {
-          gameHub.addGameResult(proof!);
-        },
-      );
-
-      await tx.sign();
-      await tx.send();
-    } catch (e) {
-      console.log('Error while generating ZK proof');
-      console.log(e);
-    }
-  };
-
   useEffect(() => {
     if (matchQueue.inQueue && !matchQueue.activeGameId) {
       setGameState(GameState.Matchmaking);
@@ -212,12 +167,7 @@ export default function RandzuPage({
           <div className="flex flex-col gap-5">
             {gameState == GameState.Won && (
               <div>
-                You won! Ticks verification:{' '}
-                <input
-                  type="text"
-                  value={JSON.stringify(lastTicks)}
-                  readOnly
-                ></input>
+                You won!
               </div>
             )}
             {gameState == GameState.Lost && (
@@ -244,9 +194,8 @@ export default function RandzuPage({
               {gameState == GameState.Won && (
                 <div
                   className="rounded-xl bg-slate-300 p-5 hover:bg-slate-400"
-                  onClick={() => proof()}
                 >
-                  Send proof
+                  Play again
                 </div>
               )}
             </div>
@@ -280,24 +229,14 @@ export default function RandzuPage({
         )} 
         {gameState == GameState.Active && (
           <div>
-            Game started
+            Game started. Opponent: {matchQueue.gameInfo?.currentUserId == 1 ? matchQueue.gameInfo?.player1.toBase58() : matchQueue.gameInfo?.player2.toBase58()}
           </div>
         )} 
 
         <GameView
-          onWin={(ticks) => {
-            setLastTicks(ticks);
-            setGameState(GameState.Won);
-          }}
-          onLost={(ticks) => {
-            setLastTicks(ticks);
-            setGameState(GameState.Lost);
-          }}
-          level={level}
           gameId={gameId}
           debug={debug}
-          setScore={setScore}
-          setTicksAmount={setTicksAmount}
+          gameInfo={matchQueue.gameInfo}
         />
         <div>Players in queue: {matchQueue.getQueueLength()}</div>
         <div className="grow"></div>

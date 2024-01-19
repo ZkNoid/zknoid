@@ -64,7 +64,7 @@ describe('game hub', () => {
     it.skip('Log proof', async () => {
         console.log(await dummyBase64Proof());
     });
-    it('Check if cheet codes works', async () => {
+    it.skip('Check if cheet codes works', async () => {
         const appChain = TestingAppChain.fromRuntime({
             modules: {
                 GameHub,

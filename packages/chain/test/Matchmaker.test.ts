@@ -32,7 +32,9 @@ describe('Matchmaker', () => {
         });
 
         appChain.configurePartial({
-            MatchMaker: {}
+            Runtime: {
+                MatchMaker: {}
+            }
         });
 
         const alicePrivateKey = PrivateKey.random();
@@ -40,7 +42,6 @@ describe('Matchmaker', () => {
         await appChain.start();
         appChain.setSigner(alicePrivateKey);
 
-        appChain.query.runtime.MatchMaker.games.get(UInt64.from(0));
-
+        console.log(await appChain.query.runtime.MatchMaker.games.get(UInt64.from(0)));
     });
 });
