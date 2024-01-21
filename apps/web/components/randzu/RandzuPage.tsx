@@ -228,10 +228,11 @@ export default function RandzuPage({
           </div>
         )} 
         {gameState == GameState.Active && (
-          <div>
-            Game started. 
-            {matchQueue.gameInfo?.isCurrentUserMove && (<> Your move. </>)} 
-            Opponent: {matchQueue.gameInfo?.currentUserIndex == 1 ? matchQueue.gameInfo?.player1.toBase58() : matchQueue.gameInfo?.player2.toBase58()}
+          <div className='flex flex-col gap-2 items-center'>
+            <>Game started. </>
+            Opponent: {matchQueue.gameInfo?.opponent.toBase58()}
+            {matchQueue.gameInfo?.isCurrentUserMove && (<div> Your move. </div>)} 
+
           </div>
         )} 
 
