@@ -58,6 +58,9 @@ export class GameContext extends Struct({
     }
 
     processTick(tick: Tick): void {
+        let a = this.ball.speed.x;
+        let b = this.ball.speed.y;
+
         // 1) Update score
         this.score = Provable.if(
             this.alreadyWon,
@@ -110,9 +113,7 @@ export class GameContext extends Struct({
 
         this.ball.position.x = Provable.if(
             rightBump,
-            Int64.from(FIELD_PIXEL_WIDTH).sub(
-                this.ball.position.x.sub(Int64.from(FIELD_PIXEL_WIDTH))
-            ),
+            Int64.from(2 * FIELD_PIXEL_WIDTH).sub(this.ball.position.x),
             this.ball.position.x
         );
 
@@ -124,9 +125,7 @@ export class GameContext extends Struct({
 
         this.ball.position.y = Provable.if(
             bottomBump,
-            Int64.from(FIELD_PIXEL_HEIGHT).sub(
-                this.ball.position.y.sub(Int64.from(FIELD_PIXEL_HEIGHT))
-            ),
+            Int64.from(2 * FIELD_PIXEL_HEIGHT).sub(this.ball.position.y),
             this.ball.position.y
         );
         this.ball.position.y = Provable.if(
@@ -141,8 +140,6 @@ export class GameContext extends Struct({
             this.ball.speed.y
         );
 
-        let a = this.ball.speed.x;
-        let b = this.ball.speed.y;
         let c = a.mul(this.ball.position.y).sub(b.mul(this.ball.position.x));
 
         /// 4') Update ball speed
@@ -267,17 +264,13 @@ export class GameContext extends Struct({
             let d1 = topBorder;
             let adc1 = a.mul(d1).sub(c);
             let crossBrickTop = inRange(adc1, leftEnd, rightEnd);
-            let hasTopBump = crossBrickTop.and(
-                prevBallPos.y.sub(topBorder).isPositive()
-            );
+            let hasTopBump = crossBrickTop.and(hasTopPass);
 
             // Bottom horisontal
             let d2 = bottomBorder;
             let adc2 = a.mul(d2).sub(c);
             let crossBrickBottom = inRange(adc2, leftEnd, rightEnd);
-            let hasBottomBump = crossBrickBottom.and(
-                bottomBorder.sub(prevBallPos.y).isPositive()
-            );
+            let hasBottomBump = crossBrickBottom.and(hasBottomPass);
 
             let topEnd = a.mul(currentBrick.pos.y.add(2 * BRICK_HALF_WIDTH));
             let bottomEnd = a.mul(currentBrick.pos.y);
@@ -286,17 +279,13 @@ export class GameContext extends Struct({
             let d3 = leftBorder;
             let bdc1 = b.mul(d3).add(c);
             let crossBrickLeft = inRange(bdc1, bottomEnd, topEnd);
-            let hasLeftBump = crossBrickLeft.and(
-                leftBorder.sub(prevBallPos.x).isPositive()
-            );
+            let hasLeftBump = crossBrickLeft.and(hasLeftPass);
 
             // Right vertical
             let d4 = rightBorder;
             let bdc2 = b.mul(d4).add(c);
             let crossBrickRight = inRange(bdc2, bottomEnd, topEnd);
-            let hasRightBump = crossBrickRight.and(
-                prevBallPos.x.sub(rightBorder).isPositive()
-            );
+            let hasRightBump = crossBrickRight.and(hasRightPass);
 
             /// Exclude double collision
             hasRightBump = Provable.if(
@@ -321,11 +310,7 @@ export class GameContext extends Struct({
             );
 
             const collisionHappen = isAlive.and(
-                hasRightPass
-                    .and(hasRightBump)
-                    .or(hasLeftPass.and(hasLeftBump))
-                    .or(hasTopPass.and(hasTopBump))
-                    .or(hasBottomPass.and(hasBottomBump))
+                hasRightBump.or(hasLeftBump).or(hasTopBump).or(hasBottomBump)
             );
 
             // Reduce health if coliision happend and brick is not dead
