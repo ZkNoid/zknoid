@@ -16,6 +16,7 @@ export interface IGameInfo {
     currentUserIndex: 0 | 1;
     isCurrentUserMove: boolean;
     opponent: PublicKey;
+    gameId: bigint;
   }
 
 export interface MatchQueueState {
@@ -105,7 +106,8 @@ export const useRandzuMatchQueueStore = create<
                         field: (gameInfo.field as RandzuField).value.map((x: UInt32[]) => x.map(x => x.toBigint())),
                         currentUserIndex,
                         isCurrentUserMove: (gameInfo.currentMoveUser as PublicKey).equals(address).toBoolean(),
-                        opponent: currentUserIndex == 1 ? gameInfo.player1: gameInfo.player2
+                        opponent: currentUserIndex == 1 ? gameInfo.player1: gameInfo.player2,
+                        gameId: activeGameId.toBigInt()
                     }
                     console.log('Parsed game info', state.gameInfo);
                 })
