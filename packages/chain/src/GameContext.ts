@@ -415,6 +415,29 @@ export class GameContext extends Struct({
         let firstDist = this.distPow2ToBrick(this.bricks.bricks[0]);
         let secondDist = this.distPow2ToBrick(this.bricks.bricks[1]);
 
+        // Chek order
+        {
+            let shouldSwap = gr(firstDist, secondDist);
+            [firstDist, secondDist] = [
+                Provable.if(shouldSwap, secondDist, firstDist),
+                Provable.if(shouldSwap, firstDist, secondDist),
+            ];
+            [this.nearestBricks[0], this.nearestBricks[1]] = [
+                Provable.if(
+                    shouldSwap,
+                    Brick,
+                    this.nearestBricks[1],
+                    this.nearestBricks[0]
+                ) as Brick,
+                Provable.if(
+                    shouldSwap,
+                    Brick,
+                    this.nearestBricks[0],
+                    this.nearestBricks[1]
+                ) as Brick,
+            ];
+        }
+
         for (let i = 2; i < MAX_BRICKS; i++) {
             let cur = this.bricks.bricks[i];
             let curDist = this.distPow2ToBrick(cur);
