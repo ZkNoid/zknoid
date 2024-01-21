@@ -26,26 +26,13 @@ interface IGameInfo {
   player1: PublicKey,
   player2: PublicKey,
   currentMoveUser: PublicKey,
-  field: number[],
+  field: number[][],
 }
 
 interface IGameViewProps {
   gameId: number;
   gameInfo: IGameInfo | undefined;
   debug: boolean;
-}
-
-interface IContractBrick {
-  pos: IntPoint;
-  value: UInt64;
-}
-
-interface IContractBrickPorted {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  value: number;
 }
 
 const BOARD_W = 15;
@@ -83,7 +70,6 @@ export const GameView = (props: IGameViewProps) => {
         )
       )
       )}
-
     </div>
   );
 };

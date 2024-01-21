@@ -229,7 +229,9 @@ export default function RandzuPage({
         )} 
         {gameState == GameState.Active && (
           <div>
-            Game started. Opponent: {matchQueue.gameInfo?.currentUserId == 1 ? matchQueue.gameInfo?.player1.toBase58() : matchQueue.gameInfo?.player2.toBase58()}
+            Game started. 
+            {matchQueue.gameInfo?.isCurrentUserMove && (<> Your move. </>)} 
+            Opponent: {matchQueue.gameInfo?.currentUserIndex == 1 ? matchQueue.gameInfo?.player1.toBase58() : matchQueue.gameInfo?.player2.toBase58()}
           </div>
         )} 
 
