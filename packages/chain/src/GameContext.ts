@@ -58,11 +58,6 @@ export class GameContext extends Struct({
     }
 
     processTick(tick: Tick): void {
-        // 0) Get tick variables
-        let a = this.ball.speed.x;
-        let b = this.ball.speed.y;
-        let c = a.mul(this.ball.position.y).sub(b.mul(this.ball.position.x));
-
         // 1) Update score
         this.score = Provable.if(
             this.alreadyWon,
@@ -145,6 +140,10 @@ export class GameContext extends Struct({
             this.ball.speed.y.neg(),
             this.ball.speed.y
         );
+
+        let a = this.ball.speed.x;
+        let b = this.ball.speed.y;
+        let c = a.mul(this.ball.position.y).sub(b.mul(this.ball.position.x));
 
         /// 4') Update ball speed
         inRange(
