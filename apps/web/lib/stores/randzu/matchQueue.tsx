@@ -8,7 +8,7 @@ import { useProtokitChainStore } from "../protokitChain";
 import { useNetworkStore } from "../network";
 import { RandzuField, RoundIdxUser } from "zknoid-chain-dev/dist/MatchMaker";
 
-interface IGameInfo {
+export interface IGameInfo {
     player1: PublicKey;
     player2: PublicKey;
     currentMoveUser: PublicKey;
@@ -89,11 +89,10 @@ export const useRandzuMatchQueueStore = create<
             console.log('Active game id', activeGameId?.toBigInt());
             console.log('In queue', inQueue?.toBoolean());
 
-            const gameInfo = await client.query.runtime.MatchMaker.games.get(UInt64.from(0));
+            if (activeGameId?.greaterThan(UInt64.from(0)).toBoolean()) {
+                const gameInfo = (await client.query.runtime.MatchMaker.games.get(UInt64.from(0)))!;
+                console.log('Raw game info', gameInfo);
 
-            console.log('Raw game info', gameInfo);
-
-            if (gameInfo) {
                 const currentUserIndex = address.equals(gameInfo.player1 as PublicKey).toBoolean() ? 0 : 1;
                 const player1 = gameInfo.player1 as PublicKey;
                 const player2 = gameInfo.player2 as PublicKey;

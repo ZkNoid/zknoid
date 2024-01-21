@@ -1,42 +1,13 @@
 'use client';
-import {
-  Brick,
-  Bricks,
-  Tick,
-  loadGameContext,
-  BRICK_HALF_WIDTH,
-  MAX_BRICKS,
-  FIELD_HEIGHT,
-  FIELD_WIDTH,
-  DEFAULT_BALL_LOCATION_X,
-  DEFAULT_BALL_LOCATION_Y,
-  TICK_PERIOD,
-  DEFAULT_BALL_SPEED_X,
-  DEFAULT_BALL_SPEED_Y,
-  IntPoint,
-  DEFAULT_PLATFORM_SPEED,
-  GameContext,
-  ACCELERATION,
-} from 'zknoid-chain-dev';
-import { useEffect, useRef, useState } from 'react';
-import { Int64, UInt64, Bool, PublicKey } from 'o1js';
-import { Ball, Cart, IBrick } from '@/lib/types';
 
-interface IGameInfo {
-  player1: PublicKey,
-  player2: PublicKey,
-  currentMoveUser: PublicKey,
-  field: number[][],
-}
+import { useEffect, useRef, useState } from 'react';
+import { IGameInfo } from '@/lib/stores/randzu/matchQueue';
 
 interface IGameViewProps {
   gameId: number;
   gameInfo: IGameInfo | undefined;
   debug: boolean;
 }
-
-const BOARD_W = 15;
-const BOARD_H = 15;
 
 export const GameView = (props: IGameViewProps) => {
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -63,9 +34,9 @@ export const GameView = (props: IGameViewProps) => {
   }, [ctx, props.gameInfo]);
 
   return (
-    <div className='grid grid-cols-15 gap-1 bg-gray-300 p-2 '>
+    <div className={`grid grid-cols-15 gap-1 ${props.gameInfo?.isCurrentUserMove && 'border-green-500 border-4 border-dashed'} bg-gray-300 p-2`}>
       {[...Array(15)].map(i => (
-        [...Array(15)].map(j => 
+        [...Array(15)].map(j =>
           <div className=' bg-white hover:bg-gray-100 w-7 h-7' id={`${i}_${j}`}></div>
         )
       )
