@@ -4,7 +4,7 @@ import {
   state,
   runtimeMethod,
 } from "@proto-kit/module";
-import { State, StateMap, assert } from "@proto-kit/protocol";
+import { Option, State, StateMap, assert } from "@proto-kit/protocol";
 import { PublicKey, Struct, UInt64, Provable, Bool, UInt32, Poseidon, Field } from "o1js";
 
 interface MatchMakerConfig { }
@@ -157,7 +157,6 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
   public makeMove(gameId: UInt64, newField: RandzuField, winPositions: WinPositions): void {
     const game = this.games.get(gameId);
     assert(game.isSome, "Invalid game id");
-    assert(Bool.or(winPositions.value.length == 0, winPositions.value.length == 5), "Invalid win positions length");
     assert(game.value.currentMoveUser.equals(this.transaction.sender), "Not your move");
 
     let addedCellsNum = UInt64.from(0);
