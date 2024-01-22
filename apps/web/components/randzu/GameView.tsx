@@ -72,16 +72,21 @@ export const GameView = (props: IGameViewProps) => {
 
   return (
     <div className={`grid grid-cols-15 gap-1 ${props.gameInfo?.isCurrentUserMove && 'border-green-500 border-4 border-dashed'} bg-gray-300 p-2`}>
+      
       {[...Array(15).keys()].map(i => (
         [...Array(15).keys()].map(j =>
           <div
             className={`
               bg-white hover:bg-gray-200 w-7 h-7 
-              bg-[length:30px_30px] bg-no-repeat bg-center p-5 ${props.gameInfo?.isCurrentUserMove && "hover:bg-[url('/ball_red.png')]"}
+              bg-[length:30px_30px] bg-no-repeat bg-center p-5 
+              ${props.gameInfo?.isCurrentUserMove && (props.gameInfo?.currentUserIndex == 0 ? "hover:bg-[url('/ball_red.png')]" : "hover:bg-[url('/ball_blue.png')]")}
+              ${props.gameInfo?.field?.[j]?.[i] == 1 && "bg-[url('/ball_red.png')]"}
+              ${props.gameInfo?.field?.[j]?.[i] == 2 && "bg-[url('/ball_blue.png')]"}
+
             `}
             style={{ imageRendering: 'pixelated' }}
             id={`${i}_${j}`}
-            onClick={() => onCellClicked(j, i)}
+            onClick={() => onCellClicked(i, j)}
           >
 
           </div>
