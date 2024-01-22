@@ -91,7 +91,7 @@ export const useRandzuMatchQueueStore = create<
             console.log('In queue', inQueue?.toBoolean());
 
             if (activeGameId?.greaterThan(UInt64.from(0)).toBoolean()) {
-                const gameInfo = (await client.query.runtime.MatchMaker.games.get(UInt64.from(0)))!;
+                const gameInfo = (await client.query.runtime.MatchMaker.games.get(activeGameId))!;
                 console.log('Raw game info', gameInfo);
 
                 const currentUserIndex = address.equals(gameInfo.player1 as PublicKey).toBoolean() ? 0 : 1;

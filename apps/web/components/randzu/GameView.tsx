@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { IGameInfo } from '@/lib/stores/randzu/matchQueue';
 import { useClientStore } from '@/lib/stores/client';
-import { UInt32, UInt64 } from 'o1js';
-import { RandzuField } from 'zknoid-chain-dev/dist/MatchMaker';
+import { PublicKey, UInt32, UInt64 } from 'o1js';
+import { RandzuField, WinPositions } from 'zknoid-chain-dev/dist/MatchMaker';
+import { useNetworkStore } from '@/lib/stores/network';
 
 interface IGameViewProps {
   gameId: number;
@@ -37,18 +38,36 @@ export const GameView = (props: IGameViewProps) => {
   }, [ctx, props.gameInfo]);
 
   const client = useClientStore();
+  const networkStore = useNetworkStore();
 
   const onCellClicked = async (x: number, y: number) => {
     if (!props.gameInfo?.isCurrentUserMove) return;
 
-    const updatedField = props.gameInfo.field;
+    const updatedField = props.gameInfo.field.map(x => [...x]);
     updatedField[y][x] = props.gameInfo.currentUserIndex + 1;
 
     const matchMaker = client.client!.runtime.resolve('MatchMaker');
 
     const updatedRandzuField = RandzuField.from(updatedField);
 
-    matchMaker.makeMove(UInt64.from(props.gameInfo.gameId), updatedRandzuField, Array(5).fill(UInt32.from(0)));
+    const tx = await client.client!.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        matchMaker.makeMove(
+          UInt64.from(props.gameInfo!.gameId), 
+          updatedRandzuField, 
+          new WinPositions(
+            // @ts-ignore
+            {
+              value: Array(5).fill(UInt32.from(0))
+            }
+          )
+        );
+      },
+    );
+
+    await tx.sign();
+    await tx.send();
   }
 
   return (

@@ -99,8 +99,6 @@ export default function RandzuPage({
     await tx.send();
 
     setGameState(GameState.MatchRegistration);
-
-    // setGameId(gameId + 1);
   };
 
   useEffect(() => {
