@@ -157,7 +157,10 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
   public makeMove(gameId: UInt64, newField: RandzuField, winPositions: WinPositions): void {
     const game = this.games.get(gameId);
     assert(game.isSome, "Invalid game id");
-    assert(game.value.currentMoveUser.equals(this.transaction.sender), "Not your move");
+    assert(
+      game.value.currentMoveUser.equals(this.transaction.sender), 
+      `Not your move: ${this.transaction.sender.toBase58()}. Game info: ${game.value.player1.toBase58()} ${game.value.player2.toBase58()}. Current user move: ${game.value.currentMoveUser.toBase58()}. Game id: ${gameId}`
+    );
 
     let addedCellsNum = UInt64.from(0);
     for (let i = 0; i < RANDZU_FIELD_SIZE; i++) {
@@ -171,5 +174,13 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
         assert(addedCellsNum.lessThanOrEqual(UInt64.from(1)), `Not only one cell added. Error at ${i}, ${j}`);
       }
     }
+
+    game.value.field = newField;
+    game.value.currentMoveUser = Provable.if(
+      game.value.currentMoveUser.equals(game.value.player1), 
+      game.value.player2, 
+      game.value.player1
+    );
+    this.games.set(gameId, game.value);
   }
 }
