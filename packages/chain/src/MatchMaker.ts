@@ -155,11 +155,14 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
 
   @runtimeMethod()
   public makeMove(gameId: UInt64, newField: RandzuField, winPositions: WinPositions): void {
+    const sessionSender = this.sesions.get(this.transaction.sender);
+    const sender = Provable.if(sessionSender.isSome, sessionSender.value, this.transaction.sender);
+
     const game = this.games.get(gameId);
     assert(game.isSome, "Invalid game id");
     assert(
-      game.value.currentMoveUser.equals(this.transaction.sender), 
-      `Not your move: ${this.transaction.sender.toBase58()}. Game info: ${game.value.player1.toBase58()} ${game.value.player2.toBase58()}. Current user move: ${game.value.currentMoveUser.toBase58()}. Game id: ${gameId}`
+      game.value.currentMoveUser.equals(sender), 
+      `Not your move: ${sender.toBase58()}`
     );
 
     let addedCellsNum = UInt64.from(0);
