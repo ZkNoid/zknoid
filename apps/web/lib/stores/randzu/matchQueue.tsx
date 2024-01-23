@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { Client, useClientStore } from "../client";
 import { immer } from "zustand/middleware/immer";
 import { PendingTransaction, UnsignedTransaction } from "@proto-kit/sequencer";
-import { PublicKey, UInt32, UInt64 } from "o1js";
+import { PrivateKey, PublicKey, UInt32, UInt64 } from "o1js";
 import { useEffect } from "react";
 import { useProtokitChainStore } from "../protokitChain";
 import { useNetworkStore } from "../network";
@@ -25,11 +25,9 @@ export interface MatchQueueState {
     inQueue: boolean;
     activeGameId: bigint;
     gameInfo: IGameInfo | undefined;
-
     getQueueLength: () => number;
     loadMatchQueue: (client: Client, blockHeight: number) => Promise<void>;
     loadActiveGame: (client: Client, blockHeight: number, address: PublicKey) => Promise<void>;
-
 }
 
 function isPendingTransaction(
