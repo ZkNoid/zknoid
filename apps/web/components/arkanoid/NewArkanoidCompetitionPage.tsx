@@ -1,8 +1,23 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Field, Int64 } from 'o1js';
-import { createBricksBySeed } from 'zknoid-chain-dev';
+import { Field, Int64, UInt64 } from 'o1js';
+import {
+  BRICK_HALF_WIDTH,
+  IntPoint,
+  createBricksBySeed,
+  FIELD_WIDTH,
+} from 'zknoid-chain-dev';
+
+interface IBrick {
+  pos: [number, number];
+  value: number;
+}
+
+interface IContractBrick {
+  pos: IntPoint;
+  value: UInt64;
+}
 
 export default function NewArkanoidCompetitionPage() {
   const [name, setName] = useState('');
@@ -21,18 +36,57 @@ export default function NewArkanoidCompetitionPage() {
   const [funding, setFunding] = useState(0);
   const [participationFee, setPerticipationFee] = useState(0);
 
+  const [bricks, setBricks] = useState<IBrick[]>([]);
+
   useEffect(() => {
     const ctx = canvas!.current?.getContext('2d');
-    ctx?.rect(0, 0, 300, 300);
-    ctx!.fillStyle = 'white';
-    ctx?.fill();
     setContext(ctx);
   }, [canvas]);
 
   useEffect(() => {
-    console.log(seed);
-    Int64.from(1);
+    let contractBricks = createBricksBySeed(Int64.from(seed)).bricks;
+    setBricks(
+      contractBricks.map((brick: IContractBrick) => {
+        return {
+          pos: [brick.pos.x ^ 1, brick.pos.y ^ 1],
+          value: +brick.value.toString(),
+        } as IBrick;
+      }),
+    );
   }, [seed]);
+
+  useEffect(() => {
+    clearCanvas();
+    drawBricks();
+  }, [bricks]);
+
+  const clearCanvas = () => {
+    if (!ctx) {
+      return;
+    }
+    ctx!.rect(0, 0, 300, 300);
+    ctx!.fillStyle = 'white';
+    ctx!.fill();
+  };
+
+  const drawBricks = () => {
+    for (let brick of bricks.filter((brick) => +brick.value.toString() > 1)) {
+      ctx!.beginPath();
+      ctx!.rect(
+        resizeToConvasSize(brick.pos[0]),
+        resizeToConvasSize(brick.pos[1]),
+        resizeToConvasSize(BRICK_HALF_WIDTH * 2),
+        resizeToConvasSize(BRICK_HALF_WIDTH * 2),
+      );
+
+      ctx!.stroke();
+      ctx!.closePath();
+    }
+  };
+
+  const resizeToConvasSize = (x: number) => {
+    return (x * (canvas.current?.width || FIELD_WIDTH)) / FIELD_WIDTH;
+  };
 
   const onSubmit = () => {};
 
@@ -62,13 +116,11 @@ export default function NewArkanoidCompetitionPage() {
           className="w-20"
           type="number"
           value={seed}
-          onChange={(e) => {
-            let val = parseInt(e.target.value);
-            // console.log(new Field(1));
-            setSeed(val);
-          }}
+          onChange={(e) => setSeed(e)}
         ></input>
         <canvas
+          width="300"
+          height="300"
           style={{ width: 300, height: 300 }}
           className="py-5"
           ref={canvas}
