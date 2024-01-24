@@ -1,4 +1,4 @@
-import { UInt64, Struct, Provable, Int64, Bool } from 'o1js';
+import { UInt64, Struct, Provable, Int64, Bool, Field } from 'o1js';
 import {
     BRICK_HALF_WIDTH,
     DEFAULT_BALL_LOCATION_X,
@@ -15,6 +15,7 @@ import {
     NEAREST_BRICKS_NUM,
     PLATFORM_WIDTH,
     SCORE_PER_TICKS,
+    SEED_MULTIPLIER,
 } from './constants';
 import { Ball, Brick, Bricks, IntPoint, Platform, Tick } from './types';
 import { gr, inRange } from './utility';
@@ -476,6 +477,41 @@ export class GameContext extends Struct({
             );
         }
     }
+}
+
+export function createBricksBySeed(intSeed: number): Bricks {
+    let seed = Field.from(intSeed);
+    /// Do it, just to get big number
+    seed = seed.mul(SEED_MULTIPLIER);
+    seed = seed.mul(seed);
+
+    console.log(seed);
+
+    let bricks = [...new Array(MAX_BRICKS)].map(
+        (elem) =>
+            new Brick({
+                pos: new IntPoint({
+                    x: Int64.from(0),
+                    y: Int64.from(0),
+                }),
+                value: UInt64.from(1),
+            })
+    );
+
+    // let curSeed = seed;
+    // let xPos = Int64.from(50);
+
+    // for (let i = 0; i < 5; i++) {
+    //     let yPos = curSeed.mod(300);
+    //     curSeed = curSeed.div(1000);
+
+    //     bricks[i].pos = new IntPoint({
+    //         x: xPos,
+    //         y: yPos,
+    //     });
+    // }
+
+    return new Bricks({ bricks });
 }
 
 export function loadGameContext(bricks: Bricks, debug: Bool) {

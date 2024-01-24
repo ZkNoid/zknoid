@@ -64,12 +64,19 @@ describe('game hub', () => {
     it.skip('Log proof', async () => {
         console.log(await dummyBase64Proof());
     });
-    it.skip('Check if cheet codes works', async () => {
+    it('Check if cheet codes works', async () => {
         const appChain = TestingAppChain.fromRuntime({
             modules: {
                 GameHub,
             },
         });
+
+        appChain.configurePartial({
+            Runtime: {
+                GameHub: {},
+            },
+        });
+
         const alicePrivateKey = PrivateKey.random();
         const alice = alicePrivateKey.toPublicKey();
         await appChain.start();
