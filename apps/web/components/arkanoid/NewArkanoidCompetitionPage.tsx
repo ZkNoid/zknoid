@@ -116,7 +116,7 @@ export default function NewArkanoidCompetitionPage() {
           className="w-20"
           type="number"
           value={seed}
-          onChange={(e) => setSeed(e)}
+          onChange={(e) => setSeed(parseInt(e.target.value))}
         ></input>
         <canvas
           width="300"
