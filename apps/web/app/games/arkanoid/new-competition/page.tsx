@@ -1,7 +1,5 @@
-import NewArkanoidCompetitionPage from "@/components/arkanoid/NewArkanoidCompetitionPage";
+import NewArkanoidCompetitionPageDynamic from '@/components/arkanoid/NewArkanoidCompetitionPageDynamic';
 
 export default function NewCompetitionPage() {
-    return (
-        <NewArkanoidCompetitionPage />
-    )
+  return <NewArkanoidCompetitionPageDynamic />;
 }

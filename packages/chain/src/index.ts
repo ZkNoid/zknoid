@@ -20,7 +20,11 @@ import {
     processTicks,
 } from './GameHub.js';
 
-import { GameContext, loadGameContext } from './GameContext.js';
+import {
+    GameContext,
+    loadGameContext,
+    createBricksBySeed,
+} from './GameContext.js';
 
 import {
     // GameHub,
@@ -65,6 +69,7 @@ export {
     checkGameRecord,
     checkMapGeneration,
     loadGameContext,
+    createBricksBySeed,
     processTicks,
     FIELD_SIZE,
     GAME_LENGTH,
