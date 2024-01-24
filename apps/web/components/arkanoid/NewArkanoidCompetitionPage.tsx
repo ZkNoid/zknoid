@@ -120,7 +120,7 @@ export default function NewArkanoidCompetitionPage() {
         */
         let competition = Competition.from(
           name,
-          description,
+          // description,
           seed,
           preregistrationEnabled,
           0, // preregBefore

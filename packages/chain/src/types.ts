@@ -18,7 +18,7 @@ export class GameRecordKey extends Struct({
 
 export class Competition extends Struct({
     name: CircuitString,
-    description: CircuitString,
+    // description: CircuitString,
     seed: Field,
     prereg: Bool,
     preregBefore: UInt64,
@@ -30,7 +30,7 @@ export class Competition extends Struct({
 }) {
     static from(
         name: string,
-        description: string,
+        // description: string,
         seed: number,
         prereg: boolean,
         prepregBefore: number,
@@ -42,7 +42,7 @@ export class Competition extends Struct({
     ): Competition {
         return new Competition({
             name: CircuitString.fromString(name),
-            description: CircuitString.fromString(description),
+            // description: CircuitString.fromString(description),
             seed: Field.from(seed),
             prereg: new Bool(prereg),
             preregBefore: UInt64.from(prepregBefore),
