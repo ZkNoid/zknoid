@@ -5,8 +5,23 @@ import {
     runtimeMethod,
 } from '@proto-kit/module';
 import { State, StateMap } from '@proto-kit/protocol';
-import { Experimental, Field, UInt64, Bool, SelfProof, Struct, PublicKey, Provable } from 'o1js';
-import { Bricks, GameInputs, GameRecordKey, LeaderboardScore } from './types';
+import {
+    Experimental,
+    Field,
+    UInt64,
+    Bool,
+    SelfProof,
+    Struct,
+    PublicKey,
+    Provable,
+} from 'o1js';
+import {
+    Bricks,
+    Competition,
+    GameInputs,
+    GameRecordKey,
+    LeaderboardScore,
+} from './types';
 
 import { GameContext, loadGameContext } from './GameContext';
 
@@ -122,6 +137,13 @@ const LEADERBOARD_SIZE = 10;
 
 @runtimeModule()
 export class GameHub extends RuntimeModule<unknown> {
+    // CompetitionId -> competition
+    @state() public competitions = StateMap.from<UInt64, Competition>(
+        UInt64,
+        Competition
+    );
+    @state() public lastCompetitonId = UInt64.from(0);
+
     /// Seed + User => Record
     @state() public gameRecords = StateMap.from<GameRecordKey, UInt64>(
         GameRecordKey,
@@ -144,11 +166,17 @@ export class GameHub extends RuntimeModule<unknown> {
     }
 
     @runtimeMethod()
+    public createCompetition(competition: Competition): void {
+        this.competitions.set(this.lastCompetitonId, competition);
+        this.lastCompetitonId = this.lastCompetitonId.add(1);
+    }
+
+    @runtimeMethod()
     public addGameResult(gameRecordProof: GameRecordProof): void {
         gameRecordProof.verify();
 
         const gameKey = new GameRecordKey({
-            seed: this.seeds.get(this.lastSeed.get().value).value,
+            competitionId: this.seeds.get(this.lastSeed.get().value).value,
             player: this.transaction.sender,
         });
 
@@ -164,16 +192,32 @@ export class GameHub extends RuntimeModule<unknown> {
             for (let i = 0; i < LEADERBOARD_SIZE; i++) {
                 const gameRecord = this.leaderboard.get(UInt64.from(i));
 
-                const result = gameRecord.orElse(new LeaderboardScore({score: UInt64.from(0), player: PublicKey.empty()}));
+                const result = gameRecord.orElse(
+                    new LeaderboardScore({
+                        score: UInt64.from(0),
+                        player: PublicKey.empty(),
+                    })
+                );
 
-                looserIndex = Provable.if(result.score.lessThan(looserScore), UInt64.from(i), looserIndex);
-                looserScore = Provable.if(result.score.lessThan(looserScore), UInt64.from(i), looserScore);
+                looserIndex = Provable.if(
+                    result.score.lessThan(looserScore),
+                    UInt64.from(i),
+                    looserIndex
+                );
+                looserScore = Provable.if(
+                    result.score.lessThan(looserScore),
+                    UInt64.from(i),
+                    looserScore
+                );
             }
 
-            this.leaderboard.set(looserIndex, new LeaderboardScore({
-                score: newScore,
-                player: this.transaction.sender
-            }))
+            this.leaderboard.set(
+                looserIndex,
+                new LeaderboardScore({
+                    score: newScore,
+                    player: this.transaction.sender,
+                })
+            );
         }
     }
 }

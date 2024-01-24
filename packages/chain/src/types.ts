@@ -1,10 +1,32 @@
-import { PublicKey, UInt64, Struct, Provable, Int64, Bool } from 'o1js';
+import {
+    PublicKey,
+    UInt64,
+    Struct,
+    Provable,
+    Int64,
+    Bool,
+    CircuitString,
+    Field,
+} from 'o1js';
 
 import { CHUNK_LENGTH, GAME_LENGTH, MAX_BRICKS } from './constants';
 
 export class GameRecordKey extends Struct({
-    seed: UInt64,
+    competitionId: UInt64,
     player: PublicKey,
+}) {}
+
+export class Competition extends Struct({
+    name: CircuitString,
+    description: CircuitString,
+    seed: Field,
+    prereg: Bool,
+    preregBefore: UInt64,
+    preregAfter: UInt64,
+    competitionStartTime: UInt64,
+    competitionEndTime: UInt64,
+    funds: UInt64,
+    entranceFee: UInt64,
 }) {}
 
 export class LeaderboardScore extends Struct({
