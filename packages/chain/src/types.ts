@@ -26,8 +26,34 @@ export class Competition extends Struct({
     competitionStartTime: UInt64,
     competitionEndTime: UInt64,
     funds: UInt64,
-    entranceFee: UInt64,
-}) {}
+    participationFee: UInt64,
+}) {
+    static from(
+        name: string,
+        description: string,
+        seed: number,
+        prereg: boolean,
+        prepregBefore: number,
+        preregAfter: number,
+        competitionStartTime: number,
+        competitionEndTime: number,
+        funds: number,
+        participationFee: number
+    ): Competition {
+        return new Competition({
+            name: CircuitString.fromString(name),
+            description: CircuitString.fromString(description),
+            seed: Field.from(seed),
+            prereg: new Bool(prereg),
+            preregBefore: UInt64.from(prepregBefore),
+            preregAfter: UInt64.from(preregAfter),
+            competitionStartTime: UInt64.from(competitionStartTime),
+            competitionEndTime: UInt64.from(competitionEndTime),
+            funds: UInt64.from(funds),
+            participationFee: UInt64.from(participationFee),
+        });
+    }
+}
 
 export class LeaderboardScore extends Struct({
     score: UInt64,
