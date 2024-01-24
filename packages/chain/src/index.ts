@@ -36,6 +36,7 @@ import {
     Brick,
     Bricks,
     IntPoint,
+    Competition,
 } from './types.js';
 
 import {
@@ -59,6 +60,7 @@ import {
 import { defaultLevel } from './levels.js';
 
 export {
+    Competition,
     GameHub,
     GameContext,
     GameRecordProof,

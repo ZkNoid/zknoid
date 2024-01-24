@@ -82,7 +82,7 @@ describe('game hub', () => {
         await appChain.start();
         appChain.setSigner(alicePrivateKey);
         const gameHub = appChain.runtime.resolve('GameHub');
-        const bricks = createBricksBySeed(Field.from(5));
+        const bricks = createBricksBySeed(Int64.from(5));
         console.log(bricks);
     });
 });

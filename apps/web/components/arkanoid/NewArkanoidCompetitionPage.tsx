@@ -1,13 +1,16 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Field, Int64, UInt64 } from 'o1js';
+import { Field, Int64, PublicKey, UInt64 } from 'o1js';
 import {
   BRICK_HALF_WIDTH,
   IntPoint,
   createBricksBySeed,
   FIELD_WIDTH,
+  Competition,
 } from 'zknoid-chain-dev';
+import { useClientStore } from '@/lib/stores/client';
+import { useNetworkStore } from '@/lib/stores/network';
 
 interface IBrick {
   pos: [number, number];
@@ -38,6 +41,9 @@ export default function NewArkanoidCompetitionPage() {
 
   const [bricks, setBricks] = useState<IBrick[]>([]);
 
+  const networkStore = useNetworkStore();
+  const client = useClientStore();
+
   useEffect(() => {
     const ctx = canvas!.current?.getContext('2d');
     setContext(ctx);
@@ -59,6 +65,10 @@ export default function NewArkanoidCompetitionPage() {
     clearCanvas();
     drawBricks();
   }, [bricks]);
+
+  useEffect(() => {
+    client.start();
+  }, []);
 
   const clearCanvas = () => {
     if (!ctx) {
@@ -88,7 +98,46 @@ export default function NewArkanoidCompetitionPage() {
     return (x * (canvas.current?.width || FIELD_WIDTH)) / FIELD_WIDTH;
   };
 
-  const onSubmit = () => {};
+  const createCompetition = async () => {
+    const gameHub = client.client!.runtime.resolve('GameHub');
+
+    const tx = await client.client!.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        /*
+        Competition({
+          name: CircuitString,
+          description: CircuitString,
+          seed: Field,
+          prereg: Bool,
+          preregBefore: UInt64,
+          preregAfter: UInt64,
+          competitionStartTime: UInt64,
+          competitionEndTime: UInt64,
+          funds: UInt64,
+          entranceFee: UInt64,
+        });
+        */
+        let competition = Competition.from(
+          name,
+          description,
+          seed,
+          preregistrationEnabled,
+          0, // preregBefore
+          0, // preregAfter
+          0, // competitionStartTime
+          0, // competitionEndTime
+          funding,
+          participationFee,
+        );
+
+        gameHub.createCompetition(competition);
+      },
+    );
+
+    await tx.sign();
+    await tx.send();
+  };
 
   return (
     <div className="flex flex-col items-center justify-center gap-5 py-10">
@@ -193,7 +242,7 @@ export default function NewArkanoidCompetitionPage() {
         </div>
       </div>
 
-      <div className="cursor-pointer py-3" onClick={() => onSubmit()}>
+      <div className="cursor-pointer py-3" onClick={() => createCompetition()}>
         [Create]
       </div>
     </div>

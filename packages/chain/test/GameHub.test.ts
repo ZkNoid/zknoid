@@ -144,7 +144,7 @@ describe('game hub', () => {
             UInt64.from(0);
         console.log(lastSeed);
         const gameRecordKey: GameRecordKey = new GameRecordKey({
-            seed: lastSeed,
+            competitionId: lastSeed,
             player: alice,
         });
         console.log(gameRecordKey);
