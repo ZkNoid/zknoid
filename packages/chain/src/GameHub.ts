@@ -142,7 +142,7 @@ export class GameHub extends RuntimeModule<unknown> {
         UInt64,
         Competition
     );
-    @state() public lastCompetitonId = UInt64.from(0);
+    @state() public lastCompetitonId = State.from<UInt64>(UInt64);
 
     /// Seed + User => Record
     @state() public gameRecords = StateMap.from<GameRecordKey, UInt64>(
@@ -167,8 +167,13 @@ export class GameHub extends RuntimeModule<unknown> {
 
     @runtimeMethod()
     public createCompetition(competition: Competition): void {
-        this.competitions.set(this.lastCompetitonId, competition);
-        this.lastCompetitonId = this.lastCompetitonId.add(1);
+        this.competitions.set(
+            this.lastCompetitonId.get().orElse(UInt64.from(0)),
+            competition
+        );
+        this.lastCompetitonId.set(
+            this.lastCompetitonId.get().orElse(UInt64.from(0)).add(1)
+        );
     }
 
     @runtimeMethod()
