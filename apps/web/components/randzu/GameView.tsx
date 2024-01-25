@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { IGameInfo, useRandzuMatchQueueStore } from '@/lib/stores/randzu/matchQueue';
 import { useClientStore } from '@/lib/stores/client';
 import { PublicKey, UInt32, UInt64 } from 'o1js';
-import { RandzuField, WinPositions } from 'zknoid-chain-dev/dist/MatchMaker';
+import { RandzuField, WinWitness } from 'zknoid-chain-dev/dist/MatchMaker';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/randzu/sessionKeyStorage';
@@ -41,7 +41,6 @@ export const GameView = (props: IGameViewProps) => {
   }, [ctx, props.gameInfo]);
 
   const client = useClientStore();
-  const networkStore = useNetworkStore();
 
   const onCellClicked = async (x: number, y: number) => {
     if (!props.gameInfo?.isCurrentUserMove) return;
@@ -59,10 +58,13 @@ export const GameView = (props: IGameViewProps) => {
         matchMaker.makeMove(
           UInt64.from(props.gameInfo!.gameId), 
           updatedRandzuField, 
-          new WinPositions(
+          new WinWitness(
             // @ts-ignore
             {
-              value: Array(5).fill(UInt32.from(0))
+              x: UInt32.from(0),
+              y: UInt32.from(0),
+              directionX: UInt32.from(0),
+              directionY: UInt32.from(0),
             }
           )
         );
