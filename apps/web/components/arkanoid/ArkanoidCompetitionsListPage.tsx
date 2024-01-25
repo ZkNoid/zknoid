@@ -77,6 +77,7 @@ export default function ArkanoidCompetitionsListPage() {
             Create competition{' '}
           </div>
         </Link>
+        <h1> Arkanoid competitions list </h1>
         <table className="min-w-max text-left">
           <thead className="bg-gray-300 font-semibold">
             <tr>
