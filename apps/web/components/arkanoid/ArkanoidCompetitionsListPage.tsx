@@ -77,8 +77,8 @@ export default function ArkanoidCompetitionsListPage() {
             Create competition{' '}
           </div>
         </Link>
-        <table className="min-w-max text-left text-xs">
-          <thead className="bg-gray-300">
+        <table className="min-w-max text-left">
+          <thead className="bg-gray-300 font-semibold">
             <tr>
               <th className="px-6 py-3"> Name </th>
               <th className="px-6 py-3"> Seed </th>
@@ -89,6 +89,7 @@ export default function ArkanoidCompetitionsListPage() {
               <th className="px-6 py-3"> CompetitionEnd </th>
               <th className="px-6 py-3"> Funds </th>
               <th className="px-6 py-3"> ParticipationFee </th>
+              <th> </th>
             </tr>
           </thead>
           <tbody>
@@ -107,30 +108,17 @@ export default function ArkanoidCompetitionsListPage() {
                 <td className="px-6 py-4">{c.competitionEndTime}</td>
                 <td className="px-6 py-4">{c.funds}</td>
                 <td className="px-6 py-4">{c.participationFee}</td>
-                {/* <div className="rounded border-2 border-solid border-blue-500">
-                    <div className="h-5 h-min w-min text-3xl">{c.name}</div>
-                    <div>
-                      {`seed: ${c.seed} prereg: ${c.prereg} preregBefore: ${c.preregBefore} preregAfter: ${c.preregAfter} competitionStart: ${c.competitionStartTime} competitionEnd: ${c.competitionEndTime} funds: ${c.funds} participationFee: ${c.participationFee}`}
+                <td>
+                  <Link href={`/games/arkanoid/${c.competitionId}`}>
+                    <div className="flex content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white">
+                      Play
                     </div>
-                  </div> */}
-                {/* </Link> */}
+                  </Link>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
-        {/* {competitions.map((c) => (
-          <Link
-            className="flex w-1/5 flex-col"
-            href={`/games/arkanoid/${c.competitionId}`}
-          >
-            <div className="rounded border-2 border-solid border-blue-500">
-              <div className="h-5 h-min w-min text-3xl">{c.name}</div>
-              <div>
-                {`seed: ${c.seed} prereg: ${c.prereg} preregBefore: ${c.preregBefore} preregAfter: ${c.preregAfter} competitionStart: ${c.competitionStartTime} competitionEnd: ${c.competitionEndTime} funds: ${c.funds} participationFee: ${c.participationFee}`}
-              </div>
-            </div>
-          </Link>
-        ))} */}
       </div>
     </>
   );
