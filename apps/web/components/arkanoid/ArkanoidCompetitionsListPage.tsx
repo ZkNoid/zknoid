@@ -70,17 +70,68 @@ export default function ArkanoidCompetitionsListPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center gap-5 py-10">
-      {competitions.map((c) => (
-        <Link
-          className="flex w-1/5 flex-col"
-          href={`/games/arkanoid/${c.competitionId}`}
-        >
-          <div className="h-10 rounded border-2 border-solid border-blue-500">
-            {c.name}
+    <>
+      <div className="flex min-h-screen w-screen flex-col items-center py-10">
+        <Link href={`/games/arkanoid/new-competition`} className="p-5">
+          <div className="h-50 w-100 rounded border-solid bg-white p-5">
+            Create competition{' '}
           </div>
         </Link>
-      ))}
-    </div>
+        <table className="min-w-max text-left text-xs">
+          <thead className="bg-gray-300">
+            <tr>
+              <th className="px-6 py-3"> Name </th>
+              <th className="px-6 py-3"> Seed </th>
+              <th className="px-6 py-3"> Prereg </th>
+              <th className="px-6 py-3"> PreregBefore </th>
+              <th className="px-6 py-3"> PreregAfter </th>
+              <th className="px-6 py-3"> CompetitionStart </th>
+              <th className="px-6 py-3"> CompetitionEnd </th>
+              <th className="px-6 py-3"> Funds </th>
+              <th className="px-6 py-3"> ParticipationFee </th>
+            </tr>
+          </thead>
+          <tbody>
+            {competitions.map((c) => (
+              <tr className="border-b bg-white">
+                {/* <Link
+                  className="flex w-1/5 flex-col"
+                  href={`/games/arkanoid/${c.competitionId}`}
+                > */}
+                <td className="px-6 py-4">{c.name}</td>
+                <td className="px-6 py-4">{c.seed}</td>
+                <td className="px-6 py-4">{c.prereg.toString()}</td>
+                <td className="px-6 py-4">{c.preregBefore}</td>
+                <td className="px-6 py-4">{c.preregAfter}</td>
+                <td className="px-6 py-4">{c.competitionStartTime}</td>
+                <td className="px-6 py-4">{c.competitionEndTime}</td>
+                <td className="px-6 py-4">{c.funds}</td>
+                <td className="px-6 py-4">{c.participationFee}</td>
+                {/* <div className="rounded border-2 border-solid border-blue-500">
+                    <div className="h-5 h-min w-min text-3xl">{c.name}</div>
+                    <div>
+                      {`seed: ${c.seed} prereg: ${c.prereg} preregBefore: ${c.preregBefore} preregAfter: ${c.preregAfter} competitionStart: ${c.competitionStartTime} competitionEnd: ${c.competitionEndTime} funds: ${c.funds} participationFee: ${c.participationFee}`}
+                    </div>
+                  </div> */}
+                {/* </Link> */}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {/* {competitions.map((c) => (
+          <Link
+            className="flex w-1/5 flex-col"
+            href={`/games/arkanoid/${c.competitionId}`}
+          >
+            <div className="rounded border-2 border-solid border-blue-500">
+              <div className="h-5 h-min w-min text-3xl">{c.name}</div>
+              <div>
+                {`seed: ${c.seed} prereg: ${c.prereg} preregBefore: ${c.preregBefore} preregAfter: ${c.preregAfter} competitionStart: ${c.competitionStartTime} competitionEnd: ${c.competitionEndTime} funds: ${c.funds} participationFee: ${c.participationFee}`}
+              </div>
+            </div>
+          </Link>
+        ))} */}
+      </div>
+    </>
   );
 }
