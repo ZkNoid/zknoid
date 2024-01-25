@@ -11,7 +11,7 @@ interface MatchMakerConfig { }
 
 const PENDING_BLOCKS_NUM = UInt64.from(5);
 const RANDZU_FIELD_SIZE = 15;
-const CELLS_LINE_TO_WIN = 15;
+const CELLS_LINE_TO_WIN = 5;
 
 export class RandzuField extends Struct({
   value: Provable.Array(Provable.Array(UInt32, RANDZU_FIELD_SIZE), RANDZU_FIELD_SIZE),
@@ -25,8 +25,11 @@ export class RandzuField extends Struct({
   }
 }
 
-export class WinPositions extends Struct({
-  value: Provable.Array(UInt32, CELLS_LINE_TO_WIN),
+export class WinWitness extends Struct({
+  x: UInt32,
+  y: UInt32,
+  directionX: UInt32,
+  directionY: UInt32
 }) { }
 
 export class RoundIdxUser extends Struct({
@@ -49,6 +52,7 @@ export class GameInfo extends Struct({
   player2: PublicKey,
   currentMoveUser: PublicKey,
   field: RandzuField,
+  winner: PublicKey
 }) { }
 
 export class QueueListItem extends Struct({
@@ -125,7 +129,8 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
         player1: this.transaction.sender,
         player2: opponent.value.userAddress,
         currentMoveUser: this.transaction.sender,
-        field: RandzuField.from(Array(RANDZU_FIELD_SIZE).fill(Array(RANDZU_FIELD_SIZE).fill(0)))
+        field: RandzuField.from(Array(RANDZU_FIELD_SIZE).fill(Array(RANDZU_FIELD_SIZE).fill(0))),
+        winner: PublicKey.empty()
       })
     );
 
@@ -154,7 +159,7 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
   }
 
   @runtimeMethod()
-  public makeMove(gameId: UInt64, newField: RandzuField, winPositions: WinPositions): void {
+  public makeMove(gameId: UInt64, newField: RandzuField, winWitness: WinWitness): void {
     const sessionSender = this.sesions.get(this.transaction.sender);
     const sender = Provable.if(sessionSender.isSome, sessionSender.value, this.transaction.sender);
 
@@ -164,19 +169,53 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
       game.value.currentMoveUser.equals(sender), 
       `Not your move: ${sender.toBase58()}`
     );
+    assert(
+      game.value.winner.equals(PublicKey.empty()), 
+      `Game finished`
+    );
+
+    const winProposed = Bool.and(winWitness.directionX.equals(UInt32.from(0)), winWitness.directionY.equals(UInt32.from(0))).not();
+    
+    const currentUserId = Provable.if(
+      game.value.currentMoveUser.equals(game.value.player1), 
+      UInt32.from(1),
+      UInt32.from(2)
+    );
 
     let addedCellsNum = UInt64.from(0);
     for (let i = 0; i < RANDZU_FIELD_SIZE; i++) {
-      for (let j = 0; j < RANDZU_FIELD_SIZE; j++) {
+      for (let j = 0; j < RANDZU_FIELD_SIZE; j++) {    
         let currentFieldCell = game.value.field.value[i][j];
         let nextFieldCell = newField.value[i][j];
+        
         assert(Bool.or(currentFieldCell.equals(UInt32.from(0)), currentFieldCell.equals(nextFieldCell)),
           `Modified filled cell at ${i}, ${j}`
         );
+
         addedCellsNum.add(Provable.if(currentFieldCell.equals(nextFieldCell), UInt64.from(0), UInt64.from(1)));
+
         assert(addedCellsNum.lessThanOrEqual(UInt64.from(1)), `Not only one cell added. Error at ${i}, ${j}`);
+        assert(
+          Provable.if(currentFieldCell.equals(nextFieldCell), Bool(true), nextFieldCell.equals(currentUserId)), 
+          'Added opponent`s color'
+        );
+
+        for (let wi = 0; wi < CELLS_LINE_TO_WIN; wi++) {
+          const winPosX = winWitness.x.add(winWitness.directionX.mul(UInt32.from(i)));
+          const winPosY = winWitness.y.add(winWitness.directionY.mul(UInt32.from(i)));
+          assert(Bool.or(
+            winProposed.not(),
+            Provable.if(
+              Bool.and(winPosX.equals(UInt32.from(i)), winPosY.equals(UInt32.from(j))), 
+              nextFieldCell.equals(currentUserId), 
+              Bool(true)
+            )
+          ), 'Win not proved');
+        }
       }
     }
+
+    game.value.winner = Provable.if(winProposed, game.value.currentMoveUser, PublicKey.empty());
 
     game.value.field = newField;
     game.value.currentMoveUser = Provable.if(

@@ -12,6 +12,7 @@ export interface IGameInfo {
     player1: PublicKey;
     player2: PublicKey;
     currentMoveUser: PublicKey;
+    winner: PublicKey;
     field: number[][];
     currentUserIndex: 0 | 1;
     isCurrentUserMove: boolean;
@@ -105,7 +106,8 @@ export const useRandzuMatchQueueStore = create<
                         currentUserIndex,
                         isCurrentUserMove: (gameInfo.currentMoveUser as PublicKey).equals(address).toBoolean(),
                         opponent: currentUserIndex == 1 ? gameInfo.player1: gameInfo.player2,
-                        gameId: activeGameId.toBigInt()
+                        gameId: activeGameId.toBigInt(),
+                        winner: gameInfo.winner
                     }
                     console.log('Parsed game info', state.gameInfo);
                 })
