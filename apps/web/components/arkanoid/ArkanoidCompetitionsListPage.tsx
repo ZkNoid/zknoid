@@ -72,14 +72,14 @@ export default function ArkanoidCompetitionsListPage() {
   return (
     <div className="flex flex-col items-center justify-center gap-5 py-10">
       {competitions.map((c) => (
-        <div className="w-1/5 rounded border-2 border-solid border-blue-500">
-          <Link
-            className="m-5 flex h-full flex-col gap-5"
-            href={`/games/arkanoid/${c.competitionId}`}
-          >
+        <Link
+          className="flex w-1/5 flex-col"
+          href={`/games/arkanoid/${c.competitionId}`}
+        >
+          <div className="h-10 rounded border-2 border-solid border-blue-500">
             {c.name}
-          </Link>
-        </div>
+          </div>
+        </Link>
       ))}
     </div>
   );
