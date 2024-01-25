@@ -5,6 +5,11 @@ import Link from 'next/link';
 import { UInt64 } from 'o1js';
 import { useEffect, useRef, useState } from 'react';
 import { client } from 'zknoid-chain-dev';
+import Header from '../Header';
+import { GameType } from '@/app/constants/games';
+import { useNetworkStore } from '@/lib/stores/network';
+import { useMinaBalancesStore } from '@/lib/stores/minaBalances';
+import { useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
 
 interface ICompetition {
   competitionId: number;
@@ -36,6 +41,9 @@ const testList: ICompetition[] = [
 
 export default function ArkanoidCompetitionsListPage() {
   let [competitions, setCompetitions] = useState(testList);
+  const networkStore = useNetworkStore();
+  const minaBalances = useMinaBalancesStore();
+  const protokitBalances = useProtokitBalancesStore();
 
   useEffect(() => {
     client.start().then(getListOfCompetitions);
@@ -71,6 +79,22 @@ export default function ArkanoidCompetitionsListPage() {
 
   return (
     <>
+      <Header
+        address={networkStore.address}
+        connectWallet={networkStore.connectWallet}
+        minaBalance={
+          networkStore.address
+            ? minaBalances.balances[networkStore.address]
+            : 0n
+        }
+        protokitBalance={
+          networkStore.address
+            ? protokitBalances.balances[networkStore.address]
+            : 0n
+        }
+        walletInstalled={networkStore.walletInstalled()}
+        currentGame={GameType.Arkanoid}
+      />
       <div className="flex min-h-screen w-screen flex-col items-center py-10">
         <Link href={`/games/arkanoid/new-competition`} className="p-5">
           <div className="h-50 w-100 rounded border-solid bg-white p-5">

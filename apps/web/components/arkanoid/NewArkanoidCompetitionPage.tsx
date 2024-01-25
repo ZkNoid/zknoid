@@ -11,6 +11,10 @@ import {
 } from 'zknoid-chain-dev';
 import { useClientStore } from '@/lib/stores/client';
 import { useNetworkStore } from '@/lib/stores/network';
+import Header from '../Header';
+import { useMinaBalancesStore } from '@/lib/stores/minaBalances';
+import { useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
+import { GameType } from '@/app/constants/games';
 
 interface IBrick {
   pos: [number, number];
@@ -42,6 +46,8 @@ export default function NewArkanoidCompetitionPage() {
   const [bricks, setBricks] = useState<IBrick[]>([]);
 
   const networkStore = useNetworkStore();
+  const minaBalances = useMinaBalancesStore();
+  const protokitBalances = useProtokitBalancesStore();
   const client = useClientStore();
 
   useEffect(() => {
@@ -140,111 +146,132 @@ export default function NewArkanoidCompetitionPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center gap-5 py-10">
-      <div className="py-3">Create competition</div>
-      <div className="flex flex-col items-center">
-        <a>Name</a>
-        <input
-          className="w-50"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        ></input>
-      </div>
-      <div className="flex flex-col items-center">
-        <a>Description</a>
-        <textarea
-          className="w-50"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        ></textarea>
-      </div>
-      <div className="flex flex-col items-center">
-        <a>Map seed</a>
-        <a className="text-xs">(do not share until competition started)</a>
-        <input
-          className="w-20"
-          type="number"
-          value={seed}
-          onChange={(e) => setSeed(parseInt(e.target.value))}
-        ></input>
-        <canvas
-          width="300"
-          height="300"
-          style={{ width: 300, height: 300 }}
-          className="py-5"
-          ref={canvas}
-        ></canvas>
-      </div>
-      <div className="flex flex-col items-center">
-        <a>Competition preregistration</a>
-        <input
-          type="checkbox"
-          checked={preregistrationEnabled}
-          onChange={(e) => setPreregistrationEnabled(e.target.checked)}
-        ></input>
-      </div>
-      {preregistrationEnabled && (
+    <>
+      <Header
+        address={networkStore.address}
+        connectWallet={networkStore.connectWallet}
+        minaBalance={
+          networkStore.address
+            ? minaBalances.balances[networkStore.address]
+            : 0n
+        }
+        protokitBalance={
+          networkStore.address
+            ? protokitBalances.balances[networkStore.address]
+            : 0n
+        }
+        walletInstalled={networkStore.walletInstalled()}
+        currentGame={GameType.Arkanoid}
+      />
+      <div className="flex flex-col items-center justify-center gap-5 py-10">
+        <div className="py-3">Create competition</div>
+        <div className="flex flex-col items-center">
+          <a>Name</a>
+          <input
+            className="w-50"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          ></input>
+        </div>
+        <div className="flex flex-col items-center">
+          <a>Description</a>
+          <textarea
+            className="w-50"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          ></textarea>
+        </div>
+        <div className="flex flex-col items-center">
+          <a>Map seed</a>
+          <a className="text-xs">(do not share until competition started)</a>
+          <input
+            className="w-20"
+            type="number"
+            value={seed}
+            onChange={(e) => setSeed(parseInt(e.target.value))}
+          ></input>
+          <canvas
+            width="300"
+            height="300"
+            style={{ width: 300, height: 300 }}
+            className="py-5"
+            ref={canvas}
+          ></canvas>
+        </div>
         <div className="flex flex-col items-center">
           <a>Competition preregistration</a>
+          <input
+            type="checkbox"
+            checked={preregistrationEnabled}
+            onChange={(e) => setPreregistrationEnabled(e.target.checked)}
+          ></input>
+        </div>
+        {preregistrationEnabled && (
+          <div className="flex flex-col items-center">
+            <a>Competition preregistration</a>
+            <div className="flex gap-5">
+              <input
+                type="date"
+                value={preregistrationFrom}
+                onChange={(e) => setPreregistrationFrom(e.target.value)}
+              ></input>{' '}
+              -
+              <input
+                type="date"
+                value={preregistrationTo}
+                onChange={(e) => setPreregistrationTo(e.target.value)}
+              ></input>
+            </div>
+          </div>
+        )}
+        <div className="flex flex-col items-center">
+          <a>Competition dates</a>
           <div className="flex gap-5">
             <input
               type="date"
-              value={preregistrationFrom}
-              onChange={(e) => setPreregistrationFrom(e.target.value)}
+              value={competitionFrom}
+              onChange={(e) => setCompetitionFrom(e.target.value)}
             ></input>{' '}
             -
             <input
               type="date"
-              value={preregistrationTo}
-              onChange={(e) => setPreregistrationTo(e.target.value)}
+              value={competitionTo}
+              onChange={(e) => setCompetitionTo(e.target.value)}
             ></input>
           </div>
         </div>
-      )}
-      <div className="flex flex-col items-center">
-        <a>Competition dates</a>
-        <div className="flex gap-5">
-          <input
-            type="date"
-            value={competitionFrom}
-            onChange={(e) => setCompetitionFrom(e.target.value)}
-          ></input>{' '}
-          -
-          <input
-            type="date"
-            value={competitionTo}
-            onChange={(e) => setCompetitionTo(e.target.value)}
-          ></input>
+        <div className="flex flex-col items-center">
+          <a>Funding</a>
+          <div className="flex">
+            <input
+              className="w-20"
+              type="number"
+              value={funding}
+              onChange={(e) => setFunding(parseInt(e.target.value))}
+            ></input>{' '}
+            🪙
+          </div>
         </div>
-      </div>
-      <div className="flex flex-col items-center">
-        <a>Funding</a>
-        <div className="flex">
-          <input
-            className="w-20"
-            type="number"
-            value={funding}
-            onChange={(e) => setFunding(parseInt(e.target.value))}
-          ></input>{' '}
-          🪙
+        <div className="flex flex-col items-center">
+          <a>Participation fee</a>
+          <div className="flex">
+            <input
+              className="w-20"
+              type="number"
+              value={participationFee}
+              onChange={(e) => setPerticipationFee(parseInt(e.target.value))}
+            ></input>{' '}
+            🪙
+          </div>
         </div>
-      </div>
-      <div className="flex flex-col items-center">
-        <a>Participation fee</a>
-        <div className="flex">
-          <input
-            className="w-20"
-            type="number"
-            value={participationFee}
-            onChange={(e) => setPerticipationFee(parseInt(e.target.value))}
-          ></input>{' '}
-          🪙
-        </div>
-      </div>
 
-      <div className="cursor-pointer py-3" onClick={() => createCompetition()}>
-        [Create]
+        <div
+          className="cursor-pointer py-3"
+          onClick={() => createCompetition()}
+        >
+          [Create]
+        </div>
       </div>
-    </div>
+    </>
   );
 }
