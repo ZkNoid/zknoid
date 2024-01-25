@@ -1,7 +1,7 @@
-'use client'
-import { client } from "zknoid-chain-dev";
-import { create } from "zustand";
-import { immer } from "zustand/middleware/immer";
+'use client';
+import { client } from 'zknoid-chain-dev';
+import { create } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
 
 export type Client = typeof client;
 
@@ -11,7 +11,7 @@ export interface ClientState {
   start: () => Promise<void>;
 }
 
-export const useClientStore = create<ClientState, [["zustand/immer", never]]>(
+export const useClientStore = create<ClientState, [['zustand/immer', never]]>(
   immer((set) => ({
     loading: Boolean(false),
     async start() {

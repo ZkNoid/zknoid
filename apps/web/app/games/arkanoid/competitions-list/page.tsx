@@ -1,5 +1,7 @@
-import ArkanoidCompetitionsListPage from '@/components/arkanoid/ArkanoidCompetitionsListPage';
+'use client';
+
+import ArkanoidCompetitionsListPageDynamic from '@/components/arkanoid/ArkanoidCompetitionsListPageDynamic';
 
 export default function ArkanoidCompetitionsListPage1() {
-  return <ArkanoidCompetitionsListPage />;
+  return <ArkanoidCompetitionsListPageDynamic />;
 }
