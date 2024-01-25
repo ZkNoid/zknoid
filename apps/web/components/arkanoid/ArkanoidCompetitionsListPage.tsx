@@ -16,10 +16,10 @@ interface ICompetition {
   name: string;
   seed: number;
   prereg: boolean;
-  preregBefore: number;
-  preregAfter: number;
-  competitionStartTime: number;
-  competitionEndTime: number;
+  preregBefore: string;
+  preregAfter: string;
+  competitionStartTime: string;
+  competitionEndTime: string;
   funds: number;
   participationFee: number;
 }
@@ -30,14 +30,21 @@ const testList: ICompetition[] = [
     name: 'global',
     seed: 0,
     prereg: false,
-    preregBefore: 0,
-    preregAfter: 0,
-    competitionStartTime: 0,
-    competitionEndTime: 0,
+    preregBefore: '1/1/1970',
+    preregAfter: '1/1/1970',
+    competitionStartTime: '1/1/1970',
+    competitionEndTime: '1/1/1970',
     funds: 0,
     participationFee: 0,
   },
 ];
+
+const timeStampToStringDate = (timeStamp: number): string => {
+  var date = new Date(timeStamp);
+  return (
+    date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()
+  );
+};
 
 export default function ArkanoidCompetitionsListPage() {
   let [competitions, setCompetitions] = useState(testList);
@@ -60,17 +67,22 @@ export default function ArkanoidCompetitionsListPage() {
       let curGame = await client.query.runtime.GameHub.competitions.get(
         UInt64.from(i),
       );
+
       result.push({
         competitionId: i,
         name: curGame!.name.toString(),
-        seed: 0,
-        prereg: false,
-        preregBefore: 0,
-        preregAfter: 0,
-        competitionStartTime: 0,
-        competitionEndTime: 0,
-        funds: 0,
-        participationFee: 0,
+        seed: +curGame!.seed.toString(),
+        prereg: curGame!.prereg.toBoolean(),
+        preregBefore: timeStampToStringDate(+curGame!.preregBefore.toString()),
+        preregAfter: timeStampToStringDate(+curGame!.preregAfter.toString()),
+        competitionStartTime: timeStampToStringDate(
+          +curGame!.competitionStartTime.toString(),
+        ),
+        competitionEndTime: timeStampToStringDate(
+          +curGame!.competitionEndTime.toString(),
+        ),
+        funds: +curGame!.funds.toString(),
+        participationFee: +curGame!.participationFee.toString(),
       });
     }
 
