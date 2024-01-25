@@ -34,6 +34,9 @@ export default function Header({
           <Link href={`/games/${currentGame}/new-competition`}>
             <div className="cursor-pointer">Create competition</div>
           </Link>
+          <Link href={`/games/${currentGame}/competitions-list`}>
+            <div className="cursor-pointer">Competitions list</div>
+          </Link>
         </div>
         <div className="flex basis-6/12 flex-row items-center justify-end gap-10">
           <div
