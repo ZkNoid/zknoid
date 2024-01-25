@@ -129,10 +129,10 @@ export default function NewArkanoidCompetitionPage() {
           // description,
           seed,
           preregistrationEnabled,
-          0, // preregBefore
-          0, // preregAfter
-          0, // competitionStartTime
-          0, // competitionEndTime
+          new Date(preregistrationFrom).getTime(), // preregBefore
+          new Date(preregistrationFrom).getTime(), // preregAfter
+          new Date(competitionFrom).getTime(), // competitionStartTime
+          new Date(competitionTo).getTime(), // competitionEndTime
           funding,
           participationFee,
         );
