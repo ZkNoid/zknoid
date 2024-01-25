@@ -96,10 +96,6 @@ export default function ArkanoidCompetitionsListPage() {
           <tbody>
             {competitions.map((c) => (
               <tr className="border-b bg-white">
-                {/* <Link
-                  className="flex w-1/5 flex-col"
-                  href={`/games/arkanoid/${c.competitionId}`}
-                > */}
                 <td className="px-6 py-4">{c.name}</td>
                 <td className="px-6 py-4">{c.seed}</td>
                 <td className="px-6 py-4">{c.prereg.toString()}</td>
