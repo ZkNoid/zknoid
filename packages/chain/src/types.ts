@@ -118,6 +118,20 @@ export class Brick extends Struct({
 export class Bricks extends Struct({
     bricks: Provable.Array(Brick, MAX_BRICKS),
 }) {
+    static empty(): Bricks {
+        return new Bricks({
+            bricks: [...new Array(MAX_BRICKS)].map(
+                (elem) =>
+                    new Brick({
+                        pos: new IntPoint({
+                            x: Int64.from(0),
+                            y: Int64.from(0),
+                        }),
+                        value: UInt64.from(1),
+                    })
+            ),
+        });
+    }
     equals(other: Bricks): Bool {
         let result = Bool(true);
 
