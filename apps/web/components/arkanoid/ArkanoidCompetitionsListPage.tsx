@@ -13,22 +13,6 @@ import { useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
 import { ICompetition } from '@/lib/types';
 import { fromContractCompetition } from '@/lib/typesConverter';
 
-// To be removed
-const testList: ICompetition[] = [
-  {
-    competitionId: 0,
-    name: 'global',
-    seed: 0,
-    prereg: false,
-    preregBefore: 0,
-    preregAfter: 0,
-    competitionStartTime: 0,
-    competitionEndTime: 0,
-    funds: 0,
-    participationFee: 0,
-  },
-];
-
 const timeStampToStringDate = (timeStamp: number): string => {
   var date = new Date(timeStamp);
   return (
@@ -37,7 +21,7 @@ const timeStampToStringDate = (timeStamp: number): string => {
 };
 
 export default function ArkanoidCompetitionsListPage() {
-  let [competitions, setCompetitions] = useState(testList);
+  let [competitions, setCompetitions] = useState([]);
   const networkStore = useNetworkStore();
   const minaBalances = useMinaBalancesStore();
   const protokitBalances = useProtokitBalancesStore();
