@@ -2,13 +2,14 @@
 import { client } from 'zknoid-chain-dev';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
+import { ClientAppChain } from '@proto-kit/sdk';
 
 export type Client = typeof client;
 
 export interface ClientState {
   loading: boolean;
   client?: Client;
-  start: () => Promise<void>;
+  start: () => Promise<Client>;
 }
 
 export const useClientStore = create<ClientState, [['zustand/immer', never]]>(
@@ -26,6 +27,8 @@ export const useClientStore = create<ClientState, [['zustand/immer', never]]>(
         // @ts-ignore
         state.client = client;
       });
+
+      return client;
     },
   })),
 );

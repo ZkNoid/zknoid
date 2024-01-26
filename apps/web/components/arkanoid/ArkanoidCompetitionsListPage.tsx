@@ -10,30 +10,20 @@ import { GameType } from '@/app/constants/games';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useMinaBalancesStore } from '@/lib/stores/minaBalances';
 import { useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
+import { ICompetition } from '@/lib/types';
+import { fromContractCompetition } from '@/lib/typesConverter';
 
-interface ICompetition {
-  competitionId: number;
-  name: string;
-  seed: number;
-  prereg: boolean;
-  preregBefore: string;
-  preregAfter: string;
-  competitionStartTime: string;
-  competitionEndTime: string;
-  funds: number;
-  participationFee: number;
-}
-
+// To be removed
 const testList: ICompetition[] = [
   {
     competitionId: 0,
     name: 'global',
     seed: 0,
     prereg: false,
-    preregBefore: '1/1/1970',
-    preregAfter: '1/1/1970',
-    competitionStartTime: '1/1/1970',
-    competitionEndTime: '1/1/1970',
+    preregBefore: 0,
+    preregAfter: 0,
+    competitionStartTime: 0,
+    competitionEndTime: 0,
     funds: 0,
     participationFee: 0,
   },
@@ -64,26 +54,11 @@ export default function ArkanoidCompetitionsListPage() {
       0;
 
     for (let i = 0; i < lastId; i++) {
-      let curGame = await client.query.runtime.GameHub.competitions.get(
+      let curCompetition = await client.query.runtime.GameHub.competitions.get(
         UInt64.from(i),
       );
 
-      result.push({
-        competitionId: i,
-        name: curGame!.name.toString(),
-        seed: +curGame!.seed.toString(),
-        prereg: curGame!.prereg.toBoolean(),
-        preregBefore: timeStampToStringDate(+curGame!.preregBefore.toString()),
-        preregAfter: timeStampToStringDate(+curGame!.preregAfter.toString()),
-        competitionStartTime: timeStampToStringDate(
-          +curGame!.competitionStartTime.toString(),
-        ),
-        competitionEndTime: timeStampToStringDate(
-          +curGame!.competitionEndTime.toString(),
-        ),
-        funds: +curGame!.funds.toString(),
-        participationFee: +curGame!.participationFee.toString(),
-      });
+      result.push(fromContractCompetition(i, curCompetition!));
     }
 
     setCompetitions(competitions.concat(...result));
@@ -135,10 +110,18 @@ export default function ArkanoidCompetitionsListPage() {
                 <td className="px-6 py-4">{c.name}</td>
                 <td className="px-6 py-4">{c.seed}</td>
                 <td className="px-6 py-4">{c.prereg.toString()}</td>
-                <td className="px-6 py-4">{c.preregBefore}</td>
-                <td className="px-6 py-4">{c.preregAfter}</td>
-                <td className="px-6 py-4">{c.competitionStartTime}</td>
-                <td className="px-6 py-4">{c.competitionEndTime}</td>
+                <td className="px-6 py-4">
+                  {timeStampToStringDate(c.preregBefore)}
+                </td>
+                <td className="px-6 py-4">
+                  {timeStampToStringDate(c.preregAfter)}
+                </td>
+                <td className="px-6 py-4">
+                  {timeStampToStringDate(c.competitionStartTime)}
+                </td>
+                <td className="px-6 py-4">
+                  {timeStampToStringDate(c.competitionEndTime)}
+                </td>
                 <td className="px-6 py-4">{c.funds}</td>
                 <td className="px-6 py-4">{c.participationFee}</td>
                 <td>
