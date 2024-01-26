@@ -1,25 +1,37 @@
-import { useMinaBridge } from "@/lib/stores/protokitBalances";
-import { useState } from "react";
+import { useMinaBridge } from '@/lib/stores/protokitBalances';
+import { useState } from 'react';
 
 export const DepositMenuItem = () => {
-    const [expanded, setExpanded] = useState(false);
-    const [amountToDeposit, setAmountToDeposit] = useState(10);
-    const bridge = useMinaBridge(amountToDeposit * 10 ** 9);
+  const [expanded, setExpanded] = useState(false);
+  const [amountToDeposit, setAmountToDeposit] = useState(10);
+  const bridge = useMinaBridge();
 
-    return (
-        <>
-            <div className="inline ml-3 bg-slate-300 cursor-pointer" onClick={() => setExpanded(!expanded)}>Deposit</div>
-            {expanded && (
-                <div className="flex flex-col items-center w-40 py-3 absolute bg-slate-200 text-xs rounded-xl top-20 gap-5 ml-7">
-                    <input type="number" className="w-20 h-7 text-lg" value={amountToDeposit} onChange={(value) => setAmountToDeposit(parseInt(value.target.value))}></input>
-                    <div
-                        className="cursor-pointer bg-slate-300 hover:bg-slate-400 py-3 px-7 text-sm rounded-xl"
-                        onClick={() => bridge()}
-                    >
-                        DEPOSIT
-                    </div>
-                </div>
-            )}
-        </>
-    )
-}
+  return (
+    <>
+      <div
+        className="ml-3 inline cursor-pointer bg-slate-300"
+        onClick={() => setExpanded(!expanded)}
+      >
+        Deposit
+      </div>
+      {expanded && (
+        <div className="absolute top-20 ml-7 flex w-40 flex-col items-center gap-5 rounded-xl bg-slate-200 py-3 text-xs">
+          <input
+            type="number"
+            className="h-7 w-20 text-lg"
+            value={amountToDeposit}
+            onChange={(value) =>
+              setAmountToDeposit(parseInt(value.target.value))
+            }
+          ></input>
+          <div
+            className="cursor-pointer rounded-xl bg-slate-300 px-7 py-3 text-sm hover:bg-slate-400"
+            onClick={() => bridge(amountToDeposit * 10 ** 9)}
+          >
+            DEPOSIT
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
