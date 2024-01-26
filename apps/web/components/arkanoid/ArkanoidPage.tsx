@@ -8,11 +8,12 @@ import {
   Tick,
   defaultLevel,
   CHUNK_LENGTH,
+  createBricksBySeed,
 } from 'zknoid-chain-dev';
-import { Bool, Int64, PublicKey } from 'o1js';
+import { Bool, Int64, PublicKey, UInt64 } from 'o1js';
 import Link from 'next/link';
 import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
-import { useNetworkStore } from '@/lib/stores/network';
+import { Client, useNetworkStore } from '@/lib/stores/network';
 import { arkanoidCompetitions } from '@/app/constants/akanoidCompetitions';
 import {
   useMinaBridge,
@@ -33,6 +34,8 @@ import {
 import Header from '../Header';
 import { GameType } from '@/app/constants/games';
 import { walletInstalled } from '@/lib/utils';
+import { ICompetition } from '@/lib/types';
+import { fromContractCompetition } from '@/lib/typesConverter';
 
 enum GameState {
   NotStarted,
@@ -57,9 +60,10 @@ export default function ArkanoidPage({
   const [lastTicks, setLastTicks] = useState<ITick[]>([]);
   const [score, setScore] = useState<number>(0);
   const [ticksAmount, setTicksAmount] = useState<number>(0);
-  const competition = arkanoidCompetitions.find(
-    (x) => x.id == params.competitionId,
-  );
+  const [competition, setCompetition] = useState<ICompetition>();
+  // const competition = arkanoidCompetitions.find(
+  //   (x) => x.id == params.competitionId,
+  // );
 
   const client = useClientStore();
 
@@ -75,16 +79,17 @@ export default function ArkanoidPage({
 
   let [gameId, setGameId] = useState(0);
   let [debug, setDebug] = useState(true);
-  const level: Bricks = useMemo(() => defaultLevel(), []);
+  // const level: Bricks = useMemo(() => defaultLevel(), []);
+  let [level, setLevel] = useState<Bricks>(Bricks.empty);
   const [workerClient, setWorkerClient] = useState<ZknoidWorkerClient | null>(
     null,
   );
   const networkStore = useNetworkStore();
 
-  const bridge = useMinaBridge(competition?.enteringPrice! * 10 ** 9);
+  const bridge = useMinaBridge(competition?.participationFee! * 10 ** 9);
 
   const startGame = async () => {
-    if (competition!.enteringPrice > 0) {
+    if (competition!.participationFee > 0) {
       await bridge();
     }
 
@@ -127,8 +132,43 @@ export default function ArkanoidPage({
   }, []);
 
   useEffect(() => {
-    client.start();
+    client.start().then((client) => getCompetition(client));
   }, []);
+
+  const getCompetition = async (client: Client) => {
+    let competitionId = +params.competitionId;
+    if (isNaN(competitionId)) {
+      console.log(
+        `Can't load level. competitionId is not a number. Loading default level`,
+      );
+      return;
+    }
+
+    let contractCompetition =
+      await client.query.runtime.GameHub.competitions.get(
+        UInt64.from(competitionId),
+      );
+    if (contractCompetition === undefined) {
+      console.log(`Can't get competition with id <${competitionId}>`);
+      return;
+    }
+
+    let competition = fromContractCompetition(
+      competitionId,
+      contractCompetition,
+    );
+
+    let bricks = createBricksBySeed(Int64.from(competition!.seed));
+
+    setCompetition(competition);
+    setLevel(bricks);
+  };
+
+  // useEffect(() => {
+  //   let bricks = createBricksBySeed(Int64.from(competition!.seed));
+
+  //   setLevel(bricks);
+  // }, [competition]);
 
   const proof = async () => {
     console.log('Ticks', lastTicks);
@@ -223,7 +263,7 @@ export default function ArkanoidPage({
                   className="rounded-xl bg-slate-300 p-5 hover:bg-slate-400"
                   onClick={() => startGame()}
                 >
-                  Start for {competition?.enteringPrice} 🪙
+                  Start for {competition?.participationFee} 🪙
                 </div>
               )}
               {gameState == GameState.Won && (
