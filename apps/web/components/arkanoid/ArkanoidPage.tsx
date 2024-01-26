@@ -86,11 +86,11 @@ export default function ArkanoidPage({
   );
   const networkStore = useNetworkStore();
 
-  const bridge = useMinaBridge(competition?.participationFee! * 10 ** 9);
+  let bridge = useMinaBridge();
 
   const startGame = async () => {
     if (competition!.participationFee > 0) {
-      await bridge();
+      await bridge(competition!.participationFee);
     }
 
     setGameState(GameState.Active);

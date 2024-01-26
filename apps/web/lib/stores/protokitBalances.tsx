@@ -61,47 +61,52 @@ export const useObserveProtokitBalance = () => {
   }, [client.client, chain.block?.height, network.address]);
 };
 
-export const useMinaBridge = (amount: number) => {
+export const useMinaBridge = () => {
   const client = useClientStore();
   const balancesStore = useProtokitBalancesStore();
   const network = useNetworkStore();
 
-  return useCallback(async () => {
-    if (!client.client || !network.address) return;
-    if (balancesStore.balances[network.address]) return;
+  return useCallback(
+    async (amount: number) => {
+      if (!client.client || !network.address) return;
+      if (balancesStore.balances[network.address]) return;
 
-    const l1tx = await Mina.transaction(() => {
-      let senderUpdate = AccountUpdate.create(
-        PublicKey.fromBase58(network.address!),
-      );
-      senderUpdate.requireSignature();
-      senderUpdate.send({ to: PublicKey.fromBase58(BRIDGE_ADDR), amount });
-    });
+      const l1tx = await Mina.transaction(() => {
+        let senderUpdate = AccountUpdate.create(
+          PublicKey.fromBase58(network.address!),
+        );
+        senderUpdate.requireSignature();
+        console.log(BRIDGE_ADDR);
+        console.log(amount);
+        senderUpdate.send({ to: PublicKey.fromBase58(BRIDGE_ADDR), amount });
+      });
 
-    await l1tx.prove();
+      await l1tx.prove();
 
-    const transactionJSON = l1tx.toJSON();
+      const transactionJSON = l1tx.toJSON();
 
-    await (window as any).mina.sendTransaction({
-      transaction: transactionJSON,
-      feePayer: {
-        fee: 0.1,
-        memo: 'zknoid.io',
-      },
-    });
+      await (window as any).mina.sendTransaction({
+        transaction: transactionJSON,
+        feePayer: {
+          fee: 0.1,
+          memo: 'zknoid.io',
+        },
+      });
 
-    const balances = client.client.runtime.resolve('Balances');
-    const sender = PublicKey.fromBase58(network.address!);
+      const balances = client.client.runtime.resolve('Balances');
+      const sender = PublicKey.fromBase58(network.address!);
 
-    const l2tx = await client.client.transaction(sender, () => {
-      balances.addBalance(sender, UInt64.from(amount));
-    });
+      const l2tx = await client.client.transaction(sender, () => {
+        balances.addBalance(sender, UInt64.from(amount));
+      });
 
-    await l2tx.sign();
-    await l2tx.send();
+      await l2tx.sign();
+      await l2tx.send();
 
-    isPendingTransaction(l2tx.transaction);
+      isPendingTransaction(l2tx.transaction);
 
-    network.addPendingL2Transaction(l2tx!.transaction!);
-  }, [client.client, network.address, balancesStore.balances]);
+      network.addPendingL2Transaction(l2tx!.transaction!);
+    },
+    [client.client, network.address, balancesStore.balances],
+  );
 };
