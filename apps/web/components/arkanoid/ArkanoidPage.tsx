@@ -296,43 +296,58 @@ export default function ArkanoidPage({
             Install wallet
           </Link>
         )}
-        <GameView
-          onWin={(ticks) => {
-            console.log('Ticks', ticks);
-            setLastTicks(ticks);
-            setGameState(GameState.Won);
-          }}
-          onLost={(ticks) => {
-            setLastTicks(ticks);
-            setGameState(GameState.Lost);
-          }}
-          onRestart={(ticks) => {
-            setLastTicks(ticks);
-            startGame();
-          }}
-          level={level}
-          gameId={gameId}
-          debug={debug}
-          setScore={setScore}
-          setTicksAmount={setTicksAmount}
-        />
+        <div className="flex w-full">
+          <div className="w-1/3"></div>
+          <div className="flex w-1/3 items-center justify-center">
+            <GameView
+              onWin={(ticks) => {
+                console.log('Ticks', ticks);
+                setLastTicks(ticks);
+                setGameState(GameState.Won);
+              }}
+              onLost={(ticks) => {
+                setLastTicks(ticks);
+                setGameState(GameState.Lost);
+              }}
+              onRestart={(ticks) => {
+                setLastTicks(ticks);
+                startGame();
+              }}
+              level={level}
+              gameId={gameId}
+              debug={debug}
+              setScore={setScore}
+              setTicksAmount={setTicksAmount}
+            />
+          </div>
+          <div className="flex flex-col items-center">
+            <h1> Leaderboard </h1>
+            <table className="min-w-max text-left">
+              <thead className="font-semibold">
+                <tr>
+                  <th className="w-96 bg-gray-300 px-6 py-3"> Address </th>
+                  <th className="w-20  bg-gray-400 px-6 py-3"> Score </th>
+                  <th> </th>
+                </tr>
+              </thead>
+              <tbody>
+                {leaderboardStore
+                  .getLeaderboard(params.competitionId)
+                  .map((user, i) => (
+                    <tr className="border-b bg-white">
+                      <td className="bg-gray-300">{user.player.toBase58()}</td>
+                      <td className="bg-gray-400">{user.score.toString()}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
         <div>
           Score: {score} Ticks: {ticksAmount}
         </div>
         <div className="grow"></div>
-        <div className="flex flex-col gap-10">
-          <div>
-            Leaderboard {params.competitionId}:
-            <div>
-              {leaderboardStore
-                .getLeaderboard(params.competitionId)
-                .map((user, i) => (
-                  <div key={i}>
-                    {user.player.toBase58()} – {user.score.toString()} pts
-                  </div>
-                ))}
-            </div>
-          </div>
+        {/* <div className="flex flex-col gap-10">
           <div>
             Active competitions:
             <div className="flex flex-col">
@@ -346,7 +361,7 @@ export default function ArkanoidPage({
               ))}
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="w-full text-end">
           Debug:{' '}
           <input
