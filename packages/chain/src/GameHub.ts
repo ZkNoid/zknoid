@@ -20,6 +20,7 @@ import {
     Competition,
     GameInputs,
     GameRecordKey,
+    LeaderboardIndex,
     LeaderboardScore,
 } from './types';
 
@@ -144,16 +145,16 @@ export class GameHub extends RuntimeModule<unknown> {
     );
     @state() public lastCompetitonId = State.from<UInt64>(UInt64);
 
-    /// Seed + User => Record
+    /// compettitionId + User => Record
     @state() public gameRecords = StateMap.from<GameRecordKey, UInt64>(
         GameRecordKey,
         UInt64
     );
-    /// Unsorted index => user result
-    @state() public leaderboard = StateMap.from<UInt64, LeaderboardScore>(
-        UInt64,
+    /// (competitionId, Unsorted index) => user result
+    @state() public leaderboard = StateMap.from<
+        LeaderboardIndex,
         LeaderboardScore
-    );
+    >(LeaderboardIndex, LeaderboardScore);
     @state() public seeds = StateMap.from<UInt64, UInt64>(UInt64, UInt64);
     @state() public lastSeed = State.from<UInt64>(UInt64);
     @state() public lastUpdate = State.from<UInt64>(UInt64);
@@ -177,11 +178,14 @@ export class GameHub extends RuntimeModule<unknown> {
     }
 
     @runtimeMethod()
-    public addGameResult(gameRecordProof: GameRecordProof): void {
+    public addGameResult(
+        competitionId: UInt64,
+        gameRecordProof: GameRecordProof
+    ): void {
         gameRecordProof.verify();
 
         const gameKey = new GameRecordKey({
-            competitionId: this.seeds.get(this.lastSeed.get().value).value,
+            competitionId,
             player: this.transaction.sender,
         });
 
@@ -189,13 +193,18 @@ export class GameHub extends RuntimeModule<unknown> {
         const newScore = gameRecordProof.publicOutput.score;
 
         if (currentScore < newScore) {
+            // Do we need provable here?
             this.gameRecords.set(gameKey, newScore);
 
             let looserIndex = UInt64.from(0);
             let looserScore = UInt64.from(0);
 
             for (let i = 0; i < LEADERBOARD_SIZE; i++) {
-                const gameRecord = this.leaderboard.get(UInt64.from(i));
+                const leaderboardKey = new LeaderboardIndex({
+                    competitionId,
+                    index: UInt64.from(i),
+                });
+                const gameRecord = this.leaderboard.get(leaderboardKey);
 
                 const result = gameRecord.orElse(
                     new LeaderboardScore({
@@ -216,8 +225,13 @@ export class GameHub extends RuntimeModule<unknown> {
                 );
             }
 
+            const looserKey = new LeaderboardIndex({
+                competitionId,
+                index: looserIndex,
+            });
+
             this.leaderboard.set(
-                looserIndex,
+                looserKey,
                 new LeaderboardScore({
                     score: newScore,
                     player: this.transaction.sender,

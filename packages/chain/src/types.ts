@@ -55,6 +55,11 @@ export class Competition extends Struct({
     }
 }
 
+export class LeaderboardIndex extends Struct({
+    competitionId: UInt64,
+    index: UInt64,
+}) {}
+
 export class LeaderboardScore extends Struct({
     score: UInt64,
     player: PublicKey,

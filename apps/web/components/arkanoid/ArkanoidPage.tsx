@@ -202,7 +202,10 @@ export default function ArkanoidPage({
       const tx = await client.client!.transaction(
         PublicKey.fromBase58(networkStore.address!),
         () => {
-          gameHub.addGameResult(proof!);
+          gameHub.addGameResult(
+            UInt64.from(competition!.competitionId),
+            proof!,
+          );
         },
       );
 
