@@ -39,10 +39,7 @@ export const useArkanoidLeaderboardStore = create<
     loading: Boolean(false),
     leaderboard: {},
     getLeaderboard(competitionId: string) {
-      return (
-        this.leaderboard?.[competitionId] ??
-        Array(LEADERBOARD_SIZE).fill({ score: 0, player: PublicKey.empty() })
-      );
+      return this.leaderboard?.[competitionId] ?? [];
     },
     async loadLeaderboard(client: Client, competitionId: string) {
       if (isNaN(+competitionId)) {
@@ -64,11 +61,12 @@ export const useArkanoidLeaderboardStore = create<
               index: UInt64.from(i),
             }),
           );
-
-        leaderboard.push({
-          score: leaderboardItem?.score || 0,
-          player: leaderboardItem?.player || PublicKey.empty(),
-        });
+        if (leaderboardItem !== undefined) {
+          leaderboard.push({
+            score: leaderboardItem!.score,
+            player: leaderboardItem!.player,
+          });
+        }
       }
       set((state) => {
         // @ts-ignore

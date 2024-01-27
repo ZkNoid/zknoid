@@ -3,7 +3,7 @@ export const SCORE_PER_TICKS = 1;
 export const MAX_BRICKS = 10;
 export const NEAREST_BRICKS_NUM = 2;
 
-export const BRICK_HALF_WIDTH = 15;
+export const BRICK_HALF_WIDTH = 25;
 export const FIELD_PIXEL_WIDTH = 500;
 export const FIELD_PIXEL_HEIGHT = 500;
 export const PLATFORM_HALF_WIDTH = 50;
