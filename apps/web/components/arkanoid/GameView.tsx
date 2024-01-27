@@ -456,8 +456,8 @@ export const GameView = (props: IGameViewProps) => {
     prevCartPos = cart.x;
 
     const commonBrick = {
-      w: 30,
-      h: 30,
+      w: BRICK_HALF_WIDTH * 2,
+      h: BRICK_HALF_WIDTH * 2,
       gap: 20,
     };
 
