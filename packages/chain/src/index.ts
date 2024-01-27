@@ -37,6 +37,7 @@ import {
     Bricks,
     IntPoint,
     Competition,
+    LeaderboardIndex,
 } from './types.js';
 
 import {
@@ -78,6 +79,7 @@ export {
     GameInputs,
     Tick,
     GameRecordKey,
+    LeaderboardIndex,
     Brick,
     Bricks,
     CHUNK_LENGTH,
