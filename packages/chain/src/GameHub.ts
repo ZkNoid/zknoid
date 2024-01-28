@@ -26,6 +26,10 @@ import {
 
 import { GameContext, loadGameContext } from './GameContext';
 
+import { Balances } from './balances';
+
+import { inject } from 'tsyringe';
+
 export class GameRecordPublicOutput extends Struct({
     score: UInt64,
 }) {}
@@ -158,6 +162,10 @@ export class GameHub extends RuntimeModule<unknown> {
     @state() public seeds = StateMap.from<UInt64, UInt64>(UInt64, UInt64);
     @state() public lastSeed = State.from<UInt64>(UInt64);
     @state() public lastUpdate = State.from<UInt64>(UInt64);
+
+    public constructor(@inject('Balances') private balances: Balances) {
+        super();
+    }
 
     @runtimeMethod()
     public updateSeed(seed: UInt64): void {
