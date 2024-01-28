@@ -21,6 +21,9 @@ const timeStampToStringDate = (timeStamp: number): string => {
 };
 
 export default function ArkanoidCompetitionsListPage() {
+  useObserveMinaBalance();
+  useObserveProtokitBalance();
+
   let [competitions, setCompetitions] = useState<ICompetition[]>([]);
   const networkStore = useNetworkStore();
   const minaBalances = useMinaBalancesStore();
