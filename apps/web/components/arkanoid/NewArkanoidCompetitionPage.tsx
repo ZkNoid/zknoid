@@ -12,8 +12,14 @@ import {
 import { useClientStore } from '@/lib/stores/client';
 import { useNetworkStore } from '@/lib/stores/network';
 import Header from '../Header';
-import { useMinaBalancesStore } from '@/lib/stores/minaBalances';
-import { useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
+import {
+  useMinaBalancesStore,
+  useObserveMinaBalance,
+} from '@/lib/stores/minaBalances';
+import {
+  useObserveProtokitBalance,
+  useProtokitBalancesStore,
+} from '@/lib/stores/protokitBalances';
 import { GameType } from '@/app/constants/games';
 
 interface IBrick {
@@ -44,6 +50,9 @@ export default function NewArkanoidCompetitionPage() {
   const [participationFee, setPerticipationFee] = useState(0);
 
   const [bricks, setBricks] = useState<IBrick[]>([]);
+
+  useObserveMinaBalance();
+  useObserveProtokitBalance();
 
   const networkStore = useNetworkStore();
   const minaBalances = useMinaBalancesStore();
