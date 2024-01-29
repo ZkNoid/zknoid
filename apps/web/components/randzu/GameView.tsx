@@ -45,6 +45,8 @@ export const GameView = (props: IGameViewProps) => {
   const onCellClicked = async (x: number, y: number) => {
     if (!props.gameInfo?.isCurrentUserMove) return;
 
+    const currentUserId = props.gameInfo.currentUserIndex + 1;
+
     const updatedField = props.gameInfo.field.map(x => [...x]);
     updatedField[y][x] = props.gameInfo.currentUserIndex + 1;
 
@@ -52,13 +54,15 @@ export const GameView = (props: IGameViewProps) => {
 
     const updatedRandzuField = RandzuField.from(updatedField);
 
+    const winWitness1 = updatedRandzuField.checkWin(currentUserId);
+
     const tx = await client.client!.transaction(
       sessionPrivateKey.toPublicKey(),
       () => {
         matchMaker.makeMove(
           UInt64.from(props.gameInfo!.gameId), 
           updatedRandzuField, 
-          new WinWitness(
+          winWitness1 ?? new WinWitness(
             // @ts-ignore
             {
               x: UInt32.from(0),
