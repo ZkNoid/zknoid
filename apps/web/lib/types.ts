@@ -29,8 +29,8 @@ export interface ICompetition {
   name: string;
   seed: number;
   prereg: boolean;
-  preregBefore: number;
-  preregAfter: number;
+  preregStartTime: number;
+  preregEndTime: number;
   competitionStartTime: number;
   competitionEndTime: number;
   funds: number;

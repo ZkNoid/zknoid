@@ -15,8 +15,8 @@ const dummy = GameRecordProof.fromJSON({
   publicInput: [],
   publicOutput: [''],
   maxProofsVerified: 2,
-  proof: dummyProofBase64
-})
+  proof: dummyProofBase64,
+});
 
 export async function mockProof<O, P>(
   publicOutput: O,
