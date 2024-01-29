@@ -25,6 +25,8 @@ cd zknoid
 # ensures you have the right node js version
 nvm use
 pnpm install
+
+npm run dev
 ```
 
 In roadmap it's planned to separate games and game store: games will import platform components and register themselves to be added to the store.
