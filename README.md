@@ -31,10 +31,9 @@ In roadmap it's planned to separate games and game store: games will import plat
 
 
 ### Interesting places
-Arkanoid game verification – [GameContexts.ts](https://github.com/ZkNoid/zknoid/blob/develop/packages/chain/src/GameContext.ts)
+- Arkanoid game verification – [GameContexts.ts](https://github.com/ZkNoid/zknoid/blob/develop/packages/chain/src/GameContext.ts)
 
-
-Randzu game multiplayer – [MatchMaker.ts](https://github.com/ZkNoid/zknoid/blob/develop/packages/chain/src/MatchMaker.ts)
+- Randzu game multiplayer – [MatchMaker.ts](https://github.com/ZkNoid/zknoid/blob/develop/packages/chain/src/MatchMaker.ts)
 
 
 ## Gameplay
