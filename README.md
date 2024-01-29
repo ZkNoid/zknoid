@@ -3,7 +3,7 @@
 ZkNoid is a ZK gaming platform on [Mina protocol](https://minaprotocol.com/).
 It was created on EthGlobal Istnabul by @asimaranov and @aii23 and [won](https://ethglobal.com/showcase/zknoid-nr5ef) Mina 2nd place.
 
-Learn more about ZkNoid
+Learn more about ZkNoid on [zknoid.io](https://www.zknoid.io/)
 - [Website](https://www.zknoid.io/)
 - [Docs](https://docs.zknoid.io/)
 - [Blog](https://zknoid.medium.com/)
