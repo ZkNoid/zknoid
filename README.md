@@ -13,8 +13,26 @@ Learn more about ZkNoid
 Repository contains ZkNoid game platform monorepo. 
 It implements contracts and UI for games such as Arkanoid and Randzu and games store.
 
+### Setup
+Project awaits for proto-kit implementation of app network deployment tools to be fully launched publicly.  
+
+Now project can be used localy. Here are the commands for set-up
+
+```bash
+git clone https://github.com/ZkNoid/zknoid
+cd zknoid
+ 
+# ensures you have the right node js version
+nvm use
+pnpm install
+```
 
 In roadmap it's planned to separate games and game store: games will import platform components and register themselves to be added to the store.
+
+
+### Interesting places
+Arkanoid game verification – [GameContexts.ts](https://github.com/ZkNoid/zknoid/blob/develop/packages/chain/src/GameContext.ts)
+Randzu game multiplayer – [MatchMaker.ts](https://github.com/ZkNoid/zknoid/blob/develop/packages/chain/src/MatchMaker.ts)
 
 ## Gameplay
 
