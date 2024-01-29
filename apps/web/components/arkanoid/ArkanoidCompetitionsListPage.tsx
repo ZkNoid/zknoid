@@ -148,7 +148,11 @@ export default function ArkanoidCompetitionsListPage() {
           </thead>
           <tbody>
             {competitions.map((c) => (
-              <tr className="border-b bg-white">
+              <tr
+                className={
+                  'border-b ' + (c.funds > 0 ? 'bg-amber-100' : 'bg-white')
+                }
+              >
                 <td className="px-6 py-4">{c.name}</td>
                 <td className="px-6 py-4">{c.seed}</td>
                 <td className="px-6 py-4">{c.prereg.toString()}</td>
