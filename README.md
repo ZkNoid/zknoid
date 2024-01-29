@@ -11,7 +11,9 @@ Learn more about ZkNoid
 ### Repository
 
 Repository contains ZkNoid game platform monorepo. 
-It implements contracts and UI for games such as Arkanoid and Randzu and games store
+It implements contracts and UI for games such as Arkanoid and Randzu and games store.
+
+
 In roadmap it's planned to separate games and game store: games will import platform components and register themselves to be added to the store.
 
 ## Gameplay
