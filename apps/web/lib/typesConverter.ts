@@ -11,8 +11,8 @@ export function fromContractCompetition(
     name: competition.name.toString(),
     seed: +competition.seed.toString(),
     prereg: competition.prereg.toBoolean(),
-    preregBefore: +competition.preregBefore.toString(),
-    preregAfter: +competition.preregAfter.toString(),
+    preregStartTime: +competition.preregStartTime.toString(),
+    preregEndTime: +competition.preregEndTime.toString(),
     competitionStartTime: +competition.competitionStartTime.toString(),
 
     competitionEndTime: +competition.competitionEndTime.toString(),

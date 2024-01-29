@@ -125,8 +125,8 @@ export default function NewArkanoidCompetitionPage() {
           description: CircuitString,
           seed: Field,
           prereg: Bool,
-          preregBefore: UInt64,
-          preregAfter: UInt64,
+          preregStartTime: UInt64,
+          preregEndTime: UInt64,
           competitionStartTime: UInt64,
           competitionEndTime: UInt64,
           funds: UInt64,
@@ -139,8 +139,8 @@ export default function NewArkanoidCompetitionPage() {
           // description,
           seed,
           preregistrationEnabled,
-          new Date(preregistrationFrom).getTime(), // preregBefore
-          new Date(preregistrationFrom).getTime(), // preregAfter
+          new Date(preregistrationFrom).getTime(), // preregStartTime
+          new Date(preregistrationTo).getTime(), // preregEndTime
           new Date(competitionFrom).getTime(), // competitionStartTime
           new Date(competitionTo).getTime(), // competitionEndTime
           funding,

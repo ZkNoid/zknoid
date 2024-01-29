@@ -3,8 +3,8 @@
 import { ClientState, useClientStore } from '@/lib/stores/client';
 import Link from 'next/link';
 import { UInt64 } from 'o1js';
-import { useEffect, useRef, useState } from 'react';
-import { client } from 'zknoid-chain-dev';
+import { ReactElement, useEffect, useRef, useState } from 'react';
+import { Competition, client } from 'zknoid-chain-dev';
 import Header from '../Header';
 import { GameType } from '@/app/constants/games';
 import { useNetworkStore } from '@/lib/stores/network';
@@ -24,6 +24,55 @@ const timeStampToStringDate = (timeStamp: number): string => {
   return (
     date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()
   );
+};
+
+const competitionButton = (c: ICompetition): ReactElement => {
+  let defaultButton = (
+    <div className="flex content-center items-center justify-center rounded border-solid bg-gray-500 px-6 py-4 font-bold text-white">
+      I am not a button
+    </div>
+  );
+
+  let playButton = (
+    <Link href={`/games/arkanoid/${c.competitionId}`}>
+      <div className="flex content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white">
+        Play
+      </div>
+    </Link>
+  );
+
+  let registerButton = (
+    <div className="flex content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white">
+      Register
+    </div>
+  );
+
+  let finished = (
+    <div className="flex content-center items-center justify-center rounded border-solid bg-gray-500 px-6 py-4 font-bold text-white">
+      Game finished
+    </div>
+  );
+  let curTime = Date.now();
+
+  let registered = false;
+  let shouldRegister =
+    c.prereg && curTime > c.preregStartTime && curTime < c.preregEndTime;
+  let isFinished = curTime > c.competitionEndTime;
+
+  let isGameReady =
+    (!shouldRegister || (shouldRegister && registered)) && !isFinished;
+
+  let finalButton = defaultButton;
+
+  if (isFinished) {
+    finalButton = finished;
+  } else if (shouldRegister) {
+    finalButton = registerButton;
+  } else if (isGameReady) {
+    finalButton = playButton;
+  }
+
+  return finalButton;
 };
 
 export default function ArkanoidCompetitionsListPage() {
@@ -104,10 +153,10 @@ export default function ArkanoidCompetitionsListPage() {
                 <td className="px-6 py-4">{c.seed}</td>
                 <td className="px-6 py-4">{c.prereg.toString()}</td>
                 <td className="px-6 py-4">
-                  {timeStampToStringDate(c.preregBefore)}
+                  {timeStampToStringDate(c.preregStartTime)}
                 </td>
                 <td className="px-6 py-4">
-                  {timeStampToStringDate(c.preregAfter)}
+                  {timeStampToStringDate(c.preregEndTime)}
                 </td>
                 <td className="px-6 py-4">
                   {timeStampToStringDate(c.competitionStartTime)}
@@ -118,11 +167,12 @@ export default function ArkanoidCompetitionsListPage() {
                 <td className="px-6 py-4">{c.funds}</td>
                 <td className="px-6 py-4">{c.participationFee}</td>
                 <td>
-                  <Link href={`/games/arkanoid/${c.competitionId}`}>
+                  {competitionButton(c)}
+                  {/* <Link href={`/games/arkanoid/${c.competitionId}`}>
                     <div className="flex content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white">
                       Play
                     </div>
-                  </Link>
+                  </Link> */}
                 </td>
               </tr>
             ))}
