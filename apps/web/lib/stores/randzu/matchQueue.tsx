@@ -8,6 +8,13 @@ import { useProtokitChainStore } from "../protokitChain";
 import { useNetworkStore } from "../network";
 import { RandzuField, RoundIdxUser } from "zknoid-chain-dev/dist/MatchMaker";
 
+
+export interface IWinWitness {
+    x: number;
+    y: number;
+    directionX: number;
+    directionY: number;
+}
 export interface IGameInfo {
     player1: PublicKey;
     player2: PublicKey;
@@ -18,6 +25,7 @@ export interface IGameInfo {
     isCurrentUserMove: boolean;
     opponent: PublicKey;
     gameId: bigint;
+    winWitness: IWinWitness;
   }
 
 export interface MatchQueueState {
@@ -96,18 +104,25 @@ export const useRandzuMatchQueueStore = create<
                 const currentUserIndex = address.equals(gameInfo.player1 as PublicKey).toBoolean() ? 0 : 1;
                 const player1 = gameInfo.player1 as PublicKey;
                 const player2 = gameInfo.player2 as PublicKey;
+                const field = (gameInfo.field as RandzuField).value.map((x: UInt32[]) => x.map(x => x.toBigint()));
                 set((state) => {
                     // @ts-ignore
                     state.gameInfo = {
                         player1,
                         player2,
                         currentMoveUser: gameInfo.currentMoveUser as PublicKey,
-                        field: (gameInfo.field as RandzuField).value.map((x: UInt32[]) => x.map(x => x.toBigint())),
+                        field,
                         currentUserIndex,
                         isCurrentUserMove: (gameInfo.currentMoveUser as PublicKey).equals(address).toBoolean(),
                         opponent: currentUserIndex == 1 ? gameInfo.player1: gameInfo.player2,
                         gameId: activeGameId.toBigInt(),
-                        winner: gameInfo.winner
+                        winner: gameInfo.winner,
+                        winWitness: {
+                            x: 0,
+                            y: 0,
+                            directionX: 0,
+                            directionY: 0
+                        }
                     }
                     console.log('Parsed game info', state.gameInfo);
                 })

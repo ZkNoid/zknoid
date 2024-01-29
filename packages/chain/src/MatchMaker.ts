@@ -13,6 +13,13 @@ const PENDING_BLOCKS_NUM = UInt64.from(5);
 const RANDZU_FIELD_SIZE = 15;
 const CELLS_LINE_TO_WIN = 5;
 
+export class WinWitness extends Struct({
+  x: UInt32,
+  y: UInt32,
+  directionX: UInt32,
+  directionY: UInt32
+}) { }
+
 export class RandzuField extends Struct({
   value: Provable.Array(Provable.Array(UInt32, RANDZU_FIELD_SIZE), RANDZU_FIELD_SIZE),
 }) {
@@ -20,17 +27,34 @@ export class RandzuField extends Struct({
     return new RandzuField({ value: value.map((row) => row.map(x => UInt32.from(x))) });
   }
 
+  checkWin(currentUserId: number): WinWitness | undefined {
+    for (let i = 0; i <= RANDZU_FIELD_SIZE - CELLS_LINE_TO_WIN; i++) {
+      for (let j = 0; j <= RANDZU_FIELD_SIZE - CELLS_LINE_TO_WIN; j++) {
+        let combo = 0;
+
+        for (let k = 0; k < CELLS_LINE_TO_WIN; k++) {
+          if (this.value[i][j + k].equals(UInt32.from(currentUserId)).toBoolean())
+            combo++;
+        }
+
+        if (combo == CELLS_LINE_TO_WIN) {
+          return new WinWitness({
+            x: UInt32.from(i),
+            y: UInt32.from(j),
+            directionX: UInt32.from(0),
+            directionY: UInt32.from(1)
+          });
+        }
+      }
+    }
+
+    return undefined;
+  }
+
   hash() {
     return Poseidon.hash(this.value.flat().map(x => x.value));
   }
 }
-
-export class WinWitness extends Struct({
-  x: UInt32,
-  y: UInt32,
-  directionX: UInt32,
-  directionY: UInt32
-}) { }
 
 export class RoundIdxUser extends Struct({
   roundId: UInt64,
