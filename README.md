@@ -16,6 +16,8 @@ In roadmap it's planned to separate games and game store: games will import plat
 
 ## Gameplay
 
-<video src="/img/zknoid_demo_debug_2.mp4" height="600"/>
+<video width="320" height="240" controls>
+  <source src="/img/zknoid_demo_debug_2.mp4" type="video/mp4">
+</video>
 
 Check out [zknoid.io](https://www.zknoid.io/) for more info
