@@ -133,6 +133,7 @@ export default function NewArkanoidCompetitionPage() {
           entranceFee: UInt64,
         });
         */
+
         let competition = Competition.from(
           name,
           // description,

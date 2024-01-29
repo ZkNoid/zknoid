@@ -8,8 +8,14 @@ import { client } from 'zknoid-chain-dev';
 import Header from '../Header';
 import { GameType } from '@/app/constants/games';
 import { useNetworkStore } from '@/lib/stores/network';
-import { useMinaBalancesStore } from '@/lib/stores/minaBalances';
-import { useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
+import {
+  useMinaBalancesStore,
+  useObserveMinaBalance,
+} from '@/lib/stores/minaBalances';
+import {
+  useObserveProtokitBalance,
+  useProtokitBalancesStore,
+} from '@/lib/stores/protokitBalances';
 import { ICompetition } from '@/lib/types';
 import { fromContractCompetition } from '@/lib/typesConverter';
 
