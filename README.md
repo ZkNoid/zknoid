@@ -16,6 +16,6 @@ In roadmap it's planned to separate games and game store: games will import plat
 
 ## Gameplay
 
-![](/img/zknoid_demo_debug_2.mp4)
+![](/img/zknoid_demo_debug_2.gif)
 
 Check out [zknoid.io](https://www.zknoid.io/) for more info
