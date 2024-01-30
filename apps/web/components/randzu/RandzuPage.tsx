@@ -9,7 +9,7 @@ import {
   defaultLevel,
   CHUNK_LENGTH,
 } from 'zknoid-chain-dev';
-import { Bool, Int64, PrivateKey, PublicKey, UInt64 } from 'o1js';
+import { Bool, Int64, PrivateKey, PublicKey, Signature, UInt64 } from 'o1js';
 import Link from 'next/link';
 import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
 import { useNetworkStore } from '@/lib/stores/network';
@@ -27,6 +27,8 @@ import { GameType } from '@/app/constants/games';
 import { randzuCompetitions } from '@/app/constants/randzuCompetitions';
 import { useObserveRandzuMatchQueue, useRandzuMatchQueueStore } from '@/lib/stores/randzu/matchQueue';
 import { walletInstalled } from '@/lib/utils';
+import { useStore } from 'zustand';
+import { useSessionKeyStore } from '@/lib/stores/randzu/sessionKeyStorage';
 
 enum GameState {
   NotStarted,
@@ -39,19 +41,12 @@ enum GameState {
   Proofing,
 }
 
-const chunkenize = (arr: any[], size: number) =>
-  Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
-    arr.slice(i * size, i * size + size),
-  );
-
 export default function RandzuPage({
   params,
 }: {
   params: { competitionId: string };
 }) {
   const [gameState, setGameState] = useState(GameState.NotStarted);
-  const [score, setScore] = useState<number>(0);
-  const [ticksAmount, setTicksAmount] = useState<number>(0);
   const competition = randzuCompetitions.find(
     (x) => x.id == params.competitionId,
   );
@@ -71,12 +66,12 @@ export default function RandzuPage({
 
   let [gameId, setGameId] = useState(0);
   let [debug, setDebug] = useState(true);
-  const level: Bricks = useMemo(() => defaultLevel(), []);
   const [workerClient, setWorkerClient] = useState<ZknoidWorkerClient | null>(
     null,
   );
   const networkStore = useNetworkStore();
   const matchQueue = useRandzuMatchQueueStore();
+  const sessionPublicKey = useStore(useSessionKeyStore, (state) => state.getSessionKey()).toPublicKey();
 
   const bridge = useMinaBridge(competition?.enteringPrice! * 10 ** 9);
 
@@ -86,12 +81,11 @@ export default function RandzuPage({
     }
 
     const matchMaker = client.client!.runtime.resolve('MatchMaker');
-    const key = PrivateKey.random();
 
     const tx = await client.client!.transaction(
       PublicKey.fromBase58(networkStore.address!),
       () => {
-        matchMaker.register(key.toPublicKey(), UInt64.from(Math.round(Date.now() / 1000)));
+        matchMaker.register(sessionPublicKey, UInt64.from(Math.round(Date.now() / 1000)));
       },
     );
 

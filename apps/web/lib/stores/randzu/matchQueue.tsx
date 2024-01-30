@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { Client, useClientStore } from "../client";
 import { immer } from "zustand/middleware/immer";
 import { PendingTransaction, UnsignedTransaction } from "@proto-kit/sequencer";
-import { PublicKey, UInt32, UInt64 } from "o1js";
+import { PrivateKey, PublicKey, UInt32, UInt64 } from "o1js";
 import { useEffect } from "react";
 import { useProtokitChainStore } from "../protokitChain";
 import { useNetworkStore } from "../network";
@@ -12,6 +12,7 @@ export interface IGameInfo {
     player1: PublicKey;
     player2: PublicKey;
     currentMoveUser: PublicKey;
+    winner: PublicKey;
     field: number[][];
     currentUserIndex: 0 | 1;
     isCurrentUserMove: boolean;
@@ -25,11 +26,9 @@ export interface MatchQueueState {
     inQueue: boolean;
     activeGameId: bigint;
     gameInfo: IGameInfo | undefined;
-
     getQueueLength: () => number;
     loadMatchQueue: (client: Client, blockHeight: number) => Promise<void>;
     loadActiveGame: (client: Client, blockHeight: number, address: PublicKey) => Promise<void>;
-
 }
 
 function isPendingTransaction(
@@ -107,7 +106,8 @@ export const useRandzuMatchQueueStore = create<
                         currentUserIndex,
                         isCurrentUserMove: (gameInfo.currentMoveUser as PublicKey).equals(address).toBoolean(),
                         opponent: currentUserIndex == 1 ? gameInfo.player1: gameInfo.player2,
-                        gameId: activeGameId.toBigInt()
+                        gameId: activeGameId.toBigInt(),
+                        winner: gameInfo.winner
                     }
                     console.log('Parsed game info', state.gameInfo);
                 })
