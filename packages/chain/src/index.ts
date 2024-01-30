@@ -20,7 +20,11 @@ import {
     processTicks,
 } from './GameHub.js';
 
-import { GameContext, loadGameContext } from './GameContext.js';
+import {
+    GameContext,
+    loadGameContext,
+    createBricksBySeed,
+} from './GameContext.js';
 
 import {
     // GameHub,
@@ -32,6 +36,8 @@ import {
     Brick,
     Bricks,
     IntPoint,
+    Competition,
+    LeaderboardIndex,
 } from './types.js';
 
 import {
@@ -55,6 +61,7 @@ import {
 import { defaultLevel } from './levels.js';
 
 export {
+    Competition,
     GameHub,
     GameContext,
     GameRecordProof,
@@ -65,12 +72,14 @@ export {
     checkGameRecord,
     checkMapGeneration,
     loadGameContext,
+    createBricksBySeed,
     processTicks,
     FIELD_SIZE,
     GAME_LENGTH,
     GameInputs,
     Tick,
     GameRecordKey,
+    LeaderboardIndex,
     Brick,
     Bricks,
     CHUNK_LENGTH,

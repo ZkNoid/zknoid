@@ -1,7 +1,7 @@
-import NewArkanoidCompetitionPage from "@/components/arkanoid/NewArkanoidCompetitionPage";
+'use client';
+
+import NewArkanoidCompetitionPageDynamic from '@/components/arkanoid/NewArkanoidCompetitionPageDynamic';
 
 export default function NewCompetitionPage() {
-    return (
-        <NewArkanoidCompetitionPage />
-    )
+  return <NewArkanoidCompetitionPageDynamic />;
 }
