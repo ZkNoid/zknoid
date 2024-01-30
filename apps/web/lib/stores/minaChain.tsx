@@ -50,6 +50,8 @@ export const useChainStore = create<ChainState, [["zustand/immer", never]]>(
     loading: Boolean(false),
     async loadBlock(chainId: string) {
 
+      if (chainId == undefined) return;
+
       set((state) => {
         state.loading = true;
       });

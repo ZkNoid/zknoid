@@ -76,7 +76,7 @@ export const useObserveMinaBalance = () => {
 
   useEffect(() => {
     console.log('Observing mina balance ',client,network)
-    if (!network.address) return;
+    if (!network.address || !network.minaNetwork?.chainId) return;
 
     balances.loadBalance(network.minaNetwork?.chainId!, network.address);
   }, [client.client, chain.block?.height, network.address, network.minaNetwork?.chainId]);

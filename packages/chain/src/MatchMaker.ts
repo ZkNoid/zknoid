@@ -5,7 +5,7 @@ import {
   runtimeMethod,
 } from "@proto-kit/module";
 import { Option, State, StateMap, assert } from "@proto-kit/protocol";
-import { PublicKey, Struct, UInt64, Provable, Bool, UInt32, Poseidon, Field } from "o1js";
+import { PublicKey, Struct, UInt64, Provable, Bool, UInt32, Poseidon, Field, Int64 } from "o1js";
 
 interface MatchMakerConfig { }
 
@@ -16,8 +16,8 @@ const CELLS_LINE_TO_WIN = 5;
 export class WinWitness extends Struct({
   x: UInt32,
   y: UInt32,
-  directionX: UInt32,
-  directionY: UInt32
+  directionX: Int64,
+  directionY: Int64
 }) { }
 
 export class RandzuField extends Struct({
@@ -41,8 +41,30 @@ export class RandzuField extends Struct({
           return new WinWitness({
             x: UInt32.from(i),
             y: UInt32.from(j),
-            directionX: UInt32.from(0),
-            directionY: UInt32.from(1)
+            directionX: Int64.from(0),
+            directionY: Int64.from(1)
+          });
+        }
+      }
+    }
+
+    for (let i = 0; i <= RANDZU_FIELD_SIZE - CELLS_LINE_TO_WIN; i++) {
+      for (let j = 0; j <= RANDZU_FIELD_SIZE - CELLS_LINE_TO_WIN; j++) {
+        let combo = 0;
+
+        for (let k = 0; k < CELLS_LINE_TO_WIN; k++) {
+          if (this.value[i + k][j].equals(UInt32.from(currentUserId)).toBoolean())
+            combo++;
+        }
+
+        if (combo == CELLS_LINE_TO_WIN) {
+        console.log(i, j)
+
+          return new WinWitness({
+            x: UInt32.from(i),
+            y: UInt32.from(j),
+            directionX: Int64.from(1),
+            directionY: Int64.from(0)
           });
         }
       }
@@ -225,8 +247,8 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
         );
 
         for (let wi = 0; wi < CELLS_LINE_TO_WIN; wi++) {
-          const winPosX = winWitness.x.add(winWitness.directionX.mul(UInt32.from(i)));
-          const winPosY = winWitness.y.add(winWitness.directionY.mul(UInt32.from(i)));
+          const winPosX = winWitness.directionX.mul(UInt32.from(wi)).add(winWitness.x);
+          const winPosY = winWitness.directionY.mul(UInt32.from(wi)).add(winWitness.y);
           assert(Bool.or(
             winProposed.not(),
             Provable.if(
