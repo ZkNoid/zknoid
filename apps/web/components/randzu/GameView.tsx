@@ -3,16 +3,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { IGameInfo, useRandzuMatchQueueStore } from '@/lib/stores/randzu/matchQueue';
 import { useClientStore } from '@/lib/stores/client';
-import { PublicKey, UInt32, UInt64 } from 'o1js';
-import { RandzuField, WinWitness } from 'zknoid-chain-dev/dist/MatchMaker';
-import { useNetworkStore } from '@/lib/stores/network';
-import { useStore } from 'zustand';
-import { useSessionKeyStore } from '@/lib/stores/randzu/sessionKeyStorage';
 
 interface IGameViewProps {
   gameId: number;
   gameInfo: IGameInfo | undefined;
   debug: boolean;
+  onCellClicked: (x: number, y: number) => void;
 }
 
 export const GameView = (props: IGameViewProps) => {
@@ -24,7 +20,6 @@ export const GameView = (props: IGameViewProps) => {
   const debugMode = props.debug;
   const matchQueue = useRandzuMatchQueueStore();
   const debugModeRef = useRef(debugMode);
-  const sessionPrivateKey = useStore(useSessionKeyStore, (state) => state.getSessionKey());
 
   useEffect(() => {
     debugModeRef.current = debugMode;
@@ -42,46 +37,12 @@ export const GameView = (props: IGameViewProps) => {
 
   const client = useClientStore();
 
-  const onCellClicked = async (x: number, y: number) => {
-    if (!props.gameInfo?.isCurrentUserMove) return;
-
-    const currentUserId = props.gameInfo.currentUserIndex + 1;
-
-    const updatedField = props.gameInfo.field.map(x => [...x]);
-    updatedField[y][x] = props.gameInfo.currentUserIndex + 1;
-
-    const matchMaker = client.client!.runtime.resolve('MatchMaker');
-
-    const updatedRandzuField = RandzuField.from(updatedField);
-
-    const winWitness1 = updatedRandzuField.checkWin(currentUserId);
-
-    const tx = await client.client!.transaction(
-      sessionPrivateKey.toPublicKey(),
-      () => {
-        matchMaker.makeMove(
-          UInt64.from(props.gameInfo!.gameId), 
-          updatedRandzuField, 
-          winWitness1 ?? new WinWitness(
-            // @ts-ignore
-            {
-              x: UInt32.from(0),
-              y: UInt32.from(0),
-              directionX: UInt32.from(0),
-              directionY: UInt32.from(0),
-            }
-          )
-        );
-      },
-    );
-
-    // await tx.sign();
-    tx.transaction = tx.transaction?.sign(sessionPrivateKey);
-    await tx.send();
-  }
-
   return (
-    <div className={`grid grid-cols-15 gap-1 ${props.gameInfo?.isCurrentUserMove && 'border-green-500 border-4 border-dashed'} bg-gray-300 p-2`}>
+    <div className={`grid grid-cols-15 gap-1 ${
+        props.gameInfo?.isCurrentUserMove && 
+        !props.gameInfo?.winner && 
+        'border-green-500 border-4 border-dashed'
+      } bg-gray-300 p-2`}>
       {[...Array(15).keys()].map(i => (
         [...Array(15).keys()].map(j =>
           <div
@@ -99,7 +60,7 @@ export const GameView = (props: IGameViewProps) => {
             `}
             style={{ imageRendering: 'pixelated' }}
             id={`${i}_${j}`}
-            onClick={() => onCellClicked(i, j)}
+            onClick={() => props.onCellClicked(i, j)}
           >
           </div>
         )

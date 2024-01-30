@@ -5,11 +5,11 @@ export interface Network {
 }
 
 export const NETWORKS: Network[] = [
-    {
-        "chainId": "testworld2",
-        "name": "Testworld2",
-        "graphql": "https://proxy.testworld.minaexplorer.com/graphql",
-    },
+    // {
+    //     "chainId": "testworld2",
+    //     "name": "Testworld2",
+    //     "graphql": "https://proxy.testworld.minaexplorer.com/graphql",
+    // },
     // {
     //     "chainId": "mainnet",
     //     "name": "Mainnet",

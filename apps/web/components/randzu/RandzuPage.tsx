@@ -9,7 +9,7 @@ import {
   defaultLevel,
   CHUNK_LENGTH,
 } from 'zknoid-chain-dev';
-import { Bool, Int64, PrivateKey, PublicKey, Signature, UInt64 } from 'o1js';
+import { Bool, Int64, PrivateKey, PublicKey, Signature, UInt32, UInt64 } from 'o1js';
 import Link from 'next/link';
 import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
 import { useNetworkStore } from '@/lib/stores/network';
@@ -29,6 +29,7 @@ import { useObserveRandzuMatchQueue, useRandzuMatchQueueStore } from '@/lib/stor
 import { walletInstalled } from '@/lib/utils';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/randzu/sessionKeyStorage';
+import { RandzuField, WinWitness } from 'zknoid-chain-dev/dist/MatchMaker';
 
 enum GameState {
   NotStarted,
@@ -66,12 +67,15 @@ export default function RandzuPage({
 
   let [gameId, setGameId] = useState(0);
   let [debug, setDebug] = useState(true);
+  let [loading, setLoading] = useState(true);
+
   const [workerClient, setWorkerClient] = useState<ZknoidWorkerClient | null>(
     null,
   );
   const networkStore = useNetworkStore();
   const matchQueue = useRandzuMatchQueueStore();
   const sessionPublicKey = useStore(useSessionKeyStore, (state) => state.getSessionKey()).toPublicKey();
+  const sessionPrivateKey = useStore(useSessionKeyStore, (state) => state.getSessionKey());
 
   const bridge = useMinaBridge(competition?.enteringPrice! * 10 ** 9);
 
@@ -94,6 +98,50 @@ export default function RandzuPage({
 
     setGameState(GameState.MatchRegistration);
   };
+
+  const onCellClicked = async (x: number, y: number) => {
+    if (!matchQueue.gameInfo?.isCurrentUserMove) return;
+
+    const currentUserId = matchQueue.gameInfo.currentUserIndex + 1;
+
+    const updatedField = matchQueue.gameInfo.field.map(x => [...x]);
+    updatedField[y][x] = matchQueue.gameInfo.currentUserIndex + 1;
+
+    const matchMaker = client.client!.runtime.resolve('MatchMaker');
+
+    const updatedRandzuField = RandzuField.from(updatedField);
+
+    const winWitness1 = updatedRandzuField.checkWin(currentUserId);
+
+    const tx = await client.client!.transaction(
+      sessionPrivateKey.toPublicKey(),
+      () => {
+        matchMaker.makeMove(
+          UInt64.from(matchQueue.gameInfo!.gameId), 
+          updatedRandzuField, 
+          winWitness1 ?? new WinWitness(
+            // @ts-ignore
+            {
+              x: UInt32.from(0),
+              y: UInt32.from(0),
+              directionX: Int64.from(0),
+              directionY: Int64.from(0),
+            }
+          )
+        );
+      },
+    );
+
+    setLoading(true);
+
+    // await tx.sign();
+    tx.transaction = tx.transaction?.sign(sessionPrivateKey);
+    await tx.send();
+  }
+
+  useEffect(() => {
+    setLoading(false);
+  }, [matchQueue.gameInfo?.isCurrentUserMove]);
 
   useEffect(() => {
     async function timeout(seconds: number): Promise<void> {
@@ -223,7 +271,10 @@ export default function RandzuPage({
           <div className='flex flex-col gap-2 items-center'>
             <>Game started. </>
             Opponent: {matchQueue.gameInfo?.opponent.toBase58()}
-            {matchQueue.gameInfo?.isCurrentUserMove && (<div> Your move. </div>)} 
+            {matchQueue.gameInfo?.isCurrentUserMove && !matchQueue.gameInfo?.winner && !loading && (<div> Your move. </div>)} 
+            {loading && (<div> ⏳ Transaction execution </div>)} 
+
+            {matchQueue.gameInfo?.winner && (<div> Winner: {matchQueue.gameInfo?.winner.toBase58()}. </div>)} 
 
           </div>
         )} 
@@ -232,6 +283,7 @@ export default function RandzuPage({
           gameId={gameId}
           debug={debug}
           gameInfo={matchQueue.gameInfo}
+          onCellClicked={onCellClicked}
         />
         <div>Players in queue: {matchQueue.getQueueLength()}</div>
         <div className="grow"></div>

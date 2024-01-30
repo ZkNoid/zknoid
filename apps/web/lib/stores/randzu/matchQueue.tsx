@@ -116,7 +116,7 @@ export const useRandzuMatchQueueStore = create<
                         isCurrentUserMove: (gameInfo.currentMoveUser as PublicKey).equals(address).toBoolean(),
                         opponent: currentUserIndex == 1 ? gameInfo.player1: gameInfo.player2,
                         gameId: activeGameId.toBigInt(),
-                        winner: gameInfo.winner,
+                        winner: gameInfo.winner.equals(PublicKey.empty()).not().toBoolean() ? gameInfo.winner : undefined,
                         winWitness: {
                             x: 0,
                             y: 0,
