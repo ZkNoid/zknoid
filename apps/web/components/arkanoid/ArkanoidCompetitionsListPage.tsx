@@ -1,6 +1,6 @@
 'use client';
 
-import { ClientState, useClientStore } from '@/lib/stores/client';
+import { Client, ClientState, useClientStore } from '@/lib/stores/client';
 import Link from 'next/link';
 import { UInt64 } from 'o1js';
 import { ReactElement, useEffect, useRef, useState } from 'react';
@@ -18,6 +18,7 @@ import {
 } from '@/lib/stores/protokitBalances';
 import { ICompetition } from '@/lib/types';
 import { fromContractCompetition } from '@/lib/typesConverter';
+import { AppChain } from '@proto-kit/sdk';
 
 const timeStampToStringDate = (timeStamp: number): string => {
   var date = new Date(timeStamp);
@@ -83,12 +84,13 @@ export default function ArkanoidCompetitionsListPage() {
   const networkStore = useNetworkStore();
   const minaBalances = useMinaBalancesStore();
   const protokitBalances = useProtokitBalancesStore();
+  const client = useClientStore();
 
   useEffect(() => {
     client.start().then(getListOfCompetitions);
   }, []);
 
-  const getListOfCompetitions = async () => {
+  const getListOfCompetitions = async (client: Client) => {
     let result: ICompetition[] = [];
 
     let lastId =
