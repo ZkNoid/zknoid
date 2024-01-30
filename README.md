@@ -40,7 +40,7 @@ In roadmap it's planned to separate games and game store: games will import plat
 
 ## Gameplay
 
-https://github.com/ZkNoid/zknoid/assets/25568730/5f85741f-9a92-41f4-a908-289bd02b3b02
+[zknoid_gameplay.webm](https://github.com/ZkNoid/zknoid/assets/25568730/2c83bddf-d28a-43fd-abef-145f593b1f57)
 
 
 Check out [zknoid.io](https://www.zknoid.io/) for more info

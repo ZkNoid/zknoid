@@ -1,4 +1,4 @@
-import { UInt64, Struct, Provable, Int64, Bool } from 'o1js';
+import { UInt64, Struct, Provable, Int64, Bool, Field, Poseidon } from 'o1js';
 import {
     BRICK_HALF_WIDTH,
     DEFAULT_BALL_LOCATION_X,
@@ -15,6 +15,7 @@ import {
     NEAREST_BRICKS_NUM,
     PLATFORM_WIDTH,
     SCORE_PER_TICKS,
+    SEED_MULTIPLIER,
 } from './constants';
 import { Ball, Brick, Bricks, IntPoint, Platform, Tick } from './types';
 import { gr, inRange } from './utility';
@@ -476,6 +477,50 @@ export class GameContext extends Struct({
             );
         }
     }
+}
+
+export function createBricksBySeed(seed: Int64): Bricks {
+    /// Do it, just to get big number
+
+    console.log(seed.toField().toString());
+    console.log(seed.toField().rangeCheckHelper(64).toString());
+
+    seed = Int64.fromField(
+        Poseidon.hash([seed.toField()]).rangeCheckHelper(64)
+    );
+
+    // seed = seed.add(SEED_MULTIPLIER);
+    // seed = seed.mul(SEED_MULTIPLIER);
+
+    let bricks = [...new Array(MAX_BRICKS)].map(
+        (elem) =>
+            new Brick({
+                pos: new IntPoint({
+                    x: Int64.from(0),
+                    y: Int64.from(0),
+                }),
+                value: UInt64.from(1),
+            })
+    );
+
+    let curSeed = seed;
+    let xPos = Int64.from(0);
+
+    for (let i = 0; i < 5; i++) {
+        let xDive = curSeed.mod(75);
+        let yPos = curSeed.mod(300);
+        curSeed = curSeed.div(1000);
+
+        bricks[i].pos = new IntPoint({
+            x: xPos.add(xDive),
+            y: yPos.add(15),
+        });
+        bricks[i].value = UInt64.from(2);
+
+        xPos = xPos.add(100);
+    }
+
+    return new Bricks({ bricks });
 }
 
 export function loadGameContext(bricks: Bricks, debug: Bool) {

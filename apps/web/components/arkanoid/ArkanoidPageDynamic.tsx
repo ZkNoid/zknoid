@@ -1,5 +1,5 @@
-import dynamic from "next/dynamic";
+import dynamic from 'next/dynamic';
 
-export default dynamic(() => import("./ArkanoidPage"), {
+export default dynamic(() => import('./ArkanoidPage'), {
   ssr: false,
 });

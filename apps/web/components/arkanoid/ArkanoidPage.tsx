@@ -8,11 +8,12 @@ import {
   Tick,
   defaultLevel,
   CHUNK_LENGTH,
+  createBricksBySeed,
 } from 'zknoid-chain-dev';
-import { Bool, Int64, PublicKey } from 'o1js';
+import { Bool, Int64, PublicKey, UInt64 } from 'o1js';
 import Link from 'next/link';
 import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
-import { useNetworkStore } from '@/lib/stores/network';
+import { Client, useNetworkStore } from '@/lib/stores/network';
 import { arkanoidCompetitions } from '@/app/constants/akanoidCompetitions';
 import {
   useMinaBridge,
@@ -33,6 +34,8 @@ import {
 import Header from '../Header';
 import { GameType } from '@/app/constants/games';
 import { walletInstalled } from '@/lib/utils';
+import { ICompetition } from '@/lib/types';
+import { fromContractCompetition } from '@/lib/typesConverter';
 
 enum GameState {
   NotStarted,
@@ -57,9 +60,10 @@ export default function ArkanoidPage({
   const [lastTicks, setLastTicks] = useState<ITick[]>([]);
   const [score, setScore] = useState<number>(0);
   const [ticksAmount, setTicksAmount] = useState<number>(0);
-  const competition = arkanoidCompetitions.find(
-    (x) => x.id == params.competitionId,
-  );
+  const [competition, setCompetition] = useState<ICompetition>();
+  // const competition = arkanoidCompetitions.find(
+  //   (x) => x.id == params.competitionId,
+  // );
 
   const client = useClientStore();
 
@@ -75,17 +79,18 @@ export default function ArkanoidPage({
 
   let [gameId, setGameId] = useState(0);
   let [debug, setDebug] = useState(true);
-  const level: Bricks = useMemo(() => defaultLevel(), []);
+  // const level: Bricks = useMemo(() => defaultLevel(), []);
+  let [level, setLevel] = useState<Bricks>(Bricks.empty);
   const [workerClient, setWorkerClient] = useState<ZknoidWorkerClient | null>(
     null,
   );
   const networkStore = useNetworkStore();
 
-  const bridge = useMinaBridge(competition?.enteringPrice! * 10 ** 9);
+  let bridge = useMinaBridge();
 
   const startGame = async () => {
-    if (competition!.enteringPrice > 0) {
-      await bridge();
+    if (competition!.participationFee > 0) {
+      await bridge(competition!.participationFee);
     }
 
     setGameState(GameState.Active);
@@ -127,8 +132,43 @@ export default function ArkanoidPage({
   }, []);
 
   useEffect(() => {
-    client.start();
+    client.start().then((client) => getCompetition(client));
   }, []);
+
+  const getCompetition = async (client: Client) => {
+    let competitionId = +params.competitionId;
+    if (isNaN(competitionId)) {
+      console.log(
+        `Can't load level. competitionId is not a number. Loading default level`,
+      );
+      return;
+    }
+
+    let contractCompetition =
+      await client.query.runtime.GameHub.competitions.get(
+        UInt64.from(competitionId),
+      );
+    if (contractCompetition === undefined) {
+      console.log(`Can't get competition with id <${competitionId}>`);
+      return;
+    }
+
+    let competition = fromContractCompetition(
+      competitionId,
+      contractCompetition,
+    );
+
+    let bricks = createBricksBySeed(Int64.from(competition!.seed));
+
+    setCompetition(competition);
+    setLevel(bricks);
+  };
+
+  // useEffect(() => {
+  //   let bricks = createBricksBySeed(Int64.from(competition!.seed));
+
+  //   setLevel(bricks);
+  // }, [competition]);
 
   const proof = async () => {
     console.log('Ticks', lastTicks);
@@ -162,7 +202,10 @@ export default function ArkanoidPage({
       const tx = await client.client!.transaction(
         PublicKey.fromBase58(networkStore.address!),
         () => {
-          gameHub.addGameResult(proof!);
+          gameHub.addGameResult(
+            UInt64.from(competition!.competitionId),
+            proof!,
+          );
         },
       );
 
@@ -223,7 +266,7 @@ export default function ArkanoidPage({
                   className="rounded-xl bg-slate-300 p-5 hover:bg-slate-400"
                   onClick={() => startGame()}
                 >
-                  Start for {competition?.enteringPrice} 🪙
+                  Start for {competition?.participationFee} 🪙
                 </div>
               )}
               {gameState == GameState.Won && (
@@ -253,43 +296,58 @@ export default function ArkanoidPage({
             Install wallet
           </Link>
         )}
-        <GameView
-          onWin={(ticks) => {
-            console.log('Ticks', ticks);
-            setLastTicks(ticks);
-            setGameState(GameState.Won);
-          }}
-          onLost={(ticks) => {
-            setLastTicks(ticks);
-            setGameState(GameState.Lost);
-          }}
-          onRestart={(ticks) => {
-            setLastTicks(ticks);
-            startGame();
-          }}
-          level={level}
-          gameId={gameId}
-          debug={debug}
-          setScore={setScore}
-          setTicksAmount={setTicksAmount}
-        />
+        <div className="flex w-full">
+          <div className="w-1/3"></div>
+          <div className="flex w-1/3 items-center justify-center">
+            <GameView
+              onWin={(ticks) => {
+                console.log('Ticks', ticks);
+                setLastTicks(ticks);
+                setGameState(GameState.Won);
+              }}
+              onLost={(ticks) => {
+                setLastTicks(ticks);
+                setGameState(GameState.Lost);
+              }}
+              onRestart={(ticks) => {
+                setLastTicks(ticks);
+                startGame();
+              }}
+              level={level}
+              gameId={gameId}
+              debug={debug}
+              setScore={setScore}
+              setTicksAmount={setTicksAmount}
+            />
+          </div>
+          <div className="flex flex-col items-center">
+            <h1> Leaderboard </h1>
+            <table className="min-w-max text-left">
+              <thead className="font-semibold">
+                <tr>
+                  <th className="w-96 bg-gray-300 px-6 py-3"> Address </th>
+                  <th className="w-20  bg-gray-400 px-6 py-3"> Score </th>
+                  <th> </th>
+                </tr>
+              </thead>
+              <tbody>
+                {leaderboardStore
+                  .getLeaderboard(params.competitionId)
+                  .map((user, i) => (
+                    <tr className="border-b bg-white">
+                      <td className="bg-gray-300">{user.player.toBase58()}</td>
+                      <td className="bg-gray-400">{user.score.toString()}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
         <div>
           Score: {score} Ticks: {ticksAmount}
         </div>
         <div className="grow"></div>
-        <div className="flex flex-col gap-10">
-          <div>
-            Leaderboard {params.competitionId}:
-            <div>
-              {leaderboardStore
-                .getLeaderboard(params.competitionId)
-                .map((user, i) => (
-                  <div key={i}>
-                    {user.player.toBase58()} – {user.score.toString()} pts
-                  </div>
-                ))}
-            </div>
-          </div>
+        {/* <div className="flex flex-col gap-10">
           <div>
             Active competitions:
             <div className="flex flex-col">
@@ -303,7 +361,7 @@ export default function ArkanoidPage({
               ))}
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="w-full text-end">
           Debug:{' '}
           <input
