@@ -24,5 +24,18 @@ export interface Cart {
   hitMomentum: number;
 }
 
+export interface ICompetition {
+  competitionId: number;
+  name: string;
+  seed: number;
+  prereg: boolean;
+  preregStartTime: number;
+  preregEndTime: number;
+  competitionStartTime: number;
+  competitionEndTime: number;
+  funds: number;
+  participationFee: number;
+}
+
 const bricksInRow = 5;
 const bricksInCol = 2;
