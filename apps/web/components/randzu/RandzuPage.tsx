@@ -77,11 +77,11 @@ export default function RandzuPage({
   const sessionPublicKey = useStore(useSessionKeyStore, (state) => state.getSessionKey()).toPublicKey();
   const sessionPrivateKey = useStore(useSessionKeyStore, (state) => state.getSessionKey());
 
-  const bridge = useMinaBridge(competition?.enteringPrice! * 10 ** 9);
+  const bridge = useMinaBridge();
 
   const startGame = async () => {
     if (competition!.enteringPrice > 0) {
-      console.log(await bridge());
+      console.log(await bridge(competition?.enteringPrice! * 10 ** 9));
     }
 
     const matchMaker = client.client!.runtime.resolve('MatchMaker');
