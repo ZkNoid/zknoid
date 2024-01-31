@@ -20,9 +20,9 @@
         "build": "tsc -p tsconfig.json",
         "start": "protokit start ./dist/chain.config.js",
         "build-and-start": "pnpm run build && pnpm run start",
-        "dev": "npm-watch build-and-start & npm run default-comp & wait",
+        "dev": "npm-watch build-and-start & pnpm run default-comp & wait",
         "stat": "npx tsx scripts/get-analyze-info.ts",
-        "default-comp": "npx tsx scripts/set-default-competitions.ts"
+        "default-comp": "pnpm tsx scripts/set-default-competitions.ts"
     },
     "devDependencies": {
         "@jest/globals": "^29.6.1",
@@ -59,6 +59,5 @@
         "util": "^0.12.5"
     },
     "dependencies": {
-        "zknoid-chain-dev1": "file:./"
     }
 }
