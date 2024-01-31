@@ -58,7 +58,7 @@ import {
     ACCELERATION_TIME,
     ACCELERATION,
 } from './constants.js';
-import { defaultLevel } from './levels.js';
+import { defaultLevel, getDefaultCompetitions } from './levels.js';
 
 export {
     Competition,
@@ -99,4 +99,5 @@ export {
     ACCELERATION_TIME,
     DEFAULT_PLATFORM_SPEED,
     GameRecord,
+    getDefaultCompetitions,
 };

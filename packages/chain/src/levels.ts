@@ -1,5 +1,5 @@
-import { Int64, UInt64 } from 'o1js';
-import { Brick, Bricks, IntPoint } from './types.js';
+import { Bool, CircuitString, Field, Int64, UInt64 } from 'o1js';
+import { Brick, Bricks, Competition, IntPoint } from './types.js';
 
 export const defaultLevel = (): Bricks => {
     const MAX_BRICKS = 10;
@@ -40,4 +40,29 @@ export const defaultLevel = (): Bricks => {
         value: UInt64.from(2),
     });
     return bricks;
+};
+
+export const getDefaultCompetitions = (): Competition[] => {
+    let prereg = Bool(false);
+    let preregStartTime = UInt64.from(0);
+    let preregEndTime = UInt64.from(0);
+    let competitionStartTime = UInt64.from(0);
+    let competitionEndTime = UInt64.from(new Date('2100-01-01').getTime());
+    let funds = UInt64.from(0);
+    let participationFee = UInt64.from(0);
+    let seeds = [0, 777, 1234];
+
+    return seeds.map((seed, i) => {
+        return new Competition({
+            name: CircuitString.fromString(`Default-${i}`),
+            seed: Field.from(seed),
+            prereg,
+            preregStartTime,
+            preregEndTime,
+            competitionStartTime,
+            competitionEndTime,
+            funds,
+            participationFee,
+        });
+    });
 };
