@@ -16,7 +16,8 @@
         "strict": true,
         "alwaysStrict": true,
         "declarationMap": true,
-        "strictFunctionTypes": true
+        "strictFunctionTypes": true,
+        "baseUrl": "."
     },
     "files": ["node_modules/jest-expect-message/types/index.d.ts"],
     "include": ["./src/**/*", "scripts/set-default-competitions.ts"],

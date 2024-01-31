@@ -1,14 +1,14 @@
 import { PrivateKey, PublicKey, UInt64 } from 'o1js';
 
 import { getDefaultCompetitions } from '../src/levels';
-import { client } from 'zknoid-chain-dev1';
+import { client } from 'dist/client.config';
 
 function timeout(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 const setDefaultGames = async () => {
-    await timeout(3000);
+    await timeout(5000);
 
     const alicePrivateKey = PrivateKey.random();
     const alice = alicePrivateKey.toPublicKey();
