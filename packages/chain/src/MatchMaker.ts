@@ -31,18 +31,21 @@ export class RandzuField extends Struct({
     const directions = [[0, 1], [1, 0], [1, 1], [-1, 1]]
 
     for (const direction of directions) {
-      for (let i = 0; i <= RANDZU_FIELD_SIZE - CELLS_LINE_TO_WIN; i++) {
-        for (let j = 0; j <= RANDZU_FIELD_SIZE - CELLS_LINE_TO_WIN; j++) {
+      for (let i = 0; i <= RANDZU_FIELD_SIZE; i++) {
+        for (let j = 0; j <= RANDZU_FIELD_SIZE; j++) {
           let combo = 0;
 
           for (let k = 0; k < CELLS_LINE_TO_WIN; k++) {
-            console.log(direction, i + direction[0] * k, j + direction[1] * k, this.value[i + direction[0] * k][j + direction[1] * k].equals(UInt32.from(currentUserId)).toBoolean());
+            if (
+              (i + direction[0] * k >= RANDZU_FIELD_SIZE - 1) || (j + direction[1] * k >= RANDZU_FIELD_SIZE - 1) ||
+              (i + direction[0] * k < 0) || (j + direction[1] * k < 0)
+            ) break;
+            
             if (this.value[i + direction[0] * k][j + direction[1] * k].equals(UInt32.from(currentUserId)).toBoolean())
               combo++;
           }
 
           if (combo == CELLS_LINE_TO_WIN) {
-            console.log('Win', direction);
             return new WinWitness({
               x: UInt32.from(i),
               y: UInt32.from(j),
@@ -53,7 +56,7 @@ export class RandzuField extends Struct({
         }
       }
     }
-    
+
     return undefined;
   }
 
