@@ -146,6 +146,10 @@ importers:
         version: 5.2.2
 
   packages/chain:
+    dependencies:
+      zknoid-chain-dev1:
+        specifier: file:./
+        version: file:packages/chain
     devDependencies:
       '@jest/globals':
         specifier: ^29.6.1
@@ -8577,4 +8581,9 @@ packages:
       immer: 10.0.3
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
+    dev: false
+
+  file:packages/chain:
+    resolution: {directory: packages/chain, type: directory}
+    name: zknoid-chain-dev
     dev: false
