@@ -28,48 +28,32 @@ export class RandzuField extends Struct({
   }
 
   checkWin(currentUserId: number): WinWitness | undefined {
-    for (let i = 0; i <= RANDZU_FIELD_SIZE - CELLS_LINE_TO_WIN; i++) {
-      for (let j = 0; j <= RANDZU_FIELD_SIZE - CELLS_LINE_TO_WIN; j++) {
-        let combo = 0;
+    const directions = [[0, 1], [1, 0], [1, 1], [-1, 1]]
 
-        for (let k = 0; k < CELLS_LINE_TO_WIN; k++) {
-          if (this.value[i][j + k].equals(UInt32.from(currentUserId)).toBoolean())
-            combo++;
-        }
+    for (const direction of directions) {
+      for (let i = 0; i <= RANDZU_FIELD_SIZE - CELLS_LINE_TO_WIN; i++) {
+        for (let j = 0; j <= RANDZU_FIELD_SIZE - CELLS_LINE_TO_WIN; j++) {
+          let combo = 0;
 
-        if (combo == CELLS_LINE_TO_WIN) {
-          return new WinWitness({
-            x: UInt32.from(i),
-            y: UInt32.from(j),
-            directionX: Int64.from(0),
-            directionY: Int64.from(1)
-          });
-        }
-      }
-    }
+          for (let k = 0; k < CELLS_LINE_TO_WIN; k++) {
+            console.log(direction, i + direction[0] * k, j + direction[1] * k, this.value[i + direction[0] * k][j + direction[1] * k].equals(UInt32.from(currentUserId)).toBoolean());
+            if (this.value[i + direction[0] * k][j + direction[1] * k].equals(UInt32.from(currentUserId)).toBoolean())
+              combo++;
+          }
 
-    for (let i = 0; i <= RANDZU_FIELD_SIZE - CELLS_LINE_TO_WIN; i++) {
-      for (let j = 0; j <= RANDZU_FIELD_SIZE - CELLS_LINE_TO_WIN; j++) {
-        let combo = 0;
-
-        for (let k = 0; k < CELLS_LINE_TO_WIN; k++) {
-          if (this.value[i + k][j].equals(UInt32.from(currentUserId)).toBoolean())
-            combo++;
-        }
-
-        if (combo == CELLS_LINE_TO_WIN) {
-        console.log(i, j)
-
-          return new WinWitness({
-            x: UInt32.from(i),
-            y: UInt32.from(j),
-            directionX: Int64.from(1),
-            directionY: Int64.from(0)
-          });
+          if (combo == CELLS_LINE_TO_WIN) {
+            console.log('Win', direction);
+            return new WinWitness({
+              x: UInt32.from(i),
+              y: UInt32.from(j),
+              directionX: Int64.from(direction[0]),
+              directionY: Int64.from(direction[1])
+            });
+          }
         }
       }
     }
-
+    
     return undefined;
   }
 
@@ -212,28 +196,28 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     const game = this.games.get(gameId);
     assert(game.isSome, "Invalid game id");
     assert(
-      game.value.currentMoveUser.equals(sender), 
+      game.value.currentMoveUser.equals(sender),
       `Not your move: ${sender.toBase58()}`
     );
     assert(
-      game.value.winner.equals(PublicKey.empty()), 
+      game.value.winner.equals(PublicKey.empty()),
       `Game finished`
     );
 
     const winProposed = Bool.and(winWitness.directionX.equals(UInt32.from(0)), winWitness.directionY.equals(UInt32.from(0))).not();
-    
+
     const currentUserId = Provable.if(
-      game.value.currentMoveUser.equals(game.value.player1), 
+      game.value.currentMoveUser.equals(game.value.player1),
       UInt32.from(1),
       UInt32.from(2)
     );
 
     let addedCellsNum = UInt64.from(0);
     for (let i = 0; i < RANDZU_FIELD_SIZE; i++) {
-      for (let j = 0; j < RANDZU_FIELD_SIZE; j++) {    
+      for (let j = 0; j < RANDZU_FIELD_SIZE; j++) {
         let currentFieldCell = game.value.field.value[i][j];
         let nextFieldCell = newField.value[i][j];
-        
+
         assert(Bool.or(currentFieldCell.equals(UInt32.from(0)), currentFieldCell.equals(nextFieldCell)),
           `Modified filled cell at ${i}, ${j}`
         );
@@ -242,7 +226,7 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
 
         assert(addedCellsNum.lessThanOrEqual(UInt64.from(1)), `Not only one cell added. Error at ${i}, ${j}`);
         assert(
-          Provable.if(currentFieldCell.equals(nextFieldCell), Bool(true), nextFieldCell.equals(currentUserId)), 
+          Provable.if(currentFieldCell.equals(nextFieldCell), Bool(true), nextFieldCell.equals(currentUserId)),
           'Added opponent`s color'
         );
 
@@ -252,8 +236,8 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
           assert(Bool.or(
             winProposed.not(),
             Provable.if(
-              Bool.and(winPosX.equals(UInt32.from(i)), winPosY.equals(UInt32.from(j))), 
-              nextFieldCell.equals(currentUserId), 
+              Bool.and(winPosX.equals(UInt32.from(i)), winPosY.equals(UInt32.from(j))),
+              nextFieldCell.equals(currentUserId),
               Bool(true)
             )
           ), 'Win not proved');
@@ -265,8 +249,8 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
 
     game.value.field = newField;
     game.value.currentMoveUser = Provable.if(
-      game.value.currentMoveUser.equals(game.value.player1), 
-      game.value.player2, 
+      game.value.currentMoveUser.equals(game.value.player1),
+      game.value.player2,
       game.value.player1
     );
     this.games.set(gameId, game.value);
