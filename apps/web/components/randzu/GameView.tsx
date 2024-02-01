@@ -57,8 +57,8 @@ export const GameView = (props: IGameViewProps) => {
               ${props.gameInfo?.field?.[j]?.[i] == 2 && "bg-[url('/ball_blue.png')]"}
               ${props.loadingElement && props.loadingElement.x == i && props.loadingElement.y == j && (
                 props.gameInfo?.currentUserIndex == 0 ? 
-                  "bg-[url('/ball_red.png')] bg-gray-200" : 
-                  "bg-[url('/ball_blue.png')] bg-gray-200"
+                  "bg-[url('/ball_red.png')] bg-opacity-50" : 
+                  "bg-[url('/ball_blue.png')] bg-opacity-50"
               )}
             `}
             style={{ imageRendering: 'pixelated' }}

@@ -63,7 +63,6 @@ export default function RandzuPage({
 
   const minaBalances = useMinaBalancesStore();
   const protokitBalances = useProtokitBalancesStore();
-  const leaderboardStore = useArkanoidLeaderboardStore();
 
   let [gameId, setGameId] = useState(0);
   let [debug, setDebug] = useState(true);
@@ -294,18 +293,6 @@ export default function RandzuPage({
         <div>Players in queue: {matchQueue.getQueueLength()}</div>
         <div className="grow"></div>
         <div className="flex flex-col gap-10">
-          <div>
-            Leaderboard {params.competitionId}:
-            <div>
-              {leaderboardStore
-                .getLeaderboard(params.competitionId)
-                .map((user, i) => (
-                  <div key={i}>
-                    {user.player.toBase58()} – {user.score.toString()} pts
-                  </div>
-                ))}
-            </div>
-          </div>
           <div>
             Active competitions:
             <div className="flex flex-col">
