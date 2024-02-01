@@ -85,7 +85,7 @@ export const useRandzuMatchQueueStore = create<
             const activeGameId = await client.query.runtime.MatchMaker.activeGameId.get(
                 address
             );
-            console.log(client.query.runtime.MatchMaker.queueRegisteredRoundUsers, address);
+            console.log('Active game id', activeGameId);
             const inQueue = await client.query.runtime.MatchMaker.queueRegisteredRoundUsers.get(
                 // @ts-expect-error
                 new RoundIdxUser({

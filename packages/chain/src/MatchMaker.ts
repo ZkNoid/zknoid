@@ -101,7 +101,7 @@ export class QueueListItem extends Struct({
 @runtimeModule()
 export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
   // Session => user
-  @state() public sesions = StateMap.from<PublicKey, PublicKey>(
+  @state() public sessions = StateMap.from<PublicKey, PublicKey>(
     PublicKey,
     PublicKey
   );
@@ -139,7 +139,7 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     assert(this.activeGameId.get(this.transaction.sender).orElse(UInt64.from(0)).equals(UInt64.from(0)), "Player already in game");
 
     // Registering player session key
-    this.sesions.set(sessionKey, this.transaction.sender);
+    this.sessions.set(sessionKey, this.transaction.sender);
     const roundId = this.network.block.height.div(PENDING_BLOCKS_NUM);
 
     // User can't re-register in round queue if already registered
@@ -198,7 +198,7 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
 
   @runtimeMethod()
   public makeMove(gameId: UInt64, newField: RandzuField, winWitness: WinWitness): void {
-    const sessionSender = this.sesions.get(this.transaction.sender);
+    const sessionSender = this.sessions.get(this.transaction.sender);
     const sender = Provable.if(sessionSender.isSome, sessionSender.value, this.transaction.sender);
 
     const game = this.games.get(gameId);
@@ -264,5 +264,9 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
       game.value.player1
     );
     this.games.set(gameId, game.value);
+
+    // Removing active game for players if game ended
+    this.activeGameId.set(Provable.if(winProposed, game.value.player2, PublicKey.empty()), UInt64.from(0));
+    this.activeGameId.set(Provable.if(winProposed, game.value.player1, PublicKey.empty()), UInt64.from(0));
   }
 }
