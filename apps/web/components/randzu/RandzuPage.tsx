@@ -68,6 +68,7 @@ export default function RandzuPage({
   let [gameId, setGameId] = useState(0);
   let [debug, setDebug] = useState(true);
   let [loading, setLoading] = useState(true);
+  let [loadingElement, setLoadingElement] = useState<{x: number, y: number} | undefined>({x: 0, y: 0});
 
   const [workerClient, setWorkerClient] = useState<ZknoidWorkerClient | null>(
     null,
@@ -133,6 +134,9 @@ export default function RandzuPage({
     );
 
     setLoading(true);
+    setLoadingElement({
+      x, y
+    });
 
     // await tx.sign();
     tx.transaction = tx.transaction?.sign(sessionPrivateKey);
@@ -141,6 +145,7 @@ export default function RandzuPage({
 
   useEffect(() => {
     setLoading(false);
+    setLoadingElement(undefined);
   }, [matchQueue.gameInfo?.isCurrentUserMove]);
 
   useEffect(() => {
@@ -284,6 +289,7 @@ export default function RandzuPage({
           debug={debug}
           gameInfo={matchQueue.gameInfo}
           onCellClicked={onCellClicked}
+          loadingElement={loadingElement}
         />
         <div>Players in queue: {matchQueue.getQueueLength()}</div>
         <div className="grow"></div>

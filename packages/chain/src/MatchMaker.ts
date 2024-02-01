@@ -18,7 +18,12 @@ export class WinWitness extends Struct({
   y: UInt32,
   directionX: Int64,
   directionY: Int64
-}) { }
+}) { 
+  assertCorrect() {
+    assert(this.directionX.equals(-1).or(this.directionX.equals(0)).or(this.directionX.equals(1)), "Invalid direction X");
+    assert(this.directionY.equals(-1).or(this.directionY.equals(0)).or(this.directionY.equals(1)), "Invalid direction Y");
+  }
+}
 
 export class RandzuField extends Struct({
   value: Provable.Array(Provable.Array(UInt32, RANDZU_FIELD_SIZE), RANDZU_FIELD_SIZE),
@@ -206,6 +211,8 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
       game.value.winner.equals(PublicKey.empty()),
       `Game finished`
     );
+
+    winWitness.assertCorrect();
 
     const winProposed = Bool.and(winWitness.directionX.equals(UInt32.from(0)), winWitness.directionY.equals(UInt32.from(0))).not();
 
