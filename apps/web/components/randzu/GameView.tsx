@@ -9,6 +9,7 @@ interface IGameViewProps {
   gameInfo: IGameInfo | undefined;
   debug: boolean;
   onCellClicked: (x: number, y: number) => void;
+  loadingElement: {x: number, y: number} | undefined;
 }
 
 export const GameView = (props: IGameViewProps) => {
@@ -18,7 +19,6 @@ export const GameView = (props: IGameViewProps) => {
   >(null);
 
   const debugMode = props.debug;
-  const matchQueue = useRandzuMatchQueueStore();
   const debugModeRef = useRef(debugMode);
 
   useEffect(() => {
@@ -34,8 +34,6 @@ export const GameView = (props: IGameViewProps) => {
     if (!ctx) return;
 
   }, [ctx, props.gameInfo]);
-
-  const client = useClientStore();
 
   return (
     <div className={`grid grid-cols-15 gap-1 ${
@@ -57,6 +55,11 @@ export const GameView = (props: IGameViewProps) => {
               }
               ${props.gameInfo?.field?.[j]?.[i] == 1 && "bg-[url('/ball_red.png')]"}
               ${props.gameInfo?.field?.[j]?.[i] == 2 && "bg-[url('/ball_blue.png')]"}
+              ${props.loadingElement && props.loadingElement.x == i && props.loadingElement.y == j && (
+                props.gameInfo?.currentUserIndex == 0 ? 
+                  "bg-[url('/ball_red.png')] bg-gray-200" : 
+                  "bg-[url('/ball_blue.png')] bg-gray-200"
+              )}
             `}
             style={{ imageRendering: 'pixelated' }}
             id={`${i}_${j}`}
