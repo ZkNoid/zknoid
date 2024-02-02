@@ -14,7 +14,7 @@
         }
     },
     "scripts": {
-        "build": "sleep 5 && tsc -p tsconfig.json",
+        "build": "sleep 7 && tsc -p tsconfig.json",
         "dev": "pnpm run build && pnpm run default-comp",
         "default-comp": "pnpm tsx scripts/set-default-competitions.ts"
     },
