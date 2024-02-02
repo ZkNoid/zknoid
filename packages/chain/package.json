@@ -20,9 +20,8 @@
         "build": "tsc -p tsconfig.json",
         "start": "protokit start ./dist/chain.config.js",
         "build-and-start": "pnpm run build && pnpm run start",
-        "dev": "npm-watch build-and-start & pnpm run default-comp & wait",
-        "stat": "npx tsx scripts/get-analyze-info.ts",
-        "default-comp": "pnpm tsx scripts/set-default-competitions.ts"
+        "dev": "pnpm run build && npm-watch build-and-start",
+        "stat": "npx tsx scripts/get-analyze-info.ts"
     },
     "devDependencies": {
         "@jest/globals": "^29.6.1",
