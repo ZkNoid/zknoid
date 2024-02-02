@@ -1,0 +1,28 @@
+{
+    "name": "on_startup_scripts",
+    "version": "1.4.5",
+    "type": "module",
+    "main": "dist/index.js",
+    "watch": {
+        "build-and-start": {
+            "patterns": [
+                "src"
+            ],
+            "extensions": [
+                "*"
+            ]
+        }
+    },
+    "scripts": {
+        "build": "sleep 5 && tsc -p tsconfig.json",
+        "dev": "pnpm run build && pnpm run default-comp",
+        "default-comp": "pnpm tsx scripts/set-default-competitions.ts"
+    },
+    "devDependencies": {
+        "o1js": "0.13.1",
+        "tsx": "^4.7.0"
+    },
+    "dependencies": {
+        "zknoid-chain-dev": "workspace:^"
+    }
+}
