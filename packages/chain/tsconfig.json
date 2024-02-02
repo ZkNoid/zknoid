@@ -20,6 +20,6 @@
         "baseUrl": "."
     },
     "files": ["node_modules/jest-expect-message/types/index.d.ts"],
-    "include": ["./src/**/*", "scripts/set-default-competitions.ts"],
+    "include": ["./src/**/*"],
     "exclude": ["jest.config.cjs"]
 }
