@@ -13,8 +13,7 @@ appChain.configure({
     },
     GameHub: {
     },
-    MatchMaker: {
-      
+    RandzuLogic: {
     }
 
   },

@@ -20,6 +20,7 @@ import {
 } from '../src/GameHub';
 import { GameContext } from '../src/GameContext';
 import { MatchMaker } from '../src/MatchMaker';
+import { RandzuField, RandzuLogic } from '../src/RandzuLogic';
 
 log.setLevel('ERROR');
 
@@ -27,13 +28,13 @@ describe('Matchmaker', () => {
     it.only('Reproduce bug', async () => {
         const appChain = TestingAppChain.fromRuntime({
             modules: {
-                MatchMaker,
+                RandzuLogic,
             },
         });
 
         appChain.configurePartial({
             Runtime: {
-                MatchMaker: {}
+                RandzuField: {}
             }
         });
 
@@ -42,6 +43,6 @@ describe('Matchmaker', () => {
         await appChain.start();
         appChain.setSigner(alicePrivateKey);
 
-        console.log(await appChain.query.runtime.MatchMaker.games.get(UInt64.from(0)));
+        console.log(await appChain.query.runtime.RandzuLogic.games.get(UInt64.from(0)));
     });
 });
