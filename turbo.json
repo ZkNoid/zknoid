@@ -6,6 +6,10 @@
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**", "dist"]
     },
+    "on_startup_scripts#build": {
+      "dependsOn": ["zknoid-chain-dev#build"]
+    },
+
     "lint": {},
     "dev": {
       "cache": false,
