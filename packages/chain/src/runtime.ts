@@ -1,17 +1,17 @@
 import { UInt64 } from 'o1js';
 import { GameHub } from './GameHub';
 import { Balances } from "./balances";
-import { MatchMaker } from './MatchMaker';
+import { RandzuLogic } from './RandzuLogic';
 
 export default {
     modules: {
         GameHub,
         Balances,
-        MatchMaker
+        RandzuLogic
     },
     config: {
         GameHub: {},
         Balances: {},
-        MatchMaker: {}
+        RandzuLogic: {}
     },
 };

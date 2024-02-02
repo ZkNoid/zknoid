@@ -6,7 +6,8 @@ import { PrivateKey, PublicKey, UInt32, UInt64 } from "o1js";
 import { useEffect } from "react";
 import { useProtokitChainStore } from "../protokitChain";
 import { useNetworkStore } from "../network";
-import { RandzuField, RoundIdxUser } from "zknoid-chain-dev/dist/MatchMaker";
+import { RoundIdxUser } from "zknoid-chain-dev/dist/MatchMaker";
+import { RandzuField } from "zknoid-chain-dev/dist/RandzuLogic";
 
 
 export interface IWinWitness {
@@ -67,7 +68,7 @@ export const useRandzuMatchQueueStore = create<
                 state.loading = true;
             });
 
-            const queueLength = await client.query.runtime.MatchMaker.queueLength.get(
+            const queueLength = await client.query.runtime.RandzuLogic.queueLength.get(
                 UInt64.from(blockHeight).div(PENDING_BLOCKS_NUM)
             );
 
@@ -82,11 +83,11 @@ export const useRandzuMatchQueueStore = create<
                 state.loading = true;
             });
 
-            const activeGameId = await client.query.runtime.MatchMaker.activeGameId.get(
+            const activeGameId = await client.query.runtime.RandzuLogic.activeGameId.get(
                 address
             );
             console.log('Active game id', activeGameId);
-            const inQueue = await client.query.runtime.MatchMaker.queueRegisteredRoundUsers.get(
+            const inQueue = await client.query.runtime.RandzuLogic.queueRegisteredRoundUsers.get(
                 // @ts-expect-error
                 new RoundIdxUser({
                     roundId: UInt64.from(blockHeight).div(PENDING_BLOCKS_NUM),
@@ -98,7 +99,7 @@ export const useRandzuMatchQueueStore = create<
             console.log('In queue', inQueue?.toBoolean());
 
             if (activeGameId?.greaterThan(UInt64.from(0)).toBoolean()) {
-                const gameInfo = (await client.query.runtime.MatchMaker.games.get(activeGameId))!;
+                const gameInfo = (await client.query.runtime.RandzuLogic.games.get(activeGameId))!;
                 console.log('Raw game info', gameInfo);
 
                 const currentUserIndex = address.equals(gameInfo.player1 as PublicKey).toBoolean() ? 0 : 1;

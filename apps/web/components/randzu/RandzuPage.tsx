@@ -29,7 +29,7 @@ import { useObserveRandzuMatchQueue, useRandzuMatchQueueStore } from '@/lib/stor
 import { walletInstalled } from '@/lib/utils';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/randzu/sessionKeyStorage';
-import { RandzuField, WinWitness } from 'zknoid-chain-dev/dist/MatchMaker';
+import { RandzuField, WinWitness } from 'zknoid-chain-dev/dist/RandzuLogic';
 
 enum GameState {
   NotStarted,
@@ -84,12 +84,12 @@ export default function RandzuPage({
       console.log(await bridge(competition?.enteringPrice! * 10 ** 9));
     }
 
-    const matchMaker = client.client!.runtime.resolve('MatchMaker');
+    const randzuLogic = client.client!.runtime.resolve('RandzuLogic');
 
     const tx = await client.client!.transaction(
       PublicKey.fromBase58(networkStore.address!),
       () => {
-        matchMaker.register(sessionPublicKey, UInt64.from(Math.round(Date.now() / 1000)));
+        randzuLogic.register(sessionPublicKey, UInt64.from(Math.round(Date.now() / 1000)));
       },
     );
 
@@ -107,7 +107,7 @@ export default function RandzuPage({
     const updatedField = matchQueue.gameInfo.field.map(x => [...x]);
     updatedField[y][x] = matchQueue.gameInfo.currentUserIndex + 1;
 
-    const matchMaker = client.client!.runtime.resolve('MatchMaker');
+    const randzuLogic = client.client!.runtime.resolve('RandzuLogic');
 
     const updatedRandzuField = RandzuField.from(updatedField);
 
@@ -116,7 +116,7 @@ export default function RandzuPage({
     const tx = await client.client!.transaction(
       sessionPrivateKey.toPublicKey(),
       () => {
-        matchMaker.makeMove(
+        randzuLogic.makeMove(
           UInt64.from(matchQueue.gameInfo!.gameId), 
           updatedRandzuField, 
           winWitness1 ?? new WinWitness(
