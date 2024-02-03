@@ -11,7 +11,7 @@ appChain.configure({
     Balances: {
       totalSupply: UInt64.from(10_000),
     },
-    GameHub: {
+    ArkanoidGameHub: {
     },
     RandzuLogic: {
     }

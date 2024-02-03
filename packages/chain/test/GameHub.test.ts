@@ -9,7 +9,7 @@ import {
     InferProvable,
 } from 'o1js';
 import {
-    GameHub,
+    ArkanoidGameHub,
     GameRecordProof,
     GameRecordPublicOutput,
     checkGameRecord,
@@ -27,7 +27,7 @@ import {
     checkMapGeneration,
     initGameProcess,
     processTicks,
-} from '../src/GameHub';
+} from '../src/ArkanoidGameHub';
 import { GameContext } from '../src/GameContext';
 
 log.setLevel('ERROR');
@@ -67,13 +67,13 @@ describe('game hub', () => {
     it('Check if cheet codes works', async () => {
         const appChain = TestingAppChain.fromRuntime({
             modules: {
-                GameHub,
+                ArkanoidGameHub,
             },
         });
 
         appChain.configurePartial({
             Runtime: {
-                GameHub: {},
+                ArkanoidGameHub: {},
             },
         });
 
@@ -81,7 +81,7 @@ describe('game hub', () => {
         const alice = alicePrivateKey.toPublicKey();
         await appChain.start();
         appChain.setSigner(alicePrivateKey);
-        const gameHub = appChain.runtime.resolve('GameHub');
+        const gameHub = appChain.runtime.resolve('ArkanoidGameHub');
         const bricks = defaultLevel();
         let uiUserInput = [
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 0, 0, 48, 35,
@@ -140,7 +140,7 @@ describe('game hub', () => {
         await tx1.send();
         const block = await appChain.produceBlock();
         const lastSeed =
-            (await appChain.query.runtime.GameHub.lastSeed.get()) ??
+            (await appChain.query.runtime.ArkanoidGameHub.lastSeed.get()) ??
             UInt64.from(0);
         console.log(lastSeed);
         const gameRecordKey: GameRecordKey = new GameRecordKey({
@@ -149,7 +149,7 @@ describe('game hub', () => {
         });
         console.log(gameRecordKey);
         const userScore =
-            await appChain.query.runtime.GameHub.gameRecords.get(gameRecordKey);
+            await appChain.query.runtime.ArkanoidGameHub.gameRecords.get(gameRecordKey);
         console.log(userScore?.toBigInt());
     });
 });
