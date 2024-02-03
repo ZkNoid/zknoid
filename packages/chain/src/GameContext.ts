@@ -59,9 +59,6 @@ export class GameContext extends Struct({
     }
 
     processTick(tick: Tick): void {
-        let a = this.ball.speed.x;
-        let b = this.ball.speed.y;
-
         // 1) Update score
         this.score = Provable.if(
             this.alreadyWon,
@@ -124,24 +121,7 @@ export class GameContext extends Struct({
             this.ball.speed.x
         );
 
-        this.ball.position.y = Provable.if(
-            bottomBump,
-            Int64.from(2 * FIELD_PIXEL_HEIGHT).sub(this.ball.position.y),
-            this.ball.position.y
-        );
-        this.ball.position.y = Provable.if(
-            topBump,
-            this.ball.position.y.neg(),
-            this.ball.position.y
-        );
-
-        this.ball.speed.y = Provable.if(
-            topBump.or(bottomBump),
-            this.ball.speed.y.neg(),
-            this.ball.speed.y
-        );
-
-        let c = a.mul(this.ball.position.y).sub(b.mul(this.ball.position.x));
+        // let c = a.mul(this.ball.position.y).sub(b.mul(this.ball.position.x));
 
         /// 4') Update ball speed
         inRange(
@@ -163,6 +143,12 @@ export class GameContext extends Struct({
         /// all space between old position and new position. It helps to solve problem, when platform
         /// collision happen in the begining of the tick, and in the end of the tick platform located
         /// somwhere else, so contract count is as loss.
+
+        let a = this.ball.speed.x;
+        let b = this.ball.speed.y;
+
+        let c = a.mul(this.ball.position.y).sub(b.mul(this.ball.position.x));
+
         let platformLeftEndExtended = Provable.if(
             movedLeft,
             this.platform.position,
@@ -183,6 +169,23 @@ export class GameContext extends Struct({
         );
 
         this.winable = this.winable.and(isFail.not());
+
+        this.ball.position.y = Provable.if(
+            bottomBump,
+            Int64.from(2 * FIELD_PIXEL_HEIGHT).sub(this.ball.position.y),
+            this.ball.position.y
+        );
+        this.ball.position.y = Provable.if(
+            topBump,
+            this.ball.position.y.neg(),
+            this.ball.position.y
+        );
+
+        this.ball.speed.y = Provable.if(
+            topBump.or(bottomBump),
+            this.ball.speed.y.neg(),
+            this.ball.speed.y
+        );
 
         // Update nearest bricks
         this.updateNearestBricks();
@@ -227,7 +230,7 @@ export class GameContext extends Struct({
 
             /*
                 Detect where collision ocured
-                /////////////// vertical part of a brick //////////////////////////
+                /////////////// horizontal part of a brick //////////////////////////
                 y = d
                 ay = bx + c;
                 c = ay1 - bx1
@@ -242,7 +245,7 @@ export class GameContext extends Struct({
                 
 
 
-                /////////////// horizontal part of a brick ////////////////////////////
+                /////////////// vertical part of a brick ////////////////////////////
                 x = d
                 ay = bx + c
                 c = ay1 - bx1
