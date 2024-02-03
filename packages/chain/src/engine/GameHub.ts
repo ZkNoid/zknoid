@@ -5,12 +5,7 @@ import {
     runtimeMethod,
 } from '@proto-kit/module';
 import { State, StateMap } from '@proto-kit/protocol';
-import {
-    UInt64,
-    SelfProof,
-    PublicKey,
-    Provable,
-} from 'o1js';
+import { UInt64, PublicKey, Provable, Proof } from 'o1js';
 import {
     Competition,
     GameRecordKey,
@@ -28,12 +23,10 @@ export interface IScoreable {
 
 @runtimeModule()
 export class Gamehub<
-    PublicInput, 
-    PublicOutput extends IScoreable, 
-    Proof extends SelfProof<PublicInput, PublicOutput>, 
-> 
-    extends RuntimeModule<unknown> 
-{
+    PublicInput,
+    PublicOutput extends IScoreable,
+    GameProof extends Proof<PublicInput, PublicOutput>,
+> extends RuntimeModule<unknown> {
     // CompetitionId -> competition
     @state() public competitions = StateMap.from<UInt64, Competition>(
         UInt64,
@@ -93,7 +86,7 @@ export class Gamehub<
     @runtimeMethod()
     public addGameResult(
         competitionId: UInt64,
-        gameRecordProof: Proof
+        gameRecordProof: GameProof
     ): void {
         gameRecordProof.verify();
 
