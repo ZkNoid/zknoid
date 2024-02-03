@@ -27,7 +27,7 @@ import {
     checkMapGeneration,
     initGameProcess,
     processTicks,
-} from '../src/GameHub';
+} from '../src/ArkanoidGameHub';
 import { GameContext, createBricksBySeed } from '../src/GameContext';
 
 log.setLevel('ERROR');

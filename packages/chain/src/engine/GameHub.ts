@@ -5,143 +5,28 @@ import {
     runtimeMethod,
 } from '@proto-kit/module';
 import { State, StateMap } from '@proto-kit/protocol';
+import { UInt64, PublicKey, Provable, Proof } from 'o1js';
 import {
-    Experimental,
-    Field,
-    UInt64,
-    Bool,
-    SelfProof,
-    Struct,
-    PublicKey,
-    Provable,
-} from 'o1js';
-import {
-    Bricks,
     Competition,
-    GameInputs,
     GameRecordKey,
     LeaderboardIndex,
     LeaderboardScore,
-} from './types';
+} from '../types';
 
-import { GameContext, loadGameContext } from './GameContext';
-
-import { Balances } from './balances';
+import { Balances } from '../balances';
 
 import { inject } from 'tsyringe';
 
-export class GameRecordPublicOutput extends Struct({
-    score: UInt64,
-}) {}
-
-export class GameProcessPublicOutput extends Struct({
-    initialState: GameContext,
-    currentState: GameContext,
-}) {}
-
-export function checkMapGeneration(seed: Field, bricks: Bricks): GameContext {
-    return loadGameContext(bricks, Bool(false));
+export interface IScoreable {
+    score: UInt64;
 }
-
-export const MapGeneration = Experimental.ZkProgram({
-    publicInput: Field,
-    publicOutput: GameContext,
-    methods: {
-        checkMapGeneration: {
-            privateInputs: [Bricks],
-            method: checkMapGeneration,
-        },
-    },
-});
-
-export class MapGenerationProof extends Experimental.ZkProgram.Proof(
-    MapGeneration
-) {}
-
-export function initGameProcess(initial: GameContext): GameProcessPublicOutput {
-    return new GameProcessPublicOutput({
-        initialState: initial,
-        currentState: initial,
-    });
-}
-
-export function processTicks(
-    prevProof: SelfProof<void, GameProcessPublicOutput>,
-    inputs: GameInputs
-): GameProcessPublicOutput {
-    prevProof.verify();
-
-    let gameContext = prevProof.publicOutput.currentState;
-    for (let i = 0; i < inputs.ticks.length; i++) {
-        gameContext.processTick(inputs.ticks[i]);
-    }
-
-    return new GameProcessPublicOutput({
-        initialState: prevProof.publicOutput.initialState,
-        currentState: gameContext,
-    });
-}
-
-export const GameProcess = Experimental.ZkProgram({
-    publicOutput: GameProcessPublicOutput,
-    methods: {
-        init: {
-            privateInputs: [GameContext],
-            method: initGameProcess,
-        },
-
-        processTicks: {
-            privateInputs: [SelfProof, GameInputs],
-
-            method: processTicks,
-        },
-    },
-});
-
-export class GameProcessProof extends Experimental.ZkProgram.Proof(
-    GameProcess
-) {}
-
-export function checkGameRecord(
-    mapGenerationProof: MapGenerationProof,
-    gameProcessProof: GameProcessProof
-): GameRecordPublicOutput {
-    // Verify map generation
-    mapGenerationProof.verify();
-
-    // Check if map generation output equal game process initial state
-    mapGenerationProof.publicOutput
-        .equals(gameProcessProof.publicOutput.initialState)
-        .assertTrue();
-
-    // Verify game process
-    gameProcessProof.verify();
-
-    // Check if game is won
-    gameProcessProof.publicOutput.currentState.alreadyWon.assertTrue();
-
-    // Get score
-    return new GameRecordPublicOutput({
-        score: gameProcessProof.publicOutput.currentState.score,
-    });
-}
-
-export const GameRecord = Experimental.ZkProgram({
-    publicOutput: GameRecordPublicOutput,
-    methods: {
-        checkGameRecord: {
-            privateInputs: [MapGenerationProof, GameProcessProof],
-            method: checkGameRecord,
-        },
-    },
-});
-
-export class GameRecordProof extends Experimental.ZkProgram.Proof(GameRecord) {}
-
-const LEADERBOARD_SIZE = 10;
 
 @runtimeModule()
-export class GameHub extends RuntimeModule<unknown> {
+export class Gamehub<
+    PublicInput,
+    PublicOutput extends IScoreable,
+    GameProof extends Proof<PublicInput, PublicOutput>,
+> extends RuntimeModule<unknown> {
     // CompetitionId -> competition
     @state() public competitions = StateMap.from<UInt64, Competition>(
         UInt64,
@@ -163,6 +48,8 @@ export class GameHub extends RuntimeModule<unknown> {
     @state() public lastSeed = State.from<UInt64>(UInt64);
     @state() public lastUpdate = State.from<UInt64>(UInt64);
 
+    public leaderboardSize = 10;
+
     public constructor(@inject('Balances') private balances: Balances) {
         super();
     }
@@ -174,6 +61,11 @@ export class GameHub extends RuntimeModule<unknown> {
         this.lastSeed.set(lastSeedIndex.add(1));
     }
 
+    /**
+     * Creates new game competition
+     *
+     * @param competition - Competition to create
+     */
     @runtimeMethod()
     public createCompetition(competition: Competition): void {
         this.competitions.set(
@@ -185,10 +77,16 @@ export class GameHub extends RuntimeModule<unknown> {
         );
     }
 
+    /**
+     * Adds game record to a competition
+     *
+     * @param competitionId - Competition id to add record to
+     * @param gameRecordProof - Proof of the game fairness
+     */
     @runtimeMethod()
     public addGameResult(
         competitionId: UInt64,
-        gameRecordProof: GameRecordProof
+        gameRecordProof: GameProof
     ): void {
         gameRecordProof.verify();
 
@@ -207,7 +105,7 @@ export class GameHub extends RuntimeModule<unknown> {
             let looserIndex = UInt64.from(0);
             let looserScore = UInt64.from(0);
 
-            for (let i = 0; i < LEADERBOARD_SIZE; i++) {
+            for (let i = 0; i < this.leaderboardSize; i++) {
                 const leaderboardKey = new LeaderboardIndex({
                     competitionId,
                     index: UInt64.from(i),

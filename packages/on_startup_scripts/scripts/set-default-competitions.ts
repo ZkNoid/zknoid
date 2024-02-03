@@ -8,7 +8,7 @@ const setDefaultGames = async () => {
     const alicePrivateKey = PrivateKey.random();
     const alice = alicePrivateKey.toPublicKey();
     await client.start();
-    const gameHub = client.runtime.resolve('GameHub');
+    const gameHub = client.runtime.resolve('ArkanoidGameHub');
     let defaultCompetitions = getDefaultCompetitions();
     for (let i = 0; i < defaultCompetitions.length; i++) {
         const competition = defaultCompetitions[i];

@@ -54,7 +54,7 @@ export const useArkanoidLeaderboardStore = create<
 
       for (let i = 0; i < LEADERBOARD_SIZE; i++) {
         const leaderboardItem =
-          await client.query.runtime.GameHub.leaderboard.get(
+          await client.query.runtime.ArkanoidGameHub.leaderboard.get(
             // @ts-expect-error
             new LeaderboardIndex({
               competitionId: UInt64.from(+competitionId),
