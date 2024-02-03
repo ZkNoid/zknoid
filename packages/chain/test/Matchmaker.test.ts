@@ -17,7 +17,7 @@ import {
     checkMapGeneration,
     initGameProcess,
     processTicks,
-} from '../src/GameHub';
+} from '../src/ArkanoidGameHub';
 import { GameContext } from '../src/GameContext';
 import { MatchMaker } from '../src/MatchMaker';
 import { RandzuField, RandzuLogic } from '../src/RandzuLogic';
