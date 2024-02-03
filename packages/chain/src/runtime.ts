@@ -1,16 +1,15 @@
-import { UInt64 } from 'o1js';
-import { GameHub } from './GameHub';
+import { ArkanoidGameHub } from './ArkanoidGameHub';
 import { Balances } from "./balances";
 import { RandzuLogic } from './RandzuLogic';
 
 export default {
     modules: {
-        GameHub,
+        ArkanoidGameHub,
         Balances,
         RandzuLogic
     },
     config: {
-        GameHub: {},
+        ArkanoidGameHub: {},
         Balances: {},
         RandzuLogic: {}
     },

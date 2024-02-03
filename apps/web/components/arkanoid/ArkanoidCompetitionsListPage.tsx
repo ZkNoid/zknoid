@@ -94,11 +94,11 @@ export default function ArkanoidCompetitionsListPage() {
     let result: ICompetition[] = [];
 
     let lastId =
-      (await client.query.runtime.GameHub.lastCompetitonId.get())?.toBigInt() ||
+      (await client.query.runtime.ArkanoidGameHub.lastCompetitonId.get())?.toBigInt() ||
       0;
 
     for (let i = 0; i < lastId; i++) {
-      let curCompetition = await client.query.runtime.GameHub.competitions.get(
+      let curCompetition = await client.query.runtime.ArkanoidGameHub.competitions.get(
         UInt64.from(i),
       );
 

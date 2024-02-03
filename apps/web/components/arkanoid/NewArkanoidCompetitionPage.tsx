@@ -121,7 +121,7 @@ export default function NewArkanoidCompetitionPage() {
   };
 
   const createCompetition = async () => {
-    const gameHub = client.client!.runtime.resolve('GameHub');
+    const gameHub = client.client!.runtime.resolve('ArkanoidGameHub');
 
     const tx = await client.client!.transaction(
       PublicKey.fromBase58(networkStore.address!),

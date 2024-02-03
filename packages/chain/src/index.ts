@@ -1,7 +1,7 @@
 export * from './client.config.js';
 
 import {
-    GameHub,
+    ArkanoidGameHub,
     GameRecordProof,
     // GameRecordPublicOutput,
     checkGameRecord,
@@ -18,7 +18,7 @@ import {
     GameProcessProof,
     checkMapGeneration,
     processTicks,
-} from './GameHub.js';
+} from './ArkanoidGameHub.js';
 
 import {
     GameContext,
@@ -62,7 +62,7 @@ import { defaultLevel, getDefaultCompetitions } from './levels.js';
 
 export {
     Competition,
-    GameHub,
+    ArkanoidGameHub,
     GameContext,
     GameRecordProof,
     GameRecordPublicOutput,

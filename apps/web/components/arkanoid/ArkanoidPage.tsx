@@ -145,7 +145,7 @@ export default function ArkanoidPage({
     }
 
     let contractCompetition =
-      await client.query.runtime.GameHub.competitions.get(
+      await client.query.runtime.ArkanoidGameHub.competitions.get(
         UInt64.from(competitionId),
       );
     if (contractCompetition === undefined) {
@@ -197,7 +197,7 @@ export default function ArkanoidPage({
 
       console.log('Level proof', proof);
 
-      const gameHub = client.client!.runtime.resolve('GameHub');
+      const gameHub = client.client!.runtime.resolve('ArkanoidGameHub');
 
       const tx = await client.client!.transaction(
         PublicKey.fromBase58(networkStore.address!),
