@@ -6,7 +6,7 @@ import { PrivateKey, PublicKey, UInt32, UInt64 } from "o1js";
 import { useEffect } from "react";
 import { useProtokitChainStore } from "../protokitChain";
 import { useNetworkStore } from "../network";
-import { RoundIdxUser } from "zknoid-chain-dev/dist/MatchMaker";
+import { RoundIdxUser } from "zknoid-chain-dev/dist/engine/MatchMaker";
 import { RandzuField } from "zknoid-chain-dev/dist/RandzuLogic";
 
 
