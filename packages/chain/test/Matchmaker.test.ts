@@ -19,7 +19,7 @@ import {
     processTicks,
 } from '../src/ArkanoidGameHub';
 import { GameContext } from '../src/GameContext';
-import { MatchMaker } from '../src/MatchMaker';
+import { MatchMaker } from '../src/engine/MatchMaker';
 import { RandzuField, RandzuLogic } from '../src/RandzuLogic';
 
 log.setLevel('ERROR');
