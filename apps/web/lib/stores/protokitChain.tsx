@@ -51,7 +51,7 @@ export const useProtokitChainStore = create<ChainState, [["zustand/immer", never
         state.loading = true;
       });
 
-      const response = await fetch("http://localhost:8080/graphql", {
+      const response = await fetch(process.env.PROTOKIT_URL || "http://localhost:8080/graphql", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

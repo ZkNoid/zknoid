@@ -1,19 +1,32 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["**/.env.*local"],
+  "globalDependencies": [
+    "**/.env.*local"
+  ],
   "pipeline": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "dist"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**",
+        "dist"
+      ]
     },
-    "on_startup_scripts#dev": {
-      "dependsOn": ["zknoid-chain-dev#build"]
-    },
-
     "lint": {},
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "start-server": {
+      "cache": false,
+      "persistent": true
+    },
+    "on_startup_scripts#dev": {
+      "dependsOn": [
+        "zknoid-chain-dev#build"
+      ]
     },
     "test": {},
     "start": {

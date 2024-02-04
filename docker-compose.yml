@@ -1,0 +1,14 @@
+version: "3"
+services:
+  api_server:
+    build: .
+    volumes:
+      - .:/zknoid
+
+    environment:
+      TZ: Europe/Moscow
+
+    command: sh -c "pnpm start-server"
+    ports:
+      - "38080:8080"
+    restart: unless-stopped

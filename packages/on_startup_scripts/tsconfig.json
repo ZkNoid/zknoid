@@ -16,8 +16,10 @@
         "alwaysStrict": true,
         "declarationMap": true,
         "strictFunctionTypes": true,
-        "baseUrl": "."
+        "baseUrl": ".",
+        
     },
     "include": ["./scripts/**/*"],
-    "exclude": ["jest.config.cjs"]
+    "exclude": ["jest.config.cjs"],
+    
 }

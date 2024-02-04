@@ -4,7 +4,6 @@ import { getDefaultCompetitions } from 'zknoid-chain-dev';
 import { client } from 'zknoid-chain-dev';
 
 const setDefaultGames = async () => {
-
     const alicePrivateKey = PrivateKey.random();
     const alice = alicePrivateKey.toPublicKey();
     await client.start();
