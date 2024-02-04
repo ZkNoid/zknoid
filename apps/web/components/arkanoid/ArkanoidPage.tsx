@@ -12,7 +12,6 @@ import {
 } from 'zknoid-chain-dev';
 import { Bool, Int64, PublicKey, UInt64 } from 'o1js';
 import Link from 'next/link';
-import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
 import { Client, useNetworkStore } from '@/lib/stores/network';
 import { arkanoidCompetitions } from '@/app/constants/akanoidCompetitions';
 import {
@@ -36,6 +35,7 @@ import { GameType } from '@/app/constants/games';
 import { walletInstalled } from '@/lib/utils';
 import { ICompetition } from '@/lib/types';
 import { fromContractCompetition } from '@/lib/typesConverter';
+import { useWorkerClientStore } from '@/lib/stores/workerClient';
 
 enum GameState {
   NotStarted,
@@ -76,14 +76,13 @@ export default function ArkanoidPage({
   const minaBalances = useMinaBalancesStore();
   const protokitBalances = useProtokitBalancesStore();
   const leaderboardStore = useArkanoidLeaderboardStore();
+  const workerClientStore = useWorkerClientStore();
 
   let [gameId, setGameId] = useState(0);
   let [debug, setDebug] = useState(true);
   // const level: Bricks = useMemo(() => defaultLevel(), []);
   let [level, setLevel] = useState<Bricks>(Bricks.empty);
-  const [workerClient, setWorkerClient] = useState<ZknoidWorkerClient | null>(
-    null,
-  );
+
   const networkStore = useNetworkStore();
 
   let bridge = useMinaBridge();
@@ -155,7 +154,7 @@ export default function ArkanoidPage({
     let userInputs = chunks.map((chunk) => new GameInputs({ ticks: chunk }));
 
     try {
-      const proof = await workerClient?.proveGameRecord({
+      const proof = await workerClientStore?.client?.proveGameRecord({
         bricks: level,
         inputs: userInputs,
         debug: Bool(false),
