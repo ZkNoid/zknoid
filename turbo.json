@@ -23,11 +23,6 @@
       "cache": false,
       "persistent": true
     },
-    "on_startup_scripts#dev": {
-      "dependsOn": [
-        "zknoid-chain-dev#build"
-      ]
-    },
     "test": {},
     "start": {
       "cache": false
