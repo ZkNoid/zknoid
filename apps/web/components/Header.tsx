@@ -6,6 +6,7 @@ import Link from 'next/link';
 import truncateMiddle from 'truncate-middle';
 import { NetworkPicker } from './NetworkPicker';
 import { DepositMenuItem } from './DepositMenuItem';
+import { useRegisterWorkerClient, useWorkerClientStore } from '@/lib/stores/workerClient';
 
 export interface HeaderProps {
   walletInstalled: boolean;
@@ -24,6 +25,10 @@ export default function Header({
   walletInstalled,
   currentGame,
 }: HeaderProps) {
+  useRegisterWorkerClient();
+  const workerClientStore = useWorkerClientStore();
+
+
   return (
     <div className="flex items-center justify-between border-b p-2 shadow-sm">
       <div className="container flex">
@@ -71,6 +76,9 @@ export default function Header({
                   : 0}{' '}
                 🪙
                 <DepositMenuItem />
+              </div>
+              <div className='text-xs text-gray-800'>
+                {workerClientStore.status}
               </div>
             </div>
           </div>

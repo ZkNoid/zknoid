@@ -109,7 +109,7 @@ export default function ArkanoidPage({
     (async () => {
       console.log('Loading web worker...');
       const zkappWorkerClient = new ZknoidWorkerClient();
-      await timeout(5);
+      await timeout(10);
 
       console.log('Done loading web worker');
       console.log('Loading contracts in web worker');
@@ -119,11 +119,11 @@ export default function ArkanoidPage({
       console.log('Compiling contracts in web worker');
 
       // @todo wait for protokit support for 0.15.x
-      // await zkappWorkerClient.compileContracts();
+      await zkappWorkerClient.compileContracts();
 
       // console.log('Contracts compilation finished');
 
-      // await zkappWorkerClient.initZkappInstance("B62qr9UxamCE5PaEZCZnKsb6jX85W1JVCYpdB8CFE7rNZzSvusaW7sb");
+      await zkappWorkerClient.initZkappInstance("B62qjTmjVvvXnYCWSiEc1eVAz8vWVzJUK4xtBu7oq5ZuNT7aqAnAVub");
 
       // console.log('Contracts initialization finished');
 
