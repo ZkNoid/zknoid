@@ -98,40 +98,6 @@ export default function ArkanoidPage({
   };
 
   useEffect(() => {
-    async function timeout(seconds: number): Promise<void> {
-      return new Promise<void>((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, seconds * 1000);
-      });
-    }
-
-    (async () => {
-      console.log('Loading web worker...');
-      const zkappWorkerClient = new ZknoidWorkerClient();
-      await timeout(10);
-
-      console.log('Done loading web worker');
-      console.log('Loading contracts in web worker');
-
-      await zkappWorkerClient.loadContracts();
-
-      console.log('Compiling contracts in web worker');
-
-      // @todo wait for protokit support for 0.15.x
-      await zkappWorkerClient.compileContracts();
-
-      // console.log('Contracts compilation finished');
-
-      await zkappWorkerClient.initZkappInstance("B62qjTmjVvvXnYCWSiEc1eVAz8vWVzJUK4xtBu7oq5ZuNT7aqAnAVub");
-
-      // console.log('Contracts initialization finished');
-
-      setWorkerClient(zkappWorkerClient);
-    })();
-  }, []);
-
-  useEffect(() => {
     client.start().then((client) => getCompetition(client));
   }, []);
 
