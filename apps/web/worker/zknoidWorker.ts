@@ -141,3 +141,10 @@ if (typeof window !== 'undefined') {
 }
 
 console.log('Web Worker Successfully Initialized.');
+
+const message: ZknoidWorkerReponse = {
+  id: 0,
+  data: {},
+};
+
+postMessage(message);

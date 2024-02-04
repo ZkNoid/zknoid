@@ -49,16 +49,27 @@ export default class ZknoidWorkerClient {
 
   nextId: number;
 
+  readyPromise: Promise<void>;
+
   constructor() {
+    this.promises = {};
+
     this.worker = new Worker(new URL('./zknoidWorker.ts', import.meta.url));
     (window as any).workerNoid = this.worker;
-    this.promises = {};
-    this.nextId = 0;
+    this.readyPromise = new Promise((resolve, reject) => {
+      this.promises[0] = { resolve, reject };
+    })
+
+    this.nextId = 1;
 
     this.worker.onmessage = (event: MessageEvent<ZknoidWorkerReponse>) => {
       this.promises[event.data.id].resolve(event.data.data);
       delete this.promises[event.data.id];
     };
+  }
+
+  async waitFor(): Promise<void> {
+    await this.readyPromise;
   }
 
   _call(fn: WorkerFunctions, args: any) {

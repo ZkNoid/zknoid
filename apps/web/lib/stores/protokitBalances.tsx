@@ -71,7 +71,7 @@ export const useMinaBridge = () => {
       if (!client.client || !network.address) return;
       if (balancesStore.balances[network.address]) return;
 
-      /*
+      
       const l1tx = await Mina.transaction(() => {
         let senderUpdate = AccountUpdate.create(
           PublicKey.fromBase58(network.address!),
@@ -93,7 +93,7 @@ export const useMinaBridge = () => {
           memo: 'zknoid.io',
         },
       });
-      */
+      
 
       const balances = client.client.runtime.resolve('Balances');
       const sender = PublicKey.fromBase58(network.address!);
