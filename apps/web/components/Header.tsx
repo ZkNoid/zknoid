@@ -28,7 +28,6 @@ export default function Header({
   useRegisterWorkerClient();
   const workerClientStore = useWorkerClientStore();
 
-
   return (
     <div className="flex items-center justify-between border-b p-2 shadow-sm">
       <div className="container flex">

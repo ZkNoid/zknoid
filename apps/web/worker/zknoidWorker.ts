@@ -55,11 +55,17 @@ const functions = {
     state.dummyBridgeApp = new state.dummyBridge!(publicKey);
   },
   bridge: async (amount: UInt64) => {
-    const transaction = await Mina.transaction(() => {
-      state.dummyBridgeApp!.bridge(amount);
-    });
+    // const transaction = await Mina.transaction(() => {
+    //   state.dummyBridgeApp!.bridge(amount);
+    // });
 
-    state.transaction = transaction;
+    // state.transaction = transaction;
+  },
+  proveBridgeTransaction: async (args: {}) => {
+    await state.transaction!.prove();
+  },
+  getBridgeTransactionJSON: async (args: {}) => {
+    return state.transaction!.toJSON();
   },
   proveGameRecord: async (args: { bricks: any; inputs: any; debug: any }) => {
     let bricks = Bricks.fromJSON(args.bricks);
