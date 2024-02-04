@@ -2,7 +2,7 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 export interface ClientState {
     status: string;
@@ -53,8 +53,8 @@ export const useWorkerClientStore = create<ClientState, [['zustand/immer', never
 
 export const useRegisterWorkerClient = () => {
     const workerClientStore = useWorkerClientStore();
-  
-    useEffect(() => {
+
+    useMemo(() => {
         workerClientStore.start();
     }, []);
   };

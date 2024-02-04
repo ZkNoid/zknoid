@@ -11,7 +11,6 @@ import {
 } from 'zknoid-chain-dev';
 import { Bool, Int64, PrivateKey, PublicKey, Signature, UInt32, UInt64 } from 'o1js';
 import Link from 'next/link';
-import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useMinaBridge, useObserveProtokitBalance, useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
 import {
@@ -69,9 +68,6 @@ export default function RandzuPage({
   let [loading, setLoading] = useState(true);
   let [loadingElement, setLoadingElement] = useState<{x: number, y: number} | undefined>({x: 0, y: 0});
 
-  const [workerClient, setWorkerClient] = useState<ZknoidWorkerClient | null>(
-    null,
-  );
   const networkStore = useNetworkStore();
   const matchQueue = useRandzuMatchQueueStore();
   const sessionPublicKey = useStore(useSessionKeyStore, (state) => state.getSessionKey()).toPublicKey();

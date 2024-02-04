@@ -35,7 +35,10 @@ const competitionButton = (c: ICompetition): ReactElement => {
   );
 
   let playButton = (
-    <Link href={`/games/arkanoid/${c.competitionId}`}>
+    <Link 
+      href={`/games/arkanoid/[competitionId]`}
+      as={`/games/arkanoid/${c.competitionId}`} 
+    >
       <div className="flex content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white">
         Play
       </div>
