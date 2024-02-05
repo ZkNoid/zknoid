@@ -2,6 +2,7 @@ import { MatchMaker, QueueListItem } from "./engine/MatchMaker";
 import {
     state,
     runtimeMethod,
+    runtimeModule,
 } from "@proto-kit/module";
 import { Option, State, StateMap, assert } from "@proto-kit/protocol";
 import { PublicKey, Struct, UInt64, Provable, Bool, UInt32, Poseidon, Field, Int64 } from "o1js";
@@ -74,6 +75,7 @@ export class GameInfo extends Struct({
     winner: PublicKey
 }) { }
 
+@runtimeModule()
 export class RandzuLogic extends MatchMaker {
     // Game ids start from 1
     @state() public games = StateMap.from<UInt64, GameInfo>(

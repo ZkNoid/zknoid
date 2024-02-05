@@ -13,10 +13,6 @@ import { Bool, Int64, PrivateKey, PublicKey, Signature, UInt32, UInt64 } from 'o
 import Link from 'next/link';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useMinaBridge, useObserveProtokitBalance, useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
-import {
-  useArkanoidLeaderboardStore,
-  useObserveArkanoidLeaderboard,
-} from '@/lib/stores/arkanoidLeaderboard';
 import { useClientStore } from '@/lib/stores/client';
 import { usePollMinaBlockHeight } from '@/lib/stores/minaChain';
 import { usePollProtokitBlockHeight } from '@/lib/stores/protokitChain';
@@ -53,7 +49,6 @@ export default function RandzuPage({
 
   const client = useClientStore();
 
-  useObserveArkanoidLeaderboard(params.competitionId);
   usePollMinaBlockHeight();
   usePollProtokitBlockHeight();
   useObserveMinaBalance();
@@ -151,10 +146,12 @@ export default function RandzuPage({
   useEffect(() => {
     if (matchQueue.inQueue && !matchQueue.activeGameId) {
       setGameState(GameState.Matchmaking);
-    }
-
-    if (matchQueue.activeGameId) {
+    } else if (matchQueue.activeGameId) {
       setGameState(GameState.Active);
+    } else {
+      // @todo 
+      // setGameState(GameState.Won);
+      // setGameState(GameState.Lost);
     }
 
   }, [matchQueue.activeGameId, matchQueue.inQueue]);
