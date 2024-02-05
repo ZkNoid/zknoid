@@ -13,6 +13,7 @@ import {
 
 import { GameContext, loadGameContext } from './GameContext';
 import { Gamehub } from './engine/GameHub';
+import { runtimeModule } from '@proto-kit/module';
 
 export class GameRecordPublicOutput extends Struct({
     score: UInt64,
@@ -122,4 +123,5 @@ export const GameRecord = Experimental.ZkProgram({
 
 export class GameRecordProof extends Experimental.ZkProgram.Proof(GameRecord) {}
 
+@runtimeModule()
 export class ArkanoidGameHub extends Gamehub<undefined, GameRecordPublicOutput, GameRecordProof> {}

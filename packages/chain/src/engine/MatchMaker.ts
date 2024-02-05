@@ -111,12 +111,20 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
       new QueueListItem({ userAddress: Provable.if(opponentReady, PublicKey.empty(), this.transaction.sender), registrationTimestamp: timestamp })
     );
 
-    // If opponent not found – registeting current user in the list
+    // If opponent not found – registering current user in the list
     this.queueRegisteredRoundUsers.set(
       new RoundIdxUser(
         { roundId, userAddress: Provable.if(opponentReady, PublicKey.empty(), this.transaction.sender) }
       ),
       Bool(true)
+    );
+
+    // If opponent found – removing him from queue
+    this.queueRegisteredRoundUsers.set(
+      new RoundIdxUser(
+        { roundId, userAddress: Provable.if(opponentReady, opponent.value.userAddress, PublicKey.empty()) }
+      ),
+      Bool(false)
     );
 
     // If opponent not found – incrementing queue length. If found – removing opponent by length decreasing 

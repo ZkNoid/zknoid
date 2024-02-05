@@ -35,6 +35,7 @@ export interface MatchQueueState {
     inQueue: boolean;
     activeGameId: bigint;
     gameInfo: IGameInfo | undefined;
+    lastGameState: 'win' | 'lost' | undefined;
     getQueueLength: () => number;
     loadMatchQueue: (client: Client, blockHeight: number) => Promise<void>;
     loadActiveGame: (client: Client, blockHeight: number, address: PublicKey) => Promise<void>;
@@ -60,6 +61,7 @@ export const useRandzuMatchQueueStore = create<
         activeGameId: BigInt(0),
         inQueue: Boolean(false),
         gameInfo: undefined as IGameInfo | undefined,
+        lastGameState: undefined as 'win' | 'lost' | undefined,
         getQueueLength() {
             return this.queueLength;
         },
@@ -97,6 +99,10 @@ export const useRandzuMatchQueueStore = create<
 
             console.log('Active game id', activeGameId?.toBigInt());
             console.log('In queue', inQueue?.toBoolean());
+
+            if (activeGameId?.equals(UInt64.from(0)).toBoolean() && this.gameInfo?.gameId != 0n) {
+                console.log('Setting last game state', this.gameInfo?.gameId);
+            }
 
             if (activeGameId?.greaterThan(UInt64.from(0)).toBoolean()) {
                 const gameInfo = (await client.query.runtime.RandzuLogic.games.get(activeGameId))!;
