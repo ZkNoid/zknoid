@@ -81,22 +81,19 @@ export class Gamehub<
      * Adds game record to a competition
      *
      * @param competitionId - Competition id to add record to
-     * @param gameRecordProof - Proof of the game fairness
+     * @param newScore - Score to be added
      */
-    @runtimeMethod()
-    public addGameResult(
+    public _addGameResult(
         competitionId: UInt64,
-        gameRecordProof: GameProof
+        newScore: UInt64
+        // gameRecordProof: GameProof
     ): void {
-        gameRecordProof.verify();
-
         const gameKey = new GameRecordKey({
             competitionId,
             player: this.transaction.sender,
         });
 
         const currentScore = this.gameRecords.get(gameKey).value;
-        const newScore = gameRecordProof.publicOutput.score;
 
         if (currentScore < newScore) {
             // Do we need provable here?
