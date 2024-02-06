@@ -569,28 +569,29 @@ export const GameView = (props: IGameViewProps) => {
   };
 
   const getCollisionPoint = (
-    pos: [number, number],
-    speed: [number, number],
+    prevPos: [number, number],
+    newPos: [number, number],
+    prevSpeed: [number, number],
+    newSpeed: [number, number],
   ): [number, number] => {
-    let overflowPoint = [pos[0] + speed[0], pos[1] + speed[1]];
-    let t: number = 1;
-    if (overflowPoint[0] > FIELD_WIDTH) {
-      t = (FIELD_WIDTH - pos[0]) / speed[0];
-    }
+    // ay = bx + d
+    let a1 = prevSpeed[0];
+    let b1 = prevSpeed[1];
 
-    if (overflowPoint[0] < 0) {
-      t = -pos[0] / speed[0];
-    }
+    let d1 = a1 * prevPos[1] - b1 * prevPos[0];
+    let a2 = newSpeed[0];
+    let b2 = newSpeed[1];
+    let d2 = a2 * newPos[1] - b2 * newPos[0];
 
-    if (overflowPoint[1] > FIELD_HEIGHT) {
-      t = (FIELD_HEIGHT - pos[1]) / speed[1];
-    }
+    // a1y = b1x + d1 => y = (b1x + d1)/a1
+    // a2y = b2x + d2 => y = (b2x + d2)/a2
+    // a2b1x + a2d1 = a1b2x + a1d2 => x(a2b1 - a1b2) = a1d2 - a2d1
+    // x = (a1d2 - a2d1) / (a2b1 - a1b2)
 
-    if (overflowPoint[1] < 0) {
-      t = -pos[1] / speed[1];
-    }
+    let x = (a1 * d2 - a2 * d1) / (a2 * b1 - a1 * b2);
+    let y = (b1 * x + d1) / a1;
 
-    return [pos[0] + speed[0] * t, pos[1] + speed[1] * t];
+    return [x, y];
   };
 
   const sync = () => {
@@ -651,7 +652,7 @@ export const GameView = (props: IGameViewProps) => {
       contractBall.dx = gameContext.ball.speed.x * 1;
       contractBall.dy = gameContext.ball.speed.y * 1;
 
-      let newSpeed = [
+      let newSpeed: [number, number] = [
         gameContext.ball.speed.x * 1,
         gameContext.ball.speed.y * 1,
       ];
@@ -659,7 +660,9 @@ export const GameView = (props: IGameViewProps) => {
       // Should add additional point to points, because collision point is ommited
       // #TODO: Change calculation for brick collision. For now works only with border collisions, but works bad for brick collision.
       if (prevSpeed[0] == -newSpeed[0] || prevSpeed[1] == -newSpeed[1]) {
-        contractBallTrace.push(getCollisionPoint(prevPos, prevSpeed));
+        contractBallTrace.push(
+          getCollisionPoint(prevPos, [x, y], prevSpeed, newSpeed),
+        );
       }
 
       contractBallTrace.push([x, y]);
