@@ -58,7 +58,6 @@ const functions = {
     // const transaction = await Mina.transaction(() => {
     //   state.dummyBridgeApp!.bridge(amount);
     // });
-
     // state.transaction = transaction;
   },
   proveBridgeTransaction: async (args: {}) => {
@@ -76,7 +75,7 @@ const functions = {
     console.log('args', bricks, userInputs, Bool.fromJSON(args.debug));
 
     console.log('Generating map proof');
-    let gameContext = checkMapGeneration(Field.from(0), bricks);
+    let gameContext = checkMapGeneration(Field.from(0));
     const mapGenerationProof = await mockProof(gameContext, MapGenerationProof);
 
     console.log('Generating gameProcess proof');
@@ -99,7 +98,7 @@ const functions = {
 
     console.log('Generating game proof');
 
-    const gameProof =  await mockProof(
+    const gameProof = await mockProof(
       checkGameRecord(mapGenerationProof, currentGameStateProof),
       GameRecordProof,
     );

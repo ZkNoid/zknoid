@@ -5,15 +5,17 @@ import {
     Bool,
     SelfProof,
     Struct,
+    Int64,
 } from 'o1js';
-import {
-    Bricks,
-    GameInputs,
-} from './types';
+import { Bricks, GameInputs } from './types';
 
-import { GameContext, loadGameContext } from './GameContext';
+import {
+    GameContext,
+    createBricksBySeed,
+    loadGameContext,
+} from './GameContext';
 import { Gamehub } from './engine/GameHub';
-import { runtimeModule } from '@proto-kit/module';
+import { runtimeMethod, runtimeModule } from '@proto-kit/module';
 
 export class GameRecordPublicOutput extends Struct({
     score: UInt64,
@@ -24,7 +26,8 @@ export class GameProcessPublicOutput extends Struct({
     currentState: GameContext,
 }) {}
 
-export function checkMapGeneration(seed: Field, bricks: Bricks): GameContext {
+export function checkMapGeneration(seed: Field): GameContext {
+    let bricks = createBricksBySeed(Int64.from(seed));
     return loadGameContext(bricks, Bool(false));
 }
 
@@ -124,4 +127,14 @@ export const GameRecord = Experimental.ZkProgram({
 export class GameRecordProof extends Experimental.ZkProgram.Proof(GameRecord) {}
 
 @runtimeModule()
-export class ArkanoidGameHub extends Gamehub<undefined, GameRecordPublicOutput, GameRecordProof> {}
+export class ArkanoidGameHub extends Gamehub<
+    undefined,
+    GameRecordPublicOutput,
+    GameRecordProof
+> {
+    @runtimeMethod()
+    public addGameResult(competitionId: UInt64, proof: GameRecordProof) {
+        proof.verify();
+        this._addGameResult(competitionId, proof.publicOutput.score);
+    }
+}
