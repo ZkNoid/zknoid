@@ -134,7 +134,6 @@ export class ArkanoidGameHub extends Gamehub<
 > {
     @runtimeMethod()
     public addGameResult(competitionId: UInt64, proof: GameRecordProof) {
-        proof.verify();
-        this._addGameResult(competitionId, proof.publicOutput.score);
+        super.addGameResult(competitionId, proof);
     }
 }
