@@ -70,6 +70,11 @@ export default function RandzuPage({
 
   const bridge = useMinaBridge();
 
+  const restart = () => {
+    matchQueue.resetLastGameState();
+    setGameState(GameState.NotStarted);
+  }
+
   const startGame = async () => {
     if (competition!.enteringPrice > 0) {
       console.log(await bridge(competition?.enteringPrice! * 10 ** 9));
@@ -149,12 +154,14 @@ export default function RandzuPage({
     } else if (matchQueue.activeGameId) {
       setGameState(GameState.Active);
     } else {
-      // @todo 
-      // setGameState(GameState.Won);
-      // setGameState(GameState.Lost);
+      if (matchQueue.lastGameState == 'win')
+        setGameState(GameState.Won);
+
+      if (matchQueue.lastGameState == 'lost')
+        setGameState(GameState.Lost);
     }
 
-  }, [matchQueue.activeGameId, matchQueue.inQueue]);
+  }, [matchQueue.activeGameId, matchQueue.inQueue, matchQueue.lastGameState]);
 
   return (
     <>
@@ -175,14 +182,14 @@ export default function RandzuPage({
               </div>
             )}
             {gameState == GameState.Lost && (
-              <div>You've lost! Nothing to prove</div>
+              <div>You lost!</div>
             )}
 
             <div className="flex flex-row items-center justify-center gap-5">
               {(gameState == GameState.Won || gameState == GameState.Lost) && (
                 <div
                   className="rounded-xl bg-slate-300 p-5 hover:bg-slate-400"
-                  onClick={() => startGame()}
+                  onClick={() => restart()}
                 >
                   Restart
                 </div>
@@ -195,13 +202,7 @@ export default function RandzuPage({
                   Start for {competition?.enteringPrice} 🪙
                 </div>
               )}
-              {gameState == GameState.Won && (
-                <div
-                  className="rounded-xl bg-slate-300 p-5 hover:bg-slate-400"
-                >
-                  Play again
-                </div>
-              )}
+              
             </div>
           </div>
         ) : 

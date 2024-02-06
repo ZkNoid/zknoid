@@ -39,13 +39,7 @@ export interface MatchQueueState {
     getQueueLength: () => number;
     loadMatchQueue: (client: Client, blockHeight: number) => Promise<void>;
     loadActiveGame: (client: Client, blockHeight: number, address: PublicKey) => Promise<void>;
-}
-
-function isPendingTransaction(
-    transaction: PendingTransaction | UnsignedTransaction | undefined,
-): asserts transaction is PendingTransaction {
-    if (!(transaction instanceof PendingTransaction))
-        throw new Error("Transaction is not a PendingTransaction");
+    resetLastGameState: () => void;
 }
 
 const PENDING_BLOCKS_NUM = UInt64.from(5);
@@ -62,6 +56,12 @@ export const useRandzuMatchQueueStore = create<
         inQueue: Boolean(false),
         gameInfo: undefined as IGameInfo | undefined,
         lastGameState: undefined as 'win' | 'lost' | undefined,
+        resetLastGameState() {
+            set((state) => {
+                state.lastGameState = undefined;
+                state.gameInfo = undefined;
+            });
+        },
         getQueueLength() {
             return this.queueLength;
         },
@@ -100,8 +100,15 @@ export const useRandzuMatchQueueStore = create<
             console.log('Active game id', activeGameId?.toBigInt());
             console.log('In queue', inQueue?.toBoolean());
 
-            if (activeGameId?.equals(UInt64.from(0)).toBoolean() && this.gameInfo?.gameId != 0n) {
+            if (activeGameId?.equals(UInt64.from(0)).toBoolean() && this.gameInfo?.gameId) {
                 console.log('Setting last game state', this.gameInfo?.gameId);
+                const gameInfo = (await client.query.runtime.RandzuLogic.games.get(UInt64.from(this.gameInfo?.gameId!)))!;
+                console.log('Fetched last game info', gameInfo);
+                console.log('Game winner', gameInfo.winner.toBase58())
+
+                set((state) => {
+                    state.lastGameState = gameInfo.winner.equals(address).toBoolean() ? 'win' : 'lost';
+                })
             }
 
             if (activeGameId?.greaterThan(UInt64.from(0)).toBoolean()) {
