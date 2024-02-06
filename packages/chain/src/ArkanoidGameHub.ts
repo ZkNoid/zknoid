@@ -1,19 +1,9 @@
-import {
-    Experimental,
-    Field,
-    UInt64,
-    Bool,
-    SelfProof,
-    Struct,
-} from 'o1js';
-import {
-    Bricks,
-    GameInputs,
-} from './types';
+import { Experimental, Field, UInt64, Bool, SelfProof, Struct } from 'o1js';
+import { Bricks, GameInputs } from './types';
 
 import { GameContext, loadGameContext } from './GameContext';
 import { Gamehub } from './engine/GameHub';
-import { runtimeModule } from '@proto-kit/module';
+import { runtimeMethod, runtimeModule } from '@proto-kit/module';
 
 export class GameRecordPublicOutput extends Struct({
     score: UInt64,
@@ -124,4 +114,14 @@ export const GameRecord = Experimental.ZkProgram({
 export class GameRecordProof extends Experimental.ZkProgram.Proof(GameRecord) {}
 
 @runtimeModule()
-export class ArkanoidGameHub extends Gamehub<undefined, GameRecordPublicOutput, GameRecordProof> {}
+export class ArkanoidGameHub extends Gamehub<
+    undefined,
+    GameRecordPublicOutput,
+    GameRecordProof
+> {
+    @runtimeMethod()
+    public addGameResult(competitionId: UInt64, proof: GameRecordProof) {
+        proof.verify();
+        this._addGameResult(competitionId, proof.publicOutput.score);
+    }
+}
