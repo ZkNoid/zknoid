@@ -1,7 +1,19 @@
-import { Experimental, Field, UInt64, Bool, SelfProof, Struct } from 'o1js';
+import {
+    Experimental,
+    Field,
+    UInt64,
+    Bool,
+    SelfProof,
+    Struct,
+    Int64,
+} from 'o1js';
 import { Bricks, GameInputs } from './types';
 
-import { GameContext, loadGameContext } from './GameContext';
+import {
+    GameContext,
+    createBricksBySeed,
+    loadGameContext,
+} from './GameContext';
 import { Gamehub } from './engine/GameHub';
 import { runtimeMethod, runtimeModule } from '@proto-kit/module';
 
@@ -14,7 +26,8 @@ export class GameProcessPublicOutput extends Struct({
     currentState: GameContext,
 }) {}
 
-export function checkMapGeneration(seed: Field, bricks: Bricks): GameContext {
+export function checkMapGeneration(seed: Field): GameContext {
+    let bricks = createBricksBySeed(Int64.from(seed));
     return loadGameContext(bricks, Bool(false));
 }
 
