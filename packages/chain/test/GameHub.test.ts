@@ -17,6 +17,7 @@ import {
     Tick,
     GameRecordKey,
     defaultLevel,
+    getDefaultCompetitions,
 } from '../src/index';
 import { log } from '@proto-kit/common';
 import { Pickles } from 'o1js/dist/node/snarky';
@@ -29,10 +30,12 @@ import {
     processTicks,
 } from '../src/ArkanoidGameHub';
 import { GameContext } from '../src/GameContext';
+import { cases } from './test-user-input';
+import { Balances } from '../src/balances';
 
 log.setLevel('ERROR');
 
-const chunkenize = (arr: number[], size: number) =>
+const chunkenize = (arr: any[], size: number) =>
     Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
         arr.slice(i * size, i * size + size)
     );
@@ -68,12 +71,14 @@ describe('game hub', () => {
         const appChain = TestingAppChain.fromRuntime({
             modules: {
                 ArkanoidGameHub,
+                Balances,
             },
         });
 
         appChain.configurePartial({
             Runtime: {
                 ArkanoidGameHub: {},
+                Balances: {},
             },
         });
 
@@ -82,27 +87,41 @@ describe('game hub', () => {
         await appChain.start();
         appChain.setSigner(alicePrivateKey);
         const gameHub = appChain.runtime.resolve('ArkanoidGameHub');
-        const bricks = defaultLevel();
-        let uiUserInput = [
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 0, 0, 48, 35,
-            0, 0, 0, 0, 0, 0, 0, 0, -67, 0, 0, -99, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 51, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        ];
+
+        /// Set defaultcompetitions
+        let defaultCompetitions = getDefaultCompetitions();
+        for (let competition of defaultCompetitions) {
+            const tx = await appChain.transaction(alice, () => {
+                gameHub.createCompetition(competition);
+            });
+            await tx.sign();
+            await tx.send();
+            await appChain.produceBlock();
+        }
+
+        let uiUserInput = cases['seed-0'];
+
         let chunks = chunkenize(uiUserInput, 10);
-        let userInputs = chunks.map(
-            (chunk) =>
-                new GameInputs({
-                    ticks: chunk.map(
-                        (elem) =>
-                            new Tick({
-                                action: Int64.from(elem),
-                                momentum: Int64.from(0),
-                            })
-                    ),
-                })
-        );
+        let userInputs = chunks
+            .filter((chunk) => chunk.length > 0)
+            .map(
+                (chunk) =>
+                    new GameInputs({
+                        ticks: chunk.map((elem) => {
+                            return new Tick({
+                                action: Int64.from(elem.action),
+                                momentum: Int64.from(elem.momentum),
+                            });
+                        }),
+                    })
+            );
+
+        let cuttentCompetition = defaultCompetitions[0];
+
         // Generate map generation proof
-        let gameContext = checkMapGeneration(Field.from(0), bricks);
+        let gameContext = checkMapGeneration(
+            Field.from(cuttentCompetition.seed)
+        );
         const mapGenerationProof = await mockProof(
             gameContext,
             MapGenerationProof
@@ -134,7 +153,7 @@ describe('game hub', () => {
 
         // Run transaction
         const tx1 = await appChain.transaction(alice, () => {
-            gameHub.addGameResult(gameRecordProof);
+            gameHub.addGameResult(UInt64.from(0), gameRecordProof);
         });
         await tx1.sign();
         await tx1.send();
@@ -149,7 +168,9 @@ describe('game hub', () => {
         });
         console.log(gameRecordKey);
         const userScore =
-            await appChain.query.runtime.ArkanoidGameHub.gameRecords.get(gameRecordKey);
+            await appChain.query.runtime.ArkanoidGameHub.gameRecords.get(
+                gameRecordKey
+            );
         console.log(userScore?.toBigInt());
     });
 });
