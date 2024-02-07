@@ -1,15 +1,18 @@
 import { dummyProofBase64 } from '@/app/constants/dummyProofBase64';
+import { BRIDGE_CACHE } from '@/constants/bridge_cache';
+import { WebFileSystem, fetchCache } from '@/lib/cache';
 import { mockProof } from '@/lib/utils';
+import { GetServerSideProps } from 'next';
 import {
   Field,
   Bool,
   Mina,
   PublicKey,
   UInt64,
-  fetchAccount,
-  Int64,
-  JsonProof,
-  Proof,
+} from 'o1js016';
+
+import {
+  Field as Field014,
 } from 'o1js';
 import {
   checkMapGeneration,
@@ -47,7 +50,12 @@ const functions = {
   },
   compileContracts: async (args: {}) => {
     console.log('[Worker] compiling contracts');
-    await DummyBridge.compile();
+
+    const fetchedCache = await fetchCache(BRIDGE_CACHE);
+    
+    await DummyBridge.compile({
+      cache: WebFileSystem(fetchedCache)
+    });
     console.log('[Worker] compiling contracts ended');
   },
   initZkappInstance: async (args: { bridgePublicKey58: string }) => {
@@ -75,7 +83,7 @@ const functions = {
     console.log('args', bricks, userInputs, Bool.fromJSON(args.debug));
 
     console.log('Generating map proof');
-    let gameContext = checkMapGeneration(Field.from(0));
+    let gameContext = checkMapGeneration(Field014.from(0));
     const mapGenerationProof = await mockProof(gameContext, MapGenerationProof);
 
     console.log('Generating gameProcess proof');
