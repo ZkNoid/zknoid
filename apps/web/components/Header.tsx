@@ -6,7 +6,10 @@ import Link from 'next/link';
 import truncateMiddle from 'truncate-middle';
 import { NetworkPicker } from './NetworkPicker';
 import { DepositMenuItem } from './DepositMenuItem';
-import { useRegisterWorkerClient, useWorkerClientStore } from '@/lib/stores/workerClient';
+import {
+  useRegisterWorkerClient,
+  useWorkerClientStore,
+} from '@/lib/stores/workerClient';
 
 export interface HeaderProps {
   walletInstalled: boolean;
@@ -32,7 +35,7 @@ export default function Header({
     <div className="flex items-center justify-between border-b p-2 shadow-sm">
       <div className="container flex">
         <div className="flex basis-6/12 items-center justify-start gap-10">
-          <Link href={`/games/${currentGame}/global`}>
+          <Link href={`/`}>
             <Image className="h-8 w-8" src={protokit} alt={'ZkNoid logo'} />
           </Link>
           <Link href={`/games/${currentGame}/new-competition`}>
@@ -76,7 +79,7 @@ export default function Header({
                 🪙
                 <DepositMenuItem />
               </div>
-              <div className='text-xs text-gray-800'>
+              <div className="text-xs text-gray-800">
                 {workerClientStore.status}
               </div>
             </div>
