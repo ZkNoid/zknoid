@@ -89,32 +89,34 @@ export default function ArkanoidCompetitionsListPage() {
       </div>
     );
 
-    let finished = (
-      <div className="flex content-center items-center justify-center rounded border-solid bg-gray-500 px-6 py-4 font-bold text-white">
-        Game finished
-      </div>
-    );
+    const info = (text: string) => {
+      return (
+        <div className="flex content-center items-center justify-center rounded border-solid bg-gray-500 px-6 py-4 font-bold text-white">
+          {text}
+        </div>
+      );
+    };
     let curTime = Date.now();
 
-    let registered = c.registered;
-    let shouldRegister =
-      c.prereg && curTime > c.preregStartTime && curTime < c.preregEndTime;
-    let isFinished = curTime > c.competitionEndTime;
-
-    let isGameReady =
-      (!shouldRegister || (shouldRegister && registered)) && !isFinished;
-
-    let finalButton = defaultButton;
-
-    if (isFinished) {
-      finalButton = finished;
-    } else if (isGameReady) {
-      finalButton = playButton;
-    } else if (shouldRegister) {
-      finalButton = registerButton;
+    if (c.competitionEndTime < curTime) {
+      return info('Competition ended');
     }
 
-    return finalButton;
+    if (c.prereg && !c.registered) {
+      if (c.preregStartTime < curTime) {
+        return registerButton;
+      } else if (c.preregEndTime > curTime) {
+        return info('Registration ended');
+      } else {
+        return info('Wait for registration');
+      }
+    }
+
+    if (c.competitionStartTime > curTime) {
+      return info('Wait for game start');
+    }
+
+    return playButton;
   };
 
   return (
