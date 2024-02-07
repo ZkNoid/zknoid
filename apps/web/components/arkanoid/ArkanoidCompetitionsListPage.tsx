@@ -23,6 +23,7 @@ import {
   useArkanoidCompetitionsStore,
   useObserveArkanoidCompetitions,
 } from '@/lib/stores/arkanoid/arkanoidCompetitions';
+import { usePollProtokitBlockHeight } from '@/lib/stores/protokitChain';
 
 const timeStampToStringDate = (timeStamp: number): string => {
   var date = new Date(timeStamp);
@@ -32,11 +33,11 @@ const timeStampToStringDate = (timeStamp: number): string => {
 };
 
 export default function ArkanoidCompetitionsListPage() {
+  usePollProtokitBlockHeight();
   useObserveMinaBalance();
   useObserveProtokitBalance();
   useObserveArkanoidCompetitions();
 
-  // let [competitions, setCompetitions] = useState<ICompetition[]>([]);
   const networkStore = useNetworkStore();
   const minaBalances = useMinaBalancesStore();
   const protokitBalances = useProtokitBalancesStore();
