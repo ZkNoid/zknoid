@@ -75,7 +75,6 @@ export class GameInfo extends Struct({
     winner: PublicKey
 }) { }
 
-@runtimeModule()
 export class RandzuLogic extends MatchMaker {
     // Game ids start from 1
     @state() public games = StateMap.from<UInt64, GameInfo>(
