@@ -95,7 +95,7 @@ export default function ArkanoidCompetitionsListPage() {
     );
     let curTime = Date.now();
 
-    let registered = false;
+    let registered = c.registered;
     let shouldRegister =
       c.prereg && curTime > c.preregStartTime && curTime < c.preregEndTime;
     let isFinished = curTime > c.competitionEndTime;
@@ -107,10 +107,10 @@ export default function ArkanoidCompetitionsListPage() {
 
     if (isFinished) {
       finalButton = finished;
-    } else if (shouldRegister) {
-      finalButton = registerButton;
     } else if (isGameReady) {
       finalButton = playButton;
+    } else if (shouldRegister) {
+      finalButton = registerButton;
     }
 
     return finalButton;
@@ -147,6 +147,7 @@ export default function ArkanoidCompetitionsListPage() {
               <th className="px-6 py-3"> Name </th>
               <th className="px-6 py-3"> Seed </th>
               <th className="px-6 py-3"> Prereg </th>
+              <th className="px-6 py-3"> Registered </th>
               <th className="px-6 py-3"> PreregBefore </th>
               <th className="px-6 py-3"> PreregAfter </th>
               <th className="px-6 py-3"> CompetitionStart </th>
@@ -167,6 +168,7 @@ export default function ArkanoidCompetitionsListPage() {
                 <td className="px-6 py-4">{c.name}</td>
                 <td className="px-6 py-4">{c.seed}</td>
                 <td className="px-6 py-4">{c.prereg.toString()}</td>
+                <td className="px-6 py-4">{c.registered?.toString()}</td>
                 <td className="px-6 py-4">
                   {timeStampToStringDate(c.preregStartTime)}
                 </td>
