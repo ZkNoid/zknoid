@@ -23,6 +23,7 @@
     "immer": "^10.0.3",
     "lucide-react": "^0.292.0",
     "next": "14.0.1",
+    "o1js016": "npm:o1js@^0.16.0",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.48.2",
