@@ -35,6 +35,7 @@ export interface ICompetition {
   competitionEndTime: number;
   funds: number;
   participationFee: number;
+  registered?: boolean;
 }
 
 const bricksInRow = 5;
