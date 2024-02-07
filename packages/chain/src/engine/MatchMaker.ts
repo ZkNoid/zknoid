@@ -31,7 +31,6 @@ export class QueueListItem extends Struct({
   registrationTimestamp: UInt64
 }) { }
 
-@runtimeModule()
 export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
   // Session => user
   @state() public sessions = StateMap.from<PublicKey, PublicKey>(
