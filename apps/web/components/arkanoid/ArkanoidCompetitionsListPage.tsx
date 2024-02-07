@@ -167,8 +167,20 @@ export default function ArkanoidCompetitionsListPage() {
               >
                 <td className="px-6 py-4">{c.name}</td>
                 <td className="px-6 py-4">{c.seed}</td>
-                <td className="px-6 py-4">{c.prereg.toString()}</td>
-                <td className="px-6 py-4">{c.registered?.toString()}</td>
+                <td className="px-6 py-4">
+                  <div className="flex items-center justify-center">
+                    <input type="checkbox" checked={c.prereg} readOnly></input>
+                  </div>
+                </td>
+                <td className="flex items-center justify-center px-3 py-6">
+                  <div className="flex items-center justify-center">
+                    <input
+                      type="checkbox"
+                      checked={c.registered}
+                      readOnly
+                    ></input>
+                  </div>
+                </td>
                 <td className="px-6 py-4">
                   {timeStampToStringDate(c.preregStartTime)}
                 </td>

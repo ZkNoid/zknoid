@@ -46,7 +46,7 @@ export const useArkanoidCompetitionsStore = create<
 
         competitions.push({
           ...fromContractCompetition(i, curCompetition!),
-          registered,
+          registered: registered.toBoolean(),
         });
       }
       set((state) => {
