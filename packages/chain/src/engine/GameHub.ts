@@ -21,6 +21,7 @@ export interface IScoreable {
     score: UInt64;
 }
 
+@runtimeModule()
 export class Gamehub<
     PublicInput,
     PublicOutput extends IScoreable,
