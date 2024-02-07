@@ -126,7 +126,6 @@ export const GameRecord = Experimental.ZkProgram({
 
 export class GameRecordProof extends Experimental.ZkProgram.Proof(GameRecord) {}
 
-@runtimeModule()
 export class ArkanoidGameHub extends Gamehub<
     undefined,
     GameRecordPublicOutput,
