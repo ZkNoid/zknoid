@@ -185,10 +185,10 @@ export default function ArkanoidCompetitionsListPage() {
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  {timeStampToStringDate(c.preregStartTime)}
+                  {c.prereg ? timeStampToStringDate(c.preregStartTime) : ''}
                 </td>
                 <td className="px-6 py-4">
-                  {timeStampToStringDate(c.preregEndTime)}
+                  {c.prereg ? timeStampToStringDate(c.preregEndTime) : ''}
                 </td>
                 <td className="px-6 py-4">
                   {timeStampToStringDate(c.competitionStartTime)}
