@@ -97,6 +97,7 @@ export default function RandzuPage({
 
   const onCellClicked = async (x: number, y: number) => {
     if (!matchQueue.gameInfo?.isCurrentUserMove) return;
+    if (matchQueue.gameInfo.field[x][y] != 0) return;
 
     const currentUserId = matchQueue.gameInfo.currentUserIndex + 1;
 

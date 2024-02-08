@@ -146,7 +146,7 @@ export class RandzuLogic extends MatchMaker {
   
           addedCellsNum.add(Provable.if(currentFieldCell.equals(nextFieldCell), UInt64.from(0), UInt64.from(1)));
   
-          assert(addedCellsNum.lessThanOrEqual(UInt64.from(1)), `Not only one cell added. Error at ${i}, ${j}`);
+          assert(addedCellsNum.lessThanOrEqual(UInt64.from(1)), `Exactly one cell should be added. Error at ${i}, ${j}`);
           assert(
             Provable.if(currentFieldCell.equals(nextFieldCell), Bool(true), nextFieldCell.equals(currentUserId)),
             'Added opponent`s color'
