@@ -4,8 +4,8 @@ import {
     state,
     runtimeMethod,
 } from '@proto-kit/module';
-import { State, StateMap } from '@proto-kit/protocol';
-import { UInt64, PublicKey, Provable, Proof } from 'o1js';
+import { State, StateMap, assert } from '@proto-kit/protocol';
+import { UInt64, PublicKey, Provable, Proof, Bool } from 'o1js';
 import {
     Competition,
     GameRecordKey,
@@ -38,6 +38,12 @@ export class Gamehub<
     @state() public gameRecords = StateMap.from<GameRecordKey, UInt64>(
         GameRecordKey,
         UInt64
+    );
+
+    /// competitionId + User => isRegistered
+    @state() public registrations = StateMap.from<GameRecordKey, Bool>(
+        GameRecordKey,
+        Bool
     );
     /// (competitionId, Unsorted index) => user result
     @state() public leaderboard = StateMap.from<
@@ -77,6 +83,17 @@ export class Gamehub<
         );
     }
 
+    @runtimeMethod()
+    public register(competitionId: UInt64): void {
+        this.registrations.set(
+            new GameRecordKey({
+                competitionId,
+                player: this.transaction.sender,
+            }),
+            Bool(true)
+        );
+    }
+
     /**
      * Adds game record to a competition
      *
@@ -94,6 +111,13 @@ export class Gamehub<
             competitionId,
             player: this.transaction.sender,
         });
+
+        // Check for registration
+        let registrationNeeded =
+            this.competitions.get(competitionId).value.prereg;
+        let userRegistration = this.registrations.get(gameKey).value;
+
+        assert(registrationNeeded.not().or(userRegistration));
 
         const currentScore = this.gameRecords.get(gameKey).value;
         let newScore = gameRecordProof.publicOutput.score;
