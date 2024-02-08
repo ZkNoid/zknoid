@@ -103,9 +103,9 @@ export default function ArkanoidCompetitionsListPage() {
     }
 
     if (c.prereg && !c.registered) {
-      if (c.preregStartTime < curTime) {
+      if (c.preregStartTime < curTime && c.preregEndTime > curTime) {
         return registerButton;
-      } else if (c.preregEndTime > curTime) {
+      } else if (c.preregEndTime < curTime) {
         return info('Registration ended');
       } else {
         return info('Wait for registration');
