@@ -151,8 +151,8 @@ export default function ArkanoidCompetitionsListPage() {
               <th className="px-6 py-3"> Seed </th>
               <th className="px-6 py-3"> Prereg </th>
               <th className="px-6 py-3"> Registered </th>
-              <th className="px-6 py-3"> PreregBefore </th>
-              <th className="px-6 py-3"> PreregAfter </th>
+              <th className="px-6 py-3"> PreregStart </th>
+              <th className="px-6 py-3"> PreregEnd </th>
               <th className="px-6 py-3"> CompetitionStart </th>
               <th className="px-6 py-3"> CompetitionEnd </th>
               <th className="px-6 py-3"> Funds </th>
