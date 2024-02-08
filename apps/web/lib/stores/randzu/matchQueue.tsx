@@ -106,8 +106,12 @@ export const useRandzuMatchQueueStore = create<
                 console.log('Fetched last game info', gameInfo);
                 console.log('Game winner', gameInfo.winner.toBase58())
 
+                const field = (gameInfo.field as RandzuField).value.map((x: UInt32[]) => x.map(x => x.toBigint()));
+
                 set((state) => {
                     state.lastGameState = gameInfo.winner.equals(address).toBoolean() ? 'win' : 'lost';
+                    state.gameInfo!.field = field;
+                    state.gameInfo!.isCurrentUserMove = false;
                 })
             }
 

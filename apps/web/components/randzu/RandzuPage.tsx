@@ -163,6 +163,9 @@ export default function RandzuPage({
 
   }, [matchQueue.activeGameId, matchQueue.inQueue, matchQueue.lastGameState]);
 
+  const randomWonEmoji = ['🥳', '🎉', '👏'][Math.floor(3 * Math.random())];
+  const randomLostEmoji = ['😨', '😕', '😓', '😣', '😞', '😩', '😧', '😰', '😖', '😮', '😫', '🙁', '😢', '😥', '😟', '😔', '😭', '😿'][Math.floor(17 * Math.random())];
+
   return (
     <>
       <Header
@@ -178,11 +181,11 @@ export default function RandzuPage({
           <div className="flex flex-col gap-5">
             {gameState == GameState.Won && (
               <div>
-                You won!
+                {randomWonEmoji} You won!
               </div>
             )}
             {gameState == GameState.Lost && (
-              <div>You lost!</div>
+              <div>{randomLostEmoji} You lost!</div>
             )}
 
             <div className="flex flex-row items-center justify-center gap-5">
@@ -236,7 +239,9 @@ export default function RandzuPage({
           <div className='flex flex-col gap-2 items-center'>
             <>Game started. </>
             Opponent: {matchQueue.gameInfo?.opponent.toBase58()}
-            {matchQueue.gameInfo?.isCurrentUserMove && !matchQueue.gameInfo?.winner && !loading && (<div> Your move. </div>)} 
+            {matchQueue.gameInfo?.isCurrentUserMove && !matchQueue.gameInfo?.winner && !loading && (<div>✅ Your turn. </div>)} 
+            {!matchQueue.gameInfo?.isCurrentUserMove && !matchQueue.gameInfo?.winner && !loading && (<div>✋ Opponent's turn. </div>)} 
+
             {loading && (<div> ⏳ Transaction execution </div>)} 
 
             {matchQueue.gameInfo?.winner && (<div> Winner: {matchQueue.gameInfo?.winner.toBase58()}. </div>)} 
@@ -250,6 +255,7 @@ export default function RandzuPage({
           gameInfo={matchQueue.gameInfo}
           onCellClicked={onCellClicked}
           loadingElement={loadingElement}
+          loading={loading}
         />
         <div>Players in queue: {matchQueue.getQueueLength()}</div>
         <div className="grow"></div>
