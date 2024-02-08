@@ -2,7 +2,7 @@
 
 import { Client, ClientState, useClientStore } from '@/lib/stores/client';
 import Link from 'next/link';
-import { UInt64 } from 'o1js';
+import { PublicKey, UInt64 } from 'o1js';
 import { ReactElement, useEffect, useRef, useState } from 'react';
 import { Competition, client } from 'zknoid-chain-dev';
 import Header from '../Header';
@@ -19,6 +19,11 @@ import {
 import { ICompetition } from '@/lib/types';
 import { fromContractCompetition } from '@/lib/typesConverter';
 import { AppChain } from '@proto-kit/sdk';
+import {
+  useArkanoidCompetitionsStore,
+  useObserveArkanoidCompetitions,
+} from '@/lib/stores/arkanoid/arkanoidCompetitions';
+import { usePollProtokitBlockHeight } from '@/lib/stores/protokitChain';
 
 const timeStampToStringDate = (timeStamp: number): string => {
   var date = new Date(timeStamp);
@@ -27,88 +32,91 @@ const timeStampToStringDate = (timeStamp: number): string => {
   );
 };
 
-const competitionButton = (c: ICompetition): ReactElement => {
-  let defaultButton = (
-    <div className="flex content-center items-center justify-center rounded border-solid bg-gray-500 px-6 py-4 font-bold text-white">
-      I am not a button
-    </div>
-  );
-
-  let playButton = (
-    <Link 
-      href={`/games/arkanoid/[competitionId]`}
-      as={`/games/arkanoid/${c.competitionId}`} 
-    >
-      <div className="flex content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white">
-        Play
-      </div>
-    </Link>
-  );
-
-  let registerButton = (
-    <div className="flex content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white">
-      Register
-    </div>
-  );
-
-  let finished = (
-    <div className="flex content-center items-center justify-center rounded border-solid bg-gray-500 px-6 py-4 font-bold text-white">
-      Game finished
-    </div>
-  );
-  let curTime = Date.now();
-
-  let registered = false;
-  let shouldRegister =
-    c.prereg && curTime > c.preregStartTime && curTime < c.preregEndTime;
-  let isFinished = curTime > c.competitionEndTime;
-
-  let isGameReady =
-    (!shouldRegister || (shouldRegister && registered)) && !isFinished;
-
-  let finalButton = defaultButton;
-
-  if (isFinished) {
-    finalButton = finished;
-  } else if (shouldRegister) {
-    finalButton = registerButton;
-  } else if (isGameReady) {
-    finalButton = playButton;
-  }
-
-  return finalButton;
-};
-
 export default function ArkanoidCompetitionsListPage() {
+  usePollProtokitBlockHeight();
   useObserveMinaBalance();
   useObserveProtokitBalance();
+  useObserveArkanoidCompetitions();
 
-  let [competitions, setCompetitions] = useState<ICompetition[]>([]);
   const networkStore = useNetworkStore();
   const minaBalances = useMinaBalancesStore();
   const protokitBalances = useProtokitBalancesStore();
   const client = useClientStore();
+  const compStore = useArkanoidCompetitionsStore();
 
   useEffect(() => {
-    client.start().then(getListOfCompetitions);
+    client.start();
   }, []);
 
-  const getListOfCompetitions = async (client: Client) => {
-    let result: ICompetition[] = [];
+  const register = async (competitionId: number) => {
+    const gameHub = client.client!.runtime.resolve('ArkanoidGameHub');
 
-    let lastId =
-      (await client.query.runtime.ArkanoidGameHub.lastCompetitonId.get())?.toBigInt() ||
-      0;
+    const tx = await client.client!.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        gameHub.register(UInt64.from(competitionId));
+      },
+    );
 
-    for (let i = 0; i < lastId; i++) {
-      let curCompetition = await client.query.runtime.ArkanoidGameHub.competitions.get(
-        UInt64.from(i),
+    await tx.sign();
+    await tx.send();
+  };
+
+  const competitionButton = (c: ICompetition): ReactElement => {
+    let defaultButton = (
+      <div className="flex content-center items-center justify-center rounded border-solid bg-gray-500 px-6 py-4 font-bold text-white">
+        I am not a button
+      </div>
+    );
+
+    let playButton = (
+      <Link
+        href={`/games/arkanoid/[competitionId]`}
+        as={`/games/arkanoid/${c.competitionId}`}
+      >
+        <div className="flex content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white">
+          Play
+        </div>
+      </Link>
+    );
+
+    let registerButton = (
+      <div
+        className="flex content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white"
+        onClick={() => register(c.competitionId)}
+      >
+        Register
+      </div>
+    );
+
+    const info = (text: string) => {
+      return (
+        <div className="flex content-center items-center justify-center rounded border-solid bg-gray-500 px-6 py-4 font-bold text-white">
+          {text}
+        </div>
       );
+    };
+    let curTime = Date.now();
 
-      result.push(fromContractCompetition(i, curCompetition!));
+    if (c.competitionEndTime < curTime) {
+      return info('Competition ended');
     }
 
-    setCompetitions(competitions.concat(...result));
+    if (c.prereg && !c.registered) {
+      if (c.preregStartTime < curTime && c.preregEndTime > curTime) {
+        return registerButton;
+      } else if (c.preregEndTime < curTime) {
+        return info('Registration ended');
+      } else {
+        return info('Wait for registration');
+      }
+    }
+
+    if (c.competitionStartTime > curTime) {
+      return info('Wait for game start');
+    }
+
+    return playButton;
   };
 
   return (
@@ -142,8 +150,9 @@ export default function ArkanoidCompetitionsListPage() {
               <th className="px-6 py-3"> Name </th>
               <th className="px-6 py-3"> Seed </th>
               <th className="px-6 py-3"> Prereg </th>
-              <th className="px-6 py-3"> PreregBefore </th>
-              <th className="px-6 py-3"> PreregAfter </th>
+              <th className="px-6 py-3"> Registered </th>
+              <th className="px-6 py-3"> PreregStart </th>
+              <th className="px-6 py-3"> PreregEnd </th>
               <th className="px-6 py-3"> CompetitionStart </th>
               <th className="px-6 py-3"> CompetitionEnd </th>
               <th className="px-6 py-3"> Funds </th>
@@ -152,20 +161,34 @@ export default function ArkanoidCompetitionsListPage() {
             </tr>
           </thead>
           <tbody>
-            {competitions.map((c) => (
+            {compStore.competitions.map((c) => (
               <tr
                 className={
                   'border-b ' + (c.funds > 0 ? 'bg-amber-100' : 'bg-white')
                 }
+                key={c.competitionId}
               >
                 <td className="px-6 py-4">{c.name}</td>
                 <td className="px-6 py-4">{c.seed}</td>
-                <td className="px-6 py-4">{c.prereg.toString()}</td>
                 <td className="px-6 py-4">
-                  {timeStampToStringDate(c.preregStartTime)}
+                  <div className="flex items-center justify-center">
+                    <input type="checkbox" checked={c.prereg} readOnly></input>
+                  </div>
+                </td>
+                <td className="flex items-center justify-center px-3 py-6">
+                  <div className="flex items-center justify-center">
+                    <input
+                      type="checkbox"
+                      checked={c.registered}
+                      readOnly
+                    ></input>
+                  </div>
                 </td>
                 <td className="px-6 py-4">
-                  {timeStampToStringDate(c.preregEndTime)}
+                  {c.prereg ? timeStampToStringDate(c.preregStartTime) : ''}
+                </td>
+                <td className="px-6 py-4">
+                  {c.prereg ? timeStampToStringDate(c.preregEndTime) : ''}
                 </td>
                 <td className="px-6 py-4">
                   {timeStampToStringDate(c.competitionStartTime)}
