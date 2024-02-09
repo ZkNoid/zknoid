@@ -113,6 +113,18 @@ export default function NewArkanoidCompetitionPage() {
 
       ctx!.stroke();
       ctx!.closePath();
+
+      if (brick.value > 1) {
+        ctx!.fillStyle = 'black';
+        ctx!.font = '24px serif';
+        ctx!.fillText(
+          (brick.value - 1).toString(),
+          resizeToConvasSize(brick.pos[0]) +
+            resizeToConvasSize(BRICK_HALF_WIDTH / 2),
+          resizeToConvasSize(brick.pos[1]) +
+            resizeToConvasSize((3 * BRICK_HALF_WIDTH) / 2),
+        );
+      }
     }
   };
 
