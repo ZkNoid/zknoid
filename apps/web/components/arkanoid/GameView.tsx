@@ -255,8 +255,10 @@ export const GameView = (props: IGameViewProps) => {
             ball.dy *= -1;
           }
 
-          brick.value = 1;
-          bricksLeft -= 1;
+          brick.value -= 1;
+          if (brick.value == 1) {
+            bricksLeft -= 1;
+          }
         }
       }
     });
@@ -291,6 +293,16 @@ export const GameView = (props: IGameViewProps) => {
       ctx!.fillStyle = brick.value > 1 ? '#0095dd' : 'transparent';
       ctx!.fill();
       ctx!.closePath();
+
+      if (brick.value > 1) {
+        ctx!.fillStyle = 'black';
+        ctx!.font = '36px serif';
+        ctx!.fillText(
+          (brick.value - 1).toString(),
+          brick.x + brick.w / 4,
+          brick.y + (3 * brick.h) / 4,
+        );
+      }
     });
   };
 
