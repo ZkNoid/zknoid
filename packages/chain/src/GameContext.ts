@@ -1,4 +1,13 @@
-import { UInt64, Struct, Provable, Int64, Bool, Field, Poseidon } from 'o1js';
+import {
+    UInt64,
+    Struct,
+    Provable,
+    Int64,
+    Bool,
+    Field,
+    Poseidon,
+    Experimental,
+} from 'o1js';
 import {
     BRICK_HALF_WIDTH,
     DEFAULT_BALL_LOCATION_X,
@@ -7,6 +16,7 @@ import {
     DEFAULT_BALL_SPEED_Y,
     DEFAULT_PLATFORM_SPEED,
     DEFAULT_PLATFORM_X,
+    FIELD_HEIGHT,
     FIELD_PIXEL_HEIGHT,
     FIELD_PIXEL_WIDTH,
     FIELD_WIDTH,
@@ -482,18 +492,58 @@ export class GameContext extends Struct({
     }
 }
 
-export function createBricksBySeed(seed: Int64): Bricks {
-    /// Do it, just to get big number
+const shift64divisor = '0x' + '1' + '0'.repeat(63);
 
-    console.log(seed.toField().toString());
-    console.log(seed.toField().rangeCheckHelper(64).toString());
+// TODO: Optimize
+// Now only 64 fits of 256 bits of field used. So can be 4x optimized
+// Think how to use Sponge here
+export class RandomGenerator extends Struct({
+    seed: Field,
+    source: Field,
+    curValue: Field,
+}) {
+    static from(seed: Field): RandomGenerator {
+        let source = Poseidon.hash([seed]);
 
-    seed = Int64.fromField(
-        Poseidon.hash([seed.toField()]).rangeCheckHelper(64)
-    );
+        return new RandomGenerator({
+            seed: seed,
+            source,
+            curValue: source,
+        });
+    }
 
-    // seed = seed.add(SEED_MULTIPLIER);
-    // seed = seed.mul(SEED_MULTIPLIER);
+    getNumber(maxValue: number): Int64 {
+        this.source = Poseidon.hash([this.source]);
+        this.curValue = this.source;
+
+        return Int64.from(this.curValue.rangeCheckHelper(64)).mod(maxValue);
+    }
+
+    // Get 4 number
+    getNumbers(maxValues: number[]): [Int64, Int64, Int64, Int64] {
+        this.source = Poseidon.hash([this.source]);
+        this.curValue = this.source;
+        let result: [Int64, Int64, Int64, Int64] = [
+            Int64.from(0),
+            Int64.from(0),
+            Int64.from(0),
+            Int64.from(0),
+        ];
+
+        for (let i = 0; i < 4; i++) {
+            result[i] = Int64.fromField(this.curValue.rangeCheckHelper(64)).mod(
+                maxValues[i]
+            );
+
+            this.curValue = this.curValue.div(shift64divisor); // Check if its ok
+        }
+
+        return result;
+    }
+}
+
+export function createBricksBySeed(seed: Field): Bricks {
+    let generator = RandomGenerator.from(seed);
 
     let bricks = [...new Array(MAX_BRICKS)].map(
         (elem) =>
@@ -506,21 +556,30 @@ export function createBricksBySeed(seed: Int64): Bricks {
             })
     );
 
-    let curSeed = seed;
-    let xPos = Int64.from(0);
+    const rows = 2;
+    const rowHeight = FIELD_HEIGHT / 2 / rows;
+    const columns = MAX_BRICKS / rows;
+    const columnWidth = FIELD_WIDTH / columns;
 
-    for (let i = 0; i < 5; i++) {
-        let xDive = curSeed.mod(75);
-        let yPos = curSeed.mod(300);
-        curSeed = curSeed.div(1000);
+    for (let curRow = 0; curRow < rows; curRow++) {
+        for (let curColumn = 0; curColumn < columns; curColumn++) {
+            const brickId = curRow * columns + curColumn;
+            const xPos = Int64.from(curColumn * columnWidth + 1);
+            const yPos = Int64.from(curRow * rowHeight + 1);
 
-        bricks[i].pos = new IntPoint({
-            x: xPos.add(xDive),
-            y: yPos.add(15),
-        });
-        bricks[i].value = UInt64.from(2);
+            const [xDeviation, yDeviation] = generator.getNumbers([
+                columnWidth - 2 * BRICK_HALF_WIDTH,
+                rowHeight - 2 * BRICK_HALF_WIDTH,
+                1,
+                1,
+            ]);
 
-        xPos = xPos.add(100);
+            bricks[brickId].pos = new IntPoint({
+                x: xPos.add(xDeviation),
+                y: yPos.add(yDeviation),
+            });
+            bricks[brickId].value = UInt64.from(2);
+        }
     }
 
     return new Bricks({ bricks });

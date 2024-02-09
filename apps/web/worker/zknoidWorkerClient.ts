@@ -22,16 +22,16 @@ export default class ZknoidWorkerClient {
     return this._call('bridge', { amount });
   }
   async proveGameRecord({
-    bricks,
+    seed,
     inputs,
     debug,
   }: {
-    bricks: Bricks;
+    seed: Field;
     inputs: GameInputs[];
     debug: Bool;
   }) {
     const result = await this._call('proveGameRecord', {
-      bricks: Bricks.toJSON(bricks),
+      seedJson: seed.toJSON(),
       inputs: JSON.stringify(inputs.map((elem) => GameInputs.toJSON(elem))),
       debug: Bool.toJSON(debug),
     });
@@ -58,7 +58,7 @@ export default class ZknoidWorkerClient {
     (window as any).workerNoid = this.worker;
     this.readyPromise = new Promise((resolve, reject) => {
       this.promises[0] = { resolve, reject };
-    })
+    });
 
     this.nextId = 1;
 

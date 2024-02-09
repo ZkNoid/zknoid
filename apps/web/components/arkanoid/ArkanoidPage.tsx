@@ -10,7 +10,7 @@ import {
   CHUNK_LENGTH,
   createBricksBySeed,
 } from 'zknoid-chain-dev';
-import { Bool, Int64, PublicKey, UInt64 } from 'o1js';
+import { Bool, Field, Int64, PublicKey, UInt64 } from 'o1js';
 import Link from 'next/link';
 import { Client, useNetworkStore } from '@/lib/stores/network';
 import { arkanoidCompetitions } from '@/app/constants/akanoidCompetitions';
@@ -123,7 +123,7 @@ export default function ArkanoidPage({
       contractCompetition,
     );
 
-    let bricks = createBricksBySeed(Int64.from(competition!.seed));
+    let bricks = createBricksBySeed(Field.from(competition!.seed));
 
     setCompetition(competition);
     setLevel(bricks);
@@ -155,7 +155,7 @@ export default function ArkanoidPage({
 
     try {
       const proof = await workerClientStore?.client?.proveGameRecord({
-        bricks: level,
+        seed: Field.from(competition!.seed),
         inputs: userInputs,
         debug: Bool(false),
       });
