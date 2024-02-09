@@ -27,7 +27,7 @@ export class GameProcessPublicOutput extends Struct({
 }) {}
 
 export function checkMapGeneration(seed: Field): GameContext {
-    let bricks = createBricksBySeed(Int64.from(seed));
+    let bricks = createBricksBySeed(seed);
     return loadGameContext(bricks, Bool(false));
 }
 

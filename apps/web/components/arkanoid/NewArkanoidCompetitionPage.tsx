@@ -35,9 +35,9 @@ interface IContractBrick {
 const getDate = (daysOffset: number) => {
   let curr = new Date();
   curr.setDate(curr.getDate() + 3);
-  let date = curr.toISOString().substring(0,10);
+  let date = curr.toISOString().substring(0, 10);
   return date;
-}
+};
 
 export default function NewArkanoidCompetitionPage() {
   const [name, setName] = useState('');
@@ -72,7 +72,7 @@ export default function NewArkanoidCompetitionPage() {
   }, [canvas]);
 
   useEffect(() => {
-    let contractBricks = createBricksBySeed(Int64.from(seed)).bricks;
+    let contractBricks = createBricksBySeed(Field.from(seed)).bricks;
     setBricks(
       contractBricks.map((brick: IContractBrick) => {
         return {

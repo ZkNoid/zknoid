@@ -3,17 +3,9 @@ import { BRIDGE_CACHE } from '@/constants/bridge_cache';
 import { WebFileSystem, fetchCache } from '@/lib/cache';
 import { mockProof } from '@/lib/utils';
 import { GetServerSideProps } from 'next';
-import {
-  Field,
-  Bool,
-  Mina,
-  PublicKey,
-  UInt64,
-} from 'o1js016';
+import { Field, Bool, Mina, PublicKey, UInt64 } from 'o1js016';
 
-import {
-  Field as Field014,
-} from 'o1js';
+import { Field as Field014 } from 'o1js';
 import {
   checkMapGeneration,
   checkGameRecord,
@@ -52,9 +44,9 @@ const functions = {
     console.log('[Worker] compiling contracts');
 
     const fetchedCache = await fetchCache(BRIDGE_CACHE);
-    
+
     await DummyBridge.compile({
-      cache: WebFileSystem(fetchedCache)
+      cache: WebFileSystem(fetchedCache),
     });
     console.log('[Worker] compiling contracts ended');
   },
@@ -74,16 +66,15 @@ const functions = {
   getBridgeTransactionJSON: async (args: {}) => {
     return state.transaction!.toJSON();
   },
-  proveGameRecord: async (args: { bricks: any; inputs: any; debug: any }) => {
-    let bricks = Bricks.fromJSON(args.bricks);
+  proveGameRecord: async (args: { seedJson: any; inputs: any; debug: any }) => {
+    let seed = Field014.fromJSON(args.seedJson);
     let userInputs = (<string[]>JSON.parse(args.inputs)).map((elem) =>
       GameInputs.fromJSON(elem),
     );
     console.log('[Worker] proof checking');
-    console.log('args', bricks, userInputs, Bool.fromJSON(args.debug));
 
     console.log('Generating map proof');
-    let gameContext = checkMapGeneration(Field014.from(0));
+    let gameContext = checkMapGeneration(seed);
     const mapGenerationProof = await mockProof(gameContext, MapGenerationProof);
 
     console.log('Generating gameProcess proof');
