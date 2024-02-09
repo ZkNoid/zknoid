@@ -22,6 +22,7 @@ import {
     FIELD_WIDTH,
     INITIAL_SCORE,
     MAX_BRICKS,
+    MAX_BRICK_HEALTH,
     NEAREST_BRICKS_NUM,
     PLATFORM_WIDTH,
     SCORE_PER_TICKS,
@@ -567,10 +568,10 @@ export function createBricksBySeed(seed: Field): Bricks {
             const xPos = Int64.from(curColumn * columnWidth + 1);
             const yPos = Int64.from(curRow * rowHeight + 1);
 
-            const [xDeviation, yDeviation] = generator.getNumbers([
+            const [xDeviation, yDeviation, health] = generator.getNumbers([
                 columnWidth - 2 * BRICK_HALF_WIDTH,
                 rowHeight - 2 * BRICK_HALF_WIDTH,
-                1,
+                MAX_BRICK_HEALTH,
                 1,
             ]);
 
@@ -578,7 +579,7 @@ export function createBricksBySeed(seed: Field): Bricks {
                 x: xPos.add(xDeviation),
                 y: yPos.add(yDeviation),
             });
-            bricks[brickId].value = UInt64.from(2);
+            bricks[brickId].value = health.magnitude.add(1);
         }
     }
 
