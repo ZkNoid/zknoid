@@ -58,6 +58,7 @@ export const GameView = (props: IGameViewProps) => {
   >(null);
   const [win, setWin] = useState(false);
   const [lost, setLost] = useState(false);
+  const paused = useRef(false);
 
   let [winable, setWinable] = useState(true);
 
@@ -105,6 +106,12 @@ export const GameView = (props: IGameViewProps) => {
   const gameLoop = (time: number) => {
     if (stopped) return;
 
+    if (paused.current) {
+      lastTime = time;
+      requestAnimationFrame(gameLoop);
+      return;
+    }
+
     if (lastTime === undefined) lastTime = time;
 
     const elapsed = time - lastTime;
@@ -123,7 +130,7 @@ export const GameView = (props: IGameViewProps) => {
     if (debugModeRef.current) {
       drawContractBall();
       drawContractBricks();
-      // drawContractNearestBricks();
+      drawContractNearestBricks();
       drawContractCart();
       drawBallsTraces();
     }
@@ -423,6 +430,11 @@ export const GameView = (props: IGameViewProps) => {
     if (e.key.toLowerCase() === 'r') {
       // #TODO restarts. Now starts to freeze after several restarts
       // onRestart();
+    }
+
+    if (e.key.toLowerCase() === 'p') {
+      console.log('Paused');
+      paused.current = !paused.current;
     }
   };
 
