@@ -130,7 +130,7 @@ export const GameView = (props: IGameViewProps) => {
     if (debugModeRef.current) {
       drawContractBall();
       drawContractBricks();
-      drawContractNearestBricks();
+      // drawContractNearestBricks();
       drawContractCart();
       drawBallsTraces();
     }
