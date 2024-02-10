@@ -228,10 +228,10 @@ export const GameView = (props: IGameViewProps) => {
     bricks.forEach((brick) => {
       if (brick.value > 1) {
         if (
-          ball.x - ball.radius > brick.x &&
-          ball.x + ball.radius < brick.x + brick.w &&
-          ball.y + ball.radius > brick.y &&
-          ball.y - ball.radius < brick.y + brick.h
+          ball.x > brick.x &&
+          ball.x < brick.x + brick.w &&
+          ball.y > brick.y &&
+          ball.y < brick.y + brick.h
         ) {
           let leftBorder = brick.x;
           let rightBorder = brick.x + brick.w;
@@ -625,6 +625,8 @@ export const GameView = (props: IGameViewProps) => {
     ball.dy = contractBall.dy;
 
     cart.x = contractCart.x;
+
+    bricks = contractBricks;
   };
 
   //  #TODO: refactor
