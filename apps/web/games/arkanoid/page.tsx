@@ -16,8 +16,7 @@ export default function Page({
         <AppChainClientContext.Provider value={client}>
             <ArkanoidPage params={{
                 competitionId: params.competitionId
-            }}>
-            </ArkanoidPage>
+            }} />
         </AppChainClientContext.Provider>
     )
 }

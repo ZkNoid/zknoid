@@ -2,7 +2,7 @@
     "name": "zknoid-chain-dev",
     "version": "1.4.5",
     "type": "module",
-    "main": "dist/index.js",
+    "main": "dist/src/index.js",
     "watch": {
         "build-and-start": {
             "patterns": [

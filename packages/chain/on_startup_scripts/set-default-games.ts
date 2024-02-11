@@ -1,7 +1,7 @@
 import { PrivateKey, UInt64 } from 'o1js';
 
-import { getDefaultCompetitions } from '../';
-import { client } from '../';
+import { getDefaultCompetitions } from '../src';
+import { client } from '../src';
 
 const setDefaultGames = async () => {
     const alicePrivateKey = PrivateKey.random();

@@ -17,8 +17,7 @@ export default function Page({
 
             <RandzuPage params={{
                 competitionId: params.competitionId
-            }}>
-            </RandzuPage>
+            }} />
         </AppChainClientContext.Provider>
     )
 }
