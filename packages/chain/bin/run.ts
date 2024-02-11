@@ -1,8 +1,6 @@
 #!/usr/bin/env node --experimental-specifier-resolution=node --experimental-vm-modules --experimental-wasm-modules --experimental-wasm-threads
 
-import { PrivateKey, UInt64 } from 'o1js';
-
-import appChain from './chain.config';
+import appChain from '../src/chain.config';
 import { ManualBlockTrigger } from '@proto-kit/sequencer';
 
 await appChain.start();

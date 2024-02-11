@@ -14,7 +14,7 @@ import {
     createBricksBySeed,
     loadGameContext,
 } from './GameContext';
-import { Gamehub } from './engine/GameHub';
+import { Gamehub } from '../engine/GameHub';
 import { runtimeMethod, runtimeModule } from '@proto-kit/module';
 
 export class GameRecordPublicOutput extends Struct({
