@@ -27,7 +27,9 @@ import {
 } from './arkanoid/GameContext.js';
 
 import {
-    RandzuLogic
+    RandzuLogic,
+    RandzuField,
+    WinWitness
 } from './randzu/RandzuLogic.js';
 
 import {
@@ -68,7 +70,14 @@ import {
 } from './arkanoid/constants.js';
 import { defaultLevel, getDefaultCompetitions } from './arkanoid/levels.js';
 
+import {
+    RoundIdxUser
+} from './engine/MatchMaker.js'
+
 export {
+    RandzuField,
+    WinWitness,
+    RoundIdxUser,
     Competition,
     ArkanoidGameHub,
     GameContext,
@@ -109,5 +118,5 @@ export {
     GameRecord,
     getDefaultCompetitions,
     RandzuLogic,
-    Balances
+    Balances,
 };
