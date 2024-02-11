@@ -1,14 +1,14 @@
 import { create } from "zustand";
-import { Client, useClientStore } from "../client";
 import { immer } from "zustand/middleware/immer";
-import { PendingTransaction, UnsignedTransaction } from "@proto-kit/sequencer";
-import { PrivateKey, PublicKey, UInt32, UInt64 } from "o1js";
-import { useEffect } from "react";
-import { useProtokitChainStore } from "../protokitChain";
-import { useNetworkStore } from "../network";
+import { PublicKey, UInt32, UInt64 } from "o1js";
+import { useContext, useEffect } from "react";
+import { useProtokitChainStore } from "../../../lib/stores/protokitChain";
+import { useNetworkStore } from "../../../lib/stores/network";
 import { RoundIdxUser } from "zknoid-chain-dev/dist/engine/MatchMaker";
 import { RandzuField } from "zknoid-chain-dev/dist/RandzuLogic";
-
+import { AppChainClientContext } from "@/lib/contexts/AppChainClientContext";
+import { randzuConfig } from "../config";
+import { ClientAppChain } from "@proto-kit/sdk";
 
 export interface IWinWitness {
     x: number;
@@ -37,8 +37,8 @@ export interface MatchQueueState {
     gameInfo: IGameInfo | undefined;
     lastGameState: 'win' | 'lost' | undefined;
     getQueueLength: () => number;
-    loadMatchQueue: (client: Client, blockHeight: number) => Promise<void>;
-    loadActiveGame: (client: Client, blockHeight: number, address: PublicKey) => Promise<void>;
+    loadMatchQueue: (client: ClientAppChain<typeof randzuConfig.runtimeModules>, blockHeight: number) => Promise<void>;
+    loadActiveGame: (client: ClientAppChain<typeof randzuConfig.runtimeModules>, blockHeight: number, address: PublicKey) => Promise<void>;
     resetLastGameState: () => void;
 }
 
@@ -65,7 +65,7 @@ export const useRandzuMatchQueueStore = create<
         getQueueLength() {
             return this.queueLength;
         },
-        async loadMatchQueue(client: Client, blockHeight: number) {
+        async loadMatchQueue(client: ClientAppChain<typeof randzuConfig.runtimeModules>, blockHeight: number) {
             set((state) => {
                 state.loading = true;
             });
@@ -80,7 +80,7 @@ export const useRandzuMatchQueueStore = create<
                 state.loading = false;
             });
         },
-        async loadActiveGame(client: Client, blockHeight: number, address: PublicKey) {
+        async loadActiveGame(client: ClientAppChain<typeof randzuConfig.runtimeModules>, blockHeight: number, address: PublicKey) {
             set((state) => {
                 state.loading = true;
             });
@@ -157,15 +157,21 @@ export const useRandzuMatchQueueStore = create<
 );
 
 export const useObserveRandzuMatchQueue = () => {
-    const client = useClientStore();
     const chain = useProtokitChainStore();
     const network = useNetworkStore();
     const matchQueue = useRandzuMatchQueueStore();
+    const client = useContext<ClientAppChain<typeof randzuConfig.runtimeModules> | undefined>(AppChainClientContext);
 
     useEffect(() => {
-        if (!client.client || !network.address) return;
+        if (!network.connected) {
+            return;
+        }
 
-        matchQueue.loadMatchQueue(client.client, parseInt(chain.block?.height ?? "0"));
-        matchQueue.loadActiveGame(client.client, parseInt(chain.block?.height ?? "0"), PublicKey.fromBase58(network.address));
-    }, [client.client, chain.block?.height, network.address]);
+        if (!client) {
+            throw Error('Context app chain client is not set');
+        }      
+
+        matchQueue.loadMatchQueue(client, parseInt(chain.block?.height ?? "0"));
+        matchQueue.loadActiveGame(client, parseInt(chain.block?.height ?? "0"), PublicKey.fromBase58(network.address!));
+    }, [chain.block?.height, network.connected]);
 };

@@ -1,7 +1,13 @@
 'use client';
 
-import NewArkanoidCompetitionPageDynamic from '@/components/arkanoid/NewArkanoidCompetitionPageDynamic';
+import dynamic from 'next/dynamic';
 
-export default function NewCompetitionPage() {
-  return <NewArkanoidCompetitionPageDynamic />;
+const GamePage = dynamic(() => import("@/games/arkanoid/page-new-competition"), {
+  ssr: false,
+});
+
+export default function Home() {
+    return (
+        <GamePage />
+    )
 }

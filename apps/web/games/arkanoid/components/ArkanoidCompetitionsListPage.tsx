@@ -1,11 +1,10 @@
 'use client';
 
-import { Client, ClientState, useClientStore } from '@/lib/stores/client';
 import Link from 'next/link';
 import { PublicKey, UInt64 } from 'o1js';
-import { ReactElement, useEffect, useRef, useState } from 'react';
+import { ReactElement, useContext, useEffect, useRef, useState } from 'react';
 import { Competition, client } from 'zknoid-chain-dev';
-import Header from '../Header';
+import Header from '../../../components/Header';
 import { GameType } from '@/app/constants/games';
 import { useNetworkStore } from '@/lib/stores/network';
 import {
@@ -22,8 +21,11 @@ import { AppChain } from '@proto-kit/sdk';
 import {
   useArkanoidCompetitionsStore,
   useObserveArkanoidCompetitions,
-} from '@/lib/stores/arkanoid/arkanoidCompetitions';
+} from '@/games/arkanoid/stores/arkanoidCompetitions';
 import { usePollProtokitBlockHeight } from '@/lib/stores/protokitChain';
+import { AppChainClientContext } from '@/lib/contexts/AppChainClientContext';
+import GamePage from '@/components/framework/GamePage';
+import { arkanoidConfig } from '../config';
 
 const timeStampToStringDate = (timeStamp: number): string => {
   var date = new Date(timeStamp);
@@ -33,25 +35,21 @@ const timeStampToStringDate = (timeStamp: number): string => {
 };
 
 export default function ArkanoidCompetitionsListPage() {
-  usePollProtokitBlockHeight();
-  useObserveMinaBalance();
-  useObserveProtokitBalance();
-  useObserveArkanoidCompetitions();
-
   const networkStore = useNetworkStore();
-  const minaBalances = useMinaBalancesStore();
-  const protokitBalances = useProtokitBalancesStore();
-  const client = useClientStore();
   const compStore = useArkanoidCompetitionsStore();
 
-  useEffect(() => {
-    client.start();
-  }, []);
+  useObserveArkanoidCompetitions()
+
+  const client = useContext(AppChainClientContext);
+
+  if (!client) {
+      throw Error('Context app chain client is not set');
+  }
 
   const register = async (competitionId: number) => {
-    const gameHub = client.client!.runtime.resolve('ArkanoidGameHub');
+    const gameHub = client.runtime.resolve('ArkanoidGameHub');
 
-    const tx = await client.client!.transaction(
+    const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
       () => {
         gameHub.register(UInt64.from(competitionId));
@@ -120,23 +118,7 @@ export default function ArkanoidCompetitionsListPage() {
   };
 
   return (
-    <>
-      <Header
-        address={networkStore.address}
-        connectWallet={networkStore.connectWallet}
-        minaBalance={
-          networkStore.address
-            ? minaBalances.balances[networkStore.address]
-            : 0n
-        }
-        protokitBalance={
-          networkStore.address
-            ? protokitBalances.balances[networkStore.address]
-            : 0n
-        }
-        walletInstalled={networkStore.walletInstalled()}
-        currentGame={GameType.Arkanoid}
-      />
+    <GamePage gameConfig={arkanoidConfig}>
       <div className="flex min-h-screen w-screen flex-col items-center py-10">
         <Link href={`/games/arkanoid/new-competition`} className="p-5">
           <div className="h-50 w-100 rounded border-solid bg-white p-5">
@@ -211,6 +193,6 @@ export default function ArkanoidCompetitionsListPage() {
           </tbody>
         </table>
       </div>
-    </>
+    </GamePage>
   );
 }

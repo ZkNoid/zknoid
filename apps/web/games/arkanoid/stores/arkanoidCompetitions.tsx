@@ -1,18 +1,20 @@
 import { create } from 'zustand';
-import { Client, useClientStore } from '../client';
 import { immer } from 'zustand/middleware/immer';
 import { Bool, PublicKey, UInt64 } from 'o1js';
-import { useEffect } from 'react';
-import { useProtokitChainStore } from '../protokitChain';
-import { useNetworkStore } from '../network';
+import { useContext, useEffect } from 'react';
+import { useProtokitChainStore } from '../../../lib/stores/protokitChain';
+import { useNetworkStore } from '../../../lib/stores/network';
 import { GameRecordKey, LeaderboardIndex } from 'zknoid-chain-dev';
 import { ICompetition } from '@/lib/types';
 import { fromContractCompetition } from '@/lib/typesConverter';
+import { ClientAppChain } from '@proto-kit/sdk';
+import { arkanoidConfig } from '../config';
+import { AppChainClientContext } from '@/lib/contexts/AppChainClientContext';
 
 export interface CompetitionsState {
   loading: boolean;
   competitions: ICompetition[];
-  loadCompetitions: (client: Client, player: PublicKey) => Promise<void>;
+  loadCompetitions: (client: ClientAppChain<typeof arkanoidConfig.runtimeModules>, player: PublicKey) => Promise<void>;
 }
 
 export const useArkanoidCompetitionsStore = create<
@@ -22,7 +24,7 @@ export const useArkanoidCompetitionsStore = create<
   immer((set) => ({
     loading: false,
     competitions: [],
-    async loadCompetitions(client: Client, player: PublicKey) {
+    async loadCompetitions(client: ClientAppChain<typeof arkanoidConfig.runtimeModules>, player: PublicKey) {
       set((state) => {
         state.loading = true;
       });
@@ -59,17 +61,18 @@ export const useArkanoidCompetitionsStore = create<
 );
 
 export const useObserveArkanoidCompetitions = () => {
-  const client = useClientStore();
+  const client = useContext<ClientAppChain<typeof arkanoidConfig.runtimeModules> | undefined>(AppChainClientContext);
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
   const competitions = useArkanoidCompetitionsStore();
 
   useEffect(() => {
-    if (!client.client || !network.address) return;
+    if (!client) throw Error("Client not set in context");
+    if (!network.connected) return;
 
     competitions.loadCompetitions(
-      client.client,
+      client,
       PublicKey.fromBase58(network.address!),
     );
-  }, [client.client, chain.block?.height, network.address]);
+  }, [chain.block?.height, network.connected]);
 };

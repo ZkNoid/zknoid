@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Field, Int64, PublicKey, UInt64 } from 'o1js';
 import {
   BRICK_HALF_WIDTH,
@@ -9,9 +9,8 @@ import {
   FIELD_WIDTH,
   Competition,
 } from 'zknoid-chain-dev';
-import { useClientStore } from '@/lib/stores/client';
 import { useNetworkStore } from '@/lib/stores/network';
-import Header from '../Header';
+import Header from '../../../components/Header';
 import {
   useMinaBalancesStore,
   useObserveMinaBalance,
@@ -21,6 +20,7 @@ import {
   useProtokitBalancesStore,
 } from '@/lib/stores/protokitBalances';
 import { GameType } from '@/app/constants/games';
+import { AppChainClientContext } from '@/lib/contexts/AppChainClientContext';
 
 interface IBrick {
   pos: [number, number];
@@ -58,14 +58,16 @@ export default function NewArkanoidCompetitionPage() {
 
   const [bricks, setBricks] = useState<IBrick[]>([]);
 
-  useObserveMinaBalance();
-  useObserveProtokitBalance();
-
   const networkStore = useNetworkStore();
   const minaBalances = useMinaBalancesStore();
   const protokitBalances = useProtokitBalancesStore();
-  const client = useClientStore();
 
+  const client = useContext(AppChainClientContext);
+
+  if (!client) {
+      throw Error('Context app chain client is not set');
+  }
+  
   useEffect(() => {
     const ctx = canvas!.current?.getContext('2d');
     setContext(ctx);
@@ -87,10 +89,6 @@ export default function NewArkanoidCompetitionPage() {
     clearCanvas();
     drawBricks();
   }, [bricks]);
-
-  useEffect(() => {
-    client.start();
-  }, []);
 
   const clearCanvas = () => {
     if (!ctx) {
@@ -133,9 +131,9 @@ export default function NewArkanoidCompetitionPage() {
   };
 
   const createCompetition = async () => {
-    const gameHub = client.client!.runtime.resolve('ArkanoidGameHub');
+    const gameHub = client.runtime.resolve('ArkanoidGameHub');
 
-    const tx = await client.client!.transaction(
+    const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
       () => {
         /*

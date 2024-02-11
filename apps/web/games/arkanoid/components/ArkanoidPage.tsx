@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import { GameView, ITick } from '@/components/arkanoid/GameView';
+import { useContext, useEffect, useMemo, useState } from 'react';
+import { GameView, ITick } from '@/games/arkanoid/components/GameView';
 import {
   Bricks,
   GameInputs,
@@ -22,20 +22,19 @@ import {
 import {
   useArkanoidLeaderboardStore,
   useObserveArkanoidLeaderboard,
-} from '@/lib/stores/arkanoidLeaderboard';
-import { useClientStore } from '@/lib/stores/client';
-import { usePollMinaBlockHeight } from '@/lib/stores/minaChain';
-import { usePollProtokitBlockHeight } from '@/lib/stores/protokitChain';
+} from '@/games/arkanoid/stores/arkanoidLeaderboard';
 import {
   useMinaBalancesStore,
-  useObserveMinaBalance,
 } from '@/lib/stores/minaBalances';
-import Header from '../Header';
+import Header from '../../../components/Header';
 import { GameType } from '@/app/constants/games';
 import { walletInstalled } from '@/lib/utils';
 import { ICompetition } from '@/lib/types';
 import { fromContractCompetition } from '@/lib/typesConverter';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
+import { AppChainClientContext } from '@/lib/contexts/AppChainClientContext';
+import GamePage from '@/components/framework/GamePage';
+import { arkanoidConfig } from '../config';
 
 enum GameState {
   NotStarted,
@@ -65,13 +64,13 @@ export default function ArkanoidPage({
   //   (x) => x.id == params.competitionId,
   // );
 
-  const client = useClientStore();
+  const client = useContext(AppChainClientContext);
+
+  if (!client) {
+      throw Error('Context app chain client is not set');
+  }
 
   useObserveArkanoidLeaderboard(params.competitionId);
-  usePollMinaBlockHeight();
-  usePollProtokitBlockHeight();
-  useObserveMinaBalance();
-  useObserveProtokitBalance();
 
   const minaBalances = useMinaBalancesStore();
   const protokitBalances = useProtokitBalancesStore();
@@ -97,10 +96,12 @@ export default function ArkanoidPage({
   };
 
   useEffect(() => {
-    client.start().then((client) => getCompetition(client));
-  }, []);
+    if (!networkStore.protokitClientStarted) return;
+    getCompetition();
+    
+  }, [networkStore.protokitClientStarted]);
 
-  const getCompetition = async (client: Client) => {
+  const getCompetition = async () => {
     let competitionId = +params.competitionId;
     if (isNaN(competitionId)) {
       console.log(
@@ -162,9 +163,9 @@ export default function ArkanoidPage({
 
       console.log('Level proof', proof);
 
-      const gameHub = client.client!.runtime.resolve('ArkanoidGameHub');
+      const gameHub = client!.runtime.resolve('ArkanoidGameHub');
 
-      const tx = await client.client!.transaction(
+      const tx = await client!.transaction(
         PublicKey.fromBase58(networkStore.address!),
         () => {
           gameHub.addGameResult(
@@ -183,23 +184,7 @@ export default function ArkanoidPage({
   };
 
   return (
-    <>
-      <Header
-        address={networkStore.address}
-        connectWallet={networkStore.connectWallet}
-        minaBalance={
-          networkStore.address
-            ? minaBalances.balances[networkStore.address]
-            : 0n
-        }
-        protokitBalance={
-          networkStore.address
-            ? protokitBalances.balances[networkStore.address]
-            : 0n
-        }
-        walletInstalled={networkStore.walletInstalled()}
-        currentGame={GameType.Arkanoid}
-      />
+    <GamePage gameConfig={arkanoidConfig}>
       <main className="flex grow flex-col items-center gap-5 p-5">
         {networkStore.address ? (
           <div className="flex flex-col gap-5">
@@ -338,6 +323,6 @@ export default function ArkanoidPage({
           ></input>
         </div>
       </main>
-    </>
+    </GamePage>
   );
 }

@@ -12,19 +12,28 @@ export interface NetworkState {
   minaNetwork: Network | undefined;
   setNetwork: (chainId: string) => Promise<void>;
   address: string | undefined;
-  setAddress: (address: string | undefined) => Promise<void>;
+  connected: boolean;
+  protokitClientStarted: boolean;
+  onConnect: (address: string | undefined) => Promise<void>;
+  onProtokitClientStarted: () => void;
   connectWallet: () => Promise<void>;
   walletInstalled: () => boolean;
 
   pendingL2Transactions: PendingTransaction[];
   addPendingL2Transaction: (pendingTransaction: PendingTransaction) => void;
   removePendingL2Transaction: (pendingTransaction: PendingTransaction) => void;
-
 }
 
 export const useNetworkStore = create<NetworkState, [["zustand/immer", never]]>(
   immer((set) => ({
+    connected: false,
+    protokitClientStarted: false,
     minaNetwork: undefined,
+    onProtokitClientStarted() {
+      set({
+        protokitClientStarted: true
+      });
+    },
     async setNetwork(chainId: string) {
       set((state) => {
         const minaNetwork = NETWORKS.find(x => x.chainId == chainId);
@@ -36,9 +45,10 @@ export const useNetworkStore = create<NetworkState, [["zustand/immer", never]]>(
       });
     },
     address: undefined,
-    async setAddress(address: string | undefined) {
+    async onConnect(address: string | undefined) {
       set((state) => {
         state.address = address;
+        state.connected = true;
       });
     },
     async connectWallet() {

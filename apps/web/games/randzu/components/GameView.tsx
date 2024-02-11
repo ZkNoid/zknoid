@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { IGameInfo, useRandzuMatchQueueStore } from '@/lib/stores/randzu/matchQueue';
-import { useClientStore } from '@/lib/stores/client';
+import { IGameInfo, useRandzuMatchQueueStore } from '@/games/randzu/stores/matchQueue';
 
 interface IGameViewProps {
   gameId: number;
