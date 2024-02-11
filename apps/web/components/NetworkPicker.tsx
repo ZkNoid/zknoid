@@ -41,11 +41,11 @@ export const NetworkPicker = ({autoconnect}: {autoconnect: boolean}) => {
         (async () => {
             const [account] = await (window as any).mina.requestAccounts();
 
-            networkStore.setAddress(account);
+            networkStore.onConnect(account);
 
             const listener = (accounts: string[]) => {
                 const [account] = accounts;
-                networkStore.setAddress(account);
+                networkStore.onConnect(account);
             };
 
             (window.mina as any).on('accountsChanged', listener);

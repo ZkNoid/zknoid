@@ -1,12 +1,14 @@
 import { create } from 'zustand';
-import { Client, useClientStore } from './client';
 import { immer } from 'zustand/middleware/immer';
 import { PendingTransaction, UnsignedTransaction } from '@proto-kit/sequencer';
 import { PublicKey, UInt64 } from 'o1js';
-import { useEffect } from 'react';
-import { useProtokitChainStore } from './protokitChain';
-import { useNetworkStore } from './network';
+import { useContext, useEffect } from 'react';
+import { useProtokitChainStore } from '../../../lib/stores/protokitChain';
+import { useNetworkStore } from '../../../lib/stores/network';
 import { LeaderboardIndex } from 'zknoid-chain-dev';
+import { ClientAppChain } from '@proto-kit/sdk';
+import { arkanoidConfig } from '../config';
+import { AppChainClientContext } from '@/lib/contexts/AppChainClientContext';
 
 interface ILeaderboardInfo {
   score: UInt64;
@@ -21,14 +23,7 @@ export interface LeaderboardState {
     [competitionId: string]: ILeaderboardInfo[];
   };
   getLeaderboard: (competitionId: string) => ILeaderboardInfo[];
-  loadLeaderboard: (client: Client, competitionId: string) => Promise<void>;
-}
-
-function isPendingTransaction(
-  transaction: PendingTransaction | UnsignedTransaction | undefined,
-): asserts transaction is PendingTransaction {
-  if (!(transaction instanceof PendingTransaction))
-    throw new Error('Transaction is not a PendingTransaction');
+  loadLeaderboard: (client: ClientAppChain<typeof arkanoidConfig.runtimeModules>, competitionId: string) => Promise<void>;
 }
 
 export const useArkanoidLeaderboardStore = create<
@@ -41,7 +36,7 @@ export const useArkanoidLeaderboardStore = create<
     getLeaderboard(competitionId: string) {
       return this.leaderboard?.[competitionId] ?? [];
     },
-    async loadLeaderboard(client: Client, competitionId: string) {
+    async loadLeaderboard(client: ClientAppChain<typeof arkanoidConfig.runtimeModules>, competitionId: string) {
       if (isNaN(+competitionId)) {
         console.log("Can't get leaderbord for NaN competitionId");
         return;
@@ -78,14 +73,17 @@ export const useArkanoidLeaderboardStore = create<
 );
 
 export const useObserveArkanoidLeaderboard = (competitionId: string) => {
-  const client = useClientStore();
+  const client = useContext<ClientAppChain<typeof arkanoidConfig.runtimeModules> | undefined>(AppChainClientContext);
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
   const leaderboard = useArkanoidLeaderboardStore();
 
   useEffect(() => {
-    if (!client.client || !network.address) return;
+    if (!client) {
+      throw Error("Client is not set in context");
+    }
+    if (!network.connected) return;
 
-    leaderboard.loadLeaderboard(client.client, competitionId);
-  }, [client.client, chain.block?.height, network.address]);
+    leaderboard.loadLeaderboard(client, competitionId);
+  }, [chain.block?.height, network.connected]);
 };

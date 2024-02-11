@@ -87,7 +87,7 @@ importers:
         specifier: ^1.4.5
         version: 1.4.5
       zknoid-chain-dev:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../packages/chain
       zknoidcontractsl1:
         specifier: ^0.1.7

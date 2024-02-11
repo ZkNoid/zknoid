@@ -1,12 +1,17 @@
+import "reflect-metadata";
+
 import { create } from 'zustand';
-import { Client, useClientStore } from './client';
+
 import { immer } from 'zustand/middleware/immer';
 import { PendingTransaction, UnsignedTransaction } from '@proto-kit/sequencer';
 import { AccountUpdate, Mina, PublicKey, UInt64 } from 'o1js';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { useProtokitChainStore } from './protokitChain';
 import { BRIDGE_ADDR } from '@/app/constants';
 import { useNetworkStore } from './network';
+import { AppChainClientContext } from '../contexts/AppChainClientContext';
+import { ClientAppChain } from '@proto-kit/sdk';
+import { DefaultRuntimeModules } from '../runtimeModules';
 
 export interface BalancesState {
   loading: boolean;
@@ -14,7 +19,7 @@ export interface BalancesState {
     // address - balance
     [key: string]: bigint;
   };
-  loadBalance: (client: Client, address: string) => Promise<void>;
+  loadBalance: (client: ClientAppChain<typeof DefaultRuntimeModules>, address: string) => Promise<void>;
 }
 
 function isPendingTransaction(
@@ -31,7 +36,7 @@ export const useProtokitBalancesStore = create<
   immer((set) => ({
     loading: Boolean(false),
     balances: {},
-    async loadBalance(client: Client, address: string) {
+    async loadBalance(client: ClientAppChain<typeof DefaultRuntimeModules>, address: string) {
       set((state) => {
         state.loading = true;
       });
@@ -48,27 +53,24 @@ export const useProtokitBalancesStore = create<
   })),
 );
 
-export const useObserveProtokitBalance = () => {
-  const client = useClientStore();
+export const useObserveProtokitBalance = (client: ClientAppChain<typeof DefaultRuntimeModules>) => {
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
   const balances = useProtokitBalancesStore();
 
   useEffect(() => {
-    if (!client.client || !network.address) return;
-
-    balances.loadBalance(client.client, network.address);
-  }, [client.client, chain.block?.height, network.address]);
+    if (!network.connected)
+    balances.loadBalance(client, network.address!);
+  }, [chain.block?.height, network.connected]);
 };
 
 export const useMinaBridge = () => {
-  const client = useClientStore();
   const balancesStore = useProtokitBalancesStore();
   const network = useNetworkStore();
 
   return useCallback(
     async (amount: number) => {
-      if (!client.client || !network.address) return;
+      if (!network.address) return;
       if (balancesStore.balances[network.address]) return;
 
       
@@ -94,11 +96,12 @@ export const useMinaBridge = () => {
         },
       });
       
+      const contextAppChainClient = useContext(AppChainClientContext) as ClientAppChain<any> as ClientAppChain<typeof DefaultRuntimeModules>;
 
-      const balances = client.client.runtime.resolve('Balances');
+      const balances = contextAppChainClient.runtime.resolve('Balances');
       const sender = PublicKey.fromBase58(network.address!);
 
-      const l2tx = await client.client.transaction(sender, () => {
+      const l2tx = await contextAppChainClient.transaction(sender, () => {
         balances.addBalance(sender, UInt64.from(amount));
       });
 
@@ -109,6 +112,6 @@ export const useMinaBridge = () => {
 
       network.addPendingL2Transaction(l2tx!.transaction!);
     },
-    [client.client, network.address, balancesStore.balances],
+    [network.connected, balancesStore.balances],
   );
 };

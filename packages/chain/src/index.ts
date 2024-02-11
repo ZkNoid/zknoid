@@ -27,6 +27,14 @@ import {
 } from './GameContext.js';
 
 import {
+    RandzuLogic
+} from './RandzuLogic.js';
+
+import {
+    Balances
+} from './balances.js';
+
+import {
     // GameHub,
     // GameRecordProof,
     // checkGameRecord,
@@ -100,4 +108,6 @@ export {
     DEFAULT_PLATFORM_SPEED,
     GameRecord,
     getDefaultCompetitions,
+    RandzuLogic,
+    Balances
 };

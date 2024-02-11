@@ -1,10 +1,10 @@
 import { create } from "zustand";
-import { useClientStore } from "./client";
 import { immer } from "zustand/middleware/immer";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useChainStore } from "./minaChain";
 import { useNetworkStore } from "./network";
 import { NETWORKS } from "@/app/constants/networks";
+import { AppChainClientContext } from "../contexts/AppChainClientContext";
 
 export interface BalancesState {
   loading: boolean;
@@ -69,15 +69,13 @@ export const useMinaBalancesStore = create<
 );
 
 export const useObserveMinaBalance = () => {
-  const client = useClientStore();
   const chain = useChainStore();
   const balances = useMinaBalancesStore();
   const network = useNetworkStore();
 
   useEffect(() => {
-    console.log('Observing mina balance ',client,network)
-    if (!network.address || !network.minaNetwork?.chainId) return;
+    if (!network.connected || !network.minaNetwork?.chainId) return;
 
-    balances.loadBalance(network.minaNetwork?.chainId!, network.address);
-  }, [client.client, chain.block?.height, network.address, network.minaNetwork?.chainId]);
+    balances.loadBalance(network.minaNetwork?.chainId!, network.address!);
+  }, [chain.block?.height, network.connected, network.minaNetwork?.chainId]);
 };

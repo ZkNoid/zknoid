@@ -1,30 +1,23 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import { GameView } from '@/components/randzu/GameView';
-import {
-  Bricks,
-  GameInputs,
-  Tick,
-  defaultLevel,
-  CHUNK_LENGTH,
-} from 'zknoid-chain-dev';
-import { Bool, Int64, PrivateKey, PublicKey, Signature, UInt32, UInt64 } from 'o1js';
+import { useContext, useEffect, useMemo, useState } from 'react';
+import { GameView } from './GameView';
+import { Int64, PublicKey, UInt32, UInt64 } from 'o1js';
 import Link from 'next/link';
 import { useNetworkStore } from '@/lib/stores/network';
-import { useMinaBridge, useObserveProtokitBalance, useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
-import { useClientStore } from '@/lib/stores/client';
-import { usePollMinaBlockHeight } from '@/lib/stores/minaChain';
-import { usePollProtokitBlockHeight } from '@/lib/stores/protokitChain';
-import { useMinaBalancesStore, useObserveMinaBalance } from '@/lib/stores/minaBalances';
-import Header from '../Header';
-import { GameType } from '@/app/constants/games';
+import { useMinaBridge } from '@/lib/stores/protokitBalances';
 import { randzuCompetitions } from '@/app/constants/randzuCompetitions';
-import { useObserveRandzuMatchQueue, useRandzuMatchQueueStore } from '@/lib/stores/randzu/matchQueue';
+import { useObserveRandzuMatchQueue, useRandzuMatchQueueStore } from '@/games/randzu/stores/matchQueue';
 import { walletInstalled } from '@/lib/utils';
 import { useStore } from 'zustand';
-import { useSessionKeyStore } from '@/lib/stores/randzu/sessionKeyStorage';
+import { useSessionKeyStore } from '@/games/randzu/stores/sessionKeyStorage';
 import { RandzuField, WinWitness } from 'zknoid-chain-dev/dist/RandzuLogic';
+import GamePage from '@/components/framework/GamePage';
+import { randzuConfig } from '../config';
+import { ClientAppChain } from '@proto-kit/sdk';
+import { AppChainClientContext } from '@/lib/contexts/AppChainClientContext';
+import { RuntimeModulesRecord } from '@proto-kit/module';
+import { getZkNoidGameClient } from '@/lib/createConfig';
 
 enum GameState {
   NotStarted,
@@ -46,17 +39,14 @@ export default function RandzuPage({
   const competition = randzuCompetitions.find(
     (x) => x.id == params.competitionId,
   );
+  
+  const client = useContext(AppChainClientContext);
 
-  const client = useClientStore();
+  if (!client) {
+      throw Error('Context app chain client is not set');
+  }
 
-  usePollMinaBlockHeight();
-  usePollProtokitBlockHeight();
-  useObserveMinaBalance();
-  useObserveProtokitBalance();
   useObserveRandzuMatchQueue();
-
-  const minaBalances = useMinaBalancesStore();
-  const protokitBalances = useProtokitBalancesStore();
 
   let [gameId, setGameId] = useState(0);
   let [debug, setDebug] = useState(true);
@@ -80,9 +70,9 @@ export default function RandzuPage({
       console.log(await bridge(competition?.enteringPrice! * 10 ** 9));
     }
 
-    const randzuLogic = client.client!.runtime.resolve('RandzuLogic');
+    const randzuLogic = client.runtime.resolve('RandzuLogic');
 
-    const tx = await client.client!.transaction(
+    const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
       () => {
         randzuLogic.register(sessionPublicKey, UInt64.from(Math.round(Date.now() / 1000)));
@@ -104,13 +94,13 @@ export default function RandzuPage({
     const updatedField = matchQueue.gameInfo.field.map(x => [...x]);
     updatedField[y][x] = matchQueue.gameInfo.currentUserIndex + 1;
 
-    const randzuLogic = client.client!.runtime.resolve('RandzuLogic');
+    const randzuLogic = client.runtime.resolve('RandzuLogic');
 
     const updatedRandzuField = RandzuField.from(updatedField);
 
     const winWitness1 = updatedRandzuField.checkWin(currentUserId);
 
-    const tx = await client.client!.transaction(
+    const tx = await client.transaction(
       sessionPrivateKey.toPublicKey(),
       () => {
         randzuLogic.makeMove(
@@ -144,11 +134,6 @@ export default function RandzuPage({
     setLoadingElement(undefined);
   }, [matchQueue.gameInfo?.isCurrentUserMove]);
 
-
-  useEffect(() => {
-    client.start();
-  }, []);
-
   useEffect(() => {
     if (matchQueue.inQueue && !matchQueue.activeGameId) {
       setGameState(GameState.Matchmaking);
@@ -166,17 +151,9 @@ export default function RandzuPage({
 
   const randomWonEmoji = ['🥳', '🎉', '👏'][Math.floor(3 * Math.random())];
   const randomLostEmoji = ['😨', '😕', '😓', '😣', '😞', '😩', '😧', '😰', '😖', '😮', '😫', '🙁', '😢', '😥', '😟', '😔', '😭', '😿'][Math.floor(17 * Math.random())];
-
+  
   return (
-    <>
-      <Header
-        address={networkStore.address}
-        connectWallet={networkStore.connectWallet}
-        minaBalance={networkStore.address ? minaBalances.balances[networkStore.address] : 0n}
-        protokitBalance={networkStore.address ? protokitBalances.balances[networkStore.address] : 0n}
-        walletInstalled={networkStore.walletInstalled()}
-        currentGame={GameType.Arkanoid}
-      />
+    <GamePage gameConfig={randzuConfig}>
       <main className="flex grow flex-col items-center gap-5 p-5">
         {networkStore.address ? (
           <div className="flex flex-col gap-5">
@@ -276,6 +253,6 @@ export default function RandzuPage({
           </div>
         </div>
       </main>
-    </>
-  );
+      </GamePage>  
+    );
 }
