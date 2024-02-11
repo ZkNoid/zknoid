@@ -11,7 +11,7 @@ import { useObserveRandzuMatchQueue, useRandzuMatchQueueStore } from '@/games/ra
 import { walletInstalled } from '@/lib/utils';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/games/randzu/stores/sessionKeyStorage';
-import { RandzuField, WinWitness } from 'zknoid-chain-dev/dist/RandzuLogic';
+import { RandzuField, WinWitness } from 'zknoid-chain-dev/dist/randzu/RandzuLogic';
 import GamePage from '@/components/framework/GamePage';
 import { randzuConfig } from '../config';
 import { ClientAppChain } from '@proto-kit/sdk';

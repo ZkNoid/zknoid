@@ -1,4 +1,4 @@
-import { MatchMaker, QueueListItem } from "./engine/MatchMaker";
+import { MatchMaker, QueueListItem } from "../engine/MatchMaker";
 import {
     state,
     runtimeMethod,

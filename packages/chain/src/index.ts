@@ -18,21 +18,21 @@ import {
     GameProcessProof,
     checkMapGeneration,
     processTicks,
-} from './ArkanoidGameHub.js';
+} from './arkanoid/ArkanoidGameHub.js';
 
 import {
     GameContext,
     loadGameContext,
     createBricksBySeed,
-} from './GameContext.js';
+} from './arkanoid/GameContext.js';
 
 import {
     RandzuLogic
-} from './RandzuLogic.js';
+} from './randzu/RandzuLogic.js';
 
 import {
     Balances
-} from './balances.js';
+} from './framework/balances.js';
 
 import {
     // GameHub,
@@ -46,7 +46,7 @@ import {
     IntPoint,
     Competition,
     LeaderboardIndex,
-} from './types.js';
+} from './arkanoid/types.js';
 
 import {
     BRICK_HALF_WIDTH,
@@ -65,8 +65,8 @@ import {
     CHUNK_LENGTH,
     ACCELERATION_TIME,
     ACCELERATION,
-} from './constants.js';
-import { defaultLevel, getDefaultCompetitions } from './levels.js';
+} from './arkanoid/constants.js';
+import { defaultLevel, getDefaultCompetitions } from './arkanoid/levels.js';
 
 export {
     Competition,

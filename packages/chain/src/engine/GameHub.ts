@@ -11,9 +11,9 @@ import {
     GameRecordKey,
     LeaderboardIndex,
     LeaderboardScore,
-} from '../types';
+} from '../arkanoid/types';
 
-import { Balances } from '../balances';
+import { Balances } from '../framework/balances';
 
 import { inject } from 'tsyringe';
 
