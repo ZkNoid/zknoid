@@ -1,15 +1,14 @@
 import {
     RuntimeModulesRecord,
   } from "@proto-kit/module";
-import { createStore } from 'zustand/vanilla';
 import { ClientAppChain } from '@proto-kit/sdk';
-
 
 export type ZkNoidGameConfig<RuntimeModules extends RuntimeModulesRecord
 > = {
     id: string,
     name: string,
     description: string,
+    image: string,
     runtimeModules: RuntimeModules
 }
 
@@ -17,6 +16,7 @@ export function createZkNoidGameConfig<RuntimeModules extends RuntimeModulesReco
   id: string,
     name: string,
     description: string,
+    image: string,
     runtimeModules: RuntimeModules
 }) {
   return params
