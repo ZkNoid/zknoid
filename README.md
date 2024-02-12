@@ -33,11 +33,12 @@ In roadmap it's planned to separate games and game store: games will import plat
 
 
 ### Interesting places
-- Arkanoid game verification – [GameContexts.ts](https://github.com/ZkNoid/zknoid/blob/develop/packages/chain/src/GameContext.ts)
-- Competitions and leaderboard system [GameHub.ts](https://github.com/ZkNoid/zknoid/blob/develop/packages/chain/src/engine/GameHub.ts)
-- Matchmaking system – [MatchMaker.ts](https://github.com/ZkNoid/zknoid/blob/develop/packages/chain/src/engine/MatchMaker.ts)
-- Randzu logic implementation – [RandzuLogic.ts](https://github.com/ZkNoid/zknoid/blob/develop/packages/chain/src/RandzuLogic.ts)
-
+- Arkanoid game verification – [arkanoid/GameContexts.ts](https://github.com/ZkNoid/zknoid/blob/develop/packages/chain/src/arkanoid/GameContext.ts)
+- Competitions and leaderboard system [engine/GameHub.ts](https://github.com/ZkNoid/zknoid/blob/develop/packages/chain/src/engine/GameHub.ts)
+- Matchmaking system – [engine/MatchMaker.ts](https://github.com/ZkNoid/zknoid/blob/develop/packages/chain/src/engine/MatchMaker.ts)
+- Randzu logic implementation – [randzu/RandzuLogic.ts](https://github.com/ZkNoid/zknoid/blob/develop/packages/chain/src/randzu/RandzuLogic.ts)
+- Games frontend implementation [apps/web/games](https://github.com/ZkNoid/zknoid/tree/develop/apps/web/games)
+- Games contracts implementation [packages/chain/src/](https://github.com/ZkNoid/zknoid/blob/develop/packages/chain/src/)
 
 ## Gameplay
 
