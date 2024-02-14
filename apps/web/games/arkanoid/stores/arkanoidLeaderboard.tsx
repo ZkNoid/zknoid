@@ -82,8 +82,8 @@ export const useObserveArkanoidLeaderboard = (competitionId: string) => {
     if (!client) {
       throw Error("Client is not set in context");
     }
-    if (!network.connected) return;
+    if (!network.protokitClientStarted) return;
 
     leaderboard.loadLeaderboard(client, competitionId);
-  }, [chain.block?.height, network.connected]);
+  }, [chain.block?.height, network.protokitClientStarted]);
 };

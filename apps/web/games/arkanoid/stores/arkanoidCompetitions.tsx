@@ -25,6 +25,7 @@ export const useArkanoidCompetitionsStore = create<
     loading: false,
     competitions: [],
     async loadCompetitions(client: ClientAppChain<typeof arkanoidConfig.runtimeModules>, player: PublicKey) {
+      console.log('Client', client);
       set((state) => {
         state.loading = true;
       });
@@ -67,12 +68,13 @@ export const useObserveArkanoidCompetitions = () => {
   const competitions = useArkanoidCompetitionsStore();
 
   useEffect(() => {
+    console.log('Observing');
     if (!client) throw Error("Client not set in context");
-    if (!network.connected) return;
+    if (!network.protokitClientStarted) return;
 
     competitions.loadCompetitions(
       client,
-      PublicKey.fromBase58(network.address!),
+      network.address ? PublicKey.fromBase58(network.address) : PublicKey.empty(),
     );
-  }, [chain.block?.height, network.connected]);
+  }, [chain.block?.height, network.walletConnected, network.protokitClientStarted]);
 };
