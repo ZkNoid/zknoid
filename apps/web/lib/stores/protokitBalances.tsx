@@ -59,9 +59,9 @@ export const useObserveProtokitBalance = (client: ClientAppChain<typeof DefaultR
   const balances = useProtokitBalancesStore();
 
   useEffect(() => {
-    if (!network.connected)
+    if (!network.walletConnected)
     balances.loadBalance(client, network.address!);
-  }, [chain.block?.height, network.connected]);
+  }, [chain.block?.height, network.walletConnected]);
 };
 
 export const useMinaBridge = () => {
@@ -112,6 +112,6 @@ export const useMinaBridge = () => {
 
       network.addPendingL2Transaction(l2tx!.transaction!);
     },
-    [network.connected, balancesStore.balances],
+    [network.walletConnected, balancesStore.balances],
   );
 };
