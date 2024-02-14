@@ -162,7 +162,7 @@ export const useObserveRandzuMatchQueue = () => {
     const client = useContext<ClientAppChain<typeof randzuConfig.runtimeModules> | undefined>(AppChainClientContext);
 
     useEffect(() => {
-        if (!network.connected) {
+        if (!network.walletConnected) {
             return;
         }
 
@@ -172,5 +172,5 @@ export const useObserveRandzuMatchQueue = () => {
 
         matchQueue.loadMatchQueue(client, parseInt(chain.block?.height ?? "0"));
         matchQueue.loadActiveGame(client, parseInt(chain.block?.height ?? "0"), PublicKey.fromBase58(network.address!));
-    }, [chain.block?.height, network.connected]);
+    }, [chain.block?.height, network.walletConnected]);
 };

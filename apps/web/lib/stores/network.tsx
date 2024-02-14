@@ -12,9 +12,9 @@ export interface NetworkState {
   minaNetwork: Network | undefined;
   setNetwork: (chainId: string) => Promise<void>;
   address: string | undefined;
-  connected: boolean;
+  walletConnected: boolean;
   protokitClientStarted: boolean;
-  onConnect: (address: string | undefined) => Promise<void>;
+  onWalletConnected: (address: string | undefined) => Promise<void>;
   onProtokitClientStarted: () => void;
   connectWallet: () => Promise<void>;
   walletInstalled: () => boolean;
@@ -26,7 +26,7 @@ export interface NetworkState {
 
 export const useNetworkStore = create<NetworkState, [["zustand/immer", never]]>(
   immer((set) => ({
-    connected: false,
+    walletConnected: false,
     protokitClientStarted: false,
     minaNetwork: undefined,
     onProtokitClientStarted() {
@@ -45,10 +45,10 @@ export const useNetworkStore = create<NetworkState, [["zustand/immer", never]]>(
       });
     },
     address: undefined,
-    async onConnect(address: string | undefined) {
+    async onWalletConnected(address: string | undefined) {
       set((state) => {
         state.address = address;
-        state.connected = true;
+        state.walletConnected = true;
       });
     },
     async connectWallet() {
