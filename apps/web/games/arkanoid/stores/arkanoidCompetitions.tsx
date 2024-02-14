@@ -67,7 +67,6 @@ export const useObserveArkanoidCompetitions = () => {
   const competitions = useArkanoidCompetitionsStore();
 
   useEffect(() => {
-    console.log('Observing');
     if (!client) throw Error("Client not set in context");
     if (!network.protokitClientStarted) return;
 
