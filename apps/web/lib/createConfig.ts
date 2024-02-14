@@ -2,6 +2,7 @@ import {
     RuntimeModulesRecord,
   } from "@proto-kit/module";
 import { ClientAppChain } from '@proto-kit/sdk';
+import { client } from 'zknoid-chain-dev';
 
 export type ZkNoidGameConfig<RuntimeModules extends RuntimeModulesRecord
 > = {
@@ -23,9 +24,9 @@ export function createZkNoidGameConfig<RuntimeModules extends RuntimeModulesReco
 }
 
 export function getZkNoidGameClient<RuntimeModules extends RuntimeModulesRecord>(zknoidGame: ZkNoidGameConfig<RuntimeModules>) {
-  const client =  ClientAppChain.fromRuntime({
-    modules: zknoidGame.runtimeModules
-  });
+  // const client =  ClientAppChain.fromRuntime({
+  //   modules: zknoidGame.runtimeModules
+  // });
 
   client.configure({
     Runtime: {
@@ -35,12 +36,10 @@ export function getZkNoidGameClient<RuntimeModules extends RuntimeModulesRecord>
     }
   });
 
-  client.configurePartial({
-      GraphqlClient: {
-          url: process.env.NEXT_PUBLIC_PROTOKIT_URL || "http://127.0.0.1:8080/graphql",
-        },
-  })
-
-
+  // client.configurePartial({
+  //     GraphqlClient: {
+  //         url: process.env.NEXT_PUBLIC_PROTOKIT_URL || "http://127.0.0.1:8080/graphql",
+  //       },
+  // })
   return client;
 }
