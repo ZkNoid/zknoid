@@ -25,7 +25,6 @@ export const useArkanoidCompetitionsStore = create<
     loading: false,
     competitions: [],
     async loadCompetitions(client: ClientAppChain<typeof arkanoidConfig.runtimeModules>, player: PublicKey) {
-      console.log('Client', client);
       set((state) => {
         state.loading = true;
       });
