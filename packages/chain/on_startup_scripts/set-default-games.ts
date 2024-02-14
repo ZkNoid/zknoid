@@ -3,10 +3,7 @@ import { PrivateKey, UInt64 } from 'o1js';
 import { getDefaultCompetitions } from '../src';
 import { client } from '../src';
 
-console.log("BBBB")
-
 const setDefaultGames = async () => {
-    console.log("AAAA")
     const alicePrivateKey = PrivateKey.random();
     const alice = alicePrivateKey.toPublicKey();
     await client.start();
@@ -17,8 +14,6 @@ const setDefaultGames = async () => {
         const tx = await client.transaction(alice, () => {
             gameHub.createCompetition(competition);
         });
-
-        console.log(tx)
 
         tx.transaction!.nonce = UInt64.from(i);
 
