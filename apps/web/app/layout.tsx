@@ -4,8 +4,6 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import AsyncLayoutDynamic from "@/containers/async-layout-dynamic";
-import Head from 'next/head';
-
 
 export default function RootLayout({
   children,
@@ -14,15 +12,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <Head>
-        <title>ZkNoid games store</title>
-        <meta property="og:title" content="ZkNoid games store" key="title" />
+      <head>
+        <title>ZkNoid gaming platform</title>
+        <meta property="og:title" content="ZkNoid gaming platform" key="title" />
         <link
           rel="shortcut icon"
           type="image/x-icon"
           href={"/favicon.ico"}
         />
-      </Head>
+      </head>
       <body className='font-mono'>
         <AsyncLayoutDynamic>{children}</AsyncLayoutDynamic>
       </body>
