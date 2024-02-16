@@ -16,7 +16,17 @@
         "alwaysStrict": true,
         "declarationMap": true,
         "strictFunctionTypes": true,
-        "baseUrl": "."
+        "baseUrl": ".",
+        "lib": ["es2020"],
+        "composite": false,
+        "forceConsistentCasingInFileNames": true,
+        "inlineSources": false,
+        "isolatedModules": true,
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,
+        "preserveWatchOutput": true,
+        "skipLibCheck": true,
+        
     },
     "files": ["node_modules/jest-expect-message/types/index.d.ts"],
     "include": ["./src/**/*", "./bin/**/*", "./on_startup_scripts/**/*"],
