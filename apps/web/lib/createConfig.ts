@@ -1,45 +1,65 @@
 import {
-    RuntimeModulesRecord,
-  } from "@proto-kit/module";
+  RuntimeModulesRecord,
+} from "@proto-kit/module";
 import { ClientAppChain } from '@proto-kit/sdk';
-import { client } from 'zknoid-chain-dev';
+import { ArkanoidGameHub, client } from 'zknoid-chain-dev';
+import { createStore } from "zustand";
 
-export type ZkNoidGameConfig<RuntimeModules extends RuntimeModulesRecord
+export type ZkNoidGameConfig<RuntimeModules extends RuntimeModulesRecord = RuntimeModulesRecord
 > = {
-    id: string,
-    name: string,
-    description: string,
-    image: string,
-    runtimeModules: RuntimeModules
+  id: string,
+  name: string,
+  description: string,
+  image: string,
+  runtimeModules: RuntimeModules
 }
 
 export function createZkNoidGameConfig<RuntimeModules extends RuntimeModulesRecord>(params: {
   id: string,
-    name: string,
-    description: string,
-    image: string,
-    runtimeModules: RuntimeModules
+  name: string,
+  description: string,
+  image: string,
+  runtimeModules: RuntimeModules
 }) {
   return params
 }
+export type Evaluate<type> = { [key in keyof type]: type[key] } & unknown;
 
-export function getZkNoidGameClient<RuntimeModules extends RuntimeModulesRecord>(zknoidGame: ZkNoidGameConfig<RuntimeModules>) {
-  // const client =  ClientAppChain.fromRuntime({
-  //   modules: zknoidGame.runtimeModules
-  // });
+export type ZkNoidConfig<
+  games extends readonly [ZkNoidGameConfig, ...ZkNoidGameConfig[]] = readonly [ZkNoidGameConfig, ...ZkNoidGameConfig[]],
+> = {
+  readonly games: games;
+  getClient(): ClientAppChain<games[number]['runtimeModules']>
+}
 
-  client.configure({
-    Runtime: {
-      RandzuLogic: {},
-      Balances: {},
-      ArkanoidGameHub: {}
-    }
-  });
+export type CreateConfigParameters<games extends readonly [ZkNoidGameConfig, ...ZkNoidGameConfig[]]> = Evaluate<{
+  games: games
+}>;
 
-  // client.configurePartial({
-  //     GraphqlClient: {
-  //         url: process.env.NEXT_PUBLIC_PROTOKIT_URL || "http://127.0.0.1:8080/graphql",
-  //       },
-  // })
-  return client;
+export function createConfig<
+  const games extends readonly [ZkNoidGameConfig, ...ZkNoidGameConfig[]]
+>(parameters: CreateConfigParameters<games>): ZkNoidConfig<games> {
+  const games = createStore(() => parameters.games);
+
+  return {
+    get games() {
+      return games.getState();
+    },
+    getClient() {
+      const gameModules = games.getState().map(x => x.runtimeModules);
+      const modules = Object.assign({}, ...gameModules);
+
+      console.log('Loaded modules', modules);
+      
+      const client = ClientAppChain.fromRuntime({
+        modules
+      });
+
+      client.configure({
+        Runtime: modules
+      });
+
+      return client;
+    },
+  }
 }

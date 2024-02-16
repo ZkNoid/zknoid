@@ -62,6 +62,7 @@ export const useArkanoidCompetitionsStore = create<
 
 export const useObserveArkanoidCompetitions = () => {
   const client = useContext<ClientAppChain<typeof arkanoidConfig.runtimeModules> | undefined>(AppChainClientContext);
+  console.log('Client', client);
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
   const competitions = useArkanoidCompetitionsStore();

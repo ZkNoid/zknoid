@@ -9,7 +9,7 @@ import { usePollProtokitBlockHeight } from '@/lib/stores/protokitChain';
 import { useMinaBalancesStore, useObserveMinaBalance } from '@/lib/stores/minaBalances';
 import Header from '@/components/Header';
 import { GameType } from '@/app/constants/games';
-import { ZkNoidGameConfig, getZkNoidGameClient } from '@/lib/createConfig';
+import { ZkNoidGameConfig } from '@/lib/createConfig';
 import { AppChainClientContext } from '@/lib/contexts/AppChainClientContext';
 import { RuntimeModulesRecord } from '@proto-kit/module';
 import { ClientAppChain } from '@proto-kit/sdk';
