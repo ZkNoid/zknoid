@@ -52,8 +52,9 @@ export function createConfig<
       console.log('Loaded modules', modules);
       
       const client = ClientAppChain.fromRuntime({
-        modules
-      });
+        modules,
+        config: modules
+      } as {modules: any});
 
       client.configure({
         Runtime: modules
