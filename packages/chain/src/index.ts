@@ -73,6 +73,7 @@ import { defaultLevel, getDefaultCompetitions } from './arkanoid/levels.js';
 import {
     RoundIdxUser
 } from './engine/MatchMaker.js'
+import { ClientAppChain } from '@proto-kit/sdk';
 
 export {
     RandzuField,
@@ -119,4 +120,5 @@ export {
     getDefaultCompetitions,
     RandzuLogic,
     Balances,
+    ClientAppChain
 };
