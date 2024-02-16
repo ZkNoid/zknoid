@@ -39,6 +39,7 @@
     "@proto-kit/module": "0.1.1-develop.457",
     "@proto-kit/sdk": "0.1.1-develop.457",
     "@proto-kit/sequencer": "0.1.1-develop.457",
+    "@proto-kit/protocol": "0.1.1-develop.457",
     "o1js": "0.13.1"
 
   },
