@@ -26,6 +26,9 @@ importers:
       '@proto-kit/module':
         specifier: 0.1.1-develop.457
         version: 0.1.1-develop.457(@proto-kit/common@0.1.1-develop.457)(@proto-kit/protocol@0.1.1-develop.457)(o1js@0.13.1)(tsyringe@4.8.0)
+      '@proto-kit/protocol':
+        specifier: 0.1.1-develop.457
+        version: 0.1.1-develop.457(@proto-kit/common@0.1.1-develop.457)(o1js@0.13.1)(ts-pattern@4.3.0)(tsyringe@4.8.0)
       '@proto-kit/sdk':
         specifier: 0.1.1-develop.457
         version: 0.1.1-develop.457(@proto-kit/api@0.1.1-develop.457)(@proto-kit/common@0.1.1-develop.457)(@proto-kit/module@0.1.1-develop.457)(@proto-kit/protocol@0.1.1-develop.457)(@proto-kit/sequencer@0.1.1-develop.457)(graphql@16.6.0)(o1js@0.13.1)(reflect-metadata@0.1.13)(tsyringe@4.8.0)
