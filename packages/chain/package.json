@@ -27,7 +27,6 @@
         "custom-protokit": "tsc -p tsconfig.json && node --experimental-specifier-resolution=node --experimental-vm-modules --experimental-wasm-modules --experimental-wasm-threads dist/bin/run.js"
     },
     "peerDependencies": {
-        "@proto-kit/protocol": "^0.1.1-develop.457"
     },
     "devDependencies": {
         "@jest/globals": "^29.6.1",
@@ -63,6 +62,8 @@
         "@proto-kit/sdk": "^0.1.1-develop.457",
         "@proto-kit/sequencer": "^0.1.1-develop.457",
         "o1js": "0.13.1",
-        "tsyringe": "^4.7.0"
+        "tsyringe": "^4.7.0",
+        "@proto-kit/protocol": "^0.1.1-develop.457"
+
     }
 }
