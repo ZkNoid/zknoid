@@ -1,23 +1,8 @@
 import {
-  InMemoryStateService,
-  Runtime,
   RuntimeModulesRecord,
 } from "@proto-kit/module";
-import { AuroSigner, ClientAppChain, GraphqlClient, GraphqlQueryTransportModule, GraphqlTransactionSender } from '@proto-kit/sdk';
-import { Sequencer } from "@proto-kit/sequencer";
-import { ArkanoidGameHub } from 'zknoid-chain-dev';
+import { ClientAppChain } from 'zknoid-chain-dev';
 import { createStore } from "zustand";
-import {
-  AccountStateModule,
-  BlockProver,
-  Protocol,
-  ProtocolModulesRecord,
-  StateServiceProvider,
-  StateTransitionProver,
-  VanillaProtocol,
-} from "@proto-kit/protocol";
-import { GraphqlNetworkStateTransportModule } from "@proto-kit/sdk/dist/graphql/GraphqlNetworkStateTransportModule";
-
 
 export type ZkNoidGameConfig<RuntimeModules extends RuntimeModulesRecord = RuntimeModulesRecord
 > = {
@@ -65,59 +50,9 @@ export function createConfig<
 
       console.log('Loaded modules', modules);
 
-      const runtime = Runtime.from({
-        ...{modules},
+      const client = ClientAppChain.fromRuntime({
+        modules,
       });
-  
-      const sequencer = Sequencer.from({
-        modules: {},
-      });
-  
-      const appChain = new ClientAppChain({
-        runtime,
-        sequencer,
-        protocol: VanillaProtocol.from({}),
-  
-        modules: {
-          GraphqlClient,
-          Signer: AuroSigner,
-          TransactionSender: GraphqlTransactionSender,
-          QueryTransportModule: GraphqlQueryTransportModule,
-          NetworkStateTransportModule: GraphqlNetworkStateTransportModule,
-        },
-      });
-  
-      appChain.configure({
-        Protocol: {
-          BlockProver: {},
-          StateTransitionProver: {},
-          AccountState: {},
-          BlockHeight: {},
-        },
-  
-        Signer: {},
-        TransactionSender: {},
-        QueryTransportModule: {},
-        NetworkStateTransportModule: {},
-  
-        GraphqlClient: {
-          url: "http://127.0.0.1:8080/graphql",
-        },
-      });
-  
-      /**
-       * Register state service provider globally,
-       * to avoid providing an entire sequencer.
-       *
-       * Alternatively we could register the state service provider
-       * in runtime's container, but i think the event emitter proxy
-       * instantiates runtime/runtime modules before we can register
-       * the mock state service provider.
-       */
-      const stateServiceProvider = new StateServiceProvider();
-      stateServiceProvider.setCurrentStateService(new InMemoryStateService());
-      // container.registerInstance("StateServiceProvider", stateServiceProvider);
-      const client = appChain;
 
       client.configure({
         Runtime: {
