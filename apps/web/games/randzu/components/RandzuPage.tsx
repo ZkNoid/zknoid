@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { GameView } from './GameView';
 import { Int64, PublicKey, UInt32, UInt64 } from 'o1js';
 import Link from 'next/link';
@@ -15,6 +15,7 @@ import { RandzuField, WinWitness } from 'zknoid-chain-dev';
 import GamePage from '@/components/framework/GamePage';
 import { randzuConfig } from '../config';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import { getRandomEmoji } from '../utils';
 
 enum GameState {
   NotStarted,
@@ -45,8 +46,6 @@ export default function RandzuPage({
 
   useObserveRandzuMatchQueue();
 
-  let [gameId, setGameId] = useState(0);
-  let [debug, setDebug] = useState(true);
   let [loading, setLoading] = useState(true);
   let [loadingElement, setLoadingElement] = useState<{x: number, y: number} | undefined>({x: 0, y: 0});
 
@@ -145,9 +144,6 @@ export default function RandzuPage({
     }
 
   }, [matchQueue.activeGameId, matchQueue.inQueue, matchQueue.lastGameState]);
-
-  const randomWonEmoji = ['🥳', '🎉', '👏'][Math.floor(3 * Math.random())];
-  const randomLostEmoji = ['😨', '😕', '😓', '😣', '😞', '😩', '😧', '😰', '😖', '😮', '😫', '🙁', '😢', '😥', '😟', '😔', '😭', '😿'][Math.floor(17 * Math.random())];
   
   return (
     <GamePage gameConfig={randzuConfig}>
@@ -156,11 +152,11 @@ export default function RandzuPage({
           <div className="flex flex-col gap-5">
             {gameState == GameState.Won && (
               <div>
-                {randomWonEmoji} You won!
+                {getRandomEmoji("happy")} You won!
               </div>
             )}
             {gameState == GameState.Lost && (
-              <div>{randomLostEmoji} You lost!</div>
+              <div>{getRandomEmoji("sad")} You lost!</div>
             )}
 
             <div className="flex flex-row items-center justify-center gap-5">
@@ -225,8 +221,6 @@ export default function RandzuPage({
         )} 
 
         <GameView
-          gameId={gameId}
-          debug={debug}
           gameInfo={matchQueue.gameInfo}
           onCellClicked={onCellClicked}
           loadingElement={loadingElement}

@@ -1,22 +1,19 @@
 'use client';
 
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { GameView, ITick } from '@/games/arkanoid/components/GameView';
 import {
   Bricks,
   GameInputs,
   Tick,
-  defaultLevel,
   CHUNK_LENGTH,
   createBricksBySeed,
 } from 'zknoid-chain-dev';
 import { Bool, Field, Int64, PublicKey, UInt64 } from 'o1js';
 import Link from 'next/link';
-import { Client, useNetworkStore } from '@/lib/stores/network';
-import { arkanoidCompetitions } from '@/app/constants/akanoidCompetitions';
+import { useNetworkStore } from '@/lib/stores/network';
 import {
   useMinaBridge,
-  useObserveProtokitBalance,
   useProtokitBalancesStore,
 } from '@/lib/stores/protokitBalances';
 import {
@@ -26,8 +23,6 @@ import {
 import {
   useMinaBalancesStore,
 } from '@/lib/stores/minaBalances';
-import Header from '../../../components/Header';
-import { GameType } from '@/app/constants/games';
 import { walletInstalled } from '@/lib/utils';
 import { ICompetition } from '@/lib/types';
 import { fromContractCompetition } from '@/lib/typesConverter';
@@ -60,9 +55,6 @@ export default function ArkanoidPage({
   const [score, setScore] = useState<number>(0);
   const [ticksAmount, setTicksAmount] = useState<number>(0);
   const [competition, setCompetition] = useState<ICompetition>();
-  // const competition = arkanoidCompetitions.find(
-  //   (x) => x.id == params.competitionId,
-  // );
 
   const client = useContext(AppChainClientContext);
 
@@ -79,7 +71,7 @@ export default function ArkanoidPage({
 
   let [gameId, setGameId] = useState(0);
   let [debug, setDebug] = useState(true);
-  // const level: Bricks = useMemo(() => defaultLevel(), []);
+
   let [level, setLevel] = useState<Bricks>(Bricks.empty);
 
   const networkStore = useNetworkStore();
