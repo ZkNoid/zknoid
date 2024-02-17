@@ -4,7 +4,7 @@ import { useContext, useEffect } from "react";
 import { useChainStore } from "./minaChain";
 import { useNetworkStore } from "./network";
 import { NETWORKS } from "@/app/constants/networks";
-import { AppChainClientContext } from "../contexts/AppChainClientContext";
+import AppChainClientContext from "../contexts/AppChainClientContext";
 
 export interface BalancesState {
   loading: boolean;

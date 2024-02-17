@@ -20,7 +20,7 @@ import {
   useProtokitBalancesStore,
 } from '@/lib/stores/protokitBalances';
 import { GameType } from '@/app/constants/games';
-import { AppChainClientContext } from '@/lib/contexts/AppChainClientContext';
+import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 
 interface IBrick {
   pos: [number, number];

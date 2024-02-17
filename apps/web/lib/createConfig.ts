@@ -10,7 +10,10 @@ export type ZkNoidGameConfig<RuntimeModules extends RuntimeModulesRecord = Runti
   name: string,
   description: string,
   image: string,
-  runtimeModules: RuntimeModules
+  runtimeModules: RuntimeModules,
+  page: ({ params, }: { params: { competitionId: string; }; }) => React.ReactNode
+  pageCompetitionsList?: () => React.ReactNode,
+  pageNewCompetition?: () => React.ReactNode,
 }
 
 export function createZkNoidGameConfig<RuntimeModules extends RuntimeModulesRecord>(params: {
@@ -18,10 +21,15 @@ export function createZkNoidGameConfig<RuntimeModules extends RuntimeModulesReco
   name: string,
   description: string,
   image: string,
-  runtimeModules: RuntimeModules
-}) {
+  runtimeModules: RuntimeModules,
+  page: ({ params, }: { params: { competitionId: string; }; }) => React.ReactNode,
+  pageCompetitionsList?: () => React.ReactNode,
+  pageNewCompetition?: () => React.ReactNode,
+
+}): ZkNoidGameConfig<RuntimeModules> {
   return params
 }
+
 export type Evaluate<type> = { [key in keyof type]: type[key] } & unknown;
 
 export type ZkNoidConfig<

@@ -23,7 +23,7 @@ import {
   useObserveArkanoidCompetitions,
 } from '@/games/arkanoid/stores/arkanoidCompetitions';
 import { usePollProtokitBlockHeight } from '@/lib/stores/protokitChain';
-import { AppChainClientContext } from '@/lib/contexts/AppChainClientContext';
+import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import GamePage from '@/components/framework/GamePage';
 import { arkanoidConfig } from '../config';
 
