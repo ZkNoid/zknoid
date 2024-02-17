@@ -13,10 +13,8 @@ import { useNetworkStore } from '@/lib/stores/network';
 import Header from '../../../components/Header';
 import {
   useMinaBalancesStore,
-  useObserveMinaBalance,
 } from '@/lib/stores/minaBalances';
 import {
-  useObserveProtokitBalance,
   useProtokitBalancesStore,
 } from '@/lib/stores/protokitBalances';
 import { GameType } from '@/app/constants/games';

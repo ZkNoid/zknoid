@@ -1,12 +1,10 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { IGameInfo, useRandzuMatchQueueStore } from '@/games/randzu/stores/matchQueue';
+import { IGameInfo } from '@/games/randzu/stores/matchQueue';
 
 interface IGameViewProps {
-  gameId: number;
   gameInfo: IGameInfo | undefined;
-  debug: boolean;
   onCellClicked: (x: number, y: number) => void;
   loadingElement: {x: number, y: number} | undefined;
   loading: boolean;
@@ -18,22 +16,10 @@ export const GameView = (props: IGameViewProps) => {
     CanvasRenderingContext2D | null | undefined
   >(null);
 
-  const debugMode = props.debug;
-  const debugModeRef = useRef(debugMode);
-
-  useEffect(() => {
-    debugModeRef.current = debugMode;
-  }, [debugMode]);
-
   useEffect(() => {
     const ctx = canvas!.current?.getContext('2d');
     setContext(ctx);
   }, [canvas]);
-
-  useEffect(() => {
-    if (!ctx) return;
-
-  }, [ctx, props.gameInfo]);
 
   return (
     <div className={`grid grid-cols-15 gap-1 ${

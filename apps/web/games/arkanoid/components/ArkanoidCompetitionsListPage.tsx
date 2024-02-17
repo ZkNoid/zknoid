@@ -2,27 +2,13 @@
 
 import Link from 'next/link';
 import { PublicKey, UInt64 } from 'o1js';
-import { ReactElement, useContext, useEffect, useRef, useState } from 'react';
-import { Competition, client } from 'zknoid-chain-dev';
-import Header from '../../../components/Header';
-import { GameType } from '@/app/constants/games';
+import { ReactElement, useContext } from 'react';
 import { useNetworkStore } from '@/lib/stores/network';
-import {
-  useMinaBalancesStore,
-  useObserveMinaBalance,
-} from '@/lib/stores/minaBalances';
-import {
-  useObserveProtokitBalance,
-  useProtokitBalancesStore,
-} from '@/lib/stores/protokitBalances';
 import { ICompetition } from '@/lib/types';
-import { fromContractCompetition } from '@/lib/typesConverter';
-import { AppChain } from '@proto-kit/sdk';
 import {
   useArkanoidCompetitionsStore,
   useObserveArkanoidCompetitions,
 } from '@/games/arkanoid/stores/arkanoidCompetitions';
-import { usePollProtokitBlockHeight } from '@/lib/stores/protokitChain';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import GamePage from '@/components/framework/GamePage';
 import { arkanoidConfig } from '../config';
