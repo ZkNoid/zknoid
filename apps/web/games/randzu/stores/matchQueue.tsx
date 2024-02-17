@@ -5,7 +5,7 @@ import { useContext, useEffect } from "react";
 import { useProtokitChainStore } from "../../../lib/stores/protokitChain";
 import { useNetworkStore } from "../../../lib/stores/network";
 import { RoundIdxUser, RandzuField } from "zknoid-chain-dev";
-import { AppChainClientContext } from "@/lib/contexts/AppChainClientContext";
+import AppChainClientContext from "@/lib/contexts/AppChainClientContext";
 import { randzuConfig } from "../config";
 import { ClientAppChain } from "@proto-kit/sdk";
 

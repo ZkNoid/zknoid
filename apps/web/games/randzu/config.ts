@@ -1,5 +1,6 @@
 import { createZkNoidGameConfig } from "@/lib/createConfig";
 import { RandzuLogic } from "zknoid-chain-dev";
+import RandzuPage from "./components/RandzuPage";
 
 export const randzuConfig =
     createZkNoidGameConfig({
@@ -9,5 +10,6 @@ export const randzuConfig =
         image: '/randzu.jpeg',
         runtimeModules: {
             RandzuLogic
-        }
+        },
+        page: RandzuPage,
     });

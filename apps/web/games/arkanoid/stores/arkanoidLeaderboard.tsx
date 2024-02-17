@@ -8,7 +8,7 @@ import { useNetworkStore } from '../../../lib/stores/network';
 import { LeaderboardIndex } from 'zknoid-chain-dev';
 import { ClientAppChain } from '@proto-kit/sdk';
 import { arkanoidConfig } from '../config';
-import { AppChainClientContext } from '@/lib/contexts/AppChainClientContext';
+import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 
 interface ILeaderboardInfo {
   score: UInt64;

@@ -9,7 +9,7 @@ import { useCallback, useContext, useEffect } from 'react';
 import { useProtokitChainStore } from './protokitChain';
 import { BRIDGE_ADDR } from '@/app/constants';
 import { useNetworkStore } from './network';
-import { AppChainClientContext } from '../contexts/AppChainClientContext';
+import AppChainClientContext from '../contexts/AppChainClientContext';
 import { ClientAppChain } from '@proto-kit/sdk';
 import { DefaultRuntimeModules } from '../runtimeModules';
 

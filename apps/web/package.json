@@ -10,6 +10,10 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
+    "@proto-kit/module": "0.1.1-develop.457",
+    "@proto-kit/protocol": "0.1.1-develop.457",
+    "@proto-kit/sdk": "0.1.1-develop.457",
+    "@proto-kit/sequencer": "0.1.1-develop.457",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-slot": "^1.0.2",
@@ -23,10 +27,12 @@
     "immer": "^10.0.3",
     "lucide-react": "^0.292.0",
     "next": "14.0.1",
+    "o1js": "0.13.1",
     "o1js016": "npm:o1js@^0.16.0",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.48.2",
+    "react-no-ssr": "^1.1.0",
     "tailwind-merge": "^2.0.0",
     "tailwindcss-animate": "^1.0.7",
     "truncate-middle": "^1.0.6",
@@ -34,14 +40,7 @@
     "zknoid-chain-dev": "workspace:*",
     "zknoidcontractsl1": "^0.1.7",
     "zod": "^3.22.4",
-    "zustand": "^4.4.6",
-
-    "@proto-kit/module": "0.1.1-develop.457",
-    "@proto-kit/sdk": "0.1.1-develop.457",
-    "@proto-kit/sequencer": "0.1.1-develop.457",
-    "@proto-kit/protocol": "0.1.1-develop.457",
-    "o1js": "0.13.1"
-
+    "zustand": "^4.4.6"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
@@ -60,7 +59,5 @@
     "prettier-plugin-tailwindcss": "^0.5.6",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
-  },
-  "peerDependencies": {
   }
 }

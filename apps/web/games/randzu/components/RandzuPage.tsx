@@ -14,7 +14,7 @@ import { useSessionKeyStore } from '@/games/randzu/stores/sessionKeyStorage';
 import { RandzuField, WinWitness } from 'zknoid-chain-dev';
 import GamePage from '@/components/framework/GamePage';
 import { randzuConfig } from '../config';
-import { AppChainClientContext } from '@/lib/contexts/AppChainClientContext';
+import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 
 enum GameState {
   NotStarted,

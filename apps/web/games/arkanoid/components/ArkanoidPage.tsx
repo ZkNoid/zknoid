@@ -32,7 +32,7 @@ import { walletInstalled } from '@/lib/utils';
 import { ICompetition } from '@/lib/types';
 import { fromContractCompetition } from '@/lib/typesConverter';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
-import { AppChainClientContext } from '@/lib/contexts/AppChainClientContext';
+import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import GamePage from '@/components/framework/GamePage';
 import { arkanoidConfig } from '../config';
 

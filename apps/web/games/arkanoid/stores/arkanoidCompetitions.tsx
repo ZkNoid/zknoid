@@ -9,7 +9,7 @@ import { ICompetition } from '@/lib/types';
 import { fromContractCompetition } from '@/lib/typesConverter';
 import { ClientAppChain } from '@proto-kit/sdk';
 import { arkanoidConfig } from '../config';
-import { AppChainClientContext } from '@/lib/contexts/AppChainClientContext';
+import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 
 export interface CompetitionsState {
   loading: boolean;
