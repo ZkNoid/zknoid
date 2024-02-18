@@ -10,7 +10,7 @@ import { randzuCompetitions } from '@/app/constants/randzuCompetitions';
 import { useObserveRandzuMatchQueue, useRandzuMatchQueueStore } from '@/games/randzu/stores/matchQueue';
 import { walletInstalled } from '@/lib/utils';
 import { useStore } from 'zustand';
-import { useSessionKeyStore } from '@/games/randzu/stores/sessionKeyStorage';
+import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
 import { RandzuField, WinWitness } from 'zknoid-chain-dev';
 import GamePage from '@/components/framework/GamePage';
 import { randzuConfig } from '../config';
@@ -24,8 +24,6 @@ enum GameState {
   Active,
   Won,
   Lost,
-  Replay,
-  Proofing,
 }
 
 export default function RandzuPage({
