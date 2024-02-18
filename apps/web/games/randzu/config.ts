@@ -5,7 +5,7 @@ import RandzuPage from "./components/RandzuPage";
 export const randzuConfig =
     createZkNoidGameConfig({
         id: 'randzu',
-        name: 'Randzu',
+        name: 'Randzu game',
         description: 'Two players take turns placing pieces on the board attempting to create lines of 5 of their own color',
         image: '/randzu.jpeg',
         runtimeModules: {

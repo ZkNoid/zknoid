@@ -8,7 +8,6 @@ import { usePollMinaBlockHeight } from '@/lib/stores/minaChain';
 import { usePollProtokitBlockHeight } from '@/lib/stores/protokitChain';
 import { useMinaBalancesStore, useObserveMinaBalance } from '@/lib/stores/minaBalances';
 import Header from '@/components/Header';
-import { GameType } from '@/app/constants/games';
 import { ZkNoidGameConfig } from '@/lib/createConfig';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { RuntimeModulesRecord } from '@proto-kit/module';
@@ -43,7 +42,7 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
         minaBalance={networkStore.address ? minaBalances.balances[networkStore.address] : 0n}
         protokitBalance={networkStore.address ? protokitBalances.balances[networkStore.address] : 0n}
         walletInstalled={networkStore.walletInstalled()}
-        currentGame={GameType.Arkanoid}
+        currentGame={gameConfig.id}
       />
       {children}
     </>

@@ -7,7 +7,7 @@ import ArkanoidCompetitionsListPage from "./components/ArkanoidCompetitionsListP
 export const arkanoidConfig =
     createZkNoidGameConfig({
         id: 'arkanoid',
-        name: 'Arkanoid',
+        name: 'Arkanoid game',
         description: 'Old but gold game. Beat all the bricks and protect the ball from falling',
         image: '/Arkanoid.png',
         runtimeModules: {

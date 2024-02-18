@@ -17,8 +17,8 @@ import {
 import {
   useProtokitBalancesStore,
 } from '@/lib/stores/protokitBalances';
-import { GameType } from '@/app/constants/games';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import { arkanoidConfig } from '../config';
 
 interface IBrick {
   pos: [number, number];
@@ -186,7 +186,7 @@ export default function NewArkanoidCompetitionPage() {
             : 0n
         }
         walletInstalled={networkStore.walletInstalled()}
-        currentGame={GameType.Arkanoid}
+        currentGame={arkanoidConfig.id}
       />
       <div className="flex flex-col items-center justify-center gap-5 py-10">
         <div className="py-3">Create competition</div>
