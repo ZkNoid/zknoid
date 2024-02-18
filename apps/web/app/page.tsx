@@ -1,9 +1,30 @@
+'use client'
+
 import { Footer } from '@/components/Footer';
 import Image from 'next/image';
 import Link from 'next/link';
-import { games } from './constants/games';
+import { IGame, announcedGames, defaultGames } from './constants/games';
+import { useEffect, useState } from 'react';
+
+const zkNoidConfig = import('@/games/config');
 
 export default function Home() {
+  const [games, setGames] = useState<IGame[]>(defaultGames.concat(announcedGames));
+
+  useEffect(() => {
+    zkNoidConfig.then(zkNoidGames => {
+      setGames((zkNoidGames.zkNoidConfig.games.map(x => ({
+        id: x.id,
+        logo: x.image, 
+        name: x.name, 
+        description: x.description, 
+        tags: [],
+        defaultPage: x.pageCompetitionsList ? 'competitions-list' : 'default', 
+        active: true
+      })) as IGame[]).concat(announcedGames));
+    });
+  }, []);
+
   return (
     <>
       <main className="mt-20 flex min-h-screen flex-col items-center px-24 py-10">
@@ -38,11 +59,11 @@ export default function Home() {
             game.active ? (
               <div
                 className="rounded-xl bg-white bg-gradient-to-b from-zinc-100 p-10"
-                key={game.type}
+                key={game.id}
               >
                 <Link
                   className="m-5 flex h-full flex-col gap-5"
-                  href={`/games/${game.type}/${game.defaultPage}`}
+                  href={`/games/${game.id}/${game.defaultPage}`}
                 >
                   <Image
                     src={game.logo}
@@ -57,7 +78,7 @@ export default function Home() {
             ) : (
               <div
                 className="rounded-xl bg-gray-100 bg-gradient-to-b from-gray-200 p-10"
-                key={game.type}
+                key={game.id}
               >
                 <div className="m-5 flex h-full cursor-default flex-col gap-5">
                   <Image

@@ -1,11 +1,5 @@
-export enum GameType {
-  Arkanoid = 'arkanoid',
-  Randzu = 'randzu',
-  Checkers = 'checkers',
-}
-
 export interface IGame {
-  type: GameType;
+  id: string;
   logo: string;
   name: string;
   description: string;
@@ -14,9 +8,21 @@ export interface IGame {
   active: boolean;
 }
 
-export const games: IGame[] = [
+export const announcedGames: IGame[] = [
   {
-    type: GameType.Arkanoid,
+    id: 'checkers',
+    logo: '/checkers.webp',
+    name: 'Checkers game',
+    description: 'Compete other players in the classic board game',
+    tags: ['L2 game', 'multiplayer', 'board games'],
+    defaultPage: 'global',
+    active: false,
+  },
+];
+
+export const defaultGames: IGame[] = [
+  {
+    id: 'arkanoid',
     logo: '/Arkanoid.png',
     name: 'Arkanoid game',
     description:
@@ -26,7 +32,7 @@ export const games: IGame[] = [
     active: true,
   },
   {
-    type: GameType.Randzu,
+    id: 'randzu',
     logo: '/randzu.jpeg',
     name: 'Randzu game',
     description:
@@ -34,14 +40,5 @@ export const games: IGame[] = [
     tags: ['L2 game', 'multiplayer', 'board games'],
     defaultPage: 'global',
     active: true,
-  },
-  {
-    type: GameType.Checkers,
-    logo: '/checkers.webp',
-    name: 'Checkers game',
-    description: 'Compete other players in the classic board game',
-    tags: ['L2 game', 'multiplayer', 'board games'],
-    defaultPage: 'global',
-    active: false,
   },
 ];
