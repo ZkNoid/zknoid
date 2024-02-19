@@ -25,7 +25,8 @@ git clone https://github.com/ZkNoid/zknoid
 cd zknoid
  
 # ensures you have the right node js version
-# !important! without this step the app may not work. If nvm is not installed please install it 
+# !important! without this step the app may not work.
+# If nvm is not installed please install it 
 nvm use
 pnpm install
 
