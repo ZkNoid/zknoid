@@ -13,10 +13,12 @@ Learn more about ZkNoid on [zknoid.io](https://www.zknoid.io/)
 Repository contains ZkNoid game platform monorepo. 
 It implements contracts and UI for games such as Arkanoid and Randzu and games store.
 
-### Setup
-Project awaits for proto-kit implementation of app network deployment tools to be fully launched publicly.  
+### Deployments
+- Develop branch in deployed to https://dev.zknoid.io/
+- Main branch in deployed to https://app.zknoid.io/
 
-Now project can be used localy. Here are the commands for set-up
+### Setup
+Project can be used localy. Here are the commands for set-up
 
 ```bash
 git clone https://github.com/ZkNoid/zknoid
