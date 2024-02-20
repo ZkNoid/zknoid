@@ -118,7 +118,6 @@ export default function RandzuPage({
       x, y
     });
 
-    // await tx.sign();
     tx.transaction = tx.transaction?.sign(sessionPrivateKey);
     await tx.send();
   }

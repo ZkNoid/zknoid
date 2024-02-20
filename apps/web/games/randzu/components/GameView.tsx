@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
 import { IGameInfo } from '@/games/randzu/stores/matchQueue';
 
 interface IGameViewProps {
@@ -11,16 +10,6 @@ interface IGameViewProps {
 }
 
 export const GameView = (props: IGameViewProps) => {
-  const canvas = useRef<HTMLCanvasElement>(null);
-  const [ctx, setContext] = useState<
-    CanvasRenderingContext2D | null | undefined
-  >(null);
-
-  useEffect(() => {
-    const ctx = canvas!.current?.getContext('2d');
-    setContext(ctx);
-  }, [canvas]);
-
   return (
     <div className={`grid grid-cols-15 gap-1 ${
         props.gameInfo?.isCurrentUserMove && 
