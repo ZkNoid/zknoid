@@ -19,7 +19,7 @@ export default function Home() {
         name: x.name, 
         description: x.description, 
         tags: [],
-        defaultPage: x.pageCompetitionsList ? 'competitions-list' : 'default', 
+        defaultPage: x.pageCompetitionsList ? 'competitions-list' : 'global', 
         active: true
       })) as IGame[]).concat(announcedGames));
     });
