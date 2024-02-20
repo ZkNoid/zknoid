@@ -13,23 +13,33 @@ Learn more about ZkNoid on [zknoid.io](https://www.zknoid.io/)
 Repository contains ZkNoid game platform monorepo. 
 It implements contracts and UI for games such as Arkanoid and Randzu and games store.
 
-### Setup
-Project awaits for proto-kit implementation of app network deployment tools to be fully launched publicly.  
+### Deployments
+- Develop branch in deployed to https://dev.zknoid.io/
+- Main branch in deployed to https://app.zknoid.io/
 
-Now project can be used localy. Here are the commands for set-up
+### Setup
+Project can be used localy. Here are the commands for set-up
 
 ```bash
 git clone https://github.com/ZkNoid/zknoid
 cd zknoid
  
 # ensures you have the right node js version
+# !important! Without this step the app may not work!
+# If nvm is not installed please install it 
 nvm use
 pnpm install
 
 npm run dev
 ```
 
-In roadmap it's planned to separate games and game store: games will import platform components and register themselves to be added to the store.
+### Implementing your own game
+ZkNoid is a modular platform that makes it easy to implement you own game using platform infrastructure. 
+To build a game you need to create a game folder inside [apps/web/games](https://github.com/ZkNoid/zknoid/tree/develop/apps/web/games).
+Define game config and implement front-end and contracts part in [packages/chain/src/](https://github.com/ZkNoid/zknoid/blob/develop/packages/chain/src/)
+
+- Learn more about SDK [here](https://docs.zknoid.io/docs/sdk)
+- Learn more about your game implementation [here](https://docs.zknoid.io/docs/game_building)
 
 
 ### Interesting places
