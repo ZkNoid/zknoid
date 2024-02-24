@@ -9,7 +9,7 @@ export const arkanoidConfig =
         id: 'arkanoid',
         name: 'Arkanoid game',
         description: 'Old but gold game. Beat all the bricks and protect the ball from falling',
-        image: '/Arkanoid.png',
+        image: '/image/games/arkanoid.svg',
         runtimeModules: {
             ArkanoidGameHub,
             Balances,
