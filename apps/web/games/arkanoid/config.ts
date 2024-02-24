@@ -3,6 +3,7 @@ import { ArkanoidGameHub, Balances } from "zknoid-chain-dev";
 import ArkanoidPage from "./components/ArkanoidPage";
 import NewArkanoidCompetitionPage from "./components/NewArkanoidCompetitionPage";
 import ArkanoidCompetitionsListPage from "./components/ArkanoidCompetitionsListPage";
+import { ZkNoidGameGenre } from "@/lib/platform/game_tags";
 
 export const arkanoidConfig =
     createZkNoidGameConfig({
@@ -10,6 +11,7 @@ export const arkanoidConfig =
         name: 'Arkanoid game',
         description: 'Old but gold game. Beat all the bricks and protect the ball from falling',
         image: '/image/games/arkanoid.svg',
+        genre: ZkNoidGameGenre.Arcade,
         runtimeModules: {
             ArkanoidGameHub,
             Balances,

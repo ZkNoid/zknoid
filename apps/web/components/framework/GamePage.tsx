@@ -3,7 +3,7 @@
 import { ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 
 import { useNetworkStore } from '@/lib/stores/network';
-import { useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
+import { useObserveProtokitBalance, useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
 import { usePollMinaBlockHeight } from '@/lib/stores/minaChain';
 import { usePollProtokitBlockHeight } from '@/lib/stores/protokitChain';
 import { useMinaBalancesStore, useObserveMinaBalance } from '@/lib/stores/minaBalances';
@@ -25,6 +25,7 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
   usePollMinaBlockHeight();
   usePollProtokitBlockHeight();
   useObserveMinaBalance();
+  useObserveProtokitBalance(client);
 
   const minaBalances = useMinaBalancesStore();
   const protokitBalances = useProtokitBalancesStore();
