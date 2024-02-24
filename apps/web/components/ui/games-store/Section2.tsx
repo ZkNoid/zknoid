@@ -1,10 +1,10 @@
 import { IGame } from "@/app/constants/games"
 import Link from "next/link"
 import Image from "next/image"
-
 import { useState } from "react"
 import { GAME_TAGS } from "@/app/constants/tags"
-import { GAME_EVENTS, ZkNoidEvent, ZkNoidEventType, getEventType, useEventTimer } from "@/lib/events"
+import { ALL_GAME_EVENT_TYPES, GAME_EVENTS, ZkNoidEvent, ZkNoidEventType, getEventType, useEventTimer } from "@/lib/platform/game_events"
+import { ALL_GAME_GENRES, ZkNoidGameGenre } from "@/lib/platform/game_tags"
 
 const FilterCard = ({ eventType, selected, typesSelected, setTypesSelected }: {
     eventType: ZkNoidEventType,
@@ -17,7 +17,7 @@ const FilterCard = ({ eventType, selected, typesSelected, setTypesSelected }: {
             () => setTypesSelected(typesSelected.includes(eventType) ?
                 typesSelected.filter(x => x != eventType) :
                 [...typesSelected, eventType])}
-        className={`p-2 rounded text-[16px] cursor-pointer ${selected ? 'bg-left-accent text-bg-dark border-left-accent' : ''}`}
+        className={`p-1 rounded text-[16px] cursor-pointer border ${selected ? 'bg-left-accent text-bg-dark border-left-accent' : 'border-[#F9F8F4]'}`}
     >
         {eventType}
     </div>
@@ -25,7 +25,7 @@ const FilterCard = ({ eventType, selected, typesSelected, setTypesSelected }: {
 
 const EventCard = ({ headText, description, event }: { headText: string, description: string, event: ZkNoidEvent }) => {
     const eventCounter = useEventTimer(event);
-    const time = `${eventCounter.startsIn.days}d:${eventCounter.startsIn.hours}h:${eventCounter.startsIn.minutes}m:${Math.trunc(eventCounter.startsIn.seconds!)}s`
+    const time = `${eventCounter.startsIn.days}d ${eventCounter.startsIn.hours}h:${eventCounter.startsIn.minutes}m:${Math.trunc(eventCounter.startsIn.seconds!)}s`
     return (
         <div className="border-left-accent flex flex-col relative">
             <img src="/image/section2/event-box.svg" className="-z-10"></img>
@@ -44,18 +44,25 @@ const EventCard = ({ headText, description, event }: { headText: string, descrip
     )
 }
 
-const FiltrationBox = ({ expanded, title, variants }: { expanded: boolean, title: string, variants: string[] }) => {
+const FiltrationBox = (
+    { expanded, title, genres, genresSelected, setGenresSelected }:
+        { expanded: boolean, title: string, genres: ZkNoidGameGenre[], genresSelected: ZkNoidGameGenre[], setGenresSelected: (genres: ZkNoidGameGenre[]) => void }
+) => {
     return (
         <div className="relative p-5 w-full min-h-[80px]">
             <div className="font-bold text-[24px]">
                 {title}
             </div>
-            {variants.map(variant => (
+            {genres.map(genre => (
                 <div
-                    className="text-plexmono font-[20] cursor-pointer hover:underline decoration-left-accent underline-offset-[5px]"
-                    onClick={() => {}}
+                    className={`text-plexmono font-[20] cursor-pointer hover:underline ${genresSelected.includes(genre) ? 'underline' : ''} decoration-left-accent underline-offset-[5px]`}
+                    onClick={() => {
+                        setGenresSelected(genresSelected.includes(genre) ?
+                        genresSelected.filter(x => x != genre) :
+                        [...genresSelected, genre])
+                    }}
                 >
-                    {variant}
+                    {genre}
                 </div>
             ))}
 
@@ -73,16 +80,24 @@ const FiltrationBox = ({ expanded, title, variants }: { expanded: boolean, title
     )
 };
 
-const GenreCard = ({ image, text }: { image: string, text: string }) => (
-    <div className="w-full h-full flex items-center justify-center relative flex-col p-5">
+const GenreCard = ({ image, genre, genresSelected, setGenresSelected }:
+    { image: string, genre: ZkNoidGameGenre, genresSelected: ZkNoidGameGenre[], setGenresSelected: (genres: ZkNoidGameGenre[]) => void }) => (
+
+    <div className="w-full h-full flex items-center justify-center relative flex-col p-5" onClick={() => {
+        setGenresSelected(genresSelected.includes(genre) ?
+            genresSelected.filter(x => x != genre) :
+            [...genresSelected, genre])
+    }
+    }>
         <div className="w-full h-[50%] bottom-0 left-0 absolute -z-10 bg-[#252525] rounded z-1"></div>
         <img src={image} className="w-[80%] h-full z-0"></img>
-        <div className="z-0 text-[24px]">{text}</div>
+        <div className="z-0 text-[24px]">{genre}</div>
     </div>
 )
 
 export const Section2 = ({ games }: { games: IGame[] }) => {
     const [eventTypesSelected, setEventTypesSelected] = useState<ZkNoidEventType[]>([]);
+    const [genresSelected, setGenresSelected] = useState<ZkNoidGameGenre[]>([]);
 
     return (
         <div className='relative flex flex-col'>
@@ -90,9 +105,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
                 <svg viewBox="0 0 1502 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
                     <path d="M1451 2341H51C23.3858 2341 1 2318.37 1 2290.75V107V51C1 23.3857 23.3858 1 51 1H650.474C663.726 1 676.436 6.26099 685.812 15.627L723.596 53.373C732.971 62.739 745.681 68 758.933 68H1451C1478.61 68 1501 90.3857 1501 118V182V2291C1501 2318.61 1478.61 2341 1451 2341Z" stroke="#D2FF00" stroke-width="2" />
                 </svg>
-
                 <div className="border-x-2 border-left-accent flex-grow" />
-
                 <svg viewBox="0 2142 1502 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
                     <path d="M1451 2341H51C23.3858 2341 1 2318.37 1 2290.75V107V51C1 23.3857 23.3858 1 51 1H650.474C663.726 1 676.436 6.26099 685.812 15.627L723.596 53.373C732.971 62.739 745.681 68 758.933 68H1451C1478.61 68 1501 90.3857 1501 118V182V2291C1501 2318.61 1478.61 2341 1451 2341Z" stroke="#D2FF00" stroke-width="2" />
                 </svg>
@@ -104,25 +117,27 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
                         Events & competitions
                     </div>
                     <div className="flex flex-row gap-3">
-                        {[ZkNoidEventType.PAST_EVENTS, ZkNoidEventType.CURRENT_EVENTS, ZkNoidEventType.UPCOMING_EVENTS]
+                        {ALL_GAME_EVENT_TYPES
                             .map(eventType => (
                                 <FilterCard
-                                    eventType={eventType} 
-                                    typesSelected={eventTypesSelected} 
-                                    setTypesSelected={setEventTypesSelected} 
+                                    eventType={eventType}
+                                    typesSelected={eventTypesSelected}
+                                    setTypesSelected={setEventTypesSelected}
                                     selected={eventTypesSelected.includes(eventType)}
                                 />
                             ))}
                     </div>
-                    <div className="grid grid-cols-2 gap-5  min-h-[352px]">
-                        {GAME_EVENTS.filter(x => eventTypesSelected.includes(getEventType(x)) || eventTypesSelected.length == 0).map(event => (
-                            <EventCard
-                                key={event.name}
-                                headText={event.name}
-                                description={event.description}
-                                event={event}
-                            />
-                        ))}
+                    <div className="grid grid-cols-2 gap-5 min-h-[352px]">
+                        {GAME_EVENTS
+                            .filter(x => eventTypesSelected.includes(getEventType(x)) || eventTypesSelected.length == 0)
+                            .map(event => (
+                                <EventCard
+                                    key={event.name}
+                                    headText={event.name}
+                                    description={event.description}
+                                    event={event}
+                                />
+                            ))}
                     </div>
                 </div>
 
@@ -131,26 +146,65 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
                         Popular genres
                     </div>
                     <div className="grid grid-cols-4 gap-5">
-                        <GenreCard image="image/genres/arcade.svg" text="Arcade" />
-                        <GenreCard image="image/genres/board.svg" text="Board games" />
-                        <GenreCard image="image/genres/lucky.svg" text="Lucky" />
-                        <GenreCard image="image/genres/soon.svg" text="Coming soon" />
+                        <GenreCard
+                            image="image/genres/arcade.svg"
+                            genre={ZkNoidGameGenre.Arcade}
+                            genresSelected={genresSelected}
+                            setGenresSelected={setGenresSelected}
+                        />
+                        <GenreCard
+                            image="image/genres/board.svg"
+                            genre={ZkNoidGameGenre.BoardGames}
+                            genresSelected={genresSelected}
+                            setGenresSelected={setGenresSelected}
+                        />
+                        <GenreCard
+                            image="image/genres/lucky.svg"
+                            genre={ZkNoidGameGenre.Lucky}
+                            genresSelected={genresSelected}
+                            setGenresSelected={setGenresSelected}
+                        />
+                        <GenreCard
+                            image="image/genres/soon.svg"
+                            genre={ZkNoidGameGenre.ComingSoon}
+                            genresSelected={genresSelected}
+                            setGenresSelected={setGenresSelected}
+                        />
                     </div>
                 </div>
                 <div className="flex gap-5">
                     <div className="min-w-[350px]">
                         <div className="text-[24px] font-bold">Filtration</div>
                         <div className="flex flex-col gap-3">
-                            <FiltrationBox expanded={true} title="Genre" variants={["Arcade", "Board games", "Lucky"]} />
-                            <FiltrationBox expanded={false} title="Features" variants={[]} />
-
-                            <div className="border-2 rounded-2xl border-left-accent h-[40px] flex items-center justify-center text-[24px] text-left-accent cursor-pointer">
+                            <FiltrationBox 
+                                key={0}
+                                expanded={true} 
+                                title="Genre" 
+                                genres={ALL_GAME_GENRES}
+                                genresSelected={genresSelected}
+                                setGenresSelected={setGenresSelected}
+                            />
+                            <FiltrationBox 
+                                key={1}
+                                expanded={false} 
+                                title="Features" 
+                                genres={[]}
+                                genresSelected={genresSelected}
+                                setGenresSelected={setGenresSelected}    
+                            />
+                            <div 
+                                className="border-2 rounded-2xl border-left-accent h-[40px] flex items-center justify-center text-[24px] text-left-accent cursor-pointer"
+                                onClick={() => {
+                                    setGenresSelected([]);
+                                    setEventTypesSelected([]);
+                                }}
+                            >
                                 Reset filters
                             </div>
                         </div>
 
                     </div>
-                    <div className="">
+                    <div className="flex flex-col gap-2">
                         <div className="text-[32px] font-bold">Games</div>
                         <div className="flex flex-row gap-3">
                             {
@@ -161,27 +215,29 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
                         </div>
                         <div>
                             <div className="grid grid-cols-3 gap-5">
-                                {games.map((game) =>
-                                    <div
-                                        className="rounded-xl bg-[#252525] min-h-[500px]"
-                                        key={game.id}
-                                    >
-                                        <Link
-                                            className="m-5 flex h-full flex-col gap-5"
-                                            href={`/games/${game.id}/${game.defaultPage}`}
+                                {games
+                                    .filter(x => genresSelected.includes(x.genre) || genresSelected.length == 0)
+                                    .map((game) =>
+                                        <div
+                                            className="rounded-xl bg-[#252525] min-h-[500px]"
+                                            key={game.id}
                                         >
-                                            <Image
-                                                src={game.logo}
-                                                alt="Game logo"
-                                                width={220}
-                                                height={251}
-                                                className="w-full"
-                                            />
-                                            <div className="text-[24px]">{game.name}</div>
-                                            <div className="text-[16px] font-plexmono font-[16]">{game.description}</div>
-                                        </Link>
-                                    </div>
-                                )}
+                                            <Link
+                                                className="m-5 flex h-full flex-col gap-5"
+                                                href={`/games/${game.id}/${game.defaultPage}`}
+                                            >
+                                                <Image
+                                                    src={game.logo}
+                                                    alt="Game logo"
+                                                    width={220}
+                                                    height={251}
+                                                    className="w-full"
+                                                />
+                                                <div className="text-[24px]">{game.name}</div>
+                                                <div className="text-[16px] font-plexmono font-[16]">{game.description}</div>
+                                            </Link>
+                                        </div>
+                                    )}
                             </div>
                         </div>
                     </div>

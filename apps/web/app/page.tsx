@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { IGame, announcedGames, defaultGames } from './constants/games';
 import { useEffect, useState } from 'react';
-import { DesktopNavbar } from '@/components/ui/games-store/DesktopNavbar';
+import DesktopNavbar from '@/components/ui/games-store/DesktopNavbar';
 import { SOCIALS } from '@/constants/socials';
 import { Section1 } from '@/components/ui/games-store/Section1';
 import { CentralBlock } from '@/components/ui/games-store/CentralBlock';
@@ -23,6 +23,7 @@ export default function Home() {
         logo: x.image,
         name: x.name,
         description: x.description,
+        genre: x.genre,
         tags: [],
         defaultPage: x.pageCompetitionsList ? 'competitions-list' : 'global',
         active: true

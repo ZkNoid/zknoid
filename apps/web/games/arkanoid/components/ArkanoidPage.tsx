@@ -14,15 +14,11 @@ import Link from 'next/link';
 import { useNetworkStore } from '@/lib/stores/network';
 import {
   useMinaBridge,
-  useProtokitBalancesStore,
 } from '@/lib/stores/protokitBalances';
 import {
   useArkanoidLeaderboardStore,
   useObserveArkanoidLeaderboard,
 } from '@/games/arkanoid/stores/arkanoidLeaderboard';
-import {
-  useMinaBalancesStore,
-} from '@/lib/stores/minaBalances';
 import { walletInstalled } from '@/lib/utils';
 import { ICompetition } from '@/lib/types';
 import { fromContractCompetition } from '@/lib/typesConverter';
@@ -64,8 +60,6 @@ export default function ArkanoidPage({
 
   useObserveArkanoidLeaderboard(params.competitionId);
 
-  const minaBalances = useMinaBalancesStore();
-  const protokitBalances = useProtokitBalancesStore();
   const leaderboardStore = useArkanoidLeaderboardStore();
   const workerClientStore = useWorkerClientStore();
 

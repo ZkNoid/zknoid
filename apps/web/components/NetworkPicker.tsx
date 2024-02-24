@@ -71,6 +71,7 @@ export const NetworkPicker = ({autoconnect}: {autoconnect: boolean}) => {
                 <div className="flex flex-col items-center w-30 py-3 absolute bg-slate-200  text-xs rounded-xl top-20">
                     {NETWORKS.map(network => (
                         <div
+                            key={network.chainId}
                             className="cursor-pointer h-full w-full hover:bg-slate-400 py-3 px-7"
                             onClick={() => switchNetwork(network.chainId)}
                         >
