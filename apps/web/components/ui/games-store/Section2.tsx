@@ -3,9 +3,11 @@ import Link from "next/link"
 import Image from "next/image"
 
 import { ReactNode } from "react"
+import { GAME_TAGS } from "@/app/constants/tags"
+import { useFilters } from "@/lib/stores/games-store/filters"
 
 const FilterCard = ({ text, checked }: { text: string, checked?: boolean }) => (
-    <div className={`p-2 rounded text-[16px] ${checked ? 'bg-left-accent text-bg-dark' : 'border'}`}>
+    <div className={`p-2 rounded text-[16px] cursor-pointer ${checked ? 'bg-left-accent text-bg-dark' : 'border'}`}>
         {text}
     </div>
 )
@@ -27,29 +29,38 @@ const EventCard = ({ headText, description, startsIn }: { headText: string, desc
     </div>
 )
 
-const FiltrationBox = ({ expanded, title, variants }: { expanded: boolean, title: string, variants: string[] }) => (
-    <div className="relative p-5 w-full min-h-[80px]">
-        <div className="font-bold text-[24px]">
-            {title}
-        </div>
-        {variants.map(variant => (
-            <div className="text-plexmono font-[20]">
-                {variant}
+const FiltrationBox = ({ expanded, title, variants }: { expanded: boolean, title: string, variants: string[] }) => {
+    const filters = useFilters();
+
+    return (
+        <div className="relative p-5 w-full min-h-[80px]">
+            <div className="font-bold text-[24px]">
+                {title}
             </div>
-        ))}
+            {variants.map(variant => (
+                <div
+                    className="text-plexmono font-[20] cursor-pointer hover:underline decoration-left-accent underline-offset-[5px]"
+                    onClick={() => {
+                        filters.setGenre(variant);
+                    }}
+                >
+                    {variant}
+                </div>
+            ))}
 
-        <div className="absolute -z-10 top-0 left-0 w-full h-full flex flex-col">
-            <svg viewBox="0 0 351 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1 17.5234V111.731V174.523C1 182.808 7.71573 189.523 16 189.523H335C343.284 189.523 350 182.808 350 174.523V58.1101C350 54.1286 348.417 50.3105 345.6 47.4969L304.963 6.91027C302.151 4.10124 298.338 2.52344 294.363 2.52344H16C7.71573 2.52344 1 9.23917 1 17.5234Z" stroke="#D2FF00" stroke-width="2" />
-                <path d="M348 2.52344H312.912C311.118 2.52344 310.231 4.7018 311.515 5.95459L346.603 40.2072C347.87 41.4438 350 40.5463 350 38.7761V4.52344C350 3.41887 349.105 2.52344 348 2.52344Z" fill={expanded ? "#D2FF00" : ""} stroke="#D2FF00" stroke-width="2" />
-                <rect x="331.775" y="6.89062" width="20" height="2" transform="rotate(45 331.775 6.89062)" fill={expanded ? "#252525" : "#D2FF00"} />
-                <rect x="345.924" y="8.30469" width="20" height="2" transform="rotate(135 345.924 8.30469)" fill={expanded ? "#252525" : "#D2FF00"} />
-            </svg>
-            <div className="flex flex-grow w-full border-x-2 border-b-2 rounded-b-2xl border-left-accent"></div>
+            <div className="absolute -z-10 top-0 left-0 w-full h-full flex flex-col">
+                <svg viewBox="0 0 351 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 17.5234V111.731V174.523C1 182.808 7.71573 189.523 16 189.523H335C343.284 189.523 350 182.808 350 174.523V58.1101C350 54.1286 348.417 50.3105 345.6 47.4969L304.963 6.91027C302.151 4.10124 298.338 2.52344 294.363 2.52344H16C7.71573 2.52344 1 9.23917 1 17.5234Z" stroke="#D2FF00" stroke-width="2" />
+                    <path d="M348 2.52344H312.912C311.118 2.52344 310.231 4.7018 311.515 5.95459L346.603 40.2072C347.87 41.4438 350 40.5463 350 38.7761V4.52344C350 3.41887 349.105 2.52344 348 2.52344Z" fill={expanded ? "#D2FF00" : ""} stroke="#D2FF00" stroke-width="2" />
+                    <rect x="331.775" y="6.89062" width="20" height="2" transform="rotate(45 331.775 6.89062)" fill={expanded ? "#252525" : "#D2FF00"} />
+                    <rect x="345.924" y="8.30469" width="20" height="2" transform="rotate(135 345.924 8.30469)" fill={expanded ? "#252525" : "#D2FF00"} />
+                </svg>
+                <div className="flex flex-grow w-full border-x-2 border-b-2 rounded-b-2xl border-left-accent"></div>
+            </div>
+
         </div>
-
-    </div>
-)
+    )
+};
 
 const GenreCard = ({ image, text }: { image: string, text: string }) => (
     <div className="w-full h-full flex items-center justify-center relative flex-col p-5">
@@ -115,7 +126,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => (
                         <FiltrationBox expanded={true} title="Genre" variants={["Arcade", "Board games", "Lucky"]} />
                         <FiltrationBox expanded={false} title="Features" variants={[]} />
 
-                        <div className="border-2 rounded-2xl border-left-accent h-[40px] flex items-center justify-center text-[24px] text-left-accent">
+                        <div className="border-2 rounded-2xl border-left-accent h-[40px] flex items-center justify-center text-[24px] text-left-accent cursor-pointer">
                             Reset filters
                         </div>
                     </div>
@@ -125,8 +136,8 @@ export const Section2 = ({ games }: { games: IGame[] }) => (
                     <div className="text-[32px] font-bold">Games</div>
                     <div className="flex flex-row gap-3">
                         {
-                            ["Single Player Arcade", "Multiplayer Arcade", "Single Player Board Games", "Multiplayer Board Games", "Lucky Games"].map(
-                                x => <div className="p-1 border rounded">{x}</div>
+                            GAME_TAGS.map(
+                                x => <div className="p-1 border rounded cursor-pointer">{x}</div>
                             )
                         }
                     </div>
