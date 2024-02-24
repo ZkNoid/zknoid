@@ -11,7 +11,7 @@ export interface IGame {
 export const announcedGames: IGame[] = [
   {
     id: 'checkers',
-    logo: '/checkers.webp',
+    logo: '/image/games/soon.svg',
     name: 'Checkers game',
     description: 'Compete other players in the classic board game',
     tags: ['L2 game', 'multiplayer', 'board games'],
@@ -23,7 +23,7 @@ export const announcedGames: IGame[] = [
 export const defaultGames: IGame[] = [
   {
     id: 'arkanoid',
-    logo: '/Arkanoid.png',
+    logo: '/image/games/arkanoid.svg',
     name: 'Arkanoid game',
     description:
       'Old but gold game. Beat all the bricks and protect the ball from falling',
@@ -33,7 +33,7 @@ export const defaultGames: IGame[] = [
   },
   {
     id: 'randzu',
-    logo: '/randzu.jpeg',
+    logo: '/image/games/randzu.svg',
     name: 'Randzu game',
     description:
       'Two players take turns placing pieces on the board attempting to create lines of 5 of their own color',
