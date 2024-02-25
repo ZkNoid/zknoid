@@ -60,6 +60,7 @@ function FiltrationBox<T extends string>(
             </div>
             {items.map(item => (
                 <div
+                    key={item}
                     className={`text-plexmono font-[20] cursor-pointer hover:underline ${itemsSelected.includes(item) ? 'underline' : ''} decoration-left-accent underline-offset-[5px]`}
                     onClick={() => {
                         setItemsSelected(itemsSelected.includes(item) ?
@@ -126,6 +127,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
                         {ALL_GAME_EVENT_TYPES
                             .map(eventType => (
                                 <FilterCard
+                                    key={eventType}
                                     eventType={eventType}
                                     typesSelected={eventTypesSelected}
                                     setTypesSelected={setEventTypesSelected}
@@ -153,25 +155,25 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
                     </div>
                     <div className="grid grid-cols-4 gap-5">
                         <GenreCard
-                            image="image/genres/arcade.svg"
+                            image="/image/genres/arcade.svg"
                             genre={ZkNoidGameGenre.Arcade}
                             genresSelected={genresSelected}
                             setGenresSelected={setGenresSelected}
                         />
                         <GenreCard
-                            image="image/genres/board.svg"
+                            image="/image/genres/board.svg"
                             genre={ZkNoidGameGenre.BoardGames}
                             genresSelected={genresSelected}
                             setGenresSelected={setGenresSelected}
                         />
                         <GenreCard
-                            image="image/genres/lucky.svg"
+                            image="/image/genres/lucky.svg"
                             genre={ZkNoidGameGenre.Lucky}
                             genresSelected={genresSelected}
                             setGenresSelected={setGenresSelected}
                         />
                         <GenreCard
-                            image="image/genres/soon.svg"
+                            image="/image/genres/soon.svg"
                             genre={ZkNoidGameGenre.ComingSoon}
                             genresSelected={genresSelected}
                             setGenresSelected={setGenresSelected}

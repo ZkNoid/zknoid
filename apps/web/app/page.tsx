@@ -33,7 +33,7 @@ export default function Home() {
 
   return (
     <div className='flex min-h-screen flex-col'>
-      <DesktopNavbar />
+      <DesktopNavbar autoconnect={true} />
 
       <main className="px-5 flex flex-col">
         <Section1 />

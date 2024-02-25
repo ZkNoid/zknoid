@@ -19,7 +19,7 @@ import {
   useArkanoidLeaderboardStore,
   useObserveArkanoidLeaderboard,
 } from '@/games/arkanoid/stores/arkanoidLeaderboard';
-import { walletInstalled } from '@/lib/utils';
+import { walletInstalled } from '@/lib/helpers';
 import { ICompetition } from '@/lib/types';
 import { fromContractCompetition } from '@/lib/typesConverter';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';

@@ -1,6 +1,9 @@
-export const HeaderCard = ({ image, text, toggle, onClick }: { image: string, text: string, toggle?: boolean, onClick?: () => void }) => (
+export const HeaderCard = (
+    { image, text, toggle, onClick, isMiddle }: 
+    { image: string, text: string, toggle?: boolean, onClick?: () => void, isMiddle?: boolean }
+) => (
     <div
-        className="flex bg-left-accent items-center gap-[10px] text-bg-dark p-1 px-2 text-[16px] rounded cursor-pointer"
+        className={`flex bg-left-accent items-center gap-[10px] text-bg-dark p-1 px-2 text-[16px] rounded cursor-pointer ${isMiddle && 'bg-middle-accent'}`}
         onClick={() => onClick?.()}
     >
         <img src={image} width={24} height={24} />

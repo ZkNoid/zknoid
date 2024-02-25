@@ -44,6 +44,8 @@ export const useNetworkStore = create<NetworkState, [["zustand/immer", never]]>(
     },
     address: undefined,
     async onWalletConnected(address: string | undefined) {
+      const network = await (window as any).mina.requestNetwork();
+      this.setNetwork(network.chainId);
       set((state) => {
         state.address = address;
         state.walletConnected = true;

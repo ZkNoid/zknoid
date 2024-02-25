@@ -27,7 +27,7 @@ export const Section1 = () => {
                         >
                             <SwiperSlide key={0} className='bg-[url("/image/grid.svg")]'>
                                 <div className="flex items-center justify-center w-full h-full">
-                                    <img src="image/slides/slide1.svg" />
+                                    <img src="/image/slides/slide1.svg" />
                                 </div>
                             </SwiperSlide>
                             <SwiperSlide key={1} className='bg-[url("/image/grid.svg")]'>

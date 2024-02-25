@@ -14,7 +14,7 @@ export const CentralBlock = () => (
                 About us
             </Link>
             <div className='flex gap-3'>
-                {SOCIALS.map(x => <Link href={x.link}><img src={x.image}></img></Link>)}
+                {SOCIALS.map(x => <Link href={x.link} key={x.id}><img src={x.image}></img></Link>)}
             </div>
         </div>
     </div>
