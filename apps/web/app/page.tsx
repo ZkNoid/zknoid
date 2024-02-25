@@ -39,11 +39,6 @@ export default function Home() {
         <Section1 />
         <CentralBlock />
         <Section2 games={games} />
-
-        {/* <div className="bg-[url('/image/grid.svg')] w-full h-[481px]" id='grid'>
-          <div className="bg-[url('/image/banner.svg')] w-full h-full"></div>
-        </div> */}
-        
       </main>
       <Footer />
     </div>
