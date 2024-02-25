@@ -7,10 +7,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function walletInstalled() {
-  return typeof mina !== 'undefined';
-}
-
 const dummy = GameRecordProof.fromJSON({
   publicInput: [],
   publicOutput: [''],

@@ -12,6 +12,7 @@ import { ZkNoidGameConfig } from '@/lib/createConfig';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { RuntimeModulesRecord } from '@proto-kit/module';
 import { ClientAppChain } from '@proto-kit/sdk';
+import DesktopNavbar from '../ui/games-store/DesktopNavbar';
 
 export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
   children,
@@ -32,18 +33,14 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
   const networkStore = useNetworkStore();
 
   useEffect(() => {
+    console.log('Starting client')
     client.start().then(() => networkStore.onProtokitClientStarted());
   }, []);
 
   return (
     <>
-      <Header
-        address={networkStore.address}
-        connectWallet={networkStore.connectWallet}
-        minaBalance={networkStore.address ? minaBalances.balances[networkStore.address] : 0n}
-        protokitBalance={networkStore.address ? protokitBalances.balances[networkStore.address] : 0n}
-        walletInstalled={networkStore.walletInstalled()}
-        currentGame={gameConfig.id}
+      <DesktopNavbar
+        autoconnect={true}
       />
       {children}
     </>

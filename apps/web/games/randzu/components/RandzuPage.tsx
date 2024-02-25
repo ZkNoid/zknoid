@@ -8,7 +8,7 @@ import { useNetworkStore } from '@/lib/stores/network';
 import { useMinaBridge } from '@/lib/stores/protokitBalances';
 import { randzuCompetitions } from '@/app/constants/randzuCompetitions';
 import { useObserveRandzuMatchQueue, useRandzuMatchQueueStore } from '@/games/randzu/stores/matchQueue';
-import { walletInstalled } from '@/lib/utils';
+import { walletInstalled } from '@/lib/helpers';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
 import { RandzuField, WinWitness } from 'zknoid-chain-dev';

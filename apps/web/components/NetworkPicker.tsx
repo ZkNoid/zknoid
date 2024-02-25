@@ -1,11 +1,15 @@
 import { NETWORKS } from "@/app/constants/networks";
 import { useNetworkStore } from "@/lib/stores/network";
-import { walletInstalled } from "@/lib/utils";
+import { walletInstalled } from "@/lib/helpers";
 import { useEffect, useState } from "react";
+import { HeaderCard } from "./ui/games-store/HeaderCard";
+import { useRegisterWorkerClient } from "@/lib/stores/workerClient";
 
-export const NetworkPicker = ({autoconnect}: {autoconnect: boolean}) => {
+export default function NetworkPicker() {
     const [expanded, setExpanded] = useState(false);
     const networkStore = useNetworkStore();
+    useRegisterWorkerClient();
+    
     
     const switchNetwork = async (chainId: string) => {
         await (window as any).mina.switchChain({
@@ -20,9 +24,7 @@ export const NetworkPicker = ({autoconnect}: {autoconnect: boolean}) => {
         if (!walletInstalled()) return;
 
         (async () => {
-            const network = await (window as any).mina.requestNetwork();
-            networkStore.setNetwork(network.chainId);
-
+        
             const listener = ({chainId, name}: {chainId: string, name: string}) => {
                 networkStore.setNetwork(chainId);
             };
@@ -33,7 +35,7 @@ export const NetworkPicker = ({autoconnect}: {autoconnect: boolean}) => {
                 (window.mina as any).removeListener(listener);
             }
         })();
-    }, []);
+    }, [networkStore.walletConnected]);
 
     useEffect(() => {
         if (!walletInstalled()) return;
@@ -56,19 +58,16 @@ export const NetworkPicker = ({autoconnect}: {autoconnect: boolean}) => {
         })();
     }, []);
 
-    useEffect(() => {
-        if (!walletInstalled()) return;
-
-        if (autoconnect) {
-            networkStore.connectWallet();
-        }
-    }, []);
-
     return (
         <div>
-            <div className="cursor-pointer" onClick={() => setExpanded(!expanded)}>{networkStore.minaNetwork?.name || 'Unsupported network'}</div>
+            <HeaderCard 
+                image="/image/cards/mina.png" 
+                text={networkStore.minaNetwork?.name || 'Unsupported network'} 
+                onClick={() => setExpanded(!expanded)} toggle={true} 
+                isMiddle={true}
+            />
             {expanded && (
-                <div className="flex flex-col items-center w-30 py-3 absolute bg-slate-200  text-xs rounded-xl top-20">
+                <div className="flex flex-col items-center w-30 py-3 absolute bg-left-accent  text-xs rounded-xl top-20">
                     {NETWORKS.map(network => (
                         <div
                             key={network.chainId}

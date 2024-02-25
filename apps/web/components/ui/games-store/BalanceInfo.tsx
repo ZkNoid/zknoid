@@ -21,7 +21,7 @@ export default function BalanceInfo() {
                         <div>{(Number(minaBalancesStore.balances[networkStore.address!] ?? 0n) / 10 ** 9).toFixed(2)} Mina</div>
                     </div>
                     <div>
-                        <HeaderCard image="image/cards/top-up.svg" text="Top up" />
+                        <HeaderCard image="/image/cards/top-up.svg" text="Top up" />
                     </div>
                 </div>
             )}

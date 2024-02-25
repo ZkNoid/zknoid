@@ -41,6 +41,7 @@ export const useProtokitBalancesStore = create<
         state.loading = true;
       });
 
+
       const balance = await client.query.runtime.Balances.balances.get(
         PublicKey.fromBase58(address),
       );
@@ -59,9 +60,11 @@ export const useObserveProtokitBalance = (client: ClientAppChain<typeof DefaultR
   const balances = useProtokitBalancesStore();
 
   useEffect(() => {
-    if (!network.walletConnected)
+    if (!network.protokitClientStarted) return;
+    if (!network.walletConnected) return;
+
     balances.loadBalance(client, network.address!);
-  }, [chain.block?.height, network.walletConnected]);
+  }, [chain.block?.height, network.protokitClientStarted, network.walletConnected]);
 };
 
 export const useMinaBridge = () => {

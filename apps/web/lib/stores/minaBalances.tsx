@@ -74,7 +74,6 @@ export const useObserveMinaBalance = () => {
   const network = useNetworkStore();
 
   useEffect(() => {
-    console.log('AAAAAAAaa', network.walletConnected, network.minaNetwork?.chainId)
     if (!network.walletConnected || !network.minaNetwork?.chainId) return;
 
     balances.loadBalance(network.minaNetwork?.chainId!, network.address!);
