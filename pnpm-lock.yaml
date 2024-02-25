@@ -95,6 +95,9 @@ importers:
       react-no-ssr:
         specifier: ^1.1.0
         version: 1.1.0(react@18.2.0)
+      swiper:
+        specifier: ^11.0.6
+        version: 11.0.6
       tailwind-merge:
         specifier: ^2.0.0
         version: 2.0.0
@@ -8020,6 +8023,11 @@ packages:
   /supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  /swiper@11.0.6:
+    resolution: {integrity: sha512-W/Me7MQl5rNgdM5x9i3Gll76WsyVpnHn91GhBOyL7RCFUeg62aVnflzlVfIpXzZ/87FtJOfAoDH79ZH2Yq76zA==}
+    engines: {node: '>= 4.7.0'}
+    dev: false
 
   /synckit@0.8.5:
     resolution: {integrity: sha512-L1dapNV6vu2s/4Sputv8xGsCdAVlb5nRDMFU/E27D44l5U6cw1g0dGd45uLc+OXjNMmF4ntiMdCimzcjFKQI8Q==}
