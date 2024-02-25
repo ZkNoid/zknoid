@@ -3,7 +3,7 @@ import {
 } from "@proto-kit/module";
 import { ClientAppChain } from 'zknoid-chain-dev';
 import { createStore } from "zustand";
-import { ZkNoidGameGenre } from "./platform/game_tags";
+import { ZkNoidGameFeature, ZkNoidGameGenre } from "./platform/game_tags";
 
 export type ZkNoidGameConfig<RuntimeModules extends RuntimeModulesRecord = RuntimeModulesRecord
 > = {
@@ -11,6 +11,7 @@ export type ZkNoidGameConfig<RuntimeModules extends RuntimeModulesRecord = Runti
   name: string,
   description: string,
   genre: ZkNoidGameGenre,
+  features: ZkNoidGameFeature[],
   image: string,
   runtimeModules: RuntimeModules,
   page: ({ params, }: { params: { competitionId: string; }; }) => React.ReactNode
@@ -23,6 +24,7 @@ export function createZkNoidGameConfig<RuntimeModules extends RuntimeModulesReco
   name: string,
   description: string,
   genre: ZkNoidGameGenre,
+  features: ZkNoidGameFeature[],
   image: string,
   runtimeModules: RuntimeModules,
   page: ({ params, }: { params: { competitionId: string; }; }) => React.ReactNode,

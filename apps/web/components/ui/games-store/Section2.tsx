@@ -2,9 +2,8 @@ import { IGame } from "@/app/constants/games"
 import Link from "next/link"
 import Image from "next/image"
 import { useState } from "react"
-import { GAME_TAGS } from "@/app/constants/tags"
 import { ALL_GAME_EVENT_TYPES, GAME_EVENTS, ZkNoidEvent, ZkNoidEventType, getEventType, useEventTimer } from "@/lib/platform/game_events"
-import { ALL_GAME_GENRES, ZkNoidGameGenre } from "@/lib/platform/game_tags"
+import { ALL_GAME_FEATURES, ALL_GAME_GENRES, ALL_GAME_TAGS, ZkNoidGameFeature, ZkNoidGameGenre } from "@/lib/platform/game_tags"
 
 const FilterCard = ({ eventType, selected, typesSelected, setTypesSelected }: {
     eventType: ZkNoidEventType,
@@ -44,25 +43,31 @@ const EventCard = ({ headText, description, event }: { headText: string, descrip
     )
 }
 
-const FiltrationBox = (
-    { expanded, title, genres, genresSelected, setGenresSelected }:
-        { expanded: boolean, title: string, genres: ZkNoidGameGenre[], genresSelected: ZkNoidGameGenre[], setGenresSelected: (genres: ZkNoidGameGenre[]) => void }
-) => {
+function FiltrationBox<T extends string>(
+    { expanded, title, items, itemsSelected, setItemsSelected }:
+        { 
+            expanded: boolean, 
+            title: string, 
+            items: T[], 
+            itemsSelected: T[], 
+            setItemsSelected: (genres: T[]) => void 
+        }
+) {
     return (
         <div className="relative p-5 w-full min-h-[80px]">
             <div className="font-bold text-[24px]">
                 {title}
             </div>
-            {genres.map(genre => (
+            {items.map(item => (
                 <div
-                    className={`text-plexmono font-[20] cursor-pointer hover:underline ${genresSelected.includes(genre) ? 'underline' : ''} decoration-left-accent underline-offset-[5px]`}
+                    className={`text-plexmono font-[20] cursor-pointer hover:underline ${itemsSelected.includes(item) ? 'underline' : ''} decoration-left-accent underline-offset-[5px]`}
                     onClick={() => {
-                        setGenresSelected(genresSelected.includes(genre) ?
-                        genresSelected.filter(x => x != genre) :
-                        [...genresSelected, genre])
+                        setItemsSelected(itemsSelected.includes(item) ?
+                        itemsSelected.filter(x => x != item) :
+                        [...itemsSelected, item])
                     }}
                 >
-                    {genre}
+                    {item}
                 </div>
             ))}
 
@@ -89,7 +94,7 @@ const GenreCard = ({ image, genre, genresSelected, setGenresSelected }:
             [...genresSelected, genre])
     }
     }>
-        <div className="w-full h-[50%] bottom-0 left-0 absolute -z-10 bg-[#252525] rounded z-1"></div>
+        <div className="w-full h-[60%] bottom-0 left-0 absolute -z-10 bg-[#252525] rounded z-1"></div>
         <img src={image} className="w-[80%] h-full z-0"></img>
         <div className="z-0 text-[24px]">{genre}</div>
     </div>
@@ -98,6 +103,7 @@ const GenreCard = ({ image, genre, genresSelected, setGenresSelected }:
 export const Section2 = ({ games }: { games: IGame[] }) => {
     const [eventTypesSelected, setEventTypesSelected] = useState<ZkNoidEventType[]>([]);
     const [genresSelected, setGenresSelected] = useState<ZkNoidGameGenre[]>([]);
+    const [featuresSelected, setFeaturesSelected] = useState<ZkNoidGameFeature[]>([]);
 
     return (
         <div className='relative flex flex-col'>
@@ -180,22 +186,23 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
                                 key={0}
                                 expanded={true} 
                                 title="Genre" 
-                                genres={ALL_GAME_GENRES}
-                                genresSelected={genresSelected}
-                                setGenresSelected={setGenresSelected}
+                                items={ALL_GAME_GENRES}
+                                itemsSelected={genresSelected}
+                                setItemsSelected={setGenresSelected}
                             />
                             <FiltrationBox 
                                 key={1}
                                 expanded={false} 
                                 title="Features" 
-                                genres={[]}
-                                genresSelected={genresSelected}
-                                setGenresSelected={setGenresSelected}    
+                                items={ALL_GAME_FEATURES}
+                                itemsSelected={featuresSelected}
+                                setItemsSelected={setFeaturesSelected}    
                             />
                             <div 
                                 className="border-2 rounded-2xl border-left-accent h-[40px] flex items-center justify-center text-[24px] text-left-accent cursor-pointer"
                                 onClick={() => {
                                     setGenresSelected([]);
+                                    setFeaturesSelected([]);
                                     setEventTypesSelected([]);
                                 }}
                             >
@@ -208,8 +215,16 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
                         <div className="text-[32px] font-bold">Games</div>
                         <div className="flex flex-row gap-3">
                             {
-                                GAME_TAGS.map(
-                                    x => <div className="p-1 border rounded cursor-pointer">{x}</div>
+                                ALL_GAME_TAGS.map(
+                                    x => <div 
+                                        className={`p-1 border rounded cursor-pointer ${(genresSelected == x.genres && featuresSelected == x.features) ? 'bg-left-accent text-bg-dark border-left-accent' : 'border-[#F9F8F4]'}`}
+                                        onClick={() => {
+                                            setGenresSelected(x.genres);
+                                            setFeaturesSelected(x.features);
+                                        }}
+                                    >
+                                        {x.name}
+                                    </div>
                                 )
                             }
                         </div>
