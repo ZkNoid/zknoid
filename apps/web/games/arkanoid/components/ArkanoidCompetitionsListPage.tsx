@@ -107,13 +107,13 @@ export default function ArkanoidCompetitionsListPage() {
     <GamePage gameConfig={arkanoidConfig}>
       <div className="flex min-h-screen w-screen flex-col items-center py-10">
         <Link href={`/games/arkanoid/new-competition`} className="p-5">
-          <div className="h-50 w-100 rounded border-solid bg-white p-5">
+          <div className="h-50 w-100 rounded border-solid bg-bg-dark border-2 border-left-accent p-5">
             Create competition{' '}
           </div>
         </Link>
         <h1> Arkanoid competitions list </h1>
-        <table className="min-w-max text-left">
-          <thead className="bg-gray-300 font-semibold">
+        <table className="min-w-max text-left border border-left-accent">
+          <thead className="bg-[#252525] font-semibold">
             <tr>
               <th className="px-6 py-3"> Name </th>
               <th className="px-6 py-3"> Seed </th>
@@ -132,7 +132,7 @@ export default function ArkanoidCompetitionsListPage() {
             {compStore.competitions.map((c) => (
               <tr
                 className={
-                  'border-b ' + (c.funds > 0 ? 'bg-amber-100' : 'bg-white')
+                  'border-y border-left-accent ' + (c.funds > 0 ? 'bg-[#252525]' : 'bg-[#252525]')
                 }
                 key={c.competitionId}
               >

@@ -241,7 +241,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
                                         >
                                             <Link
                                                 className="m-5 flex h-full flex-col gap-5"
-                                                href={`/games/${game.id}/${game.defaultPage}`}
+                                                href={game.active ? `/games/${game.id}/${game.defaultPage}` : '#'}
                                             >
                                                 <Image
                                                     src={game.logo}
