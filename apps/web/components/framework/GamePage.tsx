@@ -7,7 +7,6 @@ import { useObserveProtokitBalance, useProtokitBalancesStore } from '@/lib/store
 import { usePollMinaBlockHeight } from '@/lib/stores/minaChain';
 import { usePollProtokitBlockHeight } from '@/lib/stores/protokitChain';
 import { useMinaBalancesStore, useObserveMinaBalance } from '@/lib/stores/minaBalances';
-import Header from '@/components/Header';
 import { ZkNoidGameConfig } from '@/lib/createConfig';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { RuntimeModulesRecord } from '@proto-kit/module';

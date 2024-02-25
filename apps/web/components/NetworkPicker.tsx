@@ -59,7 +59,7 @@ export default function NetworkPicker() {
     }, []);
 
     return (
-        <div>
+        <div className="relative">
             <HeaderCard 
                 image="/image/cards/mina.png" 
                 text={networkStore.minaNetwork?.name || 'Unsupported network'} 
@@ -67,11 +67,11 @@ export default function NetworkPicker() {
                 isMiddle={true}
             />
             {expanded && (
-                <div className="flex flex-col items-center w-30 py-3 absolute bg-left-accent  text-xs rounded-xl top-20">
+                <div className="flex flex-col items-center w-full absolute bg-middle-accent top-[-px2] text-xs rounded-b-xl">
                     {NETWORKS.map(network => (
                         <div
                             key={network.chainId}
-                            className="cursor-pointer h-full w-full hover:bg-slate-400 py-3 px-7"
+                            className="cursor-pointer h-full w-full hover:bg-slate-400 py-3 px-7 text-black"
                             onClick={() => switchNetwork(network.chainId)}
                         >
                             {network.name}
