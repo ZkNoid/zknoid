@@ -1,13 +1,8 @@
 import { useNetworkStore } from "@/lib/stores/network";
-import { useObserveProtokitBalance, useProtokitBalancesStore } from "@/lib/stores/protokitBalances";
+import { useProtokitBalancesStore } from "@/lib/stores/protokitBalances";
 import { HeaderCard } from "./HeaderCard";
 import { usePollMinaBlockHeight } from "@/lib/stores/minaChain";
 import { useMinaBalancesStore, useObserveMinaBalance } from "@/lib/stores/minaBalances";
-import ProtokitBalanceInfo from "./ProtokitBalanceInfo";
-import AppChainClientContext from "@/lib/contexts/AppChainClientContext";
-import { useMemo } from "react";
-import { buildClient } from "@/lib/utils";
-import { DefaultRuntimeModules } from "@/lib/runtimeModules";
 
 export default function BalanceInfo() {
     const minaBalancesStore = useMinaBalancesStore();
