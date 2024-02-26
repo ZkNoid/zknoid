@@ -18,9 +18,10 @@ export const Section1 = () => {
                     <div className="w-full h-full">
                         <Swiper
                             autoplay={{
-                                delay: 5000,
+                                delay: 8000,
                                 disableOnInteraction: false,
                             }}
+                            speed={600}
                             loop
                             modules={[Autoplay]}
                             className="w-full h-full"
