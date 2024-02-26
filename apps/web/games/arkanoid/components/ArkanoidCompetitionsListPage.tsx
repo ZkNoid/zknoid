@@ -24,7 +24,7 @@ export default function ArkanoidCompetitionsListPage() {
   const networkStore = useNetworkStore();
   const compStore = useArkanoidCompetitionsStore();
 
-  useObserveArkanoidCompetitions()
+  useObserveArkanoidCompetitions();
 
   const client = useContext(AppChainClientContext);
 

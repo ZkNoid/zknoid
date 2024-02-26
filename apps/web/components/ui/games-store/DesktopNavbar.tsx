@@ -29,15 +29,16 @@ export default function DesktopNavbar({ autoconnect }: { autoconnect: boolean })
     }, []);
 
     return (
-        <header className="w-full h-[91px] px-3 lg:px-[50px] items-center flex">
+        <header className="w-full h-[91px] px-3 lg:px-[50px] items-center flex z-10">
             <div className={'flex w-full items-center justify-between'}>
-                <Image
-                    src={'/image/zknoid-logo.svg'}
-                    alt={'ZkNoid logo'}
-                    width={219}
-                    height={47}
-                />
-
+                <Link href={"/"}>
+                    <Image
+                        src={'/image/zknoid-logo.svg'}
+                        alt={'ZkNoid logo'}
+                        width={219}
+                        height={47}
+                    />
+                </Link>
                 {networkStore.walletConnected && (
                     <BalanceInfo />
                 )}

@@ -75,5 +75,5 @@ export const useObserveArkanoidCompetitions = () => {
       client,
       network.address ? PublicKey.fromBase58(network.address) : PublicKey.empty(),
     );
-  }, [chain.block?.height, network.walletConnected, network.protokitClientStarted]);
+  }, [chain.block?.height, network.walletConnected, network.address, network.protokitClientStarted]);
 };

@@ -95,7 +95,6 @@ export default function ArkanoidPage({
       );
       return;
     }
-
     let contractCompetition =
       await client.query.runtime.ArkanoidGameHub.competitions.get(
         UInt64.from(competitionId),

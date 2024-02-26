@@ -1,7 +1,9 @@
 import { dummyProofBase64 } from '@/app/constants/dummyProofBase64';
+import { RuntimeModulesRecord } from '@proto-kit/module';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { GameRecordProof } from 'zknoid-chain';
+import { ClientAppChain } from 'zknoid-chain-dev';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -34,4 +36,27 @@ export async function mockProof<O, P>(
     publicInput: undefined,
     publicOutput,
   });
+}
+
+export function buildClient<RuntimeModules extends RuntimeModulesRecord = RuntimeModulesRecord
+>(modules: RuntimeModules) {
+  const client = ClientAppChain.fromRuntime({
+    modules,
+  });
+
+  client.configure({
+    Runtime: {
+      ArkanoidGameHub: {},
+      Balances: {},
+      RandzuLogic: {}
+    }
+  });
+
+  client.configurePartial({
+    GraphqlClient: {
+      url: process.env.NEXT_PUBLIC_PROTOKIT_URL || "http://127.0.0.1:8080/graphql",
+    },
+  });
+  
+  return client;
 }
