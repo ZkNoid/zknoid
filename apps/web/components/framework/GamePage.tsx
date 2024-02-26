@@ -17,24 +17,25 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
   children,
   gameConfig,
 }: {
-    children: ReactNode,
-    gameConfig: ZkNoidGameConfig<RuntimeModules>,
+  children: ReactNode,
+  gameConfig: ZkNoidGameConfig<RuntimeModules>,
 }) {
   const client = useContext(AppChainClientContext) as ClientAppChain<any>;
 
   usePollMinaBlockHeight();
   usePollProtokitBlockHeight();
   useObserveMinaBalance();
-  useObserveProtokitBalance(client);
-
-  const minaBalances = useMinaBalancesStore();
-  const protokitBalances = useProtokitBalancesStore();
   const networkStore = useNetworkStore();
 
   useEffect(() => {
-    console.log('Starting client')
-    client.start().then(() => networkStore.onProtokitClientStarted());
+    console.log('Starting client');
+
+    client.start().then(() =>
+      networkStore.onProtokitClientStarted())
   }, []);
+
+  // Order is important
+  useObserveProtokitBalance({});
 
   return (
     <>

@@ -77,5 +77,5 @@ export const useObserveMinaBalance = () => {
     if (!network.walletConnected || !network.minaNetwork?.chainId) return;
 
     balances.loadBalance(network.minaNetwork?.chainId!, network.address!);
-  }, [chain.block?.height, network.walletConnected, network.minaNetwork?.chainId]);
+  }, [chain.block?.height, network.walletConnected, network.minaNetwork?.chainId, network.address]);
 };

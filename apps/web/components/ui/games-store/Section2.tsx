@@ -74,8 +74,8 @@ function FiltrationBox<T extends string>(
 
             <div className="absolute -z-10 top-0 left-0 w-full h-full flex flex-col">
                 <svg viewBox="0 0 351 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 17.5234V111.731V174.523C1 182.808 7.71573 189.523 16 189.523H335C343.284 189.523 350 182.808 350 174.523V58.1101C350 54.1286 348.417 50.3105 345.6 47.4969L304.963 6.91027C302.151 4.10124 298.338 2.52344 294.363 2.52344H16C7.71573 2.52344 1 9.23917 1 17.5234Z" stroke="#D2FF00" stroke-width="2" />
-                    <path d="M348 2.52344H312.912C311.118 2.52344 310.231 4.7018 311.515 5.95459L346.603 40.2072C347.87 41.4438 350 40.5463 350 38.7761V4.52344C350 3.41887 349.105 2.52344 348 2.52344Z" fill={expanded ? "#D2FF00" : ""} stroke="#D2FF00" stroke-width="2" />
+                    <path d="M1 17.5234V111.731V174.523C1 182.808 7.71573 189.523 16 189.523H335C343.284 189.523 350 182.808 350 174.523V58.1101C350 54.1286 348.417 50.3105 345.6 47.4969L304.963 6.91027C302.151 4.10124 298.338 2.52344 294.363 2.52344H16C7.71573 2.52344 1 9.23917 1 17.5234Z" stroke="#D2FF00" strokeWidth="2" />
+                    <path d="M348 2.52344H312.912C311.118 2.52344 310.231 4.7018 311.515 5.95459L346.603 40.2072C347.87 41.4438 350 40.5463 350 38.7761V4.52344C350 3.41887 349.105 2.52344 348 2.52344Z" fill={expanded ? "#D2FF00" : ""} stroke="#D2FF00" strokeWidth="2" />
                     <rect x="331.775" y="6.89062" width="20" height="2" transform="rotate(45 331.775 6.89062)" fill={expanded ? "#252525" : "#D2FF00"} />
                     <rect x="345.924" y="8.30469" width="20" height="2" transform="rotate(135 345.924 8.30469)" fill={expanded ? "#252525" : "#D2FF00"} />
                 </svg>
@@ -110,11 +110,11 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
         <div className='relative flex flex-col'>
             <div className="top-0 left-0 w-full h-full absolute -z-10 flex flex-col">
                 <svg viewBox="0 0 1502 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
-                    <path d="M1451 2341H51C23.3858 2341 1 2318.37 1 2290.75V107V51C1 23.3857 23.3858 1 51 1H650.474C663.726 1 676.436 6.26099 685.812 15.627L723.596 53.373C732.971 62.739 745.681 68 758.933 68H1451C1478.61 68 1501 90.3857 1501 118V182V2291C1501 2318.61 1478.61 2341 1451 2341Z" stroke="#D2FF00" stroke-width="2" />
+                    <path d="M1451 2341H51C23.3858 2341 1 2318.37 1 2290.75V107V51C1 23.3857 23.3858 1 51 1H650.474C663.726 1 676.436 6.26099 685.812 15.627L723.596 53.373C732.971 62.739 745.681 68 758.933 68H1451C1478.61 68 1501 90.3857 1501 118V182V2291C1501 2318.61 1478.61 2341 1451 2341Z" stroke="#D2FF00" strokeWidth="2" />
                 </svg>
                 <div className="border-x-2 border-left-accent flex-grow" />
                 <svg viewBox="0 2142 1502 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
-                    <path d="M1451 2341H51C23.3858 2341 1 2318.37 1 2290.75V107V51C1 23.3857 23.3858 1 51 1H650.474C663.726 1 676.436 6.26099 685.812 15.627L723.596 53.373C732.971 62.739 745.681 68 758.933 68H1451C1478.61 68 1501 90.3857 1501 118V182V2291C1501 2318.61 1478.61 2341 1451 2341Z" stroke="#D2FF00" stroke-width="2" />
+                    <path d="M1451 2341H51C23.3858 2341 1 2318.37 1 2290.75V107V51C1 23.3857 23.3858 1 51 1H650.474C663.726 1 676.436 6.26099 685.812 15.627L723.596 53.373C732.971 62.739 745.681 68 758.933 68H1451C1478.61 68 1501 90.3857 1501 118V182V2291C1501 2318.61 1478.61 2341 1451 2341Z" stroke="#D2FF00" strokeWidth="2" />
                 </svg>
             </div>
 
@@ -219,6 +219,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
                             {
                                 ALL_GAME_TAGS.map(
                                     x => <div 
+                                        key={x.name}
                                         className={`p-1 border rounded cursor-pointer ${(genresSelected == x.genres && featuresSelected == x.features) ? 'bg-left-accent text-bg-dark border-left-accent' : 'border-[#F9F8F4]'}`}
                                         onClick={() => {
                                             setGenresSelected(x.genres);

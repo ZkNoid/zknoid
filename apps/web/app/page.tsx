@@ -10,8 +10,12 @@ import { SOCIALS } from '@/constants/socials';
 import { Section1 } from '@/components/ui/games-store/Section1';
 import { CentralBlock } from '@/components/ui/games-store/CentralBlock';
 import { Section2 } from '@/components/ui/games-store/Section2';
-
+import dynamic from 'next/dynamic';
 const zkNoidConfig = import('@/games/config');
+
+const StoreProtokitUpdater = dynamic(() => import("@/components/ui/games-store/StoreProtokitUpdater"), {
+  ssr: false,
+});
 
 export default function Home() {
   const [games, setGames] = useState<IGame[]>(defaultGames.concat(announcedGames));
@@ -33,6 +37,7 @@ export default function Home() {
 
   return (
     <div className='flex min-h-screen flex-col'>
+      <StoreProtokitUpdater />
       <DesktopNavbar autoconnect={true} />
 
       <main className="px-5 flex flex-col">

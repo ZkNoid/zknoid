@@ -54,7 +54,7 @@ export const useWorkerClientStore = create<ClientState, [['zustand/immer', never
 export const useRegisterWorkerClient = () => {
     const workerClientStore = useWorkerClientStore();
 
-    useMemo(() => {
+    useEffect(() => {
         workerClientStore.start();
     }, []);
   };

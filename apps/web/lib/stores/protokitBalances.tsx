@@ -41,7 +41,6 @@ export const useProtokitBalancesStore = create<
         state.loading = true;
       });
 
-
       const balance = await client.query.runtime.Balances.balances.get(
         PublicKey.fromBase58(address),
       );
@@ -54,17 +53,19 @@ export const useProtokitBalancesStore = create<
   })),
 );
 
-export const useObserveProtokitBalance = (client: ClientAppChain<typeof DefaultRuntimeModules>) => {
+export const useObserveProtokitBalance = ({client}: {client?: ClientAppChain<typeof DefaultRuntimeModules>}) => {
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
   const balances = useProtokitBalancesStore();
-
+  const contextClient = useContext<ClientAppChain<typeof DefaultRuntimeModules> | undefined>(AppChainClientContext);
+  const clientToUse = client || contextClient;
   useEffect(() => {
     if (!network.protokitClientStarted) return;
     if (!network.walletConnected) return;
+    if (!clientToUse) throw Error("Client is not set");
 
-    balances.loadBalance(client, network.address!);
-  }, [chain.block?.height, network.protokitClientStarted, network.walletConnected]);
+    balances.loadBalance(clientToUse, network.address!);
+  }, [chain.block?.height, network.protokitClientStarted, network.walletConnected, network.address]);
 };
 
 export const useMinaBridge = () => {
