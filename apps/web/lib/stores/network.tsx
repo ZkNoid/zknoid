@@ -1,8 +1,9 @@
-'use client'
-import { NETWORKS, Network } from "@/app/constants/networks";
-import { PendingTransaction } from "@proto-kit/sequencer";
-import { create } from "zustand";
-import { immer } from "zustand/middleware/immer";
+'use client';
+import { PendingTransaction } from '@proto-kit/sequencer';
+import { create } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
+
+import { NETWORKS, Network } from '@/app/constants/networks';
 
 export interface NetworkState {
   minaNetwork: Network | undefined;
@@ -20,25 +21,25 @@ export interface NetworkState {
   removePendingL2Transaction: (pendingTransaction: PendingTransaction) => void;
 }
 
-export const useNetworkStore = create<NetworkState, [["zustand/immer", never]]>(
+export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
   immer((set) => ({
     walletConnected: false,
     protokitClientStarted: false,
     minaNetwork: undefined,
     onProtokitClientStarted() {
       set({
-        protokitClientStarted: true
+        protokitClientStarted: true,
       });
     },
     async setNetwork(chainId: string) {
       const O1js = await import('o1js');
 
       set((state) => {
-        const minaNetwork = NETWORKS.find(x => x.chainId == chainId);
+        const minaNetwork = NETWORKS.find((x) => x.chainId == chainId);
         state.minaNetwork = minaNetwork;
         if (minaNetwork) {
-          const Network = O1js.Mina.Network(minaNetwork?.graphql);;
-          O1js.Mina.setActiveInstance(Network);  
+          const Network = O1js.Mina.Network(minaNetwork?.graphql);
+          O1js.Mina.setActiveInstance(Network);
         }
       });
     },
@@ -67,10 +68,14 @@ export const useNetworkStore = create<NetworkState, [["zustand/immer", never]]>(
     },
     removePendingL2Transaction(pendingTransaction) {
       set((state) => {
-        state.pendingL2Transactions = state.pendingL2Transactions.filter((tx) => {
-          return tx.hash().toString() !== pendingTransaction.hash().toString();
-        });
+        state.pendingL2Transactions = state.pendingL2Transactions.filter(
+          (tx) => {
+            return (
+              tx.hash().toString() !== pendingTransaction.hash().toString()
+            );
+          }
+        );
       });
     },
-  })),
+  }))
 );

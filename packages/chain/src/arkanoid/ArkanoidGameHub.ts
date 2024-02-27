@@ -7,15 +7,14 @@ import {
     Struct,
     Int64,
 } from 'o1js';
+import { runtimeMethod, runtimeModule } from '@proto-kit/module';
+import { Gamehub } from '../engine/GameHub';
 import { Bricks, GameInputs } from './types';
-
 import {
     GameContext,
     createBricksBySeed,
     loadGameContext,
 } from './GameContext';
-import { Gamehub } from '../engine/GameHub';
-import { runtimeMethod, runtimeModule } from '@proto-kit/module';
 
 export class GameRecordPublicOutput extends Struct({
     score: UInt64,
@@ -27,7 +26,7 @@ export class GameProcessPublicOutput extends Struct({
 }) {}
 
 export function checkMapGeneration(seed: Field): GameContext {
-    let bricks = createBricksBySeed(seed);
+    const bricks = createBricksBySeed(seed);
     return loadGameContext(bricks, Bool(false));
 }
 
@@ -59,7 +58,7 @@ export function processTicks(
 ): GameProcessPublicOutput {
     prevProof.verify();
 
-    let gameContext = prevProof.publicOutput.currentState;
+    const gameContext = prevProof.publicOutput.currentState;
     for (let i = 0; i < inputs.ticks.length; i++) {
         gameContext.processTick(inputs.ticks[i]);
     }

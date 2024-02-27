@@ -1,4 +1,4 @@
-import { ZkNoidGameGenre } from "@/lib/platform/game_tags";
+import { ZkNoidGameGenre } from '@/lib/platform/game_tags';
 
 export interface IGame {
   id: string;

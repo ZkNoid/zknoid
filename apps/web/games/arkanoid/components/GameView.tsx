@@ -286,7 +286,7 @@ export const GameView = (props: IGameViewProps) => {
       contractBall.y,
       contractBall.radius,
       0,
-      Math.PI * 2,
+      Math.PI * 2
     );
     ctx!.strokeStyle = 'red';
     ctx!.stroke();
@@ -307,7 +307,7 @@ export const GameView = (props: IGameViewProps) => {
         ctx!.fillText(
           (brick.value - 1).toString(),
           brick.x + brick.w / 4,
-          brick.y + (3 * brick.h) / 4,
+          brick.y + (3 * brick.h) / 4
         );
       }
     });
@@ -514,7 +514,7 @@ export const GameView = (props: IGameViewProps) => {
               y: Int64.from(0),
             },
             value: UInt64.from(1),
-          }),
+          })
       ),
     });
 
@@ -596,7 +596,7 @@ export const GameView = (props: IGameViewProps) => {
     prevPos: [number, number],
     newPos: [number, number],
     prevSpeed: [number, number],
-    newSpeed: [number, number],
+    newSpeed: [number, number]
   ): [number, number] => {
     // ay = bx + d
     let a1 = prevSpeed[0];
@@ -641,7 +641,7 @@ export const GameView = (props: IGameViewProps) => {
         new Tick({
           action: Int64.from(action),
           momentum: Int64.from(momentum),
-        }),
+        })
       );
       let [x, y] = [
         gameContext.ball.position.x * 1,
@@ -667,7 +667,7 @@ export const GameView = (props: IGameViewProps) => {
         new Tick({
           action: Int64.from(action),
           momentum: Int64.from(momentum),
-        }),
+        })
       );
       let [x, y] = [
         gameContext.ball.position.x * 1,
@@ -687,7 +687,7 @@ export const GameView = (props: IGameViewProps) => {
       // #TODO: Change calculation for brick collision. For now works only with border collisions, but works bad for brick collision.
       if (prevSpeed[0] == -newSpeed[0] || prevSpeed[1] == -newSpeed[1]) {
         contractBallTrace.push(
-          getCollisionPoint(prevPos, [x, y], prevSpeed, newSpeed),
+          getCollisionPoint(prevPos, [x, y], prevSpeed, newSpeed)
         );
       }
 

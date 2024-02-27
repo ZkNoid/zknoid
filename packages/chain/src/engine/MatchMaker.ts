@@ -4,7 +4,8 @@ import {
   state,
   runtimeMethod,
 } from "@proto-kit/module";
-import { Option, StateMap, assert } from "@proto-kit/protocol";
+import type { Option} from "@proto-kit/protocol";
+import { StateMap, assert } from "@proto-kit/protocol";
 import { PublicKey, Struct, UInt64, Provable, Bool, UInt32, Poseidon, Field, Int64 } from "o1js";
 
 interface MatchMakerConfig { }

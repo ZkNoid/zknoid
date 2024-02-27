@@ -1,84 +1,92 @@
-import { NETWORKS } from "@/app/constants/networks";
-import { useNetworkStore } from "@/lib/stores/network";
-import { walletInstalled } from "@/lib/helpers";
-import { useEffect, useState } from "react";
-import { HeaderCard } from "./ui/games-store/HeaderCard";
-import { useRegisterWorkerClient } from "@/lib/stores/workerClient";
+import { useEffect, useState } from 'react';
+
+import { NETWORKS } from '@/app/constants/networks';
+import { walletInstalled } from '@/lib/helpers';
+import { useNetworkStore } from '@/lib/stores/network';
+
+import { useRegisterWorkerClient } from '@/lib/stores/workerClient';
+
+import { HeaderCard } from './ui/games-store/HeaderCard';
 
 export default function NetworkPicker() {
-    const [expanded, setExpanded] = useState(false);
-    const networkStore = useNetworkStore();
-    useRegisterWorkerClient();
-    
-    
-    const switchNetwork = async (chainId: string) => {
-        await (window as any).mina.switchChain({
-            chainId
-        });
+  const [expanded, setExpanded] = useState(false);
+  const networkStore = useNetworkStore();
+  useRegisterWorkerClient();
 
+  const switchNetwork = async (chainId: string) => {
+    await (window as any).mina.switchChain({
+      chainId,
+    });
+
+    networkStore.setNetwork(chainId);
+    setExpanded(false);
+  };
+
+  useEffect(() => {
+    if (!walletInstalled()) return;
+
+    (async () => {
+      const listener = ({
+        chainId,
+        name,
+      }: {
+        chainId: string;
+        name: string;
+      }) => {
         networkStore.setNetwork(chainId);
-        setExpanded(false);
-    }
+      };
 
-    useEffect(() => {
-        if (!walletInstalled()) return;
+      (window.mina as any).on('chainChanged', listener);
 
-        (async () => {
-        
-            const listener = ({chainId, name}: {chainId: string, name: string}) => {
-                networkStore.setNetwork(chainId);
-            };
+      return () => {
+        (window.mina as any).removeListener(listener);
+      };
+    })();
+  }, [networkStore.walletConnected]);
 
-            (window.mina as any).on('chainChanged', listener);
+  useEffect(() => {
+    if (!walletInstalled()) return;
 
-            return () => {
-                (window.mina as any).removeListener(listener);
-            }
-        })();
-    }, [networkStore.walletConnected]);
+    (async () => {
+      const [account] = await (window as any).mina.requestAccounts();
 
-    useEffect(() => {
-        if (!walletInstalled()) return;
+      networkStore.onWalletConnected(account);
 
-        (async () => {
-            const [account] = await (window as any).mina.requestAccounts();
+      const listener = (accounts: string[]) => {
+        const [account] = accounts;
+        networkStore.onWalletConnected(account);
+      };
 
-            networkStore.onWalletConnected(account);
+      (window.mina as any).on('accountsChanged', listener);
 
-            const listener = (accounts: string[]) => {
-                const [account] = accounts;
-                networkStore.onWalletConnected(account);
-            };
+      return () => {
+        (window.mina as any).removeListener(listener);
+      };
+    })();
+  }, []);
 
-            (window.mina as any).on('accountsChanged', listener);
-
-            return () => {
-                (window.mina as any).removeListener(listener);
-            }
-        })();
-    }, []);
-
-    return (
-        <div className="relative">
-            <HeaderCard 
-                image="/image/cards/mina.png" 
-                text={networkStore.minaNetwork?.name || 'Unsupported network'} 
-                onClick={() => setExpanded(!expanded)} toggle={true} 
-                isMiddle={true}
-            />
-            {expanded && (
-                <div className="flex flex-col items-center w-full absolute bg-middle-accent top-[-px2] text-xs rounded-b-xl">
-                    {NETWORKS.map(network => (
-                        <div
-                            key={network.chainId}
-                            className="cursor-pointer h-full w-full hover:bg-slate-400 py-3 px-7 text-black"
-                            onClick={() => switchNetwork(network.chainId)}
-                        >
-                            {network.name}
-                        </div>
-                    ))}
-                </div>
-            )}
+  return (
+    <div className="relative">
+      <HeaderCard
+        image="/image/cards/mina.png"
+        text={networkStore.minaNetwork?.name || 'Unsupported network'}
+        onClick={() => setExpanded(!expanded)}
+        toggle={true}
+        isMiddle={true}
+      />
+      {expanded && (
+        <div className="absolute top-[-px2] flex w-full flex-col items-center rounded-b-xl bg-middle-accent text-xs">
+          {NETWORKS.map((network) => (
+            <div
+              key={network.chainId}
+              className="h-full w-full cursor-pointer px-7 py-3 text-black hover:bg-slate-400"
+              onClick={() => switchNetwork(network.chainId)}
+            >
+              {network.name}
+            </div>
+          ))}
         </div>
-    )
+      )}
+    </div>
+  );
 }

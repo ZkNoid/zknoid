@@ -1,10 +1,13 @@
-import { create } from "zustand";
-import { immer } from "zustand/middleware/immer";
-import { useContext, useEffect } from "react";
-import { useChainStore } from "./minaChain";
-import { useNetworkStore } from "./network";
-import { NETWORKS } from "@/app/constants/networks";
-import AppChainClientContext from "../contexts/AppChainClientContext";
+import { useContext, useEffect } from 'react';
+import { create } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
+
+import { NETWORKS } from '@/app/constants/networks';
+
+import { useChainStore } from './minaChain';
+import { useNetworkStore } from './network';
+
+import AppChainClientContext from '../contexts/AppChainClientContext';
 
 export interface BalancesState {
   loading: boolean;
@@ -17,17 +20,19 @@ export interface BalancesState {
 
 export interface BalanceQueryResponse {
   data: {
-    account: {
-      balance: {
-        total: string
-      };
-    } | undefined;
+    account:
+      | {
+          balance: {
+            total: string;
+          };
+        }
+      | undefined;
   };
 }
 
 export const useMinaBalancesStore = create<
   BalancesState,
-  [["zustand/immer", never]]
+  [['zustand/immer', never]]
 >(
   immer((set) => ({
     loading: Boolean(false),
@@ -37,13 +42,15 @@ export const useMinaBalancesStore = create<
         state.loading = true;
       });
 
-      const response = await fetch(NETWORKS.find(x => x.chainId == chainId)?.graphql!, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query: `
+      const response = await fetch(
+        NETWORKS.find((x) => x.chainId == chainId)?.graphql!,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: `
             query {
               account(publicKey: "${address}") {
                 balance {
@@ -54,18 +61,19 @@ export const useMinaBalancesStore = create<
               }
             }
           `,
-        }),
-      });
+          }),
+        }
+      );
 
       const { data } = (await response.json()) as BalanceQueryResponse;
-      const balance = BigInt(data.account?.balance.total ?? "0");
+      const balance = BigInt(data.account?.balance.total ?? '0');
 
       set((state) => {
         state.loading = false;
         state.balances[address] = balance ?? 0n;
       });
     },
-  })),
+  }))
 );
 
 export const useObserveMinaBalance = () => {
@@ -77,5 +85,10 @@ export const useObserveMinaBalance = () => {
     if (!network.walletConnected || !network.minaNetwork?.chainId) return;
 
     balances.loadBalance(network.minaNetwork?.chainId!, network.address!);
-  }, [chain.block?.height, network.walletConnected, network.minaNetwork?.chainId, network.address]);
+  }, [
+    chain.block?.height,
+    network.walletConnected,
+    network.minaNetwork?.chainId,
+    network.address,
+  ]);
 };

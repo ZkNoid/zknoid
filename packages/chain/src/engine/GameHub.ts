@@ -5,17 +5,17 @@ import {
     runtimeMethod,
 } from '@proto-kit/module';
 import { State, StateMap, assert } from '@proto-kit/protocol';
-import { UInt64, PublicKey, Provable, Proof, Bool } from 'o1js';
+import type { Proof} from 'o1js';
+import { UInt64, PublicKey, Provable, Bool } from 'o1js';
+import { inject } from 'tsyringe';
 import {
     Competition,
     GameRecordKey,
     LeaderboardIndex,
     LeaderboardScore,
 } from '../arkanoid/types';
-
 import { Balances } from '../framework/balances';
 
-import { inject } from 'tsyringe';
 
 export interface IScoreable {
     score: UInt64;
@@ -113,14 +113,14 @@ export class Gamehub<
         });
 
         // Check for registration
-        let registrationNeeded =
+        const registrationNeeded =
             this.competitions.get(competitionId).value.prereg;
-        let userRegistration = this.registrations.get(gameKey).value;
+        const userRegistration = this.registrations.get(gameKey).value;
 
         assert(registrationNeeded.not().or(userRegistration));
 
         const currentScore = this.gameRecords.get(gameKey).value;
-        let newScore = gameRecordProof.publicOutput.score;
+        const newScore = gameRecordProof.publicOutput.score;
 
         if (currentScore < newScore) {
             // Do we need provable here?

@@ -1,9 +1,10 @@
-import { dummyProofBase64 } from '@/app/constants/dummyProofBase64';
 import { RuntimeModulesRecord } from '@proto-kit/module';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { GameRecordProof } from 'zknoid-chain';
 import { ClientAppChain } from 'zknoid-chain-dev';
+
+import { dummyProofBase64 } from '@/app/constants/dummyProofBase64';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -28,7 +29,7 @@ export async function mockProof<O, P>(
     publicInput: any;
     publicOutput: any;
     maxProofsVerified: 0 | 2 | 1;
-  }) => P,
+  }) => P
 ): Promise<P> {
   return new ProofType({
     proof: dummy.proof,
@@ -38,7 +39,8 @@ export async function mockProof<O, P>(
   });
 }
 
-export function buildClient<RuntimeModules extends RuntimeModulesRecord = RuntimeModulesRecord
+export function buildClient<
+  RuntimeModules extends RuntimeModulesRecord = RuntimeModulesRecord,
 >(modules: RuntimeModules) {
   const client = ClientAppChain.fromRuntime({
     modules,
@@ -48,15 +50,16 @@ export function buildClient<RuntimeModules extends RuntimeModulesRecord = Runtim
     Runtime: {
       ArkanoidGameHub: {},
       Balances: {},
-      RandzuLogic: {}
-    }
+      RandzuLogic: {},
+    },
   });
 
   client.configurePartial({
     GraphqlClient: {
-      url: process.env.NEXT_PUBLIC_PROTOKIT_URL || "http://127.0.0.1:8080/graphql",
+      url:
+        process.env.NEXT_PUBLIC_PROTOKIT_URL || 'http://127.0.0.1:8080/graphql',
     },
   });
-  
+
   return client;
 }

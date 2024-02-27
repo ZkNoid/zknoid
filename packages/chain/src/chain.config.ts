@@ -1,8 +1,6 @@
 import { LocalhostAppChain } from "@proto-kit/cli";
-import runtime from "./runtime";
 import { Runtime } from "@proto-kit/module";
 import { VanillaProtocol } from "@proto-kit/protocol";
-
 import {
   BlockProducerModule,
   InMemoryDatabase,
@@ -25,11 +23,11 @@ import {
   QueryGraphqlModule,
   UnprovenBlockResolver,
 } from "@proto-kit/api";
-
 import {
   StateServiceQueryModule,
   BlockStorageNetworkStateModule,
 } from "@proto-kit/sdk";
+import runtime from "./runtime";
 
 @sequencerModule()
 class StartupScripts extends SequencerModule {
@@ -65,7 +63,7 @@ const appChain = LocalhostAppChain.from({
           UnprovenBlockResolver,
         },
       }),
-      StartupScripts: StartupScripts,
+      StartupScripts,
     },
   }),
 

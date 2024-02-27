@@ -17,13 +17,11 @@ import {
     checkMapGeneration,
     processTicks,
 } from './ArkanoidGameHub.js';
-
 import {
     GameContext,
     loadGameContext,
     createBricksBySeed,
 } from './GameContext.js';
-
 import {
     // GameHub,
     // GameRecordProof,
@@ -37,7 +35,6 @@ import {
     Competition,
     LeaderboardIndex,
 } from './types.js';
-
 import {
     BRICK_HALF_WIDTH,
     FIELD_SIZE,
@@ -56,7 +53,6 @@ import {
     ACCELERATION_TIME,
     ACCELERATION,
 } from './constants.js';
-
 import { defaultLevel, getDefaultCompetitions } from './levels.js';
 
 export {

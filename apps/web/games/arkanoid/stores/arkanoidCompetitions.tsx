@@ -14,7 +14,10 @@ import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 export interface CompetitionsState {
   loading: boolean;
   competitions: ICompetition[];
-  loadCompetitions: (client: ClientAppChain<typeof arkanoidConfig.runtimeModules>, player: PublicKey) => Promise<void>;
+  loadCompetitions: (
+    client: ClientAppChain<typeof arkanoidConfig.runtimeModules>,
+    player: PublicKey
+  ) => Promise<void>;
 }
 
 export const useArkanoidCompetitionsStore = create<
@@ -24,7 +27,10 @@ export const useArkanoidCompetitionsStore = create<
   immer((set) => ({
     loading: false,
     competitions: [],
-    async loadCompetitions(client: ClientAppChain<typeof arkanoidConfig.runtimeModules>, player: PublicKey) {
+    async loadCompetitions(
+      client: ClientAppChain<typeof arkanoidConfig.runtimeModules>,
+      player: PublicKey
+    ) {
       set((state) => {
         state.loading = true;
       });
@@ -34,7 +40,7 @@ export const useArkanoidCompetitionsStore = create<
       for (let i = 0; i < lastCompetitionId; i++) {
         let curCompetition =
           await client.query.runtime.ArkanoidGameHub.competitions.get(
-            UInt64.from(i),
+            UInt64.from(i)
           );
         let registered =
           await client.query.runtime.ArkanoidGameHub.registrations.get(
@@ -42,7 +48,7 @@ export const useArkanoidCompetitionsStore = create<
             new GameRecordKey({
               competitionId: UInt64.from(i),
               player,
-            }),
+            })
           );
         registered ??= Bool(false);
 
@@ -57,23 +63,32 @@ export const useArkanoidCompetitionsStore = create<
         state.loading = false;
       });
     },
-  })),
+  }))
 );
 
 export const useObserveArkanoidCompetitions = () => {
-  const client = useContext<ClientAppChain<typeof arkanoidConfig.runtimeModules> | undefined>(AppChainClientContext);
+  const client = useContext<
+    ClientAppChain<typeof arkanoidConfig.runtimeModules> | undefined
+  >(AppChainClientContext);
   console.log('Client', client);
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
   const competitions = useArkanoidCompetitionsStore();
 
   useEffect(() => {
-    if (!client) throw Error("Client not set in context");
+    if (!client) throw Error('Client not set in context');
     if (!network.protokitClientStarted) return;
 
     competitions.loadCompetitions(
       client,
-      network.address ? PublicKey.fromBase58(network.address) : PublicKey.empty(),
+      network.address
+        ? PublicKey.fromBase58(network.address)
+        : PublicKey.empty()
     );
-  }, [chain.block?.height, network.walletConnected, network.address, network.protokitClientStarted]);
+  }, [
+    chain.block?.height,
+    network.walletConnected,
+    network.address,
+    network.protokitClientStarted,
+  ]);
 };

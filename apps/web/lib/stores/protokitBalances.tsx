@@ -1,16 +1,19 @@
-import "reflect-metadata";
+import 'reflect-metadata';
 
-import { create } from 'zustand';
-
-import { immer } from 'zustand/middleware/immer';
+import { ClientAppChain } from '@proto-kit/sdk';
 import { PendingTransaction, UnsignedTransaction } from '@proto-kit/sequencer';
 import { AccountUpdate, Mina, PublicKey, UInt64 } from 'o1js';
 import { useCallback, useContext, useEffect } from 'react';
-import { useProtokitChainStore } from './protokitChain';
+import { create } from 'zustand';
+
+import { immer } from 'zustand/middleware/immer';
+
 import { BRIDGE_ADDR } from '@/app/constants';
+
 import { useNetworkStore } from './network';
+import { useProtokitChainStore } from './protokitChain';
 import AppChainClientContext from '../contexts/AppChainClientContext';
-import { ClientAppChain } from '@proto-kit/sdk';
+
 import { DefaultRuntimeModules } from '../runtimeModules';
 
 export interface BalancesState {
@@ -19,11 +22,14 @@ export interface BalancesState {
     // address - balance
     [key: string]: bigint;
   };
-  loadBalance: (client: ClientAppChain<typeof DefaultRuntimeModules>, address: string) => Promise<void>;
+  loadBalance: (
+    client: ClientAppChain<typeof DefaultRuntimeModules>,
+    address: string
+  ) => Promise<void>;
 }
 
 function isPendingTransaction(
-  transaction: PendingTransaction | UnsignedTransaction | undefined,
+  transaction: PendingTransaction | UnsignedTransaction | undefined
 ): asserts transaction is PendingTransaction {
   if (!(transaction instanceof PendingTransaction))
     throw new Error('Transaction is not a PendingTransaction');
@@ -36,13 +42,16 @@ export const useProtokitBalancesStore = create<
   immer((set) => ({
     loading: Boolean(false),
     balances: {},
-    async loadBalance(client: ClientAppChain<typeof DefaultRuntimeModules>, address: string) {
+    async loadBalance(
+      client: ClientAppChain<typeof DefaultRuntimeModules>,
+      address: string
+    ) {
       set((state) => {
         state.loading = true;
       });
 
       const balance = await client.query.runtime.Balances.balances.get(
-        PublicKey.fromBase58(address),
+        PublicKey.fromBase58(address)
       );
 
       set((state) => {
@@ -50,27 +59,37 @@ export const useProtokitBalancesStore = create<
         state.balances[address] = balance?.toBigInt() ?? BigInt(0);
       });
     },
-  })),
+  }))
 );
 
-export const useObserveProtokitBalance = ({client}: {client?: ClientAppChain<typeof DefaultRuntimeModules>}) => {
+export const useObserveProtokitBalance = ({
+  client,
+}: {
+  client?: ClientAppChain<typeof DefaultRuntimeModules>;
+}) => {
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
   const balances = useProtokitBalancesStore();
-  const contextClient = useContext<ClientAppChain<typeof DefaultRuntimeModules> | undefined>(AppChainClientContext);
-  const clientToUse = client || contextClient;
   useEffect(() => {
     if (!network.protokitClientStarted) return;
     if (!network.walletConnected) return;
-    if (!clientToUse) throw Error("Client is not set");
+    if (!client) throw Error('Client is not set');
 
-    balances.loadBalance(clientToUse, network.address!);
-  }, [chain.block?.height, network.protokitClientStarted, network.walletConnected, network.address]);
+    balances.loadBalance(client, network.address!);
+  }, [
+    chain.block?.height,
+    network.protokitClientStarted,
+    network.walletConnected,
+    network.address,
+  ]);
 };
 
 export const useMinaBridge = () => {
   const balancesStore = useProtokitBalancesStore();
   const network = useNetworkStore();
+  const contextAppChainClient = useContext(
+    AppChainClientContext
+  ) as ClientAppChain<any> as ClientAppChain<typeof DefaultRuntimeModules>;
 
   return useCallback(
     async (amount: number) => {
@@ -78,8 +97,8 @@ export const useMinaBridge = () => {
       if (balancesStore.balances[network.address]) return;
 
       const l1tx = await Mina.transaction(() => {
-        let senderUpdate = AccountUpdate.create(
-          PublicKey.fromBase58(network.address!),
+        const senderUpdate = AccountUpdate.create(
+          PublicKey.fromBase58(network.address!)
         );
         senderUpdate.requireSignature();
         console.log(BRIDGE_ADDR);
@@ -98,8 +117,6 @@ export const useMinaBridge = () => {
           memo: 'zknoid.io',
         },
       });
-      
-      const contextAppChainClient = useContext(AppChainClientContext) as ClientAppChain<any> as ClientAppChain<typeof DefaultRuntimeModules>;
 
       const balances = contextAppChainClient.runtime.resolve('Balances');
       const sender = PublicKey.fromBase58(network.address!);
@@ -115,6 +132,6 @@ export const useMinaBridge = () => {
 
       network.addPendingL2Transaction(l2tx!.transaction!);
     },
-    [network.walletConnected, balancesStore.balances],
+    [network.walletConnected, balancesStore.balances]
   );
 };

@@ -1,6 +1,6 @@
 import { Field, Int64, Poseidon, Struct } from 'o1js';
 
-const shift64divisor = '0b' + '1' + '0'.repeat(64);
+const shift64divisor = `0b` + `1${  '0'.repeat(64)}`;
 
 // TODO: Optimize
 // Now only 64 fits of 256 bits of field used. So can be 4x optimized
@@ -11,10 +11,10 @@ export class RandomGenerator extends Struct({
     curValue: Field,
 }) {
     static from(seed: Field): RandomGenerator {
-        let source = Poseidon.hash([seed]);
+        const source = Poseidon.hash([seed]);
 
         return new RandomGenerator({
-            seed: seed,
+            seed,
             source,
             curValue: source,
         });
@@ -31,7 +31,7 @@ export class RandomGenerator extends Struct({
     getNumbers(maxValues: number[]): [Int64, Int64, Int64, Int64] {
         this.source = Poseidon.hash([this.source]);
         this.curValue = this.source;
-        let result: [Int64, Int64, Int64, Int64] = [
+        const result: [Int64, Int64, Int64, Int64] = [
             Int64.from(0),
             Int64.from(0),
             Int64.from(0),

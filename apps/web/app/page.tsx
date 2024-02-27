@@ -1,46 +1,62 @@
-'use client'
+'use client';
+
+import dynamic from 'next/dynamic';
+import Image from 'next/image';
+
+import Link from 'next/link';
+
+import { useEffect, useState } from 'react';
 
 import { Footer } from '@/components/Footer';
-import Image from 'next/image';
-import Link from 'next/link';
-import { IGame, announcedGames, defaultGames } from './constants/games';
-import { useEffect, useState } from 'react';
-import DesktopNavbar from '@/components/ui/games-store/DesktopNavbar';
-import { SOCIALS } from '@/constants/socials';
-import { Section1 } from '@/components/ui/games-store/Section1';
 import { CentralBlock } from '@/components/ui/games-store/CentralBlock';
+import DesktopNavbar from '@/components/ui/games-store/DesktopNavbar';
+import { Section1 } from '@/components/ui/games-store/Section1';
 import { Section2 } from '@/components/ui/games-store/Section2';
-import dynamic from 'next/dynamic';
+import { SOCIALS } from '@/constants/socials';
+
+import { IGame, announcedGames, defaultGames } from './constants/games';
+
 const zkNoidConfig = import('@/games/config');
 
-const StoreProtokitUpdater = dynamic(() => import("@/components/ui/games-store/StoreProtokitUpdater"), {
-  ssr: false,
-});
+const StoreProtokitUpdater = dynamic(
+  () => import('@/components/ui/games-store/StoreProtokitUpdater'),
+  {
+    ssr: false,
+  }
+);
 
 export default function Home() {
-  const [games, setGames] = useState<IGame[]>(defaultGames.concat(announcedGames));
+  const [games, setGames] = useState<IGame[]>(
+    defaultGames.concat(announcedGames)
+  );
 
   useEffect(() => {
-    zkNoidConfig.then(zkNoidGames => {
-      setGames((zkNoidGames.zkNoidConfig.games.map(x => ({
-        id: x.id,
-        logo: x.image,
-        name: x.name,
-        description: x.description,
-        genre: x.genre,
-        tags: [],
-        defaultPage: x.pageCompetitionsList ? 'competitions-list' : 'global',
-        active: true
-      })) as IGame[]).concat(announcedGames));
+    zkNoidConfig.then((zkNoidGames) => {
+      setGames(
+        (
+          zkNoidGames.zkNoidConfig.games.map((x) => ({
+            id: x.id,
+            logo: x.image,
+            name: x.name,
+            description: x.description,
+            genre: x.genre,
+            tags: [],
+            defaultPage: x.pageCompetitionsList
+              ? 'competitions-list'
+              : 'global',
+            active: true,
+          })) as IGame[]
+        ).concat(announcedGames)
+      );
     });
   }, []);
 
   return (
-    <div className='flex min-h-screen flex-col'>
+    <div className="flex min-h-screen flex-col">
       <StoreProtokitUpdater />
       <DesktopNavbar autoconnect={true} />
 
-      <main className="px-5 flex flex-col">
+      <main className="flex flex-col px-5">
         <Section1 />
         <CentralBlock />
         <Section2 games={games} />

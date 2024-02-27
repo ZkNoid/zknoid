@@ -23,7 +23,10 @@ export interface LeaderboardState {
     [competitionId: string]: ILeaderboardInfo[];
   };
   getLeaderboard: (competitionId: string) => ILeaderboardInfo[];
-  loadLeaderboard: (client: ClientAppChain<typeof arkanoidConfig.runtimeModules>, competitionId: string) => Promise<void>;
+  loadLeaderboard: (
+    client: ClientAppChain<typeof arkanoidConfig.runtimeModules>,
+    competitionId: string
+  ) => Promise<void>;
 }
 
 export const useArkanoidLeaderboardStore = create<
@@ -36,7 +39,10 @@ export const useArkanoidLeaderboardStore = create<
     getLeaderboard(competitionId: string) {
       return this.leaderboard?.[competitionId] ?? [];
     },
-    async loadLeaderboard(client: ClientAppChain<typeof arkanoidConfig.runtimeModules>, competitionId: string) {
+    async loadLeaderboard(
+      client: ClientAppChain<typeof arkanoidConfig.runtimeModules>,
+      competitionId: string
+    ) {
       if (isNaN(+competitionId)) {
         console.log("Can't get leaderbord for NaN competitionId");
         return;
@@ -54,7 +60,7 @@ export const useArkanoidLeaderboardStore = create<
             new LeaderboardIndex({
               competitionId: UInt64.from(+competitionId),
               index: UInt64.from(i),
-            }),
+            })
           );
         if (leaderboardItem !== undefined) {
           leaderboard.push({
@@ -69,18 +75,20 @@ export const useArkanoidLeaderboardStore = create<
         state.loading = false;
       });
     },
-  })),
+  }))
 );
 
 export const useObserveArkanoidLeaderboard = (competitionId: string) => {
-  const client = useContext<ClientAppChain<typeof arkanoidConfig.runtimeModules> | undefined>(AppChainClientContext);
+  const client = useContext<
+    ClientAppChain<typeof arkanoidConfig.runtimeModules> | undefined
+  >(AppChainClientContext);
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
   const leaderboard = useArkanoidLeaderboardStore();
 
   useEffect(() => {
     if (!client) {
-      throw Error("Client is not set in context");
+      throw Error('Client is not set in context');
     }
     if (!network.protokitClientStarted) return;
 

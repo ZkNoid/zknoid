@@ -2,12 +2,13 @@
 
 import dynamic from 'next/dynamic';
 
-const NewCompetitionPage = dynamic(() => import("@/components/framework/dynamic/NewCompetitionPageWrapper"), {
-  ssr: false,
-});
+const NewCompetitionPage = dynamic(
+  () => import('@/components/framework/dynamic/NewCompetitionPageWrapper'),
+  {
+    ssr: false,
+  }
+);
 
 export default function Home({ params }: { params: { gameId: string } }) {
-  return (
-        <NewCompetitionPage gameId={params.gameId} />
-    )
+  return <NewCompetitionPage gameId={params.gameId} />;
 }
