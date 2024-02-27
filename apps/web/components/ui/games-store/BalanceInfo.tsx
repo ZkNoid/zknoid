@@ -7,6 +7,7 @@ import { useNetworkStore } from '@/lib/stores/network';
 import { useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
 
 import { HeaderCard } from './HeaderCard';
+import { useWorkerClientStore } from '@/lib/stores/workerClient';
 
 export default function BalanceInfo() {
   const minaBalancesStore = useMinaBalancesStore();
@@ -14,6 +15,7 @@ export default function BalanceInfo() {
   usePollMinaBlockHeight();
   useObserveMinaBalance();
   const protokitBalancesStore = useProtokitBalancesStore();
+  const workerClient = useWorkerClientStore();
 
   return (
     <>
@@ -37,6 +39,9 @@ export default function BalanceInfo() {
                 10 ** 9
               ).toFixed(2)}{' '}
               Mina
+            </div>
+            <div className='text-[12px]'>
+              {workerClient.status}
             </div>
           </div>
           <div>

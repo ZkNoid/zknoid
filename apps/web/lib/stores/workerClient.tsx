@@ -17,7 +17,7 @@ export const useWorkerClientStore = create<
 >(
   immer((set) => ({
     status: 'Not loaded',
-    async start() {
+    async start() {      
       set((state) => {
         state.status = 'Loading worker';
       });
@@ -60,6 +60,7 @@ export const useRegisterWorkerClient = () => {
   const workerClientStore = useWorkerClientStore();
 
   useEffect(() => {
-    workerClientStore.start();
+    if (workerClientStore.status == 'Not loaded')
+      workerClientStore.start();
   }, []);
 };
