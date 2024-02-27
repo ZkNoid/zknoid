@@ -11,16 +11,16 @@ interface IGameViewProps {
 
 export const GameView = (props: IGameViewProps) => {
   return (
-    <div className={`grid grid-cols-15 gap-1 ${
+    <div className={`grid grid-cols-15 gap-1 bg-gray-300 p-2 ${
         props.gameInfo?.isCurrentUserMove && 
         !props.gameInfo?.winner && 
-        'border-green-500 border-4 border-dashed'
-      } bg-gray-300 p-2`}>
+        'border-green-500 border-[6px] border-dashed p-0'
+      }`}>
       {[...Array(15).keys()].map(i => (
         [...Array(15).keys()].map(j =>
           <div
             className={`
-              bg-white ${props.gameInfo?.isCurrentUserMove && !props.loading && 'hover:bg-gray-200'} w-7 h-7 
+              bg-gray-100 ${props.gameInfo?.isCurrentUserMove && !props.loading && 'hover:bg-gray-200'} w-7 h-7 
               bg-[length:30px_30px] bg-no-repeat bg-center p-5 
               ${props.gameInfo?.isCurrentUserMove && 
                 props.gameInfo?.field?.[j]?.[i] == 0 && 
