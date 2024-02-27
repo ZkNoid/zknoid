@@ -159,7 +159,7 @@ export default function RandzuPage({
             <div className="flex flex-row items-center justify-center gap-5">
               {(gameState == GameState.Won || gameState == GameState.Lost) && (
                 <div
-                  className="rounded-xl bg-slate-300 p-5 hover:bg-slate-400"
+                  className="rounded-xl bg-bg-dark border-2 border-left-accent p-5 hover:bg-left-accent hover:text-bg-dark"
                   onClick={() => restart()}
                 >
                   Restart
@@ -167,7 +167,7 @@ export default function RandzuPage({
               )}
               {gameState == GameState.NotStarted && (
                 <div
-                  className="rounded-xl bg-slate-300 p-5 hover:bg-slate-400"
+                  className="rounded-xl bg-bg-dark border-2 border-left-accent p-5 hover:bg-left-accent hover:text-bg-dark"
                   onClick={() => startGame()}
                 >
                   Start for {competition?.enteringPrice} 🪙
@@ -179,14 +179,14 @@ export default function RandzuPage({
         ) : 
           walletInstalled() ? (
             <div
-              className="rounded-xl bg-slate-300 p-5"
+              className="rounded-xl bg-bg-dark border-2 border-left-accent p-5 hover:bg-left-accent hover:text-bg-dark"
               onClick={async () => networkStore.connectWallet()}
             >
               Connect wallet
             </div>
           ) : (
             <Link href="https://www.aurowallet.com/"
-              className="rounded-xl bg-slate-300 p-5"
+              className="rounded-xl bg-bg-dark border-2 border-left-accent p-5 hover:bg-left-accent hover:text-bg-dark"
               rel="noopener noreferrer" target="_blank"
             >
                 Install wallet

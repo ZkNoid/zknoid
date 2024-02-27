@@ -177,6 +177,7 @@ export default function ArkanoidPage({
               <div>
                 You won! Ticks verification:{' '}
                 <input
+                  className='bg-bg-dark text-white border-2 border-left-accent'
                   type="text"
                   value={JSON.stringify(lastTicks)}
                   readOnly
@@ -216,7 +217,7 @@ export default function ArkanoidPage({
           </div>
         ) : walletInstalled() ? (
           <div
-            className="rounded-xl bg-slate-300 p-5"
+            className="rounded-xl bg-bg-dark border-2 border-left-accent p-5 hover:bg-left-accent hover:text-bg-dark"
             onClick={async () => networkStore.connectWallet()}
           >
             Connect wallet
@@ -224,7 +225,7 @@ export default function ArkanoidPage({
         ) : (
           <Link
             href="https://www.aurowallet.com/"
-            className="rounded-xl bg-slate-300 p-5"
+            className="rounded-xl bg-bg-dark border-2 border-left-accent p-5 hover:bg-left-accent hover:text-bg-dark"
             rel="noopener noreferrer"
             target="_blank"
           >
@@ -271,7 +272,7 @@ export default function ArkanoidPage({
                   .map((user, i) => (
                     <tr className="border-b bg-white">
                       <td className="bg-bg-dark border-2 border-left-accent">{user.player.toBase58()}</td>
-                      <td className="bg-gray-400">{user.score.toString()}</td>
+                      <td className="bg-bg-dark border-2 border-left-accent">{user.score.toString()}</td>
                     </tr>
                   ))}
               </tbody>
