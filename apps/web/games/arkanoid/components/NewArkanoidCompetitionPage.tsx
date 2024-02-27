@@ -18,6 +18,7 @@ import {
 } from '@/lib/stores/protokitBalances';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { arkanoidConfig } from '../config';
+import GamePage from '@/components/framework/GamePage';
 
 interface IBrick {
   pos: [number, number];
@@ -62,9 +63,9 @@ export default function NewArkanoidCompetitionPage() {
   const client = useContext(AppChainClientContext);
 
   if (!client) {
-      throw Error('Context app chain client is not set');
+    throw Error('Context app chain client is not set');
   }
-  
+
   useEffect(() => {
     const ctx = canvas!.current?.getContext('2d');
     setContext(ctx);
@@ -115,9 +116,9 @@ export default function NewArkanoidCompetitionPage() {
         ctx!.fillText(
           (brick.value - 1).toString(),
           resizeToConvasSize(brick.pos[0]) +
-            resizeToConvasSize(BRICK_HALF_WIDTH / 2),
+          resizeToConvasSize(BRICK_HALF_WIDTH / 2),
           resizeToConvasSize(brick.pos[1]) +
-            resizeToConvasSize((3 * BRICK_HALF_WIDTH) / 2),
+          resizeToConvasSize((3 * BRICK_HALF_WIDTH) / 2),
         );
       }
     }
@@ -170,14 +171,13 @@ export default function NewArkanoidCompetitionPage() {
   };
 
   return (
-    <>
-      
+    <GamePage gameConfig={arkanoidConfig}>
       <div className="flex flex-col items-center justify-center gap-5 py-10">
         <div className="py-3">Create competition</div>
         <div className="flex flex-col items-center">
           <a>Name</a>
           <input
-            className="w-50"
+            className="w-50 text-bg-dark"
             value={name}
             onChange={(e) => setName(e.target.value)}
           ></input>
@@ -185,7 +185,7 @@ export default function NewArkanoidCompetitionPage() {
         <div className="flex flex-col items-center">
           <a>Description</a>
           <textarea
-            className="w-50"
+            className="w-50 text-bg-dark"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           ></textarea>
@@ -194,7 +194,7 @@ export default function NewArkanoidCompetitionPage() {
           <a>Map seed</a>
           <a className="text-xs">(do not share until competition started)</a>
           <input
-            className="w-20"
+            className="w-20 text-bg-dark"
             type="number"
             value={seed}
             onChange={(e) => setSeed(parseInt(e.target.value) || 0)}
@@ -221,12 +221,14 @@ export default function NewArkanoidCompetitionPage() {
             <div className="flex gap-5">
               <input
                 type="date"
+                className='text-bg-dark'
                 value={preregistrationFrom}
                 onChange={(e) => setPreregistrationFrom(e.target.value)}
               ></input>{' '}
               -
               <input
                 type="date"
+                className='text-bg-dark'
                 value={preregistrationTo}
                 onChange={(e) => setPreregistrationTo(e.target.value)}
               ></input>
@@ -238,12 +240,14 @@ export default function NewArkanoidCompetitionPage() {
           <div className="flex gap-5">
             <input
               type="date"
+              className='text-bg-dark'
               value={competitionFrom}
               onChange={(e) => setCompetitionFrom(e.target.value)}
             ></input>{' '}
             -
             <input
               type="date"
+              className='text-bg-dark'
               value={competitionTo}
               onChange={(e) => setCompetitionTo(e.target.value)}
             ></input>
@@ -253,7 +257,7 @@ export default function NewArkanoidCompetitionPage() {
           <a>Funding</a>
           <div className="flex">
             <input
-              className="w-20"
+              className="w-20 text-bg-dark"
               type="number"
               value={funding}
               onChange={(e) => setFunding(parseInt(e.target.value))}
@@ -265,7 +269,7 @@ export default function NewArkanoidCompetitionPage() {
           <a>Participation fee</a>
           <div className="flex">
             <input
-              className="w-20"
+              className="w-20 text-bg-dark"
               type="number"
               value={participationFee}
               onChange={(e) => setPerticipationFee(parseInt(e.target.value))}
@@ -275,12 +279,12 @@ export default function NewArkanoidCompetitionPage() {
         </div>
 
         <div
-          className="cursor-pointer py-3"
+          className="rounded-xl bg-bg-dark border-2 border-left-accent p-5 hover:bg-left-accent hover:text-bg-dark"
           onClick={() => createCompetition()}
         >
-          [Create]
+          Create
         </div>
       </div>
-    </>
+    </GamePage>
   );
 }
