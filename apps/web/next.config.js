@@ -22,6 +22,9 @@ const nextConfig = {
     };
   },
   compress: false,
+  eslint: {
+    dirs: ['app', 'components', 'constants', 'containers', 'games', 'lib'],
+  },
 };
 
 module.exports = nextConfig;

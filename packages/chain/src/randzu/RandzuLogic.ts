@@ -1,11 +1,13 @@
-import { MatchMaker, QueueListItem } from "../engine/MatchMaker";
 import {
     state,
     runtimeMethod,
     runtimeModule,
 } from "@proto-kit/module";
-import { Option, State, StateMap, assert } from "@proto-kit/protocol";
+import type { Option} from "@proto-kit/protocol";
+import { State, StateMap, assert } from "@proto-kit/protocol";
 import { PublicKey, Struct, UInt64, Provable, Bool, UInt32, Poseidon, Field, Int64 } from "o1js";
+import { MatchMaker } from "../engine/MatchMaker";
+import type { QueueListItem } from "../engine/MatchMaker";
 
 const RANDZU_FIELD_SIZE = 15;
 const CELLS_LINE_TO_WIN = 5;
@@ -51,7 +53,7 @@ export class RandzuField extends Struct({
                             combo++;
                     }
 
-                    if (combo == CELLS_LINE_TO_WIN) {
+                    if (combo === CELLS_LINE_TO_WIN) {
                         return new WinWitness({
                             x: UInt32.from(i),
                             y: UInt32.from(j),
@@ -169,11 +171,11 @@ export class RandzuLogic extends MatchMaker {
         UInt32.from(2)
       );
   
-      let addedCellsNum = UInt64.from(0);
+      const addedCellsNum = UInt64.from(0);
       for (let i = 0; i < RANDZU_FIELD_SIZE; i++) {
         for (let j = 0; j < RANDZU_FIELD_SIZE; j++) {
-          let currentFieldCell = game.value.field.value[i][j];
-          let nextFieldCell = newField.value[i][j];
+          const currentFieldCell = game.value.field.value[i][j];
+          const nextFieldCell = newField.value[i][j];
   
           assert(Bool.or(currentFieldCell.equals(UInt32.from(0)), currentFieldCell.equals(nextFieldCell)),
             `Modified filled cell at ${i}, ${j}`

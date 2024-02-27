@@ -8,6 +8,9 @@ import {
     Bool,
     InferProvable,
 } from 'o1js';
+import { log } from '@proto-kit/common';
+import { Pickles } from 'o1js/dist/node/snarky';
+import { dummyBase64Proof } from 'o1js/dist/node/lib/proof_system';
 import {
     GameHub,
     GameRecordProof,
@@ -18,9 +21,6 @@ import {
     GameRecordKey,
     defaultLevel,
 } from '../src/index';
-import { log } from '@proto-kit/common';
-import { Pickles } from 'o1js/dist/node/snarky';
-import { dummyBase64Proof } from 'o1js/dist/node/lib/proof_system';
 import {
     GameProcessProof,
     MapGenerationProof,
@@ -53,7 +53,7 @@ async function mockProof<O, P>(
 ): Promise<P> {
     const [, proof] = Pickles.proofOfBase64(await dummyBase64Proof(), 2);
     return new ProofType({
-        proof: proof,
+        proof,
         maxProofsVerified: 2,
         publicInput: undefined,
         publicOutput,

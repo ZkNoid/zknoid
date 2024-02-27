@@ -1,10 +1,11 @@
 import { Competition } from 'zknoid-chain-dev';
+
 import { ICompetition } from './types';
 
 // Converts contract competition to ICompetition
 export function fromContractCompetition(
   competitionId: number,
-  competition: Competition,
+  competition: Competition
 ): ICompetition {
   return {
     competitionId,

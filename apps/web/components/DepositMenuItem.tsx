@@ -1,5 +1,6 @@
-import { useMinaBridge } from '@/lib/stores/protokitBalances';
 import { useState } from 'react';
+
+import { useMinaBridge } from '@/lib/stores/protokitBalances';
 
 export const DepositMenuItem = () => {
   const [expanded, setExpanded] = useState(false);

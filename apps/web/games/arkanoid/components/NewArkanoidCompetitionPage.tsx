@@ -10,12 +10,8 @@ import {
   Competition,
 } from 'zknoid-chain-dev';
 import { useNetworkStore } from '@/lib/stores/network';
-import {
-  useMinaBalancesStore,
-} from '@/lib/stores/minaBalances';
-import {
-  useProtokitBalancesStore,
-} from '@/lib/stores/protokitBalances';
+import { useMinaBalancesStore } from '@/lib/stores/minaBalances';
+import { useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { arkanoidConfig } from '../config';
 import GamePage from '@/components/framework/GamePage';
@@ -79,7 +75,7 @@ export default function NewArkanoidCompetitionPage() {
           pos: [brick.pos.x ^ 1, brick.pos.y ^ 1],
           value: +brick.value.toString(),
         } as IBrick;
-      }),
+      })
     );
   }, [seed]);
 
@@ -104,7 +100,7 @@ export default function NewArkanoidCompetitionPage() {
         resizeToConvasSize(brick.pos[0]),
         resizeToConvasSize(brick.pos[1]),
         resizeToConvasSize(BRICK_HALF_WIDTH * 2),
-        resizeToConvasSize(BRICK_HALF_WIDTH * 2),
+        resizeToConvasSize(BRICK_HALF_WIDTH * 2)
       );
 
       ctx!.stroke();
@@ -116,9 +112,9 @@ export default function NewArkanoidCompetitionPage() {
         ctx!.fillText(
           (brick.value - 1).toString(),
           resizeToConvasSize(brick.pos[0]) +
-          resizeToConvasSize(BRICK_HALF_WIDTH / 2),
+            resizeToConvasSize(BRICK_HALF_WIDTH / 2),
           resizeToConvasSize(brick.pos[1]) +
-          resizeToConvasSize((3 * BRICK_HALF_WIDTH) / 2),
+            resizeToConvasSize((3 * BRICK_HALF_WIDTH) / 2)
         );
       }
     }
@@ -159,11 +155,11 @@ export default function NewArkanoidCompetitionPage() {
           new Date(competitionFrom).getTime(), // competitionStartTime
           new Date(competitionTo).getTime(), // competitionEndTime
           funding,
-          participationFee,
+          participationFee
         );
 
         gameHub.createCompetition(competition);
-      },
+      }
     );
 
     await tx.sign();
@@ -221,14 +217,14 @@ export default function NewArkanoidCompetitionPage() {
             <div className="flex gap-5">
               <input
                 type="date"
-                className='text-bg-dark'
+                className="text-bg-dark"
                 value={preregistrationFrom}
                 onChange={(e) => setPreregistrationFrom(e.target.value)}
               ></input>{' '}
               -
               <input
                 type="date"
-                className='text-bg-dark'
+                className="text-bg-dark"
                 value={preregistrationTo}
                 onChange={(e) => setPreregistrationTo(e.target.value)}
               ></input>
@@ -240,14 +236,14 @@ export default function NewArkanoidCompetitionPage() {
           <div className="flex gap-5">
             <input
               type="date"
-              className='text-bg-dark'
+              className="text-bg-dark"
               value={competitionFrom}
               onChange={(e) => setCompetitionFrom(e.target.value)}
             ></input>{' '}
             -
             <input
               type="date"
-              className='text-bg-dark'
+              className="text-bg-dark"
               value={competitionTo}
               onChange={(e) => setCompetitionTo(e.target.value)}
             ></input>
@@ -279,7 +275,7 @@ export default function NewArkanoidCompetitionPage() {
         </div>
 
         <div
-          className="rounded-xl bg-bg-dark border-2 border-left-accent p-5 hover:bg-left-accent hover:text-bg-dark"
+          className="cursor-pointer rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
           onClick={() => createCompetition()}
         >
           Create

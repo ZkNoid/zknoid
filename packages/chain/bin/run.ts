@@ -1,7 +1,7 @@
 #!/usr/bin/env node --experimental-specifier-resolution=node --experimental-vm-modules --experimental-wasm-modules --experimental-wasm-threads
 
-import appChain from '../src/chain.config';
 import { ManualBlockTrigger } from '@proto-kit/sequencer';
+import appChain from '../src/chain.config';
 
 await appChain.start();
 const trigger = appChain.sequencer.resolveOrFail("BlockTrigger", ManualBlockTrigger);

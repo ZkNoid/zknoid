@@ -31,12 +31,12 @@ export class Balances extends RuntimeModule<BalancesConfig> {
 
     @runtimeMethod()
     public transferTo(address: PublicKey, amount: UInt64): void {
-        let currentBalance = this.balances
+        const currentBalance = this.balances
             .get(this.transaction.sender)
             .orElse(UInt64.from(0));
         currentBalance.assertGreaterThan(amount);
 
-        let addrCurrentBalance = this.balances
+        const addrCurrentBalance = this.balances
             .get(this.transaction.sender)
             .orElse(UInt64.from(0));
 

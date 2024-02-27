@@ -1,8 +1,10 @@
-import { create } from "zustand";
-import { immer } from "zustand/middleware/immer";
-import { useEffect, useState } from "react";
-import { NETWORKS } from "@/app/constants/networks";
-import { useNetworkStore } from "./network";
+import { useEffect, useState } from 'react';
+import { create } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
+
+import { NETWORKS } from '@/app/constants/networks';
+
+import { useNetworkStore } from './network';
 
 export interface ComputedTransactionJSON {
   argsFields: string[];
@@ -37,32 +39,33 @@ export interface BlockQueryResponse {
     bestChain: {
       protocolState: {
         consensusState: {
-          blockHeight: string
-        }
+          blockHeight: string;
+        };
       };
     }[];
     block: ComputedBlockJSON;
   };
 }
 
-export const useChainStore = create<ChainState, [["zustand/immer", never]]>(
+export const useChainStore = create<ChainState, [['zustand/immer', never]]>(
   immer((set) => ({
     loading: Boolean(false),
     async loadBlock(chainId: string) {
-
       if (chainId == undefined) return;
 
       set((state) => {
         state.loading = true;
       });
 
-      const response = await fetch(NETWORKS.find(x => x.chainId == chainId)?.graphql!, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query: `
+      const response = await fetch(
+        NETWORKS.find((x) => x.chainId == chainId)?.graphql!,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: `
             query {
               bestChain(maxLength:1) {
                 protocolState {
@@ -73,8 +76,9 @@ export const useChainStore = create<ChainState, [["zustand/immer", never]]>(
               }
             }
           `,
-        }),
-      });
+          }),
+        }
+      );
 
       const { data } = (await response.json()) as BlockQueryResponse;
       const height = data.bestChain[0].protocolState.consensusState.blockHeight;
@@ -91,7 +95,7 @@ export const useChainStore = create<ChainState, [["zustand/immer", never]]>(
         };
       });
     },
-  })),
+  }))
 );
 
 export const tickInterval = 5000;
@@ -107,7 +111,7 @@ export const usePollMinaBlockHeight = () => {
   useEffect(() => {
     const intervalId = setInterval(
       () => setTick((tick) => tick + 1),
-      tickInterval,
+      tickInterval
     );
 
     setTick((tick) => tick + 1);

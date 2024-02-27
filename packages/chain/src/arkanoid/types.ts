@@ -8,7 +8,6 @@ import {
     CircuitString,
     Field,
 } from 'o1js';
-
 import { CHUNK_LENGTH, GAME_LENGTH, MAX_BRICKS } from './constants';
 
 export class GameRecordKey extends Struct({

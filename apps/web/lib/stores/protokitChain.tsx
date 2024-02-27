@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { immer } from "zustand/middleware/immer";
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
+import { create } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
 
 export interface ComputedTransactionJSON {
   argsFields: string[];
@@ -43,7 +43,10 @@ export interface BlockQueryResponse {
   };
 }
 
-export const useProtokitChainStore = create<ChainState, [["zustand/immer", never]]>(
+export const useProtokitChainStore = create<
+  ChainState,
+  [['zustand/immer', never]]
+>(
   immer((set) => ({
     loading: Boolean(false),
     async loadBlock() {
@@ -51,13 +54,15 @@ export const useProtokitChainStore = create<ChainState, [["zustand/immer", never
         state.loading = true;
       });
 
-      const response = await fetch(process.env.NEXT_PUBLIC_PROTOKIT_URL || "http://localhost:8080/graphql", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query: `
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_PROTOKIT_URL || 'http://localhost:8080/graphql',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: `
           query GetBlock {
             block {
               txs {
@@ -85,22 +90,23 @@ export const useProtokitChainStore = create<ChainState, [["zustand/immer", never
             }
           }
         `,
-        }),
-      });
+          }),
+        }
+      );
 
       const { data } = (await response.json()) as BlockQueryResponse;
 
       set((state) => {
         state.loading = false;
         state.block = data.network.unproven
-        ? {
-            height: data.network.unproven.block.height,
-            ...data.block,
-          }
-        : undefined;
+          ? {
+              height: data.network.unproven.block.height,
+              ...data.block,
+            }
+          : undefined;
       });
     },
-  })),
+  }))
 );
 
 export const tickInterval = 5000;
@@ -115,7 +121,7 @@ export const usePollProtokitBlockHeight = () => {
   useEffect(() => {
     const intervalId = setInterval(
       () => setTick((tick) => tick + 1),
-      tickInterval,
+      tickInterval
     );
 
     setTick((tick) => tick + 1);

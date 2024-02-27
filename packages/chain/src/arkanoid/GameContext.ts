@@ -1,13 +1,15 @@
+import type {
+    Field} from 'o1js';
 import {
     UInt64,
     Struct,
     Provable,
     Int64,
     Bool,
-    Field,
     Poseidon,
     Experimental,
 } from 'o1js';
+import { RandomGenerator } from '../engine';
 import {
     BRICK_HALF_WIDTH,
     DEFAULT_BALL_LOCATION_X,
@@ -28,9 +30,9 @@ import {
     SCORE_PER_TICKS,
     SEED_MULTIPLIER,
 } from './constants';
-import { Ball, Brick, Bricks, IntPoint, Platform, Tick } from './types';
+import type { Tick } from './types';
+import { Ball, Brick, Bricks, IntPoint, Platform } from './types';
 import { gr, inRange } from './utility';
-import { RandomGenerator } from '../engine';
 
 export class GameContext extends Struct({
     bricks: Bricks,
@@ -44,20 +46,20 @@ export class GameContext extends Struct({
     debug: Bool,
 }) {
     equals(other: GameContext): Bool {
-        let bricksEquals = this.bricks.equals(other.bricks);
+        const bricksEquals = this.bricks.equals(other.bricks);
         let nearestBricksEquals = Bool(true);
         for (let i = 0; i < this.nearestBricks.length; i++) {
             nearestBricksEquals = nearestBricksEquals.and(
                 this.nearestBricks[i].equals(other.nearestBricks[i])
             );
         }
-        let totalLeftEquals = this.totalLeft.equals(other.totalLeft);
-        let ballEquals = this.ball.equals(other.ball);
-        let platformEquals = this.platform.equals(other.platform);
-        let scoreEquals = this.score.equals(other.score);
-        let winableEquals = this.winable.equals(other.winable);
-        let alreadyWonEquals = this.alreadyWon.equals(other.alreadyWon);
-        let debugEquals = this.debug.equals(other.debug);
+        const totalLeftEquals = this.totalLeft.equals(other.totalLeft);
+        const ballEquals = this.ball.equals(other.ball);
+        const platformEquals = this.platform.equals(other.platform);
+        const scoreEquals = this.score.equals(other.score);
+        const winableEquals = this.winable.equals(other.winable);
+        const alreadyWonEquals = this.alreadyWon.equals(other.alreadyWon);
+        const debugEquals = this.debug.equals(other.debug);
 
         return bricksEquals
             .and(nearestBricksEquals)
@@ -79,7 +81,7 @@ export class GameContext extends Struct({
         );
 
         /// 2) Update platform position
-        let prevPlatformPosition = this.platform.position;
+        const prevPlatformPosition = this.platform.position;
         inRange(Int64.from(tick.action), 0, FIELD_WIDTH);
 
         // Move sanity checks to separate function
@@ -91,7 +93,7 @@ export class GameContext extends Struct({
 
         this.platform.position = this.platform.position.add(tick.action);
 
-        let movedLeft = gr(prevPlatformPosition, this.platform.position);
+        const movedLeft = gr(prevPlatformPosition, this.platform.position);
 
         /// 3) Update ball position
         const prevBallPos = new IntPoint({
@@ -156,27 +158,27 @@ export class GameContext extends Struct({
         /// collision happen in the begining of the tick, and in the end of the tick platform located
         /// somwhere else, so contract count is as loss.
 
-        let a = this.ball.speed.x;
-        let b = this.ball.speed.y;
+        const a = this.ball.speed.x;
+        const b = this.ball.speed.y;
 
-        let c = a.mul(this.ball.position.y).sub(b.mul(this.ball.position.x));
+        const c = a.mul(this.ball.position.y).sub(b.mul(this.ball.position.x));
 
-        let platformLeftEndExtended = Provable.if(
+        const platformLeftEndExtended = Provable.if(
             movedLeft,
             this.platform.position,
             prevPlatformPosition
         );
-        let platformRightEndExtended = Provable.if(
+        const platformRightEndExtended = Provable.if(
             movedLeft,
             prevPlatformPosition.add(PLATFORM_WIDTH),
             this.platform.position.add(PLATFORM_WIDTH)
         );
 
-        let adc0 = a.mul(FIELD_PIXEL_HEIGHT).sub(c);
-        let platformLeft = b.mul(platformLeftEndExtended);
-        let platformRight = b.mul(platformRightEndExtended);
+        const adc0 = a.mul(FIELD_PIXEL_HEIGHT).sub(c);
+        const platformLeft = b.mul(platformLeftEndExtended);
+        const platformRight = b.mul(platformRightEndExtended);
 
-        let isFail = bottomBump.and(
+        const isFail = bottomBump.and(
             inRange(adc0, platformLeft, platformRight).not()
         );
 
@@ -205,12 +207,12 @@ export class GameContext extends Struct({
         //6) Check bricks bump
         for (let j = 0; j < NEAREST_BRICKS_NUM; j++) {
             const currentBrick = this.nearestBricks[j];
-            let isAlive = currentBrick.value.greaterThan(UInt64.from(1)); // 1 just so UInt64.sub do not underflow
+            const isAlive = currentBrick.value.greaterThan(UInt64.from(1)); // 1 just so UInt64.sub do not underflow
 
-            let leftBorder = currentBrick.pos.x;
-            let rightBorder = currentBrick.pos.x.add(BRICK_HALF_WIDTH * 2);
-            let topBorder = currentBrick.pos.y.add(BRICK_HALF_WIDTH * 2);
-            let bottomBorder = currentBrick.pos.y;
+            const leftBorder = currentBrick.pos.x;
+            const rightBorder = currentBrick.pos.x.add(BRICK_HALF_WIDTH * 2);
+            const topBorder = currentBrick.pos.y.add(BRICK_HALF_WIDTH * 2);
+            const bottomBorder = currentBrick.pos.y;
 
             /*
             Collision
@@ -270,37 +272,37 @@ export class GameContext extends Struct({
                 bd + c \incl [ a(brick.pos.y), a(brick.pos.y + 2 * BRICK_HALF_WIDTH)]
             */
 
-            let moveRight = this.ball.speed.x.isPositive();
-            let moveTop = this.ball.speed.y.isPositive();
+            const moveRight = this.ball.speed.x.isPositive();
+            const moveTop = this.ball.speed.y.isPositive();
 
-            let leftEnd = b.mul(currentBrick.pos.x);
-            let rightEnd = b.mul(currentBrick.pos.x.add(2 * BRICK_HALF_WIDTH));
+            const leftEnd = b.mul(currentBrick.pos.x);
+            const rightEnd = b.mul(currentBrick.pos.x.add(2 * BRICK_HALF_WIDTH));
 
             // Top horizontal
-            let d1 = topBorder;
-            let adc1 = a.mul(d1).sub(c);
-            let crossBrickTop = inRange(adc1, leftEnd, rightEnd);
+            const d1 = topBorder;
+            const adc1 = a.mul(d1).sub(c);
+            const crossBrickTop = inRange(adc1, leftEnd, rightEnd);
             let hasTopBump = crossBrickTop.and(hasTopPass);
 
             // Bottom horisontal
-            let d2 = bottomBorder;
-            let adc2 = a.mul(d2).sub(c);
-            let crossBrickBottom = inRange(adc2, leftEnd, rightEnd);
+            const d2 = bottomBorder;
+            const adc2 = a.mul(d2).sub(c);
+            const crossBrickBottom = inRange(adc2, leftEnd, rightEnd);
             let hasBottomBump = crossBrickBottom.and(hasBottomPass);
 
-            let topEnd = a.mul(currentBrick.pos.y.add(2 * BRICK_HALF_WIDTH));
-            let bottomEnd = a.mul(currentBrick.pos.y);
+            const topEnd = a.mul(currentBrick.pos.y.add(2 * BRICK_HALF_WIDTH));
+            const bottomEnd = a.mul(currentBrick.pos.y);
 
             // Left vertical
-            let d3 = leftBorder;
-            let bdc1 = b.mul(d3).add(c);
-            let crossBrickLeft = inRange(bdc1, bottomEnd, topEnd);
+            const d3 = leftBorder;
+            const bdc1 = b.mul(d3).add(c);
+            const crossBrickLeft = inRange(bdc1, bottomEnd, topEnd);
             let hasLeftBump = crossBrickLeft.and(hasLeftPass);
 
             // Right vertical
-            let d4 = rightBorder;
-            let bdc2 = b.mul(d4).add(c);
-            let crossBrickRight = inRange(bdc2, bottomEnd, topEnd);
+            const d4 = rightBorder;
+            const bdc2 = b.mul(d4).add(c);
+            const crossBrickRight = inRange(bdc2, bottomEnd, topEnd);
             let hasRightBump = crossBrickRight.and(hasRightPass);
 
             /// Exclude double collision
@@ -331,7 +333,7 @@ export class GameContext extends Struct({
 
             // Reduce health if coliision happend and brick is not dead
 
-            let newBrickValue = Provable.if(
+            const newBrickValue = Provable.if(
                 collisionHappen,
                 currentBrick.value.sub(1),
                 currentBrick.value
@@ -417,7 +419,7 @@ export class GameContext extends Struct({
 
         // Chek order
         {
-            let shouldSwap = gr(firstDist, secondDist);
+            const shouldSwap = gr(firstDist, secondDist);
             [firstDist, secondDist] = [
                 Provable.if(shouldSwap, secondDist, firstDist),
                 Provable.if(shouldSwap, firstDist, secondDist),
@@ -439,10 +441,10 @@ export class GameContext extends Struct({
         }
 
         for (let i = 2; i < MAX_BRICKS; i++) {
-            let cur = this.bricks.bricks[i];
-            let curDist = this.distPow2ToBrick(cur);
-            let secondGreater = gr(secondDist, curDist);
-            let firstGreater = gr(firstDist, curDist);
+            const cur = this.bricks.bricks[i];
+            const curDist = this.distPow2ToBrick(cur);
+            const secondGreater = gr(secondDist, curDist);
+            const firstGreater = gr(firstDist, curDist);
 
             this.nearestBricks[1] = Provable.if(
                 firstGreater,
@@ -469,12 +471,12 @@ export class GameContext extends Struct({
     }
 
     distPow2ToBrick(brick: Brick): Int64 {
-        let xDist = brick.pos.x.sub(this.ball.position.x);
-        let yDist = brick.pos.y.sub(this.ball.position.y);
-        let realDist = xDist.mul(xDist).add(yDist.mul(yDist));
+        const xDist = brick.pos.x.sub(this.ball.position.x);
+        const yDist = brick.pos.y.sub(this.ball.position.y);
+        const realDist = xDist.mul(xDist).add(yDist.mul(yDist));
 
         /// Infinite dist for dead bricks
-        let dist = Provable.if(
+        const dist = Provable.if(
             brick.value.greaterThan(UInt64.from(1)),
             realDist,
             Int64.from(1000000000000) // Change to Int64.max
@@ -494,9 +496,9 @@ export class GameContext extends Struct({
     }
 }
 export function createBricksBySeed(seed: Field): Bricks {
-    let generator = RandomGenerator.from(seed);
+    const generator = RandomGenerator.from(seed);
 
-    let bricks = [...new Array(MAX_BRICKS)].map(
+    const bricks = [...new Array(MAX_BRICKS)].map(
         (elem) =>
             new Brick({
                 pos: new IntPoint({
@@ -537,15 +539,15 @@ export function createBricksBySeed(seed: Field): Bricks {
 }
 
 export function loadGameContext(bricks: Bricks, debug: Bool) {
-    let score = UInt64.from(INITIAL_SCORE);
-    let ball = new Ball({
+    const score = UInt64.from(INITIAL_SCORE);
+    const ball = new Ball({
         position: IntPoint.from(
             DEFAULT_BALL_LOCATION_X,
             DEFAULT_BALL_LOCATION_Y
         ),
         speed: IntPoint.from(DEFAULT_BALL_SPEED_X, DEFAULT_BALL_SPEED_Y),
     });
-    let platform = new Platform({
+    const platform = new Platform({
         position: Int64.from(DEFAULT_PLATFORM_X),
     });
 
@@ -555,7 +557,7 @@ export function loadGameContext(bricks: Bricks, debug: Bool) {
         totalLeft = totalLeft.add(bricks.bricks[i].value.sub(1)); // Sub(1), because 1 = 0. (Workaround UInt64.sub(1))
     }
 
-    let nearestBricks = bricks.bricks.slice(0, 2);
+    const nearestBricks = bricks.bricks.slice(0, 2);
 
     return new GameContext({
         bricks,

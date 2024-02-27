@@ -43,14 +43,14 @@ export const defaultLevel = (): Bricks => {
 };
 
 export const getDefaultCompetitions = (): Competition[] => {
-    let prereg = Bool(false);
-    let preregStartTime = UInt64.from(0);
-    let preregEndTime = UInt64.from(0);
-    let competitionStartTime = UInt64.from(0);
-    let competitionEndTime = UInt64.from(new Date('2100-01-01').getTime());
-    let funds = UInt64.from(0);
-    let participationFee = UInt64.from(0);
-    let seeds = [0, 777, 1234];
+    const prereg = Bool(false);
+    const preregStartTime = UInt64.from(0);
+    const preregEndTime = UInt64.from(0);
+    const competitionStartTime = UInt64.from(0);
+    const competitionEndTime = UInt64.from(new Date('2100-01-01').getTime());
+    const funds = UInt64.from(0);
+    const participationFee = UInt64.from(0);
+    const seeds = [0, 777, 1234];
 
     return seeds.map((seed, i) => {
         return new Competition({

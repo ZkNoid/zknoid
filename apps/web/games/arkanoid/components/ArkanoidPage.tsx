@@ -12,9 +12,7 @@ import {
 import { Bool, Field, Int64, PublicKey, UInt64 } from 'o1js';
 import Link from 'next/link';
 import { useNetworkStore } from '@/lib/stores/network';
-import {
-  useMinaBridge,
-} from '@/lib/stores/protokitBalances';
+import { useMinaBridge } from '@/lib/stores/protokitBalances';
 import {
   useArkanoidLeaderboardStore,
   useObserveArkanoidLeaderboard,
@@ -38,7 +36,7 @@ enum GameState {
 
 const chunkenize = (arr: any[], size: number) =>
   Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
-    arr.slice(i * size, i * size + size),
+    arr.slice(i * size, i * size + size)
   );
 
 export default function ArkanoidPage({
@@ -55,7 +53,7 @@ export default function ArkanoidPage({
   const client = useContext(AppChainClientContext);
 
   if (!client) {
-      throw Error('Context app chain client is not set');
+    throw Error('Context app chain client is not set');
   }
 
   useObserveArkanoidLeaderboard(params.competitionId);
@@ -84,20 +82,19 @@ export default function ArkanoidPage({
   useEffect(() => {
     if (!networkStore.protokitClientStarted) return;
     getCompetition();
-    
   }, [networkStore.protokitClientStarted]);
 
   const getCompetition = async () => {
     let competitionId = +params.competitionId;
     if (isNaN(competitionId)) {
       console.log(
-        `Can't load level. competitionId is not a number. Loading default level`,
+        `Can't load level. competitionId is not a number. Loading default level`
       );
       return;
     }
     let contractCompetition =
       await client.query.runtime.ArkanoidGameHub.competitions.get(
-        UInt64.from(competitionId),
+        UInt64.from(competitionId)
       );
     if (contractCompetition === undefined) {
       console.log(`Can't get competition with id <${competitionId}>`);
@@ -106,7 +103,7 @@ export default function ArkanoidPage({
 
     let competition = fromContractCompetition(
       competitionId,
-      contractCompetition,
+      contractCompetition
     );
 
     let bricks = createBricksBySeed(Field.from(competition!.seed));
@@ -131,9 +128,9 @@ export default function ArkanoidPage({
           new Tick({
             action: Int64.from(elem.action),
             momentum: Int64.from(elem.momentum),
-          }),
+          })
       ),
-      CHUNK_LENGTH,
+      CHUNK_LENGTH
     );
 
     // @ts-expect-error
@@ -155,9 +152,9 @@ export default function ArkanoidPage({
         () => {
           gameHub.addGameResult(
             UInt64.from(competition!.competitionId),
-            proof!,
+            proof!
           );
-        },
+        }
       );
 
       await tx.sign();
@@ -177,7 +174,7 @@ export default function ArkanoidPage({
               <div>
                 You won! Ticks verification:{' '}
                 <input
-                  className='bg-bg-dark text-white border-2 border-left-accent'
+                  className="border-2 border-left-accent bg-bg-dark text-white"
                   type="text"
                   value={JSON.stringify(lastTicks)}
                   readOnly
@@ -185,13 +182,13 @@ export default function ArkanoidPage({
               </div>
             )}
             {gameState == GameState.Lost && (
-              <div>You've lost! Nothing to prove</div>
+              <div>You&apos;ve lost! Nothing to prove</div>
             )}
 
             <div className="flex flex-row items-center justify-center gap-5">
               {(gameState == GameState.Won || gameState == GameState.Lost) && (
                 <div
-                  className="rounded-xl bg-bg-dark border-2 border-left-accent p-5 hover:bg-left-accent hover:text-bg-dark"
+                  className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
                   onClick={() => startGame()}
                 >
                   Restart
@@ -199,7 +196,7 @@ export default function ArkanoidPage({
               )}
               {gameState == GameState.NotStarted && (
                 <div
-                  className="rounded-xl bg-bg-dark border-2 border-left-accent p-5 hover:bg-left-accent hover:text-bg-dark"
+                  className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
                   onClick={() => startGame()}
                 >
                   Start for {competition?.participationFee} 🪙
@@ -207,7 +204,7 @@ export default function ArkanoidPage({
               )}
               {gameState == GameState.Won && (
                 <div
-                  className="rounded-xl bg-bg-dark border-2 border-left-accent p-5 hover:bg-left-accent hover:text-bg-dark"
+                  className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
                   onClick={() => proof()}
                 >
                   Send proof
@@ -217,7 +214,7 @@ export default function ArkanoidPage({
           </div>
         ) : walletInstalled() ? (
           <div
-            className="rounded-xl bg-bg-dark border-2 border-left-accent p-5 hover:bg-left-accent hover:text-bg-dark"
+            className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
             onClick={async () => networkStore.connectWallet()}
           >
             Connect wallet
@@ -225,7 +222,7 @@ export default function ArkanoidPage({
         ) : (
           <Link
             href="https://www.aurowallet.com/"
-            className="rounded-xl bg-bg-dark border-2 border-left-accent p-5 hover:bg-left-accent hover:text-bg-dark"
+            className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
             rel="noopener noreferrer"
             target="_blank"
           >
@@ -261,8 +258,14 @@ export default function ArkanoidPage({
             <table className="min-w-max text-left">
               <thead className="font-semibold">
                 <tr>
-                  <th className="w-96 bg-bg-dark border-2 border-left-accent px-6 py-3"> Address </th>
-                  <th className="w-20  bg-bg-dark border-2 border-left-accent px-6 py-3"> Score </th>
+                  <th className="w-96 border-2 border-left-accent bg-bg-dark px-6 py-3">
+                    {' '}
+                    Address{' '}
+                  </th>
+                  <th className="w-20  border-2 border-left-accent bg-bg-dark px-6 py-3">
+                    {' '}
+                    Score{' '}
+                  </th>
                   <th> </th>
                 </tr>
               </thead>
@@ -270,9 +273,13 @@ export default function ArkanoidPage({
                 {leaderboardStore
                   .getLeaderboard(params.competitionId)
                   .map((user, i) => (
-                    <tr className="border-b bg-white">
-                      <td className="bg-bg-dark border-2 border-left-accent">{user.player.toBase58()}</td>
-                      <td className="bg-bg-dark border-2 border-left-accent">{user.score.toString()}</td>
+                    <tr className="border-b bg-white" key={i}>
+                      <td className="border-2 border-left-accent bg-bg-dark">
+                        {user.player.toBase58()}
+                      </td>
+                      <td className="border-2 border-left-accent bg-bg-dark">
+                        {user.score.toString()}
+                      </td>
                     </tr>
                   ))}
               </tbody>

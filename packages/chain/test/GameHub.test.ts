@@ -8,6 +8,9 @@ import {
     Bool,
     InferProvable,
 } from 'o1js';
+import { log } from '@proto-kit/common';
+import { Pickles } from 'o1js/dist/node/snarky';
+import { dummyBase64Proof } from 'o1js/dist/node/lib/proof_system';
 import {
     ArkanoidGameHub,
     GameRecordProof,
@@ -19,9 +22,6 @@ import {
     defaultLevel,
     getDefaultCompetitions,
 } from '../src/index';
-import { log } from '@proto-kit/common';
-import { Pickles } from 'o1js/dist/node/snarky';
-import { dummyBase64Proof } from 'o1js/dist/node/lib/proof_system';
 import {
     GameProcessProof,
     MapGenerationProof,
@@ -30,8 +30,8 @@ import {
     processTicks,
 } from '../src/ArkanoidGameHub';
 import { GameContext } from '../src/GameContext';
-import { cases } from './test-user-input';
 import { Balances } from '../src/balances';
+import { cases } from './test-user-input';
 
 log.setLevel('ERROR');
 
@@ -56,7 +56,7 @@ async function mockProof<O, P>(
 ): Promise<P> {
     const [, proof] = Pickles.proofOfBase64(await dummyBase64Proof(), 2);
     return new ProofType({
-        proof: proof,
+        proof,
         maxProofsVerified: 2,
         publicInput: undefined,
         publicOutput,
@@ -89,8 +89,8 @@ describe('game hub', () => {
         const gameHub = appChain.runtime.resolve('ArkanoidGameHub');
 
         /// Set defaultcompetitions
-        let defaultCompetitions = getDefaultCompetitions();
-        for (let competition of defaultCompetitions) {
+        const defaultCompetitions = getDefaultCompetitions();
+        for (const competition of defaultCompetitions) {
             const tx = await appChain.transaction(alice, () => {
                 gameHub.createCompetition(competition);
             });
@@ -99,10 +99,10 @@ describe('game hub', () => {
             await appChain.produceBlock();
         }
 
-        let uiUserInput = cases['seed-0'];
+        const uiUserInput = cases['seed-0'];
 
-        let chunks = chunkenize(uiUserInput, 10);
-        let userInputs = chunks
+        const chunks = chunkenize(uiUserInput, 10);
+        const userInputs = chunks
             .filter((chunk) => chunk.length > 0)
             .map(
                 (chunk) =>
@@ -116,10 +116,10 @@ describe('game hub', () => {
                     })
             );
 
-        let cuttentCompetition = defaultCompetitions[0];
+        const cuttentCompetition = defaultCompetitions[0];
 
         // Generate map generation proof
-        let gameContext = checkMapGeneration(
+        const gameContext = checkMapGeneration(
             Field.from(cuttentCompetition.seed)
         );
         const mapGenerationProof = await mockProof(
@@ -142,11 +142,11 @@ describe('game hub', () => {
                 GameProcessProof
             );
         }
-        let checkGameRecordOut = checkGameRecord(
+        const checkGameRecordOut = checkGameRecord(
             mapGenerationProof,
             currentGameStateProof
         );
-        let gameRecordProof = await mockProof(
+        const gameRecordProof = await mockProof(
             checkGameRecordOut,
             GameRecordProof
         );
