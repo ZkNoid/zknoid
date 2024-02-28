@@ -21,6 +21,21 @@ module.exports = {
       },
     },
     extend: {
+      fontSize: {
+        'headline-1': ['32px', {lineHeight: '32px', fontWeight: '700'}],
+        'headline-2': ['24px', {lineHeight: '24px', fontWeight: '700'}],
+        'headline-3': ['24px', {lineHeight: '29px', fontWeight: '500'}],
+        'big-uppercase': ['30px', {lineHeight: '30px', fontWeight: '500'}],
+        'filter': ['20px', {lineHeight: '26px', fontWeight: '400'}],
+        'main': ['16px', {lineHeight: '18px', fontWeight: '400'}],
+        'hashtag': ['14px', {lineHeight: '15px', fontWeight: '500'}],
+        'second-menu': ['24px', {lineHeight: '29px', fontWeight: '500'}],
+        'header-menu': ['16px', {lineHeight: '19px', fontWeight: '500'}],
+        'buttons': ['24px', {lineHeight: '29px', fontWeight: '500'}],
+        'buttons-menu': ['16px', {lineHeight: '19px', fontWeight: '500'}],
+        'filtration-buttons': ['16px', {lineHeight: '21px', fontWeight: '400'}],
+        'rating-numbers': ['16px', {lineHeight: '14px', fontWeight: '500'}],
+      },
         colors: {
           'bg-dark': '#212121',
           'foreground': '#F9F8F4',
@@ -50,7 +65,8 @@ module.exports = {
       },
       fontFamily: {
         museo: ['var(--museo-slab)'],
-        plexmono: ['var(--plex-mono)']
+        plexmono: ['var(--plex-mono)'],
+        plexsans: ['var(--plex-sans)'],
     },
       gridTemplateColumns: {
         '15': 'repeat(15, minmax(0, 1fr))',

@@ -16,8 +16,8 @@ export const GameCard = ({ game }: { game: IGame }) => {
           height={251}
           className="w-full"
         />
-        <div className="text-[24px]">{game.name}</div>
-        <div className="font-plexmono text-[16px] font-[16]">
+        <div className="text-headline-1">{game.name}</div>
+        <div className="font-plexsans text-main font-normal">
           {game.description}
         </div>
       </Link>

@@ -14,7 +14,10 @@ export const Accordion = ({
 
   return (
     <div className={'relative h-full w-full'}>
-      <div className={'cursor-pointer pb-2'} onClick={() => setIsOpen(!isOpen)}>
+      <div
+        className={'text-headline-2 cursor-pointer pb-2 font-medium'}
+        onClick={() => setIsOpen(!isOpen)}
+      >
         {title}
       </div>
       <AnimatePresence initial={false} mode={'wait'}>
@@ -24,7 +27,7 @@ export const Accordion = ({
             animate={{ height: 'auto' }}
             exit={{ height: 0 }}
             transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
-            className={'overflow-hidden'}
+            className={'text-main overflow-hidden'}
           >
             {children}
           </motion.div>

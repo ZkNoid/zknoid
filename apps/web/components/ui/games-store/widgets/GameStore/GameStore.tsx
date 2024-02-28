@@ -35,7 +35,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
   return (
     <div className="top-0 flex h-full w-full flex-col gap-5 p-10">
       <div className="flex flex-col gap-3">
-        <div className="text-[32px]">Events & competitions</div>
+        <div className="text-headline-1">Events & competitions</div>
         <div className="flex flex-row gap-3">
           {ALL_GAME_EVENT_TYPES.map((eventType) => (
             <FilterCard
@@ -64,7 +64,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
       </div>
 
       <div>
-        <div className="text-[32px]">Popular genres</div>
+        <div className="text-headline-1">Popular genres</div>
         <div className="grid grid-cols-4 gap-5">
           <GenreCard
             image={arcadeImg}
@@ -94,7 +94,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
       </div>
       <div className="flex gap-5">
         <div className="min-w-[350px]">
-          <div className="text-[24px] font-bold">Filtration</div>
+          <div className="text-headline-3 pb-5 pt-2 font-bold">Filtration</div>
           <div className="flex flex-col gap-3">
             <FiltrationBox
               key={0}
@@ -113,7 +113,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
               setItemsSelected={setFeaturesSelected}
             />
             <div
-              className="flex h-[40px] cursor-pointer items-center justify-center rounded-2xl border-2 border-left-accent text-[24px] text-left-accent"
+              className="text-buttons flex h-[40px] cursor-pointer items-center justify-center rounded-2xl border-2 border-left-accent text-left-accent"
               onClick={() => {
                 setGenresSelected([]);
                 setFeaturesSelected([]);
@@ -125,12 +125,12 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <div className="text-[32px] font-bold">Games</div>
+          <div className="text-headline-1">Games</div>
           <div className="flex flex-row gap-3 ">
             {ALL_GAME_TAGS.map((x) => (
               <div
                 key={x.name}
-                className={`cursor-pointer rounded border p-1 ${
+                className={`text-filtration-buttons font-plexsans cursor-pointer rounded border p-1 ${
                   genresSelected == x.genres && featuresSelected == x.features
                     ? 'border-left-accent bg-left-accent text-bg-dark'
                     : 'border-[#F9F8F4]'

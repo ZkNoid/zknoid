@@ -24,15 +24,24 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
         className="w-full"
       ></Image>
       <div className="absolute flex h-full w-full items-center justify-around">
-        <div className="flex gap-2" onClick={() => setPage('Support')}>
+        <div
+          className="text-headline-3 flex gap-2 text-left-accent"
+          onClick={() => setPage('Support')}
+        >
           <Image src={supportImg} alt={'Headphones'} />
           <span>FAQ & Support</span>
         </div>
-        <Link href={'https://docs.zknoid.io/docs'} className="flex gap-2">
+        <Link
+          href={'https://docs.zknoid.io/docs'}
+          className="text-headline-3 flex gap-2 text-left-accent"
+        >
           <Image alt="Book" src={bookImg} />
           Docs
         </Link>
-        <Link href={'https://zknoid.io'} className="flex gap-2">
+        <Link
+          href={'https://zknoid.io'}
+          className="text-headline-3 flex gap-2 text-left-accent"
+        >
           <Image src={webImg} alt="Web" />
           About us
         </Link>
@@ -96,7 +105,12 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
               width={30}
               height={30}
             />
-            <button onClick={() => setPage('GameStore')}>Game store</button>
+            <button
+              onClick={() => setPage('GameStore')}
+              className={'text-headline-3'}
+            >
+              Game store
+            </button>
           </div>
           <div
             className={`flex flex-row items-center justify-center gap-2 ${
@@ -109,7 +123,10 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
               width={30}
               height={30}
             />
-            <button onClick={() => setPage('FavoriteGames')}>
+            <button
+              onClick={() => setPage('FavoriteGames')}
+              className={'text-headline-3'}
+            >
               Favorite games
             </button>
           </div>
