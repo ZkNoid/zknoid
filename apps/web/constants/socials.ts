@@ -1,5 +1,5 @@
 import githubImg from '@/public/image/socials/github.svg';
-import twitterImg from '@/public/image/socials/github.svg';
+import twitterImg from '@/public/image/socials/twitter.svg';
 import mediumImg from '@/public/image/socials/medium.svg';
 
 export const SOCIALS = [
