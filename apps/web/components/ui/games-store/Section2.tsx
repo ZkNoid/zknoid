@@ -39,7 +39,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
         <div className="flex gap-3">
           {SOCIALS.map((x) => (
             <Link href={x.link} key={x.id}>
-              <Image alt={x.name} src={x.image}></Image>
+              <Image alt={x.name} src={x.image} />
             </Link>
           ))}
         </div>

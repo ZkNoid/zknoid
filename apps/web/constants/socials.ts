@@ -1,6 +1,9 @@
 import githubImg from '@/public/image/socials/github.svg';
+import githubImgWhite from '@/public/image/socials/github-white.svg';
 import twitterImg from '@/public/image/socials/twitter.svg';
+import twitterImgWhite from '@/public/image/socials/twitter-white.svg';
 import mediumImg from '@/public/image/socials/medium.svg';
+import mediumImgWhite from '@/public/image/socials/medium-white.svg';
 
 export const SOCIALS = [
   {
@@ -8,18 +11,21 @@ export const SOCIALS = [
     name: 'Github',
     link: 'https://github.com/ZkNoid',
     image: githubImg,
+    whiteImage: githubImgWhite,
   },
   {
     id: 'twitter',
     name: 'Twitter',
     link: 'https://twitter.com/ZkNoid',
     image: twitterImg,
+    whiteImage: twitterImgWhite,
   },
   {
     id: 'medium',
     name: 'Medium',
     link: 'https://medium.com/@zknoid',
     image: mediumImg,
+    whiteImage: mediumImgWhite,
   },
 ];
 
