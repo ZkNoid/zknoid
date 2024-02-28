@@ -13,7 +13,7 @@ export const CentralBlock = () => (
     <div className="absolute flex h-full w-full items-center justify-around">
       <Link href={'https://docs.zknoid.io/docs'} className="flex gap-2">
         <Image alt="Book" src={bookImg} />
-        Documentation
+        Docs
       </Link>
       <Link href={'https://zknoid.io'} className="flex gap-2">
         <Image src={webImg} alt="Web" />
