@@ -12,12 +12,12 @@ export function FiltrationBox<T extends string>({
   setItemsSelected: (genres: T[]) => void;
 }) {
   return (
-    <div className="relative min-h-[80px] w-full p-5">
-      <div className="text-[24px] font-bold">{title}</div>
+    <div className="relative flex min-h-[80px] w-full flex-col gap-2 p-5">
+      <div className="text-headline-3 font-bold">{title}</div>
       {items.map((item) => (
         <div
           key={item}
-          className={`text-plexmono cursor-pointer font-[20] hover:underline ${
+          className={`font-plexsans text-filter cursor-pointer hover:underline ${
             itemsSelected.includes(item) ? 'underline' : ''
           } decoration-left-accent underline-offset-[5px]`}
           onClick={() => {

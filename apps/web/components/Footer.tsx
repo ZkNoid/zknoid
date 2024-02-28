@@ -21,7 +21,7 @@ export const Footer = () => {
           }
         >
           <Link
-            className="cursor-pointer text-lg ease-in-out even:text-right hover:opacity-80 lg:text-xl"
+            className="text-buttons-menu cursor-pointer ease-in-out even:text-right hover:opacity-80"
             href={'https://github.com/ZkNoid'}
             target="_blank"
             rel="noopener noreferrer"
@@ -29,7 +29,7 @@ export const Footer = () => {
             Github
           </Link>
           <Link
-            className="cursor-pointer text-lg ease-in-out even:text-right hover:opacity-80 lg:text-xl"
+            className="text-buttons-menu cursor-pointer ease-in-out even:text-right hover:opacity-80"
             href={'https://docs.zknoid.io'}
             target="_blank"
             rel="noopener noreferrer"
@@ -37,7 +37,7 @@ export const Footer = () => {
             Documentation
           </Link>
           <Link
-            className="cursor-pointer text-lg ease-in-out even:text-right hover:opacity-80 lg:text-xl"
+            className="text-buttons-menu cursor-pointer ease-in-out even:text-right hover:opacity-80"
             href={'https://zknoid.medium.com'}
             target="_blank"
             rel="noopener noreferrer"
@@ -54,7 +54,7 @@ export const Footer = () => {
             </Link>
           ))}
         </div>
-        <div className={'col-start-3 col-end-3 text-end'}>
+        <div className={'col-start-3 col-end-3 text-end text-[14px]/[17px] font-mono font-light'}>
           © 2024 ZkNoid: all rights reserved
         </div>
       </div>

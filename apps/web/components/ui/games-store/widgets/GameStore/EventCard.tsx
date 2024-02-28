@@ -25,12 +25,12 @@ export const EventCard = ({
     <div className="relative flex flex-col border-left-accent">
       <Image src={eventBoxImg} alt="" className="-z-10 w-full" />
       <div className="absolute left-0 top-0 flex h-full w-full flex-col p-5">
-        <div className="text-[24px] font-bold">{headText}</div>
-        <div className="text-plexmono max-w-[462px] text-[16px]">
+        <div className="text-headline-2 pb-2">{headText}</div>
+        <div className="font-plexsans max-w-[462px] text-main">
           {description}
         </div>
         <div className="flex-grow"></div>
-        <div className="text-plexmono max-w-[462px] text-[30px]">
+        <div className="max-w-[462px] text-big-uppercase">
           {eventCounter.type == ZkNoidEventType.UPCOMING_EVENTS && (
             <>START IN {time}</>
           )}

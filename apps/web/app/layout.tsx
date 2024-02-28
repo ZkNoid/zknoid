@@ -4,7 +4,7 @@ import './globals.css';
 import AsyncLayoutDynamic from '@/containers/async-layout-dynamic';
 
 import 'reflect-metadata';
-import { plexMono, museoSlab } from './fonts';
+import { plexMono, museoSlab, plexSans } from './fonts';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://app.zknoid.io'),
@@ -32,7 +32,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${museoSlab.variable} ${plexMono.variable}`}>
+      <body className={`${museoSlab.variable} ${plexMono.variable} ${plexSans.variable}`}>
         <AsyncLayoutDynamic>{children}</AsyncLayoutDynamic>
       </body>
     </html>

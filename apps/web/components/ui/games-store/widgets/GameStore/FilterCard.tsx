@@ -19,7 +19,7 @@ export const FilterCard = ({
           : [...typesSelected, eventType]
       )
     }
-    className={`cursor-pointer rounded border p-1 text-[16px] ${
+    className={`text-filtration-buttons font-plexsans cursor-pointer rounded border p-1 ${
       selected
         ? 'border-left-accent bg-left-accent text-bg-dark'
         : 'border-[#F9F8F4]'

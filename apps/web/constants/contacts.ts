@@ -14,8 +14,8 @@ export const CONTACTS = [
   {
     id: 'email',
     image: MailImage,
-    link: 'mailto:ZkNoidSupport@gmail.com',
-    label: 'ZkNoidSupport@gmail.com',
+    link: 'mailto:support@zknoid.io',
+    label: 'support@zknoid.io',
   },
   {
     id: 'twitter',
