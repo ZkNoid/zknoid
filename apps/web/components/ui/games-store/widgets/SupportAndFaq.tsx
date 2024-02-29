@@ -1,14 +1,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { CONTACTS } from '@/constants/contacts';
-import { Accordion } from '@/components/ui/games-store/shared/ui/Accordion';
+import { Accordion } from '@/components/ui/games-store/shared/Accordion';
 
 export const SupportAndFaq = () => {
   return (
     <div className="top-0 flex h-full w-full flex-col gap-20 p-10">
       <div className={'flex max-w-[40%] flex-col gap-3'}>
         <div className="text-headline-1">Technical support</div>
-        <div className="text-main font-plexsans">
+        <div className="font-plexsans text-main">
           If you have any questions or notice any issues with the operation of
           our application, please do not hesitate to contact us. We will be more
           than happy to answer any questions you may have and try our best to
@@ -16,7 +16,7 @@ export const SupportAndFaq = () => {
         </div>
       </div>
       <div className="flex max-w-[50%] flex-col items-start justify-start">
-        <span className={'text-headline-2 pb-4'}>Contacts</span>
+        <span className={'pb-4 text-headline-2'}>Contacts</span>
         <div className={'grid grid-flow-col grid-cols-2 grid-rows-3 gap-4'}>
           {CONTACTS.map((item) => (
             <Link
@@ -38,7 +38,7 @@ export const SupportAndFaq = () => {
         </div>
       </div>
       <div className={'flex flex-col'}>
-        <div className={'text-headline-1 pb-2'}>FAQ</div>
+        <div className={'pb-2 text-headline-1'}>FAQ</div>
         <div className={'flex flex-row justify-between'}>
           <div className={'flex w-full flex-col gap-4'}>
             <Accordion title={'Some Title'} defaultOpen>
