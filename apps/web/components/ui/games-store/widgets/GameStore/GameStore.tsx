@@ -94,7 +94,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
       </div>
       <div className="flex gap-5">
         <div className="min-w-[350px]">
-          <div className="text-headline-3 pb-5 pt-2 font-bold">Filtration</div>
+          <div className="pb-5 pt-2 text-headline-3 font-bold">Filtration</div>
           <div className="flex flex-col gap-3">
             <FiltrationBox
               key={0}
@@ -113,7 +113,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
               setItemsSelected={setFeaturesSelected}
             />
             <div
-              className="text-buttons flex h-[40px] cursor-pointer items-center justify-center rounded-2xl border-2 border-left-accent text-left-accent"
+              className="flex h-[40px] cursor-pointer items-center justify-center rounded-2xl border-2 border-left-accent text-buttons text-left-accent"
               onClick={() => {
                 setGenresSelected([]);
                 setFeaturesSelected([]);
@@ -130,7 +130,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             {ALL_GAME_TAGS.map((x) => (
               <div
                 key={x.name}
-                className={`text-filtration-buttons font-plexsans cursor-pointer rounded border p-1 ${
+                className={`cursor-pointer rounded border p-1 font-plexsans text-filtration-buttons ${
                   genresSelected == x.genres && featuresSelected == x.features
                     ? 'border-left-accent bg-left-accent text-bg-dark'
                     : 'border-[#F9F8F4]'
