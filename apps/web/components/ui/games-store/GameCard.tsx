@@ -51,7 +51,7 @@ export const GameCard = ({ game }: { game: IGame }) => {
       <Image
         src={isFavorite ? heartFilledImg : heartImg}
         alt={'Favorite'}
-        className={'absolute right-7 top-7 h-[36px] w-[36px]'}
+        className={'absolute right-7 top-7 h-[36px] w-[36px] cursor-pointer'}
         onClick={() => setIsFavorite(!isFavorite)}
       />
       <Link
