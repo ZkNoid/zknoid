@@ -2,10 +2,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { IGame } from '@/app/constants/games';
-import { FavoriteGames } from '@/components/ui/games-store/FavoriteGames';
+import { FavoriteGames } from '@/components/ui/games-store/widgets/FavoriteGames';
 import { GameStore } from '@/components/ui/games-store/widgets/GameStore/GameStore';
 import { SOCIALS } from '@/constants/socials';
-import { SupportAndFaq } from '@/components/ui/games-store/SupportAndFaq';
+import { SupportAndFaq } from '@/components/ui/games-store/widgets/SupportAndFaq';
 import centralBlockImg from '@/public/image/central-block.svg';
 import bookImg from '@/public/image/misc/book.svg';
 import webImg from '@/public/image/misc/web.svg';
@@ -25,7 +25,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
       ></Image>
       <div className="absolute flex h-full w-full items-center justify-around">
         <div
-          className="text-headline-3 flex gap-2 text-left-accent"
+          className="flex gap-2 text-headline-3 text-left-accent"
           onClick={() => setPage('Support')}
         >
           <Image src={supportImg} alt={'Headphones'} />
@@ -33,14 +33,14 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
         </div>
         <Link
           href={'https://docs.zknoid.io/docs'}
-          className="text-headline-3 flex gap-2 text-left-accent"
+          className="flex gap-2 text-headline-3 text-left-accent"
         >
           <Image alt="Book" src={bookImg} />
           Docs
         </Link>
         <Link
           href={'https://zknoid.io'}
-          className="text-headline-3 flex gap-2 text-left-accent"
+          className="flex gap-2 text-headline-3 text-left-accent"
         >
           <Image src={webImg} alt="Web" />
           About us

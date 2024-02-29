@@ -3,7 +3,6 @@
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { Footer } from '@/components/Footer';
-// import { CentralBlock } from '@/components/ui/games-store/CentralBlock';
 import DesktopNavbar from '@/components/ui/games-store/DesktopNavbar';
 import { Section1 } from '@/components/ui/games-store/Section1';
 import { Section2 } from '@/components/ui/games-store/Section2';
@@ -52,7 +51,6 @@ export default function Home() {
 
       <main className="flex flex-col px-5">
         <Section1 />
-        {/*<CentralBlock />*/}
         <Section2 games={games} />
       </main>
       <Footer />
