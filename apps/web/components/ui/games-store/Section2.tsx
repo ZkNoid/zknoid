@@ -29,7 +29,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
           onClick={() => setPage('Support')}
         >
           <Image src={supportImg} alt={'Headphones'} />
-          <span>FAQ & Support</span>
+          <span className={'cursor-pointer'}>FAQ & Support</span>
         </div>
         <Link
           href={'https://docs.zknoid.io/docs'}
@@ -88,7 +88,6 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
             />
           </svg>
         </div>
-
         <div
           className={
             '-mt-10 ml-10 flex flex-row items-center justify-start gap-4'
