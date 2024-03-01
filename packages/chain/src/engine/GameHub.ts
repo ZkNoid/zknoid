@@ -181,6 +181,7 @@ export class Gamehub<
     }
 
     /// #TODO change to multiple receivers
+    /// #TODO add timestamp check, when timestamp will be on protokit
     @runtimeMethod()
     public getReward(competitionId: UInt64): void {
         let competition = this.competitions.get(competitionId).value;
@@ -192,6 +193,15 @@ export class Gamehub<
 
         assert(this.gotReward.get(key).value);
         this.gotReward.set(key, Bool(true));
+
+        let winner = this.leaderboard.get(
+            new LeaderboardIndex({
+                competitionId,
+                index: UInt64.zero,
+            })
+        ).value;
+
+        assert(winner.player.equals(this.transaction.sender.value));
 
         this.balances.addBalance(
             this.transaction.sender.value,
