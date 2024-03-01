@@ -56,7 +56,7 @@ export default function DesktopNavbar({
           {networkStore.walletConnected ? (
             <>
               <HeaderCard
-                image="/image/cards/account.svg"
+                svg={'account'}
                 isMiddle={true}
                 text={networkStore.address!.substring(0, 10) + '..'}
               />
@@ -64,7 +64,7 @@ export default function DesktopNavbar({
             </>
           ) : walletInstalled() ? (
             <HeaderCard
-              image="/image/cards/account.svg"
+              svg={'account'}
               text="Connect wallet"
               isMiddle={true}
               onClick={() => {
@@ -74,7 +74,7 @@ export default function DesktopNavbar({
           ) : (
             <Link href="https://www.aurowallet.com/">
               <HeaderCard
-                image="/image/cards/account.svg"
+                svg={'account'}
                 text="Install wallet"
                 isMiddle={true}
                 onClick={() => {

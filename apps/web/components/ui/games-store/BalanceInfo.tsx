@@ -40,12 +40,10 @@ export default function BalanceInfo() {
               ).toFixed(2)}{' '}
               Mina
             </div>
-            <div className='text-[12px]'>
-              {workerClient.status}
-            </div>
+            <div className="text-[12px]">{workerClient.status}</div>
           </div>
           <div>
-            <HeaderCard image="/image/cards/top-up.svg" text="Top up" />
+            <HeaderCard svg={'top-up'} text="Top up" />
           </div>
         </div>
       )}

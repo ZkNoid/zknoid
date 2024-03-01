@@ -7,6 +7,7 @@ import { useNetworkStore } from '@/lib/stores/network';
 import { useRegisterWorkerClient } from '@/lib/stores/workerClient';
 
 import { HeaderCard } from './ui/games-store/HeaderCard';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export default function NetworkPicker() {
   const [expanded, setExpanded] = useState(false);
@@ -68,25 +69,62 @@ export default function NetworkPicker() {
   return (
     <div className="relative">
       <HeaderCard
-        image="/image/cards/mina.png"
+        svg={'mina'}
         text={networkStore.minaNetwork?.name || 'Unsupported network'}
         onClick={() => setExpanded(!expanded)}
         toggle={true}
         isMiddle={true}
+        expanded={expanded}
       />
-      {expanded && (
-        <div className="absolute top-[-px2] flex w-full flex-col items-center rounded-b-xl bg-middle-accent text-xs">
-          {NETWORKS.map((network) => (
-            <div
-              key={network.chainId}
-              className="h-full w-full cursor-pointer px-7 py-3 text-black hover:bg-slate-400"
-              onClick={() => switchNetwork(network.chainId)}
-            >
-              {network.name}
-            </div>
-          ))}
-        </div>
-      )}
+      <AnimatePresence initial={false} mode={'wait'}>
+        {expanded && (
+          <motion.div
+            initial={{ height: 0 }}
+            animate={{ height: 'auto' }}
+            exit={{ height: 0 }}
+            transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
+            className="absolute top-[95%] flex w-full flex-col items-center overflow-hidden rounded-b border border-middle-accent bg-bg-dark"
+          >
+            {NETWORKS.map((network) => (
+              <div
+                key={network.chainId}
+                className="flex h-full w-full cursor-pointer flex-row items-center gap-2 py-3 pl-2 text-header-menu text-middle-accent transition duration-75 ease-in last:rounded-b hover:bg-middle-accent/20"
+                onClick={() => switchNetwork(network.chainId)}
+              >
+                <div
+                  className={
+                    'rounded-[5px] border border-middle-accent bg-bg-dark p-1'
+                  }
+                >
+                  <svg
+                    aria-hidden="true"
+                    role="presentation"
+                    viewBox="0 0 17 18"
+                    className={'h-3.5 w-3.5'}
+                  >
+                    <polyline
+                      fill="none"
+                      points="1 9 7 14 15 4"
+                      stroke="currentColor"
+                      strokeDasharray="22"
+                      strokeDashoffset="44"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      className={
+                        networkStore.minaNetwork?.name == network.name
+                          ? 'opacity-100'
+                          : 'opacity-0'
+                      }
+                    ></polyline>
+                  </svg>
+                </div>
+                <span>{network.name}</span>
+              </div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
