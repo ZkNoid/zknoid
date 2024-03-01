@@ -39,128 +39,41 @@ export const SupportAndFaq = () => {
       </div>
       <div className={'flex flex-col'}>
         <div className={'pb-2 text-headline-1'}>FAQ</div>
-        <div className={'flex flex-row justify-between'}>
-          <div className={'flex w-full flex-col gap-4'}>
-            <Accordion title={'Some Title'} defaultOpen>
-              <span>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-                blanditiis ducimus eaque earum et eveniet exercitationem
-                expedita fuga id illo ipsam laboriosam, magni, minus nemo nihil
-                nisi nulla officiis perferendis placeat porro, quaerat quasi
-                quidem saepe soluta ut velit veritatis.
-              </span>
-            </Accordion>
-
-            <Accordion title={'Some Title'}>
-              <span>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-                blanditiis ducimus eaque earum et eveniet exercitationem
-                expedita fuga id illo ipsam laboriosam, magni, minus nemo nihil
-                nisi nulla officiis perferendis placeat porro, quaerat quasi
-                quidem saepe soluta ut velit veritatis.
-              </span>
-            </Accordion>
-
-            <Accordion title={'Some Title'}>
-              <span>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-                blanditiis ducimus eaque earum et eveniet exercitationem
-                expedita fuga id illo ipsam laboriosam, magni, minus nemo nihil
-                nisi nulla officiis perferendis placeat porro, quaerat quasi
-                quidem saepe soluta ut velit veritatis.
-              </span>
-            </Accordion>
-
-            <Accordion title={'Some Title'}>
-              <span>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-                blanditiis ducimus eaque earum et eveniet exercitationem
-                expedita fuga id illo ipsam laboriosam, magni, minus nemo nihil
-                nisi nulla officiis perferendis placeat porro, quaerat quasi
-                quidem saepe soluta ut velit veritatis.
-              </span>
-            </Accordion>
-
-            <Accordion title={'Some Title'}>
-              <span>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-                blanditiis ducimus eaque earum et eveniet exercitationem
-                expedita fuga id illo ipsam laboriosam, magni, minus nemo nihil
-                nisi nulla officiis perferendis placeat porro, quaerat quasi
-                quidem saepe soluta ut velit veritatis.
-              </span>
-            </Accordion>
-
-            <Accordion title={'Some Title'}>
-              <span>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-                blanditiis ducimus eaque earum et eveniet exercitationem
-                expedita fuga id illo ipsam laboriosam, magni, minus nemo nihil
-                nisi nulla officiis perferendis placeat porro, quaerat quasi
-                quidem saepe soluta ut velit veritatis.
-              </span>
-            </Accordion>
+        <div className={'flex flex-row justify-between gap-4'}>
+          <div className={'flex h-fit w-full flex-col gap-4'}>
+            {[...Array(5)].map((value, index) => (
+              <Accordion
+                title={'Some Title'}
+                defaultOpen={index === 2}
+                key={index}
+              >
+                <span className={'font-plexsans text-main'}>
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                  Atque blanditiis ducimus eaque earum et eveniet exercitationem
+                  expedita fuga id illo ipsam laboriosam, magni, minus nemo
+                  nihil nisi nulla officiis perferendis placeat porro, quaerat
+                  quasi quidem saepe soluta ut velit veritatis.
+                </span>
+              </Accordion>
+            ))}
           </div>
-          <div className={'flex w-full flex-col gap-4'}>
-            <Accordion title={'Some Title'} defaultOpen>
-              <span>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-                blanditiis ducimus eaque earum et eveniet exercitationem
-                expedita fuga id illo ipsam laboriosam, magni, minus nemo nihil
-                nisi nulla officiis perferendis placeat porro, quaerat quasi
-                quidem saepe soluta ut velit veritatis.
-              </span>
-            </Accordion>
 
-            <Accordion title={'Some Title'}>
-              <span>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-                blanditiis ducimus eaque earum et eveniet exercitationem
-                expedita fuga id illo ipsam laboriosam, magni, minus nemo nihil
-                nisi nulla officiis perferendis placeat porro, quaerat quasi
-                quidem saepe soluta ut velit veritatis.
-              </span>
-            </Accordion>
-
-            <Accordion title={'Some Title'}>
-              <span>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-                blanditiis ducimus eaque earum et eveniet exercitationem
-                expedita fuga id illo ipsam laboriosam, magni, minus nemo nihil
-                nisi nulla officiis perferendis placeat porro, quaerat quasi
-                quidem saepe soluta ut velit veritatis.
-              </span>
-            </Accordion>
-
-            <Accordion title={'Some Title'}>
-              <span>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-                blanditiis ducimus eaque earum et eveniet exercitationem
-                expedita fuga id illo ipsam laboriosam, magni, minus nemo nihil
-                nisi nulla officiis perferendis placeat porro, quaerat quasi
-                quidem saepe soluta ut velit veritatis.
-              </span>
-            </Accordion>
-
-            <Accordion title={'Some Title'}>
-              <span>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-                blanditiis ducimus eaque earum et eveniet exercitationem
-                expedita fuga id illo ipsam laboriosam, magni, minus nemo nihil
-                nisi nulla officiis perferendis placeat porro, quaerat quasi
-                quidem saepe soluta ut velit veritatis.
-              </span>
-            </Accordion>
-
-            <Accordion title={'Some Title'}>
-              <span>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-                blanditiis ducimus eaque earum et eveniet exercitationem
-                expedita fuga id illo ipsam laboriosam, magni, minus nemo nihil
-                nisi nulla officiis perferendis placeat porro, quaerat quasi
-                quidem saepe soluta ut velit veritatis.
-              </span>
-            </Accordion>
+          <div className={'flex h-fit w-full flex-col gap-4'}>
+            {[...Array(3)].map((value, index) => (
+              <Accordion
+                title={'Some Title'}
+                defaultOpen={index === 0}
+                key={index}
+              >
+                <span className={'font-plexsans text-main'}>
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                  Atque blanditiis ducimus eaque earum et eveniet exercitationem
+                  expedita fuga id illo ipsam laboriosam, magni, minus nemo
+                  nihil nisi nulla officiis perferendis placeat porro, quaerat
+                  quasi quidem saepe soluta ut velit veritatis.
+                </span>
+              </Accordion>
+            ))}
           </div>
         </div>
       </div>
