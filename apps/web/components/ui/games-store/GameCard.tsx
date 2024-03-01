@@ -38,7 +38,7 @@ export const GameCard = ({ game }: { game: IGame }) => {
   const [fillColor, setFillColor] = useState<
     'bg-left-accent' | 'bg-middle-accent'
   >('bg-left-accent');
-  const [rating, setRating] = useState<number>(5);
+  const [rating, _setRating] = useState<number>(5);
 
   useEffect(() => {
     if (game.genre == ZkNoidGameGenre.Arcade) {
@@ -89,7 +89,7 @@ export const GameCard = ({ game }: { game: IGame }) => {
             <span
               key={value}
               className={clsx(
-                'rounded border p-1 text-filtration-buttons text-dark-buttons-text',
+                'rounded p-1 text-filtration-buttons text-dark-buttons-text',
                 fillColor
               )}
             >
