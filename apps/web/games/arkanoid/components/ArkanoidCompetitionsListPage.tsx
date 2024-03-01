@@ -46,6 +46,20 @@ export default function ArkanoidCompetitionsListPage() {
     await tx.send();
   };
 
+  const getReward = async (competitionId: number) => {
+    const gameHub = client.runtime.resolve('ArkanoidGameHub');
+
+    const tx = await client.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        gameHub.getReward(UInt64.from(competitionId));
+      }
+    );
+
+    await tx.sign();
+    await tx.send();
+  };
+
   const competitionButton = (c: ICompetition): ReactElement => {
     let defaultButton = (
       <div className="flex content-center items-center justify-center rounded border-solid bg-gray-500 px-6 py-4 font-bold text-white">
@@ -80,10 +94,20 @@ export default function ArkanoidCompetitionsListPage() {
         </div>
       );
     };
+
+    let getRewardButton = (
+      <div
+        className="flex content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white"
+        onClick={() => getReward(c.competitionId)}
+      >
+        Get Reward
+      </div>
+    );
+
     let curTime = Date.now();
 
     if (c.competitionEndTime < curTime) {
-      return info('Competition ended');
+      return getRewardButton;
     }
 
     if (c.prereg && !c.registered) {
