@@ -25,7 +25,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
       ></Image>
       <div className="absolute flex h-full w-full items-center justify-around">
         <div
-          className="flex gap-2 text-headline-3 text-left-accent"
+          className="flex gap-2 text-headline-3 text-left-accent hover:opacity-80"
           onClick={() => setPage('Support')}
         >
           <Image src={supportImg} alt={'Headphones'} />
@@ -33,21 +33,21 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
         </div>
         <Link
           href={'https://docs.zknoid.io/docs'}
-          className="flex gap-2 text-headline-3 text-left-accent"
+          className="flex gap-2 text-headline-3 text-left-accent hover:opacity-80"
         >
           <Image alt="Book" src={bookImg} />
           Docs
         </Link>
         <Link
           href={'https://zknoid.io'}
-          className="flex gap-2 text-headline-3 text-left-accent"
+          className="flex gap-2 text-headline-3 text-left-accent hover:opacity-80"
         >
           <Image src={webImg} alt="Web" />
           About us
         </Link>
         <div className="flex gap-3">
           {SOCIALS.map((x) => (
-            <Link href={x.link} key={x.id}>
+            <Link href={x.link} key={x.id} className={'hover:opacity-80'}>
               <Image alt={x.name} src={x.image} />
             </Link>
           ))}

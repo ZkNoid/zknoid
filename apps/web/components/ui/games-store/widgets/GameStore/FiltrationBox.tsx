@@ -17,8 +17,10 @@ export function FiltrationBox<T extends string>({
       {items.map((item) => (
         <div
           key={item}
-          className={`font-plexsans text-filter cursor-pointer hover:underline ${
-            itemsSelected.includes(item) ? 'underline' : ''
+          className={`cursor-pointer font-plexsans text-filter ${
+            itemsSelected.includes(item)
+              ? 'text-left-accent underline'
+              : 'hover:text-left-accent'
           } decoration-left-accent underline-offset-[5px]`}
           onClick={() => {
             setItemsSelected(

@@ -47,7 +47,7 @@ export const GameCard = ({ game }: { game: IGame }) => {
   }, [game.genre]);
 
   return (
-    <div className="relative min-h-[500px] rounded-xl bg-[#252525]">
+    <div className="group relative min-h-[500px] rounded-xl border border-bg-dark bg-[#252525] hover:border-left-accent">
       <Image
         src={isFavorite ? heartFilledImg : heartImg}
         alt={'Favorite'}
@@ -58,13 +58,21 @@ export const GameCard = ({ game }: { game: IGame }) => {
         href={game.active ? `/games/${game.id}/${game.defaultPage}` : '#'}
         className="m-5 flex h-full flex-col gap-5"
       >
-        <Image
-          src={game.logo}
-          alt="Game logo"
-          width={220}
-          height={251}
-          className="w-full"
-        />
+        <div
+          className={
+            'flex min-h-[400px] min-w-[400px] items-center justify-center rounded-[5px] border group-hover:border-left-accent'
+          }
+        >
+          <Image
+            src={game.logo}
+            alt="Game logo"
+            width={300}
+            height={300}
+            className={clsx('h-full w-full object-contain object-center', {
+              'max-w-[50%]': game.id === 'randzu' || game.id === 'checkers',
+            })}
+          />
+        </div>
         <div className={'flex flex-row justify-between'}>
           <div className="text-headline-1">{game.name}</div>
           <span
