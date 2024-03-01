@@ -53,6 +53,11 @@ export class Gamehub<
     @state() public lastSeed = State.from<UInt64>(UInt64);
     @state() public lastUpdate = State.from<UInt64>(UInt64);
 
+    @state() public gotReward = StateMap.from<GameRecordKey, Bool>(
+        GameRecordKey,
+        Bool
+    );
+
     public leaderboardSize = 10;
 
     public constructor(@inject('Balances') private balances: Balances) {
@@ -175,7 +180,26 @@ export class Gamehub<
         }
     }
 
-    private payCompetitionFee(competitionId: UInt64, shouldPay: Bool) {
+    /// #TODO change to multiple receivers
+    @runtimeMethod()
+    public getReward(competitionId: UInt64): void {
+        let competition = this.competitions.get(competitionId).value;
+
+        let key = new GameRecordKey({
+            competitionId,
+            player: this.transaction.sender.value,
+        });
+
+        assert(this.gotReward.get(key).value);
+        this.gotReward.set(key, Bool(true));
+
+        this.balances.addBalance(
+            this.transaction.sender.value,
+            competition.funds
+        );
+    }
+
+    private payCompetitionFee(competitionId: UInt64, shouldPay: Bool): void {
         let competition = this.competitions.get(competitionId).value;
         let fee = Provable.if(
             shouldPay,
