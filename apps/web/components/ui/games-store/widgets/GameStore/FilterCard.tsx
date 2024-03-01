@@ -1,4 +1,5 @@
 import { ZkNoidEventType } from '@/lib/platform/game_events';
+import { clsx } from 'clsx';
 
 export const FilterCard = ({
   eventType,
@@ -19,11 +20,12 @@ export const FilterCard = ({
           : [...typesSelected, eventType]
       )
     }
-    className={`text-filtration-buttons font-plexsans cursor-pointer rounded border p-1 ${
+    className={clsx(
+      'cursor-pointer rounded border p-1 font-plexsans text-filtration-buttons',
       selected
         ? 'border-left-accent bg-left-accent text-bg-dark'
-        : 'border-[#F9F8F4]'
-    }`}
+        : 'hover:border-left-accent hover:text-left-accent'
+    )}
   >
     {eventType}
   </div>
