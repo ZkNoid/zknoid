@@ -16,7 +16,7 @@ export const SupportAndFaq = () => {
         </div>
       </div>
       <div className="flex max-w-[50%] flex-col items-start justify-start">
-        <span className={'pb-4 text-headline-2'}>Contacts</span>
+        <span className={'text-headline-2 pb-4'}>Contacts</span>
         <div className={'grid grid-flow-col grid-cols-2 grid-rows-3 gap-4'}>
           {CONTACTS.map((item) => (
             <Link
@@ -38,12 +38,12 @@ export const SupportAndFaq = () => {
         </div>
       </div>
       <div className={'flex flex-col'}>
-        <div className={'pb-2 text-headline-1'}>FAQ</div>
+        <div className={'text-headline-1 pb-2'}>FAQ</div>
         <div className={'flex flex-row justify-between gap-4'}>
           <div className={'flex h-fit w-full flex-col gap-4'}>
             {[...Array(5)].map((value, index) => (
               <Accordion
-                title={'Some Title'}
+                title={'The wallet is not connected to the application'}
                 defaultOpen={index === 2}
                 key={index}
               >
@@ -59,9 +59,9 @@ export const SupportAndFaq = () => {
           </div>
 
           <div className={'flex h-fit w-full flex-col gap-4'}>
-            {[...Array(3)].map((value, index) => (
+            {[...Array(5)].map((value, index) => (
               <Accordion
-                title={'Some Title'}
+                title={'The wallet is not connected to the application'}
                 defaultOpen={index === 0}
                 key={index}
               >
