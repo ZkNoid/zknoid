@@ -33,6 +33,7 @@ export default function Home() {
             name: x.name,
             description: x.description,
             genre: x.genre,
+            features: x.features,
             tags: [],
             defaultPage: x.pageCompetitionsList
               ? 'competitions-list'

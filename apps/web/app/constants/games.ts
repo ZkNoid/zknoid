@@ -1,12 +1,4 @@
-import { ZkNoidGameGenre } from '@/lib/platform/game_tags';
-
-enum GameTags {
-  Multiplayer = 'Multiplayer',
-  SinglePlayer = 'Single player',
-  L2_Game = 'L2 game',
-  BoardGames = 'Board games',
-  Retro = 'Retro',
-}
+import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
 
 export interface IGame {
   id: string;
@@ -14,7 +6,7 @@ export interface IGame {
   name: string;
   description: string;
   genre: ZkNoidGameGenre;
-  tags: GameTags[];
+  features: ZkNoidGameFeature[];
   defaultPage: string;
   active: boolean;
 }
@@ -26,7 +18,7 @@ export const announcedGames: IGame[] = [
     name: 'Checkers game',
     description: 'Compete other players in the classic board game',
     genre: ZkNoidGameGenre.ComingSoon,
-    tags: [GameTags.L2_Game, GameTags.Multiplayer, GameTags.BoardGames],
+    features: [ZkNoidGameFeature.Multiplayer],
     defaultPage: 'global',
     active: false,
   },
@@ -40,7 +32,7 @@ export const defaultGames: IGame[] = [
     description:
       'Old but gold game. Beat all the bricks and protect the ball from falling',
     genre: ZkNoidGameGenre.Arcade,
-    tags: [GameTags.L2_Game, GameTags.SinglePlayer, GameTags.Retro],
+    features: [ZkNoidGameFeature.SinglePlayer],
     defaultPage: 'competitions-list',
     active: true,
   },
@@ -51,7 +43,7 @@ export const defaultGames: IGame[] = [
     description:
       'Two players take turns placing pieces on the board attempting to create lines of 5 of their own color',
     genre: ZkNoidGameGenre.BoardGames,
-    tags: [GameTags.L2_Game, GameTags.Multiplayer, GameTags.BoardGames],
+    features: [ZkNoidGameFeature.Multiplayer],
     defaultPage: 'global',
     active: true,
   },

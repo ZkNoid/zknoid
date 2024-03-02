@@ -47,7 +47,7 @@ export const GameCard = ({ game }: { game: IGame }) => {
   }, [game.genre]);
 
   return (
-    <div className="group relative min-h-[500px] rounded-xl border border-bg-dark bg-[#252525] hover:border-left-accent">
+    <div className="group relative flex min-h-[500px] flex-col rounded-xl border border-bg-dark bg-[#252525] hover:border-left-accent">
       <Image
         src={isFavorite ? heartFilledImg : heartImg}
         alt={'Favorite'}
@@ -91,11 +91,13 @@ export const GameCard = ({ game }: { game: IGame }) => {
           {game.description}
         </div>
         <div
-          className={'flex w-full flex-row items-center justify-start gap-2'}
+          className={
+            'mt-auto flex w-full flex-row items-center justify-start gap-2'
+          }
         >
-          {game.tags.map((value) => (
+          {[...game.features, game.genre].map((value, i) => (
             <span
-              key={value}
+              key={i}
               className={clsx(
                 'text-filtration-buttons rounded p-1 text-dark-buttons-text',
                 fillColor
