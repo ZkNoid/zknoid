@@ -6,13 +6,11 @@ import { useEffect, useState, useRef } from 'react';
 import Lottie from 'react-lottie';
 
 export const GenreCard = ({
-  image,
   animation,
   genre,
   genresSelected,
   setGenresSelected,
 }: {
-  image: string;
   animation: object;
   genre: ZkNoidGameGenre;
   genresSelected: ZkNoidGameGenre[];
@@ -44,11 +42,11 @@ export const GenreCard = ({
               className: 'z-0 h-full w-[80%]',
             },
           }}
-          isStopped={!visible}
+          isStopped={!visible && false}
         ></Lottie>
       </div>
 
       <div className="text-headline-3 z-0">{genre}</div>
-      </div>
+    </div>
   );
 };

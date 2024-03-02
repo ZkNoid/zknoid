@@ -118,28 +118,24 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
         <div className="text-headline-1">Popular genres</div>
         <div className="grid grid-cols-4 gap-5">
           <GenreCard
-            image={arcadeImg}
             animation={GamepadIllustration}
             genre={ZkNoidGameGenre.Arcade}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
           />
           <GenreCard
-            image={boardImg}
             animation={ChessIllustration}
             genre={ZkNoidGameGenre.BoardGames}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
           />
           <GenreCard
-            image={luckyImg}
             animation={CubesIllustration}
             genre={ZkNoidGameGenre.Lucky}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
           />
           <GenreCard
-            image={soonImg}
             animation={EyesIllustration}
             genre={ZkNoidGameGenre.ComingSoon}
             genresSelected={genresSelected}
