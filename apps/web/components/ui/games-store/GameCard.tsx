@@ -68,9 +68,9 @@ export const GameCard = ({ game }: { game: IGame }) => {
             alt="Game logo"
             width={300}
             height={300}
-            className={clsx('h-full w-full object-contain object-center', {
-              'max-w-[50%]': game.id === 'randzu' || game.id === 'checkers',
-            })}
+            className={clsx(
+              'h-full max-h-[50%] w-full object-contain object-center'
+            )}
           />
         </div>
         <div className={'flex flex-row justify-between'}>
