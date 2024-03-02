@@ -60,7 +60,7 @@ export const GameCard = ({ game }: { game: IGame }) => {
       >
         <div
           className={
-            'flex min-h-[400px] min-w-[400px] items-center justify-center rounded-[5px] border group-hover:border-left-accent'
+            'flex min-h-[400px] items-center justify-center rounded-[5px] border group-hover:border-left-accent'
           }
         >
           <Image
@@ -97,7 +97,7 @@ export const GameCard = ({ game }: { game: IGame }) => {
             <span
               key={value}
               className={clsx(
-                'rounded p-1 text-filtration-buttons text-dark-buttons-text',
+                'text-filtration-buttons rounded p-1 text-dark-buttons-text',
                 fillColor
               )}
             >
