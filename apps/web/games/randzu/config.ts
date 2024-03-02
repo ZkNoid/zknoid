@@ -15,4 +15,5 @@ export const randzuConfig = createZkNoidGameConfig({
     RandzuLogic,
   },
   page: RandzuPage,
+  
 });
