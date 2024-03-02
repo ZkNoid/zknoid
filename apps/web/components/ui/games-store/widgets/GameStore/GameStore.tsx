@@ -27,6 +27,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ALL_SORT_METHODS, SortBy } from '@/app/constants/sortBy';
 import Image from 'next/image';
 import { Competitions } from '@/components/ui/games-store/widgets/GameStore/Competitions';
+import ChessIllustration from './assets/Chess_Illustration_01_02.json';
+import CubesIllustration from './assets/Cubes_Illustration_01_02.json';
+import EyesIllustration from './assets/Eyes_Illustration_01_01.json';
+import GamepadIllustration from './assets/Gamepad_Illustration_01_01.json';
 
 export const GameStore = ({ games }: { games: IGame[] }) => {
   const [eventTypesSelected, setEventTypesSelected] = useState<
@@ -115,24 +119,28 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
         <div className="grid grid-cols-4 gap-5">
           <GenreCard
             image={arcadeImg}
+            animation={GamepadIllustration}
             genre={ZkNoidGameGenre.Arcade}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
           />
           <GenreCard
             image={boardImg}
+            animation={ChessIllustration}
             genre={ZkNoidGameGenre.BoardGames}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
           />
           <GenreCard
             image={luckyImg}
+            animation={CubesIllustration}
             genre={ZkNoidGameGenre.Lucky}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
           />
           <GenreCard
             image={soonImg}
+            animation={EyesIllustration}
             genre={ZkNoidGameGenre.ComingSoon}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
