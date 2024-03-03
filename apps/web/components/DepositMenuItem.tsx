@@ -6,8 +6,23 @@ import MinaTokenSvg from '@/public/image/tokens/mina.svg';
 import ChangeSvg from '@/public/image/bridge/change.svg';
 
 import Image from 'next/image';
+import {
+  ALL_ZKNOID_L1_ASSETS,
+  L1_ASSETS,
+  L2_ASSET,
+  ZkNoidAsset,
+} from '@/constants/assets';
 
-const BridgeInput = () => {
+const BridgeInput = ({
+  assets,
+  onAmountSet,
+  isPay,
+}: {
+  assets: ZkNoidAsset[];
+  onAmountSet?: (amount: number) => void;
+  isPay: boolean;
+}) => {
+  const [currentAsset, setCurrentAsset] = useState(assets[0]);
   const [amountToDeposit, setAmountToDeposit] = useState(10);
 
   return (
@@ -15,26 +30,38 @@ const BridgeInput = () => {
       <div className="flex w-full flex-row gap-1">
         <div className="flex flex-row rounded border border-left-accent">
           <div className="flex min-w-0 flex-col p-1 text-[14px] text-left-accent">
-            You pay
+            {isPay ? 'You pay' : 'You receive'}
             <input
               type="number"
               className="w-full min-w-0 appearance-none bg-bg-dark text-[24px] outline-none"
               value={amountToDeposit}
-              onChange={(value) =>
-                setAmountToDeposit(parseInt(value.target.value))
-              }
+              onChange={(value) => {
+                setAmountToDeposit(parseFloat(value.target.value));
+                onAmountSet?.(parseFloat(value.target.value));
+              }}
             />
           </div>
           <div className="m-2 flex items-center justify-center gap-1 rounded bg-left-accent p-1 px-2 text-[24px] font-medium text-bg-dark">
-            <Image src={MinaTokenSvg} alt="Mina"></Image>
-            $MINA
+            {currentAsset.icon ? (
+              <div className="h-[26px] w-[26px]">
+                <Image
+                  className="h-[26px] w-[26px]"
+                  src={currentAsset.icon}
+                  alt={currentAsset.ticker}
+                  width={26}
+                  height={26}
+                ></Image>
+              </div>
+            ) : (
+              <div className="h-[26px] w-[26px] rounded-3xl bg-bg-dark"></div>
+            )}
+            {currentAsset.ticker}
             <svg
               width="22"
               height="12"
               viewBox="0 0 22 12"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              className="w-[50px]"
             >
               <path
                 d="M21 1.00098L11 11.001L1 1.00098"
@@ -70,7 +97,7 @@ export const DepositMenuItem = () => {
       />
       {expanded && (
         <div
-          className="fixed left-0 top-0 flex h-full w-full items-center justify-center backdrop-blur-sm z-10"
+          className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center backdrop-blur-sm"
           onClick={() => setExpanded(false)}
         >
           <div
@@ -79,13 +106,13 @@ export const DepositMenuItem = () => {
           >
             <div className="text-[32px]">Bridge</div>
             <div className="flex flex-col items-center gap-1">
-              <BridgeInput />
+              <BridgeInput assets={[L1_ASSETS.Mina]} isPay={true} />
               <Image
                 src={ChangeSvg}
                 alt="Change"
                 className="mb-[5px] mt-[-20px]"
               ></Image>
-              <BridgeInput />
+              <BridgeInput assets={[L2_ASSET]} isPay={false} />
             </div>
             <div
               className="cursor-pointer rounded-xl bg-left-accent px-7 py-3 text-[24px] text-black"
