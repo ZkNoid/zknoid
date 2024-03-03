@@ -5,9 +5,8 @@ import {
 import { usePollMinaBlockHeight } from '@/lib/stores/minaChain';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
-
-import { HeaderCard } from './HeaderCard';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
+import { DepositMenuItem } from '@/components/DepositMenuItem';
 
 export default function BalanceInfo() {
   const minaBalancesStore = useMinaBalancesStore();
@@ -43,7 +42,7 @@ export default function BalanceInfo() {
             <div className="text-[12px]">{workerClient.status}</div>
           </div>
           <div>
-            <HeaderCard svg={'top-up'} text="Top up" />
+            <DepositMenuItem />
           </div>
         </div>
       )}
