@@ -95,7 +95,7 @@ export const Competitions = () => {
             </div>
           </div>
           <div className={'flex flex-row justify-between'}>
-            <div className={'max-w-[50%] font-plexsans'}>
+            <div className={'font-plexsans max-w-[50%]'}>
               In this list you can see all the current and upcoming
               competitions. Choose a game, the reward and the date of the
               competition and have some fun!
@@ -167,7 +167,7 @@ export const Competitions = () => {
               preRegDate={'15/04/2024-17/04/2024'}
               competitionsDate={'15/04/2024-17/04/2024'}
               participantsFee={5}
-              valute={'$MINA'}
+              valute={'$Mina'}
               reward={1000}
             />
           ))}
