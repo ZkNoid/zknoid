@@ -112,7 +112,7 @@ export const useMinaBridge = () => {
 
       const data = await (window as any).mina.sendPayment({
         transaction: transactionJSON,
-        memo: 'Bridging to zknoid.io gaming platform',
+        memo: 'Bridging to zknoid.io gaming pla',
         to: BRIDGE_ADDR,
         amount: amount / 10 ** 9,
       });
