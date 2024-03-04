@@ -1,6 +1,9 @@
 import { useState } from 'react';
 
-import { useMinaBridge } from '@/lib/stores/protokitBalances';
+import {
+  useMinaBridge,
+  useProtokitBalancesStore,
+} from '@/lib/stores/protokitBalances';
 import { HeaderCard } from './ui/games-store/HeaderCard';
 import MinaTokenSvg from '@/public/image/tokens/mina.svg';
 import ChangeSvg from '@/public/image/bridge/change.svg';
@@ -12,19 +15,26 @@ import {
   L2_ASSET,
   ZkNoidAsset,
 } from '@/constants/assets';
+import { useNetworkStore } from '@/lib/stores/network';
+import { useMinaBalancesStore } from '@/lib/stores/minaBalances';
 
 const BridgeInput = ({
   assets,
-  onAmountSet,
+  currentAsset,
+  setCurrentAsset,
+  amount,
+  setAmount,
+  balance,
   isPay,
 }: {
   assets: ZkNoidAsset[];
-  onAmountSet?: (amount: number) => void;
+  currentAsset: ZkNoidAsset;
+  setCurrentAsset: (asset: ZkNoidAsset) => void;
+  amount: number;
+  setAmount?: (amount: number) => void;
+  balance: bigint;
   isPay: boolean;
 }) => {
-  const [currentAsset, setCurrentAsset] = useState(assets[0]);
-  const [amountToDeposit, setAmountToDeposit] = useState(10);
-
   return (
     <div className="font-plexsans w-full flex-col">
       <div className="flex w-full flex-row gap-1">
@@ -34,11 +44,12 @@ const BridgeInput = ({
             <input
               type="number"
               className="w-full min-w-0 appearance-none bg-bg-dark text-[24px] outline-none"
-              value={amountToDeposit}
+              value={amount}
               onChange={(value) => {
-                setAmountToDeposit(parseFloat(value.target.value));
-                onAmountSet?.(parseFloat(value.target.value));
+                setAmount?.(parseFloat(value.target.value));
               }}
+              step="0.01"
+              placeholder="0.00"
             />
           </div>
           <div className="m-2 flex items-center justify-center gap-1 rounded bg-left-accent p-1 px-2 text-[24px] font-medium text-bg-dark">
@@ -75,7 +86,10 @@ const BridgeInput = ({
         </div>
       </div>
       <div className="flex flex-row justify-between ">
-        <div>Balance: 500 $MINA</div>
+        <div>
+          Balance: {(Number(balance) / 10 ** 9).toFixed(2)}{' '}
+          {currentAsset.ticker}
+        </div>
         <div className="m-1 rounded border border-left-accent px-1 text-left-accent">
           MAX
         </div>
@@ -85,8 +99,18 @@ const BridgeInput = ({
 };
 export const DepositMenuItem = () => {
   const [expanded, setExpanded] = useState(false);
-  const [amountToDeposit, setAmountToDeposit] = useState(10);
+  const [assetIn, setAssetIn] = useState(L1_ASSETS.Mina);
+  const [amountIn, setAmountIn] = useState(10);
+  const [assetOut, setAssetOut] = useState(L2_ASSET);
+  const [amountOut, setAmountOut] = useState(10);
+
+  const minaBalancesStore = useMinaBalancesStore();
+  const protokitBalancesStore = useProtokitBalancesStore();
+
+  const networkStore = useNetworkStore();
+
   const bridge = useMinaBridge();
+  const rate = 1;
 
   return (
     <>
@@ -101,22 +125,48 @@ export const DepositMenuItem = () => {
           onClick={() => setExpanded(false)}
         >
           <div
-            className=" flex w-96 flex-col items-center gap-5 rounded-xl border border-left-accent bg-bg-dark p-7 text-xs"
+            className="flex w-96 flex-col items-center gap-5 rounded-xl border border-left-accent bg-bg-dark p-7 text-xs"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="text-[32px]">Bridge</div>
             <div className="flex flex-col items-center gap-1">
-              <BridgeInput assets={[L1_ASSETS.Mina]} isPay={true} />
+              <BridgeInput
+                assets={[L1_ASSETS.Mina]}
+                currentAsset={assetIn}
+                setCurrentAsset={setAssetIn}
+                amount={amountIn}
+                setAmount={(amount) => {
+                  setAmountIn(amount);
+                  setAmountOut(amount * rate);
+                }}
+                balance={
+                  minaBalancesStore.balances[networkStore.address!] ?? 0n
+                }
+                isPay={true}
+              />
               <Image
                 src={ChangeSvg}
                 alt="Change"
                 className="mb-[5px] mt-[-20px]"
               ></Image>
-              <BridgeInput assets={[L2_ASSET]} isPay={false} />
+              <BridgeInput
+                assets={[L2_ASSET]}
+                currentAsset={assetOut}
+                setCurrentAsset={setAssetOut}
+                amount={amountOut}
+                setAmount={(amount) => {
+                  setAmountIn(amount / rate);
+                  setAmountOut(amount);
+                }}
+                balance={
+                  protokitBalancesStore.balances[networkStore.address!] ?? 0n
+                }
+                isPay={false}
+              />
             </div>
             <div
               className="cursor-pointer rounded-xl bg-left-accent px-7 py-3 text-[24px] text-black"
-              onClick={() => bridge(amountToDeposit * 10 ** 9)}
+              onClick={() => bridge(amountIn * 10 ** 9)}
             >
               Bridge
             </div>
