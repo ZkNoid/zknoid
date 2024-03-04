@@ -110,13 +110,15 @@ export const useMinaBridge = () => {
 
       const transactionJSON = l1tx.toJSON();
 
-      await (window as any).mina.sendTransaction({
+      const data = await (window as any).mina.sendPayment({
         transaction: transactionJSON,
-        feePayer: {
-          fee: 0.1,
-          memo: 'zknoid.io',
-        },
+        memo: 'Bridging to zknoid.io gaming platform',
+        to: BRIDGE_ADDR,
+        amount: amount / 10 ** 9,
       });
+
+      const hash = (data as any).hash;
+      console.log('Tx hash', hash);
 
       const balances = contextAppChainClient.runtime.resolve('Balances');
       const sender = PublicKey.fromBase58(network.address!);
