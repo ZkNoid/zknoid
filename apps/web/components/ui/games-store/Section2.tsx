@@ -32,13 +32,6 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
           <span className={'cursor-pointer'}>FAQ & Support</span>
         </div>
         <Link
-          href={'https://docs.zknoid.io/docs'}
-          className="flex gap-2 text-headline-3 text-left-accent hover:opacity-80"
-        >
-          <Image alt="Book" src={bookImg} />
-          Docs
-        </Link>
-        <Link
           href={'https://zknoid.io'}
           className="flex gap-2 text-headline-3 text-left-accent hover:opacity-80"
         >
@@ -101,8 +94,8 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
             <Image
               src={'/image/section2/game-store-icon.svg'}
               alt={'GameStore icon'}
-              width={30}
-              height={30}
+              width={40}
+              height={29}
             />
             <button
               onClick={() => setPage('GameStore')}
@@ -119,8 +112,8 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
             <Image
               src={'/image/section2/favorite-games-icon.svg'}
               alt={'FavoriteGames icon'}
-              width={30}
-              height={30}
+              width={32}
+              height={29}
             />
             <button
               onClick={() => setPage('FavoriteGames')}

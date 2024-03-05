@@ -18,9 +18,9 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
   );
 
   return (
-    <div className="top-0 flex h-full w-full flex-col gap-20 p-10">
-      <div className={'flex max-w-[40%] flex-col gap-3'}>
-        <div className="text-headline-1">Favorite Games</div>
+    <div className="top-0 flex h-full w-full flex-col gap-5 p-10">
+      <div className={'flex max-w-[40%] flex-col gap-5'}>
+        <div className="pb-3 text-headline-1">Favorite Games</div>
         <div className="font-plexsans text-main">
           If you have any questions or notice any issues with the operation of
           our application, please do not hesitate to contact us. We will be more
@@ -127,77 +127,81 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
               ))}
           </div>
         </div>
-        <div className={'flex w-full items-center justify-center py-4'}>
-          <div className={'flex flex-row items-center justify-center gap-2'}>
-            <span
-              className={'cursor-pointer'}
-              onClick={() =>
-                setCurrentPage((prevState) =>
-                  prevState > 1 ? prevState - 1 : prevState
-                )
-              }
-            >
-              <svg
-                width="10"
-                height="16"
-                viewBox="0 0 10 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M8.51116 15L1 8L8.51116 1"
-                  stroke="#D2FF00"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
 
-            <span
-              className={
-                'flex flex-row items-center justify-center gap-2 pt-0.5'
-              }
-            >
-              {[...Array(pagesAmount).keys()].map((value) => (
-                <span
-                  key={value + 1}
-                  className={`cursor-pointer text-left-accent hover:underline ${
-                    value + 1 === currentPage ? 'opacity-100' : 'opacity-40'
-                  }`}
-                  onClick={() => setCurrentPage(value + 1)}
+        {genresSelected.length != 0 && (
+          <div className={'flex w-full items-center justify-center py-4'}>
+            <div className={'flex flex-row items-center justify-center gap-2'}>
+              <span
+                className={'cursor-pointer'}
+                onClick={() =>
+                  setCurrentPage((prevState) =>
+                    prevState > 1 ? prevState - 1 : prevState
+                  )
+                }
+              >
+                <svg
+                  width="10"
+                  height="16"
+                  viewBox="0 0 10 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  {value + 1}
-                </span>
-              ))}
-            </span>
+                  <path
+                    d="M8.51116 15L1 8L8.51116 1"
+                    stroke="#D2FF00"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
 
-            <span
-              className={'cursor-pointer'}
-              onClick={() =>
-                setCurrentPage((prevState) =>
-                  prevState < pagesAmount ? prevState + 1 : prevState
-                )
-              }
-            >
-              <svg
-                width="11"
-                height="16"
-                viewBox="0 0 11 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+              <span
+                className={
+                  'flex flex-row items-center justify-center gap-2 pt-0.5'
+                }
               >
-                <path
-                  d="M1.5113 15L9.02246 8L1.5113 1"
-                  stroke="#D2FF00"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
+                {[...Array(pagesAmount).keys()].map((value) => (
+                  <span
+                    key={value + 1}
+                    className={`cursor-pointer text-left-accent hover:underline ${
+                      value + 1 === currentPage ? 'opacity-100' : 'opacity-40'
+                    }`}
+                    onClick={() => setCurrentPage(value + 1)}
+                  >
+                    {value + 1}
+                  </span>
+                ))}
+              </span>
+
+              <span
+                className={'cursor-pointer'}
+                onClick={() =>
+                  setCurrentPage((prevState) =>
+                    prevState < pagesAmount ? prevState + 1 : prevState
+                  )
+                }
+              >
+                <svg
+                  width="11"
+                  height="16"
+                  viewBox="0 0 11 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M1.5113 15L9.02246 8L1.5113 1"
+                    stroke="#D2FF00"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+            </div>
           </div>
-        </div>
+        )}
+
       </div>
     </div>
   );
