@@ -110,27 +110,29 @@ export const useMinaBridge = () => {
 
       const transactionJSON = l1tx.toJSON();
 
-      await (window as any).mina.sendTransaction({
+      const data = await (window as any).mina.sendPayment({
         transaction: transactionJSON,
-        feePayer: {
-          fee: 0.1,
-          memo: 'zknoid.io',
-        },
+        memo: `zknoid.io game bridging #${process.env.BRIDGE_ID ?? 100}`,
+        to: BRIDGE_ADDR,
+        amount: amount / 10 ** 9,
       });
 
-      const balances = contextAppChainClient.runtime.resolve('Balances');
-      const sender = PublicKey.fromBase58(network.address!);
+      // const hash = (data as any).hash;
+      // console.log('Tx hash', hash);
 
-      const l2tx = await contextAppChainClient.transaction(sender, () => {
-        balances.addBalance(sender, UInt64.from(amount));
-      });
+      // const balances = contextAppChainClient.runtime.resolve('Balances');
+      // const sender = PublicKey.fromBase58(network.address!);
 
-      await l2tx.sign();
-      await l2tx.send();
+      // const l2tx = await contextAppChainClient.transaction(sender, () => {
+      //   balances.addBalance(sender, UInt64.from(amount));
+      // });
 
-      isPendingTransaction(l2tx.transaction);
+      // await l2tx.sign();
+      // await l2tx.send();
 
-      network.addPendingL2Transaction(l2tx!.transaction!);
+      // isPendingTransaction(l2tx.transaction);
+
+      // network.addPendingL2Transaction(l2tx!.transaction!);
     },
     [network.walletConnected, balancesStore.balances]
   );
