@@ -46,8 +46,8 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
 
   return (
     <div className="top-0 flex h-full w-full flex-col gap-5 p-10">
-      <div className="flex flex-col gap-3">
-        <div className="text-headline-1">Events & competitions</div>
+      <div className="flex flex-col gap-5">
+        <div className="pb-3 text-headline-1">Events & competitions</div>
         <div className="flex flex-row gap-3">
           {ALL_GAME_EVENT_TYPES.map((eventType) => (
             <FilterCard
@@ -74,14 +74,22 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
           ))}
         </div>
         <div className={'grid grid-cols-2 gap-5'}>
-          <div
+          <motion.div
             className={
-              'group mr-[11.2%] flex flex-row justify-between rounded-[5px] border border-left-accent'
+              'group relative mr-[11.2%] flex flex-row justify-between rounded-[5px] border border-left-accent'
             }
+            variants={{
+              visible: {
+                background:
+                  'linear-gradient(to right, #D2FF00 100%, #212121 100%)',
+                transition: { duration: 0.5, delayChildren: 0.5 },
+              },
+            }}
+            whileHover={'visible'}
           >
             <div
               className={
-                '-mr-2 w-full p-4 pt-5 uppercase text-left-accent group-hover:bg-left-accent group-hover:text-dark-buttons-text'
+                'w-full p-4 pt-5 uppercase text-left-accent group-hover:text-dark-buttons-text'
               }
             >
               Show me the all existion competitions
@@ -127,15 +135,23 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                 </defs>
               </svg>
             </div>
-          </div>
-          <div
+          </motion.div>
+          <motion.div
             className={
-              'group mr-[11.2%] flex flex-row justify-between rounded-[5px] border border-left-accent'
+              'group relative mr-[11.2%] flex flex-row justify-between rounded-[5px] border border-left-accent'
             }
+            variants={{
+              visible: {
+                background:
+                  'linear-gradient(to right, #D2FF00 100%, #212121 100%)',
+                transition: { duration: 0.5, delayChildren: 0.5 },
+              },
+            }}
+            whileHover={'visible'}
           >
             <div
               className={
-                '-mr-2 w-full p-4 pt-5 uppercase text-left-accent group-hover:bg-left-accent group-hover:text-dark-buttons-text'
+                'w-full p-4 pt-5 uppercase text-left-accent group-hover:text-dark-buttons-text'
               }
             >
               Create your own competition!
@@ -170,11 +186,11 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                 />
               </svg>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
 
-      <div>
+      <div className={'my-20'}>
         <div className="text-headline-1">Popular genres</div>
         <div className="grid grid-cols-4 gap-5">
           <GenreCard
@@ -327,11 +343,20 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
           <div>
             <div className="grid grid-cols-3 gap-5">
               {games
-                .filter(
-                  (x) =>
-                    genresSelected.includes(x.genre) ||
-                    genresSelected.length == 0
-                )
+                .filter((x) => {
+                  if (
+                    genresSelected.length == 0 &&
+                    featuresSelected.length == 0
+                  )
+                    return true;
+                  if (genresSelected.includes(x.genre)) return true;
+                  if (
+                    x.features.some((feature) =>
+                      featuresSelected.includes(feature)
+                    )
+                  )
+                    return true;
+                })
                 .map((game) => (
                   <GameCard
                     game={game}
@@ -342,77 +367,84 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                 ))}
             </div>
           </div>
-          <div className={'flex w-full items-center justify-center py-4'}>
-            <div className={'flex flex-row items-center justify-center gap-2'}>
-              <span
-                className={'cursor-pointer'}
-                onClick={() =>
-                  setCurrentPage((prevState) =>
-                    prevState > 1 ? prevState - 1 : prevState
-                  )
-                }
-              >
-                <svg
-                  width="10"
-                  height="16"
-                  viewBox="0 0 10 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M8.51116 15L1 8L8.51116 1"
-                    stroke="#D2FF00"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
 
-              <span
-                className={
-                  'flex flex-row items-center justify-center gap-2 pt-0.5'
-                }
+          {featuresSelected.length != 0 ||
+          genresSelected.length != 0 ||
+          eventTypesSelected.length != 0 ? (
+            <div className={'flex w-full items-center justify-center py-4'}>
+              <div
+                className={'flex flex-row items-center justify-center gap-2'}
               >
-                {[...Array(pagesAmount).keys()].map((value) => (
-                  <span
-                    key={value + 1}
-                    className={`cursor-pointer text-left-accent hover:underline ${
-                      value + 1 === currentPage ? 'opacity-100' : 'opacity-40'
-                    }`}
-                    onClick={() => setCurrentPage(value + 1)}
+                <span
+                  className={'cursor-pointer'}
+                  onClick={() =>
+                    setCurrentPage((prevState) =>
+                      prevState > 1 ? prevState - 1 : prevState
+                    )
+                  }
+                >
+                  <svg
+                    width="10"
+                    height="16"
+                    viewBox="0 0 10 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
-                    {value + 1}
-                  </span>
-                ))}
-              </span>
+                    <path
+                      d="M8.51116 15L1 8L8.51116 1"
+                      stroke="#D2FF00"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
 
-              <span
-                className={'cursor-pointer'}
-                onClick={() =>
-                  setCurrentPage((prevState) =>
-                    prevState < pagesAmount ? prevState + 1 : prevState
-                  )
-                }
-              >
-                <svg
-                  width="11"
-                  height="16"
-                  viewBox="0 0 11 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+                <span
+                  className={
+                    'flex flex-row items-center justify-center gap-2 pt-0.5'
+                  }
                 >
-                  <path
-                    d="M1.5113 15L9.02246 8L1.5113 1"
-                    stroke="#D2FF00"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
+                  {[...Array(pagesAmount).keys()].map((value) => (
+                    <span
+                      key={value + 1}
+                      className={`cursor-pointer text-left-accent hover:underline ${
+                        value + 1 === currentPage ? 'opacity-100' : 'opacity-40'
+                      }`}
+                      onClick={() => setCurrentPage(value + 1)}
+                    >
+                      {value + 1}
+                    </span>
+                  ))}
+                </span>
+
+                <span
+                  className={'cursor-pointer'}
+                  onClick={() =>
+                    setCurrentPage((prevState) =>
+                      prevState < pagesAmount ? prevState + 1 : prevState
+                    )
+                  }
+                >
+                  <svg
+                    width="11"
+                    height="16"
+                    viewBox="0 0 11 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M1.5113 15L9.02246 8L1.5113 1"
+                      stroke="#D2FF00"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+              </div>
             </div>
-          </div>
+          ) : undefined}
         </div>
       </div>
       <Competitions />
