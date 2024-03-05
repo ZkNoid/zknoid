@@ -33,7 +33,15 @@ const StarSVG = ({
   );
 };
 
-export const GameCard = ({ game }: { game: IGame }) => {
+export const GameCard = ({
+  game,
+  fullImageW,
+  fullImageH,
+}: {
+  game: IGame;
+  fullImageW?: boolean;
+  fullImageH?: boolean;
+}) => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [fillColor, setFillColor] = useState<
     'bg-left-accent' | 'bg-middle-accent'
@@ -69,7 +77,8 @@ export const GameCard = ({ game }: { game: IGame }) => {
             width={300}
             height={300}
             className={clsx(
-              'h-full max-h-[50%] w-full object-contain object-center'
+              'h-full max-h-[70%] w-full max-w-[400px] object-contain object-center',
+              { 'max-w-full': fullImageW, 'max-h-full': fullImageH }
             )}
           />
         </div>
@@ -90,6 +99,7 @@ export const GameCard = ({ game }: { game: IGame }) => {
         <div className="font-plexsans text-main font-normal">
           {game.description}
         </div>
+        <div className={'flex-grow'} />
         <div
           className={
             'mt-auto flex w-full flex-row items-center justify-start gap-2'
@@ -99,7 +109,7 @@ export const GameCard = ({ game }: { game: IGame }) => {
             <span
               key={i}
               className={clsx(
-                'text-filtration-buttons rounded p-1 text-dark-buttons-text',
+                'rounded p-1 text-filtration-buttons text-dark-buttons-text',
                 fillColor
               )}
             >
