@@ -11,6 +11,7 @@ import {
   ALL_GAME_EVENT_TYPES,
   ZkNoidEventType,
 } from '@/lib/platform/game_events';
+import { ProgressBar } from '@/components/ui/games-store/shared/ProgressBar';
 
 const CompetitionItem = ({
   title,
@@ -59,7 +60,11 @@ const CompetitionItem = ({
           >
             Preregistration dates
           </span>
-          <span className={'font-plexsans text-[16px]/[16px] font-light'}>
+          <span
+            className={
+              'font-plexsans text-[16px]/[16px] font-light text-foreground'
+            }
+          >
             {preRegDate}
           </span>
         </div>
@@ -69,7 +74,11 @@ const CompetitionItem = ({
           >
             Competitions dates
           </span>
-          <span className={'font-plexsans text-[16px]/[16px] font-light'}>
+          <span
+            className={
+              'font-plexsans text-[16px]/[16px] font-light text-foreground'
+            }
+          >
             {competitionsDate}
           </span>
         </div>
@@ -134,7 +143,13 @@ export const Competitions = () => {
           <div className="relative flex min-h-[80px] w-full flex-col gap-2 p-5">
             <div className="text-headline-3 font-bold">Funds and Fee</div>
 
-            {/*<ProgressBar/>*/}
+            <ProgressBar title={'Funds'} min={0} max={100} handleSize={30} />
+            <ProgressBar
+              title={'Participants fee'}
+              min={0}
+              max={100}
+              handleSize={30}
+            />
 
             <div className="absolute left-0 top-0 -z-10 flex h-full w-full flex-col">
               <svg
