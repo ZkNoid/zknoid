@@ -4,7 +4,7 @@ import { IGame } from '@/app/constants/games';
 import { useState } from 'react';
 import { clsx } from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ALL_SORT_METHODS, SortBy } from '@/app/constants/sortBy';
+import { GAME_STORE_SORT_METHODS, GameStoreSortBy } from '@/constants/sortBy';
 
 export const FavoriteGames = ({ games }: { games: IGame[] }) => {
   const [genresSelected, setGenresSelected] = useState<ZkNoidGameGenre[]>([]);
@@ -13,7 +13,9 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
   const [pagesAmount, _setPagesAmount] = useState<number>(3);
 
   const [isSortByOpen, setIsSortByOpen] = useState<boolean>(false);
-  const [sortBy, setSortBy] = useState<SortBy>(SortBy.RatingLow);
+  const [sortBy, setSortBy] = useState<GameStoreSortBy>(
+    GameStoreSortBy.RatingLow
+  );
 
   return (
     <div className="top-0 flex h-full w-full flex-col gap-20 p-10">
@@ -89,7 +91,7 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ type: 'spring', duration: 0.8, bounce: 0 }}
                 >
-                  {ALL_SORT_METHODS.map((value, index) => (
+                  {GAME_STORE_SORT_METHODS.map((value, index) => (
                     <span
                       key={index}
                       onClick={() => {
@@ -116,7 +118,12 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
                   genresSelected.includes(x.genre) || genresSelected.length == 0
               )
               .map((game) => (
-                <GameCard game={game} key={game.id} />
+                <GameCard
+                  game={game}
+                  key={game.id}
+                  fullImageW={game.id === 'arkanoid'}
+                  fullImageH={game.id === 'arkanoid'}
+                />
               ))}
           </div>
         </div>

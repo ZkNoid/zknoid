@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { ReactNode, useState } from 'react';
+import { clsx } from 'clsx';
 
 export const Accordion = ({
   title,
@@ -15,12 +16,14 @@ export const Accordion = ({
   return (
     <div
       className={
-        'relative flex h-full min-h-[80px] w-full flex-col items-center justify-center p-4'
+        'relative flex h-full w-full cursor-pointer flex-col items-center justify-center p-4 max-[2000px]:min-h-[80px] min-[2000px]:min-h-[110px]'
       }
+      onClick={() => setIsOpen(!isOpen)}
     >
       <div
-        className={'text-headline-2 cursor-pointer font-medium'}
-        onClick={() => setIsOpen(!isOpen)}
+        className={clsx('w-full text-left text-headline-2 font-medium', {
+          'pb-2': isOpen,
+        })}
       >
         {title}
       </div>
@@ -31,7 +34,9 @@ export const Accordion = ({
             animate={{ height: 'auto' }}
             exit={{ height: 0 }}
             transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
-            className={'text-main overflow-hidden'}
+            className={
+              'flex items-center justify-start overflow-hidden pr-4 text-main'
+            }
           >
             {children}
           </motion.div>
@@ -49,12 +54,13 @@ export const Accordion = ({
           <path
             d="M1 59V16C1 8.26801 7.26801 2 15 2H656.863C660.573 2 664.131 3.47262 666.756 6.09437L707.393 46.681C710.023 49.307 711.5 52.8706 711.5 56.5866V59C711.5 66.732 705.232 73 697.5 73H15C7.26803 73 1 66.732 1 59Z"
             stroke="#D2FF00"
-            stroke-width="2"
+            strokeWidth="2"
           />
           <path
             d="M710.5 1H675.412C673.618 1 672.731 3.17836 674.015 4.43115L709.103 38.6838C710.37 39.9204 712.5 39.0229 712.5 37.2527V3C712.5 1.89543 711.605 1 710.5 1Z"
             stroke="#D2FF00"
-            stroke-width="2"
+            strokeWidth="2"
+            fill={isOpen ? '#D2FF00' : 'none'}
           />
           <rect
             x="701.638"
@@ -62,7 +68,7 @@ export const Accordion = ({
             width="20"
             height="2"
             transform="rotate(90 701.638 3.14209)"
-            fill="#D2FF00"
+            fill={isOpen ? '#212121' : '#D2FF00'}
           />
           <rect
             x="710.643"
@@ -70,11 +76,11 @@ export const Accordion = ({
             width="20"
             height="2"
             transform="rotate(-180 710.643 14.1464)"
-            fill="#D2FF00"
+            fill={isOpen ? '#212121' : '#D2FF00'}
           />
         </svg>
 
-        <div className="mr-[1.5px] flex flex-grow rounded-b-2xl border-x-2 border-b-2 border-left-accent"></div>
+        <div className="flex flex-grow rounded-b-2xl border-left-accent max-[2000px]:mr-[1.5px] max-[2000px]:border-x-2 max-[2000px]:border-b-2 min-[2000px]:mr-[1.7px] min-[2000px]:border-x-[3px] min-[2000px]:border-b-[3px]"></div>
       </div>
     </div>
   );
