@@ -4,7 +4,7 @@ import {
   COMPETITIONS_SORT_METHODS,
   CompetitionsSortBy,
 } from '@/constants/sortBy';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { ALL_GAME_GENRES, ZkNoidGameGenre } from '@/lib/platform/game_tags';
 import { FiltrationBox } from '@/components/ui/games-store/widgets/GameStore/FiltrationBox';
 import {
@@ -12,102 +12,16 @@ import {
   ZkNoidEventType,
 } from '@/lib/platform/game_events';
 import { ProgressBar } from '@/components/ui/games-store/shared/ProgressBar';
+import {
+  CompetitionItem,
+  CompetitionsItem,
+} from '@/components/ui/games-store/widgets/GameStore/CompetitionsItem';
 
-const CompetitionItem = ({
-  title,
-  index,
-  preRegDate,
-  competitionsDate,
-  participantsFee,
-  currency,
-  reward,
+export const Competitions = ({
+  competitions,
 }: {
-  title: string;
-  index: number;
-  preRegDate: string;
-  competitionsDate: string;
-  participantsFee: number;
-  currency: string;
-  reward: number;
+  competitions: CompetitionsItem[];
 }) => {
-  return (
-    <div
-      className={
-        'flex flex-row justify-between border-t border-left-accent pt-4 text-left-accent last:border-b last:pb-4'
-      }
-    >
-      <div className={'flex w-2/6 flex-col justify-between gap-4'}>
-        <div
-          className={
-            'flex flex-row gap-2 text-headline-2 font-medium uppercase'
-          }
-        >
-          <span>[{index}]</span>
-          <span>{title}</span>
-        </div>
-        <button
-          className={
-            'w-full max-w-[50%] rounded-[5px] border border-bg-dark bg-left-accent py-2 text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
-          }
-        >
-          Play
-        </button>
-      </div>
-      <div className={'flex w-2/6 flex-col gap-2'}>
-        <div className={'flex flex-col gap-1'}>
-          <span
-            className={'font-plexsans text-[20px]/[20px] font-medium uppercase'}
-          >
-            Preregistration dates
-          </span>
-          <span
-            className={
-              'font-plexsans text-[16px]/[16px] font-light text-foreground'
-            }
-          >
-            {preRegDate}
-          </span>
-        </div>
-        <div className={'flex flex-col gap-1'}>
-          <span
-            className={'font-plexsans text-[20px]/[20px] font-medium uppercase'}
-          >
-            Competitions dates
-          </span>
-          <span
-            className={
-              'font-plexsans text-[16px]/[16px] font-light text-foreground'
-            }
-          >
-            {competitionsDate}
-          </span>
-        </div>
-      </div>
-      <div
-        className={
-          'flex w-2/6 flex-col gap-4 font-plexsans text-[20px]/[20px] font-medium'
-        }
-      >
-        <div
-          className={
-            'w-full max-w-fit rounded-2xl border border-left-accent p-1 px-2 text-center'
-          }
-        >
-          {participantsFee} {currency} Participants fee
-        </div>
-        <div
-          className={
-            'w-full max-w-fit rounded-2xl border border-left-accent bg-left-accent p-1 px-2 text-center text-dark-buttons-text'
-          }
-        >
-          {reward} {currency} REWARDS
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export const Competitions = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pagesAmount, _setPagesAmount] = useState<number>(3);
 
@@ -119,6 +33,15 @@ export const Competitions = () => {
   const [genresSelected, setGenresSelected] = useState<ZkNoidGameGenre[]>([]);
   const [eventsSelected, setEventsSelected] = useState<ZkNoidEventType[]>([]);
 
+  const [isFundsAndFeesExpanded, setIsFundsAndFeesExpanded] =
+    useState<boolean>(true);
+
+  const [fundsMaxValue, setFundsMaxValue] = useState<number>(0);
+  const [fundsMinValue, setFundsMinValue] = useState<number>(0);
+
+  const [feesMaxValue, setFeesMaxValue] = useState<number>(0);
+  const [feesMinValue, setFeesMinValue] = useState<number>(0);
+
   return (
     <>
       <div className={'mt-40 flex flex-row gap-5'}>
@@ -126,7 +49,7 @@ export const Competitions = () => {
           <div className={'text-headline-3'}>Filtration</div>
           <FiltrationBox
             key={0}
-            expanded={true}
+            defaultExpanded={true}
             title="Genre"
             items={ALL_GAME_GENRES}
             itemsSelected={genresSelected}
@@ -134,7 +57,7 @@ export const Competitions = () => {
           />
           <FiltrationBox
             key={1}
-            expanded={true}
+            defaultExpanded={true}
             title="Timeline"
             items={ALL_GAME_EVENT_TYPES}
             itemsSelected={eventsSelected}
@@ -142,20 +65,45 @@ export const Competitions = () => {
           />
           <div className="relative flex min-h-[80px] w-full flex-col gap-2 p-5">
             <div className="text-headline-3 font-bold">Funds and Fee</div>
-
-            <ProgressBar title={'Funds'} min={0} max={100} handleSize={30} />
-            <ProgressBar
-              title={'Participants fee'}
-              min={0}
-              max={100}
-              handleSize={30}
-            />
-
-            <div className="absolute left-0 top-0 -z-10 flex h-full w-full flex-col">
+            <AnimatePresence initial={false} mode={'wait'}>
+              {isFundsAndFeesExpanded && (
+                <motion.div
+                  initial={{ height: 0 }}
+                  animate={{ height: 'auto' }}
+                  exit={{ height: 0 }}
+                  transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
+                  className={'z-10 overflow-hidden'}
+                >
+                  <ProgressBar
+                    title={'Funds'}
+                    min={0}
+                    max={100}
+                    minValue={fundsMinValue}
+                    maxValue={fundsMaxValue}
+                    setMinValue={setFundsMinValue}
+                    setMaxValue={setFundsMaxValue}
+                  />
+                  <ProgressBar
+                    title={'Participants fee'}
+                    min={0}
+                    max={100}
+                    minValue={feesMinValue}
+                    maxValue={feesMaxValue}
+                    setMinValue={setFeesMinValue}
+                    setMaxValue={setFeesMaxValue}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <div className="absolute left-0 top-0 z-0 flex h-full w-full flex-col">
               <svg
                 viewBox="0 0 351 60"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
+                className={'cursor-pointer'}
+                onClick={() =>
+                  setIsFundsAndFeesExpanded(!isFundsAndFeesExpanded)
+                }
               >
                 <path
                   d="M1 17.5234V111.731V174.523C1 182.808 7.71573 189.523 16 189.523H335C343.284 189.523 350 182.808 350 174.523V58.1101C350 54.1286 348.417 50.3105 345.6 47.4969L304.963 6.91027C302.151 4.10124 298.338 2.52344 294.363 2.52344H16C7.71573 2.52344 1 9.23917 1 17.5234Z"
@@ -164,7 +112,7 @@ export const Competitions = () => {
                 />
                 <path
                   d="M348 2.52344H312.912C311.118 2.52344 310.231 4.7018 311.515 5.95459L346.603 40.2072C347.87 41.4438 350 40.5463 350 38.7761V4.52344C350 3.41887 349.105 2.52344 348 2.52344Z"
-                  // fill={expanded ? '#D2FF00' : ''}
+                  fill={isFundsAndFeesExpanded ? '#D2FF00' : ''}
                   stroke="#D2FF00"
                   strokeWidth="2"
                 />
@@ -174,8 +122,7 @@ export const Competitions = () => {
                   width="20"
                   height="2"
                   transform="rotate(45 331.775 6.89062)"
-                  // fill={expanded ? '#252525' : '#D2FF00'}
-                  fill={'#D2FF00'}
+                  fill={isFundsAndFeesExpanded ? '#252525' : '#D2FF00'}
                 />
                 <rect
                   x="345.924"
@@ -183,22 +130,37 @@ export const Competitions = () => {
                   width="20"
                   height="2"
                   transform="rotate(135 345.924 8.30469)"
-                  // fill={expanded ? '#252525' : '#D2FF00'}
-                  fill={'#D2FF00'}
+                  fill={isFundsAndFeesExpanded ? '#252525' : '#D2FF00'}
                 />
               </svg>
               <div className="flex w-full flex-grow rounded-b-2xl border-x-2 border-b-2 border-left-accent"></div>
             </div>
           </div>
-          <div
-            className="flex h-[40px] cursor-pointer items-center justify-center rounded-[5px] border-2 border-left-accent bg-left-accent text-buttons text-dark-buttons-text hover:bg-bg-dark hover:text-left-accent"
-            onClick={() => {
-              setGenresSelected([]);
-              setEventsSelected([]);
-            }}
-          >
-            Reset filters
-          </div>
+          <AnimatePresence initial={false} mode={'wait'}>
+            {genresSelected.length != 0 ||
+            eventsSelected.length != 0 ||
+            feesMaxValue != 0 ||
+            feesMinValue != 0 ||
+            fundsMaxValue != 0 ||
+            fundsMinValue != 0 ? (
+              <motion.div
+                className="flex h-[40px] cursor-pointer items-center justify-center rounded-[5px] border-2 border-left-accent bg-left-accent text-buttons text-dark-buttons-text hover:bg-bg-dark hover:text-left-accent"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => {
+                  setGenresSelected([]);
+                  setEventsSelected([]);
+                  setFeesMaxValue(0);
+                  setFeesMinValue(0);
+                  setFundsMaxValue(0);
+                  setFundsMinValue(0);
+                }}
+              >
+                Reset filters
+              </motion.div>
+            ) : undefined}
+          </AnimatePresence>
         </div>
         <div className={'flex w-full flex-col gap-4'}>
           <div className={'flex flex-row justify-between'}>
@@ -237,7 +199,7 @@ export const Competitions = () => {
                 type="search"
                 placeholder={'Enter competition or game name...'}
                 className={
-                  'min-w-[350px] bg-bg-dark placeholder:font-plexsans placeholder:text-main focus:border-none focus:outline-none group-hover:placeholder:text-left-accent/80'
+                  'min-w-[350px] bg-bg-dark placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:placeholder:text-left-accent/80'
                 }
               />
             </div>
@@ -307,89 +269,106 @@ export const Competitions = () => {
               </AnimatePresence>
             </div>
           </div>
-          {[...Array(6)].map((_value, index) => (
+
+          {competitions.map((item, index) => (
             <CompetitionItem
               key={index}
-              title={'Arcanoid'}
-              index={index + 1}
-              preRegDate={'15/04/2024-17/04/2024'}
-              competitionsDate={'15/04/2024-17/04/2024'}
-              participantsFee={5}
-              currency={'$MINA'}
-              reward={1000}
+              title={item.title}
+              index={item.index}
+              preRegDate={item.preRegDate}
+              competitionsDate={item.competitionsDate}
+              participantsFee={item.participantsFee}
+              currency={item.currency}
+              reward={item.reward}
             />
           ))}
         </div>
       </div>
-      <div className={'flex w-full items-center justify-center py-4'}>
-        <div className={'flex flex-row items-center justify-center gap-2'}>
-          <span
-            className={'cursor-pointer'}
-            onClick={() =>
-              setCurrentPage((prevState) =>
-                prevState > 1 ? prevState - 1 : prevState
-              )
-            }
+      <AnimatePresence initial={false} mode={'wait'}>
+        {genresSelected.length != 0 ||
+        eventsSelected.length != 0 ||
+        fundsMaxValue != 0 ||
+        fundsMinValue != 0 ||
+        feesMaxValue != 0 ||
+        feesMinValue != 0 ? (
+          <motion.div
+            className={'flex w-full items-center justify-center py-4'}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           >
-            <svg
-              width="10"
-              height="16"
-              viewBox="0 0 10 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M8.51116 15L1 8L8.51116 1"
-                stroke="#D2FF00"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </span>
-
-          <span
-            className={'flex flex-row items-center justify-center gap-2 pt-0.5'}
-          >
-            {[...Array(pagesAmount).keys()].map((value) => (
+            <div className={'flex flex-row items-center justify-center gap-2'}>
               <span
-                key={value + 1}
-                className={`cursor-pointer text-left-accent hover:underline ${
-                  value + 1 === currentPage ? 'opacity-100' : 'opacity-40'
-                }`}
-                onClick={() => setCurrentPage(value + 1)}
+                className={'cursor-pointer'}
+                onClick={() =>
+                  setCurrentPage((prevState) =>
+                    prevState > 1 ? prevState - 1 : prevState
+                  )
+                }
               >
-                {value + 1}
+                <svg
+                  width="10"
+                  height="16"
+                  viewBox="0 0 10 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M8.51116 15L1 8L8.51116 1"
+                    stroke="#D2FF00"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
               </span>
-            ))}
-          </span>
 
-          <span
-            className={'cursor-pointer'}
-            onClick={() =>
-              setCurrentPage((prevState) =>
-                prevState < pagesAmount ? prevState + 1 : prevState
-              )
-            }
-          >
-            <svg
-              width="11"
-              height="16"
-              viewBox="0 0 11 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M1.5113 15L9.02246 8L1.5113 1"
-                stroke="#D2FF00"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </span>
-        </div>
-      </div>
+              <span
+                className={
+                  'flex flex-row items-center justify-center gap-2 pt-0.5'
+                }
+              >
+                {[...Array(pagesAmount).keys()].map((value) => (
+                  <span
+                    key={value + 1}
+                    className={`cursor-pointer text-left-accent hover:underline ${
+                      value + 1 === currentPage ? 'opacity-100' : 'opacity-40'
+                    }`}
+                    onClick={() => setCurrentPage(value + 1)}
+                  >
+                    {value + 1}
+                  </span>
+                ))}
+              </span>
+
+              <span
+                className={'cursor-pointer'}
+                onClick={() =>
+                  setCurrentPage((prevState) =>
+                    prevState < pagesAmount ? prevState + 1 : prevState
+                  )
+                }
+              >
+                <svg
+                  width="11"
+                  height="16"
+                  viewBox="0 0 11 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M1.5113 15L9.02246 8L1.5113 1"
+                    stroke="#D2FF00"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+            </div>
+          </motion.div>
+        ) : undefined}
+      </AnimatePresence>
     </>
   );
 };

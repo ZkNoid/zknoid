@@ -45,7 +45,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
   );
 
   return (
-    <div className="top-0 flex h-full w-full flex-col gap-5 p-10">
+    <div className="top-0 mb-[100px] flex h-full w-full flex-col gap-5 p-10">
       <div className="flex flex-col gap-5">
         <div className="pb-3 text-headline-1">Events & competitions</div>
         <div className="flex flex-row gap-3">
@@ -225,7 +225,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
           <div className="flex flex-col gap-3">
             <FiltrationBox
               key={0}
-              expanded={true}
+              defaultExpanded={true}
               title="Genre"
               items={ALL_GAME_GENRES}
               itemsSelected={genresSelected}
@@ -233,22 +233,31 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             />
             <FiltrationBox
               key={1}
-              expanded={false}
+              defaultExpanded={false}
               title="Features"
               items={ALL_GAME_FEATURES}
               itemsSelected={featuresSelected}
               setItemsSelected={setFeaturesSelected}
             />
-            <div
-              className="flex h-[40px] cursor-pointer items-center justify-center rounded-[5px] border-2 border-left-accent bg-left-accent text-buttons text-dark-buttons-text hover:bg-bg-dark hover:text-left-accent"
-              onClick={() => {
-                setGenresSelected([]);
-                setFeaturesSelected([]);
-                setEventTypesSelected([]);
-              }}
-            >
-              Reset filters
-            </div>
+            <AnimatePresence initial={false} mode={'wait'}>
+              {genresSelected.length != 0 ||
+              featuresSelected.length != 0 ||
+              eventTypesSelected.length != 0 ? (
+                <motion.div
+                  className="flex h-[40px] cursor-pointer items-center justify-center rounded-[5px] border-2 border-left-accent bg-left-accent text-buttons text-dark-buttons-text hover:bg-bg-dark hover:text-left-accent"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => {
+                    setGenresSelected([]);
+                    setFeaturesSelected([]);
+                    setEventTypesSelected([]);
+                  }}
+                >
+                  Reset filters
+                </motion.div>
+              ) : undefined}
+            </AnimatePresence>
           </div>
         </div>
         <div className="flex flex-col gap-2">
@@ -368,86 +377,152 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             </div>
           </div>
 
-          {featuresSelected.length != 0 ||
-          genresSelected.length != 0 ||
-          eventTypesSelected.length != 0 ? (
-            <div className={'flex w-full items-center justify-center py-4'}>
-              <div
-                className={'flex flex-row items-center justify-center gap-2'}
+          <AnimatePresence initial={false} mode={'wait'}>
+            {featuresSelected.length != 0 ||
+            genresSelected.length != 0 ||
+            eventTypesSelected.length != 0 ? (
+              <motion.div
+                className={'flex w-full items-center justify-center py-4'}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
               >
-                <span
-                  className={'cursor-pointer'}
-                  onClick={() =>
-                    setCurrentPage((prevState) =>
-                      prevState > 1 ? prevState - 1 : prevState
-                    )
-                  }
+                <div
+                  className={'flex flex-row items-center justify-center gap-2'}
                 >
-                  <svg
-                    width="10"
-                    height="16"
-                    viewBox="0 0 10 16"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+                  <span
+                    className={'cursor-pointer'}
+                    onClick={() =>
+                      setCurrentPage((prevState) =>
+                        prevState > 1 ? prevState - 1 : prevState
+                      )
+                    }
                   >
-                    <path
-                      d="M8.51116 15L1 8L8.51116 1"
-                      stroke="#D2FF00"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
-
-                <span
-                  className={
-                    'flex flex-row items-center justify-center gap-2 pt-0.5'
-                  }
-                >
-                  {[...Array(pagesAmount).keys()].map((value) => (
-                    <span
-                      key={value + 1}
-                      className={`cursor-pointer text-left-accent hover:underline ${
-                        value + 1 === currentPage ? 'opacity-100' : 'opacity-40'
-                      }`}
-                      onClick={() => setCurrentPage(value + 1)}
+                    <svg
+                      width="10"
+                      height="16"
+                      viewBox="0 0 10 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
-                      {value + 1}
-                    </span>
-                  ))}
-                </span>
+                      <path
+                        d="M8.51116 15L1 8L8.51116 1"
+                        stroke="#D2FF00"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
 
-                <span
-                  className={'cursor-pointer'}
-                  onClick={() =>
-                    setCurrentPage((prevState) =>
-                      prevState < pagesAmount ? prevState + 1 : prevState
-                    )
-                  }
-                >
-                  <svg
-                    width="11"
-                    height="16"
-                    viewBox="0 0 11 16"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+                  <span
+                    className={
+                      'flex flex-row items-center justify-center gap-2 pt-0.5'
+                    }
                   >
-                    <path
-                      d="M1.5113 15L9.02246 8L1.5113 1"
-                      stroke="#D2FF00"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
-              </div>
-            </div>
-          ) : undefined}
+                    {[...Array(pagesAmount).keys()].map((value) => (
+                      <span
+                        key={value + 1}
+                        className={`cursor-pointer text-left-accent hover:underline ${
+                          value + 1 === currentPage
+                            ? 'opacity-100'
+                            : 'opacity-40'
+                        }`}
+                        onClick={() => setCurrentPage(value + 1)}
+                      >
+                        {value + 1}
+                      </span>
+                    ))}
+                  </span>
+
+                  <span
+                    className={'cursor-pointer'}
+                    onClick={() =>
+                      setCurrentPage((prevState) =>
+                        prevState < pagesAmount ? prevState + 1 : prevState
+                      )
+                    }
+                  >
+                    <svg
+                      width="11"
+                      height="16"
+                      viewBox="0 0 11 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M1.5113 15L9.02246 8L1.5113 1"
+                        stroke="#D2FF00"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                </div>
+              </motion.div>
+            ) : undefined}
+          </AnimatePresence>
         </div>
       </div>
-      <Competitions />
+      <Competitions
+        competitions={[
+          {
+            title: 'Arcanoid',
+            index: 1,
+            preRegDate: '15/04/2024-17/04/2024',
+            competitionsDate: '15/04/2024-17/04/2024',
+            participantsFee: 5,
+            currency: '$MINA',
+            reward: 1000,
+          },
+          {
+            title: 'Randzu battle',
+            index: 2,
+            preRegDate: '15/04/2024-17/04/2024',
+            competitionsDate: '15/04/2024-17/04/2024',
+            participantsFee: 5,
+            currency: '$MINA',
+            reward: 1000,
+          },
+          {
+            title: 'Znake competition',
+            index: 3,
+            preRegDate: '15/04/2024-17/04/2024',
+            competitionsDate: '15/04/2024-17/04/2024',
+            participantsFee: 5,
+            currency: '$MINA',
+            reward: 1000,
+          },
+          {
+            title: 'Arcanoid',
+            index: 4,
+            preRegDate: '15/04/2024-17/04/2024',
+            competitionsDate: '15/04/2024-17/04/2024',
+            participantsFee: 5,
+            currency: '$MINA',
+            reward: 1000,
+          },
+          {
+            title: 'Randzu battle',
+            index: 5,
+            preRegDate: '15/04/2024-17/04/2024',
+            competitionsDate: '15/04/2024-17/04/2024',
+            participantsFee: 5,
+            currency: '$MINA',
+            reward: 1000,
+          },
+          {
+            title: 'Znake competition',
+            index: 6,
+            preRegDate: '15/04/2024-17/04/2024',
+            competitionsDate: '15/04/2024-17/04/2024',
+            participantsFee: 5,
+            currency: '$MINA',
+            reward: 1000,
+          },
+        ]}
+      />
     </div>
   );
 };
