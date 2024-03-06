@@ -24,6 +24,6 @@ export const NETWORKS: Network[] = [
   {
     chainId: 'devnet',
     name: 'Devnet',
-    graphql: 'https://proxy.devnet.minaexplorer.com/graphql  ',
+    graphql: 'https://proxy.devnet.minaexplorer.com/graphql',
   },
 ];

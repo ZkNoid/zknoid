@@ -7,18 +7,18 @@ import Link from 'next/link';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useMinaBridge } from '@/lib/stores/protokitBalances';
 import { randzuCompetitions } from '@/app/constants/randzuCompetitions';
-import {
-  useObserveRandzuMatchQueue,
-  useRandzuMatchQueueStore,
-} from '@/games/randzu/stores/matchQueue';
+import { useObserveRandzuMatchQueue } from '@/games/randzu/stores/matchQueue';
 import { walletInstalled } from '@/lib/helpers';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
-import { RandzuField, WinWitness } from 'zknoid-chain-dev';
+import { ClientAppChain, RandzuField, WinWitness } from 'zknoid-chain-dev';
 import GamePage from '@/components/framework/GamePage';
 import { randzuConfig } from '../config';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { getRandomEmoji } from '../utils';
+import {
+  useMatchQueueStore,
+} from '@/lib/stores/matchQueue';
 
 enum GameState {
   NotStarted,
@@ -39,13 +39,13 @@ export default function RandzuPage({
     (x) => x.id == params.competitionId
   );
 
-  const client = useContext(AppChainClientContext);
+  const client = useContext(AppChainClientContext) as ClientAppChain<
+    typeof randzuConfig.runtimeModules
+  >;
 
   if (!client) {
     throw Error('Context app chain client is not set');
   }
-
-  useObserveRandzuMatchQueue();
 
   let [loading, setLoading] = useState(true);
   let [loadingElement, setLoadingElement] = useState<
@@ -53,13 +53,15 @@ export default function RandzuPage({
   >({ x: 0, y: 0 });
 
   const networkStore = useNetworkStore();
-  const matchQueue = useRandzuMatchQueueStore();
+  const matchQueue = useMatchQueueStore();
   const sessionPublicKey = useStore(useSessionKeyStore, (state) =>
     state.getSessionKey()
   ).toPublicKey();
   const sessionPrivateKey = useStore(useSessionKeyStore, (state) =>
     state.getSessionKey()
   );
+
+  useObserveRandzuMatchQueue();
 
   const bridge = useMinaBridge();
 
@@ -93,11 +95,13 @@ export default function RandzuPage({
 
   const onCellClicked = async (x: number, y: number) => {
     if (!matchQueue.gameInfo?.isCurrentUserMove) return;
-    if (matchQueue.gameInfo.field[x][y] != 0) return;
+    if (matchQueue.gameInfo.field.value[x][y] != 0) return;
 
     const currentUserId = matchQueue.gameInfo.currentUserIndex + 1;
 
-    const updatedField = matchQueue.gameInfo.field.map((x) => [...x]);
+    const updatedField = (matchQueue.gameInfo.field as RandzuField).value.map(
+      (x: UInt32[]) => x.map((x) => x.toBigint())
+    );
     updatedField[y][x] = matchQueue.gameInfo.currentUserIndex + 1;
 
     const randzuLogic = client.runtime.resolve('RandzuLogic');
