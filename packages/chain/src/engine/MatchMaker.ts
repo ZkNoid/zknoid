@@ -5,7 +5,7 @@ import {
   runtimeMethod,
 } from "@proto-kit/module";
 import type { Option} from "@proto-kit/protocol";
-import { StateMap, assert } from "@proto-kit/protocol";
+import { State, StateMap, assert } from "@proto-kit/protocol";
 import { PublicKey, Struct, UInt64, Provable, Bool, UInt32, Poseidon, Field, Int64 } from "o1js";
 
 interface MatchMakerConfig { }
@@ -32,8 +32,7 @@ export class QueueListItem extends Struct({
   registrationTimestamp: UInt64
 }) { }
 
-@runtimeModule()
-export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
+export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
   // Session => user
   @state() public sessions = StateMap.from<PublicKey, PublicKey>(
     PublicKey,
@@ -58,6 +57,11 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     PublicKey,
     UInt64
   );
+
+  // Game ids start from 1
+  abstract games: StateMap<UInt64, any>;
+
+  @state() public gamesNum = State.from<UInt64>(UInt64);
 
   /**
    * Initializes game when opponent is found
