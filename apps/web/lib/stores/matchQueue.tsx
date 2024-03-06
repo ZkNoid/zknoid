@@ -1,12 +1,10 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import { PublicKey, UInt32, UInt64 } from 'o1js';
-import { useContext, useEffect } from 'react';
+import { PublicKey, UInt64 } from 'o1js';
+import { useEffect } from 'react';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import { useNetworkStore } from '@/lib/stores/network';
 import { RoundIdxUser } from 'zknoid-chain-dev';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
-import { ClientAppChain } from '@proto-kit/sdk';
 import { MatchMaker } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
 import { ModuleQuery } from '@proto-kit/sequencer';
 
