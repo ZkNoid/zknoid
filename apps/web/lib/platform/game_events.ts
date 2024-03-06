@@ -5,12 +5,14 @@ export enum ZkNoidEventType {
   PAST_EVENTS = 'Past events',
   CURRENT_EVENTS = 'Current events',
   UPCOMING_EVENTS = 'Upcoming events',
+  PREREGISTRAION = 'Preregistration of the event'
 }
 
 export const ALL_GAME_EVENT_TYPES = [
   ZkNoidEventType.PAST_EVENTS,
   ZkNoidEventType.CURRENT_EVENTS,
   ZkNoidEventType.UPCOMING_EVENTS,
+  ZkNoidEventType.PREREGISTRAION
 ];
 
 export type ZkNoidEvent = {

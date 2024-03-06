@@ -13,6 +13,7 @@ export type ZkNoidGameConfig<
   genre: ZkNoidGameGenre;
   features: ZkNoidGameFeature[];
   image: string;
+  rating: number;
   runtimeModules: RuntimeModules;
   page: ({ params }: { params: { competitionId: string } }) => React.ReactNode;
   pageCompetitionsList?: () => React.ReactNode;
@@ -28,6 +29,7 @@ export function createZkNoidGameConfig<
   genre: ZkNoidGameGenre;
   features: ZkNoidGameFeature[];
   image: string;
+  rating: number;
   runtimeModules: RuntimeModules;
   page: ({ params }: { params: { competitionId: string } }) => React.ReactNode;
   pageCompetitionsList?: () => React.ReactNode;
