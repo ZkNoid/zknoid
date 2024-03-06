@@ -46,7 +46,7 @@ export const GenreCard = ({
         ></Lottie>
       </div>
 
-      <div className="text-headline-3 z-0">{genre}</div>
+      <div className="z-0 text-headline-3">{genre}</div>
     </div>
   );
 };

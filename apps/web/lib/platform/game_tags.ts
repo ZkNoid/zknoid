@@ -15,6 +15,7 @@ export const ALL_GAME_GENRES = [
 export enum ZkNoidGameFeature {
   SinglePlayer = 'Single player',
   Multiplayer = 'Multiplayer',
+  P2P = 'P2P',
   Cooperative = 'Cooperative',
 }
 
