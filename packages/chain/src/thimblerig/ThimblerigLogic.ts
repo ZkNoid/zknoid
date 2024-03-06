@@ -26,7 +26,7 @@ export class GameInfo extends Struct({
   player2: PublicKey,
   currentMoveUser: PublicKey,
   lastMoveBlockHeight: UInt64,
-  field: ThimblerigField,
+  thimblerigField: ThimblerigField,
   winner: PublicKey,
 }) {}
 
@@ -53,7 +53,7 @@ export class ThimblerigLogic extends MatchMaker {
         player2: opponent.value.userAddress,
         currentMoveUser: this.transaction.sender,
         lastMoveBlockHeight: this.network.block.height,
-        field: new ThimblerigField({
+        thimblerigField: new ThimblerigField({
           choice: UInt64.from(0),
           commitedHash: Field.from(0),
         }),
@@ -78,15 +78,15 @@ export class ThimblerigLogic extends MatchMaker {
     const game = this.games.get(gameId);
     assert(game.isSome, "Invalid game id");
     assert(commitmentHash.greaterThan(0), "Invalid commitment");
-    assert(game.value.field.choice.equals(UInt64.from(0)), "Already chosen");
-    assert(game.value.field.commitedHash.equals(0), "Already commited");
+    assert(game.value.thimblerigField.choice.equals(UInt64.from(0)), "Already chosen");
+    assert(game.value.thimblerigField.commitedHash.equals(0), "Already commited");
     assert(
       game.value.player1.equals(sender),
       `Only player1 should commit value`
     );
     assert(game.value.winner.equals(PublicKey.empty()), `Game finished`);
 
-    game.value.field.commitedHash = commitmentHash;
+    game.value.thimblerigField.commitedHash = commitmentHash;
     game.value.currentMoveUser = game.value.player2;
     game.value.lastMoveBlockHeight = this.network.block.height;
     this.games.set(gameId, game.value);
@@ -110,15 +110,15 @@ export class ThimblerigLogic extends MatchMaker {
       ),
       "Invalid choice"
     );
-    assert(game.value.field.choice.equals(UInt64.from(0)), "Already chosen");
-    assert(game.value.field.commitedHash.greaterThan(0), "Not commited");
+    assert(game.value.thimblerigField.choice.equals(UInt64.from(0)), "Already chosen");
+    assert(game.value.thimblerigField.commitedHash.greaterThan(0), "Not commited");
     assert(
       game.value.player2.equals(sender),
       `Only player2 should make choice`
     );
     assert(game.value.winner.equals(PublicKey.empty()), `Game finished`);
 
-    game.value.field.choice = choice;
+    game.value.thimblerigField.choice = choice;
     game.value.currentMoveUser = game.value.player1;
     game.value.lastMoveBlockHeight = this.network.block.height;
     this.games.set(gameId, game.value);
@@ -136,8 +136,8 @@ export class ThimblerigLogic extends MatchMaker {
     const game = this.games.get(gameId);
     assert(game.isSome, "Invalid game id");
     assert(commitmentValue.greaterThan(0), "Invalid commitment");
-    assert(game.value.field.choice.equals(UInt64.from(0)), "Already chosen");
-    assert(game.value.field.commitedHash.equals(0), "Already commited");
+    assert(game.value.thimblerigField.choice.equals(UInt64.from(0)), "Already chosen");
+    assert(game.value.thimblerigField.commitedHash.equals(0), "Already commited");
     assert(
       game.value.player1.equals(sender),
       `Only player1 should reveal value`
@@ -145,16 +145,16 @@ export class ThimblerigLogic extends MatchMaker {
     assert(game.value.winner.equals(PublicKey.empty()), `Game finished`);
 
     Poseidon.hash([commitmentValue]).assertEquals(
-      game.value.field.commitedHash,
+      game.value.thimblerigField.commitedHash,
       "Incorrect reveal"
     );
-    game.value.field.commitedHash = commitmentValue;
+    game.value.thimblerigField.commitedHash = commitmentValue;
     game.value.currentMoveUser = game.value.player2;
     game.value.lastMoveBlockHeight = this.network.block.height;
     game.value.winner = Provable.if(
       UInt64.from(commitmentValue)
         .mod(UInt64.from(3))
-        .equals(game.value.field.choice),
+        .equals(game.value.thimblerigField.choice),
       game.value.player1,
       game.value.player2
     );
@@ -173,8 +173,8 @@ export class ThimblerigLogic extends MatchMaker {
 
     const game = this.games.get(gameId);
     assert(game.isSome, "Invalid game id");
-    assert(game.value.field.choice.equals(UInt64.from(0)), "Already chosen");
-    assert(game.value.field.commitedHash.equals(0), "Already commited");
+    assert(game.value.thimblerigField.choice.equals(UInt64.from(0)), "Already chosen");
+    assert(game.value.thimblerigField.commitedHash.equals(0), "Already commited");
     assert(
       game.value.player1.equals(sender),
       `Only player1 should prove value is not revealed`
