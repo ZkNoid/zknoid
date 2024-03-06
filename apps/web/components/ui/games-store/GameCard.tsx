@@ -46,7 +46,6 @@ export const GameCard = ({
   const [fillColor, setFillColor] = useState<
     'bg-left-accent' | 'bg-middle-accent'
   >('bg-left-accent');
-  const [rating, _setRating] = useState<number>(5);
 
   useEffect(() => {
     if (game.genre == ZkNoidGameGenre.Arcade) {
@@ -93,7 +92,7 @@ export const GameCard = ({
               fill={fillColor === 'bg-left-accent' ? '#D2FF00' : '#97FF00'}
               className={'mb-1.5'}
             />
-            {Number.isInteger(rating) ? rating + '.0' : rating}
+            {Number.isInteger(game.rating) ? game.rating + '.0' : game.rating}
           </span>
         </div>
         <div className="font-plexsans text-main font-normal">

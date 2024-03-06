@@ -17,7 +17,7 @@ import {
 import { FiltrationBox } from '@/components/ui/games-store/widgets/GameStore/FiltrationBox';
 import { GameCard } from '@/components/ui/games-store/GameCard';
 import { useState } from 'react';
-import { IGame } from '@/app/constants/games';
+import {announcedGames, defaultGames, IGame} from '@/app/constants/games';
 import { clsx } from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { GAME_STORE_SORT_METHODS, GameStoreSortBy } from '@/constants/sortBy';
@@ -468,55 +468,97 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
       <Competitions
         competitions={[
           {
+            game: defaultGames[0],
             title: 'Arcanoid',
             index: 1,
-            preRegDate: '15/04/2024-17/04/2024',
-            competitionsDate: '15/04/2024-17/04/2024',
+            preRegDate: {
+              start: new Date(2024, 2, 15),
+              end: new Date (2024, 2, 20)
+            },
+            competitionsDate: {
+              start: new Date(2024, 2, 15),
+              end: new Date (2024, 2, 20)
+            },
             participantsFee: 5,
             currency: '$MINA',
             reward: 1000,
           },
           {
+            game: defaultGames[1],
             title: 'Randzu battle',
             index: 2,
-            preRegDate: '15/04/2024-17/04/2024',
-            competitionsDate: '15/04/2024-17/04/2024',
+            preRegDate: {
+              start: new Date(2024, 2, 15),
+              end: new Date (2024, 2, 20)
+            },
+            competitionsDate: {
+              start: new Date(2024, 2, 15),
+              end: new Date (2024, 2, 20)
+            },
             participantsFee: 5,
             currency: '$MINA',
             reward: 1000,
           },
           {
-            title: 'Znake competition',
-            index: 3,
-            preRegDate: '15/04/2024-17/04/2024',
-            competitionsDate: '15/04/2024-17/04/2024',
-            participantsFee: 5,
-            currency: '$MINA',
-            reward: 1000,
-          },
-          {
+            game: defaultGames[0],
             title: 'Arcanoid',
-            index: 4,
-            preRegDate: '15/04/2024-17/04/2024',
-            competitionsDate: '15/04/2024-17/04/2024',
+            index: 3,
+            preRegDate: {
+              start: new Date(2024, 2, 15),
+              end: new Date (2024, 2, 20)
+            },
+            competitionsDate: {
+              start: new Date(2024, 2, 15),
+              end: new Date (2024, 2, 20)
+            },
             participantsFee: 5,
             currency: '$MINA',
             reward: 1000,
           },
           {
+            game: defaultGames[1],
             title: 'Randzu battle',
-            index: 5,
-            preRegDate: '15/04/2024-17/04/2024',
-            competitionsDate: '15/04/2024-17/04/2024',
+            index: 4,
+            preRegDate: {
+              start: new Date(2024, 2, 15),
+              end: new Date (2024, 2, 20)
+            },
+            competitionsDate: {
+              start: new Date(2024, 2, 15),
+              end: new Date (2024, 2, 20)
+            },
             participantsFee: 5,
             currency: '$MINA',
             reward: 1000,
           },
           {
-            title: 'Znake competition',
-            index: 6,
-            preRegDate: '15/04/2024-17/04/2024',
-            competitionsDate: '15/04/2024-17/04/2024',
+            game: defaultGames[1],
+            title: '****** **** *******',
+            index: 5,
+            preRegDate: {
+              start: new Date(2024, 2, 6),
+              end: new Date (2024, 2, 20)
+            },
+            competitionsDate: {
+              start: new Date(2024, 3, 1),
+              end: new Date (2024, 3, 6)
+            },
+            participantsFee: 5,
+            currency: '$MINA',
+            reward: 1000,
+          },
+          {
+            game: defaultGames[1],
+            title: 'Superbattle',
+            index: 5,
+            preRegDate: {
+              start: new Date(2024, 1, 9),
+              end: new Date (2024, 1, 20)
+            },
+            competitionsDate: {
+              start: new Date(2024, 1, 21),
+              end: new Date (2024, 1, 26)
+            },
             participantsFee: 5,
             currency: '$MINA',
             reward: 1000,

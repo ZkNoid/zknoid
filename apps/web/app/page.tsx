@@ -30,6 +30,7 @@ export default function Home() {
           zkNoidGames.zkNoidConfig.games.map((x) => ({
             id: x.id,
             logo: x.image,
+            rating: x.rating,
             name: x.name,
             description: x.description,
             genre: x.genre,
