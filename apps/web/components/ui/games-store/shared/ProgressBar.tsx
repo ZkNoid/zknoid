@@ -1,5 +1,5 @@
 import { motion, useMotionValue } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState} from 'react';
 
 import { animate, useMotionTemplate, useTransform } from 'framer-motion';
 
@@ -8,46 +8,51 @@ const clamp = (number: number, min: number, max: number) => {
 };
 
 export const ProgressBar = ({
-  min = 0,
-  max = 100,
-  handleSize = 30,
-  defaultValue = 0,
   title,
+  min,
+  max,
+  handleSize = 30,
+  minValue,
+  maxValue,
+  setMaxValue,
+  setMinValue,
 }: {
-  min?: number;
-  max?: number;
-  handleSize?: number;
-  defaultValue?: number;
   title: string;
+  min: number;
+  max: number;
+  handleSize?: number;
+  minValue: number;
+  maxValue: number;
+  setMinValue: (value: number) => void;
+  setMaxValue: (value: number) => void;
 }) => {
-  const [value, setValue] = useState<number>(defaultValue);
   const [dragging, setDragging] = useState<boolean>(false);
   // let percent = value / (max - min);
 
-  const constraintsRef = useRef(null);
-  const handleRef = useRef(null);
-  const progressBarRef = useRef(null);
+  const constraintsRef = useRef<HTMLDivElement | null>(null);
+  const handleRef = useRef<HTMLDivElement | null>(null);
+  const progressBarRef = useRef<HTMLDivElement | null>(null);
 
   const handleX = useMotionValue(0);
   const progress = useTransform(handleX, (v) => v + handleSize / 2);
   const background = useMotionTemplate`linear-gradient(90deg, #F9F8F4 5%, #D2FF00 ${progress}px)`;
 
   const handleDrag = () => {
-    const handleBounds = handleRef.current.getBoundingClientRect();
+    const handleBounds = handleRef.current?.getBoundingClientRect();
     const middleOfHandle = handleBounds.x + handleBounds.width / 2;
-    const progressBarBounds = progressBarRef.current.getBoundingClientRect();
+    const progressBarBounds = progressBarRef.current?.getBoundingClientRect();
     const newProgress =
       (middleOfHandle - progressBarBounds.x) / progressBarBounds.width;
 
-    setValue(newProgress * (max - min));
+    setMaxValue(newProgress * (max - min));
   };
 
   useEffect(() => {
-    const newProgress = value / (max - min);
-    const progressBarBounds = progressBarRef.current.getBoundingClientRect();
+    const newProgress = maxValue / (max - min);
+    const progressBarBounds = progressBarRef.current?.getBoundingClientRect();
 
     handleX.set(newProgress * progressBarBounds.width);
-  }, [handleX, max, min, value]);
+  }, [handleX, max, min, maxValue]);
 
   return (
     <div className="w-full pb-2">
@@ -96,11 +101,11 @@ export const ProgressBar = ({
           className="absolute h-4 w-full"
           onPointerDown={(event) => {
             const { left, width } =
-              progressBarRef.current.getBoundingClientRect();
+              progressBarRef.current?.getBoundingClientRect();
             const position = event.pageX - left;
             const newProgress = clamp(position / width, 0, 1);
             const newValue = newProgress * (max - min);
-            setValue(newValue, min, max);
+            setMaxValue(newValue, min, max);
             animate(handleX, newProgress * width);
           }}
         />
@@ -113,12 +118,13 @@ export const ProgressBar = ({
           className={
             'max-w-[100px] rounded-[5px] border bg-bg-dark p-1 placeholder:font-plexsans placeholder:text-main hover:placeholder:text-left-accent/80 focus:outline-none'
           }
+          value={minValue}
           // animate={{ y: dragging && percent < 0.4 ? 20 : 0 }}
         />
         <motion.input
           type="text"
           placeholder={'to'}
-          value={Math.round(Math.floor(value * 100) / 100)}
+          value={Math.round(Math.floor(maxValue * 100) / 100)}
           max={max}
           min={min}
           className={
@@ -126,8 +132,11 @@ export const ProgressBar = ({
           }
           // animate={{ y: dragging && percent > 0.6 ? 20 : 0 }}
           onChange={(event) => {
-            if (event.target.value < max && event.target.value >= min)
-              setValue(event.target.value);
+            if (
+              Number(event.target.value) < max &&
+              Number(event.target.value) >= min
+            )
+              setMaxValue(Number(event.target.value));
           }}
         />
       </div>

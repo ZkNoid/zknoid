@@ -201,7 +201,6 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
             </div>
           </div>
         )}
-
       </div>
     </div>
   );
