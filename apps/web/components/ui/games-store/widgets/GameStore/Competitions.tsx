@@ -1,12 +1,21 @@
-import {clsx} from 'clsx';
-import {AnimatePresence, motion} from 'framer-motion';
-import {COMPETITIONS_SORT_METHODS, CompetitionsSortBy,} from '@/constants/sortBy';
-import {useState} from 'react';
-import {ALL_GAME_GENRES, ZkNoidGameGenre} from '@/lib/platform/game_tags';
-import {FiltrationBox} from '@/components/ui/games-store/widgets/GameStore/FiltrationBox';
-import {ALL_GAME_EVENT_TYPES, ZkNoidEventType,} from '@/lib/platform/game_events';
-import {ProgressBar} from '@/components/ui/games-store/shared/ProgressBar';
-import {CompetitionItem, ICompetition,} from '@/components/ui/games-store/widgets/GameStore/CompetitionsItem';
+import { clsx } from 'clsx';
+import { AnimatePresence, motion } from 'framer-motion';
+import {
+  COMPETITIONS_SORT_METHODS,
+  CompetitionsSortBy,
+} from '@/constants/sortBy';
+import { useState } from 'react';
+import { ALL_GAME_GENRES, ZkNoidGameGenre } from '@/lib/platform/game_tags';
+import { FiltrationBox } from '@/components/ui/games-store/widgets/GameStore/FiltrationBox';
+import {
+  ALL_GAME_EVENT_TYPES,
+  ZkNoidEventType,
+} from '@/lib/platform/game_events';
+import { ProgressBar } from '@/components/ui/games-store/shared/ProgressBar';
+import {
+  CompetitionItem,
+  ICompetition,
+} from '@/components/ui/games-store/widgets/GameStore/CompetitionsItem';
 
 export const Competitions = ({
   competitions,
@@ -33,21 +42,32 @@ export const Competitions = ({
   const [feesMaxValue, setFeesMaxValue] = useState<number>(0);
   const [feesMinValue, setFeesMinValue] = useState<number>(0);
 
-
   const timelineFilter = (competition: ICompetition) => {
+    if (
+      eventsSelected.includes(ZkNoidEventType.PAST_EVENTS) &&
+      competition.competitionsDate.end.getTime() < Date.now()
+    )
+      return true;
 
-    if (eventsSelected.includes(ZkNoidEventType.PAST_EVENTS) && competition.competitionsDate.end.getTime() < Date.now())
-      return true
+    if (
+      eventsSelected.includes(ZkNoidEventType.CURRENT_EVENTS) &&
+      competition.competitionsDate.end.getTime() >= Date.now()
+    )
+      return true;
 
-    if (eventsSelected.includes(ZkNoidEventType.CURRENT_EVENTS) && competition.competitionsDate.end.getTime() >= Date.now())
-      return true
+    if (
+      eventsSelected.includes(ZkNoidEventType.UPCOMING_EVENTS) &&
+      competition.competitionsDate.start.getTime() > Date.now()
+    )
+      return true;
 
-    if (eventsSelected.includes(ZkNoidEventType.UPCOMING_EVENTS) && competition.competitionsDate.start.getTime() > Date.now())
-      return true
-
-    if (eventsSelected.includes(ZkNoidEventType.PREREGISTRAION) && competition.preRegDate.start.getTime() <= Date.now() && competition.preRegDate.end.getTime() > Date.now())
-      return true
-  }
+    if (
+      eventsSelected.includes(ZkNoidEventType.PREREGISTRAION) &&
+      competition.preRegDate.start.getTime() <= Date.now() &&
+      competition.preRegDate.end.getTime() > Date.now()
+    )
+      return true;
+  };
 
   return (
     <>
@@ -277,19 +297,17 @@ export const Competitions = ({
             </div>
           </div>
 
+          {competitions
+            .filter((item) => {
+              if (genresSelected.length == 0 && eventsSelected.length == 0)
+                return true;
 
-          {competitions.filter(item => {
-            if (genresSelected.length == 0 && eventsSelected.length == 0)
-              return true;
+              if (genresSelected.includes(item.game.genre)) return true;
 
-            if (genresSelected.includes(item.game.genre))
-              return true;
-
-            if (timelineFilter(item))
-              return true;
-
-          }).map((competition, index) => (
-            <CompetitionItem
+              if (timelineFilter(item)) return true;
+            })
+            .map((competition, index) => (
+              <CompetitionItem
                 key={index}
                 game={competition.game}
                 title={competition.title}
@@ -299,10 +317,9 @@ export const Competitions = ({
                 participantsFee={competition.participantsFee}
                 currency={competition.currency}
                 reward={competition.reward}
-            />
-          ))}
+              />
+            ))}
         </div>
-
       </div>
       <AnimatePresence initial={false} mode={'wait'}>
         {genresSelected.length != 0 ||

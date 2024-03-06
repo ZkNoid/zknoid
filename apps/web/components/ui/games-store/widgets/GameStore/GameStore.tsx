@@ -17,7 +17,7 @@ import {
 import { FiltrationBox } from '@/components/ui/games-store/widgets/GameStore/FiltrationBox';
 import { GameCard } from '@/components/ui/games-store/GameCard';
 import { useState } from 'react';
-import {announcedGames, defaultGames, IGame} from '@/app/constants/games';
+import { defaultGames, IGame } from '@/app/constants/games';
 import { clsx } from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { GAME_STORE_SORT_METHODS, GameStoreSortBy } from '@/constants/sortBy';
@@ -473,11 +473,11 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             index: 1,
             preRegDate: {
               start: new Date(2024, 2, 15),
-              end: new Date (2024, 2, 20)
+              end: new Date(2024, 2, 20),
             },
             competitionsDate: {
               start: new Date(2024, 2, 15),
-              end: new Date (2024, 2, 20)
+              end: new Date(2024, 2, 20),
             },
             participantsFee: 5,
             currency: '$MINA',
@@ -489,11 +489,11 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             index: 2,
             preRegDate: {
               start: new Date(2024, 2, 15),
-              end: new Date (2024, 2, 20)
+              end: new Date(2024, 2, 20),
             },
             competitionsDate: {
               start: new Date(2024, 2, 15),
-              end: new Date (2024, 2, 20)
+              end: new Date(2024, 2, 20),
             },
             participantsFee: 5,
             currency: '$MINA',
@@ -505,11 +505,11 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             index: 3,
             preRegDate: {
               start: new Date(2024, 2, 15),
-              end: new Date (2024, 2, 20)
+              end: new Date(2024, 2, 20),
             },
             competitionsDate: {
               start: new Date(2024, 2, 15),
-              end: new Date (2024, 2, 20)
+              end: new Date(2024, 2, 20),
             },
             participantsFee: 5,
             currency: '$MINA',
@@ -521,11 +521,11 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             index: 4,
             preRegDate: {
               start: new Date(2024, 2, 15),
-              end: new Date (2024, 2, 20)
+              end: new Date(2024, 2, 20),
             },
             competitionsDate: {
               start: new Date(2024, 2, 15),
-              end: new Date (2024, 2, 20)
+              end: new Date(2024, 2, 20),
             },
             participantsFee: 5,
             currency: '$MINA',
@@ -537,11 +537,11 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             index: 5,
             preRegDate: {
               start: new Date(2024, 2, 6),
-              end: new Date (2024, 2, 20)
+              end: new Date(2024, 2, 20),
             },
             competitionsDate: {
               start: new Date(2024, 3, 1),
-              end: new Date (2024, 3, 6)
+              end: new Date(2024, 3, 6),
             },
             participantsFee: 5,
             currency: '$MINA',
@@ -553,11 +553,11 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             index: 5,
             preRegDate: {
               start: new Date(2024, 1, 9),
-              end: new Date (2024, 1, 20)
+              end: new Date(2024, 1, 20),
             },
             competitionsDate: {
               start: new Date(2024, 1, 21),
-              end: new Date (2024, 1, 26)
+              end: new Date(2024, 1, 26),
             },
             participantsFee: 5,
             currency: '$MINA',

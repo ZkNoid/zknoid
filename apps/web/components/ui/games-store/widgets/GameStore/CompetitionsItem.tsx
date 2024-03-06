@@ -1,16 +1,16 @@
-import {IGame} from "@/app/constants/games";
+import { IGame } from '@/app/constants/games';
 
 export interface ICompetition {
   game: IGame;
   title?: string;
   index: number;
   preRegDate: {
-      start: Date,
-      end: Date
+    start: Date;
+    end: Date;
   };
   competitionsDate: {
-      start: Date,
-      end: Date
+    start: Date;
+    end: Date;
   };
   participantsFee: number;
   currency: string;
@@ -62,7 +62,11 @@ export const CompetitionItem = ({
               'font-plexsans text-[16px]/[16px] font-light text-foreground'
             }
           >
-            {preRegDate.start.toLocaleDateString('en-US', {dateStyle: 'long'})} - {preRegDate.end.toLocaleDateString('en-US', {dateStyle: 'long'})}
+            {preRegDate.start.toLocaleDateString('en-US', {
+              dateStyle: 'long',
+            })}{' '}
+            -{' '}
+            {preRegDate.end.toLocaleDateString('en-US', { dateStyle: 'long' })}
           </span>
         </div>
         <div className={'flex flex-col gap-1'}>
@@ -76,7 +80,13 @@ export const CompetitionItem = ({
               'font-plexsans text-[16px]/[16px] font-light text-foreground'
             }
           >
-            {competitionsDate.start.toLocaleDateString('en-US', {dateStyle: 'long'})} - {competitionsDate.end.toLocaleDateString('en-US', {dateStyle: 'long'})}
+            {competitionsDate.start.toLocaleDateString('en-US', {
+              dateStyle: 'long',
+            })}{' '}
+            -{' '}
+            {competitionsDate.end.toLocaleDateString('en-US', {
+              dateStyle: 'long',
+            })}
           </span>
         </div>
       </div>
