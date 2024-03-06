@@ -34,8 +34,7 @@ class StartupScripts extends SequencerModule {
   constructor() {
     super();
   }
-  async start(): Promise<void> {
-  }
+  async start(): Promise<void> {}
 }
 
 const appChain = LocalhostAppChain.from({
@@ -118,12 +117,11 @@ appChain.configure({
   ...appChain.config,
 
   Runtime: {
-    Balances: { },
-    ArkanoidGameHub: { },
-    RandzuLogic: { }
+    ThimblerigLogic: {},
+    Balances: {},
+    ArkanoidGameHub: {},
+    RandzuLogic: {},
   },
-  
 });
-
 
 export default appChain as any;
