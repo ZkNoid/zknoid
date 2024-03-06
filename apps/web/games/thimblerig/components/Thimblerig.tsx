@@ -23,8 +23,11 @@ enum GameState {
 }
 
 export default function Thimblerig({}: { params: { competitionId: string } }) {
+  const client = useContext(AppChainClientContext) as ClientAppChain<
+    typeof thimblerigConfig.runtimeModules
+  >;
+
   const networkStore = useNetworkStore();
-  const client = useContext(AppChainClientContext);
   const [gameState, setGameState] = useState(GameState.NotStarted);
   const matchQueue = useMatchQueueStore();
   const sessionPublicKey = useStore(useSessionKeyStore, (state) =>
@@ -43,10 +46,6 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   };
 
   const startGame = async () => {
-    const client = useContext(AppChainClientContext) as ClientAppChain<
-      typeof thimblerigConfig.runtimeModules
-    >;
-
     const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
 
     const tx = await client.transaction(
