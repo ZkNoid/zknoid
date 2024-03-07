@@ -7,13 +7,15 @@ export default {
   modules: {
     ArkanoidGameHub,
     Balances,
-    RandzuLogic,
     ThimblerigLogic,
+
+    RandzuLogic,
   },
   config: {
     ArkanoidGameHub: {},
     Balances: {},
-    RandzuLogic: {},
     ThimblerigLogic: {},
+
+    RandzuLogic: {},
   },
 };
