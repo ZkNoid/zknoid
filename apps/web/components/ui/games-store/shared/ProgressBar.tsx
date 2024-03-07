@@ -1,5 +1,5 @@
 import { motion, useMotionValue } from 'framer-motion';
-import { useEffect, useRef, useState} from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { animate, useMotionTemplate, useTransform } from 'framer-motion';
 
@@ -105,7 +105,7 @@ export const ProgressBar = ({
             const position = event.pageX - left;
             const newProgress = clamp(position / width, 0, 1);
             const newValue = newProgress * (max - min);
-            setMaxValue(newValue, min, max);
+            setMaxValue(newValue);
             animate(handleX, newProgress * width);
           }}
         />
@@ -120,6 +120,14 @@ export const ProgressBar = ({
           }
           value={minValue}
           // animate={{ y: dragging && percent < 0.4 ? 20 : 0 }}
+          onChange={(event) => {
+            if (
+              Number(event.target.value) <= max &&
+              Number(event.target.value) >= min &&
+              Number(event.target.value) <= maxValue
+            )
+              setMinValue(Number(event.target.value));
+          }}
         />
         <motion.input
           type="text"
@@ -133,8 +141,9 @@ export const ProgressBar = ({
           // animate={{ y: dragging && percent > 0.6 ? 20 : 0 }}
           onChange={(event) => {
             if (
-              Number(event.target.value) < max &&
-              Number(event.target.value) >= min
+              Number(event.target.value) <= max &&
+              Number(event.target.value) >= min &&
+              Number(event.target.value) >= minValue
             )
               setMaxValue(Number(event.target.value));
           }}

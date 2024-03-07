@@ -1,10 +1,9 @@
-import { clsx } from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   COMPETITIONS_SORT_METHODS,
   CompetitionsSortBy,
 } from '@/constants/sortBy';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ALL_GAME_GENRES, ZkNoidGameGenre } from '@/lib/platform/game_tags';
 import { FiltrationBox } from '@/components/ui/games-store/widgets/GameStore/FiltrationBox';
 import {
@@ -16,6 +15,8 @@ import {
   CompetitionItem,
   ICompetition,
 } from '@/components/ui/games-store/widgets/GameStore/CompetitionsItem';
+import { Pagination } from '@/components/ui/games-store/shared/Pagination';
+import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
 
 export const Competitions = ({
   competitions,
@@ -25,7 +26,6 @@ export const Competitions = ({
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pagesAmount, _setPagesAmount] = useState<number>(3);
 
-  const [isSortByOpen, setIsSortByOpen] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<CompetitionsSortBy>(
     CompetitionsSortBy.LowFunds
   );
@@ -36,11 +36,15 @@ export const Competitions = ({
   const [isFundsAndFeesExpanded, setIsFundsAndFeesExpanded] =
     useState<boolean>(true);
 
+  const [fundsAbsoluteMaximum, setFundsAbsoluteMaximum] = useState<number>(0);
   const [fundsMaxValue, setFundsMaxValue] = useState<number>(0);
   const [fundsMinValue, setFundsMinValue] = useState<number>(0);
 
+  const [feesAbsoluteMaximum, setFeesAbsoluteMaximum] = useState<number>(0);
   const [feesMaxValue, setFeesMaxValue] = useState<number>(0);
   const [feesMinValue, setFeesMinValue] = useState<number>(0);
+
+  const [searchValue, setSearchValue] = useState<string>('');
 
   const timelineFilter = (competition: ICompetition) => {
     if (
@@ -68,6 +72,58 @@ export const Competitions = ({
     )
       return true;
   };
+
+  const sortByFilter = (a: ICompetition, b: ICompetition) => {
+    switch (sortBy) {
+      case CompetitionsSortBy.HighFees:
+        return a.participantsFee - b.participantsFee;
+
+      case CompetitionsSortBy.LowFees:
+        return b.participantsFee - a.participantsFee;
+
+      case CompetitionsSortBy.HighFunds:
+        return a.reward - b.reward;
+
+      case CompetitionsSortBy.LowFunds:
+        return b.reward - a.reward;
+
+      case CompetitionsSortBy.Latest:
+        return (
+          a.competitionsDate.start.getDate() -
+          b.competitionsDate.start.getDate()
+        );
+
+      case CompetitionsSortBy.Nearest:
+        return (
+          b.competitionsDate.start.getDate() -
+          a.competitionsDate.start.getDate()
+        );
+    }
+  };
+
+  const searchFilter = (competition: ICompetition) => {
+    if (searchValue.length === 0) return true;
+
+    const searchWords = searchValue.toLowerCase().split(' ');
+    const titleWords = competition.title?.toLowerCase().split(' ');
+
+    return searchWords.every(
+      (searchWord) =>
+        titleWords?.some((titleWord) => titleWord.startsWith(searchWord))
+    );
+  };
+
+  useEffect(() => {
+    const fundsMaximum = competitions.reduce((max, competition) => {
+      return Math.max(max, competition.reward);
+    }, -Infinity);
+    setFundsAbsoluteMaximum(fundsMaximum);
+
+    const feesMaximum = competitions.reduce((max, competition) => {
+      return Math.max(max, competition.participantsFee);
+    }, -Infinity);
+    setFeesAbsoluteMaximum(feesMaximum);
+  }, [competitions]);
 
   return (
     <>
@@ -104,7 +160,7 @@ export const Competitions = ({
                   <ProgressBar
                     title={'Funds'}
                     min={0}
-                    max={100}
+                    max={fundsAbsoluteMaximum}
                     minValue={fundsMinValue}
                     maxValue={fundsMaxValue}
                     setMinValue={setFundsMinValue}
@@ -113,7 +169,7 @@ export const Competitions = ({
                   <ProgressBar
                     title={'Participants fee'}
                     min={0}
-                    max={100}
+                    max={feesAbsoluteMaximum}
                     minValue={feesMinValue}
                     maxValue={feesMaxValue}
                     setMinValue={setFeesMinValue}
@@ -228,7 +284,32 @@ export const Competitions = ({
                 className={
                   'min-w-[350px] bg-bg-dark placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:placeholder:text-left-accent/80'
                 }
+                value={searchValue}
+                onChange={(event) => {
+                  setSearchValue(event.target.value);
+                }}
               />
+              <div
+                className={
+                  'flex cursor-pointer items-center justify-center opacity-60 hover:opacity-100'
+                }
+                onClick={() => setSearchValue('')}
+              >
+                <svg
+                  aria-hidden="true"
+                  focusable="false"
+                  height="1em"
+                  role="presentation"
+                  viewBox="0 0 24 24"
+                  width={24}
+                >
+                  <path
+                    d="M12 2a10 10 0 1010 10A10.016 10.016 0 0012 2zm3.36 12.3a.754.754 0 010 1.06.748.748 0 01-1.06 0l-2.3-2.3-2.3 2.3a.748.748 0 01-1.06 0 .754.754 0 010-1.06l2.3-2.3-2.3-2.3A.75.75 0 019.7 8.64l2.3 2.3 2.3-2.3a.75.75 0 011.06 1.06l-2.3 2.3z"
+                    fill="#F9F8F4"
+                    className={'group-hover:fill-left-accent'}
+                  ></path>
+                </svg>
+              </div>
             </div>
           </div>
           <div className={'flex flex-row justify-between'}>
@@ -237,75 +318,40 @@ export const Competitions = ({
               competitions. Choose a game, the reward and the date of the
               competition and have some fun!
             </div>
-            <div className={'relative flex flex-col gap-4'}>
-              <span
-                className={clsx(
-                  'group flex min-w-[300px] cursor-pointer flex-row items-center gap-2 rounded-[5px] border border-bg-dark px-4 py-1 hover:border-left-accent hover:text-left-accent',
-                  {
-                    'rounded-b-none border-white duration-75 ease-out':
-                      isSortByOpen,
-                  }
-                )}
-                onClick={() => setIsSortByOpen(!isSortByOpen)}
-              >
-                <span>Sort By: {sortBy}</span>
-                <svg
-                  width="16"
-                  height="10"
-                  viewBox="0 0 16 10"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M15 1.5L8 8.5L1 1.5"
-                    stroke="#252525"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className={'stroke-white group-hover:stroke-left-accent'}
-                  />
-                </svg>
-              </span>
-              <AnimatePresence initial={false} mode={'wait'}>
-                {isSortByOpen && (
-                  <motion.div
-                    className={
-                      'absolute top-full z-10 flex w-full min-w-[300px] flex-col items-center justify-start overflow-hidden rounded-[5px] rounded-t-none border border-t-0 bg-bg-dark'
-                    }
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ type: 'spring', duration: 0.8, bounce: 0 }}
-                  >
-                    {COMPETITIONS_SORT_METHODS.map((value, index) => (
-                      <span
-                        key={index}
-                        onClick={() => {
-                          setSortBy(value);
-                          setIsSortByOpen(false);
-                        }}
-                        className={
-                          'h-full w-full cursor-pointer p-4 hover:text-left-accent'
-                        }
-                      >
-                        {value}
-                      </span>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+            <SortByFilter
+              sortMethods={COMPETITIONS_SORT_METHODS}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+            />
           </div>
 
           {competitions
             .filter((item) => {
-              if (genresSelected.length == 0 && eventsSelected.length == 0)
+              if (
+                genresSelected.length == 0 &&
+                eventsSelected.length == 0 &&
+                feesMinValue == 0 &&
+                feesMaxValue == 0 &&
+                fundsMinValue == 0 &&
+                fundsMaxValue == 0
+              )
                 return true;
 
               if (genresSelected.includes(item.game.genre)) return true;
 
               if (timelineFilter(item)) return true;
+
+              if (
+                item.participantsFee >= feesMinValue &&
+                item.participantsFee <= feesMaxValue
+              )
+                return true;
+
+              if (item.reward >= fundsMinValue && item.reward <= fundsMaxValue)
+                return true;
             })
+            .filter((value) => searchFilter(value))
+            .sort((a, b) => sortByFilter(a, b))
             .map((competition, index) => (
               <CompetitionItem
                 key={index}
@@ -334,75 +380,11 @@ export const Competitions = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <div className={'flex flex-row items-center justify-center gap-2'}>
-              <span
-                className={'cursor-pointer'}
-                onClick={() =>
-                  setCurrentPage((prevState) =>
-                    prevState > 1 ? prevState - 1 : prevState
-                  )
-                }
-              >
-                <svg
-                  width="10"
-                  height="16"
-                  viewBox="0 0 10 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M8.51116 15L1 8L8.51116 1"
-                    stroke="#D2FF00"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
-
-              <span
-                className={
-                  'flex flex-row items-center justify-center gap-2 pt-0.5'
-                }
-              >
-                {[...Array(pagesAmount).keys()].map((value) => (
-                  <span
-                    key={value + 1}
-                    className={`cursor-pointer text-left-accent hover:underline ${
-                      value + 1 === currentPage ? 'opacity-100' : 'opacity-40'
-                    }`}
-                    onClick={() => setCurrentPage(value + 1)}
-                  >
-                    {value + 1}
-                  </span>
-                ))}
-              </span>
-
-              <span
-                className={'cursor-pointer'}
-                onClick={() =>
-                  setCurrentPage((prevState) =>
-                    prevState < pagesAmount ? prevState + 1 : prevState
-                  )
-                }
-              >
-                <svg
-                  width="11"
-                  height="16"
-                  viewBox="0 0 11 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M1.5113 15L9.02246 8L1.5113 1"
-                    stroke="#D2FF00"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
-            </div>
+            <Pagination
+              pagesAmount={pagesAmount}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
           </motion.div>
         ) : undefined}
       </AnimatePresence>
