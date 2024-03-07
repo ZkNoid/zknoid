@@ -2,12 +2,12 @@ import GamePage from '@/components/framework/GamePage';
 import { thimblerigConfig } from '../config';
 import Link from 'next/link';
 import { useNetworkStore } from '@/lib/stores/network';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { getRandomEmoji } from '@/games/randzu/utils';
 import { useMatchQueueStore } from '@/lib/stores/matchQueue';
 import { ClientAppChain } from 'zknoid-chain-dev';
-import { PublicKey, UInt64 } from 'o1js';
+import { Field, Poseidon, PublicKey, UInt64 } from 'o1js';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
 import { walletInstalled } from '@/lib/helpers';
@@ -38,7 +38,8 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   );
   useObserveThimblerigMatchQueue();
 
-  let [loading, setLoading] = useState(true);
+  let [loading, setLoading] = useState(false);
+  let [commitment, setCommitment] = useState<Field | undefined >(undefined);
 
   const restart = () => {
     matchQueue.resetLastGameState();
@@ -63,6 +64,40 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
     setGameState(GameState.MatchRegistration);
   };
+
+  const chooseThumblerig = async (id: number) => {
+    const generatedCommitment = Field.random().div(10).mul(10).add(id);
+    setCommitment(generatedCommitment);
+    
+    const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
+
+    const tx = await client.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        thimblerigLogic.commitValue(
+          UInt64.from(matchQueue.activeGameId),
+          Poseidon.hash([])
+        );
+      }
+    );
+
+    await tx.sign();
+    await tx.send();
+
+    setGameState(GameState.MatchRegistration);
+  };
+
+  useEffect(() => {
+    if (matchQueue.inQueue && !matchQueue.activeGameId) {
+      setGameState(GameState.Matchmaking);
+    } else if (matchQueue.activeGameId) {
+      setGameState(GameState.Active);
+    } else {
+      if (matchQueue.lastGameState == 'win') setGameState(GameState.Won);
+
+      if (matchQueue.lastGameState == 'lost') setGameState(GameState.Lost);
+    }
+  }, [matchQueue.activeGameId, matchQueue.inQueue, matchQueue.lastGameState]);
 
   return (
     <GamePage gameConfig={thimblerigConfig}>
@@ -125,7 +160,21 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
             Opponent: {matchQueue.gameInfo?.opponent.toBase58()}
             {matchQueue.gameInfo?.isCurrentUserMove &&
               !matchQueue.gameInfo?.winner &&
-              !loading && <div>✅ Your turn. </div>}
+              !loading && (
+                <div className="flex flex-col items-center">
+                  ✅ Your turn.
+                  <div className="flex flex-col items-center justify-center gap-3">
+                    {[0, 1, 2].map((i) => (
+                      <div className="flex flex-row items-center justify-center gap-3">
+                        Thimble {i}{' '}
+                        <div className="rounded bg-middle-accent p-1 text-bg-dark cursor-pointer" onClick={() => chooseThumblerig(i)}>
+                          Choose
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             {!matchQueue.gameInfo?.isCurrentUserMove &&
               !matchQueue.gameInfo?.winner &&
               !loading && <div>✋ Opponent&apos;s turn. </div>}

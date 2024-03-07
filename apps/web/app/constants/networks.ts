@@ -19,11 +19,6 @@ export const NETWORKS: Network[] = [
   {
     chainId: 'berkeley',
     name: 'Berkeley',
-    graphql: 'https://proxy.berkeley.minaexplorer.com/graphql',
-  },
-  {
-    chainId: 'devnet',
-    name: 'Devnet',
-    graphql: 'https://proxy.devnet.minaexplorer.com/graphql',
+    graphql: 'https://api.minascan.io/node/berkeley/v1/graphql',
   },
 ];

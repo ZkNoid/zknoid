@@ -51,6 +51,7 @@ export function buildClient<
       ArkanoidGameHub: {},
       Balances: {},
       RandzuLogic: {},
+      ThimblerigLogic: {},
     },
   });
 
