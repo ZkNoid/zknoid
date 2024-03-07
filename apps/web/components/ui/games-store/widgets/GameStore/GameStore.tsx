@@ -26,6 +26,8 @@ import ChessIllustration from './assets/Chess_Illustration_01_02.json';
 import CubesIllustration from './assets/Cubes_Illustration_01_02.json';
 import EyesIllustration from './assets/Eyes_Illustration_01_01.json';
 import GamepadIllustration from './assets/Gamepad_Illustration_01_01.json';
+import { Pagination } from '@/components/ui/games-store/shared/Pagination';
+import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
 
 export const GameStore = ({ games }: { games: IGame[] }) => {
   const [eventTypesSelected, setEventTypesSelected] = useState<
@@ -39,10 +41,19 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pagesAmount, _setPagesAmount] = useState<number>(3);
 
-  const [isSortByOpen, setIsSortByOpen] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<GameStoreSortBy>(
     GameStoreSortBy.RatingLow
   );
+
+  const sortByFliter = (a: IGame, b: IGame) => {
+    switch (sortBy) {
+      case GameStoreSortBy.RatingHigh:
+        return a.rating - b.rating;
+
+      case GameStoreSortBy.RatingLow:
+        return b.rating - a.rating;
+    }
+  };
 
   return (
     <div className="top-0 mb-[100px] flex h-full w-full flex-col gap-5 p-10">
@@ -263,64 +274,11 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
         <div className="flex flex-col gap-2">
           <div className={'flex w-full flex-row items-center justify-between'}>
             <div className="text-headline-1">Games</div>
-            <div className={'relative flex flex-col gap-4'}>
-              <span
-                className={clsx(
-                  'group flex min-w-[300px] cursor-pointer flex-row items-center gap-2 rounded-[5px] border border-bg-dark px-4 py-1 hover:border-left-accent hover:text-left-accent',
-                  {
-                    'rounded-b-none border-white duration-75 ease-out':
-                      isSortByOpen,
-                  }
-                )}
-                onClick={() => setIsSortByOpen(!isSortByOpen)}
-              >
-                <span>Sort By: {sortBy}</span>
-                <svg
-                  width="16"
-                  height="10"
-                  viewBox="0 0 16 10"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M15 1.5L8 8.5L1 1.5"
-                    stroke="#252525"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className={'stroke-white group-hover:stroke-left-accent'}
-                  />
-                </svg>
-              </span>
-              <AnimatePresence initial={false} mode={'wait'}>
-                {isSortByOpen && (
-                  <motion.div
-                    className={
-                      'absolute top-full z-10 flex w-full min-w-[300px] flex-col items-center justify-start overflow-hidden rounded-[5px] rounded-t-none border border-t-0 bg-bg-dark'
-                    }
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ type: 'spring', duration: 0.8, bounce: 0 }}
-                  >
-                    {GAME_STORE_SORT_METHODS.map((value, index) => (
-                      <span
-                        key={index}
-                        onClick={() => {
-                          setSortBy(value);
-                          setIsSortByOpen(false);
-                        }}
-                        className={
-                          'h-full w-full cursor-pointer p-4 hover:text-left-accent'
-                        }
-                      >
-                        {value}
-                      </span>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+            <SortByFilter
+              sortMethods={GAME_STORE_SORT_METHODS}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+            />
           </div>
           <div className="flex flex-row gap-3 ">
             {ALL_GAME_TAGS.map((x) => (
@@ -366,6 +324,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                   )
                     return true;
                 })
+                .sort((a, b) => sortByFliter(a, b))
                 .map((game) => (
                   <GameCard
                     game={game}
@@ -387,79 +346,11 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
-                <div
-                  className={'flex flex-row items-center justify-center gap-2'}
-                >
-                  <span
-                    className={'cursor-pointer'}
-                    onClick={() =>
-                      setCurrentPage((prevState) =>
-                        prevState > 1 ? prevState - 1 : prevState
-                      )
-                    }
-                  >
-                    <svg
-                      width="10"
-                      height="16"
-                      viewBox="0 0 10 16"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M8.51116 15L1 8L8.51116 1"
-                        stroke="#D2FF00"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-
-                  <span
-                    className={
-                      'flex flex-row items-center justify-center gap-2 pt-0.5'
-                    }
-                  >
-                    {[...Array(pagesAmount).keys()].map((value) => (
-                      <span
-                        key={value + 1}
-                        className={`cursor-pointer text-left-accent hover:underline ${
-                          value + 1 === currentPage
-                            ? 'opacity-100'
-                            : 'opacity-40'
-                        }`}
-                        onClick={() => setCurrentPage(value + 1)}
-                      >
-                        {value + 1}
-                      </span>
-                    ))}
-                  </span>
-
-                  <span
-                    className={'cursor-pointer'}
-                    onClick={() =>
-                      setCurrentPage((prevState) =>
-                        prevState < pagesAmount ? prevState + 1 : prevState
-                      )
-                    }
-                  >
-                    <svg
-                      width="11"
-                      height="16"
-                      viewBox="0 0 11 16"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M1.5113 15L9.02246 8L1.5113 1"
-                        stroke="#D2FF00"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                </div>
+                <Pagination
+                  pagesAmount={pagesAmount}
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                />
               </motion.div>
             ) : undefined}
           </AnimatePresence>
@@ -484,22 +375,6 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             reward: 1000,
           },
           {
-            game: defaultGames[1],
-            title: 'Randzu battle',
-            index: 2,
-            preRegDate: {
-              start: new Date(2024, 2, 15),
-              end: new Date(2024, 2, 20),
-            },
-            competitionsDate: {
-              start: new Date(2024, 2, 15),
-              end: new Date(2024, 2, 20),
-            },
-            participantsFee: 5,
-            currency: '$MINA',
-            reward: 1000,
-          },
-          {
             game: defaultGames[0],
             title: 'Arcanoid',
             index: 3,
@@ -511,9 +386,9 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
               start: new Date(2024, 2, 15),
               end: new Date(2024, 2, 20),
             },
-            participantsFee: 5,
+            participantsFee: 20,
             currency: '$MINA',
-            reward: 1000,
+            reward: 500,
           },
           {
             game: defaultGames[1],
@@ -527,7 +402,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
               start: new Date(2024, 2, 15),
               end: new Date(2024, 2, 20),
             },
-            participantsFee: 5,
+            participantsFee: 1,
             currency: '$MINA',
             reward: 1000,
           },
@@ -543,9 +418,9 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
               start: new Date(2024, 3, 1),
               end: new Date(2024, 3, 6),
             },
-            participantsFee: 5,
+            participantsFee: 10,
             currency: '$MINA',
-            reward: 1000,
+            reward: 10000,
           },
           {
             game: defaultGames[1],
@@ -559,9 +434,9 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
               start: new Date(2024, 1, 21),
               end: new Date(2024, 1, 26),
             },
-            participantsFee: 5,
+            participantsFee: 99,
             currency: '$MINA',
-            reward: 1000,
+            reward: 4999,
           },
         ]}
       />
