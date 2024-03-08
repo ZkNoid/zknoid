@@ -1,24 +1,17 @@
-'use client';
-
-import { useContext, useEffect, useState } from 'react';
-import { GameView } from './GameView';
-import { Int64, PublicKey, UInt32, UInt64 } from 'o1js';
+import GamePage from '@/components/framework/GamePage';
+import { thimblerigConfig } from '../config';
 import Link from 'next/link';
 import { useNetworkStore } from '@/lib/stores/network';
-import { useMinaBridge } from '@/lib/stores/protokitBalances';
-import { randzuCompetitions } from '@/app/constants/randzuCompetitions';
-import { useObserveRandzuMatchQueue } from '@/games/randzu/stores/matchQueue';
-import { walletInstalled } from '@/lib/helpers';
+import { useContext, useEffect, useState } from 'react';
+import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import { getRandomEmoji } from '@/games/randzu/utils';
+import { useMatchQueueStore } from '@/lib/stores/matchQueue';
+import { ClientAppChain } from 'zknoid-chain-dev';
+import { Field, Poseidon, PublicKey, UInt64 } from 'o1js';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
-import { ClientAppChain, RandzuField, WinWitness } from 'zknoid-chain-dev';
-import GamePage from '@/components/framework/GamePage';
-import { randzuConfig } from '../config';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
-import { getRandomEmoji } from '../utils';
-import {
-  useMatchQueueStore,
-} from '@/lib/stores/matchQueue';
+import { walletInstalled } from '@/lib/helpers';
+import { useObserveThimblerigMatchQueue } from '../stores/matchQueue';
 
 enum GameState {
   NotStarted,
@@ -29,30 +22,13 @@ enum GameState {
   Lost,
 }
 
-export default function RandzuPage({
-  params,
-}: {
-  params: { competitionId: string };
-}) {
-  const [gameState, setGameState] = useState(GameState.NotStarted);
-  const competition = randzuCompetitions.find(
-    (x) => x.id == params.competitionId
-  );
-
+export default function Thimblerig({}: { params: { competitionId: string } }) {
   const client = useContext(AppChainClientContext) as ClientAppChain<
-    typeof randzuConfig.runtimeModules
+    typeof thimblerigConfig.runtimeModules
   >;
 
-  if (!client) {
-    throw Error('Context app chain client is not set');
-  }
-
-  let [loading, setLoading] = useState(true);
-  let [loadingElement, setLoadingElement] = useState<
-    { x: number; y: number } | undefined
-  >({ x: 0, y: 0 });
-
   const networkStore = useNetworkStore();
+  const [gameState, setGameState] = useState(GameState.NotStarted);
   const matchQueue = useMatchQueueStore();
   const sessionPublicKey = useStore(useSessionKeyStore, (state) =>
     state.getSessionKey()
@@ -60,10 +36,10 @@ export default function RandzuPage({
   const sessionPrivateKey = useStore(useSessionKeyStore, (state) =>
     state.getSessionKey()
   );
+  useObserveThimblerigMatchQueue();
 
-  useObserveRandzuMatchQueue();
-
-  const bridge = useMinaBridge();
+  let [loading, setLoading] = useState(false);
+  let [commitment, setCommitment] = useState<Field | undefined >(undefined);
 
   const restart = () => {
     matchQueue.resetLastGameState();
@@ -71,16 +47,12 @@ export default function RandzuPage({
   };
 
   const startGame = async () => {
-    if (competition!.enteringPrice > 0) {
-      console.log(await bridge(competition?.enteringPrice! * 10 ** 9));
-    }
-
-    const randzuLogic = client.runtime.resolve('RandzuLogic');
+    const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
       () => {
-        randzuLogic.register(
+        thimblerigLogic.register(
           sessionPublicKey,
           UInt64.from(Math.round(Date.now() / 1000))
         );
@@ -93,54 +65,27 @@ export default function RandzuPage({
     setGameState(GameState.MatchRegistration);
   };
 
-  const onCellClicked = async (x: number, y: number) => {
-    if (!matchQueue.gameInfo?.isCurrentUserMove) return;
-    if (matchQueue.gameInfo.field.value[x][y] != 0) return;
+  const chooseThumblerig = async (id: number) => {
+    const generatedCommitment = Field.random().div(10).mul(10).add(id);
+    setCommitment(generatedCommitment);
+    
+    const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
 
-    const currentUserId = matchQueue.gameInfo.currentUserIndex + 1;
-
-    const updatedField = (matchQueue.gameInfo.field as RandzuField).value.map(
-      (x: UInt32[]) => x.map((x) => x.toBigint())
+    const tx = await client.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        thimblerigLogic.commitValue(
+          UInt64.from(matchQueue.activeGameId),
+          Poseidon.hash([])
+        );
+      }
     );
-    updatedField[y][x] = matchQueue.gameInfo.currentUserIndex + 1;
 
-    const randzuLogic = client.runtime.resolve('RandzuLogic');
-
-    const updatedRandzuField = RandzuField.from(updatedField);
-
-    const winWitness1 = updatedRandzuField.checkWin(currentUserId);
-
-    const tx = await client.transaction(sessionPrivateKey.toPublicKey(), () => {
-      randzuLogic.makeMove(
-        UInt64.from(matchQueue.gameInfo!.gameId),
-        updatedRandzuField,
-        winWitness1 ??
-          new WinWitness(
-            // @ts-ignore
-            {
-              x: UInt32.from(0),
-              y: UInt32.from(0),
-              directionX: Int64.from(0),
-              directionY: Int64.from(0),
-            }
-          )
-      );
-    });
-
-    setLoading(true);
-    setLoadingElement({
-      x,
-      y,
-    });
-
-    tx.transaction = tx.transaction?.sign(sessionPrivateKey);
+    await tx.sign();
     await tx.send();
-  };
 
-  useEffect(() => {
-    setLoading(false);
-    setLoadingElement(undefined);
-  }, [matchQueue.gameInfo?.isCurrentUserMove]);
+    setGameState(GameState.MatchRegistration);
+  };
 
   useEffect(() => {
     if (matchQueue.inQueue && !matchQueue.activeGameId) {
@@ -155,7 +100,7 @@ export default function RandzuPage({
   }, [matchQueue.activeGameId, matchQueue.inQueue, matchQueue.lastGameState]);
 
   return (
-    <GamePage gameConfig={randzuConfig}>
+    <GamePage gameConfig={thimblerigConfig}>
       <main className="flex grow flex-col items-center gap-5 p-5">
         {networkStore.address ? (
           <div className="flex flex-col gap-5">
@@ -180,7 +125,7 @@ export default function RandzuPage({
                   className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
                   onClick={() => startGame()}
                 >
-                  Start for {competition?.enteringPrice} 🪙
+                  Start for 0 🪙
                 </div>
               )}
             </div>
@@ -215,7 +160,21 @@ export default function RandzuPage({
             Opponent: {matchQueue.gameInfo?.opponent.toBase58()}
             {matchQueue.gameInfo?.isCurrentUserMove &&
               !matchQueue.gameInfo?.winner &&
-              !loading && <div>✅ Your turn. </div>}
+              !loading && (
+                <div className="flex flex-col items-center">
+                  ✅ Your turn.
+                  <div className="flex flex-col items-center justify-center gap-3">
+                    {[0, 1, 2].map((i) => (
+                      <div className="flex flex-row items-center justify-center gap-3">
+                        Thimble {i}{' '}
+                        <div className="rounded bg-middle-accent p-1 text-bg-dark cursor-pointer" onClick={() => chooseThumblerig(i)}>
+                          Choose
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             {!matchQueue.gameInfo?.isCurrentUserMove &&
               !matchQueue.gameInfo?.winner &&
               !loading && <div>✋ Opponent&apos;s turn. </div>}
@@ -226,29 +185,7 @@ export default function RandzuPage({
           </div>
         )}
 
-        <GameView
-          gameInfo={matchQueue.gameInfo}
-          onCellClicked={onCellClicked}
-          loadingElement={loadingElement}
-          loading={loading}
-        />
         <div>Players in queue: {matchQueue.getQueueLength()}</div>
-        <div className="grow"></div>
-        <div className="flex flex-col gap-10">
-          <div>
-            Active competitions:
-            <div className="flex flex-col">
-              {randzuCompetitions.map((competition) => (
-                <Link
-                  href={`/games/randzu/${competition.id}`}
-                  key={competition.id}
-                >
-                  {competition.name} – {competition.prizeFund} 🪙
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
       </main>
     </GamePage>
   );

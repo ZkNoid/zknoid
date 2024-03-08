@@ -1,0 +1,190 @@
+import { create } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
+import { PublicKey, UInt64 } from 'o1js';
+import { useEffect } from 'react';
+import { useProtokitChainStore } from '@/lib/stores/protokitChain';
+import { useNetworkStore } from '@/lib/stores/network';
+import { RoundIdxUser } from 'zknoid-chain-dev';
+import { MatchMaker } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
+import { ModuleQuery } from '@proto-kit/sequencer';
+
+export interface MatchQueueState {
+  loading: boolean;
+  queueLength: number;
+  inQueue: boolean;
+  activeGameId: bigint;
+  gameInfo: any | undefined;
+  lastGameState: 'win' | 'lost' | undefined;
+  getQueueLength: () => number;
+  loadMatchQueue(
+    query: ModuleQuery<MatchMaker>,
+    blockHeight: number
+  ): Promise<void>;
+  loadActiveGame: (
+    query: ModuleQuery<MatchMaker>,
+    blockHeight: number,
+    address: PublicKey
+  ) => Promise<void>;
+  resetLastGameState: () => void;
+}
+
+const PENDING_BLOCKS_NUM = UInt64.from(5);
+
+export const useMatchQueueStore = create<
+  MatchQueueState,
+  [['zustand/immer', never]]
+>(
+  immer((set) => ({
+    loading: Boolean(false),
+    queueLength: 0,
+    activeGameId: BigInt(0),
+    inQueue: Boolean(false),
+    gameInfo: undefined as any | undefined,
+    lastGameState: undefined as 'win' | 'lost' | undefined,
+    resetLastGameState() {
+      set((state) => {
+        state.lastGameState = undefined;
+        state.gameInfo = undefined;
+      });
+    },
+    getQueueLength() {
+      return this.queueLength;
+    },
+    async loadMatchQueue(query: ModuleQuery<MatchMaker>, blockHeight: number) {
+      set((state) => {
+        state.loading = true;
+      });
+
+      const queueLength = await query.queueLength.get(
+        UInt64.from(blockHeight).div(PENDING_BLOCKS_NUM)
+      );
+
+      set((state) => {
+        // @ts-ignore
+        state.queueLength = Number(queueLength?.toBigInt() || 0);
+        state.loading = false;
+      });
+    },
+    async loadActiveGame(
+      query: ModuleQuery<MatchMaker>,
+      blockHeight: number,
+      address: PublicKey
+    ) {
+      set((state) => {
+        state.loading = true;
+      });
+
+      const activeGameId = await query.activeGameId.get(address);
+      console.log('Active game id', activeGameId);
+      const inQueue = await query.queueRegisteredRoundUsers.get(
+        // @ts-expect-error
+        new RoundIdxUser({
+          roundId: UInt64.from(blockHeight).div(PENDING_BLOCKS_NUM),
+          userAddress: address,
+        })
+      );
+
+      console.log('Active game id', activeGameId?.toBigInt());
+      console.log('In queue', inQueue?.toBoolean());
+
+      if (
+        activeGameId?.equals(UInt64.from(0)).toBoolean() &&
+        this.gameInfo?.gameId
+      ) {
+        console.log('Setting last game state', this.gameInfo?.gameId);
+        const gameInfo = (await query.games.get(
+          UInt64.from(this.gameInfo?.gameId!)
+        ))!;
+        console.log('Fetched last game info', gameInfo);
+        console.log('Game winner', gameInfo.winner.toBase58());
+
+        // const field = (gameInfo.field as RandzuField).value.map((x: UInt32[]) =>
+        //   x.map((x) => x.toBigint())
+        // );
+
+        set((state) => {
+          state.lastGameState = gameInfo.winner.equals(address).toBoolean()
+            ? 'win'
+            : 'lost';
+          state.gameInfo!.field = gameInfo.field;
+          state.gameInfo!.isCurrentUserMove = false;
+        });
+      }
+
+      if (activeGameId?.greaterThan(UInt64.from(0)).toBoolean()) {
+        const gameInfo = (await query.games.get(activeGameId))!;
+        console.log('Raw game info', gameInfo);
+
+        const currentUserIndex = address
+          .equals(gameInfo.player1 as PublicKey)
+          .toBoolean()
+          ? 0
+          : 1;
+        const player1 = gameInfo.player1 as PublicKey;
+        const player2 = gameInfo.player2 as PublicKey;
+        // const field = (gameInfo.field as RandzuField).value.map((x: UInt32[]) =>
+        //   x.map((x) => x.toBigint())
+        // );
+        set((state) => {
+          // @ts-ignore
+          state.gameInfo = {
+            player1,
+            player2,
+            currentMoveUser: gameInfo.currentMoveUser as PublicKey,
+            field: gameInfo.field,
+            currentUserIndex,
+            isCurrentUserMove: (gameInfo.currentMoveUser as PublicKey)
+              .equals(address)
+              .toBoolean(),
+            opponent:
+              currentUserIndex == 1 ? gameInfo.player1 : gameInfo.player2,
+            gameId: activeGameId.toBigInt(),
+            winner: gameInfo.winner.equals(PublicKey.empty()).not().toBoolean()
+              ? gameInfo.winner
+              : undefined,
+          };
+          console.log('Parsed game info', state.gameInfo);
+        });
+      }
+
+      set((state) => {
+        // @ts-ignore
+        state.activeGameId = activeGameId?.toBigInt() || 0n;
+        state.inQueue = inQueue?.toBoolean();
+        state.loading = false;
+      });
+    },
+  }))
+);
+
+export const useObserveMatchQueue = (query: ModuleQuery<MatchMaker>) => {
+  const chain = useProtokitChainStore();
+  const network = useNetworkStore();
+  const matchQueue = useMatchQueueStore();
+
+  useEffect(() => {
+    if (!network.walletConnected || !network.protokitClientStarted) {
+      return;
+    }
+
+    matchQueue.loadMatchQueue(query, parseInt(chain.block?.height ?? '0'));
+    matchQueue.loadActiveGame(
+      query,
+      parseInt(chain.block?.height ?? '0'),
+      PublicKey.fromBase58(network.address!)
+    );
+  }, [chain.block?.height, network.walletConnected, network.address]);
+};
+
+
+export interface IGameInfo<GameField> {
+  player1: PublicKey;
+  player2: PublicKey;
+  currentMoveUser: PublicKey;
+  winner: PublicKey;
+  field: GameField;
+  currentUserIndex: 0 | 1;
+  isCurrentUserMove: boolean;
+  opponent: PublicKey;
+  gameId: bigint;
+}

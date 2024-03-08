@@ -1,9 +1,10 @@
 'use client';
 
-import { IGameInfo } from '@/games/randzu/stores/matchQueue';
+import { IGameInfo } from '@/lib/stores/matchQueue';
+import { RandzuField } from 'zknoid-chain-dev';
 
 interface IGameViewProps {
-  gameInfo: IGameInfo | undefined;
+  gameInfo: IGameInfo<RandzuField> | undefined;
   onCellClicked: (x: number, y: number) => void;
   loadingElement: { x: number; y: number } | undefined;
   loading: boolean;
@@ -16,7 +17,7 @@ export const GameView = (props: IGameViewProps) => {
   const displayBall = (i: number, j: number) =>
     props.gameInfo?.isCurrentUserMove &&
     !props.loading &&
-    props.gameInfo?.field?.[j]?.[i] == 0;
+    props.gameInfo?.field?.value?.[j]?.[i] == 0;
   const isLoadingBall = (i: number, j: number) =>
     props.loadingElement &&
     props.loadingElement.x == i &&
@@ -43,12 +44,12 @@ export const GameView = (props: IGameViewProps) => {
                   : "hover:bg-[url('/ball_blue.png')]")
               }
               ${
-                props.gameInfo?.field?.[j]?.[i] == 1
+                props.gameInfo?.field?.value?.[j]?.[i] == 1
                   ? "bg-[url('/ball_red.png')]"
                   : ''
               }
               ${
-                props.gameInfo?.field?.[j]?.[i] == 2
+                props.gameInfo?.field?.value?.[j]?.[i] == 2
                   ? "bg-[url('/ball_blue.png')]"
                   : ''
               }
