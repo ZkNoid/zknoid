@@ -25,6 +25,9 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
 
       case GameStoreSortBy.RatingLow:
         return b.rating - a.rating;
+
+      default:
+        return 0;
     }
   };
 
