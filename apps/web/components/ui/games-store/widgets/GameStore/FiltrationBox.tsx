@@ -70,22 +70,46 @@ export function FiltrationBox<T extends string>({
             stroke="#D2FF00"
             strokeWidth="2"
           />
-          <rect
-            x="331.775"
-            y="6.89062"
-            width="20"
-            height="2"
-            transform="rotate(45 331.775 6.89062)"
-            fill={isExpanded ? '#252525' : '#D2FF00'}
-          />
-          <rect
-            x="345.924"
-            y="8.30469"
-            width="20"
-            height="2"
-            transform="rotate(135 345.924 8.30469)"
-            fill={isExpanded ? '#252525' : '#D2FF00'}
-          />
+
+          {isExpanded ? (
+            <>
+              <rect
+                x="331.775"
+                y="6.89062"
+                width="20"
+                height="2"
+                transform="rotate(45 331.775 6.89062)"
+                fill="#252525"
+              />
+              <rect
+                x="345.924"
+                y="8.30469"
+                width="20"
+                height="2"
+                transform="rotate(135 345.924 8.30469)"
+                fill="#252525"
+              />
+            </>
+          ) : (
+            <>
+              <rect
+                x="330.775"
+                y="-0.5"
+                width="17"
+                height="2"
+                transform="rotate(90 331.775 6.89062)"
+                fill="#D2FF00"
+              />
+              <rect
+                x="345.924"
+                y="1.30469"
+                width="17"
+                height="2"
+                transform="rotate(-180 345.924 8.30469)"
+                fill="#D2FF00"
+              />
+            </>
+          )}
         </svg>
         <div className="flex w-full flex-grow rounded-b-2xl border-x-2 border-b-2 border-left-accent"></div>
       </div>

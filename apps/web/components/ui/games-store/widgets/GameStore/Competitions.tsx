@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/games-store/widgets/GameStore/CompetitionsItem';
 import { Pagination } from '@/components/ui/games-store/shared/Pagination';
 import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
+import { clsx } from 'clsx';
 
 export const Competitions = ({
   competitions,
@@ -282,7 +283,7 @@ export const Competitions = ({
                 type="search"
                 placeholder={'Enter competition or game name...'}
                 className={
-                  'min-w-[350px] bg-bg-dark placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:placeholder:text-left-accent/80'
+                  'min-w-[300px] bg-bg-dark placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:placeholder:text-left-accent/80'
                 }
                 value={searchValue}
                 onChange={(event) => {
@@ -290,18 +291,20 @@ export const Competitions = ({
                 }}
               />
               <div
-                className={
-                  'flex cursor-pointer items-center justify-center opacity-60 hover:opacity-100'
-                }
+                className={clsx('flex items-center justify-center', {
+                  'visible cursor-pointer opacity-60 transition-opacity ease-in-out hover:opacity-100':
+                    searchValue.length !== 0,
+                  invisible: searchValue.length === 0,
+                })}
                 onClick={() => setSearchValue('')}
               >
                 <svg
                   aria-hidden="true"
                   focusable="false"
-                  height="1em"
                   role="presentation"
                   viewBox="0 0 24 24"
                   width={24}
+                  height={24}
                 >
                   <path
                     d="M12 2a10 10 0 1010 10A10.016 10.016 0 0012 2zm3.36 12.3a.754.754 0 010 1.06.748.748 0 01-1.06 0l-2.3-2.3-2.3 2.3a.748.748 0 01-1.06 0 .754.754 0 010-1.06l2.3-2.3-2.3-2.3A.75.75 0 019.7 8.64l2.3 2.3 2.3-2.3a.75.75 0 011.06 1.06l-2.3 2.3z"
