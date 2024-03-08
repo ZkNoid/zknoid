@@ -215,18 +215,24 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             genre={ZkNoidGameGenre.BoardGames}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
+            width={450}
+            height={450}
           />
           <GenreCard
             animation={CubesIllustration}
             genre={ZkNoidGameGenre.Lucky}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
+            width={410}
+            height={410}
+            className={'mt-[35px]'}
           />
           <GenreCard
             animation={EyesIllustration}
             genre={ZkNoidGameGenre.ComingSoon}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
+            className={'mt-[80px]'}
           />
         </div>
       </div>
