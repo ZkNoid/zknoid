@@ -39,7 +39,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   useObserveThimblerigMatchQueue();
 
   let [loading, setLoading] = useState(false);
-  let [commitment, setCommitment] = useState<Field | undefined >(undefined);
+  let [commitment, setCommitment] = useState<Field | undefined>(undefined);
 
   const restart = () => {
     matchQueue.resetLastGameState();
@@ -68,7 +68,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   const chooseThumblerig = async (id: number) => {
     const generatedCommitment = Field.random().div(10).mul(10).add(id);
     setCommitment(generatedCommitment);
-    
+
     const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
 
     const tx = await client.transaction(
@@ -165,9 +165,15 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                   ✅ Your turn.
                   <div className="flex flex-col items-center justify-center gap-3">
                     {[0, 1, 2].map((i) => (
-                      <div className="flex flex-row items-center justify-center gap-3">
+                      <div
+                        key={i}
+                        className="flex flex-row items-center justify-center gap-3"
+                      >
                         Thimble {i}{' '}
-                        <div className="rounded bg-middle-accent p-1 text-bg-dark cursor-pointer" onClick={() => chooseThumblerig(i)}>
+                        <div
+                          className="cursor-pointer rounded bg-middle-accent p-1 text-bg-dark"
+                          onClick={() => chooseThumblerig(i)}
+                        >
                           Choose
                         </div>
                       </div>
