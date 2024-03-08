@@ -18,21 +18,27 @@ export function SortByFilter<T extends string>({
     <div className={`relative ${className}`}>
       <span
         className={clsx(
-          'group flex h-full min-w-[300px] cursor-pointer flex-row items-center gap-2 rounded-[5px] border border-bg-dark px-4 py-1 hover:border-b hover:border-left-accent hover:text-left-accent',
+          'group flex h-full min-w-[300px] cursor-pointer flex-row items-center justify-between gap-2 rounded-[5px] border border-bg-dark px-4 py-1 hover:border-b hover:border-left-accent hover:text-left-accent',
           {
-            'rounded-b-none border-b-0 border-white duration-75 ease-out ':
+            'rounded-b-none border-white border-b-bg-dark duration-75 ease-out':
               isOpen,
           }
         )}
         onClick={() => setIsOpen(!isOpen)}
       >
         <span className={'font-plexsans text-main'}>Sort By: {sortBy}</span>
-        <svg
+        <motion.svg
           width="16"
           height="10"
           viewBox="0 0 16 10"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          variants={{
+            open: { rotate: 180 },
+            closed: { rotate: 0 },
+          }}
+          transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
+          animate={isOpen ? 'open' : 'closed'}
         >
           <path
             d="M15 1.5L8 8.5L1 1.5"
@@ -42,7 +48,7 @@ export function SortByFilter<T extends string>({
             strokeLinejoin="round"
             className={'stroke-white group-hover:stroke-left-accent'}
           />
-        </svg>
+        </motion.svg>
       </span>
       <AnimatePresence initial={false} mode={'wait'}>
         {isOpen && (
