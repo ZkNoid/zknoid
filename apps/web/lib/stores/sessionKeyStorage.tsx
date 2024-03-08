@@ -2,14 +2,14 @@ import { PrivateKey, PublicKey, UInt32, UInt64 } from 'o1js';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export interface MatchQueueState {
+export interface SessionKeyStorageState {
   sessionKeyBase58: any;
   getSessionKey: () => PrivateKey;
   newSessionKey: () => PrivateKey;
 }
 
 export const useSessionKeyStore = create<
-  MatchQueueState,
+  SessionKeyStorageState,
   [['zustand/persist', never]]
 >(
   persist(

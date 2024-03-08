@@ -5,6 +5,8 @@ import AsyncLayoutDynamic from '@/containers/async-layout-dynamic';
 
 import 'reflect-metadata';
 import { plexMono, museoSlab, plexSans } from './fonts';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://app.zknoid.io'),
@@ -34,6 +36,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${museoSlab.variable} ${plexMono.variable} ${plexSans.variable}`}>
         <AsyncLayoutDynamic>{children}</AsyncLayoutDynamic>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
