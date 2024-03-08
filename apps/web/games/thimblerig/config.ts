@@ -9,6 +9,7 @@ export const thimblerigConfig = createZkNoidGameConfig({
   description:
     'One player hides a boll behind a thimbler and second player needs to guess which thimbler it was',
   image: '/image/games/soon.svg',
+  rating: 5,
   genre: ZkNoidGameGenre.Lucky,
   features: [ZkNoidGameFeature.P2P],
   runtimeModules: {
