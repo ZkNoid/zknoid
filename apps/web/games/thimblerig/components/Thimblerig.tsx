@@ -165,7 +165,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                   ✅ Your turn.
                   <div className="flex flex-col items-center justify-center gap-3">
                     {[0, 1, 2].map((i) => (
-                      <div className="flex flex-row items-center justify-center gap-3">
+                      <div className="flex flex-row items-center justify-center gap-3" key={i}>
                         Thimble {i}{' '}
                         <div className="rounded bg-middle-accent p-1 text-bg-dark cursor-pointer" onClick={() => chooseThumblerig(i)}>
                           Choose
