@@ -106,7 +106,7 @@ export const useMatchQueueStore = create<
           state.lastGameState = gameInfo.winner.equals(address).toBoolean()
             ? 'win'
             : 'lost';
-          state.gameInfo!.field = gameInfo.field;
+          state.gameInfo!.field = gameInfo.field ?? gameInfo.thimblerigField; // @todo temporal workaround for proto-kit bug https://github.com/ZkNoid/proto-kit
           state.gameInfo!.isCurrentUserMove = false;
         });
       }
@@ -131,7 +131,7 @@ export const useMatchQueueStore = create<
             player1,
             player2,
             currentMoveUser: gameInfo.currentMoveUser as PublicKey,
-            field: gameInfo.field,
+            field: gameInfo.field ?? gameInfo.thimblerigField, // @todo temporal workaround for proto-kit bug https://github.com/ZkNoid/proto-kit,
             currentUserIndex,
             isCurrentUserMove: (gameInfo.currentMoveUser as PublicKey)
               .equals(address)
