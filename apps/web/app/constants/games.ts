@@ -10,19 +10,25 @@ export interface IGame {
   features: ZkNoidGameFeature[];
   defaultPage: string;
   active: boolean;
+  isReleased: boolean;
+  releaseDate: Date;
+  popularity: number;
 }
 
 export const announcedGames: IGame[] = [
   {
     id: 'checkers',
     logo: '/image/games/soon.svg',
-    rating: 5,
+    rating: 0,
     name: 'Checkers game',
     description: 'Compete other players in the classic board game',
-    genre: ZkNoidGameGenre.ComingSoon,
+    genre: ZkNoidGameGenre.BoardGames,
     features: [ZkNoidGameFeature.Multiplayer],
     defaultPage: 'global',
     active: false,
+    isReleased: false,
+    releaseDate: new Date(2024, 2, 25),
+    popularity: 0,
   },
 ];
 
@@ -38,6 +44,9 @@ export const defaultGames: IGame[] = [
     features: [ZkNoidGameFeature.SinglePlayer],
     defaultPage: 'competitions-list',
     active: true,
+    isReleased: true,
+    releaseDate: new Date(2023, 11, 1),
+    popularity: 60,
   },
   {
     id: 'randzu',
@@ -50,5 +59,8 @@ export const defaultGames: IGame[] = [
     features: [ZkNoidGameFeature.Multiplayer],
     defaultPage: 'global',
     active: true,
+    isReleased: true,
+    releaseDate: new Date(2024, 0, 1),
+    popularity: 50,
   },
 ];

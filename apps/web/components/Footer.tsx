@@ -10,7 +10,7 @@ export const Footer = () => {
     >
       <div className={'grid grid-cols-3 grid-rows-1'}>
         <Link
-          href={'https://app.zknoid.io'}
+          href={'/'}
           target="_blank"
           rel="noopener noreferrer"
           className={'cursor-pointer ease-in-out hover:opacity-80'}

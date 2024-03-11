@@ -5,7 +5,7 @@ import { Accordion } from '@/components/ui/games-store/shared/Accordion';
 
 export const SupportAndFaq = () => {
   return (
-    <div className="top-0 flex h-full w-full flex-col gap-5 p-10 pb-[100px]">
+    <div className="top-0 flex h-full w-full flex-col gap-20 p-10 pb-[100px]">
       <div className={'flex max-w-[40%] flex-col gap-5'}>
         <div className="pb-3 text-headline-1">Technical support</div>
         <div className="font-plexsans text-main">
@@ -39,7 +39,7 @@ export const SupportAndFaq = () => {
       </div>
       <div className={'flex flex-col'}>
         <div className={'pb-2 text-headline-1'}>FAQ</div>
-        <div className={'flex flex-row justify-between gap-10'}>
+        <div className={'flex flex-row justify-between gap-5'}>
           <div className={'flex h-fit w-full flex-col gap-4'}>
             {[...Array(5)].map((_value, index) => (
               <Accordion

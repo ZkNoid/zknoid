@@ -28,6 +28,7 @@ import EyesIllustration from './assets/Eyes_Illustration_01_01.json';
 import GamepadIllustration from './assets/Gamepad_Illustration_01_01.json';
 import { Pagination } from '@/components/ui/games-store/shared/Pagination';
 import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
+import Lottie from 'react-lottie';
 
 export const GameStore = ({ games }: { games: IGame[] }) => {
   const [eventTypesSelected, setEventTypesSelected] = useState<
@@ -53,8 +54,20 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
       case GameStoreSortBy.RatingLow:
         return b.rating - a.rating;
 
+      case GameStoreSortBy.PopularHigh:
+        return b.popularity - a.popularity;
+
+      case GameStoreSortBy.PopularLow:
+        return a.popularity - b.popularity;
+
+      case GameStoreSortBy.NewRelease:
+        return a.releaseDate.getDate() - b.releaseDate.getDate();
+
+      case GameStoreSortBy.ComingSoon:
+        return a.isReleased === b.isReleased ? 0 : a.isReleased ? 1 : -1;
+
       default:
-        return 0;
+        return 1;
     }
   };
 
@@ -218,29 +231,42 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             genre={ZkNoidGameGenre.BoardGames}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
-            width={450}
             height={450}
+            className={'max-[2000px]:mt-[25px]'}
           />
           <GenreCard
             animation={CubesIllustration}
             genre={ZkNoidGameGenre.Lucky}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
-            width={410}
-            height={410}
-            className={'mt-[35px]'}
+            height={450}
+            className={'mt-[35px] max-[2000px]:mt-[50px]'}
           />
-          <GenreCard
-            animation={EyesIllustration}
-            genre={ZkNoidGameGenre.ComingSoon}
-            genresSelected={genresSelected}
-            setGenresSelected={setGenresSelected}
-            className={'mt-[80px]'}
-          />
+          <div
+            className="relative flex h-full w-full flex-col items-center justify-center p-5"
+            onClick={() => {
+              setSortBy(GameStoreSortBy.ComingSoon);
+            }}
+          >
+            <div className="z-1 absolute bottom-0 left-0 -z-10 h-[60%] w-full rounded bg-[#252525]"></div>
+            <div className="h-full w-full">
+              <Lottie
+                options={{
+                  animationData: EyesIllustration,
+                  rendererSettings: {
+                    className: `z-0 h-full mt-[80px]`,
+                  },
+                }}
+                height={500}
+              ></Lottie>
+            </div>
+
+            <div className="z-0 text-headline-3">Coming Soon</div>
+          </div>
         </div>
       </div>
       <div className="flex gap-5">
-        <div className="min-w-[350px]">
+        <div className="min-w-[350px] max-[2000px]:min-w-[280px]">
           <div className="pb-5 pt-2 text-headline-3 font-bold">Filtration</div>
           <div className="flex flex-col gap-3">
             <FiltrationBox
@@ -280,7 +306,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             </AnimatePresence>
           </div>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex w-full flex-col gap-6">
           <div className={'flex w-full flex-row items-center justify-between'}>
             <div className="text-headline-1">Games</div>
             <SortByFilter
@@ -289,7 +315,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
               setSortBy={setSortBy}
             />
           </div>
-          <div className="flex flex-row gap-3 ">
+          <div className="flex flex-row gap-3">
             {ALL_GAME_TAGS.map((x) => (
               <div
                 key={x.name}
@@ -317,7 +343,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             ))}
           </div>
           <div>
-            <div className="grid grid-cols-3 gap-5">
+            <div className="grid grid-cols-3 gap-5 max-[1700px]:grid-cols-2">
               {games
                 .filter((x) => {
                   if (
@@ -334,12 +360,19 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                     return true;
                 })
                 .sort((a, b) => sortByFliter(a, b))
-                .map((game) => (
+                .map((game, index) => (
                   <GameCard
                     game={game}
                     key={game.id}
                     fullImageW={game.id === 'arkanoid'}
                     fullImageH={game.id === 'arkanoid'}
+                    color={
+                      Number.isInteger(index / 3)
+                        ? 1
+                        : index === 1 || Number.isInteger(index - 1 / 3)
+                          ? 2
+                          : 3
+                    }
                   />
                 ))}
             </div>
