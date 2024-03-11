@@ -11,8 +11,12 @@ export const arkanoidConfig = createZkNoidGameConfig({
   description:
     'Old but gold game. Beat all the bricks and protect the ball from falling',
   image: '/image/games/arkanoid.svg',
+  rating: 4.5,
   genre: ZkNoidGameGenre.Arcade,
   features: [ZkNoidGameFeature.SinglePlayer],
+  isReleased: true,
+  releaseDate: new Date(2023, 11, 1),
+  popularity: 60,
   runtimeModules: {
     ArkanoidGameHub,
     Balances,

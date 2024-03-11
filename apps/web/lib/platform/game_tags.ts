@@ -2,14 +2,14 @@ export enum ZkNoidGameGenre {
   Arcade = 'Arcade',
   BoardGames = 'Board games',
   Lucky = 'Lucky',
-  ComingSoon = 'Coming soon',
+  // ComingSoon = 'Coming soon',
 }
 
 export const ALL_GAME_GENRES = [
   ZkNoidGameGenre.Arcade,
   ZkNoidGameGenre.BoardGames,
   ZkNoidGameGenre.Lucky,
-  ZkNoidGameGenre.ComingSoon,
+  // ZkNoidGameGenre.ComingSoon,
 ];
 
 export enum ZkNoidGameFeature {
@@ -22,6 +22,7 @@ export enum ZkNoidGameFeature {
 export const ALL_GAME_FEATURES = [
   ZkNoidGameFeature.SinglePlayer,
   ZkNoidGameFeature.Multiplayer,
+  ZkNoidGameFeature.P2P,
   ZkNoidGameFeature.Cooperative,
 ];
 

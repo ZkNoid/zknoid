@@ -1,108 +1,32 @@
-import { clsx } from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   COMPETITIONS_SORT_METHODS,
   CompetitionsSortBy,
 } from '@/constants/sortBy';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ALL_GAME_GENRES, ZkNoidGameGenre } from '@/lib/platform/game_tags';
 import { FiltrationBox } from '@/components/ui/games-store/widgets/GameStore/FiltrationBox';
 import {
   ALL_GAME_EVENT_TYPES,
   ZkNoidEventType,
 } from '@/lib/platform/game_events';
+import { ProgressBar } from '@/components/ui/games-store/shared/ProgressBar';
+import {
+  CompetitionItem,
+  ICompetition,
+} from '@/components/ui/games-store/widgets/GameStore/CompetitionsItem';
+import { Pagination } from '@/components/ui/games-store/shared/Pagination';
+import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
+import { clsx } from 'clsx';
 
-const CompetitionItem = ({
-  title,
-  index,
-  preRegDate,
-  competitionsDate,
-  participantsFee,
-  currency,
-  reward,
+export const Competitions = ({
+  competitions,
 }: {
-  title: string;
-  index: number;
-  preRegDate: string;
-  competitionsDate: string;
-  participantsFee: number;
-  currency: string;
-  reward: number;
+  competitions: ICompetition[];
 }) => {
-  return (
-    <div
-      className={
-        'flex flex-row justify-between border-t border-left-accent pt-4 text-left-accent last:border-b last:pb-4'
-      }
-    >
-      <div className={'flex w-2/6 flex-col justify-between gap-4'}>
-        <div
-          className={
-            'flex flex-row gap-2 text-headline-2 font-medium uppercase'
-          }
-        >
-          <span>[{index}]</span>
-          <span>{title}</span>
-        </div>
-        <button
-          className={
-            'w-full max-w-[50%] rounded-[5px] border border-bg-dark bg-left-accent py-2 text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
-          }
-        >
-          Play
-        </button>
-      </div>
-      <div className={'flex w-2/6 flex-col gap-2'}>
-        <div className={'flex flex-col gap-1'}>
-          <span
-            className={'font-plexsans text-[20px]/[20px] font-medium uppercase'}
-          >
-            Preregistration dates
-          </span>
-          <span className={'font-plexsans text-[16px]/[16px] font-light'}>
-            {preRegDate}
-          </span>
-        </div>
-        <div className={'flex flex-col gap-1'}>
-          <span
-            className={'font-plexsans text-[20px]/[20px] font-medium uppercase'}
-          >
-            Competitions dates
-          </span>
-          <span className={'font-plexsans text-[16px]/[16px] font-light'}>
-            {competitionsDate}
-          </span>
-        </div>
-      </div>
-      <div
-        className={
-          'flex w-2/6 flex-col gap-4 font-plexsans text-[20px]/[20px] font-medium'
-        }
-      >
-        <div
-          className={
-            'w-full max-w-fit rounded-2xl border border-left-accent p-1 px-2 text-center'
-          }
-        >
-          {participantsFee} {currency} Participants fee
-        </div>
-        <div
-          className={
-            'w-full max-w-fit rounded-2xl border border-left-accent bg-left-accent p-1 px-2 text-center text-dark-buttons-text'
-          }
-        >
-          {reward} {currency} REWARDS
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export const Competitions = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pagesAmount, _setPagesAmount] = useState<number>(3);
 
-  const [isSortByOpen, setIsSortByOpen] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<CompetitionsSortBy>(
     CompetitionsSortBy.LowFunds
   );
@@ -110,14 +34,110 @@ export const Competitions = () => {
   const [genresSelected, setGenresSelected] = useState<ZkNoidGameGenre[]>([]);
   const [eventsSelected, setEventsSelected] = useState<ZkNoidEventType[]>([]);
 
+  const [isFundsAndFeesExpanded, setIsFundsAndFeesExpanded] =
+    useState<boolean>(true);
+
+  const [fundsAbsoluteMaximum, setFundsAbsoluteMaximum] = useState<number>(0);
+  const [fundsMaxValue, setFundsMaxValue] = useState<number>(0);
+  const [fundsMinValue, setFundsMinValue] = useState<number>(0);
+
+  const [feesAbsoluteMaximum, setFeesAbsoluteMaximum] = useState<number>(0);
+  const [feesMaxValue, setFeesMaxValue] = useState<number>(0);
+  const [feesMinValue, setFeesMinValue] = useState<number>(0);
+
+  const [searchValue, setSearchValue] = useState<string>('');
+
+  const timelineFilter = (competition: ICompetition) => {
+    if (
+      eventsSelected.includes(ZkNoidEventType.PAST_EVENTS) &&
+      competition.competitionsDate.end.getTime() < Date.now()
+    )
+      return true;
+
+    if (
+      eventsSelected.includes(ZkNoidEventType.CURRENT_EVENTS) &&
+      competition.competitionsDate.end.getTime() >= Date.now()
+    )
+      return true;
+
+    if (
+      eventsSelected.includes(ZkNoidEventType.UPCOMING_EVENTS) &&
+      competition.competitionsDate.start.getTime() > Date.now()
+    )
+      return true;
+
+    if (
+      eventsSelected.includes(ZkNoidEventType.PREREGISTRAION) &&
+      competition.preRegDate.start.getTime() <= Date.now() &&
+      competition.preRegDate.end.getTime() > Date.now()
+    )
+      return true;
+  };
+
+  const sortByFilter = (a: ICompetition, b: ICompetition) => {
+    switch (sortBy) {
+      case CompetitionsSortBy.HighFees:
+        return a.participantsFee - b.participantsFee;
+
+      case CompetitionsSortBy.LowFees:
+        return b.participantsFee - a.participantsFee;
+
+      case CompetitionsSortBy.HighFunds:
+        return a.reward - b.reward;
+
+      case CompetitionsSortBy.LowFunds:
+        return b.reward - a.reward;
+
+      case CompetitionsSortBy.Latest:
+        return (
+          a.competitionsDate.start.getDate() -
+          b.competitionsDate.start.getDate()
+        );
+
+      case CompetitionsSortBy.Nearest:
+        return (
+          b.competitionsDate.start.getDate() -
+          a.competitionsDate.start.getDate()
+        );
+    }
+  };
+
+  const searchFilter = (competition: ICompetition) => {
+    if (searchValue.length === 0) return true;
+
+    const searchWords = searchValue.toLowerCase().split(' ');
+    const titleWords = competition.title?.toLowerCase().split(' ');
+
+    return searchWords.every(
+      (searchWord) =>
+        titleWords?.some((titleWord) => titleWord.startsWith(searchWord))
+    );
+  };
+
+  useEffect(() => {
+    const fundsMaximum = competitions.reduce((max, competition) => {
+      return Math.max(max, competition.reward);
+    }, -Infinity);
+    setFundsAbsoluteMaximum(fundsMaximum);
+
+    const feesMaximum = competitions.reduce((max, competition) => {
+      return Math.max(max, competition.participantsFee);
+    }, -Infinity);
+    setFeesAbsoluteMaximum(feesMaximum);
+  }, [competitions]);
+
   return (
     <>
       <div className={'mt-40 flex flex-row gap-5'}>
-        <div className={'flex min-w-[350px] flex-col gap-4'}>
+        <div
+          className={
+            'flex min-w-[350px] flex-col gap-4 max-[2000px]:min-w-[280px]'
+          }
+        >
           <div className={'text-headline-3'}>Filtration</div>
           <FiltrationBox
             key={0}
-            expanded={true}
+            defaultExpanded={true}
             title="Genre"
             items={ALL_GAME_GENRES}
             itemsSelected={genresSelected}
@@ -125,7 +145,7 @@ export const Competitions = () => {
           />
           <FiltrationBox
             key={1}
-            expanded={true}
+            defaultExpanded={true}
             title="Timeline"
             items={ALL_GAME_EVENT_TYPES}
             itemsSelected={eventsSelected}
@@ -133,14 +153,45 @@ export const Competitions = () => {
           />
           <div className="relative flex min-h-[80px] w-full flex-col gap-2 p-5">
             <div className="text-headline-3 font-bold">Funds and Fee</div>
-
-            {/*<ProgressBar/>*/}
-
-            <div className="absolute left-0 top-0 -z-10 flex h-full w-full flex-col">
+            <AnimatePresence initial={false} mode={'wait'}>
+              {isFundsAndFeesExpanded && (
+                <motion.div
+                  initial={{ height: 0 }}
+                  animate={{ height: 'auto' }}
+                  exit={{ height: 0 }}
+                  transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
+                  className={'z-10 overflow-hidden'}
+                >
+                  <ProgressBar
+                    title={'Funds'}
+                    min={0}
+                    max={fundsAbsoluteMaximum}
+                    minValue={fundsMinValue}
+                    maxValue={fundsMaxValue}
+                    setMinValue={setFundsMinValue}
+                    setMaxValue={setFundsMaxValue}
+                  />
+                  <ProgressBar
+                    title={'Participants fee'}
+                    min={0}
+                    max={feesAbsoluteMaximum}
+                    minValue={feesMinValue}
+                    maxValue={feesMaxValue}
+                    setMinValue={setFeesMinValue}
+                    setMaxValue={setFeesMaxValue}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <div className="absolute left-0 top-0 z-0 flex h-full w-full flex-col">
               <svg
                 viewBox="0 0 351 60"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
+                className={'cursor-pointer'}
+                onClick={() =>
+                  setIsFundsAndFeesExpanded(!isFundsAndFeesExpanded)
+                }
               >
                 <path
                   d="M1 17.5234V111.731V174.523C1 182.808 7.71573 189.523 16 189.523H335C343.284 189.523 350 182.808 350 174.523V58.1101C350 54.1286 348.417 50.3105 345.6 47.4969L304.963 6.91027C302.151 4.10124 298.338 2.52344 294.363 2.52344H16C7.71573 2.52344 1 9.23917 1 17.5234Z"
@@ -149,41 +200,78 @@ export const Competitions = () => {
                 />
                 <path
                   d="M348 2.52344H312.912C311.118 2.52344 310.231 4.7018 311.515 5.95459L346.603 40.2072C347.87 41.4438 350 40.5463 350 38.7761V4.52344C350 3.41887 349.105 2.52344 348 2.52344Z"
-                  // fill={expanded ? '#D2FF00' : ''}
+                  fill={isFundsAndFeesExpanded ? '#D2FF00' : ''}
                   stroke="#D2FF00"
                   strokeWidth="2"
                 />
-                <rect
-                  x="331.775"
-                  y="6.89062"
-                  width="20"
-                  height="2"
-                  transform="rotate(45 331.775 6.89062)"
-                  // fill={expanded ? '#252525' : '#D2FF00'}
-                  fill={'#D2FF00'}
-                />
-                <rect
-                  x="345.924"
-                  y="8.30469"
-                  width="20"
-                  height="2"
-                  transform="rotate(135 345.924 8.30469)"
-                  // fill={expanded ? '#252525' : '#D2FF00'}
-                  fill={'#D2FF00'}
-                />
+                {isFundsAndFeesExpanded ? (
+                  <>
+                    <rect
+                      x="331.775"
+                      y="6.89062"
+                      width="20"
+                      height="2"
+                      transform="rotate(45 331.775 6.89062)"
+                      fill="#252525"
+                    />
+                    <rect
+                      x="345.924"
+                      y="8.30469"
+                      width="20"
+                      height="2"
+                      transform="rotate(135 345.924 8.30469)"
+                      fill="#252525"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <rect
+                      x="330.775"
+                      y="-0.5"
+                      width="17"
+                      height="2"
+                      transform="rotate(90 331.775 6.89062)"
+                      fill="#D2FF00"
+                    />
+                    <rect
+                      x="345.924"
+                      y="1.30469"
+                      width="17"
+                      height="2"
+                      transform="rotate(-180 345.924 8.30469)"
+                      fill="#D2FF00"
+                    />
+                  </>
+                )}
               </svg>
               <div className="flex w-full flex-grow rounded-b-2xl border-x-2 border-b-2 border-left-accent"></div>
             </div>
           </div>
-          <div
-            className="flex h-[40px] cursor-pointer items-center justify-center rounded-[5px] border-2 border-left-accent bg-left-accent text-buttons text-dark-buttons-text hover:bg-bg-dark hover:text-left-accent"
-            onClick={() => {
-              setGenresSelected([]);
-              setEventsSelected([]);
-            }}
-          >
-            Reset filters
-          </div>
+          <AnimatePresence initial={false} mode={'wait'}>
+            {genresSelected.length != 0 ||
+            eventsSelected.length != 0 ||
+            feesMaxValue != 0 ||
+            feesMinValue != 0 ||
+            fundsMaxValue != 0 ||
+            fundsMinValue != 0 ? (
+              <motion.div
+                className="flex h-[40px] cursor-pointer items-center justify-center rounded-[5px] border-2 border-left-accent bg-left-accent text-buttons text-dark-buttons-text hover:bg-bg-dark hover:text-left-accent"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => {
+                  setGenresSelected([]);
+                  setEventsSelected([]);
+                  setFeesMaxValue(0);
+                  setFeesMinValue(0);
+                  setFundsMaxValue(0);
+                  setFundsMinValue(0);
+                }}
+              >
+                Reset filters
+              </motion.div>
+            ) : undefined}
+          </AnimatePresence>
         </div>
         <div className={'flex w-full flex-col gap-4'}>
           <div className={'flex flex-row justify-between'}>
@@ -222,9 +310,36 @@ export const Competitions = () => {
                 type="search"
                 placeholder={'Enter competition or game name...'}
                 className={
-                  'min-w-[350px] bg-bg-dark placeholder:font-plexsans placeholder:text-main focus:border-none focus:outline-none group-hover:placeholder:text-left-accent/80'
+                  'min-w-[300px] appearance-none bg-bg-dark placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80'
                 }
+                value={searchValue}
+                onChange={(event) => {
+                  setSearchValue(event.target.value);
+                }}
               />
+              <div
+                className={clsx('flex items-center justify-center', {
+                  'visible cursor-pointer opacity-60 transition-opacity ease-in-out hover:opacity-100':
+                    searchValue.length !== 0,
+                  invisible: searchValue.length === 0,
+                })}
+                onClick={() => setSearchValue('')}
+              >
+                <svg
+                  aria-hidden="true"
+                  focusable="false"
+                  role="presentation"
+                  viewBox="0 0 24 24"
+                  width={24}
+                  height={24}
+                >
+                  <path
+                    d="M12 2a10 10 0 1010 10A10.016 10.016 0 0012 2zm3.36 12.3a.754.754 0 010 1.06.748.748 0 01-1.06 0l-2.3-2.3-2.3 2.3a.748.748 0 01-1.06 0 .754.754 0 010-1.06l2.3-2.3-2.3-2.3A.75.75 0 019.7 8.64l2.3 2.3 2.3-2.3a.75.75 0 011.06 1.06l-2.3 2.3z"
+                    fill="#F9F8F4"
+                    className={'group-hover:fill-left-accent'}
+                  ></path>
+                </svg>
+              </div>
             </div>
           </div>
           <div className={'flex flex-row justify-between'}>
@@ -233,148 +348,76 @@ export const Competitions = () => {
               competitions. Choose a game, the reward and the date of the
               competition and have some fun!
             </div>
-            <div className={'relative flex flex-col gap-4'}>
-              <span
-                className={clsx(
-                  'group flex min-w-[300px] cursor-pointer flex-row items-center gap-2 rounded-[5px] border border-bg-dark px-4 py-1 hover:border-left-accent hover:text-left-accent',
-                  {
-                    'rounded-b-none border-white duration-75 ease-out':
-                      isSortByOpen,
-                  }
-                )}
-                onClick={() => setIsSortByOpen(!isSortByOpen)}
-              >
-                <span>Sort By: {sortBy}</span>
-                <svg
-                  width="16"
-                  height="10"
-                  viewBox="0 0 16 10"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M15 1.5L8 8.5L1 1.5"
-                    stroke="#252525"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className={'stroke-white group-hover:stroke-left-accent'}
-                  />
-                </svg>
-              </span>
-              <AnimatePresence initial={false} mode={'wait'}>
-                {isSortByOpen && (
-                  <motion.div
-                    className={
-                      'absolute top-full z-10 flex w-full min-w-[300px] flex-col items-center justify-start overflow-hidden rounded-[5px] rounded-t-none border border-t-0 bg-bg-dark'
-                    }
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ type: 'spring', duration: 0.8, bounce: 0 }}
-                  >
-                    {COMPETITIONS_SORT_METHODS.map((value, index) => (
-                      <span
-                        key={index}
-                        onClick={() => {
-                          setSortBy(value);
-                          setIsSortByOpen(false);
-                        }}
-                        className={
-                          'h-full w-full cursor-pointer p-4 hover:text-left-accent'
-                        }
-                      >
-                        {value}
-                      </span>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-          {[...Array(6)].map((_value, index) => (
-            <CompetitionItem
-              key={index}
-              title={'Arcanoid'}
-              index={index + 1}
-              preRegDate={'15/04/2024-17/04/2024'}
-              competitionsDate={'15/04/2024-17/04/2024'}
-              participantsFee={5}
-              currency={'$MINA'}
-              reward={1000}
+            <SortByFilter
+              sortMethods={COMPETITIONS_SORT_METHODS}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
             />
-          ))}
-        </div>
-      </div>
-      <div className={'flex w-full items-center justify-center py-4'}>
-        <div className={'flex flex-row items-center justify-center gap-2'}>
-          <span
-            className={'cursor-pointer'}
-            onClick={() =>
-              setCurrentPage((prevState) =>
-                prevState > 1 ? prevState - 1 : prevState
-              )
-            }
-          >
-            <svg
-              width="10"
-              height="16"
-              viewBox="0 0 10 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M8.51116 15L1 8L8.51116 1"
-                stroke="#D2FF00"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </span>
+          </div>
 
-          <span
-            className={'flex flex-row items-center justify-center gap-2 pt-0.5'}
-          >
-            {[...Array(pagesAmount).keys()].map((value) => (
-              <span
-                key={value + 1}
-                className={`cursor-pointer text-left-accent hover:underline ${
-                  value + 1 === currentPage ? 'opacity-100' : 'opacity-40'
-                }`}
-                onClick={() => setCurrentPage(value + 1)}
-              >
-                {value + 1}
-              </span>
+          {competitions
+            .filter((item) => {
+              if (
+                genresSelected.length == 0 &&
+                eventsSelected.length == 0 &&
+                feesMinValue == 0 &&
+                feesMaxValue == 0 &&
+                fundsMinValue == 0 &&
+                fundsMaxValue == 0
+              )
+                return true;
+
+              if (genresSelected.includes(item.game.genre)) return true;
+
+              if (timelineFilter(item)) return true;
+
+              if (
+                item.participantsFee >= feesMinValue &&
+                item.participantsFee <= feesMaxValue
+              )
+                return true;
+
+              if (item.reward >= fundsMinValue && item.reward <= fundsMaxValue)
+                return true;
+            })
+            .filter((value) => searchFilter(value))
+            .sort((a, b) => sortByFilter(a, b))
+            .map((competition, index) => (
+              <CompetitionItem
+                key={index}
+                game={competition.game}
+                title={competition.title}
+                index={competition.index}
+                preRegDate={competition.preRegDate}
+                competitionsDate={competition.competitionsDate}
+                participantsFee={competition.participantsFee}
+                currency={competition.currency}
+                reward={competition.reward}
+              />
             ))}
-          </span>
-
-          <span
-            className={'cursor-pointer'}
-            onClick={() =>
-              setCurrentPage((prevState) =>
-                prevState < pagesAmount ? prevState + 1 : prevState
-              )
-            }
-          >
-            <svg
-              width="11"
-              height="16"
-              viewBox="0 0 11 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M1.5113 15L9.02246 8L1.5113 1"
-                stroke="#D2FF00"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </span>
         </div>
       </div>
+      <AnimatePresence initial={false} mode={'wait'}>
+        {genresSelected.length != 0 ||
+        eventsSelected.length != 0 ||
+        fundsMaxValue != 0 ||
+        fundsMinValue != 0 ||
+        feesMaxValue != 0 ||
+        feesMinValue != 0 ? (
+          <motion.div
+            className={'flex w-full items-center justify-center py-4'}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <Pagination
+              pagesAmount={pagesAmount}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          </motion.div>
+        ) : undefined}
+      </AnimatePresence>
     </>
   );
 };
