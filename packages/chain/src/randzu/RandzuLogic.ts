@@ -102,9 +102,9 @@ export class RandzuLogic extends MatchMaker {
                 UInt64.from(0)
             ),
             new GameInfo({
-                player1: this.transaction.sender,
+                player1: this.transaction.sender.value,
                 player2: opponent.value.userAddress,
-                currentMoveUser: this.transaction.sender,
+                currentMoveUser: this.transaction.sender.value,
                 lastMoveBlockHeight: this.network.block.height,
                 field: RandzuField.from(Array(RANDZU_FIELD_SIZE).fill(Array(RANDZU_FIELD_SIZE).fill(0))),
                 winner: PublicKey.empty()
@@ -118,8 +118,8 @@ export class RandzuLogic extends MatchMaker {
 
     @runtimeMethod()
     public proveOpponentTimeout(gameId: UInt64): void {
-      const sessionSender = this.sessions.get(this.transaction.sender);
-      const sender = Provable.if(sessionSender.isSome, sessionSender.value, this.transaction.sender);
+      const sessionSender = this.sessions.get(this.transaction.sender.value);
+      const sender = Provable.if(sessionSender.isSome, sessionSender.value, this.transaction.sender.value);
   
       const game = this.games.get(gameId);
       assert(game.isSome, "Invalid game id");
@@ -147,8 +147,8 @@ export class RandzuLogic extends MatchMaker {
 
     @runtimeMethod()
     public makeMove(gameId: UInt64, newField: RandzuField, winWitness: WinWitness): void {
-      const sessionSender = this.sessions.get(this.transaction.sender);
-      const sender = Provable.if(sessionSender.isSome, sessionSender.value, this.transaction.sender);
+      const sessionSender = this.sessions.get(this.transaction.sender.value);
+      const sender = Provable.if(sessionSender.isSome, sessionSender.value, this.transaction.sender.value);
   
       const game = this.games.get(gameId);
       assert(game.isSome, "Invalid game id");

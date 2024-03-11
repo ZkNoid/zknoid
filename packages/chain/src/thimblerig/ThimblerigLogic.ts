@@ -90,21 +90,21 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     // If player in game – revert
     assert(
       this.activeGameId
-        .get(this.transaction.sender)
+        .get(this.transaction.sender.value)
         .orElse(UInt64.from(0))
         .equals(UInt64.from(0)),
       "Player already in game"
     );
 
     // Registering player session key
-    this.sessions.set(sessionKey, this.transaction.sender);
+    this.sessions.set(sessionKey, this.transaction.sender.value);
     const roundId = this.network.block.height.div(PENDING_BLOCKS_NUM);
 
     // User can't re-register in round queue if already registered
     assert(
       this.queueRegisteredRoundUsers
         .get(
-          new RoundIdxUser({ roundId, userAddress: this.transaction.sender })
+          new RoundIdxUser({ roundId, userAddress: this.transaction.sender.value })
         )
         .isSome.not(),
       "User already in queue"
@@ -126,7 +126,7 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
 
     // Assigning new game to player if opponent found
     this.activeGameId.set(
-      this.transaction.sender,
+      this.transaction.sender.value,
       Provable.if(opponentReady, gameId, UInt64.from(0))
     );
 
@@ -143,7 +143,7 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
         userAddress: Provable.if(
           opponentReady,
           PublicKey.empty(),
-          this.transaction.sender
+          this.transaction.sender.value
         ),
         registrationTimestamp: timestamp,
       })
@@ -156,7 +156,7 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
         userAddress: Provable.if(
           opponentReady,
           PublicKey.empty(),
-          this.transaction.sender
+          this.transaction.sender.value
         ),
       }),
       Bool(true)
@@ -225,9 +225,9 @@ export class ThimblerigLogic extends MatchMaker {
     this.games.set(
       Provable.if(opponentReady, currentGameId, UInt64.from(0)),
       new GameInfo({
-        player1: this.transaction.sender,
+        player1: this.transaction.sender.value,
         player2: opponent.value.userAddress,
-        currentMoveUser: this.transaction.sender,
+        currentMoveUser: this.transaction.sender.value,
         lastMoveBlockHeight: this.network.block.height,
         thimblerigField: new ThimblerigField({
           choice: UInt64.from(0),
@@ -244,11 +244,11 @@ export class ThimblerigLogic extends MatchMaker {
 
   @runtimeMethod()
   public commitValue(gameId: UInt64, commitmentHash: Field): void {
-    const sessionSender = this.sessions.get(this.transaction.sender);
+    const sessionSender = this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
       sessionSender.value,
-      this.transaction.sender
+      this.transaction.sender.value
     );
 
     const game = this.games.get(gameId);
@@ -276,11 +276,11 @@ export class ThimblerigLogic extends MatchMaker {
 
   @runtimeMethod()
   public chooseThumble(gameId: UInt64, choice: UInt64): void {
-    const sessionSender = this.sessions.get(this.transaction.sender);
+    const sessionSender = this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
       sessionSender.value,
-      this.transaction.sender
+      this.transaction.sender.value
     );
 
     const game = this.games.get(gameId);
@@ -314,11 +314,11 @@ export class ThimblerigLogic extends MatchMaker {
 
   @runtimeMethod()
   public revealCommitment(gameId: UInt64, commitmentValue: Field): void {
-    const sessionSender = this.sessions.get(this.transaction.sender);
+    const sessionSender = this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
       sessionSender.value,
-      this.transaction.sender
+      this.transaction.sender.value
     );
 
     const game = this.games.get(gameId);
@@ -360,11 +360,11 @@ export class ThimblerigLogic extends MatchMaker {
 
   @runtimeMethod()
   public proveCommitNotRevealed(gameId: UInt64): void {
-    const sessionSender = this.sessions.get(this.transaction.sender);
+    const sessionSender = this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
       sessionSender.value,
-      this.transaction.sender
+      this.transaction.sender.value
     );
 
     const game = this.games.get(gameId);

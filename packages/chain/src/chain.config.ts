@@ -22,6 +22,7 @@ import {
   NodeStatusResolver,
   QueryGraphqlModule,
   UnprovenBlockResolver,
+  MerkleWitnessResolver,
 } from "@proto-kit/api";
 import {
   StateServiceQueryModule,
@@ -53,6 +54,7 @@ const appChain = LocalhostAppChain.from({
       UnprovenProducerModule,
       BlockTrigger: ManualBlockTrigger,
       TaskQueue: LocalTaskQueue,
+
       Graphql: GraphqlSequencerModule.from({
         modules: {
           MempoolResolver,
@@ -60,9 +62,9 @@ const appChain = LocalhostAppChain.from({
           BlockStorageResolver,
           NodeStatusResolver,
           UnprovenBlockResolver,
+          MerkleWitnessResolver,
         },
       }),
-      StartupScripts,
     },
   }),
 
@@ -80,12 +82,12 @@ appChain.configure({
     StateTransitionProver: {},
     AccountState: {},
     BlockHeight: {},
+    LastStateRoot: {},
   },
 
   Sequencer: {
     Database: {},
     UnprovenProducerModule: {},
-    StartupScripts: {},
 
     GraphqlServer: {
       port: 8080,
@@ -98,6 +100,7 @@ appChain.configure({
       MempoolResolver: {},
       BlockStorageResolver: {},
       NodeStatusResolver: {},
+      MerkleWitnessResolver: {},
       UnprovenBlockResolver: {},
     },
 
