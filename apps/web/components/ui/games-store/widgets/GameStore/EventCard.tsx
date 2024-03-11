@@ -26,7 +26,7 @@ export const EventCard = ({
       <Image src={eventBoxImg} alt="" className="-z-10 w-full" />
       <div
         className={
-          'group absolute bottom-2 right-2 z-10 rounded-xl bg-[#252525] max-[2200px]:bottom-0 max-[2200px]:right-0 max-[2000px]:p-2 min-[2000px]:p-4'
+          'group absolute bottom-2 right-2 z-10 rounded-xl bg-[#252525] max-[2200px]:bottom-0 max-[2200px]:right-0 max-[2000px]:p-2 max-[1800px]:-right-2 max-[1800px]:bottom-2 max-[1600px]:-right-3 max-[1600px]:bottom-8 min-[2000px]:p-4'
         }
       >
         <svg

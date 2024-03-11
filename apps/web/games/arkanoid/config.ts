@@ -14,6 +14,9 @@ export const arkanoidConfig = createZkNoidGameConfig({
   rating: 4.5,
   genre: ZkNoidGameGenre.Arcade,
   features: [ZkNoidGameFeature.SinglePlayer],
+  isReleased: true,
+  releaseDate: new Date(2023, 11, 1),
+  popularity: 60,
   runtimeModules: {
     ArkanoidGameHub,
     Balances,

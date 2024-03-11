@@ -9,7 +9,6 @@ export const GenreCard = ({
   genresSelected,
   setGenresSelected,
   className,
-  width = 500,
   height = 500,
 }: {
   animation: object;
@@ -17,7 +16,6 @@ export const GenreCard = ({
   genresSelected: ZkNoidGameGenre[];
   setGenresSelected: (genres: ZkNoidGameGenre[]) => void;
   className?: string;
-  width?: number;
   height?: number;
 }) => {
   const [visible, setVisible] = useState(false);
@@ -46,7 +44,6 @@ export const GenreCard = ({
               className: `z-0 h-full ${className}`,
             },
           }}
-          width={width}
           height={height}
           isStopped={!visible && false}
         ></Lottie>

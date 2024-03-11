@@ -129,7 +129,11 @@ export const Competitions = ({
   return (
     <>
       <div className={'mt-40 flex flex-row gap-5'}>
-        <div className={'flex min-w-[350px] flex-col gap-4'}>
+        <div
+          className={
+            'flex min-w-[350px] flex-col gap-4 max-[2000px]:min-w-[280px]'
+          }
+        >
           <div className={'text-headline-3'}>Filtration</div>
           <FiltrationBox
             key={0}
@@ -200,22 +204,45 @@ export const Competitions = ({
                   stroke="#D2FF00"
                   strokeWidth="2"
                 />
-                <rect
-                  x="331.775"
-                  y="6.89062"
-                  width="20"
-                  height="2"
-                  transform="rotate(45 331.775 6.89062)"
-                  fill={isFundsAndFeesExpanded ? '#252525' : '#D2FF00'}
-                />
-                <rect
-                  x="345.924"
-                  y="8.30469"
-                  width="20"
-                  height="2"
-                  transform="rotate(135 345.924 8.30469)"
-                  fill={isFundsAndFeesExpanded ? '#252525' : '#D2FF00'}
-                />
+                {isFundsAndFeesExpanded ? (
+                  <>
+                    <rect
+                      x="331.775"
+                      y="6.89062"
+                      width="20"
+                      height="2"
+                      transform="rotate(45 331.775 6.89062)"
+                      fill="#252525"
+                    />
+                    <rect
+                      x="345.924"
+                      y="8.30469"
+                      width="20"
+                      height="2"
+                      transform="rotate(135 345.924 8.30469)"
+                      fill="#252525"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <rect
+                      x="330.775"
+                      y="-0.5"
+                      width="17"
+                      height="2"
+                      transform="rotate(90 331.775 6.89062)"
+                      fill="#D2FF00"
+                    />
+                    <rect
+                      x="345.924"
+                      y="1.30469"
+                      width="17"
+                      height="2"
+                      transform="rotate(-180 345.924 8.30469)"
+                      fill="#D2FF00"
+                    />
+                  </>
+                )}
               </svg>
               <div className="flex w-full flex-grow rounded-b-2xl border-x-2 border-b-2 border-left-accent"></div>
             </div>
@@ -283,7 +310,7 @@ export const Competitions = ({
                 type="search"
                 placeholder={'Enter competition or game name...'}
                 className={
-                  'min-w-[300px] bg-bg-dark placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:placeholder:text-left-accent/80'
+                  'min-w-[300px] appearance-none bg-bg-dark placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80'
                 }
                 value={searchValue}
                 onChange={(event) => {

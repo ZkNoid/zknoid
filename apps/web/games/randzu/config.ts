@@ -12,6 +12,9 @@ export const randzuConfig = createZkNoidGameConfig({
   rating: 2.2,
   genre: ZkNoidGameGenre.BoardGames,
   features: [ZkNoidGameFeature.Multiplayer],
+  isReleased: true,
+  releaseDate: new Date(2024, 0, 1),
+  popularity: 50,
   runtimeModules: {
     RandzuLogic,
   },

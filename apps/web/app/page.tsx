@@ -40,6 +40,9 @@ export default function Home() {
               ? 'competitions-list'
               : 'global',
             active: true,
+            isReleased: x.isReleased,
+            releaseDate: x.releaseDate,
+            popularity: x.popularity,
           })) as IGame[]
         ).concat(announcedGames)
       );

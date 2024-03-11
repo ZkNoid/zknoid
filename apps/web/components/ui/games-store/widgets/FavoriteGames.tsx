@@ -26,8 +26,20 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
       case GameStoreSortBy.RatingLow:
         return b.rating - a.rating;
 
+      case GameStoreSortBy.PopularHigh:
+        return b.popularity - a.popularity;
+
+      case GameStoreSortBy.PopularLow:
+        return a.popularity - b.popularity;
+
+      case GameStoreSortBy.NewRelease:
+        return a.releaseDate.getDate() - b.releaseDate.getDate();
+
+      case GameStoreSortBy.ComingSoon:
+        return a.isReleased === b.isReleased ? 0 : a.isReleased ? 1 : -1;
+
       default:
-        return 0;
+        return 1;
     }
   };
 
@@ -43,7 +55,7 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
         </div>
       </div>
 
-      <div className="flex min-h-[40vh] flex-col justify-between gap-2">
+      <div className="flex min-h-[40vh] flex-col justify-between gap-6">
         <div className={'flex w-full flex-row justify-between'}>
           <div className="flex flex-row gap-3">
             {ALL_GAME_TAGS.map((x) => (
@@ -72,19 +84,20 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
           />
         </div>
         <div>
-          <div className="grid gap-5 max-[1900px]:grid-cols-3 min-[1900px]:grid-cols-4">
+          <div className="grid grid-cols-4 gap-5 max-[1600px]:grid-cols-3 max-[1400px]:grid-cols-2">
             {games
               .filter(
                 (x) =>
                   genresSelected.includes(x.genre) || genresSelected.length == 0
               )
               .sort((a, b) => sortByFliter(a, b))
-              .map((game) => (
+              .map((game, index) => (
                 <GameCard
                   game={game}
                   key={game.id}
                   fullImageW={game.id === 'arkanoid'}
                   fullImageH={game.id === 'arkanoid'}
+                  color={index === 0 || Number.isInteger(index / 2) ? 1 : 2}
                 />
               ))}
           </div>

@@ -37,24 +37,24 @@ export const GameCard = ({
   game,
   fullImageW,
   fullImageH,
+  color,
 }: {
   game: IGame;
   fullImageW?: boolean;
   fullImageH?: boolean;
+  color: 1 | 2 | 3;
 }) => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
-  const [fillColor, setFillColor] = useState<
-    'bg-left-accent' | 'bg-middle-accent'
-  >('bg-left-accent');
 
-  useEffect(() => {
-    if (game.genre == ZkNoidGameGenre.Arcade) {
-      setFillColor('bg-left-accent');
-    } else setFillColor('bg-middle-accent');
-  }, [game.genre]);
+  const fillColor =
+    color === 1
+      ? 'bg-left-accent'
+      : color === 2
+        ? 'bg-middle-accent'
+        : 'bg-gradient-to-r from-left-accent to-middle-accent';
 
   return (
-    <div className="group relative flex min-h-[500px] flex-col rounded-xl border border-bg-dark bg-[#252525] hover:border-left-accent">
+    <div className="group relative flex flex-col rounded-xl border border-bg-dark bg-[#252525] hover:border-left-accent">
       <Image
         src={isFavorite ? heartFilledImg : heartImg}
         alt={'Favorite'}
@@ -67,7 +67,7 @@ export const GameCard = ({
       >
         <div
           className={
-            'flex min-h-[400px] items-center justify-center rounded-[5px] border group-hover:border-left-accent'
+            'flex items-center justify-center rounded-[5px] border group-hover:border-left-accent max-[2000px]:h-[300px] min-[2000px]:h-[400px]'
           }
         >
           <Image
@@ -76,8 +76,12 @@ export const GameCard = ({
             width={300}
             height={300}
             className={clsx(
-              'h-full max-h-[70%] w-full max-w-[400px] object-contain object-center',
-              { 'max-w-full': fullImageW, 'max-h-full': fullImageH }
+              'h-full max-h-[70%] w-full object-contain object-center',
+              {
+                'max-w-full': fullImageW,
+                'max-h-full': fullImageH,
+                'max-[2000px]:w-[300px] min-[2000px]:w-[400px]': !fullImageW,
+              }
             )}
           />
         </div>
@@ -89,7 +93,7 @@ export const GameCard = ({
             }
           >
             <StarSVG
-              fill={fillColor === 'bg-left-accent' ? '#D2FF00' : '#97FF00'}
+              fill={color === 1 ? '#D2FF00' : '#97FF00'}
               className={'mb-1.5'}
             />
             {Number.isInteger(game.rating) ? game.rating + '.0' : game.rating}
@@ -98,7 +102,7 @@ export const GameCard = ({
         <div className="font-plexsans text-main font-normal">
           {game.description}
         </div>
-        <div className={'flex-grow'} />
+        <div className={'flex-grow max-[2000px]:hidden'} />
         <div
           className={
             'mt-auto flex w-full flex-row items-center justify-start gap-2'
