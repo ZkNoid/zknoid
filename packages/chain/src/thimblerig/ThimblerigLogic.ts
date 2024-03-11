@@ -11,9 +11,7 @@ import {
   Poseidon,
 } from "o1js";
 
-import {
-  RuntimeModule,
-} from "@proto-kit/module";
+import { RuntimeModule } from "@proto-kit/module";
 
 interface MatchMakerConfig {}
 
@@ -327,12 +325,12 @@ export class ThimblerigLogic extends MatchMaker {
     assert(game.isSome, "Invalid game id");
     assert(commitmentValue.greaterThan(0), "Invalid commitment");
     assert(
-      game.value.thimblerigField.choice.equals(UInt64.from(0)),
-      "Already chosen"
+      game.value.thimblerigField.choice.greaterThan(UInt64.from(0)),
+      "Not chosen"
     );
     assert(
-      game.value.thimblerigField.commitedHash.equals(0),
-      "Already commited"
+      game.value.thimblerigField.commitedHash.greaterThan(0),
+      "Not commited"
     );
     assert(
       game.value.player1.equals(sender),
@@ -340,15 +338,17 @@ export class ThimblerigLogic extends MatchMaker {
     );
     assert(game.value.winner.equals(PublicKey.empty()), `Game finished`);
 
-    Poseidon.hash([commitmentValue]).assertEquals(
-      game.value.thimblerigField.commitedHash,
+    assert(
+      Poseidon.hash([commitmentValue]).equals(
+        game.value.thimblerigField.commitedHash
+      ),
       "Incorrect reveal"
     );
     game.value.thimblerigField.commitedHash = commitmentValue;
     game.value.currentMoveUser = game.value.player2;
     game.value.lastMoveBlockHeight = this.network.block.height;
     game.value.winner = Provable.if(
-      UInt64.from(commitmentValue)
+      UInt64.from(commitmentValue.rangeCheckHelper(64))
         .mod(UInt64.from(3))
         .equals(game.value.thimblerigField.choice),
       game.value.player1,

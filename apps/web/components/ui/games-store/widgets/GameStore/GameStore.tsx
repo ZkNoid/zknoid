@@ -26,6 +26,8 @@ import ChessIllustration from './assets/Chess_Illustration_01_02.json';
 import CubesIllustration from './assets/Cubes_Illustration_01_02.json';
 import EyesIllustration from './assets/Eyes_Illustration_01_01.json';
 import GamepadIllustration from './assets/Gamepad_Illustration_01_01.json';
+import Lottie from 'react-lottie';
+import SnakeNoEvents from './assets/ZKNoid_Snake_Intro_03_04.json';
 
 export const GameStore = ({ games }: { games: IGame[] }) => {
   const [eventTypesSelected, setEventTypesSelected] = useState<
@@ -44,6 +46,12 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
     GameStoreSortBy.RatingLow
   );
 
+  const filteredEvents = GAME_EVENTS.filter(
+    (x) =>
+      eventTypesSelected.includes(getEventType(x)) ||
+      eventTypesSelected.length == 0
+  );
+
   return (
     <div className="top-0 flex h-full w-full flex-col gap-5 p-10">
       <div className="flex flex-col gap-3">
@@ -59,20 +67,31 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             />
           ))}
         </div>
-        <div className="grid min-h-[352px] grid-cols-2 gap-5">
-          {GAME_EVENTS.filter(
-            (x) =>
-              eventTypesSelected.includes(getEventType(x)) ||
-              eventTypesSelected.length == 0
-          ).map((event) => (
-            <EventCard
-              key={event.name}
-              headText={event.name}
-              description={event.description}
-              event={event}
-            />
-          ))}
-        </div>
+        {filteredEvents.length == 0 && (
+          <div className="h-[352px] w-fit">
+            <Lottie
+              options={{
+                animationData: SnakeNoEvents,
+                rendererSettings: {
+                  className: 'z-0 h-full',
+                },
+              }}
+            ></Lottie>
+          </div>
+        )}
+        {filteredEvents.length > 0 && (
+          <div className="grid min-h-[352px] grid-cols-2 gap-5">
+            {filteredEvents.map((event) => (
+              <EventCard
+                key={event.name}
+                headText={event.name}
+                description={event.description}
+                event={event}
+              />
+            ))}
+          </div>
+        )}
+
         <div className={'grid grid-cols-2 gap-5'}>
           <div
             className={
