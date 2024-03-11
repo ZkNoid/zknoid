@@ -12,6 +12,7 @@ import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
 import { walletInstalled } from '@/lib/helpers';
 import { useObserveThimblerigMatchQueue } from '../stores/matchQueue';
+import { useCommitmentStore } from '@/lib/stores/commitmentStorage';
 
 enum GameState {
   NotStarted,
@@ -39,7 +40,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   useObserveThimblerigMatchQueue();
 
   let [loading, setLoading] = useState(false);
-  let [commitment, setCommitment] = useState<Field | undefined >(undefined);
+  let commitmentStore = useCommitmentStore();
 
   const restart = () => {
     matchQueue.resetLastGameState();
@@ -65,10 +66,9 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     setGameState(GameState.MatchRegistration);
   };
 
-  const chooseThumblerig = async (id: number) => {
-    const generatedCommitment = Field.random().div(10).mul(10).add(id);
-    setCommitment(generatedCommitment);
-    
+  const commitThumblerig = async (id: number) => {
+    const generatedCommitment = commitmentStore.commit(id);
+
     const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
 
     const tx = await client.transaction(
@@ -76,15 +76,48 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       () => {
         thimblerigLogic.commitValue(
           UInt64.from(matchQueue.activeGameId),
-          Poseidon.hash([])
+          Poseidon.hash([generatedCommitment])
         );
       }
     );
 
     await tx.sign();
     await tx.send();
+  };
 
-    setGameState(GameState.MatchRegistration);
+  const chooseThumblerig = async (id: number) => {
+    const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
+
+    const tx = await client.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        thimblerigLogic.chooseThumble(
+          UInt64.from(matchQueue.activeGameId),
+          UInt64.from(id)
+        );
+      }
+    );
+
+    await tx.sign();
+    await tx.send();
+  };
+
+  const revealThumblerig = async () => {
+    const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
+    console.log('Revealing', commitmentStore.getCommitment());
+
+    const tx = await client.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        thimblerigLogic.revealCommitment(
+          UInt64.from(matchQueue.activeGameId),
+          commitmentStore.getCommitment()
+        );
+      }
+    );
+
+    await tx.sign();
+    await tx.send();
   };
 
   useEffect(() => {
@@ -99,6 +132,20 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     }
   }, [matchQueue.activeGameId, matchQueue.inQueue, matchQueue.lastGameState]);
 
+  useEffect(() => {
+    if (
+      matchQueue.gameInfo &&
+      matchQueue.gameInfo.field.commitedHash.toBigInt() &&
+      matchQueue.gameInfo.field.choice.toBigInt() &&
+      matchQueue.gameInfo.isCurrentUserMove
+    ) {
+      console.log('Revealing');
+      (async () => {
+        revealThumblerig();
+      })();
+    }
+  }, [matchQueue.gameInfo]);
+  // console.log('AAAA', matchQueue.gameInfo.field.commitedHash.toBigInt());
   return (
     <GamePage gameConfig={thimblerigConfig}>
       <main className="flex grow flex-col items-center gap-5 p-5">
@@ -158,21 +205,66 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
           <div className="flex flex-col items-center gap-2">
             <>Game started. </>
             Opponent: {matchQueue.gameInfo?.opponent.toBase58()}
+            {matchQueue.gameInfo.field.commitedHash.toBigInt() && (
+              <div>
+                Commited hash{' '}
+                {matchQueue.gameInfo.field.commitedHash.toBigInt().toString()}
+              </div>
+            )}
             {matchQueue.gameInfo?.isCurrentUserMove &&
-              !matchQueue.gameInfo?.winner &&
-              !loading && (
+              !loading &&
+              !matchQueue.gameInfo.field.commitedHash.toBigInt() &&
+              !matchQueue.gameInfo.field.choice.toBigInt() && (
                 <div className="flex flex-col items-center">
-                  ✅ Your turn.
+                  ✅ Choose thimblerig to hide ball behind.
                   <div className="flex flex-col items-center justify-center gap-3">
                     {[0, 1, 2].map((i) => (
-                      <div className="flex flex-row items-center justify-center gap-3" key={i}>
+                      <div
+                        className="flex flex-row items-center justify-center gap-3"
+                        key={i}
+                      >
                         Thimble {i}{' '}
-                        <div className="rounded bg-middle-accent p-1 text-bg-dark cursor-pointer" onClick={() => chooseThumblerig(i)}>
+                        <div
+                          className="cursor-pointer rounded bg-middle-accent p-1 text-bg-dark"
+                          onClick={() => commitThumblerig(i)}
+                        >
+                          Hide
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            {matchQueue.gameInfo?.isCurrentUserMove &&
+              !loading &&
+              matchQueue.gameInfo.field.commitedHash.toBigInt() &&
+              !matchQueue.gameInfo.field.choice.toBigInt() && (
+                <div className="flex flex-col items-center">
+                  ✅ Guess under what thimblerig ball is hidden by opponent
+                  <div className="flex flex-col items-center justify-center gap-3">
+                    {[1, 2, 3].map((i) => (
+                      <div
+                        className="flex flex-row items-center justify-center gap-3"
+                        key={i}
+                      >
+                        Thimble {i}{' '}
+                        <div
+                          className="cursor-pointer rounded bg-middle-accent p-1 text-bg-dark"
+                          onClick={() => chooseThumblerig(i)}
+                        >
                           Choose
                         </div>
                       </div>
                     ))}
                   </div>
+                </div>
+              )}
+            {matchQueue.gameInfo?.isCurrentUserMove &&
+              !loading &&
+              matchQueue.gameInfo.field.commitedHash.toBigInt() &&
+              matchQueue.gameInfo.field.choice.toBigInt() && (
+                <div className="flex flex-col items-center">
+                  ✅ Revealing the position
                 </div>
               )}
             {!matchQueue.gameInfo?.isCurrentUserMove &&
