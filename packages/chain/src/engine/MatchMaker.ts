@@ -95,21 +95,21 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     // If player in game – revert
     assert(
       this.activeGameId
-        .get(this.transaction.sender)
+        .get(this.transaction.sender.value)
         .orElse(UInt64.from(0))
         .equals(UInt64.from(0)),
       "Player already in game"
     );
 
     // Registering player session key
-    this.sessions.set(sessionKey, this.transaction.sender);
+    this.sessions.set(sessionKey, this.transaction.sender.value);
     const roundId = this.network.block.height.div(PENDING_BLOCKS_NUM);
 
     // User can't re-register in round queue if already registered
     assert(
       this.queueRegisteredRoundUsers
         .get(
-          new RoundIdxUser({ roundId, userAddress: this.transaction.sender })
+          new RoundIdxUser({ roundId, userAddress: this.transaction.sender.value })
         )
         .isSome.not(),
       "User already in queue"
@@ -131,7 +131,7 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
 
     // Assigning new game to player if opponent found
     this.activeGameId.set(
-      this.transaction.sender,
+      this.transaction.sender.value,
       Provable.if(opponentReady, gameId, UInt64.from(0))
     );
 
@@ -148,7 +148,7 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
         userAddress: Provable.if(
           opponentReady,
           PublicKey.empty(),
-          this.transaction.sender
+          this.transaction.sender.value
         ),
         registrationTimestamp: timestamp,
       })
@@ -161,7 +161,7 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
         userAddress: Provable.if(
           opponentReady,
           PublicKey.empty(),
-          this.transaction.sender
+          this.transaction.sender.value
         ),
       }),
       Bool(true)

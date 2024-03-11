@@ -32,15 +32,15 @@ export class Balances extends RuntimeModule<BalancesConfig> {
     @runtimeMethod()
     public transferTo(address: PublicKey, amount: UInt64): void {
         const currentBalance = this.balances
-            .get(this.transaction.sender)
+            .get(this.transaction.sender.value)
             .orElse(UInt64.from(0));
         currentBalance.assertGreaterThan(amount);
 
         const addrCurrentBalance = this.balances
-            .get(this.transaction.sender)
+            .get(this.transaction.sender.value)
             .orElse(UInt64.from(0));
 
-        this.balances.set(this.transaction.sender, currentBalance.sub(amount));
+        this.balances.set(this.transaction.sender.value, currentBalance.sub(amount));
         this.balances.set(address, addrCurrentBalance.add(amount));
     }
 }

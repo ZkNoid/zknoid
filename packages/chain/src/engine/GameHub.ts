@@ -88,7 +88,7 @@ export class Gamehub<
         this.registrations.set(
             new GameRecordKey({
                 competitionId,
-                player: this.transaction.sender,
+                player: this.transaction.sender.value,
             }),
             Bool(true)
         );
@@ -109,7 +109,7 @@ export class Gamehub<
 
         const gameKey = new GameRecordKey({
             competitionId,
-            player: this.transaction.sender,
+            player: this.transaction.sender.value,
         });
 
         // Check for registration
@@ -164,7 +164,7 @@ export class Gamehub<
                 looserKey,
                 new LeaderboardScore({
                     score: newScore,
-                    player: this.transaction.sender,
+                    player: this.transaction.sender.value,
                 })
             );
         }

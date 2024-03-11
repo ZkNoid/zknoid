@@ -1,12 +1,13 @@
 'use client';
 
+import "reflect-metadata";
+
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { Footer } from '@/components/Footer';
 import DesktopNavbar from '@/components/ui/games-store/DesktopNavbar';
 import { Section1 } from '@/components/ui/games-store/Section1';
 import { Section2 } from '@/components/ui/games-store/Section2';
-
 import { IGame, announcedGames, defaultGames } from './constants/games';
 
 const zkNoidConfig = import('@/games/config');
