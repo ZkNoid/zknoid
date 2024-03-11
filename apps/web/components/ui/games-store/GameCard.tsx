@@ -49,26 +49,27 @@ export const GameCard = ({
     color === 1
       ? 'bg-left-accent'
       : color === 2
-            ? 'bg-middle-accent'
-            : color === 3
-                ? 'bg-right-accent'
-                : 'bg-gradient-to-r from-left-accent to-middle-accent';
+        ? 'bg-middle-accent'
+        : color === 3
+          ? 'bg-right-accent'
+          : 'bg-gradient-to-r from-left-accent to-middle-accent';
 
-    const hoverColor =
-        color === 1
-            ? 'hover:border-left-accent group-hover:border-left-accent'
-            : color === 2
-                ? 'hover:border-middle-accent group-hover:border-middle-accent'
-                : color === 3
-                    ? 'hover:border-right-accent group-hover:border-right-accent'
-                    : 'hover:border-middle-accent group-hover:border-middle-accent';
-
+  const hoverColor =
+    color === 1
+      ? 'hover:border-left-accent group-hover:border-left-accent'
+      : color === 2
+        ? 'hover:border-middle-accent group-hover:border-middle-accent'
+        : color === 3
+          ? 'hover:border-right-accent group-hover:border-right-accent'
+          : 'hover:border-middle-accent group-hover:border-middle-accent';
 
   return (
-    <div className={clsx(
-        "group relative flex flex-col rounded-xl border border-bg-dark bg-[#252525]",
+    <div
+      className={clsx(
+        'group relative flex flex-col rounded-xl border border-bg-dark bg-[#252525]',
         hoverColor
-    )}>
+      )}
+    >
       <Image
         src={isFavorite ? heartFilledImg : heartImg}
         alt={'Favorite'}
@@ -81,8 +82,8 @@ export const GameCard = ({
       >
         <div
           className={clsx(
-              'flex items-center justify-center rounded-[5px] border max-[2000px]:h-[300px] min-[2000px]:h-[400px]',
-              hoverColor
+            'flex items-center justify-center rounded-[5px] border max-[2000px]:h-[300px] min-[2000px]:h-[400px]',
+            hoverColor
           )}
         >
           <Image
