@@ -1,7 +1,5 @@
 import { ZkNoidGameGenre } from '@/lib/platform/game_tags';
-import dynamic from 'next/dynamic';
-import Image from 'next/image';
-import { useEffect, useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 
 import Lottie from 'react-lottie';
 
@@ -10,11 +8,15 @@ export const GenreCard = ({
   genre,
   genresSelected,
   setGenresSelected,
+  className,
+  height = 500,
 }: {
   animation: object;
   genre: ZkNoidGameGenre;
   genresSelected: ZkNoidGameGenre[];
   setGenresSelected: (genres: ZkNoidGameGenre[]) => void;
+  className?: string;
+  height?: number;
 }) => {
   const [visible, setVisible] = useState(false);
   const nodeRef = useRef(null);
@@ -39,9 +41,10 @@ export const GenreCard = ({
           options={{
             animationData: animation,
             rendererSettings: {
-              className: 'z-0 h-full w-[80%]',
+              className: `z-0 h-full ${className}`,
             },
           }}
+          height={height}
           isStopped={!visible && false}
         ></Lottie>
       </div>

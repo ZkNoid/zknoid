@@ -17,7 +17,7 @@ import {
 import { FiltrationBox } from '@/components/ui/games-store/widgets/GameStore/FiltrationBox';
 import { GameCard } from '@/components/ui/games-store/GameCard';
 import { useState } from 'react';
-import { IGame } from '@/app/constants/games';
+import { defaultGames, IGame } from '@/app/constants/games';
 import { clsx } from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { GAME_STORE_SORT_METHODS, GameStoreSortBy } from '@/constants/sortBy';
@@ -28,6 +28,8 @@ import EyesIllustration from './assets/Eyes_Illustration_01_01.json';
 import GamepadIllustration from './assets/Gamepad_Illustration_01_01.json';
 import Lottie from 'react-lottie';
 import SnakeNoEvents from './assets/ZKNoid_Snake_Intro_03_04.json';
+import { Pagination } from '@/components/ui/games-store/shared/Pagination';
+import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
 
 export const GameStore = ({ games }: { games: IGame[] }) => {
   const [eventTypesSelected, setEventTypesSelected] = useState<
@@ -41,7 +43,6 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pagesAmount, _setPagesAmount] = useState<number>(3);
 
-  const [isSortByOpen, setIsSortByOpen] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<GameStoreSortBy>(
     GameStoreSortBy.RatingLow
   );
@@ -51,11 +52,35 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
       eventTypesSelected.includes(getEventType(x)) ||
       eventTypesSelected.length == 0
   );
+  const sortByFliter = (a: IGame, b: IGame) => {
+    switch (sortBy) {
+      case GameStoreSortBy.RatingHigh:
+        return a.rating - b.rating;
+
+      case GameStoreSortBy.RatingLow:
+        return b.rating - a.rating;
+
+      case GameStoreSortBy.PopularHigh:
+        return b.popularity - a.popularity;
+
+      case GameStoreSortBy.PopularLow:
+        return a.popularity - b.popularity;
+
+      case GameStoreSortBy.NewRelease:
+        return a.releaseDate.getDate() - b.releaseDate.getDate();
+
+      case GameStoreSortBy.ComingSoon:
+        return a.isReleased === b.isReleased ? 0 : a.isReleased ? 1 : -1;
+
+      default:
+        return 1;
+    }
+  };
 
   return (
-    <div className="top-0 flex h-full w-full flex-col gap-5 p-10">
-      <div className="flex flex-col gap-3">
-        <div className="text-headline-1">Events & competitions</div>
+    <div className="top-0 mb-[100px] flex h-full w-full flex-col gap-5 p-10">
+      <div className="flex flex-col gap-5">
+        <div className="pb-3 text-headline-1">Events & competitions</div>
         <div className="flex flex-row gap-3">
           {ALL_GAME_EVENT_TYPES.map((eventType) => (
             <FilterCard
@@ -93,14 +118,22 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
         )}
 
         <div className={'grid grid-cols-2 gap-5'}>
-          <div
+          <motion.div
             className={
-              'group mr-[11.2%] flex flex-row justify-between rounded-[5px] border border-left-accent'
+              'group relative mr-[11.2%] flex flex-row justify-between rounded-[5px] border border-left-accent'
             }
+            variants={{
+              visible: {
+                background:
+                  'linear-gradient(to right, #D2FF00 100%, #212121 100%)',
+                transition: { duration: 0.5, delayChildren: 0.5 },
+              },
+            }}
+            whileHover={'visible'}
           >
             <div
               className={
-                '-mr-2 w-full p-4 pt-5 uppercase text-left-accent group-hover:bg-left-accent group-hover:text-dark-buttons-text'
+                'w-full p-4 pt-5 uppercase text-left-accent group-hover:text-dark-buttons-text'
               }
             >
               Show me the all existion competitions
@@ -146,15 +179,23 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                 </defs>
               </svg>
             </div>
-          </div>
-          <div
+          </motion.div>
+          <motion.div
             className={
-              'group mr-[11.2%] flex flex-row justify-between rounded-[5px] border border-left-accent'
+              'group relative mr-[11.2%] flex flex-row justify-between rounded-[5px] border border-left-accent'
             }
+            variants={{
+              visible: {
+                background:
+                  'linear-gradient(to right, #D2FF00 100%, #212121 100%)',
+                transition: { duration: 0.5, delayChildren: 0.5 },
+              },
+            }}
+            whileHover={'visible'}
           >
             <div
               className={
-                '-mr-2 w-full p-4 pt-5 uppercase text-left-accent group-hover:bg-left-accent group-hover:text-dark-buttons-text'
+                'w-full p-4 pt-5 uppercase text-left-accent group-hover:text-dark-buttons-text'
               }
             >
               Create your own competition!
@@ -189,11 +230,11 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                 />
               </svg>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
 
-      <div>
+      <div className={'my-20'}>
         <div className="text-headline-1">Popular genres</div>
         <div className="grid grid-cols-4 gap-5">
           <GenreCard
@@ -207,28 +248,47 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             genre={ZkNoidGameGenre.BoardGames}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
+            height={450}
+            className={'max-[2000px]:mt-[25px]'}
           />
           <GenreCard
             animation={CubesIllustration}
             genre={ZkNoidGameGenre.Lucky}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
+            height={450}
+            className={'mt-[35px] max-[2000px]:mt-[50px]'}
           />
-          <GenreCard
-            animation={EyesIllustration}
-            genre={ZkNoidGameGenre.ComingSoon}
-            genresSelected={genresSelected}
-            setGenresSelected={setGenresSelected}
-          />
+          <div
+            className="relative flex h-full w-full flex-col items-center justify-center p-5"
+            onClick={() => {
+              setSortBy(GameStoreSortBy.ComingSoon);
+            }}
+          >
+            <div className="z-1 absolute bottom-0 left-0 -z-10 h-[60%] w-full rounded bg-[#252525]"></div>
+            <div className="h-full w-full">
+              <Lottie
+                options={{
+                  animationData: EyesIllustration,
+                  rendererSettings: {
+                    className: `z-0 h-full mt-[80px]`,
+                  },
+                }}
+                height={500}
+              ></Lottie>
+            </div>
+
+            <div className="z-0 text-headline-3">Coming Soon</div>
+          </div>
         </div>
       </div>
       <div className="flex gap-5">
-        <div className="min-w-[350px]">
+        <div className="min-w-[350px] max-[2000px]:min-w-[280px]">
           <div className="pb-5 pt-2 text-headline-3 font-bold">Filtration</div>
           <div className="flex flex-col gap-3">
             <FiltrationBox
               key={0}
-              expanded={true}
+              defaultExpanded={true}
               title="Genre"
               items={ALL_GAME_GENRES}
               itemsSelected={genresSelected}
@@ -236,87 +296,43 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             />
             <FiltrationBox
               key={1}
-              expanded={false}
+              defaultExpanded={false}
               title="Features"
               items={ALL_GAME_FEATURES}
               itemsSelected={featuresSelected}
               setItemsSelected={setFeaturesSelected}
             />
-            <div
-              className="flex h-[40px] cursor-pointer items-center justify-center rounded-[5px] border-2 border-left-accent bg-left-accent text-buttons text-dark-buttons-text hover:bg-bg-dark hover:text-left-accent"
-              onClick={() => {
-                setGenresSelected([]);
-                setFeaturesSelected([]);
-                setEventTypesSelected([]);
-              }}
-            >
-              Reset filters
-            </div>
+            <AnimatePresence initial={false} mode={'wait'}>
+              {genresSelected.length != 0 ||
+              featuresSelected.length != 0 ||
+              eventTypesSelected.length != 0 ? (
+                <motion.div
+                  className="flex h-[40px] cursor-pointer items-center justify-center rounded-[5px] border-2 border-left-accent bg-left-accent text-buttons text-dark-buttons-text hover:bg-bg-dark hover:text-left-accent"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => {
+                    setGenresSelected([]);
+                    setFeaturesSelected([]);
+                    setEventTypesSelected([]);
+                  }}
+                >
+                  Reset filters
+                </motion.div>
+              ) : undefined}
+            </AnimatePresence>
           </div>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex w-full flex-col gap-6">
           <div className={'flex w-full flex-row items-center justify-between'}>
             <div className="text-headline-1">Games</div>
-            <div className={'relative flex flex-col gap-4'}>
-              <span
-                className={clsx(
-                  'group flex min-w-[300px] cursor-pointer flex-row items-center gap-2 rounded-[5px] border border-bg-dark px-4 py-1 hover:border-left-accent hover:text-left-accent',
-                  {
-                    'rounded-b-none border-white duration-75 ease-out':
-                      isSortByOpen,
-                  }
-                )}
-                onClick={() => setIsSortByOpen(!isSortByOpen)}
-              >
-                <span>Sort By: {sortBy}</span>
-                <svg
-                  width="16"
-                  height="10"
-                  viewBox="0 0 16 10"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M15 1.5L8 8.5L1 1.5"
-                    stroke="#252525"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className={'stroke-white group-hover:stroke-left-accent'}
-                  />
-                </svg>
-              </span>
-              <AnimatePresence initial={false} mode={'wait'}>
-                {isSortByOpen && (
-                  <motion.div
-                    className={
-                      'absolute top-full z-10 flex w-full min-w-[300px] flex-col items-center justify-start overflow-hidden rounded-[5px] rounded-t-none border border-t-0 bg-bg-dark'
-                    }
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ type: 'spring', duration: 0.8, bounce: 0 }}
-                  >
-                    {GAME_STORE_SORT_METHODS.map((value, index) => (
-                      <span
-                        key={index}
-                        onClick={() => {
-                          setSortBy(value);
-                          setIsSortByOpen(false);
-                        }}
-                        className={
-                          'h-full w-full cursor-pointer p-4 hover:text-left-accent'
-                        }
-                      >
-                        {value}
-                      </span>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+            <SortByFilter
+              sortMethods={GAME_STORE_SORT_METHODS}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+            />
           </div>
-          <div className="flex flex-row gap-3 ">
+          <div className="flex flex-row gap-3">
             {ALL_GAME_TAGS.map((x) => (
               <div
                 key={x.name}
@@ -344,97 +360,145 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             ))}
           </div>
           <div>
-            <div className="grid grid-cols-3 gap-5">
+            <div className="grid grid-cols-3 gap-5 max-[1700px]:grid-cols-2">
               {games
-                .filter(
-                  (x) =>
-                    genresSelected.includes(x.genre) ||
-                    genresSelected.length == 0
-                )
-                .map((game) => (
+                .filter((x) => {
+                  if (
+                    genresSelected.length == 0 &&
+                    featuresSelected.length == 0
+                  )
+                    return true;
+                  if (genresSelected.includes(x.genre)) return true;
+                  if (
+                    x.features.some((feature) =>
+                      featuresSelected.includes(feature)
+                    )
+                  )
+                    return true;
+                })
+                .sort((a, b) => sortByFliter(a, b))
+                .map((game, index) => (
                   <GameCard
                     game={game}
                     key={game.id}
                     fullImageW={game.id === 'arkanoid'}
                     fullImageH={game.id === 'arkanoid'}
+                    color={
+                      Number.isInteger(index / 3)
+                        ? 1
+                        : index === 1 || Number.isInteger(index - 1 / 3)
+                          ? 2
+                          : 3
+                    }
                   />
                 ))}
             </div>
           </div>
-          <div className={'flex w-full items-center justify-center py-4'}>
-            <div className={'flex flex-row items-center justify-center gap-2'}>
-              <span
-                className={'cursor-pointer'}
-                onClick={() =>
-                  setCurrentPage((prevState) =>
-                    prevState > 1 ? prevState - 1 : prevState
-                  )
-                }
-              >
-                <svg
-                  width="10"
-                  height="16"
-                  viewBox="0 0 10 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M8.51116 15L1 8L8.51116 1"
-                    stroke="#D2FF00"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
 
-              <span
-                className={
-                  'flex flex-row items-center justify-center gap-2 pt-0.5'
-                }
+          <AnimatePresence initial={false} mode={'wait'}>
+            {featuresSelected.length != 0 ||
+            genresSelected.length != 0 ||
+            eventTypesSelected.length != 0 ? (
+              <motion.div
+                className={'flex w-full items-center justify-center py-4'}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
               >
-                {[...Array(pagesAmount).keys()].map((value) => (
-                  <span
-                    key={value + 1}
-                    className={`cursor-pointer text-left-accent hover:underline ${
-                      value + 1 === currentPage ? 'opacity-100' : 'opacity-40'
-                    }`}
-                    onClick={() => setCurrentPage(value + 1)}
-                  >
-                    {value + 1}
-                  </span>
-                ))}
-              </span>
-
-              <span
-                className={'cursor-pointer'}
-                onClick={() =>
-                  setCurrentPage((prevState) =>
-                    prevState < pagesAmount ? prevState + 1 : prevState
-                  )
-                }
-              >
-                <svg
-                  width="11"
-                  height="16"
-                  viewBox="0 0 11 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M1.5113 15L9.02246 8L1.5113 1"
-                    stroke="#D2FF00"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
-            </div>
-          </div>
+                <Pagination
+                  pagesAmount={pagesAmount}
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                />
+              </motion.div>
+            ) : undefined}
+          </AnimatePresence>
         </div>
       </div>
-      <Competitions />
+      <Competitions
+        competitions={[
+          {
+            game: defaultGames[0],
+            title: 'Arcanoid',
+            index: 1,
+            preRegDate: {
+              start: new Date(2024, 2, 15),
+              end: new Date(2024, 2, 20),
+            },
+            competitionsDate: {
+              start: new Date(2024, 2, 15),
+              end: new Date(2024, 2, 20),
+            },
+            participantsFee: 5,
+            currency: '$MINA',
+            reward: 1000,
+          },
+          {
+            game: defaultGames[0],
+            title: 'Arcanoid',
+            index: 3,
+            preRegDate: {
+              start: new Date(2024, 2, 15),
+              end: new Date(2024, 2, 20),
+            },
+            competitionsDate: {
+              start: new Date(2024, 2, 15),
+              end: new Date(2024, 2, 20),
+            },
+            participantsFee: 20,
+            currency: '$MINA',
+            reward: 500,
+          },
+          {
+            game: defaultGames[1],
+            title: 'Randzu battle',
+            index: 4,
+            preRegDate: {
+              start: new Date(2024, 2, 15),
+              end: new Date(2024, 2, 20),
+            },
+            competitionsDate: {
+              start: new Date(2024, 2, 15),
+              end: new Date(2024, 2, 20),
+            },
+            participantsFee: 1,
+            currency: '$MINA',
+            reward: 1000,
+          },
+          {
+            game: defaultGames[1],
+            title: '****** **** *******',
+            index: 5,
+            preRegDate: {
+              start: new Date(2024, 2, 6),
+              end: new Date(2024, 2, 20),
+            },
+            competitionsDate: {
+              start: new Date(2024, 3, 1),
+              end: new Date(2024, 3, 6),
+            },
+            participantsFee: 10,
+            currency: '$MINA',
+            reward: 10000,
+          },
+          {
+            game: defaultGames[1],
+            title: 'Superbattle',
+            index: 5,
+            preRegDate: {
+              start: new Date(2024, 1, 9),
+              end: new Date(2024, 1, 20),
+            },
+            competitionsDate: {
+              start: new Date(2024, 1, 21),
+              end: new Date(2024, 1, 26),
+            },
+            participantsFee: 99,
+            currency: '$MINA',
+            reward: 4999,
+          },
+        ]}
+      />
     </div>
   );
 };

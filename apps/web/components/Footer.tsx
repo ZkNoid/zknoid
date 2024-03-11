@@ -5,10 +5,12 @@ import { SOCIALS } from '@/constants/socials';
 
 export const Footer = () => {
   return (
-    <div className={'mx-6 my-10 flex flex-col justify-between gap-4'}>
+    <div
+      className={'mx-6 mb-10 mt-[100px] flex flex-col justify-between gap-4'}
+    >
       <div className={'grid grid-cols-3 grid-rows-1'}>
         <Link
-          href={'https://app.zknoid.io'}
+          href={'/'}
           target="_blank"
           rel="noopener noreferrer"
           className={'cursor-pointer ease-in-out hover:opacity-80'}
@@ -21,7 +23,7 @@ export const Footer = () => {
           }
         >
           <Link
-            className="text-buttons-menu cursor-pointer ease-in-out even:text-right hover:opacity-80"
+            className="cursor-pointer text-buttons-menu ease-in-out even:text-right hover:opacity-80"
             href={'https://github.com/ZkNoid'}
             target="_blank"
             rel="noopener noreferrer"
@@ -29,7 +31,7 @@ export const Footer = () => {
             Github
           </Link>
           <Link
-            className="text-buttons-menu cursor-pointer ease-in-out even:text-right hover:opacity-80"
+            className="cursor-pointer text-buttons-menu ease-in-out even:text-right hover:opacity-80"
             href={'https://docs.zknoid.io'}
             target="_blank"
             rel="noopener noreferrer"
@@ -37,7 +39,7 @@ export const Footer = () => {
             Documentation
           </Link>
           <Link
-            className="text-buttons-menu cursor-pointer ease-in-out even:text-right hover:opacity-80"
+            className="cursor-pointer text-buttons-menu ease-in-out even:text-right hover:opacity-80"
             href={'https://zknoid.medium.com'}
             target="_blank"
             rel="noopener noreferrer"
@@ -54,7 +56,11 @@ export const Footer = () => {
             </Link>
           ))}
         </div>
-        <div className={'col-start-3 col-end-3 text-end text-[14px]/[17px] font-mono font-light'}>
+        <div
+          className={
+            'col-start-3 col-end-3 text-end font-mono text-[14px]/[17px] font-light'
+          }
+        >
           © 2024 ZkNoid: all rights reserved
         </div>
       </div>

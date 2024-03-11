@@ -17,6 +17,7 @@ import {
 } from '@/constants/assets';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useMinaBalancesStore } from '@/lib/stores/minaBalances';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const BridgeInput = ({
   assets,
@@ -36,7 +37,7 @@ const BridgeInput = ({
   isPay: boolean;
 }) => {
   return (
-    <div className="font-plexsans w-full flex-col">
+    <div className="w-full flex-col font-plexsans">
       <div className="flex w-full flex-row gap-1">
         <div className="flex flex-row rounded border border-left-accent">
           <div className="flex min-w-0 flex-col p-1 text-[14px] text-left-accent">
@@ -119,60 +120,65 @@ export const DepositMenuItem = () => {
         text="Top up"
         onClick={() => setExpanded(true)}
       />
-      {expanded && (
-        <div
-          className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center backdrop-blur-sm"
-          onClick={() => setExpanded(false)}
-        >
-          <div
-            className="flex w-96 flex-col items-center gap-5 rounded-xl border border-left-accent bg-bg-dark p-7 text-xs"
-            onClick={(e) => e.stopPropagation()}
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center backdrop-blur-sm"
+            onClick={() => setExpanded(false)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           >
-            <div className="text-[32px]">Bridge</div>
-            <div className="flex flex-col items-center gap-1">
-              <BridgeInput
-                assets={[L1_ASSETS.Mina]}
-                currentAsset={assetIn}
-                setCurrentAsset={setAssetIn}
-                amount={amountIn}
-                setAmount={(amount) => {
-                  setAmountIn(amount);
-                  setAmountOut(amount * rate);
-                }}
-                balance={
-                  minaBalancesStore.balances[networkStore.address!] ?? 0n
-                }
-                isPay={true}
-              />
-              <Image
-                src={ChangeSvg}
-                alt="Change"
-                className="mb-[5px] mt-[-20px]"
-              ></Image>
-              <BridgeInput
-                assets={[L2_ASSET]}
-                currentAsset={assetOut}
-                setCurrentAsset={setAssetOut}
-                amount={amountOut}
-                setAmount={(amount) => {
-                  setAmountIn(amount / rate);
-                  setAmountOut(amount);
-                }}
-                balance={
-                  protokitBalancesStore.balances[networkStore.address!] ?? 0n
-                }
-                isPay={false}
-              />
-            </div>
             <div
-              className="cursor-pointer rounded-xl bg-left-accent px-7 py-3 text-[24px] text-black"
-              onClick={() => bridge(amountIn * 10 ** 9)}
+              className="flex w-96 flex-col items-center gap-5 rounded-xl border border-left-accent bg-bg-dark p-7 text-xs"
+              onClick={(e) => e.stopPropagation()}
             >
-              Bridge
+              <div className="text-[32px]">Bridge</div>
+              <div className="flex flex-col items-center gap-1">
+                <BridgeInput
+                  assets={[L1_ASSETS.Mina]}
+                  currentAsset={assetIn}
+                  setCurrentAsset={setAssetIn}
+                  amount={amountIn}
+                  setAmount={(amount) => {
+                    setAmountIn(amount);
+                    setAmountOut(amount * rate);
+                  }}
+                  balance={
+                    minaBalancesStore.balances[networkStore.address!] ?? 0n
+                  }
+                  isPay={true}
+                />
+                <Image
+                  src={ChangeSvg}
+                  alt="Change"
+                  className="mb-[5px] mt-[-20px]"
+                ></Image>
+                <BridgeInput
+                  assets={[L2_ASSET]}
+                  currentAsset={assetOut}
+                  setCurrentAsset={setAssetOut}
+                  amount={amountOut}
+                  setAmount={(amount) => {
+                    setAmountIn(amount / rate);
+                    setAmountOut(amount);
+                  }}
+                  balance={
+                    protokitBalancesStore.balances[networkStore.address!] ?? 0n
+                  }
+                  isPay={false}
+                />
+              </div>
+              <div
+                className="cursor-pointer rounded-xl bg-left-accent px-7 py-3 text-[24px] text-black"
+                onClick={() => bridge(amountIn * 10 ** 9)}
+              >
+                Bridge
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
