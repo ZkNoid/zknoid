@@ -1,12 +1,7 @@
-import {
-  ALL_GAME_EVENT_TYPES,
-  GAME_EVENTS,
-  getEventType,
-  ZkNoidEventType,
-} from '@/lib/platform/game_events';
-import { FilterCard } from '@/components/ui/games-store/widgets/GameStore/FilterCard';
-import { EventCard } from '@/components/ui/games-store/widgets/GameStore/EventCard';
-import { GenreCard } from '@/components/ui/games-store/widgets/GameStore/GenreCard';
+import {ALL_GAME_EVENT_TYPES, GAME_EVENTS, getEventType, ZkNoidEventType,} from '@/lib/platform/game_events';
+import {FilterCard} from '@/components/ui/games-store/widgets/GameStore/FilterCard';
+import {EventCard} from '@/components/ui/games-store/widgets/GameStore/EventCard';
+import {GenreCard} from '@/components/ui/games-store/widgets/GameStore/GenreCard';
 import {
   ALL_GAME_FEATURES,
   ALL_GAME_GENRES,
@@ -14,20 +9,20 @@ import {
   ZkNoidGameFeature,
   ZkNoidGameGenre,
 } from '@/lib/platform/game_tags';
-import { FiltrationBox } from '@/components/ui/games-store/widgets/GameStore/FiltrationBox';
-import { GameCard } from '@/components/ui/games-store/GameCard';
-import { useState } from 'react';
-import { defaultGames, IGame } from '@/app/constants/games';
-import { clsx } from 'clsx';
-import { AnimatePresence, motion } from 'framer-motion';
-import { GAME_STORE_SORT_METHODS, GameStoreSortBy } from '@/constants/sortBy';
-import { Competitions } from '@/components/ui/games-store/widgets/GameStore/Competitions';
+import {FiltrationBox} from '@/components/ui/games-store/widgets/GameStore/FiltrationBox';
+import {GameCard} from '@/components/ui/games-store/GameCard';
+import {useState} from 'react';
+import {defaultGames, IGame} from '@/app/constants/games';
+import {clsx} from 'clsx';
+import {AnimatePresence, motion} from 'framer-motion';
+import {GAME_STORE_SORT_METHODS, GameStoreSortBy} from '@/constants/sortBy';
+import {Competitions} from '@/components/ui/games-store/widgets/GameStore/Competitions';
 import ChessIllustration from './assets/Chess_Illustration_01_02.json';
 import CubesIllustration from './assets/Cubes_Illustration_01_02.json';
 import EyesIllustration from './assets/Eyes_Illustration_01_01.json';
 import GamepadIllustration from './assets/Gamepad_Illustration_01_01.json';
-import { Pagination } from '@/components/ui/games-store/shared/Pagination';
-import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
+import {Pagination} from '@/components/ui/games-store/shared/Pagination';
+import {SortByFilter} from '@/components/ui/games-store/SortByFilter';
 import Lottie from 'react-lottie';
 
 export const GameStore = ({ games }: { games: IGame[] }) => {
@@ -360,19 +355,13 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                     return true;
                 })
                 .sort((a, b) => sortByFliter(a, b))
-                .map((game, index) => (
+                .map((game) => (
                   <GameCard
                     game={game}
                     key={game.id}
                     fullImageW={game.id === 'arkanoid'}
                     fullImageH={game.id === 'arkanoid'}
-                    color={
-                      Number.isInteger(index / 3)
-                        ? 1
-                        : index === 1 || Number.isInteger(index - 1 / 3)
-                          ? 2
-                          : 3
-                    }
+                    color={game.isReleased ? game.genre === ZkNoidGameGenre.BoardGames ? 1 : game.genre === ZkNoidGameGenre.Arcade ? 2 : 3 : 4}
                   />
                 ))}
             </div>
