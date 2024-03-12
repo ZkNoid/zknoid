@@ -6,13 +6,14 @@ import { useContext, useEffect, useState } from 'react';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { getRandomEmoji } from '@/games/randzu/utils';
 import { useMatchQueueStore } from '@/lib/stores/matchQueue';
-import { ClientAppChain } from 'zknoid-chain-dev';
+import { ClientAppChain, PENDING_BLOCKS_NUM_CONST } from 'zknoid-chain-dev';
 import { Field, Poseidon, PublicKey, UInt64 } from 'o1js';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
 import { walletInstalled } from '@/lib/helpers';
 import { useObserveThimblerigMatchQueue } from '../stores/matchQueue';
 import { useCommitmentStore } from '@/lib/stores/commitmentStorage';
+import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 
 enum GameState {
   NotStarted,
@@ -41,6 +42,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
   let [loading, setLoading] = useState(false);
   let commitmentStore = useCommitmentStore();
+  const protokitChain = useProtokitChainStore();
 
   const restart = () => {
     matchQueue.resetLastGameState();
@@ -197,7 +199,12 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
           <div>Registering in the match pool 📝 ...</div>
         )}
         {gameState == GameState.Matchmaking && (
-          <div>Searching for opponents 🔍 ...</div>
+          <div>
+            Searching for opponents{' '}
+            {parseInt(protokitChain.block?.height ?? '0') %
+              PENDING_BLOCKS_NUM_CONST}{' '}
+            / {PENDING_BLOCKS_NUM_CONST}🔍 ...
+          </div>
         )}
         {gameState == GameState.Active && (
           <div className="flex flex-col items-center gap-2">

@@ -11,14 +11,18 @@ import { useObserveRandzuMatchQueue } from '@/games/randzu/stores/matchQueue';
 import { walletInstalled } from '@/lib/helpers';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
-import { ClientAppChain, RandzuField, WinWitness } from 'zknoid-chain-dev';
+import {
+  ClientAppChain,
+  PENDING_BLOCKS_NUM_CONST,
+  RandzuField,
+  WinWitness,
+} from 'zknoid-chain-dev';
 import GamePage from '@/components/framework/GamePage';
 import { randzuConfig } from '../config';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { getRandomEmoji } from '../utils';
-import {
-  useMatchQueueStore,
-} from '@/lib/stores/matchQueue';
+import { useMatchQueueStore } from '@/lib/stores/matchQueue';
+import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 
 enum GameState {
   NotStarted,
@@ -62,6 +66,7 @@ export default function RandzuPage({
   );
 
   useObserveRandzuMatchQueue();
+  const protokitChain = useProtokitChainStore();
 
   const bridge = useMinaBridge();
 
@@ -150,8 +155,7 @@ export default function RandzuPage({
     } else {
       if (matchQueue.lastGameState == 'win') setGameState(GameState.Won);
       else if (matchQueue.lastGameState == 'lost') setGameState(GameState.Lost);
-      else 
-        setGameState(GameState.NotStarted);
+      else setGameState(GameState.NotStarted);
     }
   }, [matchQueue.activeGameId, matchQueue.inQueue, matchQueue.lastGameState]);
 
@@ -208,7 +212,12 @@ export default function RandzuPage({
           <div>Registering in the match pool 📝 ...</div>
         )}
         {gameState == GameState.Matchmaking && (
-          <div>Searching for opponents 🔍 ...</div>
+          <div>
+            Searching for opponents{' '}
+            {parseInt(protokitChain.block?.height ?? '0') %
+              PENDING_BLOCKS_NUM_CONST}{' '}
+            / {PENDING_BLOCKS_NUM_CONST}🔍 ...
+          </div>
         )}
         {gameState == GameState.Active && (
           <div className="flex flex-col items-center gap-2">
