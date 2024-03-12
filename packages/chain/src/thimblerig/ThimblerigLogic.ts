@@ -197,8 +197,8 @@ export class ThimblerigLogic extends MatchMaker {
     game.value.lastMoveBlockHeight = this.network.block.height;
     game.value.winner = Provable.if(
       value.add(1).equals(game.value.field.choice),
-      game.value.player1,
-      game.value.player2
+      game.value.player2,
+      game.value.player1
     );
 
     this.games.set(gameId, game.value);

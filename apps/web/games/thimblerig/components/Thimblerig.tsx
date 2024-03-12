@@ -98,7 +98,6 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
    */
   const chooseThumblerig = async (choice: number) => {
     const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
-
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
       () => {
@@ -115,8 +114,8 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
   const revealThumblerig = async () => {
     const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
-    console.log('Revealing', commitmentStore.getCommitment());
     const commitment = commitmentStore.getCommitment();
+
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
       () => {
