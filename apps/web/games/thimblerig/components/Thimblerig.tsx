@@ -267,7 +267,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                     className="cursor-pointer rounded bg-middle-accent p-1 text-bg-dark"
                     onClick={() => revealThumblerig()}
                   >
-                    Choose
+                    Reveal
                   </div>
                 </div>
               )}
