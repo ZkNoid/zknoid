@@ -3,9 +3,9 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 export interface SessionKeyStorageState {
-  commitment: string;
+  salt: string;
   value: string;
-  getCommitment: () => Field;
+  getCommitment: () => {value: UInt64, salt: Field};
   commit: (value: number) => Field;
 }
 
@@ -17,17 +17,20 @@ export const useCommitmentStore = create<
     (set, get) => ({
       commitment: "0",
       value: "0",
+      salt: "0",
       getCommitment() {
-        return Field.from(this.commitment);
+        return {
+          value: UInt64.from(this.value),
+          salt: Field.from(this.salt)
+        };
       },
       commit(value: number) {
-        const generatedCommitment = Field.random().div(10).mul(10).add(value);
+        const salt = Field.random();
         set({
-          commitment: generatedCommitment.toString(),
-          value: value.toString()
+          value: value.toString(),
+          salt: salt.toString()
         });
-
-        return generatedCommitment;
+        return salt;
       },
     }),
     {

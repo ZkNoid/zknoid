@@ -66,8 +66,12 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     setGameState(GameState.MatchRegistration);
   };
 
+  /**
+   *
+   * @param id Number 0-2
+   */
   const commitThumblerig = async (id: number) => {
-    const generatedCommitment = commitmentStore.commit(id);
+    const salt = commitmentStore.commit(id);
 
     const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
 
@@ -76,7 +80,8 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       () => {
         thimblerigLogic.commitValue(
           UInt64.from(matchQueue.activeGameId),
-          Poseidon.hash([generatedCommitment])
+          UInt64.from(id),
+          salt
         );
       }
     );
@@ -85,7 +90,11 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     await tx.send();
   };
 
-  const chooseThumblerig = async (id: number) => {
+  /**
+   *
+   * @param choice Number 1-3
+   */
+  const chooseThumblerig = async (choice: number) => {
     const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
 
     const tx = await client.transaction(
@@ -93,7 +102,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       () => {
         thimblerigLogic.chooseThumble(
           UInt64.from(matchQueue.activeGameId),
-          UInt64.from(id)
+          UInt64.from(choice)
         );
       }
     );
@@ -105,13 +114,14 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   const revealThumblerig = async () => {
     const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
     console.log('Revealing', commitmentStore.getCommitment());
-
+    const commitment = commitmentStore.getCommitment();
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
       () => {
         thimblerigLogic.revealCommitment(
           UInt64.from(matchQueue.activeGameId),
-          commitmentStore.getCommitment()
+          commitment.value,
+          commitment.salt
         );
       }
     );
@@ -127,25 +137,13 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       setGameState(GameState.Active);
     } else {
       if (matchQueue.lastGameState == 'win') setGameState(GameState.Won);
-
-      if (matchQueue.lastGameState == 'lost') setGameState(GameState.Lost);
+      else if (matchQueue.lastGameState == 'lost') setGameState(GameState.Lost);
+      else {
+        setGameState(GameState.NotStarted);
+      }
     }
   }, [matchQueue.activeGameId, matchQueue.inQueue, matchQueue.lastGameState]);
 
-  useEffect(() => {
-    if (
-      matchQueue.gameInfo &&
-      matchQueue.gameInfo.field.commitedHash.toBigInt() &&
-      matchQueue.gameInfo.field.choice.toBigInt() &&
-      matchQueue.gameInfo.isCurrentUserMove
-    ) {
-      console.log('Revealing');
-      (async () => {
-        revealThumblerig();
-      })();
-    }
-  }, [matchQueue.gameInfo]);
-  // console.log('AAAA', matchQueue.gameInfo.field.commitedHash.toBigInt());
   return (
     <GamePage gameConfig={thimblerigConfig}>
       <main className="flex grow flex-col items-center gap-5 p-5">
@@ -218,7 +216,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                 <div className="flex flex-col items-center">
                   ✅ Choose thimblerig to hide ball behind.
                   <div className="flex flex-col items-center justify-center gap-3">
-                    {[0, 1, 2].map((i) => (
+                    {[1, 2, 3].map((i) => (
                       <div
                         className="flex flex-row items-center justify-center gap-3"
                         key={i}
@@ -226,7 +224,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                         Thimble {i}{' '}
                         <div
                           className="cursor-pointer rounded bg-middle-accent p-1 text-bg-dark"
-                          onClick={() => commitThumblerig(i)}
+                          onClick={() => commitThumblerig(i - 1)}
                         >
                           Hide
                         </div>
@@ -264,7 +262,13 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
               matchQueue.gameInfo.field.commitedHash.toBigInt() &&
               matchQueue.gameInfo.field.choice.toBigInt() && (
                 <div className="flex flex-col items-center">
-                  ✅ Revealing the position
+                  ✅ Reveal the position
+                  <div
+                    className="cursor-pointer rounded bg-middle-accent p-1 text-bg-dark"
+                    onClick={() => revealThumblerig()}
+                  >
+                    Choose
+                  </div>
                 </div>
               )}
             {!matchQueue.gameInfo?.isCurrentUserMove &&

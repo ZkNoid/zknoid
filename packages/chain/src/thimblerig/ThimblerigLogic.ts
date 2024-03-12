@@ -15,7 +15,7 @@ import { RuntimeModule } from "@proto-kit/module";
 
 interface MatchMakerConfig {}
 
-const PENDING_BLOCKS_NUM = UInt64.from(5);
+const PENDING_BLOCKS_NUM = UInt64.from(20);
 
 export class RoundIdxUser extends Struct({
   roundId: UInt64,
@@ -104,7 +104,10 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     assert(
       this.queueRegisteredRoundUsers
         .get(
-          new RoundIdxUser({ roundId, userAddress: this.transaction.sender.value })
+          new RoundIdxUser({
+            roundId,
+            userAddress: this.transaction.sender.value,
+          })
         )
         .isSome.not(),
       "User already in queue"
@@ -243,7 +246,7 @@ export class ThimblerigLogic extends MatchMaker {
   }
 
   @runtimeMethod()
-  public commitValue(gameId: UInt64, commitmentHash: Field): void {
+  public commitValue(gameId: UInt64, value: UInt64, salt: Field): void {
     const sessionSender = this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
@@ -253,7 +256,8 @@ export class ThimblerigLogic extends MatchMaker {
 
     const game = this.games.get(gameId);
     assert(game.isSome, "Invalid game id");
-    assert(commitmentHash.greaterThan(0), "Invalid commitment");
+    assert(value.lessThanOrEqual(UInt64.from(3)), "Invalid value");
+    assert(salt.greaterThan(0), "Invalid salt");
     assert(
       game.value.thimblerigField.choice.equals(UInt64.from(0)),
       "Already chosen"
@@ -268,7 +272,10 @@ export class ThimblerigLogic extends MatchMaker {
     );
     assert(game.value.winner.equals(PublicKey.empty()), `Game finished`);
 
-    game.value.thimblerigField.commitedHash = commitmentHash;
+    game.value.thimblerigField.commitedHash = Poseidon.hash([
+      ...value.toFields(),
+      salt,
+    ]);
     game.value.currentMoveUser = game.value.player2;
     game.value.lastMoveBlockHeight = this.network.block.height;
     this.games.set(gameId, game.value);
@@ -313,7 +320,7 @@ export class ThimblerigLogic extends MatchMaker {
   }
 
   @runtimeMethod()
-  public revealCommitment(gameId: UInt64, commitmentValue: Field): void {
+  public revealCommitment(gameId: UInt64, value: UInt64, salt: Field): void {
     const sessionSender = this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
@@ -323,7 +330,6 @@ export class ThimblerigLogic extends MatchMaker {
 
     const game = this.games.get(gameId);
     assert(game.isSome, "Invalid game id");
-    assert(commitmentValue.greaterThan(0), "Invalid commitment");
     assert(
       game.value.thimblerigField.choice.greaterThan(UInt64.from(0)),
       "Not chosen"
@@ -337,25 +343,27 @@ export class ThimblerigLogic extends MatchMaker {
       `Only player1 should reveal value`
     );
     assert(game.value.winner.equals(PublicKey.empty()), `Game finished`);
-
     assert(
-      Poseidon.hash([commitmentValue]).equals(
+      Poseidon.hash([...value.toFields(), salt]).equals(
         game.value.thimblerigField.commitedHash
       ),
       "Incorrect reveal"
     );
-    game.value.thimblerigField.commitedHash = commitmentValue;
+    assert(value.lessThanOrEqual(UInt64.from(3)), "Invalid value");
+    assert(salt.greaterThan(0), "Invalid salt");
+
     game.value.currentMoveUser = game.value.player2;
     game.value.lastMoveBlockHeight = this.network.block.height;
     game.value.winner = Provable.if(
-      UInt64.from(commitmentValue.rangeCheckHelper(64))
-        .mod(UInt64.from(3))
-        .equals(game.value.thimblerigField.choice),
+      value.add(1).equals(game.value.thimblerigField.choice),
       game.value.player1,
       game.value.player2
     );
 
     this.games.set(gameId, game.value);
+
+    this.activeGameId.set(game.value.player2, UInt64.from(0));
+    this.activeGameId.set(game.value.player1, UInt64.from(0));
   }
 
   @runtimeMethod()

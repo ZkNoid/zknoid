@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import { useNetworkStore } from '@/lib/stores/network';
 import { RoundIdxUser } from 'zknoid-chain-dev';
-import { MatchMaker } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
+import { MatchMaker, PENDING_BLOCKS_NUM_CONST } from 'zknoid-chain-dev';
 import { ModuleQuery } from '@proto-kit/sequencer';
 
 export interface MatchQueueState {
@@ -28,7 +28,7 @@ export interface MatchQueueState {
   resetLastGameState: () => void;
 }
 
-const PENDING_BLOCKS_NUM = UInt64.from(5);
+const PENDING_BLOCKS_NUM = UInt64.from(PENDING_BLOCKS_NUM_CONST);
 
 export const useMatchQueueStore = create<
   MatchQueueState,
@@ -54,6 +54,11 @@ export const useMatchQueueStore = create<
       set((state) => {
         state.loading = true;
       });
+
+      console.log(
+        'Frontend round',
+        UInt64.from(blockHeight).div(PENDING_BLOCKS_NUM).toBigInt()
+      );
 
       const queueLength = await query.queueLength.get(
         UInt64.from(blockHeight).div(PENDING_BLOCKS_NUM)
@@ -175,7 +180,6 @@ export const useObserveMatchQueue = (query: ModuleQuery<MatchMaker>) => {
     );
   }, [chain.block?.height, network.walletConnected, network.address]);
 };
-
 
 export interface IGameInfo<GameField> {
   player1: PublicKey;
