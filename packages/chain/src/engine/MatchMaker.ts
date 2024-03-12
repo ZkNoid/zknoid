@@ -20,7 +20,9 @@ import {
 
 interface MatchMakerConfig {}
 
-const PENDING_BLOCKS_NUM = UInt64.from(5);
+export const PENDING_BLOCKS_NUM_CONST = 20;
+
+const PENDING_BLOCKS_NUM = UInt64.from(PENDING_BLOCKS_NUM_CONST);
 
 export class RoundIdxUser extends Struct({
   roundId: UInt64,
