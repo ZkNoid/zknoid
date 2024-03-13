@@ -13,4 +13,3 @@ cd my-chain
 npm install
 npm run test:watch
 ```
-

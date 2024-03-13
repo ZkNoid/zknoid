@@ -1,1 +1,1 @@
-export { MySnakeGameContext } from './MySnakeGameContext'
+export { MySnakeGameContext } from './MySnakeGameContext';
