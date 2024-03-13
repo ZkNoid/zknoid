@@ -1,11 +1,3 @@
-import {
-    RandzuLogic,
-    RandzuField,
-    WinWitness
-} from './RandzuLogic.js';
+import { RandzuLogic, RandzuField, WinWitness } from './RandzuLogic.js';
 
-export {
-    RandzuLogic,
-    RandzuField,
-    WinWitness 
-}
+export { RandzuLogic, RandzuField, WinWitness };
