@@ -5,7 +5,7 @@ import {
     runtimeMethod,
 } from '@proto-kit/module';
 import { State, StateMap, assert } from '@proto-kit/protocol';
-import type { Proof} from 'o1js';
+import type { Proof } from 'o1js';
 import { UInt64, PublicKey, Provable, Bool } from 'o1js';
 import { inject } from 'tsyringe';
 import {
@@ -15,7 +15,6 @@ import {
     LeaderboardScore,
 } from '../arkanoid/types';
 import { Balances } from '../framework/balances';
-
 
 export interface IScoreable {
     score: UInt64;
@@ -81,6 +80,8 @@ export class Gamehub<
         this.lastCompetitonId.set(
             this.lastCompetitonId.get().orElse(UInt64.from(0)).add(1)
         );
+
+        this.balances.transferTo(PublicKey.empty(), competition.funds);
     }
 
     @runtimeMethod()
@@ -92,6 +93,8 @@ export class Gamehub<
             }),
             Bool(true)
         );
+
+        this.payCompetitionFee(competitionId, Bool(true));
     }
 
     /**
@@ -118,6 +121,8 @@ export class Gamehub<
         const userRegistration = this.registrations.get(gameKey).value;
 
         assert(registrationNeeded.not().or(userRegistration));
+
+        this.payCompetitionFee(competitionId, registrationNeeded.not());
 
         const currentScore = this.gameRecords.get(gameKey).value;
         const newScore = gameRecordProof.publicOutput.score;
@@ -168,5 +173,18 @@ export class Gamehub<
                 })
             );
         }
+    }
+
+    private payCompetitionFee(competitionId: UInt64, shouldPay: Bool) {
+        let competition = this.competitions.get(competitionId).value;
+        let fee = Provable.if(
+            shouldPay,
+            competition.participationFee,
+            UInt64.zero
+        );
+
+        this.balances.transferTo(PublicKey.empty(), fee);
+        competition.funds = competition.funds.add(fee);
+        this.competitions.set(competitionId, competition);
     }
 }

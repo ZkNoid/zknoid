@@ -18,6 +18,7 @@ export class Balances extends RuntimeModule<BalancesConfig> {
 
     @state() public circulatingSupply = State.from<UInt64>(UInt64);
 
+    // Security issues: unprotected mint. Use for testing purpose only
     @runtimeMethod()
     public addBalance(address: PublicKey, amount: UInt64): void {
         const circulatingSupply = this.circulatingSupply.get();
@@ -29,18 +30,24 @@ export class Balances extends RuntimeModule<BalancesConfig> {
         this.balances.set(address, newBalance);
     }
 
+    // Security issues: this.transaction.sender is not updating when calling from another contract
+    //      so it it this.transaction.sender == tx.origin
     @runtimeMethod()
     public transferTo(address: PublicKey, amount: UInt64): void {
-        const currentBalance = this.balances
-            .get(this.transaction.sender.value)
-            .orElse(UInt64.from(0));
-        currentBalance.assertGreaterThan(amount);
-
-        const addrCurrentBalance = this.balances
+        let currentBalance = this.balances
             .get(this.transaction.sender.value)
             .orElse(UInt64.from(0));
 
-        this.balances.set(this.transaction.sender.value, currentBalance.sub(amount));
+        assert(currentBalance.greaterThan(amount));
+
+        let addrCurrentBalance = this.balances
+            .get(this.transaction.sender.value)
+            .orElse(UInt64.from(0));
+
+        this.balances.set(
+            this.transaction.sender.value,
+            currentBalance.sub(amount)
+        );
         this.balances.set(address, addrCurrentBalance.add(amount));
     }
 }
