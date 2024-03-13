@@ -6,7 +6,7 @@ import { useContext, useEffect, useState } from 'react';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { getRandomEmoji } from '@/games/randzu/utils';
 import { useMatchQueueStore } from '@/lib/stores/matchQueue';
-import { ClientAppChain, PENDING_BLOCKS_NUM_CONST } from 'zknoid-chain-dev';
+import { ClientAppChain, MOVE_TIMEOUT_IN_BLOCKS, PENDING_BLOCKS_NUM_CONST } from 'zknoid-chain-dev';
 import { Field, Poseidon, PublicKey, UInt64 } from 'o1js';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
@@ -123,6 +123,22 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
           UInt64.from(matchQueue.activeGameId),
           commitment.value,
           commitment.salt
+        );
+      }
+    );
+
+    await tx.sign();
+    await tx.send();
+  };
+
+  const proveOpponentTimeout = async () => {
+    const randzuLogic = client.runtime.resolve('ThimblerigLogic');
+
+    const tx = await client.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        randzuLogic.proveOpponentTimeout(
+          UInt64.from(matchQueue.gameInfo!.gameId)        
         );
       }
     );
@@ -284,6 +300,24 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
             {matchQueue.gameInfo?.winner && (
               <div> Winner: {matchQueue.gameInfo?.winner.toBase58()}. </div>
             )}
+            {!matchQueue.gameInfo?.isCurrentUserMove &&
+              BigInt(protokitChain?.block?.height || '0') -
+                matchQueue.gameInfo?.lastMoveBlockHeight >
+                MOVE_TIMEOUT_IN_BLOCKS && (
+                <div className="flex flex-col items-center">
+                  <div>
+                    Opponent timeout {Number(protokitChain?.block?.height)}{' '}
+                    {' / '}
+                    {Number(matchQueue.gameInfo?.lastMoveBlockHeight)}
+                  </div>
+                  <div
+                    className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
+                    onClick={() => proveOpponentTimeout()}
+                  >
+                    Prove win
+                  </div>
+                </div>
+              )}
           </div>
         )}
 
