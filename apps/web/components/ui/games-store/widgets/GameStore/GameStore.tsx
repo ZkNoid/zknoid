@@ -1,7 +1,12 @@
-import {ALL_GAME_EVENT_TYPES, GAME_EVENTS, getEventType, ZkNoidEventType,} from '@/lib/platform/game_events';
-import {FilterCard} from '@/components/ui/games-store/widgets/GameStore/FilterCard';
-import {EventCard} from '@/components/ui/games-store/widgets/GameStore/EventCard';
-import {GenreCard} from '@/components/ui/games-store/widgets/GameStore/GenreCard';
+import {
+  ALL_GAME_EVENT_TYPES,
+  GAME_EVENTS,
+  getEventType,
+  ZkNoidEventType,
+} from '@/lib/platform/game_events';
+import { FilterCard } from '@/components/ui/games-store/widgets/GameStore/FilterCard';
+import { EventCard } from '@/components/ui/games-store/widgets/GameStore/EventCard';
+import { GenreCard } from '@/components/ui/games-store/widgets/GameStore/GenreCard';
 import {
   ALL_GAME_FEATURES,
   ALL_GAME_GENRES,
@@ -9,21 +14,22 @@ import {
   ZkNoidGameFeature,
   ZkNoidGameGenre,
 } from '@/lib/platform/game_tags';
-import {FiltrationBox} from '@/components/ui/games-store/widgets/GameStore/FiltrationBox';
-import {GameCard} from '@/components/ui/games-store/GameCard';
-import {useState} from 'react';
-import {defaultGames, IGame} from '@/app/constants/games';
-import {clsx} from 'clsx';
-import {AnimatePresence, motion} from 'framer-motion';
-import {GAME_STORE_SORT_METHODS, GameStoreSortBy} from '@/constants/sortBy';
-import {Competitions} from '@/components/ui/games-store/widgets/GameStore/Competitions';
+import { FiltrationBox } from '@/components/ui/games-store/widgets/GameStore/FiltrationBox';
+import { GameCard } from '@/components/ui/games-store/GameCard';
+import { useState } from 'react';
+import { defaultGames, IGame } from '@/app/constants/games';
+import { clsx } from 'clsx';
+import { AnimatePresence, motion } from 'framer-motion';
+import { GAME_STORE_SORT_METHODS, GameStoreSortBy } from '@/constants/sortBy';
+import { Competitions } from '@/components/ui/games-store/widgets/GameStore/Competitions';
 import ChessIllustration from './assets/Chess_Illustration_01_02.json';
 import CubesIllustration from './assets/Cubes_Illustration_01_02.json';
 import EyesIllustration from './assets/Eyes_Illustration_01_01.json';
 import GamepadIllustration from './assets/Gamepad_Illustration_01_01.json';
-import {Pagination} from '@/components/ui/games-store/shared/Pagination';
-import {SortByFilter} from '@/components/ui/games-store/SortByFilter';
 import Lottie from 'react-lottie';
+import SnakeNoEvents from './assets/ZKNoid_Snake_Intro_03_05.json';
+import { Pagination } from '@/components/ui/games-store/shared/Pagination';
+import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
 
 export const GameStore = ({ games }: { games: IGame[] }) => {
   const [eventTypesSelected, setEventTypesSelected] = useState<
@@ -41,6 +47,11 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
     GameStoreSortBy.RatingLow
   );
 
+  const filteredEvents = GAME_EVENTS.filter(
+    (x) =>
+      eventTypesSelected.includes(getEventType(x)) ||
+      eventTypesSelected.length == 0
+  );
   const sortByFliter = (a: IGame, b: IGame) => {
     switch (sortBy) {
       case GameStoreSortBy.RatingHigh:
@@ -81,20 +92,31 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             />
           ))}
         </div>
-        <div className="grid min-h-[352px] grid-cols-2 gap-5">
-          {GAME_EVENTS.filter(
-            (x) =>
-              eventTypesSelected.includes(getEventType(x)) ||
-              eventTypesSelected.length == 0
-          ).map((event) => (
-            <EventCard
-              key={event.name}
-              headText={event.name}
-              description={event.description}
-              event={event}
-            />
-          ))}
-        </div>
+        {filteredEvents.length == 0 && (
+          <div className="h-[352px] w-fit">
+            <Lottie
+              options={{
+                animationData: SnakeNoEvents,
+                rendererSettings: {
+                  className: 'z-0 h-full',
+                },
+              }}
+            ></Lottie>
+          </div>
+        )}
+        {filteredEvents.length > 0 && (
+          <div className="grid min-h-[352px] grid-cols-2 gap-5">
+            {filteredEvents.map((event) => (
+              <EventCard
+                key={event.name}
+                headText={event.name}
+                description={event.description}
+                event={event}
+              />
+            ))}
+          </div>
+        )}
+
         <div className={'grid grid-cols-2 gap-5'}>
           <motion.div
             className={
@@ -355,13 +377,19 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                     return true;
                 })
                 .sort((a, b) => sortByFliter(a, b))
-                .map((game) => (
+                .map((game, index) => (
                   <GameCard
                     game={game}
                     key={game.id}
                     fullImageW={game.id === 'arkanoid'}
                     fullImageH={game.id === 'arkanoid'}
-                    color={game.isReleased ? game.genre === ZkNoidGameGenre.BoardGames ? 1 : game.genre === ZkNoidGameGenre.Arcade ? 2 : 3 : 4}
+                    color={
+                      Number.isInteger(index / 3)
+                        ? 1
+                        : index === 1 || Number.isInteger(index - 1 / 3)
+                          ? 2
+                          : 3
+                    }
                   />
                 ))}
             </div>
