@@ -1,0 +1,22 @@
+<svg width="66" height="66" viewBox="0 0 66 66" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M66 0L59 7H7L0 0H66Z" fill="#97FF00"/>
+<path d="M66 0V66L59 59V7L66 0Z" fill="#6EB00D"/>
+<path d="M66 66H0L7 59H59L66 66Z" fill="#598814"/>
+<path d="M59 7H7V59H59V7Z" fill="#82D707"/>
+<path d="M7 7V59L0 66V0L7 7Z" fill="#8DEB03"/>
+<g opacity="0.3">
+<path d="M31 7L7 31V7H31Z" fill="white"/>
+</g>
+<g opacity="0.2">
+<path d="M44 7L7 44V32L32 7H44Z" fill="white"/>
+</g>
+<g opacity="0.1">
+<path d="M51 7L7 51V46L46 7H51Z" fill="white"/>
+</g>
+<g opacity="0.3">
+<path d="M59 47V59H47L59 47Z" fill="white"/>
+</g>
+<g opacity="0.1">
+<path d="M59 39V44L44 59H39L59 39Z" fill="white"/>
+</g>
+</svg>
