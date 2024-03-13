@@ -7,6 +7,7 @@ import {
 import { State, StateMap, assert } from '@proto-kit/protocol';
 import type { Proof } from 'o1js';
 import { UInt64, PublicKey, Provable, Bool } from 'o1js';
+import { UInt64 as ProtoUInt64 } from '@proto-kit/library';
 import { inject } from 'tsyringe';
 import {
   Competition,
@@ -86,7 +87,10 @@ export class Gamehub<
       this.lastCompetitonId.get().orElse(UInt64.from(0)).add(1),
     );
 
-    this.balances.transferTo(PublicKey.empty(), competition.funds);
+    this.balances.transferTo(
+      PublicKey.empty(),
+      ProtoUInt64.from(competition.funds),
+    );
   }
 
   @runtimeMethod()
@@ -203,14 +207,17 @@ export class Gamehub<
 
     assert(winner.player.equals(this.transaction.sender.value));
 
-    this.balances.addBalance(this.transaction.sender.value, competition.funds);
+    this.balances.addBalance(
+      this.transaction.sender.value,
+      ProtoUInt64.from(competition.funds),
+    );
   }
 
   private payCompetitionFee(competitionId: UInt64, shouldPay: Bool): void {
     let competition = this.competitions.get(competitionId).value;
     let fee = Provable.if(shouldPay, competition.participationFee, UInt64.zero);
 
-    this.balances.transferTo(PublicKey.empty(), fee);
+    this.balances.transferTo(PublicKey.empty(), ProtoUInt64.from(fee));
     competition.funds = competition.funds.add(fee);
     this.competitions.set(competitionId, competition);
   }
