@@ -210,6 +210,9 @@ importers:
       '@proto-kit/common':
         specifier: ^0.1.1-develop.600
         version: 0.1.1-develop.600(o1js@0.13.1)(tsyringe@4.8.0)
+      '@proto-kit/library':
+        specifier: 0.1.1-develop.600
+        version: 0.1.1-develop.600(@proto-kit/common@0.1.1-develop.600)(o1js@0.13.1)(ts-pattern@4.3.0)(tsyringe@4.8.0)
       '@proto-kit/module':
         specifier: ^0.1.1-develop.600
         version: 0.1.1-develop.600(@proto-kit/common@0.1.1-develop.600)(@proto-kit/protocol@0.1.1-develop.600)(o1js@0.13.1)(tsyringe@4.8.0)
@@ -1943,6 +1946,24 @@ packages:
       typescript-memoize: 1.1.1
     dev: false
 
+  /@proto-kit/library@0.1.1-develop.600(@proto-kit/common@0.1.1-develop.600)(o1js@0.13.1)(ts-pattern@4.3.0)(tsyringe@4.8.0):
+    resolution: {integrity: sha512-8dbjxHe7VxYhsbd6GISq7KfHhHdItFT9n4KX3yf13Ckg50CsX6+pGwuCuhx6fHmS1Vmts1cHs87xq1wj2Mx/sg==}
+    peerDependencies:
+      o1js: 0.13.1
+      tsyringe: ^4.7.0
+    dependencies:
+      '@proto-kit/protocol': 0.1.1-develop.600(@proto-kit/common@0.1.1-develop.600)(o1js@0.13.1)(ts-pattern@4.3.0)(tsyringe@4.8.0)
+      bigint-isqrt: 0.3.2
+      lodash: 4.17.21
+      loglevel: 1.8.1
+      o1js: 0.13.1
+      reflect-metadata: 0.1.13
+      tsyringe: 4.8.0
+    transitivePeerDependencies:
+      - '@proto-kit/common'
+      - ts-pattern
+    dev: false
+
   /@proto-kit/module@0.1.1-develop.600(@proto-kit/common@0.1.1-develop.600)(@proto-kit/protocol@0.1.1-develop.600)(o1js@0.13.1)(tsyringe@4.8.0):
     resolution: {integrity: sha512-QHRcGLWsIhzVrS545+6YD2OSVQ/mAAUEP62IDpwV9t+WZDc9lAMkzawtMRHPNDV4TZ/iQasapUx0yMdqe8yFkw==}
     peerDependencies:
@@ -3493,6 +3514,10 @@ packages:
     resolution: {integrity: sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg==}
     engines: {node: '>=0.6'}
     dev: true
+
+  /bigint-isqrt@0.3.2:
+    resolution: {integrity: sha512-hfd7Ka2XKmBIAQWWDrDHTCkGsSfZMFjgcB3eCnDtZHsDiszSk+CQvnq16nGYIKuDMBvnSAvjnihoumJDpMnv7A==}
+    dev: false
 
   /binary-extensions@2.2.0:
     resolution: {integrity: sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==}
