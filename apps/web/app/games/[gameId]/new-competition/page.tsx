@@ -1,5 +1,5 @@
 'use client';
-
+import 'reflect-metadata';
 import dynamic from 'next/dynamic';
 
 const NewCompetitionPage = dynamic(

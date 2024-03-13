@@ -1,4 +1,5 @@
 'use client';
+import 'reflect-metadata';
 
 import dynamic from 'next/dynamic';
 
