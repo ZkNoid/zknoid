@@ -196,11 +196,15 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
   public proveOpponentTimeout(gameId: UInt64): void {
     const sessionSender = this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(sessionSender.isSome, sessionSender.value, this.transaction.sender.value);
-
     const game = this.games.get(gameId);
+    const nextUser = Provable.if(
+      game.value.currentMoveUser.equals(game.value.player1),
+      game.value.player2,
+      game.value.player1
+    );
     assert(game.isSome, "Invalid game id");
     assert(
-      game.value.currentMoveUser.equals(sender),
+      nextUser.equals(sender),
       `Not your move: ${sender.toBase58()}`
     );
     assert(
@@ -212,12 +216,12 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
 
     assert(isTimeout, "Timeout not reached");
       
-    game.value.currentMoveUser = Provable.if(
-      game.value.currentMoveUser.equals(game.value.player1),
-      game.value.player2,
-      game.value.player1
-    );
+    game.value.winner = sender;
     game.value.lastMoveBlockHeight = this.network.block.height;
     this.games.set(gameId, game.value);
+
+    // Removing active game for players if game ended
+    this.activeGameId.set(game.value.player1, UInt64.from(0));
+    this.activeGameId.set(game.value.player2, UInt64.from(0));
   }
 }
