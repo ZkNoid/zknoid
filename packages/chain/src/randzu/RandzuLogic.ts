@@ -12,10 +12,6 @@ import type { QueueListItem } from "../engine/MatchMaker";
 const RANDZU_FIELD_SIZE = 15;
 const CELLS_LINE_TO_WIN = 5;
 
-const BLOCK_PRODUCTION_SECONDS = 5;
-const MOVE_TIMEOUT_IN_BLOCKS = 60 / BLOCK_PRODUCTION_SECONDS;
-
-
 export class WinWitness extends Struct({
     x: UInt32,
     y: UInt32,
@@ -102,9 +98,9 @@ export class RandzuLogic extends MatchMaker {
                 UInt64.from(0)
             ),
             new GameInfo({
-                player1: this.transaction.sender,
+                player1: this.transaction.sender.value,
                 player2: opponent.value.userAddress,
-                currentMoveUser: this.transaction.sender,
+                currentMoveUser: this.transaction.sender.value,
                 lastMoveBlockHeight: this.network.block.height,
                 field: RandzuField.from(Array(RANDZU_FIELD_SIZE).fill(Array(RANDZU_FIELD_SIZE).fill(0))),
                 winner: PublicKey.empty()
@@ -117,38 +113,9 @@ export class RandzuLogic extends MatchMaker {
     }
 
     @runtimeMethod()
-    public proveOpponentTimeout(gameId: UInt64): void {
-      const sessionSender = this.sessions.get(this.transaction.sender);
-      const sender = Provable.if(sessionSender.isSome, sessionSender.value, this.transaction.sender);
-  
-      const game = this.games.get(gameId);
-      assert(game.isSome, "Invalid game id");
-      assert(
-        game.value.currentMoveUser.equals(sender),
-        `Not your move: ${sender.toBase58()}`
-      );
-      assert(
-        game.value.winner.equals(PublicKey.empty()),
-        `Game finished`
-      );
-
-      const isTimeout = this.network.block.height.sub(game.value.lastMoveBlockHeight).greaterThan(UInt64.from(MOVE_TIMEOUT_IN_BLOCKS));
-
-      assert(isTimeout, "Timeout not reached");
-        
-      game.value.currentMoveUser = Provable.if(
-        game.value.currentMoveUser.equals(game.value.player1),
-        game.value.player2,
-        game.value.player1
-      );
-      game.value.lastMoveBlockHeight = this.network.block.height;
-      this.games.set(gameId, game.value);
-    }
-
-    @runtimeMethod()
     public makeMove(gameId: UInt64, newField: RandzuField, winWitness: WinWitness): void {
-      const sessionSender = this.sessions.get(this.transaction.sender);
-      const sender = Provable.if(sessionSender.isSome, sessionSender.value, this.transaction.sender);
+      const sessionSender = this.sessions.get(this.transaction.sender.value);
+      const sender = Provable.if(sessionSender.isSome, sessionSender.value, this.transaction.sender.value);
   
       const game = this.games.get(gameId);
       assert(game.isSome, "Invalid game id");

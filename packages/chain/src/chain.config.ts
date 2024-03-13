@@ -22,6 +22,7 @@ import {
   NodeStatusResolver,
   QueryGraphqlModule,
   UnprovenBlockResolver,
+  MerkleWitnessResolver,
 } from "@proto-kit/api";
 import {
   StateServiceQueryModule,
@@ -37,81 +38,49 @@ class StartupScripts extends SequencerModule {
   async start(): Promise<void> {}
 }
 
-const appChain = LocalhostAppChain.from({
-  runtime: Runtime.from(runtime),
+const appChain = LocalhostAppChain.fromRuntime(runtime);
 
-  protocol: VanillaProtocol.from({}),
+// appChain.configure({
+//   ...appChain.config,
 
-  sequencer: Sequencer.from({
-    modules: {
-      Database: InMemoryDatabase,
-      Mempool: PrivateMempool,
-      GraphqlServer,
-      LocalTaskWorkerModule,
-      BaseLayer: NoopBaseLayer,
-      BlockProducerModule,
-      UnprovenProducerModule,
-      BlockTrigger: ManualBlockTrigger,
-      TaskQueue: LocalTaskQueue,
-      Graphql: GraphqlSequencerModule.from({
-        modules: {
-          MempoolResolver,
-          QueryGraphqlModule,
-          BlockStorageResolver,
-          NodeStatusResolver,
-          UnprovenBlockResolver,
-        },
-      }),
-      StartupScripts,
-    },
-  }),
+//   Protocol: {
+//     BlockProver: {},
+//     StateTransitionProver: {},
+//     AccountState: {},
+//     BlockHeight: {},
+//     LastStateRoot: {},
+//   },
 
-  modules: {
-    QueryTransportModule: StateServiceQueryModule,
-    NetworkStateTransportModule: BlockStorageNetworkStateModule,
-  },
-});
+//   Sequencer: {
+//     Database: {},
+//     UnprovenProducerModule: {},
 
-appChain.configure({
-  ...appChain.config,
+//     GraphqlServer: {
+//       port: 8080,
+//       host: "0.0.0.0",
+//       graphiql: true,
+//     },
 
-  Protocol: {
-    BlockProver: {},
-    StateTransitionProver: {},
-    AccountState: {},
-    BlockHeight: {},
-  },
+//     Graphql: {
+//       QueryGraphqlModule: {},
+//       MempoolResolver: {},
+//       BlockStorageResolver: {},
+//       NodeStatusResolver: {},
+//       MerkleWitnessResolver: {},
+//       UnprovenBlockResolver: {},
+//     },
 
-  Sequencer: {
-    Database: {},
-    UnprovenProducerModule: {},
-    StartupScripts: {},
+//     Mempool: {},
+//     BlockProducerModule: {},
+//     LocalTaskWorkerModule: {},
+//     BaseLayer: {},
+//     TaskQueue: {},
+//     BlockTrigger: {},
+//   },
 
-    GraphqlServer: {
-      port: 8080,
-      host: "0.0.0.0",
-      graphiql: true,
-    },
-
-    Graphql: {
-      QueryGraphqlModule: {},
-      MempoolResolver: {},
-      BlockStorageResolver: {},
-      NodeStatusResolver: {},
-      UnprovenBlockResolver: {},
-    },
-
-    Mempool: {},
-    BlockProducerModule: {},
-    LocalTaskWorkerModule: {},
-    BaseLayer: {},
-    TaskQueue: {},
-    BlockTrigger: {},
-  },
-
-  QueryTransportModule: {},
-  NetworkStateTransportModule: {},
-});
+//   QueryTransportModule: {},
+//   NetworkStateTransportModule: {},
+// });
 
 appChain.configure({
   ...appChain.config,

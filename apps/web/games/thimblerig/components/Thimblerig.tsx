@@ -6,12 +6,14 @@ import { useContext, useEffect, useState } from 'react';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { getRandomEmoji } from '@/games/randzu/utils';
 import { useMatchQueueStore } from '@/lib/stores/matchQueue';
-import { ClientAppChain } from 'zknoid-chain-dev';
+import { ClientAppChain, MOVE_TIMEOUT_IN_BLOCKS, PENDING_BLOCKS_NUM_CONST } from 'zknoid-chain-dev';
 import { Field, Poseidon, PublicKey, UInt64 } from 'o1js';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
 import { walletInstalled } from '@/lib/helpers';
 import { useObserveThimblerigMatchQueue } from '../stores/matchQueue';
+import { useCommitmentStore } from '@/lib/stores/commitmentStorage';
+import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 
 enum GameState {
   NotStarted,
@@ -39,7 +41,8 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   useObserveThimblerigMatchQueue();
 
   let [loading, setLoading] = useState(false);
-  let [commitment, setCommitment] = useState<Field | undefined >(undefined);
+  let commitmentStore = useCommitmentStore();
+  const protokitChain = useProtokitChainStore();
 
   const restart = () => {
     matchQueue.resetLastGameState();
@@ -65,10 +68,13 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     setGameState(GameState.MatchRegistration);
   };
 
-  const chooseThumblerig = async (id: number) => {
-    const generatedCommitment = Field.random().div(10).mul(10).add(id);
-    setCommitment(generatedCommitment);
-    
+  /**
+   *
+   * @param id Number 0-2
+   */
+  const commitThumblerig = async (id: number) => {
+    const salt = commitmentStore.commit(id);
+
     const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
 
     const tx = await client.transaction(
@@ -76,15 +82,69 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       () => {
         thimblerigLogic.commitValue(
           UInt64.from(matchQueue.activeGameId),
-          Poseidon.hash([])
+          UInt64.from(id),
+          salt
         );
       }
     );
 
     await tx.sign();
     await tx.send();
+  };
 
-    setGameState(GameState.MatchRegistration);
+  /**
+   *
+   * @param choice Number 1-3
+   */
+  const chooseThumblerig = async (choice: number) => {
+    const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
+    const tx = await client.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        thimblerigLogic.chooseThumble(
+          UInt64.from(matchQueue.activeGameId),
+          UInt64.from(choice)
+        );
+      }
+    );
+
+    await tx.sign();
+    await tx.send();
+  };
+
+  const revealThumblerig = async () => {
+    const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
+    const commitment = commitmentStore.getCommitment();
+
+    const tx = await client.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        thimblerigLogic.revealCommitment(
+          UInt64.from(matchQueue.activeGameId),
+          commitment.value,
+          commitment.salt
+        );
+      }
+    );
+
+    await tx.sign();
+    await tx.send();
+  };
+
+  const proveOpponentTimeout = async () => {
+    const randzuLogic = client.runtime.resolve('ThimblerigLogic');
+
+    const tx = await client.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        randzuLogic.proveOpponentTimeout(
+          UInt64.from(matchQueue.gameInfo!.gameId)        
+        );
+      }
+    );
+
+    await tx.sign();
+    await tx.send();
   };
 
   useEffect(() => {
@@ -94,8 +154,10 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       setGameState(GameState.Active);
     } else {
       if (matchQueue.lastGameState == 'win') setGameState(GameState.Won);
-
-      if (matchQueue.lastGameState == 'lost') setGameState(GameState.Lost);
+      else if (matchQueue.lastGameState == 'lost') setGameState(GameState.Lost);
+      else {
+        setGameState(GameState.NotStarted);
+      }
     }
   }, [matchQueue.activeGameId, matchQueue.inQueue, matchQueue.lastGameState]);
 
@@ -152,26 +214,82 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
           <div>Registering in the match pool 📝 ...</div>
         )}
         {gameState == GameState.Matchmaking && (
-          <div>Searching for opponents 🔍 ...</div>
+          <div>
+            Searching for opponents{' '}
+            {parseInt(protokitChain.block?.height ?? '0') %
+              PENDING_BLOCKS_NUM_CONST}{' '}
+            / {PENDING_BLOCKS_NUM_CONST}🔍 ...
+          </div>
         )}
         {gameState == GameState.Active && (
           <div className="flex flex-col items-center gap-2">
             <>Game started. </>
             Opponent: {matchQueue.gameInfo?.opponent.toBase58()}
+            {matchQueue.gameInfo.field.commitedHash.toBigInt() && (
+              <div>
+                Commited hash{' '}
+                {matchQueue.gameInfo.field.commitedHash.toBigInt().toString()}
+              </div>
+            )}
             {matchQueue.gameInfo?.isCurrentUserMove &&
-              !matchQueue.gameInfo?.winner &&
-              !loading && (
+              !loading &&
+              !matchQueue.gameInfo.field.commitedHash.toBigInt() &&
+              !matchQueue.gameInfo.field.choice.toBigInt() && (
                 <div className="flex flex-col items-center">
-                  ✅ Your turn.
+                  ✅ Choose thimblerig to hide ball behind.
                   <div className="flex flex-col items-center justify-center gap-3">
-                    {[0, 1, 2].map((i) => (
-                      <div className="flex flex-row items-center justify-center gap-3" key={i}>
+                    {[1, 2, 3].map((i) => (
+                      <div
+                        className="flex flex-row items-center justify-center gap-3"
+                        key={i}
+                      >
                         Thimble {i}{' '}
-                        <div className="rounded bg-middle-accent p-1 text-bg-dark cursor-pointer" onClick={() => chooseThumblerig(i)}>
+                        <div
+                          className="cursor-pointer rounded bg-middle-accent p-1 text-bg-dark"
+                          onClick={() => commitThumblerig(i - 1)}
+                        >
+                          Hide
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            {matchQueue.gameInfo?.isCurrentUserMove &&
+              !loading &&
+              matchQueue.gameInfo.field.commitedHash.toBigInt() &&
+              !matchQueue.gameInfo.field.choice.toBigInt() && (
+                <div className="flex flex-col items-center">
+                  ✅ Guess under what thimblerig ball is hidden by opponent
+                  <div className="flex flex-col items-center justify-center gap-3">
+                    {[1, 2, 3].map((i) => (
+                      <div
+                        className="flex flex-row items-center justify-center gap-3"
+                        key={i}
+                      >
+                        Thimble {i}{' '}
+                        <div
+                          className="cursor-pointer rounded bg-middle-accent p-1 text-bg-dark"
+                          onClick={() => chooseThumblerig(i)}
+                        >
                           Choose
                         </div>
                       </div>
                     ))}
+                  </div>
+                </div>
+              )}
+            {matchQueue.gameInfo?.isCurrentUserMove &&
+              !loading &&
+              matchQueue.gameInfo.field.commitedHash.toBigInt() &&
+              matchQueue.gameInfo.field.choice.toBigInt() && (
+                <div className="flex flex-col items-center">
+                  ✅ Reveal the position
+                  <div
+                    className="cursor-pointer rounded bg-middle-accent p-1 text-bg-dark"
+                    onClick={() => revealThumblerig()}
+                  >
+                    Reveal
                   </div>
                 </div>
               )}
@@ -182,6 +300,24 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
             {matchQueue.gameInfo?.winner && (
               <div> Winner: {matchQueue.gameInfo?.winner.toBase58()}. </div>
             )}
+            {!matchQueue.gameInfo?.isCurrentUserMove &&
+              BigInt(protokitChain?.block?.height || '0') -
+                matchQueue.gameInfo?.lastMoveBlockHeight >
+                MOVE_TIMEOUT_IN_BLOCKS && (
+                <div className="flex flex-col items-center">
+                  <div>
+                    Opponent timeout {Number(protokitChain?.block?.height)}{' '}
+                    {' / '}
+                    {Number(matchQueue.gameInfo?.lastMoveBlockHeight)}
+                  </div>
+                  <div
+                    className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
+                    onClick={() => proveOpponentTimeout()}
+                  >
+                    Prove win
+                  </div>
+                </div>
+              )}
           </div>
         )}
 
