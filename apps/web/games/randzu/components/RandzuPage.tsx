@@ -23,6 +23,7 @@ import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { getRandomEmoji } from '../utils';
 import { useMatchQueueStore } from '@/lib/stores/matchQueue';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
+import { MOVE_TIMEOUT_IN_BLOCKS } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
 
 enum GameState {
   NotStarted,
@@ -233,6 +234,24 @@ export default function RandzuPage({
             {matchQueue.gameInfo?.winner && (
               <div> Winner: {matchQueue.gameInfo?.winner.toBase58()}. </div>
             )}
+            {!matchQueue.gameInfo?.isCurrentUserMove &&
+              BigInt(protokitChain?.block?.height || '0') -
+                matchQueue.gameInfo?.lastMoveBlockHeight >
+                MOVE_TIMEOUT_IN_BLOCKS && (
+                <div className="flex flex-col items-center">
+                  <div>
+                    Opponent timeout {Number(protokitChain?.block?.height)}{' '}
+                    {' / '}
+                    {Number(matchQueue.gameInfo?.lastMoveBlockHeight)}
+                  </div>
+                  <div
+                    className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
+                    onClick={() => {}}
+                  >
+                    Prove win
+                  </div>
+                </div>
+              )}
           </div>
         )}
 

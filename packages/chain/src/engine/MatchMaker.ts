@@ -1,6 +1,5 @@
 import {
   RuntimeModule,
-  runtimeModule,
   state,
   runtimeMethod,
 } from "@proto-kit/module";
@@ -11,16 +10,15 @@ import {
   Struct,
   UInt64,
   Provable,
-  Bool,
-  UInt32,
-  Poseidon,
-  Field,
-  Int64,
+  Bool
 } from "o1js";
 
 interface MatchMakerConfig {}
 
 export const PENDING_BLOCKS_NUM_CONST = 20;
+
+const BLOCK_PRODUCTION_SECONDS = 5;
+export const MOVE_TIMEOUT_IN_BLOCKS = 60 / BLOCK_PRODUCTION_SECONDS;
 
 const PENDING_BLOCKS_NUM = UInt64.from(PENDING_BLOCKS_NUM_CONST);
 
@@ -193,5 +191,33 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
         queueLength.add(1)
       )
     );
+  }
+  @runtimeMethod()
+  public proveOpponentTimeout(gameId: UInt64): void {
+    const sessionSender = this.sessions.get(this.transaction.sender.value);
+    const sender = Provable.if(sessionSender.isSome, sessionSender.value, this.transaction.sender.value);
+
+    const game = this.games.get(gameId);
+    assert(game.isSome, "Invalid game id");
+    assert(
+      game.value.currentMoveUser.equals(sender),
+      `Not your move: ${sender.toBase58()}`
+    );
+    assert(
+      game.value.winner.equals(PublicKey.empty()),
+      `Game finished`
+    );
+
+    const isTimeout = this.network.block.height.sub(game.value.lastMoveBlockHeight).greaterThan(UInt64.from(MOVE_TIMEOUT_IN_BLOCKS));
+
+    assert(isTimeout, "Timeout not reached");
+      
+    game.value.currentMoveUser = Provable.if(
+      game.value.currentMoveUser.equals(game.value.player1),
+      game.value.player2,
+      game.value.player1
+    );
+    game.value.lastMoveBlockHeight = this.network.block.height;
+    this.games.set(gameId, game.value);
   }
 }

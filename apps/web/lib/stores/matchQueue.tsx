@@ -130,6 +130,8 @@ export const useMatchQueueStore = create<
         // const field = (gameInfo.field as RandzuField).value.map((x: UInt32[]) =>
         //   x.map((x) => x.toBigint())
         // );
+        const lastMoveBlockHeight = gameInfo.lastMoveBlockHeight;
+        console.log('BH', lastMoveBlockHeight);
         set((state) => {
           // @ts-ignore
           state.gameInfo = {
@@ -144,6 +146,7 @@ export const useMatchQueueStore = create<
             opponent:
               currentUserIndex == 1 ? gameInfo.player1 : gameInfo.player2,
             gameId: activeGameId.toBigInt(),
+            lastMoveBlockHeight: lastMoveBlockHeight?.toBigInt(),
             winner: gameInfo.winner.equals(PublicKey.empty()).not().toBoolean()
               ? gameInfo.winner
               : undefined,
