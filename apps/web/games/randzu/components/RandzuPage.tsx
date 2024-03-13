@@ -99,6 +99,25 @@ export default function RandzuPage({
     setGameState(GameState.MatchRegistration);
   };
 
+  const proveOpponentTimeout = async () => {
+    if (competition!.enteringPrice > 0) {
+      console.log(await bridge(competition?.enteringPrice! * 10 ** 9));
+    }
+
+    const randzuLogic = client.runtime.resolve('RandzuLogic');
+
+    const tx = await client.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        randzuLogic.proveOpponentTimeout(
+          UInt64.from(matchQueue.gameInfo!.gameId)        
+        );
+      }
+    );
+
+    await tx.sign();
+    await tx.send();
+  };
   const onCellClicked = async (x: number, y: number) => {
     if (!matchQueue.gameInfo?.isCurrentUserMove) return;
     if (matchQueue.gameInfo.field.value[x][y] != 0) return;
@@ -246,7 +265,7 @@ export default function RandzuPage({
                   </div>
                   <div
                     className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
-                    onClick={() => {}}
+                    onClick={() => proveOpponentTimeout()}
                   >
                     Prove win
                   </div>

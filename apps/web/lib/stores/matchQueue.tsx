@@ -111,7 +111,7 @@ export const useMatchQueueStore = create<
           state.lastGameState = gameInfo.winner.equals(address).toBoolean()
             ? 'win'
             : 'lost';
-          state.gameInfo!.field = gameInfo.field ?? gameInfo.thimblerigField; // @todo temporal workaround for proto-kit bug https://github.com/ZkNoid/proto-kit
+          state.gameInfo!.field = gameInfo.field;
           state.gameInfo!.isCurrentUserMove = false;
         });
       }
