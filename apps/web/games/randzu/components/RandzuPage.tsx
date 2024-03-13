@@ -100,10 +100,6 @@ export default function RandzuPage({
   };
 
   const proveOpponentTimeout = async () => {
-    if (competition!.enteringPrice > 0) {
-      console.log(await bridge(competition?.enteringPrice! * 10 ** 9));
-    }
-
     const randzuLogic = client.runtime.resolve('RandzuLogic');
 
     const tx = await client.transaction(

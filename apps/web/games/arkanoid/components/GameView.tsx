@@ -65,6 +65,17 @@ export const GameView = (props: IGameViewProps) => {
   let ticksCache: ITick[] = [];
   let bricksLeft: number = 0;
 
+  let brickImages: HTMLImageElement[] = [new Image(), new Image(), new Image()];
+  brickImages[0].src = '/sprite/brick/1.png';
+  brickImages[1].src = '/sprite/brick/2.png';
+  brickImages[2].src = '/sprite/brick/3.png';
+
+  let cartImage = new Image();
+  cartImage.src = '/sprite/cart.png';
+
+  let ballImage = new Image();
+  ballImage.src = '/sprite/ball.png';
+
   // const [ticks, setTicks] = useState<number[]>([]);
 
   let lastUpdateTime = Date.now();
@@ -275,7 +286,14 @@ export const GameView = (props: IGameViewProps) => {
     ctx!.beginPath();
     ctx!.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
     ctx!.fillStyle = 'black';
-    ctx!.fill();
+    // ctx!.fill();
+    ctx?.drawImage(
+      ballImage,
+      ball.x - ball.radius,
+      ball.y - ball.radius,
+      ball.radius * 2,
+      ball.radius * 2
+    );
     ctx!.closePath();
   };
 
@@ -295,26 +313,36 @@ export const GameView = (props: IGameViewProps) => {
 
   const drawBricks = () => {
     bricks.forEach((brick) => {
-      ctx!.beginPath();
-      ctx!.rect(brick.x, brick.y, brick.w, brick.h);
-      ctx!.fillStyle = brick.value > 1 ? '#0095dd' : 'transparent';
-      ctx!.fill();
-      ctx!.closePath();
-
       if (brick.value > 1) {
-        ctx!.fillStyle = 'black';
-        ctx!.font = '36px serif';
-        ctx!.fillText(
-          (brick.value - 1).toString(),
-          brick.x + brick.w / 4,
-          brick.y + (3 * brick.h) / 4
+        ctx!.drawImage(
+          brickImages[brick.value - 2],
+          brick.x,
+          brick.y,
+          brick.w,
+          brick.h
         );
       }
+
+      // ctx!.beginPath();
+      // ctx!.rect(brick.x, brick.y, brick.w, brick.h);
+      // ctx!.fillStyle = brick.value > 1 ? '#0095dd' : 'transparent';
+      // // ctx!.fill();
+      // ctx!.closePath();
+
+      // if (brick.value > 1) {
+      //   ctx!.fillStyle = 'black';
+      //   ctx!.font = '36px serif';
+      //   ctx!.fillText(
+      //     (brick.value - 1).toString(),
+      //     brick.x + brick.w / 4,
+      //     brick.y + (3 * brick.h) / 4
+      //   );
+      // }
     });
   };
 
   const drawContractBricks = () => {
-    ctx!.strokeStyle = 'red';
+    ctx!.strokeStyle = '#4DC7D7';
     ctx!.setLineDash([5, 5]);
 
     contractBricks.forEach((brick) => {
@@ -342,8 +370,9 @@ export const GameView = (props: IGameViewProps) => {
   const drawCart = () => {
     ctx!.beginPath();
     ctx!.rect(cart.x, cart.y, cart.w, cart.h);
+    ctx?.drawImage(cartImage, cart.x, cart.y, cart.w, cart.h);
     ctx!.fillStyle = 'red';
-    ctx!.fill();
+    // ctx!.fill();
     ctx!.closePath();
   };
 
@@ -364,7 +393,7 @@ export const GameView = (props: IGameViewProps) => {
 
     // Ball trace
     ctx!.beginPath();
-    ctx!.strokeStyle = 'black';
+    ctx!.strokeStyle = '#D2FF00';
     if (ballTrace.length > 0) {
       ctx!.moveTo(ballTrace[0][0], ballTrace[0][1]);
     }
@@ -376,7 +405,7 @@ export const GameView = (props: IGameViewProps) => {
 
     // Contract ball trace line
     ctx!.beginPath();
-    ctx!.strokeStyle = 'red';
+    ctx!.strokeStyle = '#4DC7D7';
     if (contractBallTrace.length > 0) {
       ctx!.moveTo(contractBallTrace[0][0], contractBallTrace[0][1]);
     }
@@ -733,7 +762,7 @@ export const GameView = (props: IGameViewProps) => {
       width={`${FIELD_WIDTH}`}
       height={`${FIELD_HEIGHT + 10}`}
       ref={canvas}
-      className={winable ? 'border border-black' : 'border border-red-500'}
+      className={winable ? 'border border-[#D2FF00]' : 'border border-red-500'}
     ></canvas>
   );
 };
