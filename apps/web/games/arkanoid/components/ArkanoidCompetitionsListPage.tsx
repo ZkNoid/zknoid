@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { PublicKey, UInt64 } from 'o1js';
-import { ReactElement, useContext } from 'react';
+import { ReactElement, useContext, useState } from 'react';
 import { useNetworkStore } from '@/lib/stores/network';
 import { ICompetition } from '@/lib/types';
 import {
@@ -12,6 +12,7 @@ import {
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import GamePage from '@/components/framework/GamePage';
 import { arkanoidConfig } from '../config';
+import {defaultGames} from "@/app/constants/games";
 
 const timeStampToStringDate = (timeStamp: number): string => {
   var date = new Date(timeStamp);
@@ -104,8 +105,106 @@ export default function ArkanoidCompetitionsListPage() {
   };
 
   return (
-    <GamePage gameConfig={arkanoidConfig}>
-      <div className="flex min-h-screen w-screen flex-col items-center py-10">
+    <GamePage
+      gameConfig={arkanoidConfig}
+      image={'/image/games/arkanoid-title.svg'}
+      gameName={'Arkanoid Game'}
+      competitionsBlocks={[
+        {
+          game: defaultGames[0],
+          index: 0,
+          preRegDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          competitionsDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          participantsFee: 96,
+          currency: '$MINA',
+          reward: 5000,
+        },
+        {
+          game: defaultGames[0],
+          index: 0,
+          preRegDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          competitionsDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          participantsFee: 96,
+          currency: '$MINA',
+          reward: 5000,
+        },
+        {
+          game: defaultGames[0],
+          index: 0,
+          preRegDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          competitionsDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          participantsFee: 96,
+          currency: '$MINA',
+          reward: 5000,
+        },
+      ]}
+      competitionList={[
+        {
+          game: defaultGames[0],
+          index: 0,
+          preRegDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          competitionsDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          participantsFee: 96,
+          currency: '$MINA',
+          reward: 6000,
+        },
+        {
+          game: defaultGames[0],
+          index: 0,
+          preRegDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          competitionsDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          participantsFee: 96,
+          currency: '$MINA',
+          reward: 5000,
+        },
+        {
+          game: defaultGames[0],
+          index: 0,
+          preRegDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          competitionsDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          participantsFee: 96,
+          currency: '$MINA',
+          reward: 5000,
+        },
+      ]}
+    >
+      <div className="flex flex-col items-center py-10">
         <Link href={`/games/arkanoid/new-competition`} className="p-5">
           <div className="h-50 w-100 rounded border-2 border-solid border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark">
             Create competition{' '}
