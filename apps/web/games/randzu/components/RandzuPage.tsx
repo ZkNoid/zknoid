@@ -24,6 +24,7 @@ import { getRandomEmoji } from '../utils';
 import { useMatchQueueStore } from '@/lib/stores/matchQueue';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import { MOVE_TIMEOUT_IN_BLOCKS } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
+import { formatDecimals } from '@/lib/utils';
 
 enum GameState {
   NotStarted,
@@ -106,7 +107,7 @@ export default function RandzuPage({
       PublicKey.fromBase58(networkStore.address!),
       () => {
         randzuLogic.proveOpponentTimeout(
-          UInt64.from(matchQueue.gameInfo!.gameId)        
+          UInt64.from(matchQueue.gameInfo!.gameId)
         );
       }
     );
@@ -114,6 +115,21 @@ export default function RandzuPage({
     await tx.sign();
     await tx.send();
   };
+
+  const getWinnings = async () => {
+    const randzuLogic = client.runtime.resolve('RandzuLogic');
+
+    const tx = await client.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        randzuLogic.win(UInt64.from(matchQueue.gameInfo!.gameId));
+      }
+    );
+
+    await tx.sign();
+    await tx.send();
+  };
+
   const onCellClicked = async (x: number, y: number) => {
     if (!matchQueue.gameInfo?.isCurrentUserMove) return;
     if (matchQueue.gameInfo.field.value[x][y] != 0) return;
@@ -189,11 +205,19 @@ export default function RandzuPage({
 
             <div className="flex flex-row items-center justify-center gap-5">
               {(gameState == GameState.Won || gameState == GameState.Lost) && (
-                <div
-                  className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
-                  onClick={() => restart()}
-                >
-                  Restart
+                <div>
+                  <div
+                    className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
+                    onClick={() => getWinnings()}
+                  >
+                    Get winnings
+                  </div>
+                  <div
+                    className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
+                    onClick={() => restart()}
+                  >
+                    Restart
+                  </div>
                 </div>
               )}
               {gameState == GameState.NotStarted && (
@@ -201,7 +225,8 @@ export default function RandzuPage({
                   className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
                   onClick={() => startGame()}
                 >
-                  Start for {competition?.enteringPrice} 🪙
+                  Start for{' '}
+                  {competition && formatDecimals(competition.enteringPrice)} 🪙
                 </div>
               )}
             </div>

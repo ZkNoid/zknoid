@@ -12,6 +12,7 @@ import {
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import GamePage from '@/components/framework/GamePage';
 import { arkanoidConfig } from '../config';
+import { formatDecimals } from '@/lib/utils';
 
 const timeStampToStringDate = (timeStamp: number): string => {
   var date = new Date(timeStamp);
@@ -46,6 +47,20 @@ export default function ArkanoidCompetitionsListPage() {
     await tx.send();
   };
 
+  const getReward = async (competitionId: number) => {
+    const gameHub = client.runtime.resolve('ArkanoidGameHub');
+
+    const tx = await client.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        gameHub.getReward(UInt64.from(competitionId));
+      }
+    );
+
+    await tx.sign();
+    await tx.send();
+  };
+
   const competitionButton = (c: ICompetition): ReactElement => {
     let defaultButton = (
       <div className="flex content-center items-center justify-center rounded border-solid bg-gray-500 px-6 py-4 font-bold text-white">
@@ -58,7 +73,7 @@ export default function ArkanoidCompetitionsListPage() {
         href={`/games/arkanoid/[competitionId]`}
         as={`/games/arkanoid/${c.competitionId}`}
       >
-        <div className="flex content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white">
+        <div className="flex cursor-pointer content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white">
           Play
         </div>
       </Link>
@@ -66,7 +81,7 @@ export default function ArkanoidCompetitionsListPage() {
 
     let registerButton = (
       <div
-        className="flex content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white"
+        className="flex cursor-pointer content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white"
         onClick={() => register(c.competitionId)}
       >
         Register
@@ -75,15 +90,25 @@ export default function ArkanoidCompetitionsListPage() {
 
     const info = (text: string) => {
       return (
-        <div className="flex content-center items-center justify-center rounded border-solid bg-gray-500 px-6 py-4 font-bold text-white">
+        <div className="flex cursor-pointer content-center items-center justify-center rounded border-solid bg-gray-500 px-6 py-4 font-bold text-white">
           {text}
         </div>
       );
     };
+
+    let getRewardButton = (
+      <div
+        className="flex cursor-pointer content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white"
+        onClick={() => getReward(c.competitionId)}
+      >
+        Get Reward
+      </div>
+    );
+
     let curTime = Date.now();
 
     if (c.competitionEndTime < curTime) {
-      return info('Competition ended');
+      return getRewardButton;
     }
 
     if (c.prereg && !c.registered) {
@@ -165,8 +190,10 @@ export default function ArkanoidCompetitionsListPage() {
                 <td className="px-6 py-4">
                   {timeStampToStringDate(c.competitionEndTime)}
                 </td>
-                <td className="px-6 py-4">{c.funds}</td>
-                <td className="px-6 py-4">{c.participationFee}</td>
+                <td className="px-6 py-4">{formatDecimals(c.funds)}</td>
+                <td className="px-6 py-4">
+                  {formatDecimals(c.participationFee)}
+                </td>
                 <td>
                   {competitionButton(c)}
                   {/* <Link href={`/games/arkanoid/${c.competitionId}`}>

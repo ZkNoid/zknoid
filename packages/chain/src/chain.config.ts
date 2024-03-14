@@ -1,6 +1,6 @@
-import { LocalhostAppChain } from "@proto-kit/cli";
-import { Runtime } from "@proto-kit/module";
-import { VanillaProtocol } from "@proto-kit/protocol";
+import { LocalhostAppChain } from '@proto-kit/cli';
+import { Runtime } from '@proto-kit/module';
+import { VanillaProtocol } from '@proto-kit/protocol';
 import {
   BlockProducerModule,
   InMemoryDatabase,
@@ -13,7 +13,7 @@ import {
   SequencerModule,
   UnprovenProducerModule,
   sequencerModule,
-} from "@proto-kit/sequencer";
+} from '@proto-kit/sequencer';
 import {
   BlockStorageResolver,
   GraphqlSequencerModule,
@@ -23,12 +23,12 @@ import {
   QueryGraphqlModule,
   UnprovenBlockResolver,
   MerkleWitnessResolver,
-} from "@proto-kit/api";
+} from '@proto-kit/api';
 import {
   StateServiceQueryModule,
   BlockStorageNetworkStateModule,
-} from "@proto-kit/sdk";
-import runtime from "./runtime";
+} from '@proto-kit/sdk';
+import runtime from './runtime';
 
 @sequencerModule()
 class StartupScripts extends SequencerModule {

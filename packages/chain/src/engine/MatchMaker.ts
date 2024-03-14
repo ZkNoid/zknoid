@@ -1,19 +1,29 @@
 import {
   RuntimeModule,
+  runtimeModule,
   state,
   runtimeMethod,
-} from "@proto-kit/module";
-import type { Option } from "@proto-kit/protocol";
-import { State, StateMap, assert } from "@proto-kit/protocol";
+} from '@proto-kit/module';
+import type { Option } from '@proto-kit/protocol';
+import { UInt64 as ProtoUInt64 } from '@proto-kit/library';
+import { State, StateMap, assert } from '@proto-kit/protocol';
 import {
   PublicKey,
   Struct,
   UInt64,
   Provable,
-  Bool
-} from "o1js";
+  Bool,
+  UInt32,
+  Poseidon,
+  Field,
+  Int64,
+} from 'o1js';
+import { inject } from 'tsyringe';
+import { Balances } from '../framework/balances';
 
 interface MatchMakerConfig {}
+
+export const DEFAULT_GAME_COST = ProtoUInt64.from(10 ** 9);
 
 export const PENDING_BLOCKS_NUM_CONST = 20;
 
@@ -42,16 +52,19 @@ export class QueueListItem extends Struct({
   registrationTimestamp: UInt64,
 }) {}
 
-export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
+// abstract class
+
+@runtimeModule()
+export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
   // Session => user
   @state() public sessions = StateMap.from<PublicKey, PublicKey>(
     PublicKey,
-    PublicKey
+    PublicKey,
   );
   // mapping(roundId => mapping(registered user address => bool))
   @state() public queueRegisteredRoundUsers = StateMap.from<RoundIdxUser, Bool>(
     RoundIdxUser,
-    Bool
+    Bool,
   );
   // mapping(roundId => SessionKey[])
   @state() public queueRoundUsersList = StateMap.from<
@@ -62,13 +75,25 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
 
   @state() public activeGameId = StateMap.from<PublicKey, UInt64>(
     PublicKey,
-    UInt64
+    UInt64,
   );
 
   // Game ids start from 1
-  abstract games: StateMap<UInt64, any>;
+  // abstract games: StateMap<UInt64, any>;
+  @state() public games = StateMap.from<UInt64, any>(UInt64, UInt64);
 
   @state() public gamesNum = State.from<UInt64>(UInt64);
+
+  @state() public gameFund = StateMap.from<UInt64, ProtoUInt64>(
+    UInt64,
+    ProtoUInt64,
+  );
+
+  @state() public gameFinished = StateMap.from<UInt64, Bool>(UInt64, Bool);
+
+  public constructor(@inject('Balances') private balances: Balances) {
+    super();
+  }
 
   /**
    * Initializes game when opponent is found
@@ -79,7 +104,7 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
    */
   public initGame(
     opponentReady: Bool,
-    opponent: Option<QueueListItem>
+    opponent: Option<QueueListItem>,
   ): UInt64 {
     return UInt64.from(0);
   }
@@ -98,7 +123,7 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
         .get(this.transaction.sender.value)
         .orElse(UInt64.from(0))
         .equals(UInt64.from(0)),
-      "Player already in game"
+      'Player already in game',
     );
 
     // Registering player session key
@@ -109,10 +134,13 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     assert(
       this.queueRegisteredRoundUsers
         .get(
-          new RoundIdxUser({ roundId, userAddress: this.transaction.sender.value })
+          new RoundIdxUser({
+            roundId,
+            userAddress: this.transaction.sender.value,
+          }),
         )
         .isSome.not(),
-      "User already in queue"
+      'User already in queue',
     );
 
     const queueLength = this.queueLength.get(roundId).orElse(UInt64.from(0));
@@ -122,9 +150,9 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
       new RoundIdxIndex({
         roundId,
         index: queueLength.sub(
-          Provable.if(opponentReady, UInt64.from(1), UInt64.from(0))
+          Provable.if(opponentReady, UInt64.from(1), UInt64.from(0)),
         ),
-      })
+      }),
     );
 
     const gameId = this.initGame(opponentReady, opponent);
@@ -132,13 +160,13 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     // Assigning new game to player if opponent found
     this.activeGameId.set(
       this.transaction.sender.value,
-      Provable.if(opponentReady, gameId, UInt64.from(0))
+      Provable.if(opponentReady, gameId, UInt64.from(0)),
     );
 
     // Setting that opponent is in game if opponent found
     this.activeGameId.set(
       Provable.if(opponentReady, opponent.value.userAddress, PublicKey.empty()),
-      gameId
+      gameId,
     );
 
     // If opponent not found – adding current user to the list
@@ -148,10 +176,10 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
         userAddress: Provable.if(
           opponentReady,
           PublicKey.empty(),
-          this.transaction.sender.value
+          this.transaction.sender.value,
         ),
         registrationTimestamp: timestamp,
-      })
+      }),
     );
 
     // If opponent not found – registering current user in the list
@@ -161,10 +189,10 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
         userAddress: Provable.if(
           opponentReady,
           PublicKey.empty(),
-          this.transaction.sender.value
+          this.transaction.sender.value,
         ),
       }),
-      Bool(true)
+      Bool(true),
     );
 
     // If opponent found – removing him from queue
@@ -174,10 +202,10 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
         userAddress: Provable.if(
           opponentReady,
           opponent.value.userAddress,
-          PublicKey.empty()
+          PublicKey.empty(),
         ),
       }),
-      Bool(false)
+      Bool(false),
     );
 
     // If opponent not found – incrementing queue length. If found – removing opponent by length decreasing
@@ -186,36 +214,39 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
       Provable.if(
         opponentReady,
         queueLength.sub(
-          Provable.if(opponentReady, UInt64.from(1), UInt64.from(0))
+          Provable.if(opponentReady, UInt64.from(1), UInt64.from(0)),
         ),
-        queueLength.add(1)
-      )
+        queueLength.add(1),
+      ),
     );
+
+    this.balances.transferTo(PublicKey.empty(), this.getParticipationPrice());
   }
+
   @runtimeMethod()
   public proveOpponentTimeout(gameId: UInt64): void {
     const sessionSender = this.sessions.get(this.transaction.sender.value);
-    const sender = Provable.if(sessionSender.isSome, sessionSender.value, this.transaction.sender.value);
+    const sender = Provable.if(
+      sessionSender.isSome,
+      sessionSender.value,
+      this.transaction.sender.value,
+    );
     const game = this.games.get(gameId);
     const nextUser = Provable.if(
       game.value.currentMoveUser.equals(game.value.player1),
       game.value.player2,
-      game.value.player1
+      game.value.player1,
     );
-    assert(game.isSome, "Invalid game id");
-    assert(
-      nextUser.equals(sender),
-      `Not your move: ${sender.toBase58()}`
-    );
-    assert(
-      game.value.winner.equals(PublicKey.empty()),
-      `Game finished`
-    );
+    assert(game.isSome, 'Invalid game id');
+    assert(nextUser.equals(sender), `Not your move: ${sender.toBase58()}`);
+    assert(game.value.winner.equals(PublicKey.empty()), `Game finished`);
 
-    const isTimeout = this.network.block.height.sub(game.value.lastMoveBlockHeight).greaterThan(UInt64.from(MOVE_TIMEOUT_IN_BLOCKS));
+    const isTimeout = this.network.block.height
+      .sub(game.value.lastMoveBlockHeight)
+      .greaterThan(UInt64.from(MOVE_TIMEOUT_IN_BLOCKS));
 
-    assert(isTimeout, "Timeout not reached");
-      
+    assert(isTimeout, 'Timeout not reached');
+
     game.value.winner = sender;
     game.value.lastMoveBlockHeight = this.network.block.height;
     this.games.set(gameId, game.value);
@@ -223,5 +254,17 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     // Removing active game for players if game ended
     this.activeGameId.set(game.value.player1, UInt64.from(0));
     this.activeGameId.set(game.value.player2, UInt64.from(0));
+  }
+
+  protected getParticipationPrice() {
+    return DEFAULT_GAME_COST;
+  }
+
+  protected getFunds(gameId: UInt64, winner: PublicKey) {
+    assert(this.gameFinished.get(gameId).value.not());
+
+    this.gameFinished.set(gameId, Bool(true));
+
+    this.balances.addBalance(winner, this.gameFund.get(gameId).value);
   }
 }
