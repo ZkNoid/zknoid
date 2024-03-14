@@ -52,7 +52,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
       eventTypesSelected.includes(getEventType(x)) ||
       eventTypesSelected.length == 0
   );
-  const sortByFliter = (a: IGame, b: IGame) => {
+  const sortByFilter = (a: IGame, b: IGame) => {
     switch (sortBy) {
       case GameStoreSortBy.RatingHigh:
         return a.rating - b.rating;
@@ -376,7 +376,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                   )
                     return true;
                 })
-                .sort((a, b) => sortByFliter(a, b))
+                .sort((a, b) => sortByFilter(a, b))
                 .map((game, index) => (
                   <GameCard
                     game={game}

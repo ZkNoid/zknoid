@@ -24,6 +24,7 @@ import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import GamePage from '@/components/framework/GamePage';
 import { arkanoidConfig } from '../config';
+import {defaultGames} from "@/app/constants/games";
 
 enum GameState {
   NotStarted,
@@ -166,7 +167,105 @@ export default function ArkanoidPage({
   };
 
   return (
-    <GamePage gameConfig={arkanoidConfig}>
+    <GamePage
+      gameConfig={arkanoidConfig}
+      image={'/image/games/arkanoid-title.svg'}
+      gameName={'Arkanoid Game'}
+      competitionsBlocks={[
+        {
+          game: defaultGames[0],
+          index: 0,
+          preRegDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          competitionsDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          participantsFee: 96,
+          currency: '$MINA',
+          reward: 5000,
+        },
+        {
+          game: defaultGames[0],
+          index: 0,
+          preRegDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          competitionsDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          participantsFee: 96,
+          currency: '$MINA',
+          reward: 5000,
+        },
+        {
+          game: defaultGames[0],
+          index: 0,
+          preRegDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          competitionsDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          participantsFee: 96,
+          currency: '$MINA',
+          reward: 5000,
+        },
+      ]}
+      competitionList={[
+        {
+          game: defaultGames[0],
+          index: 0,
+          preRegDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          competitionsDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          participantsFee: 96,
+          currency: '$MINA',
+          reward: 5000,
+        },
+        {
+          game: defaultGames[0],
+          index: 0,
+          preRegDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          competitionsDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          participantsFee: 96,
+          currency: '$MINA',
+          reward: 5000,
+        },
+        {
+          game: defaultGames[0],
+          index: 0,
+          preRegDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          competitionsDate: {
+            start: new Date(1999, 12, 12),
+            end: new Date(2000, 12, 1),
+          },
+          participantsFee: 96,
+          currency: '$MINA',
+          reward: 5000,
+        },
+      ]}
+    >
       <main className="flex grow flex-col items-center gap-5 p-5">
         {networkStore.address ? (
           <div className="flex flex-col gap-5">
