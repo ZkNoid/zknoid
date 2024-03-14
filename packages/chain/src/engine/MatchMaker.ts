@@ -5,6 +5,7 @@ import {
   runtimeMethod,
 } from '@proto-kit/module';
 import type { Option } from '@proto-kit/protocol';
+import { UInt64 as ProtoUInt64 } from '@proto-kit/library';
 import { State, StateMap, assert } from '@proto-kit/protocol';
 import {
   PublicKey,
@@ -17,8 +18,12 @@ import {
   Field,
   Int64,
 } from 'o1js';
+import { inject } from 'tsyringe';
+import { Balances } from '../framework/balances';
 
 interface MatchMakerConfig {}
+
+export const DEFAULT_GAME_COST = ProtoUInt64.from(10 ** 9);
 
 export const PENDING_BLOCKS_NUM_CONST = 20;
 
@@ -47,7 +52,10 @@ export class QueueListItem extends Struct({
   registrationTimestamp: UInt64,
 }) {}
 
-export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
+// abstract class
+
+@runtimeModule()
+export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
   // Session => user
   @state() public sessions = StateMap.from<PublicKey, PublicKey>(
     PublicKey,
@@ -71,9 +79,21 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
   );
 
   // Game ids start from 1
-  abstract games: StateMap<UInt64, any>;
+  // abstract games: StateMap<UInt64, any>;
+  @state() public games = StateMap.from<UInt64, any>(UInt64, UInt64);
 
   @state() public gamesNum = State.from<UInt64>(UInt64);
+
+  @state() public gameFund = StateMap.from<UInt64, ProtoUInt64>(
+    UInt64,
+    ProtoUInt64,
+  );
+
+  @state() public gameFinished = StateMap.from<UInt64, Bool>(UInt64, Bool);
+
+  public constructor(@inject('Balances') private balances: Balances) {
+    super();
+  }
 
   /**
    * Initializes game when opponent is found
@@ -199,6 +219,8 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
         queueLength.add(1),
       ),
     );
+
+    this.balances.transferTo(PublicKey.empty(), DEFAULT_GAME_COST);
   }
   @runtimeMethod()
   public proveOpponentTimeout(gameId: UInt64): void {
@@ -231,5 +253,13 @@ export abstract class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     // Removing active game for players if game ended
     this.activeGameId.set(game.value.player1, UInt64.from(0));
     this.activeGameId.set(game.value.player2, UInt64.from(0));
+  }
+
+  protected getFunds(gameId: UInt64, winner: PublicKey) {
+    assert(this.gameFinished.get(gameId).value.not());
+
+    this.gameFinished.set(gameId, Bool(true));
+
+    this.balances.addBalance(winner, this.gameFund.get(gameId).value);
   }
 }

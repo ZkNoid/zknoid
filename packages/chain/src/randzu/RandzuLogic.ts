@@ -12,7 +12,7 @@ import {
   Field,
   Int64,
 } from 'o1js';
-import { MatchMaker } from '../engine/MatchMaker';
+import { DEFAULT_GAME_COST, MatchMaker } from '../engine/MatchMaker';
 import type { QueueListItem } from '../engine/MatchMaker';
 
 const RANDZU_FIELD_SIZE = 15;
@@ -147,6 +147,7 @@ export class RandzuLogic extends MatchMaker {
     );
 
     this.gamesNum.set(currentGameId);
+    this.gameFund.set(currentGameId, DEFAULT_GAME_COST.mul(2));
 
     return currentGameId;
   }
@@ -301,5 +302,12 @@ export class RandzuLogic extends MatchMaker {
       Provable.if(winProposed, game.value.player1, PublicKey.empty()),
       UInt64.from(0),
     );
+  }
+
+  @runtimeMethod()
+  public win(gameId: UInt64): void {
+    let game = this.games.get(gameId).value;
+    assert(game.winner.equals(PublicKey.empty()).not());
+    this.getFunds(gameId, game.winner);
   }
 }
