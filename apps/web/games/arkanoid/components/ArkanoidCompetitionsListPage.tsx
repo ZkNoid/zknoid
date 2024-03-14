@@ -72,7 +72,7 @@ export default function ArkanoidCompetitionsListPage() {
         href={`/games/arkanoid/[competitionId]`}
         as={`/games/arkanoid/${c.competitionId}`}
       >
-        <div className="flex content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white">
+        <div className="flex cursor-pointer content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white">
           Play
         </div>
       </Link>
@@ -80,7 +80,7 @@ export default function ArkanoidCompetitionsListPage() {
 
     let registerButton = (
       <div
-        className="flex content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white"
+        className="flex cursor-pointer content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white"
         onClick={() => register(c.competitionId)}
       >
         Register
@@ -89,7 +89,7 @@ export default function ArkanoidCompetitionsListPage() {
 
     const info = (text: string) => {
       return (
-        <div className="flex content-center items-center justify-center rounded border-solid bg-gray-500 px-6 py-4 font-bold text-white">
+        <div className="flex cursor-pointer content-center items-center justify-center rounded border-solid bg-gray-500 px-6 py-4 font-bold text-white">
           {text}
         </div>
       );
@@ -97,7 +97,7 @@ export default function ArkanoidCompetitionsListPage() {
 
     let getRewardButton = (
       <div
-        className="flex content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white"
+        className="flex cursor-pointer content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white"
         onClick={() => getReward(c.competitionId)}
       >
         Get Reward
