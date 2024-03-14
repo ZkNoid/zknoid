@@ -220,8 +220,9 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
       ),
     );
 
-    this.balances.transferTo(PublicKey.empty(), DEFAULT_GAME_COST);
+    this.balances.transferTo(PublicKey.empty(), this.getParticipationPrice());
   }
+
   @runtimeMethod()
   public proveOpponentTimeout(gameId: UInt64): void {
     const sessionSender = this.sessions.get(this.transaction.sender.value);
@@ -253,6 +254,10 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     // Removing active game for players if game ended
     this.activeGameId.set(game.value.player1, UInt64.from(0));
     this.activeGameId.set(game.value.player2, UInt64.from(0));
+  }
+
+  protected getParticipationPrice() {
+    return DEFAULT_GAME_COST;
   }
 
   protected getFunds(gameId: UInt64, winner: PublicKey) {
