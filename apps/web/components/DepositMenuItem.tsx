@@ -3,6 +3,7 @@ import { useState } from 'react';
 import {
   useMinaBridge,
   useProtokitBalancesStore,
+  useTestBalanceGetter,
 } from '@/lib/stores/protokitBalances';
 import { HeaderCard } from './ui/games-store/HeaderCard';
 import MinaTokenSvg from '@/public/image/tokens/mina.svg';
@@ -111,6 +112,7 @@ export const DepositMenuItem = () => {
   const networkStore = useNetworkStore();
 
   const bridge = useMinaBridge();
+  const testBalanceGetter = useTestBalanceGetter();
   const rate = 1;
 
   return (
@@ -119,6 +121,11 @@ export const DepositMenuItem = () => {
         svg={'top-up'}
         text="Top up"
         onClick={() => setExpanded(true)}
+      />
+      <HeaderCard
+        svg={'top-up'}
+        text="Get test balance"
+        onClick={() => testBalanceGetter()}
       />
       <AnimatePresence>
         {expanded && (

@@ -1,7 +1,7 @@
-import { ArkanoidGameHub } from "./arkanoid/ArkanoidGameHub";
-import { Balances } from "./framework/balances";
-import { RandzuLogic } from "./randzu/RandzuLogic";
-import { ThimblerigLogic } from "./thimblerig/ThimblerigLogic";
+import { ArkanoidGameHub } from './arkanoid/ArkanoidGameHub';
+import { Balances } from './framework/balances';
+import { RandzuLogic } from './randzu/RandzuLogic';
+import { ThimblerigLogic } from './thimblerig/ThimblerigLogic';
 
 export default {
   modules: {

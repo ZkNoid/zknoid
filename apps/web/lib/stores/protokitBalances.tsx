@@ -15,6 +15,7 @@ import { useProtokitChainStore } from './protokitChain';
 import AppChainClientContext from '../contexts/AppChainClientContext';
 
 import { DefaultRuntimeModules } from '../runtimeModules';
+import { zkNoidConfig } from '@/games/config';
 
 export interface BalancesState {
   loading: boolean;
@@ -136,4 +137,28 @@ export const useMinaBridge = () => {
     },
     [network.walletConnected, balancesStore.balances]
   );
+};
+
+export const useTestBalanceGetter = () => {
+  const defaultBalance = 100 * 10 ** 9;
+  const balancesStore = useProtokitBalancesStore();
+  const network = useNetworkStore();
+  const contextAppChainClient = useContext(
+    AppChainClientContext
+  ) as ClientAppChain<any> as ClientAppChain<typeof DefaultRuntimeModules>;
+
+  return useCallback(async () => {
+    if (!network.address) return;
+    if (balancesStore.balances[network.address]) return;
+
+    const balances = contextAppChainClient.runtime.resolve('Balances');
+    const sender = PublicKey.fromBase58(network.address!);
+
+    const l2tx = await contextAppChainClient.transaction(sender, () => {
+      balances.addBalance(sender, UInt64.from(defaultBalance));
+    });
+
+    await l2tx.sign();
+    await l2tx.send();
+  }, [network.walletConnected, balancesStore.balances]);
 };

@@ -24,6 +24,7 @@ import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import GamePage from '@/components/framework/GamePage';
 import { arkanoidConfig } from '../config';
+import { formatDecimals } from '@/lib/utils';
 
 enum GameState {
   NotStarted,
@@ -199,7 +200,9 @@ export default function ArkanoidPage({
                   className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
                   onClick={() => startGame()}
                 >
-                  Start for {competition?.participationFee} 🪙
+                  Start for{' '}
+                  {competition && formatDecimals(competition.participationFee)}{' '}
+                  🪙
                 </div>
               )}
               {gameState == GameState.Won && (
