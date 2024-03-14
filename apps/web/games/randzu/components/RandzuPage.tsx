@@ -24,6 +24,7 @@ import { getRandomEmoji } from '../utils';
 import { useMatchQueueStore } from '@/lib/stores/matchQueue';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import { MOVE_TIMEOUT_IN_BLOCKS } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
+import { formatDecimals } from '@/lib/utils';
 
 enum GameState {
   NotStarted,
@@ -224,7 +225,8 @@ export default function RandzuPage({
                   className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
                   onClick={() => startGame()}
                 >
-                  Start for {competition?.enteringPrice} 🪙
+                  Start for{' '}
+                  {competition && formatDecimals(competition.enteringPrice)} 🪙
                 </div>
               )}
             </div>
