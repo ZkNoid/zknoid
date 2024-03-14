@@ -12,6 +12,7 @@ import {
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import GamePage from '@/components/framework/GamePage';
 import { arkanoidConfig } from '../config';
+import { formatDecimals } from '@/lib/utils';
 
 const timeStampToStringDate = (timeStamp: number): string => {
   var date = new Date(timeStamp);
@@ -189,8 +190,10 @@ export default function ArkanoidCompetitionsListPage() {
                 <td className="px-6 py-4">
                   {timeStampToStringDate(c.competitionEndTime)}
                 </td>
-                <td className="px-6 py-4">{c.funds}</td>
-                <td className="px-6 py-4">{c.participationFee}</td>
+                <td className="px-6 py-4">{formatDecimals(c.funds)}</td>
+                <td className="px-6 py-4">
+                  {formatDecimals(c.participationFee)}
+                </td>
                 <td>
                   {competitionButton(c)}
                   {/* <Link href={`/games/arkanoid/${c.competitionId}`}>
