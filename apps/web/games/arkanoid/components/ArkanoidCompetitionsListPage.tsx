@@ -10,14 +10,17 @@ import {
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import GamePage from '@/components/framework/GamePage';
 import { arkanoidConfig } from '../config';
-import { CompetitionList } from '@/components/framework/CompetitionList/CompetitionList';
+import { CompetitionWidget } from '@/components/framework/CompetitionWidget/CompetitionWidget';
+import { ICompetition } from '@/lib/types';
+import { ZkNoidGameGenre } from '@/lib/platform/game_tags';
+import { Currency } from '@/constants/currency';
 
-const timeStampToStringDate = (timeStamp: number): string => {
-  var date = new Date(timeStamp);
-  return (
-    date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()
-  );
-};
+// const timeStampToStringDate = (timeStamp: number): string => {
+//   var date = new Date(timeStamp);
+//   return (
+//     date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()
+//   );
+// };
 
 export default function ArkanoidCompetitionsListPage() {
   const networkStore = useNetworkStore();
@@ -101,97 +104,76 @@ export default function ArkanoidCompetitionsListPage() {
   //
   //   return playButton;
   // };
-  console.log(compStore.competitions);
+  const competitions: ICompetition[] = [
+    {
+      id: 1,
+      seed: 123,
+      game: { id: 'arkanoid', genre: ZkNoidGameGenre.Arcade },
+      title: 'Arkanoid GAME',
+      preReg: false,
+      preRegDate: {
+        start: new Date(2024, 9, 10),
+        end: new Date(2024, 9, 20),
+      },
+      competitionDate: {
+        start: new Date(2024, 9, 25),
+        end: new Date(2024, 9, 31),
+      },
+      participationFee: 5,
+      currency: Currency.MINA,
+      reward: 5000,
+      registered: false,
+    },
+    {
+      id: 2,
+      seed: 123,
+      game: { id: 'arkanoid', genre: ZkNoidGameGenre.Arcade },
+      title: 'Arkanoid GAME',
+      preReg: false,
+      preRegDate: {
+        start: new Date(2024, 10, 10),
+        end: new Date(2024, 10, 20),
+      },
+      competitionDate: {
+        start: new Date(2024, 10, 25),
+        end: new Date(2024, 10, 31),
+      },
+      participationFee: 4,
+      currency: Currency.MINA,
+      reward: 10000,
+      registered: false,
+    },
+    {
+      id: 3,
+      seed: 123,
+      game: { id: 'arkanoid', genre: ZkNoidGameGenre.Arcade },
+      title: 'Arkanoid GAME',
+      preReg: false,
+      preRegDate: {
+        start: new Date(2024, 11, 10),
+        end: new Date(2024, 11, 20),
+      },
+      competitionDate: {
+        start: new Date(2024, 11, 25),
+        end: new Date(2024, 11, 31),
+      },
+      participationFee: 6,
+      currency: Currency.MINA,
+      reward: 99999,
+      registered: false,
+    },
+  ];
 
   return (
     <GamePage
       gameConfig={arkanoidConfig}
       image={'/image/game-page/arkanoid-title.svg'}
     >
-      <CompetitionList
+      <CompetitionWidget
         gameId={arkanoidConfig.id}
-        competitionList={compStore.competitions}
-        competitionsBlocks={[
-          compStore.competitions[0],
-          compStore.competitions[1],
-          compStore.competitions[2],
-        ]}
+        competitionList={competitions}
+        competitionsBlocks={[competitions[0], competitions[1], competitions[2]]}
       />
-      {/*<div className="flex flex-col items-center py-10">*/}
-      {/*  <Link href={`/games/arkanoid/new-competition`} className="p-5">*/}
-      {/*    <div className="h-50 w-100 rounded border-2 border-solid border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark">*/}
-      {/*      Create competition{' '}*/}
-      {/*    </div>*/}
-      {/*  </Link>*/}
-      {/*  <h1> Arkanoid competitions list </h1>*/}
-      {/*  <table className="min-w-max border border-left-accent text-left">*/}
-      {/*    <thead className="bg-[#252525] font-semibold">*/}
-      {/*      <tr>*/}
-      {/*        <th className="px-6 py-3"> Name </th>*/}
-      {/*        <th className="px-6 py-3"> Seed </th>*/}
-      {/*        <th className="px-6 py-3"> Prereg </th>*/}
-      {/*        <th className="px-6 py-3"> Registered </th>*/}
-      {/*        <th className="px-6 py-3"> PreregStart </th>*/}
-      {/*        <th className="px-6 py-3"> PreregEnd </th>*/}
-      {/*        <th className="px-6 py-3"> CompetitionStart </th>*/}
-      {/*        <th className="px-6 py-3"> CompetitionEnd </th>*/}
-      {/*        <th className="px-6 py-3"> Funds </th>*/}
-      {/*        <th className="px-6 py-3"> ParticipationFee </th>*/}
-      {/*        <th> </th>*/}
-      {/*      </tr>*/}
-      {/*    </thead>*/}
-      {/*    <tbody>*/}
-      {/*      {compStore.competitions.map((c) => (*/}
-      {/*        <tr*/}
-      {/*          className={*/}
-      {/*            'border-y border-left-accent ' +*/}
-      {/*            (c.funds > 0 ? 'bg-[#252525]' : 'bg-[#252525]')*/}
-      {/*          }*/}
-      {/*          key={c.competitionId}*/}
-      {/*        >*/}
-      {/*          <td className="px-6 py-4">{c.name}</td>*/}
-      {/*          <td className="px-6 py-4">{c.seed}</td>*/}
-      {/*          <td className="px-6 py-4">*/}
-      {/*            <div className="flex items-center justify-center">*/}
-      {/*              <input type="checkbox" checked={c.prereg} readOnly></input>*/}
-      {/*            </div>*/}
-      {/*          </td>*/}
-      {/*          <td className="flex items-center justify-center px-3 py-6">*/}
-      {/*            <div className="flex items-center justify-center">*/}
-      {/*              <input*/}
-      {/*                type="checkbox"*/}
-      {/*                checked={c.registered}*/}
-      {/*                readOnly*/}
-      {/*              ></input>*/}
-      {/*            </div>*/}
-      {/*          </td>*/}
-      {/*          <td className="px-6 py-4">*/}
-      {/*            {c.prereg ? timeStampToStringDate(c.preregStartTime) : ''}*/}
-      {/*          </td>*/}
-      {/*          <td className="px-6 py-4">*/}
-      {/*            {c.prereg ? timeStampToStringDate(c.preregEndTime) : ''}*/}
-      {/*          </td>*/}
-      {/*          <td className="px-6 py-4">*/}
-      {/*            {timeStampToStringDate(c.competitionStartTime)}*/}
-      {/*          </td>*/}
-      {/*          <td className="px-6 py-4">*/}
-      {/*            {timeStampToStringDate(c.competitionEndTime)}*/}
-      {/*          </td>*/}
-      {/*          <td className="px-6 py-4">{c.funds}</td>*/}
-      {/*          <td className="px-6 py-4">{c.participationFee}</td>*/}
-      {/*          <td>*/}
-      {/*            {competitionButton(c)}*/}
-      {/*            /!* <Link href={`/games/arkanoid/${c.competitionId}`}>*/}
-      {/*              <div className="flex content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white">*/}
-      {/*                Play*/}
-      {/*              </div>*/}
-      {/*            </Link> *!/*/}
-      {/*          </td>*/}
-      {/*        </tr>*/}
-      {/*      ))}*/}
-      {/*    </tbody>*/}
-      {/*  </table>*/}
-      {/*</div>*/}
     </GamePage>
   );
 }

@@ -1,15 +1,15 @@
-import { CompetitionBlock } from '@/components/framework/CompetitionList/CompetitionBlock';
+import { CompetitionBlock } from '@/components/framework/CompetitionWidget/CompetitionBlock';
 import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
 import {
   COMPETITIONS_SORT_METHODS,
   CompetitionsSortBy,
 } from '@/constants/sortBy';
-import { CompetitionListItem } from '@/components/framework/CompetitionList/CompetitionListItem';
+import { CompetitionListItem } from '@/components/framework/CompetitionWidget/CompetitionListItem';
 import Link from 'next/link';
 import { ICompetition } from '@/lib/types';
 import { useState } from 'react';
 
-export const CompetitionList = ({
+export const CompetitionWidget = ({
   competitionsBlocks,
   competitionList,
   gameId,
@@ -50,7 +50,7 @@ export const CompetitionList = ({
   return (
     <div
       className={
-        'relative flex w-full flex-col gap-20 rounded-2xl border-2 border-left-accent p-10'
+        'relative flex w-full flex-col gap-20 rounded-2xl border-2 border-left-accent p-10 pb-[100px]'
       }
     >
       <div
