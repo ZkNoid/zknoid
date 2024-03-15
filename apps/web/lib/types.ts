@@ -1,5 +1,5 @@
 import { Currency } from '@/constants/currency';
-import {ZkNoidGameGenre} from "@/lib/platform/game_tags";
+import { ZkNoidGameGenre } from '@/lib/platform/game_tags';
 
 export interface Ball {
   x: number;
@@ -44,7 +44,7 @@ export interface Cart {
 export interface ICompetition {
   id: number;
   seed: number;
-  game: {id: string, genre: ZkNoidGameGenre}
+  game: { id: string; genre: ZkNoidGameGenre };
   title: string;
   preReg: boolean;
   preRegDate: {
