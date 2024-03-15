@@ -3,6 +3,7 @@ import leftSvg from '@/public/image/game-page/1.svg';
 import centerSvg from '@/public/image/game-page/2.svg';
 import rightSvg from '@/public/image/game-page/3.svg';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export const CompetitionBlock = ({
   competition,
@@ -58,7 +59,7 @@ export const CompetitionBlock = ({
             'flex flex-row gap-2 text-headline-2 font-medium uppercase text-left-accent'
           }
         >
-          <span>[{competition.index}]</span>
+          <span>[{competition.id}]</span>
           <span>
             {competition.title ? competition.title : competition.game.name}
           </span>
@@ -131,13 +132,14 @@ export const CompetitionBlock = ({
           </span>
         </div>
       </div>
-      <button
+      <Link
         className={
-          'w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
+          'w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
         }
+        href={`/games/${competition.game.id}/${competition.id}`}
       >
         Play
-      </button>
+      </Link>
     </div>
   );
 };

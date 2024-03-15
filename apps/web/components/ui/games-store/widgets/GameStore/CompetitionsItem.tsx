@@ -1,9 +1,10 @@
 import { IGame } from '@/app/constants/games';
+import Link from 'next/link';
 
 export interface ICompetition {
   game: IGame;
   title?: string;
-  index: number;
+  id: number;
   preRegDate: {
     start: Date;
     end: Date;
@@ -20,7 +21,7 @@ export interface ICompetition {
 export const CompetitionItem = ({
   game,
   title = game.name,
-  index,
+  id,
   preRegDate,
   competitionsDate,
   participantsFee,
@@ -39,16 +40,17 @@ export const CompetitionItem = ({
             'flex flex-row gap-2 text-headline-2 font-medium uppercase'
           }
         >
-          <span>[{index}]</span>
+          <span>[{id}]</span>
           <span>{title}</span>
         </div>
-        <button
+        <Link
           className={
-            'w-full max-w-[50%] rounded-[5px] border border-bg-dark bg-left-accent py-2 text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
+            'w-full max-w-[50%] rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
           }
+          href={`/games/${game.id}/${id}`}
         >
           Play
-        </button>
+        </Link>
       </div>
       <div className={'flex w-2/6 flex-col gap-2'}>
         <div className={'flex flex-col gap-1'}>
