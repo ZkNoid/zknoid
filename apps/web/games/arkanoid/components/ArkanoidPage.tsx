@@ -24,6 +24,7 @@ import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import GamePage from '@/components/framework/GamePage';
 import { arkanoidConfig } from '../config';
+import { GameWidget } from '@/components/framework/GameWidget/GameWidget';
 
 enum GameState {
   NotStarted,
@@ -150,10 +151,7 @@ export default function ArkanoidPage({
       const tx = await client!.transaction(
         PublicKey.fromBase58(networkStore.address!),
         () => {
-          gameHub.addGameResult(
-            UInt64.from(competition!.id),
-            proof!
-          );
+          gameHub.addGameResult(UInt64.from(competition!.id), proof!);
         }
       );
 
@@ -170,155 +168,158 @@ export default function ArkanoidPage({
       gameConfig={arkanoidConfig}
       image={'/image/game-page/arkanoid-title.svg'}
     >
-      <main className="flex grow flex-col items-center gap-5 p-5">
-        {networkStore.address ? (
-          <div className="flex flex-col gap-5">
-            {gameState == GameState.Won && (
-              <div>
-                You won! Ticks verification:{' '}
-                <input
-                  className="border-2 border-left-accent bg-bg-dark text-white"
-                  type="text"
-                  value={JSON.stringify(lastTicks)}
-                  readOnly
-                ></input>
-              </div>
-            )}
-            {gameState == GameState.Lost && (
-              <div>You&apos;ve lost! Nothing to prove</div>
-            )}
-
-            <div className="flex flex-row items-center justify-center gap-5">
-              {(gameState == GameState.Won || gameState == GameState.Lost) && (
-                <div
-                  className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
-                  onClick={() => startGame()}
-                >
-                  Restart
-                </div>
-              )}
-              {gameState == GameState.NotStarted && (
-                <div
-                  className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
-                  onClick={() => startGame()}
-                >
-                  Start for {competition?.participationFee} 🪙
-                </div>
-              )}
-              {gameState == GameState.Won && (
-                <div
-                  className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
-                  onClick={() => proof()}
-                >
-                  Send proof
-                </div>
-              )}
-            </div>
-          </div>
-        ) : walletInstalled() ? (
-          <div
-            className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
-            onClick={async () => networkStore.connectWallet()}
-          >
-            Connect wallet
-          </div>
-        ) : (
-          <Link
-            href="https://www.aurowallet.com/"
-            className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Install wallet
-          </Link>
-        )}
-        <div className="flex w-full">
-          <div className="w-1/3"></div>
-          <div className="flex w-1/3 items-center justify-center">
-            <GameView
-              onWin={(ticks) => {
-                console.log('Ticks', ticks);
-                setLastTicks(ticks);
-                setGameState(GameState.Won);
-              }}
-              onLost={(ticks) => {
-                setLastTicks(ticks);
-                setGameState(GameState.Lost);
-              }}
-              onRestart={(ticks) => {
-                setLastTicks(ticks);
-                startGame();
-              }}
-              level={level}
-              gameId={gameId}
-              debug={debug}
-              setScore={setScore}
-              setTicksAmount={setTicksAmount}
-            />
-          </div>
-          <div className="flex flex-col items-center">
-            <h1> Leaderboard </h1>
-            <table className="min-w-max text-left">
-              <thead className="font-semibold">
-                <tr>
-                  <th className="w-96 border-2 border-left-accent bg-bg-dark px-6 py-3">
-                    {' '}
-                    Address{' '}
-                  </th>
-                  <th className="w-20  border-2 border-left-accent bg-bg-dark px-6 py-3">
-                    {' '}
-                    Score{' '}
-                  </th>
-                  <th> </th>
-                </tr>
-              </thead>
-              <tbody>
-                {leaderboardStore
-                  .getLeaderboard(params.competitionId)
-                  .map((user, i) => (
-                    <tr className="border-b bg-white" key={i}>
-                      <td className="border-2 border-left-accent bg-bg-dark">
-                        {user.player.toBase58()}
-                      </td>
-                      <td className="border-2 border-left-accent bg-bg-dark">
-                        {user.score.toString()}
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div>
-          Score: {score} Ticks: {ticksAmount}
-        </div>
-        <div className="grow"></div>
-        {/* <div className="flex flex-col gap-10">
-          <div>
-            Active competitions:
-            <div className="flex flex-col">
-              {arkanoidCompetitions.map((competition) => (
-                <Link
-                  href={`/games/arkanoid/${competition.id}`}
-                  key={competition.id}
-                >
-                  {competition.name} – {competition.prizeFund} 🪙
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div> */}
-        <div className="w-full text-end">
-          Debug:{' '}
-          <input
-            type="checkbox"
-            checked={debug}
-            onChange={(event) => {
-              setDebug(event.target.checked);
-            }}
-          ></input>
-        </div>
+      <main>
+        <GameWidget />
       </main>
+      {/*<main className="flex grow flex-col items-center gap-5 p-5">*/}
+      {/*  {networkStore.address ? (*/}
+      {/*    <div className="flex flex-col gap-5">*/}
+      {/*      {gameState == GameState.Won && (*/}
+      {/*        <div>*/}
+      {/*          You won! Ticks verification:{' '}*/}
+      {/*          <input*/}
+      {/*            className="border-2 border-left-accent bg-bg-dark text-white"*/}
+      {/*            type="text"*/}
+      {/*            value={JSON.stringify(lastTicks)}*/}
+      {/*            readOnly*/}
+      {/*          ></input>*/}
+      {/*        </div>*/}
+      {/*      )}*/}
+      {/*      {gameState == GameState.Lost && (*/}
+      {/*        <div>You&apos;ve lost! Nothing to prove</div>*/}
+      {/*      )}*/}
+
+      {/*      <div className="flex flex-row items-center justify-center gap-5">*/}
+      {/*        {(gameState == GameState.Won || gameState == GameState.Lost) && (*/}
+      {/*          <div*/}
+      {/*            className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"*/}
+      {/*            onClick={() => startGame()}*/}
+      {/*          >*/}
+      {/*            Restart*/}
+      {/*          </div>*/}
+      {/*        )}*/}
+      {/*        {gameState == GameState.NotStarted && (*/}
+      {/*          <div*/}
+      {/*            className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"*/}
+      {/*            onClick={() => startGame()}*/}
+      {/*          >*/}
+      {/*            Start for {competition?.participationFee} 🪙*/}
+      {/*          </div>*/}
+      {/*        )}*/}
+      {/*        {gameState == GameState.Won && (*/}
+      {/*          <div*/}
+      {/*            className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"*/}
+      {/*            onClick={() => proof()}*/}
+      {/*          >*/}
+      {/*            Send proof*/}
+      {/*          </div>*/}
+      {/*        )}*/}
+      {/*      </div>*/}
+      {/*    </div>*/}
+      {/*  ) : walletInstalled() ? (*/}
+      {/*    <div*/}
+      {/*      className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"*/}
+      {/*      onClick={async () => networkStore.connectWallet()}*/}
+      {/*    >*/}
+      {/*      Connect wallet*/}
+      {/*    </div>*/}
+      {/*  ) : (*/}
+      {/*    <Link*/}
+      {/*      href="https://www.aurowallet.com/"*/}
+      {/*      className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"*/}
+      {/*      rel="noopener noreferrer"*/}
+      {/*      target="_blank"*/}
+      {/*    >*/}
+      {/*      Install wallet*/}
+      {/*    </Link>*/}
+      {/*  )}*/}
+      {/*  <div className="flex w-full">*/}
+      {/*    <div className="w-1/3"></div>*/}
+      {/*    <div className="flex w-1/3 items-center justify-center">*/}
+      {/*      <GameView*/}
+      {/*        onWin={(ticks) => {*/}
+      {/*          console.log('Ticks', ticks);*/}
+      {/*          setLastTicks(ticks);*/}
+      {/*          setGameState(GameState.Won);*/}
+      {/*        }}*/}
+      {/*        onLost={(ticks) => {*/}
+      {/*          setLastTicks(ticks);*/}
+      {/*          setGameState(GameState.Lost);*/}
+      {/*        }}*/}
+      {/*        onRestart={(ticks) => {*/}
+      {/*          setLastTicks(ticks);*/}
+      {/*          startGame();*/}
+      {/*        }}*/}
+      {/*        level={level}*/}
+      {/*        gameId={gameId}*/}
+      {/*        debug={debug}*/}
+      {/*        setScore={setScore}*/}
+      {/*        setTicksAmount={setTicksAmount}*/}
+      {/*      />*/}
+      {/*    </div>*/}
+      {/*    <div className="flex flex-col items-center">*/}
+      {/*      <h1> Leaderboard </h1>*/}
+      {/*      <table className="min-w-max text-left">*/}
+      {/*        <thead className="font-semibold">*/}
+      {/*          <tr>*/}
+      {/*            <th className="w-96 border-2 border-left-accent bg-bg-dark px-6 py-3">*/}
+      {/*              {' '}*/}
+      {/*              Address{' '}*/}
+      {/*            </th>*/}
+      {/*            <th className="w-20  border-2 border-left-accent bg-bg-dark px-6 py-3">*/}
+      {/*              {' '}*/}
+      {/*              Score{' '}*/}
+      {/*            </th>*/}
+      {/*            <th> </th>*/}
+      {/*          </tr>*/}
+      {/*        </thead>*/}
+      {/*        <tbody>*/}
+      {/*          {leaderboardStore*/}
+      {/*            .getLeaderboard(params.competitionId)*/}
+      {/*            .map((user, i) => (*/}
+      {/*              <tr className="border-b bg-white" key={i}>*/}
+      {/*                <td className="border-2 border-left-accent bg-bg-dark">*/}
+      {/*                  {user.player.toBase58()}*/}
+      {/*                </td>*/}
+      {/*                <td className="border-2 border-left-accent bg-bg-dark">*/}
+      {/*                  {user.score.toString()}*/}
+      {/*                </td>*/}
+      {/*              </tr>*/}
+      {/*            ))}*/}
+      {/*        </tbody>*/}
+      {/*      </table>*/}
+      {/*    </div>*/}
+      {/*  </div>*/}
+      {/*  <div>*/}
+      {/*    Score: {score} Ticks: {ticksAmount}*/}
+      {/*  </div>*/}
+      {/*  <div className="grow"></div>*/}
+      {/*  /!* <div className="flex flex-col gap-10">*/}
+      {/*    <div>*/}
+      {/*      Active competitions:*/}
+      {/*      <div className="flex flex-col">*/}
+      {/*        {arkanoidCompetitions.map((competition) => (*/}
+      {/*          <Link*/}
+      {/*            href={`/games/arkanoid/${competition.id}`}*/}
+      {/*            key={competition.id}*/}
+      {/*          >*/}
+      {/*            {competition.name} – {competition.prizeFund} 🪙*/}
+      {/*          </Link>*/}
+      {/*        ))}*/}
+      {/*      </div>*/}
+      {/*    </div>*/}
+      {/*  </div> *!/*/}
+      {/*  <div className="w-full text-end">*/}
+      {/*    Debug:{' '}*/}
+      {/*    <input*/}
+      {/*      type="checkbox"*/}
+      {/*      checked={debug}*/}
+      {/*      onChange={(event) => {*/}
+      {/*        setDebug(event.target.checked);*/}
+      {/*      }}*/}
+      {/*    ></input>*/}
+      {/*  </div>*/}
+      {/*</main>*/}
     </GamePage>
   );
 }
