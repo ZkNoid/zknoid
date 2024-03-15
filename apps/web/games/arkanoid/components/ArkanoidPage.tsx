@@ -24,7 +24,7 @@ import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import GamePage from '@/components/framework/GamePage';
 import { arkanoidConfig } from '../config';
-import {defaultGames} from "@/app/constants/games";
+import { defaultGames } from '@/app/constants/games';
 
 enum GameState {
   NotStarted,
@@ -169,12 +169,11 @@ export default function ArkanoidPage({
   return (
     <GamePage
       gameConfig={arkanoidConfig}
-      image={'/image/games/arkanoid-title.svg'}
-      gameName={'Arkanoid Game'}
+      image={'/image/game-page/arkanoid-title.svg'}
       competitionsBlocks={[
         {
           game: defaultGames[0],
-          index: 0,
+          id: 0,
           preRegDate: {
             start: new Date(1999, 12, 12),
             end: new Date(2000, 12, 1),
@@ -189,7 +188,7 @@ export default function ArkanoidPage({
         },
         {
           game: defaultGames[0],
-          index: 0,
+          id: 0,
           preRegDate: {
             start: new Date(1999, 12, 12),
             end: new Date(2000, 12, 1),
@@ -204,7 +203,7 @@ export default function ArkanoidPage({
         },
         {
           game: defaultGames[0],
-          index: 0,
+          id: 0,
           preRegDate: {
             start: new Date(1999, 12, 12),
             end: new Date(2000, 12, 1),
@@ -221,7 +220,7 @@ export default function ArkanoidPage({
       competitionList={[
         {
           game: defaultGames[0],
-          index: 0,
+          id: 0,
           preRegDate: {
             start: new Date(1999, 12, 12),
             end: new Date(2000, 12, 1),
@@ -236,7 +235,7 @@ export default function ArkanoidPage({
         },
         {
           game: defaultGames[0],
-          index: 0,
+          id: 0,
           preRegDate: {
             start: new Date(1999, 12, 12),
             end: new Date(2000, 12, 1),
@@ -251,7 +250,7 @@ export default function ArkanoidPage({
         },
         {
           game: defaultGames[0],
-          index: 0,
+          id: 0,
           preRegDate: {
             start: new Date(1999, 12, 12),
             end: new Date(2000, 12, 1),

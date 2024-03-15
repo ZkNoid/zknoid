@@ -15,7 +15,7 @@ import { useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { arkanoidConfig } from '../config';
 import GamePage from '@/components/framework/GamePage';
-import {defaultGames} from "@/app/constants/games";
+import { defaultGames } from '@/app/constants/games';
 
 interface IBrick {
   pos: [number, number];
@@ -170,12 +170,11 @@ export default function NewArkanoidCompetitionPage() {
   return (
     <GamePage
       gameConfig={arkanoidConfig}
-      image={'/image/games/arkanoid-title.svg'}
-      gameName={'Arkanoid Game'}
+      image={'/image/game-page/arkanoid-title.svg'}
       competitionsBlocks={[
         {
           game: defaultGames[0],
-          index: 0,
+          id: 0,
           preRegDate: {
             start: new Date(1999, 12, 12),
             end: new Date(2000, 12, 1),
@@ -190,7 +189,7 @@ export default function NewArkanoidCompetitionPage() {
         },
         {
           game: defaultGames[0],
-          index: 0,
+          id: 0,
           preRegDate: {
             start: new Date(1999, 12, 12),
             end: new Date(2000, 12, 1),
@@ -205,7 +204,7 @@ export default function NewArkanoidCompetitionPage() {
         },
         {
           game: defaultGames[0],
-          index: 0,
+          id: 0,
           preRegDate: {
             start: new Date(1999, 12, 12),
             end: new Date(2000, 12, 1),
@@ -222,7 +221,7 @@ export default function NewArkanoidCompetitionPage() {
       competitionList={[
         {
           game: defaultGames[0],
-          index: 0,
+          id: 0,
           preRegDate: {
             start: new Date(1999, 12, 12),
             end: new Date(2000, 12, 1),
@@ -237,7 +236,7 @@ export default function NewArkanoidCompetitionPage() {
         },
         {
           game: defaultGames[0],
-          index: 0,
+          id: 0,
           preRegDate: {
             start: new Date(1999, 12, 12),
             end: new Date(2000, 12, 1),
@@ -252,7 +251,7 @@ export default function NewArkanoidCompetitionPage() {
         },
         {
           game: defaultGames[0],
-          index: 0,
+          id: 0,
           preRegDate: {
             start: new Date(1999, 12, 12),
             end: new Date(2000, 12, 1),

@@ -17,10 +17,6 @@ import { Footer } from '@/components/Footer';
 import Image from 'next/image';
 import { clsx } from 'clsx';
 import { ICompetition } from '@/components/ui/games-store/widgets/GameStore/CompetitionsItem';
-import { defaultGames } from '@/app/constants/games';
-import leftSvg from '@/public/image/game-page/1.svg';
-import centerSvg from '@/public/image/game-page/2.svg';
-import rightSvg from '@/public/image/game-page/3.svg';
 import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
 import {
   COMPETITIONS_SORT_METHODS,
@@ -28,19 +24,18 @@ import {
 } from '@/constants/sortBy';
 import { CompetitionBlock } from '@/components/framework/CompetitionBlock';
 import { CompetitionListItem } from '@/components/framework/CompetitionListItem';
+import Link from 'next/link';
 
 export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
   children,
   gameConfig,
   image,
-  gameName,
   competitionsBlocks,
   competitionList,
 }: {
   children: ReactNode;
   gameConfig: ZkNoidGameConfig<RuntimeModules>;
   image: string;
-  gameName: string;
   competitionsBlocks: ICompetition[];
   competitionList: ICompetition[];
 }) {
@@ -219,7 +214,7 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
             </defs>
           </svg>
         </SwitchBtn>
-        <SwitchBtn switchPage={gameName}>
+        <SwitchBtn switchPage={gameConfig.name}>
           <svg
             width="32"
             height="36"
@@ -274,7 +269,7 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
                   key={index}
                   competition={{
                     game: item.game,
-                    index: item.index,
+                    id: item.id,
                     preRegDate: {
                       start: item.preRegDate.start,
                       end: item.preRegDate.end,
@@ -313,7 +308,7 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
                     key={index}
                     competition={{
                       game: item.game,
-                      index: item.index,
+                      id: item.id,
                       preRegDate: {
                         start: item.preRegDate.start,
                         end: item.preRegDate.end,
@@ -329,13 +324,14 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
                   />
                 ))}
             </div>
-            <button
+            <Link
               className={
-                'w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent max-[2000px]:max-w-[40%] min-[2000px]:max-w-[30%]'
+                'w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent max-[2000px]:max-w-[40%] min-[2000px]:max-w-[30%]'
               }
+              href={`/games/${gameConfig.id}/new-competition`}
             >
               Create new competition
-            </button>
+            </Link>
           </div>
           {children}
         </div>

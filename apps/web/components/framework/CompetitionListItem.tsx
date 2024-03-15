@@ -2,6 +2,7 @@ import { ICompetition } from '@/components/ui/games-store/widgets/GameStore/Comp
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import { clsx } from 'clsx';
+import Link from 'next/link';
 
 export const CompetitionListItem = ({
   competition,
@@ -24,7 +25,7 @@ export const CompetitionListItem = ({
             'flex min-w-[400px] flex-row items-center gap-4 text-headline-2 font-medium uppercase text-left-accent'
           }
         >
-          <span>[{competition.index}]</span>
+          <span>[{competition.id}]</span>
           <span>
             {competition.title ? competition.title : competition.game.name}
           </span>
@@ -50,13 +51,14 @@ export const CompetitionListItem = ({
             fee
           </div>
         </div>
-        <button
+        <Link
           className={
-            'w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent max-[2000px]:max-w-[250px] min-[2000px]:max-w-[350px]'
+            'w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent max-[2000px]:max-w-[250px] min-[2000px]:max-w-[350px]'
           }
+          href={`/games/${competition.game.id}/${competition.id}`}
         >
           Play
-        </button>
+        </Link>
         <div
           className={
             'flex w-full max-w-[200px] flex-col items-end justify-center'
@@ -69,7 +71,11 @@ export const CompetitionListItem = ({
             onClick={() => setIsOpen(!isOpen)}
           >
             <div className={'h-[2px] w-4 bg-left-accent'} />
-            <div className={`h-[2px] w-4 rotate-90 bg-left-accent ${isOpen ? 'invisible': 'visible'}`} />
+            <div
+              className={`h-[2px] w-4 rotate-90 bg-left-accent ${
+                isOpen ? 'invisible' : 'visible'
+              }`}
+            />
           </div>
         </div>
       </div>

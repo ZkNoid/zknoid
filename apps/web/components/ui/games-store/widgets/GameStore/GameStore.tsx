@@ -420,7 +420,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
           {
             game: defaultGames[0],
             title: 'Arcanoid',
-            index: 1,
+            id: 1,
             preRegDate: {
               start: new Date(2024, 2, 15),
               end: new Date(2024, 2, 20),
@@ -436,7 +436,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
           {
             game: defaultGames[0],
             title: 'Arcanoid',
-            index: 3,
+            id: 3,
             preRegDate: {
               start: new Date(2024, 2, 15),
               end: new Date(2024, 2, 20),
@@ -452,7 +452,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
           {
             game: defaultGames[1],
             title: 'Randzu battle',
-            index: 4,
+            id: 4,
             preRegDate: {
               start: new Date(2024, 2, 15),
               end: new Date(2024, 2, 20),
@@ -468,7 +468,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
           {
             game: defaultGames[1],
             title: '****** **** *******',
-            index: 5,
+            id: 5,
             preRegDate: {
               start: new Date(2024, 2, 6),
               end: new Date(2024, 2, 20),
@@ -484,7 +484,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
           {
             game: defaultGames[1],
             title: 'Superbattle',
-            index: 5,
+            id: 5,
             preRegDate: {
               start: new Date(2024, 1, 9),
               end: new Date(2024, 1, 20),
