@@ -1,4 +1,5 @@
-import { IGame } from '@/app/constants/games';
+import { Currency } from '@/constants/currency';
+import {ZkNoidGameGenre} from "@/lib/platform/game_tags";
 
 export interface Ball {
   x: number;
@@ -43,7 +44,7 @@ export interface Cart {
 export interface ICompetition {
   id: number;
   seed: number;
-  game: IGame;
+  game: {id: string, genre: ZkNoidGameGenre}
   title: string;
   preReg: boolean;
   preRegDate: {
@@ -55,7 +56,7 @@ export interface ICompetition {
     end: Date;
   };
   participationFee: number;
-  currency: string;
+  currency: Currency;
   reward: number;
   registered?: boolean;
 }
