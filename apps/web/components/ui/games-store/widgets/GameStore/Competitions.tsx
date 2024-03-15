@@ -11,13 +11,11 @@ import {
   ZkNoidEventType,
 } from '@/lib/platform/game_events';
 import { ProgressBar } from '@/components/ui/games-store/shared/ProgressBar';
-import {
-  CompetitionItem,
-  ICompetition,
-} from '@/components/ui/games-store/widgets/GameStore/CompetitionsItem';
+import { CompetitionItem } from '@/components/ui/games-store/widgets/GameStore/CompetitionsItem';
 import { Pagination } from '@/components/ui/games-store/shared/Pagination';
 import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
 import { clsx } from 'clsx';
+import { ICompetition } from '@/lib/types';
 
 export const Competitions = ({
   competitions,
@@ -50,19 +48,19 @@ export const Competitions = ({
   const timelineFilter = (competition: ICompetition) => {
     if (
       eventsSelected.includes(ZkNoidEventType.PAST_EVENTS) &&
-      competition.competitionsDate.end.getTime() < Date.now()
+      competition.competitionDate.end.getTime() < Date.now()
     )
       return true;
 
     if (
       eventsSelected.includes(ZkNoidEventType.CURRENT_EVENTS) &&
-      competition.competitionsDate.end.getTime() >= Date.now()
+      competition.competitionDate.end.getTime() >= Date.now()
     )
       return true;
 
     if (
       eventsSelected.includes(ZkNoidEventType.UPCOMING_EVENTS) &&
-      competition.competitionsDate.start.getTime() > Date.now()
+      competition.competitionDate.start.getTime() > Date.now()
     )
       return true;
 
@@ -77,10 +75,10 @@ export const Competitions = ({
   const sortByFilter = (a: ICompetition, b: ICompetition) => {
     switch (sortBy) {
       case CompetitionsSortBy.HighFees:
-        return a.participantsFee - b.participantsFee;
+        return a.participationFee - b.participationFee;
 
       case CompetitionsSortBy.LowFees:
-        return b.participantsFee - a.participantsFee;
+        return b.participationFee - a.participationFee;
 
       case CompetitionsSortBy.HighFunds:
         return a.reward - b.reward;
@@ -90,14 +88,12 @@ export const Competitions = ({
 
       case CompetitionsSortBy.Latest:
         return (
-          a.competitionsDate.start.getDate() -
-          b.competitionsDate.start.getDate()
+          a.competitionDate.start.getDate() - b.competitionDate.start.getDate()
         );
 
       case CompetitionsSortBy.Nearest:
         return (
-          b.competitionsDate.start.getDate() -
-          a.competitionsDate.start.getDate()
+          b.competitionDate.start.getDate() - a.competitionDate.start.getDate()
         );
     }
   };
@@ -121,7 +117,7 @@ export const Competitions = ({
     setFundsAbsoluteMaximum(fundsMaximum);
 
     const feesMaximum = competitions.reduce((max, competition) => {
-      return Math.max(max, competition.participantsFee);
+      return Math.max(max, competition.participationFee);
     }, -Infinity);
     setFeesAbsoluteMaximum(feesMaximum);
   }, [competitions]);
@@ -372,8 +368,8 @@ export const Competitions = ({
               if (timelineFilter(item)) return true;
 
               if (
-                item.participantsFee >= feesMinValue &&
-                item.participantsFee <= feesMaxValue
+                item.participationFee >= feesMinValue &&
+                item.participationFee <= feesMaxValue
               )
                 return true;
 
@@ -388,11 +384,14 @@ export const Competitions = ({
                 game={competition.game}
                 title={competition.title}
                 id={competition.id}
+                preReg={competition.preReg}
                 preRegDate={competition.preRegDate}
-                competitionsDate={competition.competitionsDate}
-                participantsFee={competition.participantsFee}
+                competitionDate={competition.competitionDate}
+                participationFee={competition.participationFee}
                 currency={competition.currency}
                 reward={competition.reward}
+                seed={competition.seed}
+                registered={competition.registered}
               />
             ))}
         </div>

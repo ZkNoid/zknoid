@@ -1,32 +1,35 @@
-import { IGame } from '@/app/constants/games';
 import Link from 'next/link';
+import { ICompetition } from '@/lib/types';
 
-export interface ICompetition {
-  game: IGame;
-  title?: string;
-  id: number;
-  preRegDate: {
-    start: Date;
-    end: Date;
-  };
-  competitionsDate: {
-    start: Date;
-    end: Date;
-  };
-  participantsFee: number;
-  currency: string;
-  reward: number;
-}
+// export interface ICompetition {
+//   game: IGame;
+//   title?: string;
+//   id: number;
+//   preRegDate: {
+//     start: Date;
+//     end: Date;
+//   };
+//   competitionsDate: {
+//     start: Date;
+//     end: Date;
+//   };
+//   participantsFee: number;
+//   currency: string;
+//   reward: number;
+// }
 
 export const CompetitionItem = ({
-  game,
-  title = game.name,
   id,
+  seed,
+  game,
+  title,
+  preReg,
   preRegDate,
-  competitionsDate,
-  participantsFee,
+  competitionDate,
+  participationFee,
   currency,
   reward,
+  registered,
 }: ICompetition) => {
   return (
     <div
@@ -82,11 +85,11 @@ export const CompetitionItem = ({
               'font-plexsans text-[16px]/[16px] font-light text-foreground'
             }
           >
-            {competitionsDate.start.toLocaleDateString('en-US', {
+            {competitionDate.start.toLocaleDateString('en-US', {
               dateStyle: 'long',
             })}{' '}
             -{' '}
-            {competitionsDate.end.toLocaleDateString('en-US', {
+            {competitionDate.end.toLocaleDateString('en-US', {
               dateStyle: 'long',
             })}
           </span>
@@ -102,7 +105,7 @@ export const CompetitionItem = ({
             'w-full max-w-fit rounded-2xl border border-left-accent p-1 px-2 text-center'
           }
         >
-          {participantsFee} {currency} Participants fee
+          {participationFee} {currency} Participants fee
         </div>
         <div
           className={

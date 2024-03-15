@@ -1,10 +1,8 @@
 'use client';
 
-import Link from 'next/link';
 import { PublicKey, UInt64 } from 'o1js';
 import { ReactElement, useContext, useState } from 'react';
 import { useNetworkStore } from '@/lib/stores/network';
-import { ICompetition } from '@/lib/types';
 import {
   useArkanoidCompetitionsStore,
   useObserveArkanoidCompetitions,
@@ -12,7 +10,7 @@ import {
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import GamePage from '@/components/framework/GamePage';
 import { arkanoidConfig } from '../config';
-import { defaultGames } from '@/app/constants/games';
+import { CompetitionList } from '@/components/framework/CompetitionList/CompetitionList';
 
 const timeStampToStringDate = (timeStamp: number): string => {
   var date = new Date(timeStamp);
@@ -47,162 +45,78 @@ export default function ArkanoidCompetitionsListPage() {
     await tx.send();
   };
 
-  const competitionButton = (c: ICompetition): ReactElement => {
-    let defaultButton = (
-      <div className="flex content-center items-center justify-center rounded border-solid bg-gray-500 px-6 py-4 font-bold text-white">
-        I am not a button
-      </div>
-    );
-
-    let playButton = (
-      <Link
-        href={`/games/arkanoid/[competitionId]`}
-        as={`/games/arkanoid/${c.competitionId}`}
-      >
-        <div className="flex content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white">
-          Play
-        </div>
-      </Link>
-    );
-
-    let registerButton = (
-      <div
-        className="flex content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white"
-        onClick={() => register(c.competitionId)}
-      >
-        Register
-      </div>
-    );
-
-    const info = (text: string) => {
-      return (
-        <div className="flex content-center items-center justify-center rounded border-solid bg-gray-500 px-6 py-4 font-bold text-white">
-          {text}
-        </div>
-      );
-    };
-    let curTime = Date.now();
-
-    if (c.competitionEndTime < curTime) {
-      return info('Competition ended');
-    }
-
-    if (c.prereg && !c.registered) {
-      if (c.preregStartTime < curTime && c.preregEndTime > curTime) {
-        return registerButton;
-      } else if (c.preregEndTime < curTime) {
-        return info('Registration ended');
-      } else {
-        return info('Wait for registration');
-      }
-    }
-
-    if (c.competitionStartTime > curTime) {
-      return info('Wait for game start');
-    }
-
-    return playButton;
-  };
+  // const competitionButton = (c: ICompetition): ReactElement => {
+  //   let defaultButton = (
+  //     <div className="flex content-center items-center justify-center rounded border-solid bg-gray-500 px-6 py-4 font-bold text-white">
+  //       I am not a button
+  //     </div>
+  //   );
+  //
+  //   let playButton = (
+  //     <Link
+  //       href={`/games/arkanoid/[competitionId]`}
+  //       as={`/games/arkanoid/${c.competitionId}`}
+  //     >
+  //       <div className="flex content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white">
+  //         Play
+  //       </div>
+  //     </Link>
+  //   );
+  //
+  //   let registerButton = (
+  //     <div
+  //       className="flex content-center items-center justify-center rounded border-solid bg-blue-500 px-6 py-4 font-bold text-white"
+  //       onClick={() => register(c.competitionId)}
+  //     >
+  //       Register
+  //     </div>
+  //   );
+  //
+  //   const info = (text: string) => {
+  //     return (
+  //       <div className="flex content-center items-center justify-center rounded border-solid bg-gray-500 px-6 py-4 font-bold text-white">
+  //         {text}
+  //       </div>
+  //     );
+  //   };
+  //   let curTime = Date.now();
+  //
+  //   if (c.competitionEndTime < curTime) {
+  //     return info('Competition ended');
+  //   }
+  //
+  //   if (c.prereg && !c.registered) {
+  //     if (c.preregStartTime < curTime && c.preregEndTime > curTime) {
+  //       return registerButton;
+  //     } else if (c.preregEndTime < curTime) {
+  //       return info('Registration ended');
+  //     } else {
+  //       return info('Wait for registration');
+  //     }
+  //   }
+  //
+  //   if (c.competitionStartTime > curTime) {
+  //     return info('Wait for game start');
+  //   }
+  //
+  //   return playButton;
+  // };
+  console.log(compStore.competitions);
 
   return (
     <GamePage
       gameConfig={arkanoidConfig}
       image={'/image/game-page/arkanoid-title.svg'}
-      competitionsBlocks={[
-        {
-          game: defaultGames[0],
-          id: 0,
-          preRegDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          competitionsDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          participantsFee: 96,
-          currency: '$MINA',
-          reward: 5000,
-        },
-        {
-          game: defaultGames[0],
-          id: 0,
-          preRegDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          competitionsDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          participantsFee: 96,
-          currency: '$MINA',
-          reward: 5000,
-        },
-        {
-          game: defaultGames[0],
-          id: 0,
-          preRegDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          competitionsDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          participantsFee: 96,
-          currency: '$MINA',
-          reward: 5000,
-        },
-      ]}
-      competitionList={[
-        {
-          game: defaultGames[0],
-          id: 0,
-          preRegDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          competitionsDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          participantsFee: 96,
-          currency: '$MINA',
-          reward: 6000,
-        },
-        {
-          game: defaultGames[0],
-          id: 0,
-          preRegDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          competitionsDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          participantsFee: 96,
-          currency: '$MINA',
-          reward: 5000,
-        },
-        {
-          game: defaultGames[0],
-          id: 0,
-          preRegDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          competitionsDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          participantsFee: 96,
-          currency: '$MINA',
-          reward: 5000,
-        },
-      ]}
     >
+      <CompetitionList
+        gameId={arkanoidConfig.id}
+        competitionList={compStore.competitions}
+        competitionsBlocks={[
+          compStore.competitions[0],
+          compStore.competitions[1],
+          compStore.competitions[2],
+        ]}
+      />
       {/*<div className="flex flex-col items-center py-10">*/}
       {/*  <Link href={`/games/arkanoid/new-competition`} className="p-5">*/}
       {/*    <div className="h-50 w-100 rounded border-2 border-solid border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark">*/}
