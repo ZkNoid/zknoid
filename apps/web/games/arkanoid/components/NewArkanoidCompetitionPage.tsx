@@ -15,7 +15,6 @@ import { useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { arkanoidConfig } from '../config';
 import GamePage from '@/components/framework/GamePage';
-import { defaultGames } from '@/app/constants/games';
 
 interface IBrick {
   pos: [number, number];
@@ -171,100 +170,6 @@ export default function NewArkanoidCompetitionPage() {
     <GamePage
       gameConfig={arkanoidConfig}
       image={'/image/game-page/arkanoid-title.svg'}
-      competitionsBlocks={[
-        {
-          game: defaultGames[0],
-          id: 0,
-          preRegDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          competitionsDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          participantsFee: 96,
-          currency: '$MINA',
-          reward: 5000,
-        },
-        {
-          game: defaultGames[0],
-          id: 0,
-          preRegDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          competitionsDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          participantsFee: 96,
-          currency: '$MINA',
-          reward: 5000,
-        },
-        {
-          game: defaultGames[0],
-          id: 0,
-          preRegDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          competitionsDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          participantsFee: 96,
-          currency: '$MINA',
-          reward: 5000,
-        },
-      ]}
-      competitionList={[
-        {
-          game: defaultGames[0],
-          id: 0,
-          preRegDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          competitionsDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          participantsFee: 96,
-          currency: '$MINA',
-          reward: 5000,
-        },
-        {
-          game: defaultGames[0],
-          id: 0,
-          preRegDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          competitionsDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          participantsFee: 96,
-          currency: '$MINA',
-          reward: 5000,
-        },
-        {
-          game: defaultGames[0],
-          id: 0,
-          preRegDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          competitionsDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          participantsFee: 96,
-          currency: '$MINA',
-          reward: 5000,
-        },
-      ]}
     >
       <div className="flex flex-col items-center justify-center gap-5 py-10">
         <div className="py-3">Create competition</div>

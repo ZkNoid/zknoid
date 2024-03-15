@@ -106,7 +106,7 @@ export default function RandzuPage({
       PublicKey.fromBase58(networkStore.address!),
       () => {
         randzuLogic.proveOpponentTimeout(
-          UInt64.from(matchQueue.gameInfo!.gameId)        
+          UInt64.from(matchQueue.gameInfo!.gameId)
         );
       }
     );
@@ -176,7 +176,10 @@ export default function RandzuPage({
   }, [matchQueue.activeGameId, matchQueue.inQueue, matchQueue.lastGameState]);
 
   return (
-    <GamePage gameConfig={randzuConfig}>
+    <GamePage
+      gameConfig={randzuConfig}
+      image={'/image/game-page/game-title-template.svg'}
+    >
       <main className="flex grow flex-col items-center gap-5 p-5">
         {networkStore.address ? (
           <div className="flex flex-col gap-5">

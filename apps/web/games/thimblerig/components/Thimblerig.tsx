@@ -6,7 +6,11 @@ import { useContext, useEffect, useState } from 'react';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { getRandomEmoji } from '@/games/randzu/utils';
 import { useMatchQueueStore } from '@/lib/stores/matchQueue';
-import { ClientAppChain, MOVE_TIMEOUT_IN_BLOCKS, PENDING_BLOCKS_NUM_CONST } from 'zknoid-chain-dev';
+import {
+  ClientAppChain,
+  MOVE_TIMEOUT_IN_BLOCKS,
+  PENDING_BLOCKS_NUM_CONST,
+} from 'zknoid-chain-dev';
 import { Field, Poseidon, PublicKey, UInt64 } from 'o1js';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
@@ -138,7 +142,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       PublicKey.fromBase58(networkStore.address!),
       () => {
         randzuLogic.proveOpponentTimeout(
-          UInt64.from(matchQueue.gameInfo!.gameId)        
+          UInt64.from(matchQueue.gameInfo!.gameId)
         );
       }
     );
@@ -162,7 +166,10 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   }, [matchQueue.activeGameId, matchQueue.inQueue, matchQueue.lastGameState]);
 
   return (
-    <GamePage gameConfig={thimblerigConfig}>
+    <GamePage
+      gameConfig={thimblerigConfig}
+      image={'/image/game-page/game-title-template.svg'}
+    >
       <main className="flex grow flex-col items-center gap-5 p-5">
         {networkStore.address ? (
           <div className="flex flex-col gap-5">

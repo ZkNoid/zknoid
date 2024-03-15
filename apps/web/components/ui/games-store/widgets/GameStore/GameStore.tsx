@@ -384,11 +384,13 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                     fullImageW={game.id === 'arkanoid'}
                     fullImageH={game.id === 'arkanoid'}
                     color={
-                      Number.isInteger(index / 3)
-                        ? 1
-                        : index === 1 || Number.isInteger(index - 1 / 3)
-                          ? 2
-                          : 3
+                      game.isReleased
+                        ? game.genre === ZkNoidGameGenre.BoardGames
+                          ? 1
+                          : game.genre === ZkNoidGameGenre.Arcade
+                            ? 2
+                            : 3
+                        : 4
                     }
                   />
                 ))}
@@ -421,81 +423,96 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             game: defaultGames[0],
             title: 'Arcanoid',
             id: 1,
+            preReg: false,
             preRegDate: {
               start: new Date(2024, 2, 15),
               end: new Date(2024, 2, 20),
             },
-            competitionsDate: {
+            competitionDate: {
               start: new Date(2024, 2, 15),
               end: new Date(2024, 2, 20),
             },
-            participantsFee: 5,
+            participationFee: 5,
             currency: '$MINA',
             reward: 1000,
+            seed: 123,
+            registered: false,
           },
           {
             game: defaultGames[0],
             title: 'Arcanoid',
-            id: 3,
+            id: 1,
+            preReg: false,
             preRegDate: {
               start: new Date(2024, 2, 15),
               end: new Date(2024, 2, 20),
             },
-            competitionsDate: {
+            competitionDate: {
               start: new Date(2024, 2, 15),
               end: new Date(2024, 2, 20),
             },
-            participantsFee: 20,
-            currency: '$MINA',
-            reward: 500,
-          },
-          {
-            game: defaultGames[1],
-            title: 'Randzu battle',
-            id: 4,
-            preRegDate: {
-              start: new Date(2024, 2, 15),
-              end: new Date(2024, 2, 20),
-            },
-            competitionsDate: {
-              start: new Date(2024, 2, 15),
-              end: new Date(2024, 2, 20),
-            },
-            participantsFee: 1,
+            participationFee: 5,
             currency: '$MINA',
             reward: 1000,
+            seed: 123,
+            registered: false,
           },
           {
-            game: defaultGames[1],
-            title: '****** **** *******',
-            id: 5,
+            game: defaultGames[0],
+            title: 'Arcanoid',
+            id: 1,
+            preReg: false,
             preRegDate: {
-              start: new Date(2024, 2, 6),
+              start: new Date(2024, 2, 15),
               end: new Date(2024, 2, 20),
             },
-            competitionsDate: {
-              start: new Date(2024, 3, 1),
-              end: new Date(2024, 3, 6),
+            competitionDate: {
+              start: new Date(2024, 2, 15),
+              end: new Date(2024, 2, 20),
             },
-            participantsFee: 10,
+            participationFee: 5,
             currency: '$MINA',
-            reward: 10000,
+            reward: 1000,
+            seed: 123,
+            registered: false,
           },
           {
-            game: defaultGames[1],
-            title: 'Superbattle',
-            id: 5,
+            game: defaultGames[0],
+            title: 'Arcanoid',
+            id: 1,
+            preReg: false,
             preRegDate: {
-              start: new Date(2024, 1, 9),
-              end: new Date(2024, 1, 20),
+              start: new Date(2024, 2, 15),
+              end: new Date(2024, 2, 20),
             },
-            competitionsDate: {
-              start: new Date(2024, 1, 21),
-              end: new Date(2024, 1, 26),
+            competitionDate: {
+              start: new Date(2024, 2, 15),
+              end: new Date(2024, 2, 20),
             },
-            participantsFee: 99,
+            participationFee: 5,
             currency: '$MINA',
-            reward: 4999,
+            reward: 1000,
+            seed: 123,
+            registered: false,
+          },
+          {
+            game: defaultGames[0],
+            title: 'Arcanoid',
+            id: 1,
+            preReg: false,
+            preRegDate: {
+              start: new Date(2024, 2, 15),
+              end: new Date(2024, 2, 20),
+            },
+            competitionDate: {
+              start: new Date(2024, 2, 15),
+              end: new Date(2024, 2, 20),
+            },
+            participationFee: 5,
+            currency: '$MINA',
+            reward: 1000,
+            seed: 123,
+            registered: false,
           },
         ]}
       />

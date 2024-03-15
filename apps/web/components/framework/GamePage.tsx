@@ -16,28 +16,15 @@ import DesktopNavbar from '../ui/games-store/DesktopNavbar';
 import { Footer } from '@/components/Footer';
 import Image from 'next/image';
 import { clsx } from 'clsx';
-import { ICompetition } from '@/components/ui/games-store/widgets/GameStore/CompetitionsItem';
-import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
-import {
-  COMPETITIONS_SORT_METHODS,
-  CompetitionsSortBy,
-} from '@/constants/sortBy';
-import { CompetitionBlock } from '@/components/framework/CompetitionBlock';
-import { CompetitionListItem } from '@/components/framework/CompetitionListItem';
-import Link from 'next/link';
 
 export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
   children,
   gameConfig,
   image,
-  competitionsBlocks,
-  competitionList,
 }: {
   children: ReactNode;
   gameConfig: ZkNoidGameConfig<RuntimeModules>;
   image: string;
-  competitionsBlocks: ICompetition[];
-  competitionList: ICompetition[];
 }) {
   const client = useContext(AppChainClientContext) as ClientAppChain<any>;
 
@@ -60,37 +47,6 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
   }
 
   const [page, setPage] = useState<string>(Pages.CompetitionsList);
-  const [sortBy, setSortBy] = useState<CompetitionsSortBy>(
-    CompetitionsSortBy.LowFunds
-  );
-
-  const sortByFilter = (a: ICompetition, b: ICompetition) => {
-    switch (sortBy) {
-      case CompetitionsSortBy.HighFees:
-        return a.participantsFee - b.participantsFee;
-
-      case CompetitionsSortBy.LowFees:
-        return b.participantsFee - a.participantsFee;
-
-      case CompetitionsSortBy.HighFunds:
-        return a.reward - b.reward;
-
-      case CompetitionsSortBy.LowFunds:
-        return b.reward - a.reward;
-
-      case CompetitionsSortBy.Latest:
-        return (
-          a.competitionsDate.start.getDate() -
-          b.competitionsDate.start.getDate()
-        );
-
-      case CompetitionsSortBy.Nearest:
-        return (
-          b.competitionsDate.start.getDate() -
-          a.competitionsDate.start.getDate()
-        );
-    }
-  };
 
   const SwitchBtn = ({
     switchPage,
@@ -249,92 +205,7 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
           />
         </div>
         <SwitchWidget />
-        <div
-          className={
-            'relative flex w-full flex-col gap-20 rounded-2xl border-2 border-left-accent p-10'
-          }
-        >
-          <div
-            className={
-              'absolute left-0 top-0 -z-10 h-[200px] w-full bg-bg-dark'
-            }
-          />
-          <div className={'mb-4 flex flex-col gap-8'}>
-            <div className={'w-full text-left text-headline-1'}>
-              The most interesting competitions
-            </div>
-            <div className={'flex flex-row gap-4'}>
-              {competitionsBlocks.map((item, index) => (
-                <CompetitionBlock
-                  key={index}
-                  competition={{
-                    game: item.game,
-                    id: item.id,
-                    preRegDate: {
-                      start: item.preRegDate.start,
-                      end: item.preRegDate.end,
-                    },
-                    competitionsDate: {
-                      start: item.competitionsDate.start,
-                      end: item.competitionsDate.end,
-                    },
-                    participantsFee: item.participantsFee,
-                    currency: item.currency,
-                    reward: item.reward,
-                  }}
-                  variant={index == 0 ? 1 : index == 1 ? 2 : 3}
-                />
-              ))}
-            </div>
-          </div>
-          <div className={'mb-4 flex max-w-[90%] flex-col gap-8'}>
-            <div className={'flex w-full flex-row justify-between'}>
-              <div className={'text-left text-headline-1'}>
-                Full competition list
-              </div>
-              <SortByFilter
-                sortMethods={COMPETITIONS_SORT_METHODS}
-                sortBy={sortBy}
-                setSortBy={setSortBy}
-              />
-            </div>
-            <div
-              className={'flex max-h-[400px] flex-col gap-4 overflow-y-scroll'}
-            >
-              {competitionList
-                .sort((a, b) => sortByFilter(a, b))
-                .map((item, index) => (
-                  <CompetitionListItem
-                    key={index}
-                    competition={{
-                      game: item.game,
-                      id: item.id,
-                      preRegDate: {
-                        start: item.preRegDate.start,
-                        end: item.preRegDate.end,
-                      },
-                      competitionsDate: {
-                        start: item.competitionsDate.start,
-                        end: item.competitionsDate.end,
-                      },
-                      participantsFee: item.participantsFee,
-                      currency: item.currency,
-                      reward: item.reward,
-                    }}
-                  />
-                ))}
-            </div>
-            <Link
-              className={
-                'w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent max-[2000px]:max-w-[40%] min-[2000px]:max-w-[30%]'
-              }
-              href={`/games/${gameConfig.id}/new-competition`}
-            >
-              Create new competition
-            </Link>
-          </div>
-          {children}
-        </div>
+        {children}
       </div>
       <Footer />
     </>

@@ -1,8 +1,8 @@
-import { ICompetition } from '@/components/ui/games-store/widgets/GameStore/CompetitionsItem';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import { clsx } from 'clsx';
 import Link from 'next/link';
+import { ICompetition } from '@/lib/types';
 
 export const CompetitionListItem = ({
   competition,
@@ -26,9 +26,7 @@ export const CompetitionListItem = ({
           }
         >
           <span>[{competition.id}]</span>
-          <span>
-            {competition.title ? competition.title : competition.game.name}
-          </span>
+          <span>{competition.title}</span>
         </div>
         <div
           className={
@@ -47,7 +45,7 @@ export const CompetitionListItem = ({
               'w-full max-w-fit items-center justify-center rounded-2xl border border-left-accent p-1 px-2 text-center'
             }
           >
-            {competition.participantsFee} {competition.currency} Participants
+            {competition.participationFee} {competition.currency} Participants
             fee
           </div>
         </div>
@@ -215,7 +213,7 @@ export const CompetitionListItem = ({
                   >
                     <span className={'font-extralight'}>Start</span>
                     <span className={'font-normal text-foreground opacity-80'}>
-                      {competition.competitionsDate.start.toLocaleDateString(
+                      {competition.competitionDate.start.toLocaleDateString(
                         'en-US',
                         {
                           dateStyle: 'long',
@@ -230,7 +228,7 @@ export const CompetitionListItem = ({
                   >
                     <span className={'font-extralight'}>Finish</span>
                     <span className={'font-normal text-foreground opacity-80'}>
-                      {competition.competitionsDate.end.toLocaleDateString(
+                      {competition.competitionDate.end.toLocaleDateString(
                         'en-US',
                         {
                           dateStyle: 'long',

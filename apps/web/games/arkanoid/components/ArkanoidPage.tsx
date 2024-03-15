@@ -24,7 +24,6 @@ import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import GamePage from '@/components/framework/GamePage';
 import { arkanoidConfig } from '../config';
-import { defaultGames } from '@/app/constants/games';
 
 enum GameState {
   NotStarted,
@@ -152,7 +151,7 @@ export default function ArkanoidPage({
         PublicKey.fromBase58(networkStore.address!),
         () => {
           gameHub.addGameResult(
-            UInt64.from(competition!.competitionId),
+            UInt64.from(competition!.id),
             proof!
           );
         }
@@ -170,100 +169,6 @@ export default function ArkanoidPage({
     <GamePage
       gameConfig={arkanoidConfig}
       image={'/image/game-page/arkanoid-title.svg'}
-      competitionsBlocks={[
-        {
-          game: defaultGames[0],
-          id: 0,
-          preRegDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          competitionsDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          participantsFee: 96,
-          currency: '$MINA',
-          reward: 5000,
-        },
-        {
-          game: defaultGames[0],
-          id: 0,
-          preRegDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          competitionsDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          participantsFee: 96,
-          currency: '$MINA',
-          reward: 5000,
-        },
-        {
-          game: defaultGames[0],
-          id: 0,
-          preRegDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          competitionsDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          participantsFee: 96,
-          currency: '$MINA',
-          reward: 5000,
-        },
-      ]}
-      competitionList={[
-        {
-          game: defaultGames[0],
-          id: 0,
-          preRegDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          competitionsDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          participantsFee: 96,
-          currency: '$MINA',
-          reward: 5000,
-        },
-        {
-          game: defaultGames[0],
-          id: 0,
-          preRegDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          competitionsDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          participantsFee: 96,
-          currency: '$MINA',
-          reward: 5000,
-        },
-        {
-          game: defaultGames[0],
-          id: 0,
-          preRegDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          competitionsDate: {
-            start: new Date(1999, 12, 12),
-            end: new Date(2000, 12, 1),
-          },
-          participantsFee: 96,
-          currency: '$MINA',
-          reward: 5000,
-        },
-      ]}
     >
       <main className="flex grow flex-col items-center gap-5 p-5">
         {networkStore.address ? (

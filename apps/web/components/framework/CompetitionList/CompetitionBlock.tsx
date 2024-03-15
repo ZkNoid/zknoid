@@ -1,9 +1,9 @@
-import { ICompetition } from '@/components/ui/games-store/widgets/GameStore/CompetitionsItem';
 import leftSvg from '@/public/image/game-page/1.svg';
 import centerSvg from '@/public/image/game-page/2.svg';
 import rightSvg from '@/public/image/game-page/3.svg';
 import Image from 'next/image';
 import Link from 'next/link';
+import { ICompetition } from '@/lib/types';
 
 export const CompetitionBlock = ({
   competition,
@@ -60,9 +60,7 @@ export const CompetitionBlock = ({
           }
         >
           <span>[{competition.id}]</span>
-          <span>
-            {competition.title ? competition.title : competition.game.name}
-          </span>
+          <span>{competition.title}</span>
         </div>
         <div
           className={
@@ -81,7 +79,7 @@ export const CompetitionBlock = ({
               'w-full max-w-fit rounded-2xl border border-left-accent p-1 px-2 text-center'
             }
           >
-            {competition.participantsFee} {competition.currency} Participants
+            {competition.participationFee} {competition.currency} Participants
             fee
           </div>
         </div>
@@ -122,11 +120,11 @@ export const CompetitionBlock = ({
               'font-plexsans text-[16px]/[16px] font-normal text-foreground'
             }
           >
-            {competition.competitionsDate.start.toLocaleDateString('en-US', {
+            {competition.competitionDate.start.toLocaleDateString('en-US', {
               dateStyle: 'long',
             })}{' '}
             -{' '}
-            {competition.competitionsDate.end.toLocaleDateString('en-US', {
+            {competition.competitionDate.end.toLocaleDateString('en-US', {
               dateStyle: 'long',
             })}
           </span>
