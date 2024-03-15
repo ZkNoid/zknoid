@@ -30,6 +30,7 @@ import Lottie from 'react-lottie';
 import SnakeNoEvents from './assets/ZKNoid_Snake_Intro_03_05.json';
 import { Pagination } from '@/components/ui/games-store/shared/Pagination';
 import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
+import { Currency } from '@/constants/currency';
 
 export const GameStore = ({ games }: { games: IGame[] }) => {
   const [eventTypesSelected, setEventTypesSelected] = useState<
@@ -433,7 +434,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
               end: new Date(2024, 2, 20),
             },
             participationFee: 5,
-            currency: '$MINA',
+            currency: Currency.MINA,
             reward: 1000,
             seed: 123,
             registered: false,
@@ -452,7 +453,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
               end: new Date(2024, 2, 20),
             },
             participationFee: 5,
-            currency: '$MINA',
+            currency: Currency.MINA,
             reward: 1000,
             seed: 123,
             registered: false,
@@ -471,7 +472,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
               end: new Date(2024, 2, 20),
             },
             participationFee: 5,
-            currency: '$MINA',
+            currency: Currency.MINA,
             reward: 1000,
             seed: 123,
             registered: false,
@@ -490,7 +491,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
               end: new Date(2024, 2, 20),
             },
             participationFee: 5,
-            currency: '$MINA',
+            currency: Currency.MINA,
             reward: 1000,
             seed: 123,
             registered: false,
@@ -509,7 +510,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
               end: new Date(2024, 2, 20),
             },
             participationFee: 5,
-            currency: '$MINA',
+            currency: Currency.MINA,
             reward: 1000,
             seed: 123,
             registered: false,

@@ -48,14 +48,7 @@ export const CompetitionWidget = ({
     }
   };
   return (
-    <div
-      className={
-        'relative flex w-full flex-col gap-20 rounded-2xl border-2 border-left-accent p-10 pb-[100px]'
-      }
-    >
-      <div
-        className={'absolute left-0 top-0 -z-10 h-[200px] w-full bg-bg-dark'}
-      />
+    <>
       <div className={'mb-4 flex flex-col gap-8'}>
         <div className={'w-full text-left text-headline-1'}>
           The most interesting competitions
@@ -97,6 +90,6 @@ export const CompetitionWidget = ({
           Create new competition
         </Link>
       </div>
-    </div>
+    </>
   );
 };

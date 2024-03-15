@@ -205,7 +205,18 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
           />
         </div>
         <SwitchWidget />
-        {children}
+        <div
+          className={
+            'relative flex w-full flex-col gap-20 rounded-2xl border-2 border-left-accent p-10 pb-[100px]'
+          }
+        >
+          <div
+            className={
+              'absolute left-0 top-0 -z-10 h-[200px] w-full bg-bg-dark'
+            }
+          />
+          {children}
+        </div>
       </div>
       <Footer />
     </>
