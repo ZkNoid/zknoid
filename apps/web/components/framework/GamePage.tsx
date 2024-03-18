@@ -16,6 +16,7 @@ import DesktopNavbar from '../ui/games-store/DesktopNavbar';
 import { Footer } from '@/components/Footer';
 import Image from 'next/image';
 import { clsx } from 'clsx';
+import Link from "next/link";
 
 export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
   children,
@@ -44,6 +45,7 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
 
   enum Pages {
     CompetitionsList = 'Competitions List',
+    Game = 'Game',
   }
 
   const [page, setPage] = useState<string>(Pages.CompetitionsList);
@@ -70,12 +72,17 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
         data-iscurrentpage={page === switchPage}
       >
         {children}
-        <button
+        <Link
           onClick={() => setPage(switchPage)}
           className={'text-headline-3 group-hover:opacity-80'}
+          href={
+            page === Pages.CompetitionsList
+              ? `/games/${gameConfig.id}/competitions-list`
+              : `/games/${gameConfig.id}/1`
+          }
         >
           {switchPage}
-        </button>
+        </Link>
         <div
           className={clsx('absolute -top-3 -z-20', {
             '-left-5': isLeft,
