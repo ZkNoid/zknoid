@@ -32,6 +32,7 @@ import { RateGame } from '@/components/framework/GameWidget/RateGame';
 import { Lost } from '@/components/framework/GameWidget/Lost';
 import { Win } from '@/components/framework/GameWidget/Win';
 import { formatDecimals } from '@/lib/utils';
+import {InstallWallet} from "@/components/framework/GameWidget/InstallWallet";
 
 enum GameState {
   NotStarted,
@@ -171,6 +172,7 @@ export default function ArkanoidPage({
   };
 
   const [isConnectWallet, setIsConnectWallet] = useState<boolean>(false);
+  const [isInstallWallet, setIsInstallWallet] = useState<boolean>(true)
   const [isRateGame, setIsRateGame] = useState<boolean>(false);
 
   // TEMPORARY LEADERBOARD AND PLAYER
@@ -244,7 +246,7 @@ export default function ArkanoidPage({
           ) : walletInstalled() ? (
             <ConnectWallet setIsVisible={setIsConnectWallet} />
           ) : (
-            <p>InstallWallet</p>
+            <InstallWallet setIsVisible={setIsInstallWallet} />
           )}
           {gameState === GameState.Active && (
             <div className={'flex h-full w-full items-center justify-center'}>
