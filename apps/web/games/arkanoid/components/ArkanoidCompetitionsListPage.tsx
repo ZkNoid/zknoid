@@ -183,6 +183,7 @@ export default function ArkanoidCompetitionsListPage() {
     <GamePage
       gameConfig={arkanoidConfig}
       image={'/image/game-page/arkanoid-title.svg'}
+      defaultPage={'Competitions List'}
     >
       <CompetitionWidget
         gameId={arkanoidConfig.id}

@@ -218,6 +218,7 @@ export default function ArkanoidPage({
     <GamePage
       gameConfig={arkanoidConfig}
       image={'/image/game-page/arkanoid-title.svg'}
+      defaultPage={'Game'}
     >
       <div className={'grid grid-cols-4 grid-rows-1 gap-4'}>
         <Leaderboard leaderboard={DEBUG_LEADERBOARD} />
