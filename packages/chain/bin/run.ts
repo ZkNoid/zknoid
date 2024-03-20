@@ -4,12 +4,15 @@ import { ManualBlockTrigger } from '@proto-kit/sequencer';
 import appChain from '../src/chain.config';
 
 await appChain.start();
-const trigger = appChain.sequencer.resolveOrFail("BlockTrigger", ManualBlockTrigger);
+const trigger = appChain.sequencer.resolveOrFail(
+  'BlockTrigger',
+  ManualBlockTrigger,
+);
 setInterval(async () => {
-    console.log('Tick');
+  console.log('Tick');
   try {
     await trigger.produceUnproven();
   } catch (e) {
     console.error(e);
   }
-}, 5000)
+}, 5000);

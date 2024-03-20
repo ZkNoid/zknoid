@@ -64,3 +64,7 @@ export function buildClient<
 
   return client;
 }
+
+export function formatDecimals(value: number) {
+  return value / 10 ** 9;
+}

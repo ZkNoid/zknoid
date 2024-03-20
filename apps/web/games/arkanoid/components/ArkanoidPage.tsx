@@ -31,6 +31,7 @@ import { ConnectWallet } from '@/components/framework/GameWidget/ConnectWallet';
 import { RateGame } from '@/components/framework/GameWidget/RateGame';
 import { Lost } from '@/components/framework/GameWidget/Lost';
 import { Win } from '@/components/framework/GameWidget/Win';
+import { formatDecimals } from '@/lib/utils';
 
 enum GameState {
   NotStarted,
