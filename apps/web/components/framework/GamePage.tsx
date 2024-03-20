@@ -16,16 +16,18 @@ import DesktopNavbar from '../ui/games-store/DesktopNavbar';
 import { Footer } from '@/components/Footer';
 import Image from 'next/image';
 import { clsx } from 'clsx';
-import Link from "next/link";
+import Link from 'next/link';
 
 export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
   children,
   gameConfig,
   image,
+  defaultPage,
 }: {
   children: ReactNode;
   gameConfig: ZkNoidGameConfig<RuntimeModules>;
   image: string;
+  defaultPage: 'Competitions List' | 'Game';
 }) {
   const client = useContext(AppChainClientContext) as ClientAppChain<any>;
 
@@ -48,14 +50,16 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
     Game = 'Game',
   }
 
-  const [page, setPage] = useState<string>(Pages.CompetitionsList);
+  const [page, setPage] = useState<string>(defaultPage);
 
   const SwitchBtn = ({
+    title,
     switchPage,
     children,
     isLeft = false,
   }: {
-    switchPage: string;
+    title: string;
+    switchPage: Pages;
     children: ReactNode;
     isLeft?: boolean;
   }) => {
@@ -81,7 +85,7 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
               : `/games/${gameConfig.id}/1`
           }
         >
-          {switchPage}
+          {title}
         </Link>
         <div
           className={clsx('absolute -top-3 -z-20', {
@@ -132,7 +136,11 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
           'ml-5 flex flex-row items-start justify-start pb-[6px] max-[2000px]:pb-[7px]'
         }
       >
-        <SwitchBtn switchPage={Pages.CompetitionsList} isLeft>
+        <SwitchBtn
+          title={Pages.CompetitionsList}
+          switchPage={Pages.CompetitionsList}
+          isLeft
+        >
           <svg
             width="36"
             height="36"
@@ -177,7 +185,7 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
             </defs>
           </svg>
         </SwitchBtn>
-        <SwitchBtn switchPage={gameConfig.name}>
+        <SwitchBtn title={gameConfig.name} switchPage={Pages.Game}>
           <svg
             width="32"
             height="36"

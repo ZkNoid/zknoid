@@ -170,6 +170,7 @@ export default function NewArkanoidCompetitionPage() {
     <GamePage
       gameConfig={arkanoidConfig}
       image={'/image/game-page/arkanoid-title.svg'}
+      defaultPage={'Competitions List'}
     >
       <div className="flex flex-col items-center justify-center gap-5 py-10">
         <div className="py-3">Create competition</div>

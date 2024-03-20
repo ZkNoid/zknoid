@@ -169,6 +169,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     <GamePage
       gameConfig={thimblerigConfig}
       image={'/image/game-page/game-title-template.svg'}
+      defaultPage={'Game'}
     >
       <main className="flex grow flex-col items-center gap-5 p-5">
         {networkStore.address ? (
