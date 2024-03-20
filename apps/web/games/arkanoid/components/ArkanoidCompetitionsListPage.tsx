@@ -14,6 +14,7 @@ import { CompetitionWidget } from '@/components/framework/CompetitionWidget/Comp
 import { ICompetition } from '@/lib/types';
 import { ZkNoidGameGenre } from '@/lib/platform/game_tags';
 import { Currency } from '@/constants/currency';
+import { formatDecimals } from '@/lib/utils';
 
 // const timeStampToStringDate = (timeStamp: number): string => {
 //   var date = new Date(timeStamp);
@@ -41,6 +42,20 @@ export default function ArkanoidCompetitionsListPage() {
       PublicKey.fromBase58(networkStore.address!),
       () => {
         gameHub.register(UInt64.from(competitionId));
+      }
+    );
+
+    await tx.sign();
+    await tx.send();
+  };
+
+  const getReward = async (competitionId: number) => {
+    const gameHub = client.runtime.resolve('ArkanoidGameHub');
+
+    const tx = await client.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        gameHub.getReward(UInt64.from(competitionId));
       }
     );
 

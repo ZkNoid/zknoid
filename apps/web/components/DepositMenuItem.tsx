@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 
 import {
   useMinaBridge,
   useProtokitBalancesStore,
+  useTestBalanceGetter,
 } from '@/lib/stores/protokitBalances';
 import { HeaderCard } from './ui/games-store/HeaderCard';
 import MinaTokenSvg from '@/public/image/tokens/mina.svg';
@@ -18,6 +19,7 @@ import {
 import { useNetworkStore } from '@/lib/stores/network';
 import { useMinaBalancesStore } from '@/lib/stores/minaBalances';
 import { AnimatePresence, motion } from 'framer-motion';
+import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 
 const BridgeInput = ({
   assets,
@@ -111,7 +113,9 @@ export const DepositMenuItem = () => {
   const networkStore = useNetworkStore();
 
   const bridge = useMinaBridge();
+  const testBalanceGetter = useTestBalanceGetter();
   const rate = 1;
+  const contextAppChainClient = useContext(AppChainClientContext);
 
   return (
     <>
@@ -120,6 +124,13 @@ export const DepositMenuItem = () => {
         text="Top up"
         onClick={() => setExpanded(true)}
       />
+      {contextAppChainClient && (
+        <HeaderCard
+          svg={'top-up'}
+          text="Get test balance"
+          onClick={() => testBalanceGetter()}
+        />
+      )}
       <AnimatePresence>
         {expanded && (
           <motion.div
