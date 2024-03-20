@@ -1,6 +1,6 @@
 'use client';
 
-import "reflect-metadata";
+import 'reflect-metadata';
 
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
@@ -44,6 +44,7 @@ export default function Home() {
             isReleased: x.isReleased,
             releaseDate: x.releaseDate,
             popularity: x.popularity,
+            author: x.author,
           })) as IGame[]
         ).concat(announcedGames)
       );

@@ -1,6 +1,18 @@
 import { ReactNode } from 'react';
 
-export const GameWidget = ({ children }: { children: ReactNode }) => {
+export const GameWidget = ({
+  children,
+  ticks,
+  score,
+  gameRating,
+  author,
+}: {
+  children: ReactNode;
+  ticks: number;
+  score: number;
+  gameRating: number;
+  author: string;
+}) => {
   return (
     <div className={'col-start-2 col-end-4 h-full w-full'}>
       <div className={'h-full w-full rounded-[5px] border border-left-accent'}>
@@ -30,7 +42,7 @@ export const GameWidget = ({ children }: { children: ReactNode }) => {
               />
             </svg>
             <span className={'font-plexsans text-buttons-menu font-normal'}>
-              5.0
+              {Number.isInteger(gameRating) ? gameRating + '.0' : gameRating}
             </span>
           </span>
           <span
@@ -41,7 +53,7 @@ export const GameWidget = ({ children }: { children: ReactNode }) => {
             Author:
           </span>
           <span className={'font-plexsans text-buttons-menu font-normal'}>
-            ZkNoid Team
+            {author}
           </span>
         </div>
         <div
@@ -49,8 +61,8 @@ export const GameWidget = ({ children }: { children: ReactNode }) => {
             'flex flex-row gap-4 font-plexsans text-[20px]/[20px] text-left-accent'
           }
         >
-          <span className={'uppercase'}>Ticks: 45</span>
-          <span className={'uppercase'}>Scores: 45000</span>
+          <span className={'uppercase'}>Ticks: {ticks}</span>
+          <span className={'uppercase'}>Score: {score}</span>
         </div>
       </div>
     </div>

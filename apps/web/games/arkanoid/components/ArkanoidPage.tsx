@@ -10,7 +10,6 @@ import {
   createBricksBySeed,
 } from 'zknoid-chain-dev';
 import { Bool, Field, Int64, PrivateKey, PublicKey, UInt64 } from 'o1js';
-import Link from 'next/link';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useMinaBridge } from '@/lib/stores/protokitBalances';
 import {
@@ -32,7 +31,8 @@ import { RateGame } from '@/components/framework/GameWidget/RateGame';
 import { Lost } from '@/components/framework/GameWidget/Lost';
 import { Win } from '@/components/framework/GameWidget/Win';
 import { formatDecimals } from '@/lib/utils';
-import {InstallWallet} from "@/components/framework/GameWidget/InstallWallet";
+import { InstallWallet } from '@/components/framework/GameWidget/InstallWallet';
+import { DebugCheckbox } from '@/components/framework/GameWidget/DebugCheckbox';
 
 enum GameState {
   NotStarted,
@@ -172,47 +172,58 @@ export default function ArkanoidPage({
   };
 
   const [isConnectWallet, setIsConnectWallet] = useState<boolean>(false);
-  const [isInstallWallet, setIsInstallWallet] = useState<boolean>(true)
+  const [isInstallWallet, setIsInstallWallet] = useState<boolean>(true);
   const [isRateGame, setIsRateGame] = useState<boolean>(false);
 
   // TEMPORARY LEADERBOARD AND PLAYER
-  const DEBUG_PLAYER = 'B62qo73iSWQi1vyuToZGg6u1d8emzwZUG7jXcLZLuLgT7q7XPbxUFat';
+  const DEBUG_PLAYERS = [
+    'mLZLPXq1ZSx8UQBWueT7Gcagu6ywuLoZ367g7o7bjvTUidtGz2Xi1qF',
+    'Wv6Tdj1abxqQyLZF77eLoU7Pwct7uUXgG8S1umG6ZiBXz3guoTL2Zqi',
+    'uUWZuigy7Q6vTXq7d1oLBm3GP1o7XcaewTGL7b8zxjiqu6ZFtU2gSZL',
+    '7Q73wog6j7iuGexXZ7z8qLo1mu1ubXLSgUZGF62PLyvTtqBiaUTcdWZ',
+    'gbWuq61Zuwz3y2LLGUa8d6X7uGiXvFLZgxqP7BS7Uc1oTjmiet7TZoQ',
+    'gS2XxLg7a81iouPeTGzT6iomGBquU6u7LWq7ZbQFLX3cj1Udty7ZZvw',
+    'PGXiXG8bUv7q7ZTLymwS161jtdLgZFcLaTuooi7Wq7QZB62uz3ueUgx',
+    'U6biZcWT1LZuxqmGPFiX7doBuLjuq7oZS1Ge7gLT27vygX6tQw3Uza8',
+    'TdPXeGw7QtaS3TWzLB17u2qL7qc8ZUj7ZmuogGou6LiUxvbFZy6Xig1',
+    '7gj7wZmTey77uxPUdZq8X3SQcgWLLT1iF1GuL26UGovZzuqibBXoat6',
+  ];
   const DEBUG_LEADERBOARD = [
     {
       score: new UInt64(100),
-      player: DEBUG_PLAYER,
+      player: DEBUG_PLAYERS[0],
     },
     {
       score: new UInt64(200),
-      player: DEBUG_PLAYER,
+      player: DEBUG_PLAYERS[1],
     },
     {
       score: new UInt64(300),
-      player: DEBUG_PLAYER,
+      player: DEBUG_PLAYERS[2],
     },
     {
       score: new UInt64(400),
-      player: DEBUG_PLAYER,
+      player: DEBUG_PLAYERS[3],
     },
     {
       score: new UInt64(500),
-      player: DEBUG_PLAYER,
+      player: DEBUG_PLAYERS[4],
     },
     {
       score: new UInt64(600),
-      player: DEBUG_PLAYER,
+      player: DEBUG_PLAYERS[5],
     },
     {
       score: new UInt64(700),
-      player: DEBUG_PLAYER,
+      player: DEBUG_PLAYERS[6],
     },
     {
       score: new UInt64(800),
-      player: DEBUG_PLAYER,
+      player: DEBUG_PLAYERS[7],
     },
     {
       score: new UInt64(900),
-      player: DEBUG_PLAYER,
+      player: DEBUG_PLAYERS[8],
     },
   ];
 
@@ -224,7 +235,12 @@ export default function ArkanoidPage({
     >
       <div className={'grid grid-cols-4 grid-rows-1 gap-4'}>
         <Leaderboard leaderboard={DEBUG_LEADERBOARD} />
-        <GameWidget>
+        <GameWidget
+          ticks={ticksAmount}
+          score={score}
+          gameRating={arkanoidConfig.rating}
+          author={arkanoidConfig.author}
+        >
           {networkStore.address ? (
             <>
               {gameState == GameState.Won && <Win />}
@@ -275,6 +291,7 @@ export default function ArkanoidPage({
         </GameWidget>
         <Competition startGame={startGame} />
       </div>
+      <DebugCheckbox debug={debug} setDebug={setDebug} />
       {/*<main className="flex grow flex-col items-center gap-5 p-5">*/}
       {/*  {networkStore.address ? (*/}
       {/*    <div className="flex flex-col gap-5">*/}
