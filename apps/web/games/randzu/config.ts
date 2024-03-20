@@ -15,6 +15,7 @@ export const randzuConfig = createZkNoidGameConfig({
   isReleased: true,
   releaseDate: new Date(2024, 0, 1),
   popularity: 50,
+  author: 'ZkNoid Team',
   runtimeModules: {
     RandzuLogic,
   },
