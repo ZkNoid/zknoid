@@ -33,6 +33,8 @@ import { Win } from '@/components/framework/GameWidget/Win';
 import { formatDecimals } from '@/lib/utils';
 import { InstallWallet } from '@/components/framework/GameWidget/InstallWallet';
 import { DebugCheckbox } from '@/components/framework/GameWidget/DebugCheckbox';
+import { defaultGames } from '@/app/constants/games';
+import { Currency } from '@/constants/currency';
 
 enum GameState {
   NotStarted,
@@ -175,7 +177,7 @@ export default function ArkanoidPage({
   const [isInstallWallet, setIsInstallWallet] = useState<boolean>(false);
   const [isRateGame, setIsRateGame] = useState<boolean>(false);
 
-  // TEMPORARY LEADERBOARD AND PLAYER
+  // TEMPORARY DATA
   const DEBUG_PLAYERS = [
     'mLZLPXq1ZSx8UQBWueT7Gcagu6ywuLoZ367g7o7bjvTUidtGz2Xi1qF',
     'Wv6Tdj1abxqQyLZF77eLoU7Pwct7uUXgG8S1umG6ZiBXz3guoTL2Zqi',
@@ -226,6 +228,26 @@ export default function ArkanoidPage({
       player: DEBUG_PLAYERS[8],
     },
   ];
+
+  const DEBUG_COMPETITION: ICompetition = {
+    game: defaultGames[0],
+    title: 'Arcanoid',
+    id: 1,
+    preReg: false,
+    preRegDate: {
+      start: new Date(2024, 2, 15),
+      end: new Date(2024, 2, 20),
+    },
+    competitionDate: {
+      start: new Date(2024, 2, 15),
+      end: new Date(2024, 2, 20),
+    },
+    participationFee: 5,
+    currency: Currency.MINA,
+    reward: 1000,
+    seed: 123,
+    registered: false,
+  };
 
   return (
     <GamePage
@@ -289,7 +311,7 @@ export default function ArkanoidPage({
             </div>
           )}
         </GameWidget>
-        <Competition startGame={startGame} />
+        <Competition startGame={startGame} competition={DEBUG_COMPETITION} />
       </div>
       <DebugCheckbox debug={debug} setDebug={setDebug} />
     </GamePage>
