@@ -663,50 +663,36 @@ export const GameView = (props: IGameViewProps) => {
     action = Math.min(action, DEFAULT_PLATFORM_SPEED);
     action = Math.max(action, -DEFAULT_PLATFORM_SPEED);
     ticksCache.push({ action, momentum });
-    if (!debugModeRef.current) {
-      // Is not in debug mode - just process tick
-      gameContext.processTick(
-        //@ts-ignore
-        new Tick({
-          action: Int64.from(action),
-          momentum: Int64.from(momentum),
-        })
-      );
-      let [x, y] = [
-        gameContext.ball.position.x * 1,
-        gameContext.ball.position.y * 1,
-      ];
-      contractBall.x = x;
-      contractBall.y = y;
-      contractBall.dx = gameContext.ball.speed.x * 1;
-      contractBall.dy = gameContext.ball.speed.y * 1;
-      contractBallTrace = [];
-    } else {
-      let prevPos: [number, number] =
-        contractBallTrace.length > 0
-          ? contractBallTrace[contractBallTrace.length - 1]
-          : [gameContext.ball.position.x * 1, gameContext.ball.position.y * 1];
 
-      let prevSpeed: [number, number] = [
-        gameContext.ball.speed.x * 1,
-        gameContext.ball.speed.y * 1,
-      ];
-      gameContext.processTick(
-        //@ts-ignore
-        new Tick({
-          action: Int64.from(action),
-          momentum: Int64.from(momentum),
-        })
-      );
-      let [x, y] = [
-        gameContext.ball.position.x * 1,
-        gameContext.ball.position.y * 1,
-      ];
-      contractBall.x = x;
-      contractBall.y = y;
-      contractBall.dx = gameContext.ball.speed.x * 1;
-      contractBall.dy = gameContext.ball.speed.y * 1;
+    let prevPos: [number, number] =
+      contractBallTrace.length > 0
+        ? contractBallTrace[contractBallTrace.length - 1]
+        : [gameContext.ball.position.x * 1, gameContext.ball.position.y * 1];
 
+    let prevSpeed: [number, number] = [
+      gameContext.ball.speed.x * 1,
+      gameContext.ball.speed.y * 1,
+    ];
+
+    gameContext.processTick(
+      //@ts-ignore
+      new Tick({
+        action: Int64.from(action),
+        momentum: Int64.from(momentum),
+      })
+    );
+    let [x, y] = [
+      gameContext.ball.position.x * 1,
+      gameContext.ball.position.y * 1,
+    ];
+
+    contractBall.x = x;
+    contractBall.y = y;
+    contractBall.dx = gameContext.ball.speed.x * 1;
+    contractBall.dy = gameContext.ball.speed.y * 1;
+    contractBallTrace = [];
+
+    if (debugModeRef.current) {
       let newSpeed: [number, number] = [
         gameContext.ball.speed.x * 1,
         gameContext.ball.speed.y * 1,
@@ -721,31 +707,30 @@ export const GameView = (props: IGameViewProps) => {
       }
 
       contractBallTrace.push([x, y]);
-
-      const contractBrickToBrick = (brick: IContractBrick) => {
-        let x = brick.pos.x * 1;
-        let y = brick.pos.y * 1;
-        return {
-          x,
-          y,
-          w: 2 * BRICK_HALF_WIDTH,
-          h: 2 * BRICK_HALF_WIDTH,
-          value: +brick.value.toString(),
-        } as IContractBrickPorted;
-      };
-
-      contractBricks = gameContext.bricks.bricks
-        .map(contractBrickToBrick)
-        .filter((brick: IContractBrickPorted) => brick.value > 1);
-
-      contractNearestBricks =
-        gameContext.nearestBricks.map(contractBrickToBrick);
-
-      contractCart = {
-        ...cart,
-        x: gameContext.platform.position * 1,
-      };
     }
+
+    const contractBrickToBrick = (brick: IContractBrick) => {
+      let x = brick.pos.x * 1;
+      let y = brick.pos.y * 1;
+      return {
+        x,
+        y,
+        w: 2 * BRICK_HALF_WIDTH,
+        h: 2 * BRICK_HALF_WIDTH,
+        value: +brick.value.toString(),
+      } as IContractBrickPorted;
+    };
+
+    contractBricks = gameContext.bricks.bricks
+      .map(contractBrickToBrick)
+      .filter((brick: IContractBrickPorted) => brick.value > 1);
+
+    contractNearestBricks = gameContext.nearestBricks.map(contractBrickToBrick);
+
+    contractCart = {
+      ...cart,
+      x: gameContext.platform.position * 1,
+    };
 
     props.setTicksAmount(ticksCache.length);
     props.setScore(gameContext.score * 1);
