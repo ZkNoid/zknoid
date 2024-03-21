@@ -23,7 +23,7 @@ export const Leaderboard = ({
     return (
       <div
         className={clsx(
-          'flex flex-row justify-between border-b border-left-accent pb-4 font-plexsans text-header-menu',
+          'flex h-full flex-row items-center justify-between font-plexsans text-header-menu',
           { 'text-left-accent': index === 0 || index === 1 || index === 2 }
         )}
       >
@@ -75,76 +75,86 @@ export const Leaderboard = ({
   };
 
   return (
-    <div className="relative col-start-1 col-end-2 flex min-h-[80vh] flex-col gap-10 p-5">
-      <div
-        className="text-headline-2 font-bold"
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
-        Leaderboard
-      </div>
-      <AnimatePresence initial={false} mode={'wait'}>
-        {isExpanded && (
-          <motion.div
-            initial={{ height: 0 }}
-            animate={{ height: 'auto' }}
-            exit={{ height: 0 }}
-            transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
-            className={'z-10 flex flex-col gap-4 overflow-hidden'}
+    <div className="col-start-1 col-end-2">
+      <div className={'relative flex h-full w-full flex-col gap-10'}>
+        <div
+          className="z-10 px-5 pt-5 text-headline-2 font-bold"
+          onClick={() => setIsExpanded(!isExpanded)}
+        >
+          Leaderboard
+        </div>
+        <AnimatePresence initial={false} mode={'wait'}>
+          {isExpanded && (
+            <motion.div
+              initial={{ height: 0 }}
+              animate={{ height: '100%' }}
+              exit={{ height: 0 }}
+              transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
+              className={
+                'relative z-10 flex flex-col gap-4 overflow-hidden px-5'
+              }
+            >
+              <div
+                className={
+                  'flex flex-row justify-between font-plexsans text-header-menu'
+                }
+              >
+                <span className={'uppercase'}>Nickname/address</span>
+                <span className={'uppercase'}>Score</span>
+              </div>
+              <div className={'h-4 w-full bg-left-accent'} />
+              {leaderboard.sort(sortByHighScore).map((item, index) => (
+                <>
+                  <LeaderboardItem
+                    key={index}
+                    index={index}
+                    // address={item.player.toBase58().slice(0, 16) + '...'}
+                    address={item.player.slice(0, 16) + '...'}
+                    score={Number(item.score)}
+                  />
+                  <div className={'h-4 w-full bg-left-accent'} />
+                </>
+              ))}
+              <button
+                className={
+                  'mb-5 w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-[20px]/[20px] font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
+                }
+              >
+                Show my place
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <div className={'absolute left-0 top-0 z-0 h-full w-full'}>
+          <svg
+            width="349"
+            height="712"
+            viewBox="0 0 349 712"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="none"
+            className={'h-full w-full'}
           >
-            <div
-              className={
-                'flex flex-row justify-between border-b border-left-accent pb-4 font-plexsans text-header-menu'
-              }
-            >
-              <span className={'uppercase'}>Nickname/address</span>
-              <span className={'uppercase'}>Score</span>
-            </div>
-            {leaderboard.sort(sortByHighScore).map((item, index) => (
-              <LeaderboardItem
-                key={index}
-                index={index}
-                // address={item.player.toBase58().slice(0, 16) + '...'}
-                address={item.player.slice(0, 16) + '...'}
-                score={Number(item.score)}
-              />
-            ))}
-            <button
-              className={
-                'w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-[20px]/[20px] font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
-              }
-            >
-              Show my place
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      {/*<div className="absolute left-0 top-0 z-0 flex h-full w-full flex-col">*/}
-      {/*  <svg*/}
-      {/*    width="700"*/}
-      {/*    height="1429"*/}
-      {/*    viewBox="0 0 700 1429"*/}
-      {/*    fill="none"*/}
-      {/*    xmlns="http://www.w3.org/2000/svg"*/}
-      {/*  >*/}
-      {/*    <path*/}
-      {/*      d="M697.999 0H620.587C618.805 0 617.913 2.15429 619.173 3.41422L696.585 80.8265C697.845 82.0864 699.999 81.1941 699.999 79.4123V2C699.999 0.89543 699.104 0 697.999 0Z"*/}
-      {/*      fill="#D2FF00"*/}
-      {/*    />*/}
-      {/*    <path*/}
-      {/*      fillRule="evenodd"*/}
-      {/*      clipRule="evenodd"*/}
-      {/*      d="M681.059 24.9608L693.83 11.8784L690.993 8.97266L678.222 22.0551L665.452 8.9731L662.615 11.8788L675.386 24.9608L662.628 38.0298L665.464 40.9355L678.222 27.8665L690.981 40.936L693.817 38.0302L681.059 24.9608Z"*/}
-      {/*      fill="#252525"*/}
-      {/*    />*/}
-      {/*    <path*/}
-      {/*      d="M1 219.042V5C1 2.79086 2.79086 1 5 1H598.789C599.849 1 600.866 1.42074 601.616 2.16982L697.827 98.2616C698.578 99.0119 699 100.03 699 101.092V1423.08C699 1425.29 697.209 1427.08 695 1427.08H4.99999C2.79085 1427.08 1 1425.29 1 1423.08V219.042Z"*/}
-      {/*      fill="#252525"*/}
-      {/*      stroke="#D2FF00"*/}
-      {/*      strokeWidth="2"*/}
-      {/*    />*/}
-      {/*  </svg>*/}
-      {/*</div>*/}
-      {/*<div className="flex w-full flex-grow rounded-b-[5px] border-x-2 border-b-2 border-left-accent" />*/}
+            <path
+              d="M1 109.208V5C1 2.79086 2.79086 1 5 1H297.502C298.562 1 299.578 1.42075 300.328 2.16982L346.827 48.6107C347.578 49.361 348 50.3792 348 51.4409V707C348 709.209 346.209 711 344 711H4.99999C2.79086 711 1 709.209 1 707V109.208Z"
+              fill="#252525"
+              stroke="#D2FF00"
+              strokeWidth="1"
+            />
+            <path
+              d="M347 0H311.912C310.118 0 309.231 2.17836 310.515 3.43115L345.603 37.6838C346.87 38.9204 349 38.0229 349 36.2527V2C349 0.89543 348.105 0 347 0Z"
+              fill="#D2FF00"
+            />
+            <path
+              fillRule="evenodd"
+              clipRule="evenodd"
+              d="M339.557 12.1483L345.924 5.78116L344.51 4.36694L338.143 10.7341L331.776 4.36709L330.361 5.78131L336.728 12.1483L330.368 18.5091L331.782 19.9233L338.143 13.5626L344.503 19.9234L345.918 18.5092L339.557 12.1483Z"
+              fill="#252525"
+            />
+          </svg>
+        </div>
+        {/*<div className="flex w-full flex-grow rounded-b-[5px] border-x-2 border-b-2 border-left-accent"></div>*/}
+      </div>
     </div>
   );
 };
