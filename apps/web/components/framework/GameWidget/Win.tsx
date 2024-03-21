@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-export const Win = () => {
+export const Win = ({ sendProof }: { sendProof: () => void }) => {
   return (
     <div className={'flex h-full w-full items-center justify-center'}>
       <div className={'flex flex-col items-center justify-center gap-4'}>
@@ -47,7 +47,7 @@ export const Win = () => {
         <span className={'text-headline-1'}>You won! Congratulations!</span>
         <motion.div
           className={
-            'group relative flex w-full flex-row justify-between rounded-[5px] border border-left-accent'
+            'group relative flex w-full cursor-pointer flex-row justify-between rounded-[5px] border border-left-accent'
           }
           variants={{
             visible: {
@@ -57,6 +57,7 @@ export const Win = () => {
             },
           }}
           whileHover={'visible'}
+          onClick={sendProof}
         >
           <div
             className={

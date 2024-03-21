@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-export const Lost = () => {
+export const Lost = ({ startGame }: { startGame: () => void }) => {
   return (
     <div className={'flex h-full w-full items-center justify-center'}>
       <div className={'flex flex-col items-center justify-center gap-4'}>
@@ -47,7 +47,7 @@ export const Lost = () => {
         <span className={'text-headline-1'}>You’ve lost! Please try again</span>
         <motion.div
           className={
-            'group relative flex w-full flex-row justify-between rounded-[5px] border border-left-accent'
+            'group relative flex w-full cursor-pointer flex-row justify-between rounded-[5px] border border-left-accent'
           }
           variants={{
             visible: {
@@ -57,13 +57,14 @@ export const Lost = () => {
             },
           }}
           whileHover={'visible'}
+          onClick={startGame}
         >
           <div
             className={
               'w-full p-4 pt-5 uppercase text-left-accent group-hover:text-dark-buttons-text'
             }
           >
-            Reastart game
+            Restart game
           </div>
           <div
             className={
