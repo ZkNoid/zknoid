@@ -14,7 +14,7 @@ export const GameWidget = ({
   author: string;
 }) => {
   return (
-    <div className={'col-start-2 col-end-4 h-full w-full'}>
+    <div className={'col-start-2 col-end-4 h-full min-h-[75vh] w-full'}>
       <div className={'h-full w-full rounded-[5px] border border-left-accent'}>
         {children}
       </div>
