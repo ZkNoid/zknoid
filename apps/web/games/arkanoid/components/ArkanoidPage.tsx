@@ -30,7 +30,6 @@ import { ConnectWallet } from '@/components/framework/GameWidget/ConnectWallet';
 import { RateGame } from '@/components/framework/GameWidget/RateGame';
 import { Lost } from '@/components/framework/GameWidget/Lost';
 import { Win } from '@/components/framework/GameWidget/Win';
-import { formatDecimals } from '@/lib/utils';
 import { InstallWallet } from '@/components/framework/GameWidget/InstallWallet';
 import { DebugCheckbox } from '@/components/framework/GameWidget/DebugCheckbox';
 import { defaultGames } from '@/app/constants/games';
@@ -245,9 +244,9 @@ export default function ArkanoidPage({
       start: new Date(2024, 2, 15),
       end: new Date(2024, 2, 20),
     },
-    participationFee: 5,
+    participationFee: 5n * 10n ** 9n,
     currency: Currency.MINA,
-    reward: 1000,
+    reward: 1000n * 10n ** 9n,
     seed: 123,
     registered: false,
   };

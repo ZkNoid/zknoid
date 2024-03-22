@@ -112,12 +112,12 @@ export const Competitions = ({
 
   useEffect(() => {
     const fundsMaximum = competitions.reduce((max, competition) => {
-      return Math.max(max, competition.reward);
+      return Math.max(max, Number(competition.reward));
     }, -Infinity);
     setFundsAbsoluteMaximum(fundsMaximum);
 
     const feesMaximum = competitions.reduce((max, competition) => {
-      return Math.max(max, competition.participationFee);
+      return Math.max(max, Number(competition.participationFee));
     }, -Infinity);
     setFeesAbsoluteMaximum(feesMaximum);
   }, [competitions]);

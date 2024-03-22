@@ -75,15 +75,15 @@ export const CompetitionBlock = ({
               'w-full max-w-fit rounded-2xl border border-left-accent bg-left-accent p-1 px-2 text-center text-dark-buttons-text'
             }
           >
-            {competition.reward} {competition.currency} REWARDS
+            {Number(competition.reward)} {competition.currency} REWARDS
           </div>
           <div
             className={
               'w-full max-w-fit rounded-2xl border border-left-accent p-1 px-2 text-center'
             }
           >
-            {competition.participationFee} {competition.currency} Participants
-            fee
+            {competition.participationFee.toString()} {competition.currency}{' '}
+            Participants fee
           </div>
         </div>
       </div>

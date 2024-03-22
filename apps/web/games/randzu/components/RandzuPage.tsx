@@ -24,7 +24,7 @@ import { getRandomEmoji } from '../utils';
 import { useMatchQueueStore } from '@/lib/stores/matchQueue';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import { MOVE_TIMEOUT_IN_BLOCKS } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
-import { formatDecimals } from '@/lib/utils';
+import { formatUnits } from '@/lib/utils';
 
 enum GameState {
   NotStarted,
@@ -79,7 +79,7 @@ export default function RandzuPage({
 
   const startGame = async () => {
     if (competition!.enteringPrice > 0) {
-      console.log(await bridge(competition?.enteringPrice! * 10 ** 9));
+      console.log(await bridge(competition?.enteringPrice!));
     }
 
     const randzuLogic = client.runtime.resolve('RandzuLogic');
@@ -230,7 +230,7 @@ export default function RandzuPage({
                   onClick={() => startGame()}
                 >
                   Start for{' '}
-                  {competition && formatDecimals(competition.enteringPrice)} 🪙
+                  {competition && formatUnits(competition.enteringPrice)} 🪙
                 </div>
               )}
             </div>
@@ -316,7 +316,7 @@ export default function RandzuPage({
                   href={`/games/randzu/${competition.id}`}
                   key={competition.id}
                 >
-                  {competition.name} – {competition.prizeFund} 🪙
+                  {competition.name} – {formatUnits(competition.prizeFund)} 🪙
                 </Link>
               ))}
             </div>

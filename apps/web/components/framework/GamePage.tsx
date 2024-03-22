@@ -17,7 +17,6 @@ import { Footer } from '@/components/Footer';
 import Image from 'next/image';
 import { clsx } from 'clsx';
 import Link from 'next/link';
-import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
 
 export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
   children,
@@ -46,7 +45,6 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
   // Order is important
   useObserveProtokitBalance({ client });
 
-  const switchStore = useSwitchWidgetStorage();
   enum Pages {
     CompetitionsList = 'Competitions List',
     Game = 'Game',
@@ -78,9 +76,19 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
         data-iscurrentpage={page === switchPage}
       >
         {children}
-        <div className={'text-headline-3 group-hover:opacity-80'}>{title}</div>
+        <Link
+          onClick={() => setPage(switchPage)}
+          className={'text-headline-3 group-hover:opacity-80'}
+          href={
+            page === Pages.CompetitionsList
+              ? `/games/${gameConfig.id}/competitions-list`
+              : `/games/${gameConfig.id}/1`
+          }
+        >
+          {title}
+        </Link>
         <div
-          className={clsx('absolute -top-[16px] -z-20', {
+          className={clsx('absolute -top-3 -z-20', {
             '-left-5': isLeft,
             '-left-24': !isLeft,
           })}
@@ -117,86 +125,73 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
             </svg>
           )}
         </div>
-        <Link
-          className={'absolute left-0 top-0 h-full w-[80%]'}
-          href={
-            switchPage === Pages.CompetitionsList
-              ? `/games/${gameConfig.id}/competitions-list`
-              : `/games/${gameConfig.id}/${switchStore.competitionId}`
-          }
-        />
-        {page === switchPage && (
-          <div
-            className={clsx(
-              'absolute top-[117%] z-10 h-[30px] rounded-t-[3px] bg-bg-dark',
-              {
-                '-left-[22px] w-[431px]': isLeft,
-                '-left-[30px] w-[447px]': !isLeft,
-              }
-            )}
-          />
-        )}
       </div>
     );
   };
 
-  const SwitchWidget = () => {
+  const SwitchWidget = (props: { competitionsSupported: boolean }) => {
     return (
       <div
         className={
           'ml-5 flex flex-row items-start justify-start pb-[6px] max-[2000px]:pb-[7px]'
         }
       >
-        <SwitchBtn
-          title={Pages.CompetitionsList}
-          switchPage={Pages.CompetitionsList}
-          isLeft
-        >
-          <svg
-            width="36"
-            height="36"
-            viewBox="0 0 36 36"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+        {props.competitionsSupported && (
+          <SwitchBtn
+            title={Pages.CompetitionsList}
+            switchPage={Pages.CompetitionsList}
+            isLeft
           >
-            <g clipPath="url(#clip0_3204_7476)">
-              <path
-                d="M15 9.00048H34.5C34.8978 9.00048 35.2794 8.84245 35.5607 8.56114C35.842 8.27984 36 7.89831 36 7.50049C36 7.10266 35.842 6.72113 35.5607 6.43983C35.2794 6.15852 34.8978 6.00049 34.5 6.00049H15C14.6022 6.00049 14.2206 6.15852 13.9393 6.43983C13.658 6.72113 13.5 7.10266 13.5 7.50049C13.5 7.89831 13.658 8.27984 13.9393 8.56114C14.2206 8.84245 14.6022 9.00048 15 9.00048Z"
-                fill="#F9F8F4"
-                className={
-                  'group-hover:opacity-80 group-data-[iscurrentpage=true]:fill-left-accent'
-                }
-              />
-              <path
-                d="M34.5 16.4995H15C14.6022 16.4995 14.2206 16.6576 13.9393 16.9389C13.658 17.2202 13.5 17.6017 13.5 17.9996C13.5 18.3974 13.658 18.7789 13.9393 19.0602C14.2206 19.3415 14.6022 19.4996 15 19.4996H34.5C34.8978 19.4996 35.2794 19.3415 35.5607 19.0602C35.842 18.7789 36 18.3974 36 17.9996C36 17.6017 35.842 17.2202 35.5607 16.9389C35.2794 16.6576 34.8978 16.4995 34.5 16.4995Z"
-                fill="#F9F8F4"
-                className={
-                  'group-hover:opacity-80 group-data-[iscurrentpage=true]:fill-left-accent'
-                }
-              />
-              <path
-                d="M34.5 27H15C14.6022 27 14.2206 27.158 13.9393 27.4393C13.658 27.7206 13.5 28.1022 13.5 28.5C13.5 28.8978 13.658 29.2794 13.9393 29.5607C14.2206 29.842 14.6022 30 15 30H34.5C34.8978 30 35.2794 29.842 35.5607 29.5607C35.842 29.2794 36 28.8978 36 28.5C36 28.1022 35.842 27.7206 35.5607 27.4393C35.2794 27.158 34.8978 27 34.5 27Z"
-                fill="#F9F8F4"
-                className={
-                  'group-hover:opacity-80 group-data-[iscurrentpage=true]:fill-left-accent'
-                }
-              />
-              <path
-                d="M9.13087 9.00038C9.27927 9.00035 9.42433 8.9563 9.54768 8.87379C9.67103 8.79128 9.76714 8.67403 9.82383 8.53688C9.88052 8.39974 9.89525 8.24885 9.86615 8.10333C9.83705 7.95781 9.76544 7.82419 9.66037 7.71938L6.00037 4.06088C5.71907 3.77968 5.33761 3.6217 4.93987 3.6217C4.54212 3.6217 4.16066 3.77968 3.87937 4.06088L0.220866 7.71938C0.115796 7.82419 0.0441806 7.95781 0.0150829 8.10333C-0.0140149 8.24885 0.000713419 8.39974 0.0574036 8.53688C0.114094 8.67403 0.210197 8.79128 0.333551 8.87379C0.456905 8.9563 0.601963 9.00035 0.750366 9.00038H3.44137V27.0004H0.750366C0.601835 27.0001 0.456569 27.044 0.332986 27.1264C0.209402 27.2087 0.113065 27.326 0.0561892 27.4632C-0.000687102 27.6004 -0.0155418 27.7514 0.0135084 27.8971C0.0425586 28.0427 0.114205 28.1765 0.219366 28.2814L3.87937 31.9399C4.16066 32.2211 4.54212 32.3791 4.93987 32.3791C5.33761 32.3791 5.71907 32.2211 6.00037 31.9399L9.66037 28.2814C9.76544 28.1766 9.83705 28.043 9.86615 27.8974C9.89525 27.7519 9.88052 27.601 9.82383 27.4639C9.76714 27.3267 9.67103 27.2095 9.54768 27.127C9.42433 27.0445 9.27927 27.0004 9.13087 27.0004H6.44137V9.00038H9.13087Z"
-                fill="#F9F8F4"
-                className={
-                  'group-hover:opacity-80 group-data-[iscurrentpage=true]:fill-left-accent'
-                }
-              />
-            </g>
-            <defs>
-              <clipPath id="clip0_3204_7476">
-                <rect width="36" height="36" fill="white" />
-              </clipPath>
-            </defs>
-          </svg>
-        </SwitchBtn>
-        <SwitchBtn title={gameConfig.name} switchPage={Pages.Game}>
+            <svg
+              width="36"
+              height="36"
+              viewBox="0 0 36 36"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g clipPath="url(#clip0_3204_7476)">
+                <path
+                  d="M15 9.00048H34.5C34.8978 9.00048 35.2794 8.84245 35.5607 8.56114C35.842 8.27984 36 7.89831 36 7.50049C36 7.10266 35.842 6.72113 35.5607 6.43983C35.2794 6.15852 34.8978 6.00049 34.5 6.00049H15C14.6022 6.00049 14.2206 6.15852 13.9393 6.43983C13.658 6.72113 13.5 7.10266 13.5 7.50049C13.5 7.89831 13.658 8.27984 13.9393 8.56114C14.2206 8.84245 14.6022 9.00048 15 9.00048Z"
+                  fill="#F9F8F4"
+                  className={
+                    'group-hover:opacity-80 group-data-[iscurrentpage=true]:fill-left-accent'
+                  }
+                />
+                <path
+                  d="M34.5 16.4995H15C14.6022 16.4995 14.2206 16.6576 13.9393 16.9389C13.658 17.2202 13.5 17.6017 13.5 17.9996C13.5 18.3974 13.658 18.7789 13.9393 19.0602C14.2206 19.3415 14.6022 19.4996 15 19.4996H34.5C34.8978 19.4996 35.2794 19.3415 35.5607 19.0602C35.842 18.7789 36 18.3974 36 17.9996C36 17.6017 35.842 17.2202 35.5607 16.9389C35.2794 16.6576 34.8978 16.4995 34.5 16.4995Z"
+                  fill="#F9F8F4"
+                  className={
+                    'group-hover:opacity-80 group-data-[iscurrentpage=true]:fill-left-accent'
+                  }
+                />
+                <path
+                  d="M34.5 27H15C14.6022 27 14.2206 27.158 13.9393 27.4393C13.658 27.7206 13.5 28.1022 13.5 28.5C13.5 28.8978 13.658 29.2794 13.9393 29.5607C14.2206 29.842 14.6022 30 15 30H34.5C34.8978 30 35.2794 29.842 35.5607 29.5607C35.842 29.2794 36 28.8978 36 28.5C36 28.1022 35.842 27.7206 35.5607 27.4393C35.2794 27.158 34.8978 27 34.5 27Z"
+                  fill="#F9F8F4"
+                  className={
+                    'group-hover:opacity-80 group-data-[iscurrentpage=true]:fill-left-accent'
+                  }
+                />
+                <path
+                  d="M9.13087 9.00038C9.27927 9.00035 9.42433 8.9563 9.54768 8.87379C9.67103 8.79128 9.76714 8.67403 9.82383 8.53688C9.88052 8.39974 9.89525 8.24885 9.86615 8.10333C9.83705 7.95781 9.76544 7.82419 9.66037 7.71938L6.00037 4.06088C5.71907 3.77968 5.33761 3.6217 4.93987 3.6217C4.54212 3.6217 4.16066 3.77968 3.87937 4.06088L0.220866 7.71938C0.115796 7.82419 0.0441806 7.95781 0.0150829 8.10333C-0.0140149 8.24885 0.000713419 8.39974 0.0574036 8.53688C0.114094 8.67403 0.210197 8.79128 0.333551 8.87379C0.456905 8.9563 0.601963 9.00035 0.750366 9.00038H3.44137V27.0004H0.750366C0.601835 27.0001 0.456569 27.044 0.332986 27.1264C0.209402 27.2087 0.113065 27.326 0.0561892 27.4632C-0.000687102 27.6004 -0.0155418 27.7514 0.0135084 27.8971C0.0425586 28.0427 0.114205 28.1765 0.219366 28.2814L3.87937 31.9399C4.16066 32.2211 4.54212 32.3791 4.93987 32.3791C5.33761 32.3791 5.71907 32.2211 6.00037 31.9399L9.66037 28.2814C9.76544 28.1766 9.83705 28.043 9.86615 27.8974C9.89525 27.7519 9.88052 27.601 9.82383 27.4639C9.76714 27.3267 9.67103 27.2095 9.54768 27.127C9.42433 27.0445 9.27927 27.0004 9.13087 27.0004H6.44137V9.00038H9.13087Z"
+                  fill="#F9F8F4"
+                  className={
+                    'group-hover:opacity-80 group-data-[iscurrentpage=true]:fill-left-accent'
+                  }
+                />
+              </g>
+              <defs>
+                <clipPath id="clip0_3204_7476">
+                  <rect width="36" height="36" fill="white" />
+                </clipPath>
+              </defs>
+            </svg>
+          </SwitchBtn>
+        )}
+        <SwitchBtn
+          title={gameConfig.name}
+          switchPage={Pages.Game}
+          isLeft={!props.competitionsSupported}
+        >
           <svg
             width="32"
             height="36"
@@ -230,7 +225,9 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
             className={'w-full object-contain object-center'}
           />
         </div>
-        <SwitchWidget />
+        <SwitchWidget
+          competitionsSupported={!!gameConfig.pageCompetitionsList}
+        />
         <div
           className={
             'relative flex w-full flex-col gap-20 rounded-2xl border-2 border-left-accent p-10 pb-[100px]'

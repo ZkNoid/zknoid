@@ -22,19 +22,20 @@ export const CompetitionWidget = ({
     CompetitionsSortBy.LowFunds
   );
 
-  const sortByFilter = (a: ICompetition, b: ICompetition) => {
+  const sortByFilter = (a: ICompetition, b: ICompetition): number => {
+    console.log(a, b);
     switch (sortBy) {
       case CompetitionsSortBy.HighFees:
-        return a.participationFee - b.participationFee;
+        return Number(a.participationFee - b.participationFee);
 
       case CompetitionsSortBy.LowFees:
-        return b.participationFee - a.participationFee;
+        return Number(b.participationFee - a.participationFee);
 
       case CompetitionsSortBy.HighFunds:
-        return a.reward - b.reward;
+        return Number(a.reward - b.reward);
 
       case CompetitionsSortBy.LowFunds:
-        return b.reward - a.reward;
+        return Number(b.reward - a.reward);
 
       case CompetitionsSortBy.Latest:
         return (
@@ -76,7 +77,7 @@ export const CompetitionWidget = ({
         </div>
         <div className={'flex max-h-[400px] flex-col gap-4 overflow-y-scroll'}>
           {competitionList
-            .sort((a, b) => sortByFilter(a, b))
+            .toSorted((a, b) => sortByFilter(a, b))
             .map((item, index) => (
               <CompetitionListItem key={index} competition={item} />
             ))}

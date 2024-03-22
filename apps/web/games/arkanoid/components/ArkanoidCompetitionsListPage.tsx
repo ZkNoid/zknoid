@@ -11,10 +11,6 @@ import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import GamePage from '@/components/framework/GamePage';
 import { arkanoidConfig } from '../config';
 import { CompetitionWidget } from '@/components/framework/CompetitionWidget/CompetitionWidget';
-import { ICompetition } from '@/lib/types';
-import { ZkNoidGameGenre } from '@/lib/platform/game_tags';
-import { Currency } from '@/constants/currency';
-import { formatDecimals } from '@/lib/utils';
 
 // const timeStampToStringDate = (timeStamp: number): string => {
 //   var date = new Date(timeStamp);
@@ -119,65 +115,67 @@ export default function ArkanoidCompetitionsListPage() {
   //
   //   return playButton;
   // };
-  const competitions: ICompetition[] = [
-    {
-      id: 0,
-      seed: 123,
-      game: { id: 'arkanoid', genre: ZkNoidGameGenre.Arcade },
-      title: 'Arkanoid GAME',
-      preReg: false,
-      preRegDate: {
-        start: new Date(2024, 9, 10),
-        end: new Date(2024, 9, 20),
-      },
-      competitionDate: {
-        start: new Date(2024, 9, 25),
-        end: new Date(2024, 9, 31),
-      },
-      participationFee: 5,
-      currency: Currency.MINA,
-      reward: 5000,
-      registered: false,
-    },
-    {
-      id: 1,
-      seed: 123,
-      game: { id: 'arkanoid', genre: ZkNoidGameGenre.Arcade },
-      title: 'Arkanoid GAME',
-      preReg: false,
-      preRegDate: {
-        start: new Date(2024, 10, 10),
-        end: new Date(2024, 10, 20),
-      },
-      competitionDate: {
-        start: new Date(2024, 10, 25),
-        end: new Date(2024, 10, 31),
-      },
-      participationFee: 4,
-      currency: Currency.MINA,
-      reward: 10000,
-      registered: false,
-    },
-    {
-      id: 2,
-      seed: 123,
-      game: { id: 'arkanoid', genre: ZkNoidGameGenre.Arcade },
-      title: 'Arkanoid GAME',
-      preReg: false,
-      preRegDate: {
-        start: new Date(2024, 11, 10),
-        end: new Date(2024, 11, 20),
-      },
-      competitionDate: {
-        start: new Date(2024, 11, 25),
-        end: new Date(2024, 11, 31),
-      },
-      participationFee: 6,
-      currency: Currency.MINA,
-      reward: 99999,
-      registered: false,
-    },
-  ];
+  // const competitions: ICompetition[] = [
+  //   {
+  //     id: 0,
+  //     seed: 123,
+  //     game: { id: 'arkanoid', genre: ZkNoidGameGenre.Arcade },
+  //     title: 'Arkanoid GAME',
+  //     preReg: false,
+  //     preRegDate: {
+  //       start: new Date(2024, 9, 10),
+  //       end: new Date(2024, 9, 20),
+  //     },
+  //     competitionDate: {
+  //       start: new Date(2024, 9, 25),
+  //       end: new Date(2024, 9, 31),
+  //     },
+  //     participationFee: 5,
+  //     currency: Currency.MINA,
+  //     reward: 5000,
+  //     registered: false,
+  //   },
+  //   {
+  //     id: 1,
+  //     seed: 123,
+  //     game: { id: 'arkanoid', genre: ZkNoidGameGenre.Arcade },
+  //     title: 'Arkanoid GAME',
+  //     preReg: false,
+  //     preRegDate: {
+  //       start: new Date(2024, 10, 10),
+  //       end: new Date(2024, 10, 20),
+  //     },
+  //     competitionDate: {
+  //       start: new Date(2024, 10, 25),
+  //       end: new Date(2024, 10, 31),
+  //     },
+  //     participationFee: 4,
+  //     currency: Currency.MINA,
+  //     reward: 10000,
+  //     registered: false,
+  //   },
+  //   {
+  //     id: 2,
+  //     seed: 123,
+  //     game: { id: 'arkanoid', genre: ZkNoidGameGenre.Arcade },
+  //     title: 'Arkanoid GAME',
+  //     preReg: false,
+  //     preRegDate: {
+  //       start: new Date(2024, 11, 10),
+  //       end: new Date(2024, 11, 20),
+  //     },
+  //     competitionDate: {
+  //       start: new Date(2024, 11, 25),
+  //       end: new Date(2024, 11, 31),
+  //     },
+  //     participationFee: 6,
+  //     currency: Currency.MINA,
+  //     reward: 99999,
+  //     registered: false,
+  //   },
+  // ];
+
+  console.log('Competitions', compStore);
 
   return (
     <GamePage
@@ -187,8 +185,8 @@ export default function ArkanoidCompetitionsListPage() {
     >
       <CompetitionWidget
         gameId={arkanoidConfig.id}
-        competitionList={competitions}
-        competitionsBlocks={[competitions[0], competitions[1], competitions[2]]}
+        competitionList={compStore.competitions}
+        competitionsBlocks={compStore.competitions}
       />
     </GamePage>
   );
