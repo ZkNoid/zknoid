@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react';
 
 import {
+  useBridgeStore,
   useMinaBridge,
   useProtokitBalancesStore,
   useTestBalanceGetter,
@@ -101,11 +102,10 @@ const BridgeInput = ({
   );
 };
 export const DepositMenuItem = () => {
-  const [expanded, setExpanded] = useState(false);
   const [assetIn, setAssetIn] = useState(L1_ASSETS.Mina);
-  const [amountIn, setAmountIn] = useState(10);
+  const [amountIn, setAmountIn] = useState(10n);
   const [assetOut, setAssetOut] = useState(L2_ASSET);
-  const [amountOut, setAmountOut] = useState(10);
+  const [amountOut, setAmountOut] = useState(10n);
 
   const minaBalancesStore = useMinaBalancesStore();
   const protokitBalancesStore = useProtokitBalancesStore();
@@ -116,13 +116,13 @@ export const DepositMenuItem = () => {
   const testBalanceGetter = useTestBalanceGetter();
   const rate = 1;
   const contextAppChainClient = useContext(AppChainClientContext);
-
+  const bridgeStore = useBridgeStore();
   return (
     <>
       <HeaderCard
         svg={'top-up'}
         text="Top up"
-        onClick={() => setExpanded(true)}
+        onClick={() => bridgeStore.setOpen(100n)}
       />
       {contextAppChainClient && (
         <HeaderCard
@@ -132,10 +132,10 @@ export const DepositMenuItem = () => {
         />
       )}
       <AnimatePresence>
-        {expanded && (
+        {bridgeStore.open && (
           <motion.div
             className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center backdrop-blur-sm"
-            onClick={() => setExpanded(false)}
+            onClick={() => bridgeStore.close()}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -150,10 +150,10 @@ export const DepositMenuItem = () => {
                   assets={[L1_ASSETS.Mina]}
                   currentAsset={assetIn}
                   setCurrentAsset={setAssetIn}
-                  amount={amountIn}
+                  amount={Number(amountIn)}
                   setAmount={(amount) => {
-                    setAmountIn(amount);
-                    setAmountOut(amount * rate);
+                    setAmountIn(BigInt(amount));
+                    setAmountOut(BigInt(amount * rate));
                   }}
                   balance={
                     minaBalancesStore.balances[networkStore.address!] ?? 0n
@@ -169,10 +169,10 @@ export const DepositMenuItem = () => {
                   assets={[L2_ASSET]}
                   currentAsset={assetOut}
                   setCurrentAsset={setAssetOut}
-                  amount={amountOut}
+                  amount={Number(amountOut)}
                   setAmount={(amount) => {
-                    setAmountIn(amount / rate);
-                    setAmountOut(amount);
+                    setAmountIn(BigInt(amount / rate));
+                    setAmountOut(BigInt(amount));
                   }}
                   balance={
                     protokitBalancesStore.balances[networkStore.address!] ?? 0n
@@ -182,7 +182,7 @@ export const DepositMenuItem = () => {
               </div>
               <div
                 className="cursor-pointer rounded-xl bg-left-accent px-7 py-3 text-[24px] text-black"
-                onClick={() => bridge(amountIn * 10 ** 9)}
+                onClick={() => bridge(amountIn * 10n ** 9n)}
               >
                 Bridge
               </div>

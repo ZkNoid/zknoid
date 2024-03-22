@@ -100,17 +100,19 @@ export const GameView = (props: IGameViewProps) => {
   let contractBallTrace: [number, number][] = [];
 
   useEffect(() => {
+    const ctx = canvas!.current?.getContext('2d');
+    console.log('Setting canvas', ctx);
+    setContext(ctx);
+  }, [canvas]);
+
+  useEffect(() => {
+    console.log('Setting game', ctx);
     if (props.gameId > 0) startGame();
-  }, [props.gameId]);
+  }, [props.gameId, ctx]);
 
   useEffect(() => {
     debugModeRef.current = debugMode;
   }, [debugMode]);
-
-  useEffect(() => {
-    const ctx = canvas!.current?.getContext('2d');
-    setContext(ctx);
-  }, [canvas]);
 
   let lastTime: number | undefined;
 

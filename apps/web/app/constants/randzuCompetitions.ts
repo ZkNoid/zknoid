@@ -3,21 +3,21 @@ import { DEFAULT_GAME_COST } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
 export interface RandzuCompetition {
   id: string;
   name: string;
-  enteringPrice: number;
-  prizeFund: number;
+  enteringPrice: bigint;
+  prizeFund: bigint;
 }
 
 export const randzuCompetitions: RandzuCompetition[] = [
   {
     id: 'global',
     name: 'Global competition',
-    enteringPrice: +DEFAULT_GAME_COST.toString(),
-    prizeFund: 0,
+    enteringPrice: BigInt(+DEFAULT_GAME_COST.toString()),
+    prizeFund: 0n,
   },
   {
     id: 'paid',
     name: 'Paid competition',
-    enteringPrice: 5,
-    prizeFund: 10,
+    enteringPrice: 5n,
+    prizeFund: 10n,
   },
 ];

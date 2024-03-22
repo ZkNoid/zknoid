@@ -23,8 +23,8 @@ export function fromContractCompetition(
       start: new Date(+competition.competitionStartTime.toString()),
       end: new Date(+competition.competitionEndTime.toString()),
     },
-    participationFee: competition.participationFee,
+    participationFee: competition.participationFee.toBigInt(),
     currency: Currency.MINA,
-    reward: competition.funds,
+    reward: competition.funds.toBigInt(),
   };
 }

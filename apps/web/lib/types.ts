@@ -55,9 +55,9 @@ export interface ICompetition {
     start: Date;
     end: Date;
   };
-  participationFee: number;
+  participationFee: bigint;
   currency: Currency;
-  reward: number;
+  reward: bigint;
   registered?: boolean;
 }
 

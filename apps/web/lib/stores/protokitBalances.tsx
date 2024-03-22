@@ -18,7 +18,6 @@ import { DefaultRuntimeModules } from '../runtimeModules';
 import { zkNoidConfig } from '@/games/config';
 import { ProtokitLibrary } from 'zknoid-chain-dev';
 
-
 export interface BalancesState {
   loading: boolean;
   balances: {
@@ -29,13 +28,6 @@ export interface BalancesState {
     client: ClientAppChain<typeof DefaultRuntimeModules>,
     address: string
   ) => Promise<void>;
-}
-
-function isPendingTransaction(
-  transaction: PendingTransaction | UnsignedTransaction | undefined
-): asserts transaction is PendingTransaction {
-  if (!(transaction instanceof PendingTransaction))
-    throw new Error('Transaction is not a PendingTransaction');
 }
 
 export const useProtokitBalancesStore = create<
@@ -87,17 +79,46 @@ export const useObserveProtokitBalance = ({
   ]);
 };
 
+export interface BridgeStoreState {
+  open: boolean;
+  amount: bigint;
+  setOpen: (amount: bigint) => void;
+  close: () => void
+}
+
+export const useBridgeStore = create<
+  BridgeStoreState,
+  [['zustand/immer', never]]
+>(
+  immer((set) => ({
+    open: false,
+    amount: 0n,
+    setOpen(amount) {
+      set({
+        open: true,
+        amount
+      });
+    },
+    close() {
+      set({
+        open: false
+      });
+    }
+  }))
+);
+
 export const useMinaBridge = () => {
   const balancesStore = useProtokitBalancesStore();
   const network = useNetworkStore();
-  const contextAppChainClient = useContext(
-    AppChainClientContext
-  ) as ClientAppChain<any> as ClientAppChain<typeof DefaultRuntimeModules>;
+  const bridgeStore = useBridgeStore();
 
   return useCallback(
-    async (amount: number) => {
+    async (amount: bigint) => {
       if (!network.address) return;
-      if (balancesStore.balances[network.address]) return;
+      if (balancesStore.balances[network.address] >= amount) return;
+
+      bridgeStore.setOpen(amount);
+      return;
 
       const l1tx = await Mina.transaction(() => {
         const senderUpdate = AccountUpdate.create(
@@ -117,7 +138,7 @@ export const useMinaBridge = () => {
         transaction: transactionJSON,
         memo: `zknoid.io game bridging #${process.env.BRIDGE_ID ?? 100}`,
         to: BRIDGE_ADDR,
-        amount: amount / 10 ** 9,
+        amount: amount / 10n ** 9n,
       });
 
       // const hash = (data as any).hash;
