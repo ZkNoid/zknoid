@@ -35,6 +35,7 @@ import { InstallWallet } from '@/components/framework/GameWidget/InstallWallet';
 import { DebugCheckbox } from '@/components/framework/GameWidget/DebugCheckbox';
 import { defaultGames } from '@/app/constants/games';
 import { Currency } from '@/constants/currency';
+import { UnsetCompetitionPopup } from '@/components/framework/GameWidget/UnsetCompetitionPopup';
 
 enum GameState {
   NotStarted,
@@ -176,6 +177,8 @@ export default function ArkanoidPage({
   const [isConnectWallet, setIsConnectWallet] = useState<boolean>(false);
   const [isInstallWallet, setIsInstallWallet] = useState<boolean>(false);
   const [isRateGame, setIsRateGame] = useState<boolean>(false);
+  const [isUnsetCompetitionPopup, setIsUnsetCompetitionPopup] =
+    useState<boolean>(false);
 
   // TEMPORARY DATA
   const DEBUG_PLAYERS = [
@@ -232,7 +235,7 @@ export default function ArkanoidPage({
   const DEBUG_COMPETITION: ICompetition = {
     game: defaultGames[0],
     title: 'Arcanoid',
-    id: 1,
+    id: 0,
     preReg: false,
     preRegDate: {
       start: new Date(2024, 2, 15),
@@ -249,6 +252,9 @@ export default function ArkanoidPage({
     registered: false,
   };
 
+  const isRestartButton =
+    gameState === GameState.Lost || gameState === GameState.Won;
+
   return (
     <GamePage
       gameConfig={arkanoidConfig}
@@ -256,7 +262,9 @@ export default function ArkanoidPage({
       defaultPage={'Game'}
     >
       <div className={'grid grid-cols-4 grid-rows-1 gap-4'}>
-        <Leaderboard leaderboard={DEBUG_LEADERBOARD} />
+        {params.competitionId !== 'undefined' && (
+          <Leaderboard leaderboard={DEBUG_LEADERBOARD} />
+        )}
         <GameWidget
           ticks={ticksAmount}
           score={score}
@@ -265,6 +273,12 @@ export default function ArkanoidPage({
         >
           {networkStore.address ? (
             <>
+              {params.competitionId === 'undefined' && (
+                <UnsetCompetitionPopup
+                  setIsVisible={setIsUnsetCompetitionPopup}
+                  gameId={arkanoidConfig.id}
+                />
+              )}
               {gameState == GameState.Won && <Win sendProof={proof} />}
               {gameState == GameState.Lost && <Lost startGame={startGame} />}
               {gameState === GameState.NotStarted && (
@@ -272,11 +286,12 @@ export default function ArkanoidPage({
                   className={'flex h-full w-full items-center justify-center'}
                 >
                   <button
-                    className={'rounded-2xl border border-left-accent p-2'}
+                    className={
+                      'w-full max-w-[40%] rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-[20px]/[20px] font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
+                    }
                     onClick={startGame}
                   >
-                    Start for 0 🪙
-                    {/*{competition?.participationFee}*/}
+                    Start game
                   </button>
                 </div>
               )}
@@ -311,7 +326,13 @@ export default function ArkanoidPage({
             </div>
           )}
         </GameWidget>
-        <Competition startGame={startGame} competition={DEBUG_COMPETITION} />
+        <Competition
+          startGame={startGame}
+          competition={DEBUG_COMPETITION}
+          isUnset={params.competitionId === 'undefined'}
+          isRestartBtn={isRestartButton}
+          isDebugRestartBtn={debug}
+        />
       </div>
       <DebugCheckbox debug={debug} setDebug={setDebug} />
     </GamePage>

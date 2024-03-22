@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { clsx } from 'clsx';
 import Link from 'next/link';
 import { ICompetition } from '@/lib/types';
+import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
 
 export const CompetitionListItem = ({
   competition,
@@ -12,6 +13,8 @@ export const CompetitionListItem = ({
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isPreReg, setIsPreReg] = useState<boolean>(false);
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
+
+  const switchStore = useSwitchWidgetStorage();
 
   return (
     <div
@@ -54,6 +57,7 @@ export const CompetitionListItem = ({
             'w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent max-[2000px]:max-w-[250px] min-[2000px]:max-w-[350px]'
           }
           href={`/games/${competition.game.id}/${competition.id}`}
+          onClick={() => switchStore.setCompetitionId(competition.id)}
         >
           Play
         </Link>

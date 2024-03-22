@@ -3,9 +3,15 @@ import { ICompetition } from '@/lib/types';
 export const Competition = ({
   startGame,
   competition,
+  isUnset,
+  isRestartBtn,
+  isDebugRestartBtn,
 }: {
   startGame: () => void;
   competition: ICompetition;
+  isUnset: boolean;
+  isRestartBtn: boolean;
+  isDebugRestartBtn: boolean;
 }) => {
   return (
     <div className={'flex h-full w-full flex-col gap-10'}>
@@ -17,7 +23,9 @@ export const Competition = ({
           }
         >
           <span className={'uppercase text-left-accent'}>Name</span>
-          <span className={'font-normal'}>{competition.title}</span>
+          <span className={'font-normal'}>
+            {isUnset ? ' - ' : competition.title}
+          </span>
         </div>
         <div
           className={
@@ -26,7 +34,7 @@ export const Competition = ({
         >
           <span className={'uppercase text-left-accent'}>Funds</span>
           <span className={'font-normal'}>
-            {competition.reward} {competition.currency}
+            {isUnset ? ' - ' : (competition.reward, competition.currency)}
           </span>
         </div>
       </div>
@@ -35,23 +43,35 @@ export const Competition = ({
           Preregistration dates
         </span>
         <span className={'font-normal'}>
-          {competition.preRegDate.start.toLocaleDateString('en-US', {
-            dateStyle: 'long',
-          })}{' '}
-          -{' '}
-          {competition.preRegDate.end.toLocaleDateString('en-US', {
-            dateStyle: 'long',
-          })}
+          {isUnset ? (
+            ' - '
+          ) : (
+            <>
+              {competition.preRegDate.start.toLocaleDateString('en-US', {
+                dateStyle: 'long',
+              })}{' '}
+              -{' '}
+              {competition.preRegDate.end.toLocaleDateString('en-US', {
+                dateStyle: 'long',
+              })}
+            </>
+          )}
         </span>
         <span className={'uppercase text-left-accent'}>Competitions dates</span>
         <span className={'font-normal'}>
-          {competition.competitionDate.start.toLocaleDateString('en-US', {
-            dateStyle: 'long',
-          })}{' '}
-          -{' '}
-          {competition.competitionDate.end.toLocaleDateString('en-US', {
-            dateStyle: 'long',
-          })}
+          {isUnset ? (
+            ' - '
+          ) : (
+            <>
+              {competition.competitionDate.start.toLocaleDateString('en-US', {
+                dateStyle: 'long',
+              })}{' '}
+              -{' '}
+              {competition.competitionDate.end.toLocaleDateString('en-US', {
+                dateStyle: 'long',
+              })}
+            </>
+          )}
         </span>
       </div>
       <div className={'flex flex-col gap-4'}>
@@ -64,14 +84,26 @@ export const Competition = ({
           the bottom of the screen.
         </span>
       </div>
-      <button
-        className={
-          'w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-[20px]/[20px] font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
-        }
-        onClick={startGame}
-      >
-        Restart game
-      </button>
+      {isRestartBtn && (
+        <button
+          className={
+            'w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-[20px]/[20px] font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
+          }
+          onClick={startGame}
+        >
+          Restart game
+        </button>
+      )}
+      {isDebugRestartBtn && (
+        <button
+          className={
+            'w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-[20px]/[20px] font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
+          }
+          onClick={startGame}
+        >
+          [DEBUG] Restart game
+        </button>
+      )}
     </div>
   );
 };
