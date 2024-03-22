@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ICompetition } from '@/lib/types';
+import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
 
 // export interface ICompetition {
 //   game: IGame;
@@ -31,6 +32,7 @@ export const CompetitionItem = ({
   reward,
   registered,
 }: ICompetition) => {
+  const switchStore = useSwitchWidgetStorage();
   return (
     <div
       className={
@@ -51,6 +53,7 @@ export const CompetitionItem = ({
             'w-full max-w-[50%] rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
           }
           href={`/games/${game.id}/${id}`}
+          onClick={() => switchStore.setCompetitionId(id)}
         >
           Play
         </Link>

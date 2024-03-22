@@ -17,6 +17,7 @@ import { Footer } from '@/components/Footer';
 import Image from 'next/image';
 import { clsx } from 'clsx';
 import Link from 'next/link';
+import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
 
 export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
   children,
@@ -45,6 +46,7 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
   // Order is important
   useObserveProtokitBalance({ client });
 
+  const switchStore = useSwitchWidgetStorage();
   enum Pages {
     CompetitionsList = 'Competitions List',
     Game = 'Game',
@@ -76,19 +78,9 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
         data-iscurrentpage={page === switchPage}
       >
         {children}
-        <Link
-          onClick={() => setPage(switchPage)}
-          className={'text-headline-3 group-hover:opacity-80'}
-          href={
-            page === Pages.CompetitionsList
-              ? `/games/${gameConfig.id}/competitions-list`
-              : `/games/${gameConfig.id}/1`
-          }
-        >
-          {title}
-        </Link>
+        <div className={'text-headline-3 group-hover:opacity-80'}>{title}</div>
         <div
-          className={clsx('absolute -top-3 -z-20', {
+          className={clsx('absolute -top-[16px] -z-20', {
             '-left-5': isLeft,
             '-left-24': !isLeft,
           })}
@@ -125,6 +117,25 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
             </svg>
           )}
         </div>
+        <Link
+          className={'absolute left-0 top-0 h-full w-[80%]'}
+          href={
+            switchPage === Pages.CompetitionsList
+              ? `/games/${gameConfig.id}/competitions-list`
+              : `/games/${gameConfig.id}/${switchStore.competitionId}`
+          }
+        />
+        {page === switchPage && (
+          <div
+            className={clsx(
+              'absolute top-[117%] z-10 h-[30px] rounded-t-[3px] bg-bg-dark',
+              {
+                '-left-[22px] w-[431px]': isLeft,
+                '-left-[30px] w-[447px]': !isLeft,
+              }
+            )}
+          />
+        )}
       </div>
     );
   };

@@ -1,7 +1,7 @@
 'use client';
 
 import { PublicKey, UInt64 } from 'o1js';
-import { ReactElement, useContext, useState } from 'react';
+import { useContext } from 'react';
 import { useNetworkStore } from '@/lib/stores/network';
 import {
   useArkanoidCompetitionsStore,
@@ -121,7 +121,7 @@ export default function ArkanoidCompetitionsListPage() {
   // };
   const competitions: ICompetition[] = [
     {
-      id: 1,
+      id: 0,
       seed: 123,
       game: { id: 'arkanoid', genre: ZkNoidGameGenre.Arcade },
       title: 'Arkanoid GAME',
@@ -140,7 +140,7 @@ export default function ArkanoidCompetitionsListPage() {
       registered: false,
     },
     {
-      id: 2,
+      id: 1,
       seed: 123,
       game: { id: 'arkanoid', genre: ZkNoidGameGenre.Arcade },
       title: 'Arkanoid GAME',
@@ -159,7 +159,7 @@ export default function ArkanoidCompetitionsListPage() {
       registered: false,
     },
     {
-      id: 3,
+      id: 2,
       seed: 123,
       game: { id: 'arkanoid', genre: ZkNoidGameGenre.Arcade },
       title: 'Arkanoid GAME',

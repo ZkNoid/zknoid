@@ -4,6 +4,7 @@ import rightSvg from '@/public/image/game-page/3.svg';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ICompetition } from '@/lib/types';
+import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
 
 export const CompetitionBlock = ({
   competition,
@@ -12,6 +13,8 @@ export const CompetitionBlock = ({
   competition: ICompetition;
   variant: 1 | 2 | 3;
 }) => {
+  const switchStore = useSwitchWidgetStorage();
+
   return (
     <div
       className={
@@ -135,6 +138,7 @@ export const CompetitionBlock = ({
           'w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
         }
         href={`/games/${competition.game.id}/${competition.id}`}
+        onClick={() => switchStore.setCompetitionId(competition.id)}
       >
         Play
       </Link>

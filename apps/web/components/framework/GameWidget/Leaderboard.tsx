@@ -106,13 +106,15 @@ export const Leaderboard = ({
               {leaderboard.sort(sortByHighScore).map((item, index) => (
                 <>
                   <LeaderboardItem
-                    key={index}
                     index={index}
                     // address={item.player.toBase58().slice(0, 16) + '...'}
                     address={item.player.slice(0, 16) + '...'}
                     score={Number(item.score)}
                   />
-                  <div className={'h-4 w-full bg-left-accent'} />
+                  <div
+                    key={index + 20}
+                    className={'h-4 w-full bg-left-accent'}
+                  />
                 </>
               ))}
               <button
