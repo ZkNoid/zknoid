@@ -17,6 +17,7 @@ export const arkanoidConfig = createZkNoidGameConfig({
   isReleased: true,
   releaseDate: new Date(2023, 11, 1),
   popularity: 60,
+  author: 'ZkNoid Team',
   runtimeModules: {
     ArkanoidGameHub,
     Balances,

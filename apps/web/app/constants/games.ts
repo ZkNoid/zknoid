@@ -13,6 +13,7 @@ export interface IGame {
   isReleased: boolean;
   releaseDate: Date;
   popularity: number;
+  author: string;
 }
 
 export const announcedGames: IGame[] = [
@@ -29,6 +30,7 @@ export const announcedGames: IGame[] = [
     isReleased: false,
     releaseDate: new Date(2024, 2, 25),
     popularity: 0,
+    author: 'ZkNoid Team',
   },
 ];
 
@@ -47,6 +49,7 @@ export const defaultGames: IGame[] = [
     isReleased: true,
     releaseDate: new Date(2023, 11, 1),
     popularity: 60,
+    author: 'ZkNoid Team',
   },
   {
     id: 'randzu',
@@ -62,5 +65,6 @@ export const defaultGames: IGame[] = [
     isReleased: true,
     releaseDate: new Date(2024, 0, 1),
     popularity: 50,
+    author: 'ZkNoid Team',
   },
 ];

@@ -16,6 +16,8 @@ import AppChainClientContext from '../contexts/AppChainClientContext';
 
 import { DefaultRuntimeModules } from '../runtimeModules';
 import { zkNoidConfig } from '@/games/config';
+import { ProtokitLibrary } from 'zknoid-chain-dev';
+
 
 export interface BalancesState {
   loading: boolean;
@@ -155,7 +157,7 @@ export const useTestBalanceGetter = () => {
     const sender = PublicKey.fromBase58(network.address!);
 
     const l2tx = await contextAppChainClient.transaction(sender, () => {
-      balances.addBalance(sender, UInt64.from(defaultBalance));
+      balances.addBalance(sender, ProtokitLibrary.UInt64.from(defaultBalance));
     });
 
     await l2tx.sign();

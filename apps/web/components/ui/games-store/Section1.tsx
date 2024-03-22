@@ -49,6 +49,16 @@ export const Section1 = () => {
               </SwiperSlide>
               <SwiperSlide key={1} className='bg-[url("/image/grid.svg")]'>
                 <div className="flex h-full w-full items-center justify-center">
+                  <Image
+                    src="/image/slides/snake.svg"
+                    width={1092}
+                    height={378}
+                    alt="Slide"
+                  />
+                </div>
+              </SwiperSlide>
+              <SwiperSlide key={2} className='bg-[url("/image/grid.svg")]'>
+                <div className="flex h-full w-full items-center justify-center">
                   <div className="text-[35px]">Explore more games!</div>
                 </div>
               </SwiperSlide>

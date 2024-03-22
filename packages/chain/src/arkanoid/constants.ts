@@ -4,8 +4,8 @@ export const MAX_BRICKS = 10;
 export const NEAREST_BRICKS_NUM = 2;
 
 export const BRICK_HALF_WIDTH = 25;
-export const FIELD_PIXEL_WIDTH = 500;
-export const FIELD_PIXEL_HEIGHT = 500;
+export const FIELD_PIXEL_WIDTH = 720;
+export const FIELD_PIXEL_HEIGHT = 720;
 export const PLATFORM_HALF_WIDTH = 50;
 export const PLATFORM_WIDTH = 100;
 

@@ -192,7 +192,11 @@ export default function RandzuPage({
   }, [matchQueue.activeGameId, matchQueue.inQueue, matchQueue.lastGameState]);
 
   return (
-    <GamePage gameConfig={randzuConfig}>
+    <GamePage
+      gameConfig={randzuConfig}
+      image={'/image/game-page/game-title-template.svg'}
+      defaultPage={'Game'}
+    >
       <main className="flex grow flex-col items-center gap-5 p-5">
         {networkStore.address ? (
           <div className="flex flex-col gap-5">

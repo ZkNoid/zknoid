@@ -3,10 +3,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { IGame } from '@/app/constants/games';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import heartImg from '@/public/image/misc/heart.svg';
 import heartFilledImg from '@/public/image/misc/heart-filled.svg';
-import { ZkNoidGameGenre } from '@/lib/platform/game_tags';
 import { clsx } from 'clsx';
 
 const StarSVG = ({
@@ -42,7 +41,7 @@ export const GameCard = ({
   game: IGame;
   fullImageW?: boolean;
   fullImageH?: boolean;
-  color: 1 | 2 | 3;
+  color: 1 | 2 | 3 | 4;
 }) => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
 
@@ -51,10 +50,26 @@ export const GameCard = ({
       ? 'bg-left-accent'
       : color === 2
         ? 'bg-middle-accent'
-        : 'bg-gradient-to-r from-left-accent to-middle-accent';
+        : color === 3
+          ? 'bg-right-accent'
+          : 'bg-gradient-to-r from-left-accent to-middle-accent';
+
+  const hoverColor =
+    color === 1
+      ? 'hover:border-left-accent group-hover:border-left-accent'
+      : color === 2
+        ? 'hover:border-middle-accent group-hover:border-middle-accent'
+        : color === 3
+          ? 'hover:border-right-accent group-hover:border-right-accent'
+          : 'hover:border-middle-accent group-hover:border-middle-accent';
 
   return (
-    <div className="group relative flex flex-col rounded-xl border border-bg-dark bg-[#252525] hover:border-left-accent">
+    <div
+      className={clsx(
+        'group relative flex flex-col rounded-xl border border-bg-dark bg-[#252525]',
+        hoverColor
+      )}
+    >
       <Image
         src={isFavorite ? heartFilledImg : heartImg}
         alt={'Favorite'}
@@ -66,9 +81,10 @@ export const GameCard = ({
         className="m-5 flex h-full flex-col gap-5"
       >
         <div
-          className={
-            'flex items-center justify-center rounded-[5px] border group-hover:border-left-accent max-[2000px]:h-[300px] min-[2000px]:h-[400px]'
-          }
+          className={clsx(
+            'flex items-center justify-center rounded-[5px] border max-[2000px]:h-[300px] min-[2000px]:h-[400px]',
+            hoverColor
+          )}
         >
           <Image
             src={game.logo}

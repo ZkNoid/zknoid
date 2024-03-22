@@ -15,6 +15,7 @@ export const thimblerigConfig = createZkNoidGameConfig({
   isReleased: false,
   releaseDate: new Date(2024, 2, 25),
   popularity: 0,
+  author: 'ZkNoid Team',
   runtimeModules: {
     ThimblerigLogic,
   },

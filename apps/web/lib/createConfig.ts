@@ -17,6 +17,7 @@ export type ZkNoidGameConfig<
   isReleased: boolean;
   releaseDate: Date;
   popularity: number;
+  author: string;
   runtimeModules: RuntimeModules;
   page: ({ params }: { params: { competitionId: string } }) => React.ReactNode;
   pageCompetitionsList?: () => React.ReactNode;
@@ -36,6 +37,7 @@ export function createZkNoidGameConfig<
   isReleased: boolean;
   releaseDate: Date;
   popularity: number;
+  author: string;
   runtimeModules: RuntimeModules;
   page: ({ params }: { params: { competitionId: string } }) => React.ReactNode;
   pageCompetitionsList?: () => React.ReactNode;

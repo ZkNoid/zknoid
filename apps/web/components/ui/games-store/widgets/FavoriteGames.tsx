@@ -91,13 +91,21 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
                   genresSelected.includes(x.genre) || genresSelected.length == 0
               )
               .sort((a, b) => sortByFliter(a, b))
-              .map((game, index) => (
+              .map((game) => (
                 <GameCard
                   game={game}
                   key={game.id}
                   fullImageW={game.id === 'arkanoid'}
                   fullImageH={game.id === 'arkanoid'}
-                  color={index === 0 || Number.isInteger(index / 2) ? 1 : 2}
+                  color={
+                    game.isReleased
+                      ? game.genre === ZkNoidGameGenre.BoardGames
+                        ? 1
+                        : game.genre === ZkNoidGameGenre.Arcade
+                          ? 2
+                          : 3
+                      : 4
+                  }
                 />
               ))}
           </div>

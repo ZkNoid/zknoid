@@ -1,32 +1,38 @@
-import { IGame } from '@/app/constants/games';
+import Link from 'next/link';
+import { ICompetition } from '@/lib/types';
+import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
 
-export interface ICompetition {
-  game: IGame;
-  title?: string;
-  index: number;
-  preRegDate: {
-    start: Date;
-    end: Date;
-  };
-  competitionsDate: {
-    start: Date;
-    end: Date;
-  };
-  participantsFee: number;
-  currency: string;
-  reward: number;
-}
+// export interface ICompetition {
+//   game: IGame;
+//   title?: string;
+//   id: number;
+//   preRegDate: {
+//     start: Date;
+//     end: Date;
+//   };
+//   competitionsDate: {
+//     start: Date;
+//     end: Date;
+//   };
+//   participantsFee: number;
+//   currency: string;
+//   reward: number;
+// }
 
 export const CompetitionItem = ({
+  id,
+  seed,
   game,
-  title = game.name,
-  index,
+  title,
+  preReg,
   preRegDate,
-  competitionsDate,
-  participantsFee,
+  competitionDate,
+  participationFee,
   currency,
   reward,
+  registered,
 }: ICompetition) => {
+  const switchStore = useSwitchWidgetStorage();
   return (
     <div
       className={
@@ -39,16 +45,18 @@ export const CompetitionItem = ({
             'flex flex-row gap-2 text-headline-2 font-medium uppercase'
           }
         >
-          <span>[{index}]</span>
+          <span>[{id}]</span>
           <span>{title}</span>
         </div>
-        <button
+        <Link
           className={
-            'w-full max-w-[50%] rounded-[5px] border border-bg-dark bg-left-accent py-2 text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
+            'w-full max-w-[50%] rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
           }
+          href={`/games/${game.id}/${id}`}
+          onClick={() => switchStore.setCompetitionId(id)}
         >
           Play
-        </button>
+        </Link>
       </div>
       <div className={'flex w-2/6 flex-col gap-2'}>
         <div className={'flex flex-col gap-1'}>
@@ -80,11 +88,11 @@ export const CompetitionItem = ({
               'font-plexsans text-[16px]/[16px] font-light text-foreground'
             }
           >
-            {competitionsDate.start.toLocaleDateString('en-US', {
+            {competitionDate.start.toLocaleDateString('en-US', {
               dateStyle: 'long',
             })}{' '}
             -{' '}
-            {competitionsDate.end.toLocaleDateString('en-US', {
+            {competitionDate.end.toLocaleDateString('en-US', {
               dateStyle: 'long',
             })}
           </span>
@@ -100,7 +108,7 @@ export const CompetitionItem = ({
             'w-full max-w-fit rounded-2xl border border-left-accent p-1 px-2 text-center'
           }
         >
-          {participantsFee} {currency} Participants fee
+          {participationFee} {currency} Participants fee
         </div>
         <div
           className={
