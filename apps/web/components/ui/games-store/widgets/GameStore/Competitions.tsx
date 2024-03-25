@@ -75,16 +75,16 @@ export const Competitions = ({
   const sortByFilter = (a: ICompetition, b: ICompetition) => {
     switch (sortBy) {
       case CompetitionsSortBy.HighFees:
-        return a.participationFee - b.participationFee;
+        return Number(a.participationFee - b.participationFee);
 
       case CompetitionsSortBy.LowFees:
-        return b.participationFee - a.participationFee;
+        return Number(b.participationFee - a.participationFee);
 
       case CompetitionsSortBy.HighFunds:
-        return a.reward - b.reward;
+        return Number(a.reward - b.reward);
 
       case CompetitionsSortBy.LowFunds:
-        return b.reward - a.reward;
+        return Number(b.reward - a.reward);
 
       case CompetitionsSortBy.Latest:
         return (
