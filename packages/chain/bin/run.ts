@@ -2,6 +2,7 @@
 
 import { ManualBlockTrigger } from '@proto-kit/sequencer';
 import appChain from '../src/chain.config';
+import { exit } from 'process';
 
 await appChain.start();
 const trigger = appChain.sequencer.resolveOrFail(
@@ -13,6 +14,10 @@ setInterval(async () => {
   try {
     await trigger.produceUnproven();
   } catch (e) {
-    console.error(e);
+    console.error('Run err', e);
+    if (/maximum leaf number/.test((e as any).toString())) {
+      console.log('[LEAF ERROR]');
+      exit(100);
+    }
   }
 }, 5000);
