@@ -114,29 +114,12 @@ export const useMinaBridge = () => {
 
   return useCallback(
     async (amount: bigint) => {
-      if (!network.address) return;
-      if (balancesStore.balances[network.address] >= amount) return;
+      if (!network.address) return false;
+      if (balancesStore.balances[network.address] >= amount) return false;
 
       bridgeStore.setOpen(amount);
       console.log('Setting open', amount);
-      return;
-
-      // const hash = (data as any).hash;
-      // console.log('Tx hash', hash);
-
-      // const balances = contextAppChainClient.runtime.resolve('Balances');
-      // const sender = PublicKey.fromBase58(network.address!);
-
-      // const l2tx = await contextAppChainClient.transaction(sender, () => {
-      //   balances.addBalance(sender, UInt64.from(amount));
-      // });
-
-      // await l2tx.sign();
-      // await l2tx.send();
-
-      // isPendingTransaction(l2tx.transaction);
-
-      // network.addPendingL2Transaction(l2tx!.transaction!);
+      return true;
     },
     [network.walletConnected, balancesStore.balances]
   );

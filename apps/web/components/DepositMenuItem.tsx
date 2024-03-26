@@ -136,6 +136,7 @@ export const DepositMenuItem = () => {
   const protokitBalancesStore = useProtokitBalancesStore();
 
   const networkStore = useNetworkStore();
+  const contextAppChainClient = useContext(AppChainClientContext);
 
   useEffect(() => {
     setAmountIn(bridgeStore.amount);
@@ -165,12 +166,21 @@ export const DepositMenuItem = () => {
       transaction: transactionJSON,
       memo: `zknoid.io game bridging #${process.env.BRIDGE_ID ?? 100}`,
       to: BRIDGE_ADDR,
-      amount: amountIn / 10n ** 9n,
+      amount: formatUnits(amountIn, assetIn.decimals),
     });
+
+    const balances = contextAppChainClient!.runtime.resolve('Balances');
+    const sender = PublicKey.fromBase58(networkStore.address!);
+
+    const l2tx = await contextAppChainClient!.transaction(sender, () => {
+      balances.addBalance(sender, ProtokitLibrary.UInt64.from(amountOut));
+    });
+
+    await l2tx.sign();
+    await l2tx.send();
   };
   const testBalanceGetter = useTestBalanceGetter();
   const rate = 1;
-  const contextAppChainClient = useContext(AppChainClientContext);
   return (
     <>
       <HeaderCard

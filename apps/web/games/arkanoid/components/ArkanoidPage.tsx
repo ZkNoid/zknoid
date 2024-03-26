@@ -83,7 +83,7 @@ export default function ArkanoidPage({
 
   const startGame = async () => {
     if (competition!.participationFee > 0) {
-      await bridge(competition!.participationFee);
+      if (await bridge(competition!.participationFee)) return;
     }
 
     setGameState(GameState.Active);
