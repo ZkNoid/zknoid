@@ -6,8 +6,7 @@ import { PublicKey, UInt64 } from 'o1js';
 export const Leaderboard = ({
   leaderboard,
 }: {
-  // leaderboard: { score: UInt64; player: PublicKey }[];
-  leaderboard: { score: UInt64; player: string }[];
+  leaderboard: { score: UInt64; player: PublicKey }[];
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(true);
 
@@ -22,54 +21,58 @@ export const Leaderboard = ({
   }) => {
     return (
       <div
-        className={clsx(
-          'flex h-full flex-row items-center justify-between font-plexsans text-header-menu',
-          { 'text-left-accent': index === 0 || index === 1 || index === 2 }
-        )}
+        className={clsx('border-b border-left-accent py-4 last:border-t', {
+          'h-full': leaderboard.length >= 7 || leaderboard.length === 0,
+        })}
       >
-        <span className={'flex flex-row gap-4'}>
-          {index === 0 ? (
-            <svg
-              width="24"
-              height="20"
-              viewBox="0 0 24 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M16.2798 8.75798L16.2796 8.75765L13.6596 4.06933C13.9631 3.69513 14.15 3.21613 14.15 2.6875C14.15 1.49037 13.1976 0.5 12 0.5C10.8024 0.5 9.85 1.49037 9.85 2.6875C9.85 3.21613 10.0369 3.69513 10.3404 4.06933L7.7204 8.75765L7.72022 8.75798C7.54995 9.06321 7.17796 9.15476 6.89942 8.98347L6.8991 8.98327L4.74956 7.66363C4.7839 7.51232 4.80344 7.353 4.80344 7.1875C4.80344 5.99037 3.85105 5 2.65344 5C1.45716 5 0.5 5.989 0.5 7.1875C0.5 8.35963 1.41303 9.33355 2.57531 9.37371L4.93056 15.7971L5.05078 16.125H5.4H18.6H18.9492L19.0694 15.7971L21.4247 9.37371C22.587 9.33355 23.5 8.35964 23.5 7.1875C23.5 5.99037 22.5476 5 21.35 5C20.1524 5 19.2 5.99037 19.2 7.1875C19.2 7.35261 19.2186 7.51157 19.2529 7.66392L17.1018 8.98271C17.1017 8.98279 17.1015 8.98287 17.1014 8.98296C16.8186 9.15547 16.4497 9.06266 16.2798 8.75798ZM4.85 16.25C4.26082 16.25 3.8 16.7376 3.8 17.3125V18.4375C3.8 19.0124 4.26082 19.5 4.85 19.5H19.15C19.7392 19.5 20.2 19.0124 20.2 18.4375V17.3125C20.2 16.7376 19.7392 16.25 19.15 16.25H4.85Z"
-                stroke="#212121"
-                fill="#D2FF00"
-              />
-            </svg>
-          ) : index === 1 || index === 2 ? (
-            <svg
-              width="24"
-              height="20"
-              viewBox="0 0 24 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M16.2798 8.75798L16.2796 8.75765L13.6596 4.06933C13.9631 3.69513 14.15 3.21613 14.15 2.6875C14.15 1.49037 13.1976 0.5 12 0.5C10.8024 0.5 9.85 1.49037 9.85 2.6875C9.85 3.21613 10.0369 3.69513 10.3404 4.06933L7.7204 8.75765L7.72022 8.75798C7.54995 9.06321 7.17796 9.15476 6.89942 8.98347L6.8991 8.98327L4.74956 7.66363C4.7839 7.51232 4.80344 7.353 4.80344 7.1875C4.80344 5.99037 3.85105 5 2.65344 5C1.45716 5 0.5 5.989 0.5 7.1875C0.5 8.35963 1.41303 9.33355 2.57531 9.37371L4.93056 15.7971L5.05078 16.125H5.4H18.6H18.9492L19.0694 15.7971L21.4247 9.37371C22.587 9.33355 23.5 8.35964 23.5 7.1875C23.5 5.99037 22.5476 5 21.35 5C20.1524 5 19.2 5.99037 19.2 7.1875C19.2 7.35261 19.2186 7.51157 19.2529 7.66392L17.1018 8.98271C17.1017 8.98279 17.1015 8.98287 17.1014 8.98296C16.8186 9.15547 16.4497 9.06266 16.2798 8.75798ZM4.85 16.25C4.26082 16.25 3.8 16.7376 3.8 17.3125V18.4375C3.8 19.0124 4.26082 19.5 4.85 19.5H19.15C19.7392 19.5 20.2 19.0124 20.2 18.4375V17.3125C20.2 16.7376 19.7392 16.25 19.15 16.25H4.85Z"
-                stroke="#D2FF00"
-              />
-            </svg>
-          ) : (
-            <span>[{index + 1}]</span>
+        <div
+          className={clsx(
+            'flex h-full flex-row items-center justify-between font-plexsans text-header-menu',
+            { 'text-left-accent': index === 0 || index === 1 || index === 2 }
           )}
-          <span>{address}</span>
-        </span>
-        <span>{score}</span>
+        >
+          <span className={'flex flex-row gap-4'}>
+            {index === 0 ? (
+              <svg
+                width="24"
+                height="20"
+                viewBox="0 0 24 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M16.2798 8.75798L16.2796 8.75765L13.6596 4.06933C13.9631 3.69513 14.15 3.21613 14.15 2.6875C14.15 1.49037 13.1976 0.5 12 0.5C10.8024 0.5 9.85 1.49037 9.85 2.6875C9.85 3.21613 10.0369 3.69513 10.3404 4.06933L7.7204 8.75765L7.72022 8.75798C7.54995 9.06321 7.17796 9.15476 6.89942 8.98347L6.8991 8.98327L4.74956 7.66363C4.7839 7.51232 4.80344 7.353 4.80344 7.1875C4.80344 5.99037 3.85105 5 2.65344 5C1.45716 5 0.5 5.989 0.5 7.1875C0.5 8.35963 1.41303 9.33355 2.57531 9.37371L4.93056 15.7971L5.05078 16.125H5.4H18.6H18.9492L19.0694 15.7971L21.4247 9.37371C22.587 9.33355 23.5 8.35964 23.5 7.1875C23.5 5.99037 22.5476 5 21.35 5C20.1524 5 19.2 5.99037 19.2 7.1875C19.2 7.35261 19.2186 7.51157 19.2529 7.66392L17.1018 8.98271C17.1017 8.98279 17.1015 8.98287 17.1014 8.98296C16.8186 9.15547 16.4497 9.06266 16.2798 8.75798ZM4.85 16.25C4.26082 16.25 3.8 16.7376 3.8 17.3125V18.4375C3.8 19.0124 4.26082 19.5 4.85 19.5H19.15C19.7392 19.5 20.2 19.0124 20.2 18.4375V17.3125C20.2 16.7376 19.7392 16.25 19.15 16.25H4.85Z"
+                  stroke="#212121"
+                  fill="#D2FF00"
+                />
+              </svg>
+            ) : index === 1 || index === 2 ? (
+              <svg
+                width="24"
+                height="20"
+                viewBox="0 0 24 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M16.2798 8.75798L16.2796 8.75765L13.6596 4.06933C13.9631 3.69513 14.15 3.21613 14.15 2.6875C14.15 1.49037 13.1976 0.5 12 0.5C10.8024 0.5 9.85 1.49037 9.85 2.6875C9.85 3.21613 10.0369 3.69513 10.3404 4.06933L7.7204 8.75765L7.72022 8.75798C7.54995 9.06321 7.17796 9.15476 6.89942 8.98347L6.8991 8.98327L4.74956 7.66363C4.7839 7.51232 4.80344 7.353 4.80344 7.1875C4.80344 5.99037 3.85105 5 2.65344 5C1.45716 5 0.5 5.989 0.5 7.1875C0.5 8.35963 1.41303 9.33355 2.57531 9.37371L4.93056 15.7971L5.05078 16.125H5.4H18.6H18.9492L19.0694 15.7971L21.4247 9.37371C22.587 9.33355 23.5 8.35964 23.5 7.1875C23.5 5.99037 22.5476 5 21.35 5C20.1524 5 19.2 5.99037 19.2 7.1875C19.2 7.35261 19.2186 7.51157 19.2529 7.66392L17.1018 8.98271C17.1017 8.98279 17.1015 8.98287 17.1014 8.98296C16.8186 9.15547 16.4497 9.06266 16.2798 8.75798ZM4.85 16.25C4.26082 16.25 3.8 16.7376 3.8 17.3125V18.4375C3.8 19.0124 4.26082 19.5 4.85 19.5H19.15C19.7392 19.5 20.2 19.0124 20.2 18.4375V17.3125C20.2 16.7376 19.7392 16.25 19.15 16.25H4.85Z"
+                  stroke="#D2FF00"
+                />
+              </svg>
+            ) : (
+              <span>[{index + 1}]</span>
+            )}
+            <span>{address}</span>
+          </span>
+          <span>{score}</span>
+        </div>
       </div>
     );
   };
 
   const sortByHighScore = (
-    // a: { score: UInt64; player: PublicKey },
-    // b: { score: UInt64; player: PublicKey }
-    a: { score: UInt64; player: string },
-    b: { score: UInt64; player: string }
+    a: { score: UInt64; player: PublicKey },
+    b: { score: UInt64; player: PublicKey }
   ) => {
     return Number(b.score) - Number(a.score);
   };
@@ -90,33 +93,40 @@ export const Leaderboard = ({
               animate={{ height: '100%' }}
               exit={{ height: 0 }}
               transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
-              className={
-                'relative z-10 flex flex-col gap-4 overflow-hidden px-5'
-              }
+              className={'relative z-10 flex flex-col overflow-hidden px-5'}
             >
               <div
                 className={
-                  'flex flex-row justify-between font-plexsans text-header-menu'
+                  'flex flex-row justify-between border-b border-left-accent pb-4 font-plexsans text-header-menu'
                 }
               >
                 <span className={'uppercase'}>Nickname/address</span>
                 <span className={'uppercase'}>Score</span>
               </div>
-              <div className={'h-4 w-full bg-left-accent'} />
-              {leaderboard.sort(sortByHighScore).map((item, index) => (
+              {leaderboard.length != 0 ? (
                 <>
-                  <LeaderboardItem
-                    index={index}
-                    // address={item.player.toBase58().slice(0, 16) + '...'}
-                    address={item.player.slice(0, 16) + '...'}
-                    score={Number(item.score)}
-                  />
-                  <div
-                    key={index + 20}
-                    className={'h-4 w-full bg-left-accent'}
-                  />
+                  {leaderboard.sort(sortByHighScore).map((item, index) => (
+                    <LeaderboardItem
+                      key={index}
+                      index={index}
+                      address={item.player.toBase58().slice(0, 16) + '...'}
+                      score={Number(item.score)}
+                    />
+                  ))}
                 </>
-              ))}
+              ) : (
+                <>
+                  {[...Array(9)].map((_, index) => (
+                    <LeaderboardItem
+                      key={index}
+                      index={index}
+                      address={''}
+                      score={0}
+                    />
+                  ))}
+                </>
+              )}
+              <div className={'flex-grow pt-4'} />
               <button
                 className={
                   'mb-5 w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-[20px]/[20px] font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
