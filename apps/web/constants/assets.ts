@@ -4,6 +4,7 @@ export type ZkNoidAsset = {
   name: string;
   ticker: string;
   icon: any | undefined;
+  decimals: number;
 };
 
 export const L1_ASSETS: Record<string, ZkNoidAsset> = {
@@ -11,11 +12,13 @@ export const L1_ASSETS: Record<string, ZkNoidAsset> = {
     name: 'Mina',
     ticker: '$MINA',
     icon: '/image/tokens/mina.svg',
+    decimals: 9
   },
   ZkNoid: {
     name: 'ZkNoid',
     ticker: '$ZkNoid',
     icon: undefined,
+    decimals: 9
   },
 };
 
@@ -25,4 +28,5 @@ export const L2_ASSET: ZkNoidAsset = {
   name: 'Znakes',
   ticker: '$znakes',
   icon: undefined,
+  decimals: 9
 };
