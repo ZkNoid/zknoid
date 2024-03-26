@@ -107,7 +107,7 @@ export const GameView = (props: IGameViewProps) => {
 
   useEffect(() => {
     console.log('Setting game', ctx);
-    if (props.gameId > 0) startGame();
+    if (props.gameId > 0 && ctx) startGame();
   }, [props.gameId, ctx]);
 
   useEffect(() => {
