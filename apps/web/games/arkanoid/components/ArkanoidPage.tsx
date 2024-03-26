@@ -180,57 +180,6 @@ export default function ArkanoidPage({
     useState<boolean>(false);
 
   // TEMPORARY DATA
-  const DEBUG_PLAYERS = [
-    'mLZLPXq1ZSx8UQBWueT7Gcagu6ywuLoZ367g7o7bjvTUidtGz2Xi1qF',
-    'Wv6Tdj1abxqQyLZF77eLoU7Pwct7uUXgG8S1umG6ZiBXz3guoTL2Zqi',
-    'uUWZuigy7Q6vTXq7d1oLBm3GP1o7XcaewTGL7b8zxjiqu6ZFtU2gSZL',
-    '7Q73wog6j7iuGexXZ7z8qLo1mu1ubXLSgUZGF62PLyvTtqBiaUTcdWZ',
-    'gbWuq61Zuwz3y2LLGUa8d6X7uGiXvFLZgxqP7BS7Uc1oTjmiet7TZoQ',
-    'gS2XxLg7a81iouPeTGzT6iomGBquU6u7LWq7ZbQFLX3cj1Udty7ZZvw',
-    'PGXiXG8bUv7q7ZTLymwS161jtdLgZFcLaTuooi7Wq7QZB62uz3ueUgx',
-    'U6biZcWT1LZuxqmGPFiX7doBuLjuq7oZS1Ge7gLT27vygX6tQw3Uza8',
-    'TdPXeGw7QtaS3TWzLB17u2qL7qc8ZUj7ZmuogGou6LiUxvbFZy6Xig1',
-    '7gj7wZmTey77uxPUdZq8X3SQcgWLLT1iF1GuL26UGovZzuqibBXoat6',
-  ];
-  const DEBUG_LEADERBOARD = [
-    {
-      score: new UInt64(100),
-      player: DEBUG_PLAYERS[0],
-    },
-    {
-      score: new UInt64(200),
-      player: DEBUG_PLAYERS[1],
-    },
-    {
-      score: new UInt64(300),
-      player: DEBUG_PLAYERS[2],
-    },
-    {
-      score: new UInt64(400),
-      player: DEBUG_PLAYERS[3],
-    },
-    {
-      score: new UInt64(500),
-      player: DEBUG_PLAYERS[4],
-    },
-    {
-      score: new UInt64(600),
-      player: DEBUG_PLAYERS[5],
-    },
-    {
-      score: new UInt64(700),
-      player: DEBUG_PLAYERS[6],
-    },
-    {
-      score: new UInt64(800),
-      player: DEBUG_PLAYERS[7],
-    },
-    {
-      score: new UInt64(900),
-      player: DEBUG_PLAYERS[8],
-    },
-  ];
-
   const DEBUG_COMPETITION: ICompetition = {
     game: defaultGames[0],
     title: 'Arcanoid',
@@ -262,7 +211,9 @@ export default function ArkanoidPage({
     >
       <div className={'grid grid-cols-4 grid-rows-1 gap-4'}>
         {params.competitionId !== 'undefined' && (
-          <Leaderboard leaderboard={DEBUG_LEADERBOARD} />
+          <Leaderboard
+            leaderboard={leaderboardStore.getLeaderboard(params.competitionId)}
+          />
         )}
         <GameWidget
           ticks={ticksAmount}
