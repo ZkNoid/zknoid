@@ -21,6 +21,21 @@ import { useNetworkStore } from '@/lib/stores/network';
 import { useMinaBalancesStore } from '@/lib/stores/minaBalances';
 import { AnimatePresence, motion } from 'framer-motion';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import 'reflect-metadata';
+
+import { ClientAppChain } from '@proto-kit/sdk';
+import { PendingTransaction, UnsignedTransaction } from '@proto-kit/sequencer';
+import { AccountUpdate, Mina, PublicKey, UInt64 } from 'o1js';
+import { useCallback, useEffect } from 'react';
+import { create } from 'zustand';
+
+import { immer } from 'zustand/middleware/immer';
+
+import { BRIDGE_ADDR } from '@/app/constants';
+
+import { zkNoidConfig } from '@/games/config';
+import { ProtokitLibrary } from 'zknoid-chain-dev';
+import { formatUnits } from '@/lib/utils';
 
 const BridgeInput = ({
   assets,
@@ -34,8 +49,8 @@ const BridgeInput = ({
   assets: ZkNoidAsset[];
   currentAsset: ZkNoidAsset;
   setCurrentAsset: (asset: ZkNoidAsset) => void;
-  amount: number;
-  setAmount?: (amount: number) => void;
+  amount: bigint;
+  setAmount?: (amount: bigint) => void;
   balance: bigint;
   isPay: boolean;
 }) => {
@@ -48,9 +63,13 @@ const BridgeInput = ({
             <input
               type="number"
               className="w-full min-w-0 appearance-none bg-bg-dark text-[24px] outline-none"
-              value={amount}
+              value={formatUnits(amount, currentAsset.decimals)}
               onChange={(value) => {
-                setAmount?.(parseFloat(value.target.value));
+                setAmount?.(
+                  BigInt(
+                    parseFloat(value.target.value) * 10 ** currentAsset.decimals
+                  )
+                );
               }}
               step="0.01"
               placeholder="0.00"
@@ -102,21 +121,56 @@ const BridgeInput = ({
   );
 };
 export const DepositMenuItem = () => {
+  const bridgeStore = useBridgeStore();
+
   const [assetIn, setAssetIn] = useState(L1_ASSETS.Mina);
-  const [amountIn, setAmountIn] = useState(10n);
+  const [amountIn, setAmountIn] = useState(
+    10n * 10n ** BigInt(L1_ASSETS.Mina.decimals)
+  );
   const [assetOut, setAssetOut] = useState(L2_ASSET);
-  const [amountOut, setAmountOut] = useState(10n);
+  const [amountOut, setAmountOut] = useState(
+    10n * 10n ** BigInt(L2_ASSET.decimals)
+  );
 
   const minaBalancesStore = useMinaBalancesStore();
   const protokitBalancesStore = useProtokitBalancesStore();
 
   const networkStore = useNetworkStore();
 
-  const bridge = useMinaBridge();
+  useEffect(() => {
+    setAmountIn(bridgeStore.amount);
+    setAmountOut(bridgeStore.amount);
+  }, [bridgeStore.amount]);
+
+  const bridge = async (amount: bigint) => {
+    console.log('Bridging', amount);
+    const l1tx = await Mina.transaction(() => {
+      const senderUpdate = AccountUpdate.create(
+        PublicKey.fromBase58(networkStore.address!)
+      );
+      senderUpdate.requireSignature();
+      console.log(BRIDGE_ADDR);
+      console.log(amountIn);
+      senderUpdate.send({
+        to: PublicKey.fromBase58(BRIDGE_ADDR),
+        amount: Number(amount / 10n ** 9n),
+      });
+    });
+
+    await l1tx.prove();
+
+    const transactionJSON = l1tx.toJSON();
+
+    const data = await (window as any).mina.sendPayment({
+      transaction: transactionJSON,
+      memo: `zknoid.io game bridging #${process.env.BRIDGE_ID ?? 100}`,
+      to: BRIDGE_ADDR,
+      amount: amountIn / 10n ** 9n,
+    });
+  };
   const testBalanceGetter = useTestBalanceGetter();
   const rate = 1;
   const contextAppChainClient = useContext(AppChainClientContext);
-  const bridgeStore = useBridgeStore();
   return (
     <>
       <HeaderCard
@@ -150,10 +204,10 @@ export const DepositMenuItem = () => {
                   assets={[L1_ASSETS.Mina]}
                   currentAsset={assetIn}
                   setCurrentAsset={setAssetIn}
-                  amount={Number(amountIn)}
+                  amount={amountIn}
                   setAmount={(amount) => {
-                    setAmountIn(BigInt(amount));
-                    setAmountOut(BigInt(amount * rate));
+                    setAmountIn(amount || 0n);
+                    setAmountOut(amount * BigInt(rate) || 0n);
                   }}
                   balance={
                     minaBalancesStore.balances[networkStore.address!] ?? 0n
@@ -169,10 +223,10 @@ export const DepositMenuItem = () => {
                   assets={[L2_ASSET]}
                   currentAsset={assetOut}
                   setCurrentAsset={setAssetOut}
-                  amount={Number(amountOut)}
+                  amount={amountOut}
                   setAmount={(amount) => {
-                    setAmountIn(BigInt(amount / rate));
-                    setAmountOut(BigInt(amount));
+                    setAmountIn(amount / BigInt(rate) || 0n);
+                    setAmountOut(amount || 0n);
                   }}
                   balance={
                     protokitBalancesStore.balances[networkStore.address!] ?? 0n
