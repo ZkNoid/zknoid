@@ -1,17 +1,14 @@
 import { ICompetition } from '@/lib/types';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export const Competition = ({
   startGame,
   competition,
-  isUnset,
   isRestartBtn,
-  isDebugRestartBtn,
 }: {
   startGame: () => void;
-  competition: ICompetition;
-  isUnset: boolean;
+  competition: ICompetition | undefined;
   isRestartBtn: boolean;
-  isDebugRestartBtn: boolean;
 }) => {
   return (
     <div className={'flex h-full w-full flex-col gap-10'}>
@@ -24,7 +21,7 @@ export const Competition = ({
         >
           <span className={'uppercase text-left-accent'}>Name</span>
           <span className={'font-normal'}>
-            {isUnset ? ' - ' : competition.title}
+            {!competition ? ' - ' : competition.title}
           </span>
         </div>
         <div
@@ -34,7 +31,7 @@ export const Competition = ({
         >
           <span className={'uppercase text-left-accent'}>Funds</span>
           <span className={'font-normal'}>
-            {isUnset ? ' - ' : (competition.reward, competition.currency)}
+            {!competition ? ' - ' : (competition.reward, competition.currency)}
           </span>
         </div>
       </div>
@@ -43,7 +40,7 @@ export const Competition = ({
           Preregistration dates
         </span>
         <span className={'font-normal'}>
-          {isUnset ? (
+          {!competition ? (
             ' - '
           ) : (
             <>
@@ -59,7 +56,7 @@ export const Competition = ({
         </span>
         <span className={'uppercase text-left-accent'}>Competitions dates</span>
         <span className={'font-normal'}>
-          {isUnset ? (
+          {!competition ? (
             ' - '
           ) : (
             <>
@@ -84,26 +81,21 @@ export const Competition = ({
           the bottom of the screen.
         </span>
       </div>
-      {isRestartBtn && (
-        <button
-          className={
-            'w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-[20px]/[20px] font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
-          }
-          onClick={startGame}
-        >
-          Restart game
-        </button>
-      )}
-      {isDebugRestartBtn && (
-        <button
-          className={
-            'w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-[20px]/[20px] font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
-          }
-          onClick={startGame}
-        >
-          [DEBUG] Restart game
-        </button>
-      )}
+      <AnimatePresence>
+        {isRestartBtn && (
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className={
+              'w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-[20px]/[20px] font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
+            }
+            onClick={startGame}
+          >
+            Restart game
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
