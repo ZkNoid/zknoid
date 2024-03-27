@@ -35,7 +35,7 @@ import { BRIDGE_ADDR } from '@/app/constants';
 
 import { zkNoidConfig } from '@/games/config';
 import { ProtokitLibrary } from 'zknoid-chain-dev';
-import { formatUnits } from '@/lib/utils';
+import { formatUnits } from '@/lib/unit';
 
 const BridgeInput = ({
   assets,

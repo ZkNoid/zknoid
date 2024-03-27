@@ -24,7 +24,7 @@ import { getRandomEmoji } from '../utils';
 import { useMatchQueueStore } from '@/lib/stores/matchQueue';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import { MOVE_TIMEOUT_IN_BLOCKS } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
-import { formatUnits } from '@/lib/utils';
+import { formatUnits } from '@/lib/unit';
 
 enum GameState {
   NotStarted,
