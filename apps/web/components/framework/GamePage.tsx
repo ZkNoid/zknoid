@@ -17,6 +17,7 @@ import { Footer } from '@/components/Footer';
 import Image from 'next/image';
 import { clsx } from 'clsx';
 import Link from 'next/link';
+import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
 
 export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
   children,
@@ -35,6 +36,7 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
   usePollProtokitBlockHeight();
   useObserveMinaBalance();
   const networkStore = useNetworkStore();
+  const switchStore = useSwitchWidgetStorage();
 
   useEffect(() => {
     console.log('Starting client');
@@ -76,17 +78,7 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
         data-iscurrentpage={page === switchPage}
       >
         {children}
-        <Link
-          onClick={() => setPage(switchPage)}
-          className={'text-headline-3 group-hover:opacity-80'}
-          href={
-            page === Pages.CompetitionsList
-              ? `/games/${gameConfig.id}/competitions-list`
-              : `/games/${gameConfig.id}/1`
-          }
-        >
-          {title}
-        </Link>
+        <div className={'text-headline-3 group-hover:opacity-80'}>{title}</div>
         <div
           className={clsx('absolute -top-3 -z-20', {
             '-left-5': isLeft,
@@ -125,6 +117,14 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
             </svg>
           )}
         </div>
+        <Link
+          className={'absolute left-0 top-0 h-full w-[80%]'}
+          href={
+            switchPage === Pages.CompetitionsList
+              ? `/games/${gameConfig.id}/competitions-list`
+              : `/games/${gameConfig.id}/${switchStore.competitionId}`
+          }
+        />
       </div>
     );
   };
