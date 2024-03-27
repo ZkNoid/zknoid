@@ -738,6 +738,7 @@ export const GameView = (props: IGameViewProps) => {
     props.setScore(gameContext.score * 1);
     if (!gameContext.winable.toBoolean()) {
       setWinable(false);
+      onLost();
     }
 
     sync();
