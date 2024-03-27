@@ -61,7 +61,9 @@ export const Competition = ({
             >
               {!competition
                 ? ' - '
-                : `${competition.reward} ${competition.currency}`}
+                // : <>{formatUnits(competition.reward)} {' '} {competition.currency}</>
+                : <>{competition.reward} {' '} {competition.currency}</>
+              }
             </motion.span>
           </div>
         </div>
