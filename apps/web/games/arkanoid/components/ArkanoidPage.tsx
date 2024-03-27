@@ -32,8 +32,6 @@ import { Lost } from '@/components/framework/GameWidget/Lost';
 import { Win } from '@/components/framework/GameWidget/Win';
 import { InstallWallet } from '@/components/framework/GameWidget/InstallWallet';
 import { DebugCheckbox } from '@/components/framework/GameWidget/DebugCheckbox';
-import { defaultGames } from '@/app/constants/games';
-import { Currency } from '@/constants/currency';
 import { UnsetCompetitionPopup } from '@/components/framework/GameWidget/UnsetCompetitionPopup';
 import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
 
@@ -183,27 +181,6 @@ export default function ArkanoidPage({
     )
       switchStore.setCompetitionId(competition.id);
   }, [competition, params.competitionId, switchStore.competitionId]);
-
-  // TEMPORARY DATA
-  const DEBUG_COMPETITION: ICompetition = {
-    game: defaultGames[0],
-    title: 'Arcanoid',
-    id: 0,
-    preReg: false,
-    preRegDate: {
-      start: new Date(2024, 2, 15),
-      end: new Date(2024, 2, 20),
-    },
-    competitionDate: {
-      start: new Date(2024, 2, 15),
-      end: new Date(2024, 2, 20),
-    },
-    participationFee: 5n * 10n ** 9n,
-    currency: Currency.MINA,
-    reward: 1000n * 10n ** 9n,
-    seed: 123,
-    registered: false,
-  };
 
   const isRestartButton =
     gameState === GameState.Lost || gameState === GameState.Won;
