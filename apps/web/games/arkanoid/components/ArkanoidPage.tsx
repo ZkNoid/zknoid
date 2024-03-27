@@ -34,6 +34,9 @@ import { InstallWallet } from '@/components/framework/GameWidget/InstallWallet';
 import { DebugCheckbox } from '@/components/framework/GameWidget/DebugCheckbox';
 import { UnsetCompetitionPopup } from '@/components/framework/GameWidget/UnsetCompetitionPopup';
 import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
+import { FullscreenButton } from '@/components/framework/GameWidget/FullscreenButton';
+import { AnimatePresence, motion } from 'framer-motion';
+import { LoadSpinner } from '@/components/ui/games-store/shared/LoadSpinner';
 
 enum GameState {
   NotStarted,
@@ -59,7 +62,11 @@ export default function ArkanoidPage({
   const [score, setScore] = useState<number>(0);
   const [ticksAmount, setTicksAmount] = useState<number>(0);
   const [competition, setCompetition] = useState<ICompetition>();
+
   const [isRateGame, setIsRateGame] = useState<boolean>(false);
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+  const [isFullscreenLoading, setIsFullscreenLoading] =
+    useState<boolean>(false);
 
   const client = useContext(AppChainClientContext);
 
@@ -191,7 +198,22 @@ export default function ArkanoidPage({
       image={'/image/game-page/arkanoid-title.svg'}
       defaultPage={'Game'}
     >
-      <div className={'grid grid-cols-4 grid-rows-1 gap-4'}>
+      <motion.div
+        animate={isFullscreen ? 'fullscreen' : 'windowed'}
+        initial={false}
+        variants={{
+          fullscreen: {
+            gridTemplateRows: 'repeat(2, minmax(0, 1fr))',
+            gap: '5rem',
+          },
+          windowed: {
+            gridTemplateRows: 'repeat(1, minmax(0, 1fr))',
+          },
+        }}
+        className={'grid grid-cols-4 gap-4'}
+        onAnimationStart={() => setIsFullscreenLoading(true)}
+        onAnimationComplete={() => setIsFullscreenLoading(false)}
+      >
         {competition && (
           <Leaderboard
             leaderboard={leaderboardStore.getLeaderboard(params.competitionId)}
@@ -261,14 +283,32 @@ export default function ArkanoidPage({
               />
             </div>
           )}
+          <FullscreenButton
+            isFullscreen={isFullscreen}
+            setIsFullscreen={setIsFullscreen}
+          />
         </GameWidget>
         <Competition
           startGame={startGame}
           competition={competition}
           isRestartBtn={isRestartButton}
         />
-      </div>
+      </motion.div>
       <DebugCheckbox debug={debug} setDebug={setDebug} />
+      <AnimatePresence initial={false}>
+        {isFullscreenLoading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className={
+              'fixed left-0 top-0 z-50 flex h-full w-full flex-col items-center justify-center backdrop-blur-md'
+            }
+          >
+            <LoadSpinner width={50} height={50} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </GamePage>
   );
 }
