@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 import { fontFamily } from "tailwindcss/defaultTheme";
+const plugin = require('tailwindcss/plugin')
 
 module.exports = {
   darkMode: ["class"],
@@ -36,14 +37,14 @@ module.exports = {
         'filtration-buttons': ['16px', {lineHeight: '21px', fontWeight: '400'}],
         'rating-numbers': ['16px', {lineHeight: '14px', fontWeight: '500'}],
       },
-        colors: {
-          'bg-dark': '#212121',
-          'foreground': '#F9F8F4',
-          'left-accent': '#D2FF00',
-          'middle-accent': '#97FF00',
-          'right-accent': '#56EBFF',
-          'dark-buttons-text': '#212121'
-        },    
+      colors: {
+        'bg-dark': '#212121',
+        'foreground': '#F9F8F4',
+        'left-accent': '#D2FF00',
+        'middle-accent': '#97FF00',
+        'right-accent': '#56EBFF',
+        'dark-buttons-text': '#212121'
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -51,12 +52,12 @@ module.exports = {
       },
       keyframes: {
         "accordion-down": {
-          from: { height: 0 },
-          to: { height: "var(--radix-accordion-content-height)" },
+          from: {height: 0},
+          to: {height: "var(--radix-accordion-content-height)"},
         },
         "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: 0 },
+          from: {height: "var(--radix-accordion-content-height)"},
+          to: {height: 0},
         },
       },
       animation: {
@@ -67,12 +68,22 @@ module.exports = {
         museo: ['var(--museo-slab)'],
         plexmono: ['var(--plex-mono)'],
         plexsans: ['var(--plex-sans)'],
-    },
+      },
       gridTemplateColumns: {
         '15': 'repeat(15, minmax(0, 1fr))',
-      }
+      },
     },
-    
   },
-  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
+  plugins: [
+      plugin(function ({addUtilities}) {
+        addUtilities({
+          ".scrollbar-custom": {
+            "scrollbar-width": "auto",
+            "scrollbar-color": "#D2FF00 #212121",
+            "padding-right": "1rem",
+          },
+        }, ['responsive', 'hover'])
+      }),
+    require("tailwindcss-animate"), require("@tailwindcss/typography")
+  ],
 };

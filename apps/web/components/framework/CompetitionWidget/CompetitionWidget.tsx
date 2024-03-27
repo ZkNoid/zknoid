@@ -75,7 +75,11 @@ export const CompetitionWidget = ({
             setSortBy={setSortBy}
           />
         </div>
-        <div className={'flex max-h-[400px] flex-col gap-4 overflow-y-scroll'}>
+        <div
+          className={
+            'scrollbar-custom flex max-h-[400px] flex-col gap-4 overflow-y-scroll'
+          }
+        >
           {competitionList
             .toSorted((a, b) => sortByFilter(a, b))
             .map((item, index) => (

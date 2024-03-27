@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { clsx } from 'clsx';
 import Link from 'next/link';
 import { ICompetition } from '@/lib/types';
@@ -11,8 +11,10 @@ export const CompetitionListItem = ({
   competition: ICompetition;
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [isPreReg, setIsPreReg] = useState<boolean>(false);
-  const [isRegistered, setIsRegistered] = useState<boolean>(false);
+  const [isPreReg, setIsPreReg] = useState<boolean>(competition.preReg);
+  const [isRegistered, setIsRegistered] = useState<boolean>(
+    !!competition.registered
+  );
 
   const switchStore = useSwitchWidgetStorage();
 
@@ -27,9 +29,14 @@ export const CompetitionListItem = ({
           className={
             'flex min-w-[400px] flex-row items-center gap-4 text-headline-2 font-medium uppercase text-left-accent'
           }
+          onClick={() => setIsOpen(!isOpen)}
         >
-          <span>[{competition.id}]</span>
-          <span>{competition.title}</span>
+          <div
+            className={'flex cursor-pointer flex-row gap-4 hover:opacity-80'}
+          >
+            <span>[{competition.id}]</span>
+            <span>{competition.title}</span>
+          </div>
         </div>
         <div
           className={
@@ -48,8 +55,8 @@ export const CompetitionListItem = ({
               'w-full max-w-fit items-center justify-center rounded-2xl border border-left-accent p-1 px-2 text-center'
             }
           >
-            {Number(competition.participationFee)} {competition.currency} Participants
-            fee
+            {Number(competition.participationFee)} {competition.currency}{' '}
+            Participants fee
           </div>
         </div>
         <Link
@@ -68,15 +75,15 @@ export const CompetitionListItem = ({
         >
           <div
             className={
-              'flex h-[24px] w-[24px] flex-col items-center justify-center border-2 border-left-accent'
+              'flex h-[24px] w-[24px] cursor-pointer flex-col items-center justify-center border-2 border-left-accent hover:opacity-80'
             }
             onClick={() => setIsOpen(!isOpen)}
           >
             <div className={'h-[2px] w-4 bg-left-accent'} />
-            <div
-              className={`h-[2px] w-4 rotate-90 bg-left-accent ${
-                isOpen ? 'invisible' : 'visible'
-              }`}
+            <motion.div
+              animate={isOpen ? 'open' : 'close'}
+              variants={{ open: { opacity: 0 }, close: { opacity: 1 } }}
+              className={'h-[2px] w-4 rotate-90 bg-left-accent'}
             />
           </div>
         </div>
@@ -98,13 +105,10 @@ export const CompetitionListItem = ({
                   Preregiatration
                 </span>
                 <div
-                  className={clsx(
-                    'cursor-pointer rounded-[5px] border bg-bg-dark p-1 hover:opacity-80',
-                    {
-                      'border-left-accent bg-left-accent': isPreReg,
-                    }
-                  )}
-                  onClick={() => setIsPreReg(!isPreReg)}
+                  className={clsx('rounded-[5px] border bg-bg-dark p-1', {
+                    'border-left-accent bg-left-accent': isPreReg,
+                  })}
+                  // onClick={() => setIsPreReg(!isPreReg)}
                 >
                   <svg
                     aria-hidden="true"
@@ -133,13 +137,10 @@ export const CompetitionListItem = ({
                   Registered
                 </span>
                 <div
-                  className={clsx(
-                    'cursor-pointer rounded-[5px] border bg-bg-dark p-1 hover:opacity-80',
-                    {
-                      'border-left-accent bg-left-accent': isRegistered,
-                    }
-                  )}
-                  onClick={() => setIsRegistered(!isRegistered)}
+                  className={clsx('rounded-[5px] border bg-bg-dark p-1', {
+                    'border-left-accent bg-left-accent': isRegistered,
+                  })}
+                  // onClick={() => setIsRegistered(!isRegistered)}
                 >
                   <svg
                     aria-hidden="true"
