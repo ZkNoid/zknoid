@@ -78,10 +78,14 @@ export const Leaderboard = ({
   };
 
   return (
-    <div className="col-start-1 col-end-2">
-      <div className={'relative flex h-full w-full flex-col gap-10'}>
+    <div className="col-start-1 col-end-2 h-full">
+      <div
+        className={clsx(
+          'relative flex min-h-[90px] w-full flex-col overflow-hidden'
+        )}
+      >
         <div
-          className="z-10 px-5 pt-5 text-headline-2 font-bold"
+          className="z-10 px-5 pb-10 pt-5 text-headline-2 font-bold"
           onClick={() => setIsExpanded(!isExpanded)}
         >
           Leaderboard
@@ -90,10 +94,10 @@ export const Leaderboard = ({
           {isExpanded && (
             <motion.div
               initial={{ height: 0 }}
-              animate={{ height: '100%' }}
+              animate={{ height: 'auto' }}
               exit={{ height: 0 }}
               transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
-              className={'relative z-10 flex flex-col overflow-hidden px-5'}
+              className={'relative z-0 flex flex-col overflow-hidden px-5'}
             >
               <div
                 className={
@@ -137,35 +141,50 @@ export const Leaderboard = ({
             </motion.div>
           )}
         </AnimatePresence>
-        <div className={'absolute left-0 top-0 z-0 h-full w-full'}>
+        <div className="absolute left-0 top-0 -z-10 flex h-auto w-full flex-col">
           <svg
-            width="349"
-            height="712"
+            width="auto"
+            height="auto"
             viewBox="0 0 349 712"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            preserveAspectRatio="none"
-            className={'h-full w-full'}
           >
             <path
               d="M1 109.208V5C1 2.79086 2.79086 1 5 1H297.502C298.562 1 299.578 1.42075 300.328 2.16982L346.827 48.6107C347.578 49.361 348 50.3792 348 51.4409V707C348 709.209 346.209 711 344 711H4.99999C2.79086 711 1 709.209 1 707V109.208Z"
-              fill="#252525"
+              fill="#212121"
               stroke="#D2FF00"
-              strokeWidth="1"
+              strokeWidth="2"
             />
             <path
               d="M347 0H311.912C310.118 0 309.231 2.17836 310.515 3.43115L345.603 37.6838C346.87 38.9204 349 38.0229 349 36.2527V2C349 0.89543 348.105 0 347 0Z"
               fill="#D2FF00"
             />
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M339.557 12.1483L345.924 5.78116L344.51 4.36694L338.143 10.7341L331.776 4.36709L330.361 5.78131L336.728 12.1483L330.368 18.5091L331.782 19.9233L338.143 13.5626L344.503 19.9234L345.918 18.5092L339.557 12.1483Z"
-              fill="#252525"
-            />
           </svg>
+          <motion.div
+            className={
+              'absolute right-0 top-0 flex h-[34px] w-[34px] flex-col items-center justify-center'
+            }
+            animate={isExpanded ? 'open' : 'close'}
+          >
+            <motion.div
+              variants={{
+                open: { rotate: 45, y: 1 },
+                close: { rotate: 0 },
+              }}
+              transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
+              className={'h-[3px] w-3/4 rotate-45 bg-bg-dark'}
+            />
+            <motion.div
+              variants={{
+                open: { rotate: -45, y: -1 },
+                close: { rotate: 90 },
+              }}
+              transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
+              className={'h-[3px] w-3/4 -rotate-45 bg-bg-dark'}
+            />
+          </motion.div>
         </div>
-        {/*<div className="flex w-full flex-grow rounded-b-[5px] border-x-2 border-b-2 border-left-accent"></div>*/}
+        <div className="z-10 flex w-full flex-grow border-b-2 border-left-accent" />
       </div>
     </div>
   );
