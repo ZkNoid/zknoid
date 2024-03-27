@@ -31,7 +31,9 @@ export const Competition = ({
         >
           <span className={'uppercase text-left-accent'}>Funds</span>
           <span className={'font-normal'}>
-            {!competition ? ' - ' : (competition.reward, competition.currency)}
+            {!competition
+              ? ' - '
+              : `${competition.reward} ${competition.currency}`}
           </span>
         </div>
       </div>
