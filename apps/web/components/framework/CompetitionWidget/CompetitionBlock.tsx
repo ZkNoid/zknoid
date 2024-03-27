@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ICompetition } from '@/lib/types';
 import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
+import { formatUnits } from '@/lib/unit';
 
 export const CompetitionBlock = ({
   competition,
@@ -82,7 +83,7 @@ export const CompetitionBlock = ({
               'w-full max-w-fit rounded-2xl border border-left-accent p-1 px-2 text-center'
             }
           >
-            {competition.participationFee.toString()} {competition.currency}{' '}
+            {formatUnits(competition.participationFee)} {competition.currency}{' '}
             Participants fee
           </div>
         </div>

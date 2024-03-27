@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ICompetition } from '@/lib/types';
 import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
+import { formatUnits } from '@/lib/unit';
 
 // export interface ICompetition {
 //   game: IGame;
@@ -108,14 +109,14 @@ export const CompetitionItem = ({
             'w-full max-w-fit rounded-2xl border border-left-accent p-1 px-2 text-center'
           }
         >
-          {Number(participationFee)} {currency} Participants fee
+          {formatUnits(participationFee)} {currency} Participants fee
         </div>
         <div
           className={
             'w-full max-w-fit rounded-2xl border border-left-accent bg-left-accent p-1 px-2 text-center text-dark-buttons-text'
           }
         >
-          {Number(reward)} {currency} REWARDS
+          {formatUnits(reward)} {currency} REWARDS
         </div>
       </div>
     </div>

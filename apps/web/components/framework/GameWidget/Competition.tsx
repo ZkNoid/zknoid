@@ -1,4 +1,5 @@
 import { ICompetition } from '@/lib/types';
+import { formatUnits } from '@/lib/unit';
 import { AnimatePresence, motion } from 'framer-motion';
 
 export const Competition = ({
@@ -61,8 +62,8 @@ export const Competition = ({
             >
               {!competition
                 ? ' - '
-                // : <>{formatUnits(competition.reward)} {' '} {competition.currency}</>
-                : <>{competition.reward} {' '} {competition.currency}</>
+                : <>{formatUnits(competition.reward)} {' '} {competition.currency}</>
+                // : <>{competition.reward} {' '} {competition.currency}</>
               }
             </motion.span>
           </div>
