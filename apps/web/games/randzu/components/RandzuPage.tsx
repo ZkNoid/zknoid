@@ -79,7 +79,7 @@ export default function RandzuPage({
 
   const startGame = async () => {
     if (competition!.enteringPrice > 0) {
-      console.log(await bridge(competition?.enteringPrice!));
+      if (await bridge(competition?.enteringPrice!)) return;
     }
 
     const randzuLogic = client.runtime.resolve('RandzuLogic');
