@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
 
 export const GameWidget = ({
@@ -14,9 +15,23 @@ export const GameWidget = ({
   author: string;
 }) => {
   return (
-    <div className={'col-start-2 col-end-4 h-full min-h-[75vh] w-full'}>
+    <motion.div
+      variants={{
+        fullscreen: {
+          gridColumnStart: 1,
+          gridColumnEnd: 5,
+        },
+        windowed: {
+          gridColumnStart: 2,
+          gridColumnEnd: 4,
+        },
+      }}
+      className={'h-full min-h-[75vh] w-full'}
+    >
       <div
-        className={'h-full w-full rounded-[5px] border-2 border-left-accent'}
+        className={
+          'relative h-full w-full rounded-[5px] border-2 border-left-accent'
+        }
       >
         {children}
       </div>
@@ -67,6 +82,6 @@ export const GameWidget = ({
           <span className={'uppercase'}>Score: {score}</span>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

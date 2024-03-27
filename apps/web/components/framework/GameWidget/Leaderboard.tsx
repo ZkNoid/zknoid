@@ -78,14 +78,28 @@ export const Leaderboard = ({
   };
 
   return (
-    <div className="col-start-1 col-end-2 h-full">
+    <motion.div
+      variants={{
+        fullscreen: {
+          gridColumnStart: 1,
+          gridColumnEnd: 3,
+          gridRowStart: 2,
+        },
+        windowed: {
+          gridColumnStart: 1,
+          gridColumnEnd: 2,
+          gridRowStart: 1,
+        },
+      }}
+      className="h-full max-w-[800px]"
+    >
       <div
         className={clsx(
-          'relative flex min-h-[90px] w-full flex-col overflow-hidden'
+          'relative flex min-h-[120px] w-full flex-col overflow-hidden'
         )}
       >
         <div
-          className="z-10 px-5 pb-10 pt-5 text-headline-2 font-bold"
+          className="z-10 cursor-pointer px-5 pb-10 pt-5 text-headline-2 font-bold hover:opacity-80"
           onClick={() => setIsExpanded(!isExpanded)}
         >
           Leaderboard
@@ -162,7 +176,7 @@ export const Leaderboard = ({
           </svg>
           <motion.div
             className={
-              'absolute right-0 top-0 flex h-[34px] w-[34px] flex-col items-center justify-center'
+              'absolute right-0 top-0 flex flex-col items-center justify-center max-[1850px]:h-[24px] max-[1850px]:w-[24px] min-[1850px]:h-[34px] min-[1850px]:w-[34px]'
             }
             animate={isExpanded ? 'open' : 'close'}
           >
@@ -186,6 +200,6 @@ export const Leaderboard = ({
         </div>
         <div className="z-10 flex w-full flex-grow border-b-2 border-left-accent" />
       </div>
-    </div>
+    </motion.div>
   );
 };
