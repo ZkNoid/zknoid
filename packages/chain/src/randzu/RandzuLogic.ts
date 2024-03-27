@@ -149,6 +149,8 @@ export class RandzuLogic extends MatchMaker {
     this.gamesNum.set(currentGameId);
     this.gameFund.set(currentGameId, this.getParticipationPrice().mul(2));
 
+    super.initGame(opponentReady, opponent);
+
     return currentGameId;
   }
 

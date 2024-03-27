@@ -143,6 +143,15 @@ export const DepositMenuItem = () => {
     setAmountOut(bridgeStore.amount);
   }, [bridgeStore.amount]);
 
+  useEffect(() => {
+    const newBalance = protokitBalancesStore.balances[networkStore.address!];
+    if (bridgeStore.amount > 0 && newBalance >= bridgeStore.amount) {
+      console.log('[Balance update finished!]');
+      bridgeStore.close();
+    }
+    console.log('Balance update');
+  }, [protokitBalancesStore.balances[networkStore.address!]]);
+
   const bridge = async (amount: bigint) => {
     console.log('Bridging', amount);
     const l1tx = await Mina.transaction(() => {
