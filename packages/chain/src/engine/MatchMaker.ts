@@ -78,6 +78,11 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     UInt64,
   );
 
+  @state() public pendingBalances = StateMap.from<PublicKey, ProtoUInt64>(
+    PublicKey,
+    ProtoUInt64,
+  );
+
   // Game ids start from 1
   // abstract games: StateMap<UInt64, any>;
   @state() public games = StateMap.from<UInt64, any>(UInt64, UInt64);
@@ -106,6 +111,16 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     opponentReady: Bool,
     opponent: Option<QueueListItem>,
   ): UInt64 {
+    this.pendingBalances.set(
+      Provable.if(opponentReady, this.transaction.sender.value, PublicKey.empty()), 
+      ProtoUInt64.from(0)
+    );
+
+    this.pendingBalances.set(
+      Provable.if(opponentReady, opponent.value.userAddress, PublicKey.empty()), 
+      ProtoUInt64.from(0)
+    );
+
     return UInt64.from(0);
   }
 
@@ -220,7 +235,14 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
       ),
     );
 
-    this.balances.transferTo(PublicKey.empty(), this.getParticipationPrice());
+    const fee = this.getParticipationPrice();
+
+    const pendingBalance = ProtoUInt64.from(this.pendingBalances.get(this.transaction.sender.value).value);
+
+    const amountToTransfer = Provable.if<ProtoUInt64>(pendingBalance.greaterThan(fee), ProtoUInt64, ProtoUInt64.from(0), fee);
+
+    this.balances.transferTo(PublicKey.empty(), amountToTransfer);
+    this.pendingBalances.set(this.transaction.sender.value, pendingBalance.add(amountToTransfer));
   }
 
   @runtimeMethod()
