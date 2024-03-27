@@ -83,7 +83,7 @@ export interface BridgeStoreState {
   open: boolean;
   amount: bigint;
   setOpen: (amount: bigint) => void;
-  close: () => void
+  close: () => void;
 }
 
 export const useBridgeStore = create<
@@ -96,14 +96,14 @@ export const useBridgeStore = create<
     setOpen(amount) {
       set({
         open: true,
-        amount
+        amount,
       });
     },
     close() {
       set({
-        open: false
+        open: false,
       });
-    }
+    },
   }))
 );
 
@@ -114,49 +114,12 @@ export const useMinaBridge = () => {
 
   return useCallback(
     async (amount: bigint) => {
-      if (!network.address) return;
-      if (balancesStore.balances[network.address] >= amount) return;
+      if (!network.address) return false;
+      if (balancesStore.balances[network.address] >= amount) return false;
 
       bridgeStore.setOpen(amount);
-      return;
-
-      const l1tx = await Mina.transaction(() => {
-        const senderUpdate = AccountUpdate.create(
-          PublicKey.fromBase58(network.address!)
-        );
-        senderUpdate.requireSignature();
-        console.log(BRIDGE_ADDR);
-        console.log(amount);
-        senderUpdate.send({ to: PublicKey.fromBase58(BRIDGE_ADDR), amount });
-      });
-
-      await l1tx.prove();
-
-      const transactionJSON = l1tx.toJSON();
-
-      const data = await (window as any).mina.sendPayment({
-        transaction: transactionJSON,
-        memo: `zknoid.io game bridging #${process.env.BRIDGE_ID ?? 100}`,
-        to: BRIDGE_ADDR,
-        amount: amount / 10n ** 9n,
-      });
-
-      // const hash = (data as any).hash;
-      // console.log('Tx hash', hash);
-
-      // const balances = contextAppChainClient.runtime.resolve('Balances');
-      // const sender = PublicKey.fromBase58(network.address!);
-
-      // const l2tx = await contextAppChainClient.transaction(sender, () => {
-      //   balances.addBalance(sender, UInt64.from(amount));
-      // });
-
-      // await l2tx.sign();
-      // await l2tx.send();
-
-      // isPendingTransaction(l2tx.transaction);
-
-      // network.addPendingL2Transaction(l2tx!.transaction!);
+      console.log('Setting open', amount);
+      return true;
     },
     [network.walletConnected, balancesStore.balances]
   );
