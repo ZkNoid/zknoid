@@ -15,6 +15,7 @@ export interface MatchQueueState {
   activeGameId: bigint;
   gameInfo: any | undefined;
   lastGameState: 'win' | 'lost' | undefined;
+  pendingBalance: bigint;
   getQueueLength: () => number;
   loadMatchQueue(
     query: ModuleQuery<MatchMaker>,
@@ -41,6 +42,7 @@ export const useMatchQueueStore = create<
     inQueue: Boolean(false),
     gameInfo: undefined as any | undefined,
     lastGameState: undefined as 'win' | 'lost' | undefined,
+    pendingBalance: 0n,
     resetLastGameState() {
       set((state) => {
         state.lastGameState = undefined;
@@ -80,7 +82,7 @@ export const useMatchQueueStore = create<
       });
 
       const activeGameId = await query.activeGameId.get(address);
-      console.log('Active game id', activeGameId);
+      console.log('Active game idd', activeGameId);
       const inQueue = await query.queueRegisteredRoundUsers.get(
         // @ts-expect-error
         new RoundIdxUser({
@@ -89,7 +91,7 @@ export const useMatchQueueStore = create<
         })
       );
 
-      console.log('Active game id', activeGameId?.toBigInt());
+      console.log('Active game idd', activeGameId?.toBigInt());
       console.log('In queue', inQueue?.toBoolean());
 
       if (
@@ -155,11 +157,18 @@ export const useMatchQueueStore = create<
         });
       }
 
+      const pendingBalance = (
+        await query.pendingBalances.get(address)
+      )?.toBigInt();
+
+      console.log('Pending balance', pendingBalance);
+
       set((state) => {
         // @ts-ignore
         state.activeGameId = activeGameId?.toBigInt() || 0n;
         state.inQueue = inQueue?.toBoolean();
         state.loading = false;
+        state.pendingBalance = pendingBalance || 0n;
       });
     },
   }))
@@ -174,7 +183,6 @@ export const useObserveMatchQueue = (query: ModuleQuery<MatchMaker>) => {
     if (!network.walletConnected || !network.protokitClientStarted) {
       return;
     }
-
     matchQueue.loadMatchQueue(query, parseInt(chain.block?.height ?? '0'));
     matchQueue.loadActiveGame(
       query,

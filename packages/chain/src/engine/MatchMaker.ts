@@ -245,6 +245,23 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     this.pendingBalances.set(this.transaction.sender.value, pendingBalance.add(amountToTransfer));
   }
 
+    /**
+   * Registers user in session queue
+   *
+   * @param sessionKey - Key of user background session
+   * @param timestamp - Current user timestamp from front-end
+   */
+    @runtimeMethod()
+    public collectPendingBalance(): void {
+      const sender = this.sessions.get(this.transaction.sender.value).value;
+      
+      const pendingBalance = ProtoUInt64.from(this.pendingBalances.get(sender).value);
+
+      this.balances.addBalance(sender, pendingBalance);
+      this.pendingBalances.set(sender, ProtoUInt64.from(0));
+  
+    }
+
   @runtimeMethod()
   public proveOpponentTimeout(gameId: UInt64): void {
     const sessionSender = this.sessions.get(this.transaction.sender.value);

@@ -100,6 +100,24 @@ export default function RandzuPage({
     setGameState(GameState.MatchRegistration);
   };
 
+  const collectPending = async () => {
+    const randzuLogic = client.runtime.resolve('RandzuLogic');
+
+    const tx = await client.transaction(sessionPrivateKey.toPublicKey(), () => {
+      randzuLogic.collectPendingBalance();
+    });
+
+    console.log('Collect tx', tx);
+
+    tx.transaction = tx.transaction?.sign(sessionPrivateKey);
+
+    console.log('Sending tx', tx);
+
+    await tx.send();
+
+    console.log('Tx sent', tx);
+  };
+
   const proveOpponentTimeout = async () => {
     const randzuLogic = client.runtime.resolve('RandzuLogic');
 
@@ -180,6 +198,10 @@ export default function RandzuPage({
   }, [matchQueue.gameInfo?.isCurrentUserMove]);
 
   useEffect(() => {
+    if (matchQueue.pendingBalance && !matchQueue.inQueue) {
+      console.log('Collecting pending balance', matchQueue.pendingBalance);
+      collectPending();
+    }
     if (matchQueue.inQueue && !matchQueue.activeGameId) {
       setGameState(GameState.Matchmaking);
     } else if (matchQueue.activeGameId) {
