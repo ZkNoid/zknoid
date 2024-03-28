@@ -39,9 +39,11 @@ img {
 }
 
 .banner-mask {
-  mask-image: url(/image/section1/banner-mask.svg);
-  mask-repeat: no-repeat;
-  mask-size: 100%;
+  @media (min-width: 1024px) {
+    mask-image: url(/image/section1/banner-mask.svg);
+    mask-repeat: no-repeat;
+    mask-size: 100%;
+  }
 }
 
 @layer base {

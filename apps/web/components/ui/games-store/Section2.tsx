@@ -21,7 +21,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
   const [page, setPage] = useState<Pages>(Pages.GameStore);
 
   const CentralBlock = () => (
-    <div className="relative flex w-[50%] self-end text-[24px]">
+    <div className="relative hidden w-[50%] self-end text-[24px] lg:flex">
       <Image
         alt="central block"
         src={centralBlockImg}
@@ -56,6 +56,22 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
     </div>
   );
 
+  const MobileCentralBlock = () => {
+    return (
+      <div
+        className={
+          'my-12 flex w-full items-center justify-center gap-4 rounded-[10px] border border-left-accent px-2 py-4 lg:hidden'
+        }
+      >
+        {SOCIALS.map((x) => (
+          <Link href={x.link} key={x.id} className={'hover:opacity-80'}>
+            <Image alt={x.name} src={x.image} />
+          </Link>
+        ))}
+      </div>
+    );
+  };
+
   const SwitchBtn = ({
     switchPage,
     children,
@@ -65,7 +81,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
   }) => {
     return (
       <div
-        className={`group relative flex w-full flex-row items-center justify-center gap-2 pl-4 ${
+        className={`group relative flex w-full flex-row items-center justify-start gap-2 rounded-t-[10px] border-x border-t border-left-accent py-2 pl-4 first:-mb-2 first:pb-4 lg:rounded-none lg:border-none ${
           page === switchPage ? 'text-left-accent' : ''
         }`}
         data-iscurrentpage={page === switchPage}
@@ -77,7 +93,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
         >
           {switchPage}
         </button>
-        <div className={'absolute -left-5 -top-5 -z-20'}>
+        <div className={'absolute -left-5 -top-5 -z-20 hidden lg:block'}>
           <svg
             width="380"
             height="190"
@@ -101,7 +117,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
     return (
       <div
         className={
-          'ml-5 mt-20 flex flex-row items-center justify-start gap-14 max-[2000px]:pb-4'
+          'flex flex-col items-center justify-start lg:ml-5 lg:mt-20 lg:flex-row lg:gap-14 lg:max-[2000px]:pb-4'
         }
       >
         <SwitchBtn switchPage={Pages.GameStore}>
@@ -144,18 +160,19 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
 
   return (
     <>
-      <div className={'flex w-full justify-between'}>
+      <div className={'flex w-full flex-col justify-between lg:flex-row'}>
+        <MobileCentralBlock />
         <WidgetsSwitch />
         <CentralBlock />
       </div>
 
-      <div className="relative flex flex-col">
+      <div className="relative flex flex-col rounded-b-[10px] border-x border-b border-left-accent lg:rounded-none lg:border-none">
         <div
           className={
-            'absolute left-0.5 top-0 -z-20 h-[200px] w-full bg-bg-dark'
+            'absolute left-0.5 top-0 -z-20 hidden h-[200px] w-full bg-bg-dark lg:block'
           }
         />
-        <div className="absolute left-0 top-0 -z-10 flex h-full w-full flex-col">
+        <div className="absolute left-0 top-0 -z-10 hidden h-full w-full flex-col lg:flex">
           <svg
             viewBox="0 0 1502 200"
             fill="none"
