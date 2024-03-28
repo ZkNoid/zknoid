@@ -16,7 +16,7 @@ import {
 } from '@/lib/platform/game_tags';
 import { FiltrationBox } from '@/components/ui/games-store/widgets/GameStore/FiltrationBox';
 import { GameCard } from '@/components/ui/games-store/GameCard';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { defaultGames, IGame } from '@/app/constants/games';
 import { clsx } from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -48,6 +48,10 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
     GameStoreSortBy.RatingLow
   );
 
+  const [animationHeights, setAnimationHeights] = useState<
+    [500, 450, 450, 500] | [300, 250, 250, 250]
+  >([500, 450, 450, 500]);
+
   const filteredEvents = GAME_EVENTS.filter(
     (x) =>
       eventTypesSelected.includes(getEventType(x)) ||
@@ -78,11 +82,25 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
     }
   };
 
+  useEffect(() => {
+    const updateAnimationHeights = () => {
+      const innerWidth = window.innerWidth;
+      setAnimationHeights(
+        innerWidth <= 1024 ? [300, 250, 250, 250] : [500, 450, 450, 500]
+      );
+    };
+
+    window.addEventListener('resize', updateAnimationHeights);
+    updateAnimationHeights();
+
+    return () => window.removeEventListener('resize', updateAnimationHeights);
+  }, []);
+
   return (
-    <div className="top-0 mb-[100px] flex h-full w-full flex-col gap-5 p-10">
+    <div className="top-0 mb-[100px] flex h-full w-full flex-col gap-5 p-4 lg:p-10">
       <div className="flex flex-col gap-5">
         <div className="pb-3 text-headline-1">Events & competitions</div>
-        <div className="flex flex-row gap-3">
+        <div className="flex flex-row flex-wrap gap-3 lg:flex-nowrap">
           {ALL_GAME_EVENT_TYPES.map((eventType) => (
             <FilterCard
               key={eventType}
@@ -106,7 +124,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
           </div>
         )}
         {filteredEvents.length > 0 && (
-          <div className="grid min-h-[352px] grid-cols-2 gap-5">
+          <div className="grid min-h-[600px] grid-cols-1 gap-5 lg:min-h-[352px] lg:grid-cols-2">
             {filteredEvents.map((event) => (
               <EventCard
                 key={event.name}
@@ -118,10 +136,14 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
           </div>
         )}
 
-        <div className={'grid grid-cols-2 gap-5'}>
+        <div
+          className={
+            'flex grid-cols-2 flex-col gap-5 text-[11px]/[11px] lg:grid lg:text-main'
+          }
+        >
           <motion.div
             className={
-              'group relative mr-[11.2%] flex flex-row justify-between rounded-[5px] border border-left-accent'
+              'group relative flex flex-row justify-between rounded-[5px] border border-left-accent lg:mr-[11.2%]'
             }
             variants={{
               visible: {
@@ -134,14 +156,14 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
           >
             <div
               className={
-                'w-full p-4 pt-5 uppercase text-left-accent group-hover:text-dark-buttons-text'
+                'w-full p-4 uppercase text-left-accent group-hover:text-dark-buttons-text lg:pt-5'
               }
             >
-              Show me the all existion competitions
+              Show me the all existing competitions
             </div>
             <div
               className={
-                'rounded-[5px] bg-left-accent p-4 group-hover:bg-bg-dark'
+                'flex flex-col items-center justify-center rounded-[5px] bg-left-accent p-4 group-hover:bg-bg-dark'
               }
             >
               <svg
@@ -150,6 +172,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
+                className={'h-[24px] w-[24px] lg:h-auto lg:w-auto'}
               >
                 <g clipPath="url(#clip0_2952_1406)">
                   <path
@@ -183,7 +206,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
           </motion.div>
           <motion.div
             className={
-              'group relative mr-[11.2%] flex flex-row justify-between rounded-[5px] border border-left-accent'
+              'group relative flex flex-row justify-between rounded-[5px] border border-left-accent lg:mr-[11.2%]'
             }
             variants={{
               visible: {
@@ -196,14 +219,14 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
           >
             <div
               className={
-                'w-full p-4 pt-5 uppercase text-left-accent group-hover:text-dark-buttons-text'
+                'w-full p-4 uppercase text-left-accent group-hover:text-dark-buttons-text lg:pt-5'
               }
             >
               Create your own competition!
             </div>
             <div
               className={
-                'rounded-[5px] bg-left-accent p-4 group-hover:bg-bg-dark'
+                'flex flex-col items-center justify-center rounded-[5px] bg-left-accent p-4 group-hover:bg-bg-dark'
               }
             >
               <svg
@@ -212,6 +235,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                 viewBox="0 0 25 26"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
+                className={'h-[24px] w-[24px] lg:h-auto lg:w-auto'}
               >
                 <path
                   d="M10.9822 4.79724H9.69879C9.38351 4.79818 9.07587 4.89429 8.81615 5.07303C8.55643 5.25177 8.35675 5.50476 8.24324 5.79892L7.57024 7.53617L5.25387 8.85088L3.40703 8.56915C3.09953 8.52742 2.78655 8.57803 2.50786 8.71459C2.22918 8.85114 1.99739 9.06747 1.84192 9.33606L1.21589 10.4316C1.05547 10.7045 0.981555 11.0196 1.00391 11.3354C1.02626 11.6511 1.14383 11.9527 1.3411 12.2002L2.51492 13.6558V16.2852L1.3724 17.7407C1.17513 17.9883 1.05756 18.2898 1.03521 18.6056C1.01286 18.9213 1.08677 19.2364 1.24719 19.5093L1.87323 20.6048C2.0287 20.8734 2.26049 21.0897 2.53915 21.2263C2.81784 21.3629 3.13084 21.4135 3.43834 21.3718L5.28518 21.0901L7.57024 22.4047L8.24324 24.142C8.35675 24.4361 8.55643 24.6892 8.81615 24.868C9.07587 25.0466 9.38351 25.1428 9.69879 25.1437H11.0135C11.3288 25.1428 11.6364 25.0466 11.8961 24.868C12.1559 24.6892 12.3555 24.4361 12.469 24.142L13.142 22.4047L15.4271 21.0901L17.2739 21.3718C17.5814 21.4135 17.8944 21.3629 18.1731 21.2263C18.4518 21.0897 18.6837 20.8734 18.8391 20.6048L19.4651 19.5093C19.6256 19.2364 19.6994 18.9213 19.6771 18.6056C19.6547 18.2898 19.5372 17.9883 19.3399 17.7407L18.1661 16.2852V14.5898M7.21026 14.9705C7.21026 15.5896 7.39385 16.1947 7.73781 16.7095C8.08176 17.2243 8.57062 17.6255 9.1426 17.8624C9.71457 18.0993 10.344 18.1613 10.9512 18.0405C11.5584 17.9197 12.1161 17.6216 12.5539 17.1839C12.9917 16.7461 13.2898 16.1883 13.4106 15.5811C13.5313 14.9739 13.4694 14.3445 13.2324 13.7726C12.9955 13.2006 12.5943 12.7117 12.0795 12.3678C11.5648 12.0238 10.9596 11.8402 10.3405 11.8402C9.5103 11.8402 8.71411 12.17 8.12708 12.7571C7.54005 13.3441 7.21026 14.1403 7.21026 14.9705Z"
@@ -237,28 +261,29 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
 
       <div className={'my-20'}>
         <div className="text-headline-1">Popular genres</div>
-        <div className="grid grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-4">
           <GenreCard
             animation={GamepadIllustration}
             genre={ZkNoidGameGenre.Arcade}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
+            height={animationHeights[0]}
           />
           <GenreCard
             animation={ChessIllustration}
             genre={ZkNoidGameGenre.BoardGames}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
-            height={450}
-            className={'max-[2000px]:mt-[25px]'}
+            height={animationHeights[1]}
+            className={'lg:max-[2000px]:mt-[25px]'}
           />
           <GenreCard
             animation={CubesIllustration}
             genre={ZkNoidGameGenre.Lucky}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
-            height={450}
-            className={'mt-[35px] max-[2000px]:mt-[50px]'}
+            height={animationHeights[2]}
+            className={'lg:mt-[35px] lg:max-[2000px]:mt-[50px]'}
           />
           <div
             className="relative flex h-full w-full flex-col items-center justify-center p-5"
@@ -272,10 +297,10 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                 options={{
                   animationData: EyesIllustration,
                   rendererSettings: {
-                    className: `z-0 h-full mt-[80px]`,
+                    className: `z-0 h-full mt-[40px] lg:mt-[80px]`,
                   },
                 }}
-                height={500}
+                height={animationHeights[3]}
               ></Lottie>
             </div>
 
@@ -284,7 +309,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
         </div>
       </div>
       <div className="flex gap-5">
-        <div className="min-w-[350px] max-[2000px]:min-w-[280px]">
+        <div className="hidden min-w-[350px] max-[2000px]:min-w-[280px] lg:block">
           <div className="pb-5 pt-2 text-headline-3 font-bold">Filtration</div>
           <div className="flex flex-col gap-3">
             <FiltrationBox
@@ -331,9 +356,10 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
               sortMethods={GAME_STORE_SORT_METHODS}
               sortBy={sortBy}
               setSortBy={setSortBy}
+              className={'hidden lg:block'}
             />
           </div>
-          <div className="flex flex-row gap-3">
+          <div className="hidden flex-row gap-3 lg:flex">
             {ALL_GAME_TAGS.map((x) => (
               <div
                 key={x.name}
@@ -361,7 +387,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             ))}
           </div>
           <div>
-            <div className="grid grid-cols-3 gap-5 max-[1700px]:grid-cols-2">
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-3 lg:max-[1700px]:grid-cols-2">
               {games
                 .filter((x) => {
                   if (
@@ -434,10 +460,8 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
               end: new Date(2024, 2, 20),
             },
             participationFee: 5n * 10n ** 9n,
-            // participationFee: 5,
             currency: Currency.MINA,
             reward: 1000n * 10n ** 9n,
-            // reward: 1000,
             seed: 123,
             registered: false,
           },
@@ -455,10 +479,8 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
               end: new Date(2024, 2, 20),
             },
             participationFee: 5n * 10n ** 9n,
-            // participationFee: 5,
             currency: Currency.MINA,
             reward: 1000n * 10n ** 9n,
-            // reward: 1000,
             seed: 123,
             registered: false,
           },

@@ -60,11 +60,13 @@ export const Competition = ({
               }}
               className={'font-normal'}
             >
-              {!competition
-                ? ' - '
-                : <>{formatUnits(competition.reward)} {' '} {competition.currency}</>
-                // : <>{competition.reward} {' '} {competition.currency}</>
-              }
+              {!competition ? (
+                ' - '
+              ) : (
+                <>
+                  {formatUnits(competition.reward)} {competition.currency}
+                </>
+              )}
             </motion.span>
           </div>
         </div>

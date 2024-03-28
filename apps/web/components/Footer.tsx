@@ -8,18 +8,20 @@ export const Footer = () => {
     <div
       className={'mx-6 mb-10 mt-[100px] flex flex-col justify-between gap-4'}
     >
-      <div className={'grid grid-cols-3 grid-rows-1'}>
+      <div className={'grid grid-cols-3 grid-rows-2 lg:grid-rows-1'}>
         <Link
           href={'/'}
           target="_blank"
           rel="noopener noreferrer"
-          className={'cursor-pointer ease-in-out hover:opacity-80'}
+          className={
+            'col-start-1 col-end-4 cursor-pointer ease-in-out hover:opacity-80'
+          }
         >
           <Image src={zknoidLogo} alt={'ZkNoid Logo'} />
         </Link>
         <div
           className={
-            'flex flex-row items-center justify-center gap-4 self-center'
+            'col-start-1 col-end-4 flex flex-row items-center justify-center gap-4 self-center'
           }
         >
           <Link
