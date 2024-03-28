@@ -3,23 +3,6 @@ import { ICompetition } from '@/lib/types';
 import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
 import { formatUnits } from '@/lib/unit';
 
-// export interface ICompetition {
-//   game: IGame;
-//   title?: string;
-//   id: number;
-//   preRegDate: {
-//     start: Date;
-//     end: Date;
-//   };
-//   competitionsDate: {
-//     start: Date;
-//     end: Date;
-//   };
-//   participantsFee: number;
-//   currency: string;
-//   reward: number;
-// }
-
 export const CompetitionItem = ({
   id,
   seed,
@@ -37,10 +20,10 @@ export const CompetitionItem = ({
   return (
     <div
       className={
-        'flex flex-row justify-between border-t border-left-accent pt-4 text-left-accent last:border-b last:pb-4'
+        'grid grid-cols-1 flex-row justify-between gap-6 border-t border-left-accent pt-4 text-left-accent last:border-b last:pb-4 lg:flex'
       }
     >
-      <div className={'flex w-2/6 flex-col justify-between gap-4'}>
+      <div className={'flex w-full flex-col justify-between gap-4 lg:w-2/6'}>
         <div
           className={
             'flex flex-row gap-2 text-headline-2 font-medium uppercase'
@@ -51,7 +34,7 @@ export const CompetitionItem = ({
         </div>
         <Link
           className={
-            'w-full max-w-[50%] rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
+            'hidden w-full max-w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent lg:block lg:max-w-[50%]'
           }
           href={`/games/${game.id}/${id}`}
           onClick={() => switchStore.setCompetitionId(id)}
@@ -59,7 +42,9 @@ export const CompetitionItem = ({
           Play
         </Link>
       </div>
-      <div className={'flex w-2/6 flex-col gap-2'}>
+      <div
+        className={'row-start-3 row-end-3 flex w-full flex-col gap-2 lg:w-2/6'}
+      >
         <div className={'flex flex-col gap-1'}>
           <span
             className={'font-plexsans text-[20px]/[20px] font-medium uppercase'}
@@ -98,10 +83,19 @@ export const CompetitionItem = ({
             })}
           </span>
         </div>
+        <Link
+          className={
+            'block w-full max-w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent lg:hidden lg:max-w-[50%]'
+          }
+          href={`/games/${game.id}/${id}`}
+          onClick={() => switchStore.setCompetitionId(id)}
+        >
+          Play
+        </Link>
       </div>
       <div
         className={
-          'flex w-2/6 flex-col gap-4 font-plexsans text-[20px]/[20px] font-medium'
+          'flex w-full flex-col gap-4 font-plexsans text-[20px]/[20px] font-medium lg:w-2/6'
         }
       >
         <div

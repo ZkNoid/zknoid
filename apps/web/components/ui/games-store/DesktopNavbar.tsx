@@ -40,7 +40,7 @@ export default function DesktopNavbar({
   }, []);
 
   return (
-    <header className="z-10 flex h-[91px] w-full items-center px-3 lg:px-[50px]">
+    <header className="z-10 hidden h-[91px] w-full items-center px-3 lg:flex lg:px-[50px]">
       <div className={'flex w-full items-center justify-between'}>
         <Link
           href={'/'}

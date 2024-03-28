@@ -6,7 +6,7 @@ import { Accordion } from '@/components/ui/games-store/shared/Accordion';
 export const SupportAndFaq = () => {
   return (
     <div className="top-0 flex h-full w-full flex-col gap-20 p-10 pb-[100px]">
-      <div className={'flex max-w-[40%] flex-col gap-5'}>
+      <div className={'flex max-w-full flex-col gap-5 lg:max-w-[40%]'}>
         <div className="pb-3 text-headline-1">Technical support</div>
         <div className="font-plexsans text-main">
           If you have any questions or notice any issues with the operation of
