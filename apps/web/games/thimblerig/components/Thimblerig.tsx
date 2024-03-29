@@ -18,6 +18,9 @@ import { walletInstalled } from '@/lib/helpers';
 import { useObserveThimblerigMatchQueue } from '../stores/matchQueue';
 import { useCommitmentStore } from '@/lib/stores/commitmentStorage';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
+import { DEFAULT_GAME_COST } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
+import { useMinaBridge } from '@/lib/stores/protokitBalances';
+import { formatUnits } from '@/lib/unit';
 
 enum GameState {
   NotStarted,
@@ -52,8 +55,11 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     matchQueue.resetLastGameState();
     setGameState(GameState.NotStarted);
   };
+  const bridge = useMinaBridge();
 
   const startGame = async () => {
+    if (await bridge(DEFAULT_GAME_COST.toBigInt())) return;
+
     const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
 
     const tx = await client.transaction(
@@ -195,7 +201,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                   className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
                   onClick={() => startGame()}
                 >
-                  Start for 0 🪙
+                  Start for {formatUnits(DEFAULT_GAME_COST.toBigInt())} 🪙
                 </div>
               )}
             </div>
