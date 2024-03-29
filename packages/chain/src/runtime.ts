@@ -3,20 +3,25 @@ import { ArkanoidGameHub } from './arkanoid/ArkanoidGameHub';
 import { RandzuLogic } from './randzu/RandzuLogic';
 import { ThimblerigLogic } from './thimblerig/ThimblerigLogic';
 import { Balances } from './framework';
+import { ModulesConfig } from '@proto-kit/common';
+
+const modules = {
+  ArkanoidGameHub,
+  ThimblerigLogic,
+  Balances,
+  RandzuLogic,
+};
+
+const config: ModulesConfig<typeof modules> = {
+  ArkanoidGameHub: {},
+  ThimblerigLogic: {},
+  Balances: {
+    totalSupply: UInt64.from(10000),
+  },
+  RandzuLogic: {},
+};
 
 export default {
-  modules: {
-    ArkanoidGameHub,
-    ThimblerigLogic,
-    Balances,
-    RandzuLogic,
-  },
-  config: {
-    ArkanoidGameHub: {},
-    ThimblerigLogic: {},
-    Balances: {
-      totalSupply: UInt64.from(10000),
-    },
-    RandzuLogic: {},
-  },
+  modules,
+  config,
 };
