@@ -30,7 +30,7 @@ enum GameState {
 
 export default function Thimblerig({}: { params: { competitionId: string } }) {
   const client = useContext(AppChainClientContext) as ClientAppChain<
-    typeof thimblerigConfig.runtimeModules
+    typeof thimblerigConfig.runtimeModules, any, any, any
   >;
 
   const networkStore = useNetworkStore();

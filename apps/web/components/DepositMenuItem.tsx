@@ -34,7 +34,7 @@ import { immer } from 'zustand/middleware/immer';
 import { BRIDGE_ADDR } from '@/app/constants';
 
 import { zkNoidConfig } from '@/games/config';
-import { ProtokitLibrary } from 'zknoid-chain-dev';
+import { ProtokitLibrary, ZNAKE_TOKEN_ID } from 'zknoid-chain-dev';
 import { formatUnits } from '@/lib/unit';
 
 const BridgeInput = ({
@@ -182,7 +182,11 @@ export const DepositMenuItem = () => {
     const sender = PublicKey.fromBase58(networkStore.address!);
 
     const l2tx = await contextAppChainClient!.transaction(sender, () => {
-      balances.addBalance(sender, ProtokitLibrary.UInt64.from(amountOut));
+      balances.addBalance(
+        ZNAKE_TOKEN_ID,
+        sender,
+        ProtokitLibrary.UInt64.from(amountOut)
+      );
     });
 
     await l2tx.sign();
