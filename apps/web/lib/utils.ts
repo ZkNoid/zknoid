@@ -3,8 +3,9 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { GameRecordProof } from 'zknoid-chain';
 import { ClientAppChain } from 'zknoid-chain-dev';
-import { ModulesConfig } from "@proto-kit/common";
+import { ModulesConfig } from '@proto-kit/common';
 import { dummyProofBase64 } from '@/app/constants/dummyProofBase64';
+import { UInt64 } from '@proto-kit/library';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -50,7 +51,8 @@ export function buildClient<
       Balances: {},
       RandzuLogic: {},
       ThimblerigLogic: {},
-    } as ModulesConfig<typeof modules>,
+    } as any,
+    //  ModulesConfig<typeof modules>
   });
 
   client.configurePartial({
