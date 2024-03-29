@@ -165,10 +165,7 @@ export class RandzuLogic extends MatchMaker {
 
     const game = this.games.get(gameId);
     assert(game.isSome, 'Invalid game id');
-    assert(
-      game.value.currentMoveUser.equals(sender),
-      `Not your move: ${sender.toBase58()}`,
-    );
+    assert(game.value.currentMoveUser.equals(sender), `Not your move`);
     assert(game.value.winner.equals(PublicKey.empty()), `Game finished`);
 
     const isTimeout = this.network.block.height
@@ -201,10 +198,7 @@ export class RandzuLogic extends MatchMaker {
 
     const game = this.games.get(gameId);
     assert(game.isSome, 'Invalid game id');
-    assert(
-      game.value.currentMoveUser.equals(sender),
-      `Not your move: ${sender.toBase58()}`,
-    );
+    assert(game.value.currentMoveUser.equals(sender), `Not your move`);
     assert(game.value.winner.equals(PublicKey.empty()), `Game finished`);
 
     winWitness.assertCorrect();

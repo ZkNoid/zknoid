@@ -112,13 +112,17 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     opponent: Option<QueueListItem>,
   ): UInt64 {
     this.pendingBalances.set(
-      Provable.if(opponentReady, this.transaction.sender.value, PublicKey.empty()), 
-      ProtoUInt64.from(0)
+      Provable.if(
+        opponentReady,
+        this.transaction.sender.value,
+        PublicKey.empty(),
+      ),
+      ProtoUInt64.from(0),
     );
 
     this.pendingBalances.set(
-      Provable.if(opponentReady, opponent.value.userAddress, PublicKey.empty()), 
-      ProtoUInt64.from(0)
+      Provable.if(opponentReady, opponent.value.userAddress, PublicKey.empty()),
+      ProtoUInt64.from(0),
     );
 
     return UInt64.from(0);
@@ -237,30 +241,41 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
 
     const fee = this.getParticipationPrice();
 
-    const pendingBalance = ProtoUInt64.from(this.pendingBalances.get(this.transaction.sender.value).value);
+    const pendingBalance = ProtoUInt64.from(
+      this.pendingBalances.get(this.transaction.sender.value).value,
+    );
 
-    const amountToTransfer = Provable.if<ProtoUInt64>(pendingBalance.greaterThan(fee), ProtoUInt64, ProtoUInt64.from(0), fee);
+    const amountToTransfer = Provable.if<ProtoUInt64>(
+      pendingBalance.greaterThan(fee),
+      ProtoUInt64,
+      ProtoUInt64.from(0),
+      fee,
+    );
 
     this.balances.transferTo(PublicKey.empty(), amountToTransfer);
-    this.pendingBalances.set(this.transaction.sender.value, pendingBalance.add(amountToTransfer));
+    this.pendingBalances.set(
+      this.transaction.sender.value,
+      pendingBalance.add(amountToTransfer),
+    );
   }
 
-    /**
+  /**
    * Registers user in session queue
    *
    * @param sessionKey - Key of user background session
    * @param timestamp - Current user timestamp from front-end
    */
-    @runtimeMethod()
-    public collectPendingBalance(): void {
-      const sender = this.sessions.get(this.transaction.sender.value).value;
-      
-      const pendingBalance = ProtoUInt64.from(this.pendingBalances.get(sender).value);
+  @runtimeMethod()
+  public collectPendingBalance(): void {
+    const sender = this.sessions.get(this.transaction.sender.value).value;
 
-      this.balances.addBalance(sender, pendingBalance);
-      this.pendingBalances.set(sender, ProtoUInt64.from(0));
-  
-    }
+    const pendingBalance = ProtoUInt64.from(
+      this.pendingBalances.get(sender).value,
+    );
+
+    this.balances.addBalance(sender, pendingBalance);
+    this.pendingBalances.set(sender, ProtoUInt64.from(0));
+  }
 
   @runtimeMethod()
   public proveOpponentTimeout(gameId: UInt64): void {
@@ -277,7 +292,7 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
       game.value.player1,
     );
     assert(game.isSome, 'Invalid game id');
-    assert(nextUser.equals(sender), `Not your move: ${sender.toBase58()}`);
+    assert(nextUser.equals(sender), `Not your move`);
     assert(game.value.winner.equals(PublicKey.empty()), `Game finished`);
 
     const isTimeout = this.network.block.height
