@@ -1,3 +1,3 @@
-import { OldBalances } from './balances.js';
+import { Balances } from './balances.js';
 
-export { OldBalances };
+export { Balances };

@@ -16,7 +16,7 @@ import AppChainClientContext from '../contexts/AppChainClientContext';
 
 import { DefaultRuntimeModules } from '../runtimeModules';
 import { zkNoidConfig } from '@/games/config';
-import { ProtokitLibrary, ZNAKE_TOKEN_ID } from 'zknoid-chain-dev';
+import { Balances, ProtokitLibrary, ZNAKE_TOKEN_ID } from 'zknoid-chain-dev';
 import { BalancesKey } from '@proto-kit/library';
 
 export interface BalancesState {
@@ -26,7 +26,7 @@ export interface BalancesState {
     [key: string]: bigint;
   };
   loadBalance: (
-    client: ClientAppChain<typeof DefaultRuntimeModules>,
+    client: ClientAppChain<typeof DefaultRuntimeModules, any, any, any>,
     address: string
   ) => Promise<void>;
 }
@@ -39,7 +39,7 @@ export const useProtokitBalancesStore = create<
     loading: Boolean(false),
     balances: {},
     async loadBalance(
-      client: ClientAppChain<typeof DefaultRuntimeModules>,
+      client: ClientAppChain<typeof DefaultRuntimeModules, any, any, any>,
       address: string
     ) {
       set((state) => {
@@ -65,7 +65,7 @@ export const useProtokitBalancesStore = create<
 export const useObserveProtokitBalance = ({
   client,
 }: {
-  client?: ClientAppChain<typeof DefaultRuntimeModules>;
+  client?: ClientAppChain<typeof DefaultRuntimeModules, any, any, any>;
 }) => {
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
@@ -136,17 +136,21 @@ export const useTestBalanceGetter = () => {
   const network = useNetworkStore();
   const contextAppChainClient = useContext(
     AppChainClientContext
-  ) as ClientAppChain<any> as ClientAppChain<typeof DefaultRuntimeModules>;
+  ) as ClientAppChain<typeof DefaultRuntimeModules, any, any, any>;
 
   return useCallback(async () => {
     if (!network.address) return;
     if (balancesStore.balances[network.address]) return;
 
-    const balances = contextAppChainClient.runtime.resolve('Balances');
+    const balances = contextAppChainClient.runtime.resolve(
+      'Balances'
+    ) as Balances;
     const sender = PublicKey.fromBase58(network.address!);
 
+    console.log(balances);
+
     const l2tx = await contextAppChainClient.transaction(sender, () => {
-      balances.mint(
+      balances.addBalance(
         ZNAKE_TOKEN_ID,
         sender,
         ProtokitLibrary.UInt64.from(defaultBalance)
