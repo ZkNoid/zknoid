@@ -7,7 +7,7 @@ import {
 import { State, StateMap, assert } from '@proto-kit/protocol';
 import type { Proof } from 'o1js';
 import { UInt64, PublicKey, Provable, Bool } from 'o1js';
-import { UInt64 as ProtoUInt64 } from '@proto-kit/library';
+import { Balances, UInt64 as ProtoUInt64 } from '@proto-kit/library';
 import { inject } from 'tsyringe';
 import {
   Competition,
@@ -15,7 +15,7 @@ import {
   LeaderboardIndex,
   LeaderboardScore,
 } from '../arkanoid/types';
-import { Balances } from '../framework/balances';
+import { ZNAKE_TOKEN_ID } from '../constants';
 
 export interface IScoreable {
   score: UInt64;
@@ -87,7 +87,9 @@ export class Gamehub<
       this.lastCompetitonId.get().orElse(UInt64.from(0)).add(1),
     );
 
-    this.balances.transferTo(
+    this.balances.transfer(
+      ZNAKE_TOKEN_ID,
+      this.transaction.sender.value,
       PublicKey.empty(),
       ProtoUInt64.from(competition.funds),
     );
@@ -136,9 +138,16 @@ export class Gamehub<
     const currentScore = this.gameRecords.get(gameKey).value;
     const newScore = gameRecordProof.publicOutput.score;
 
-    if (currentScore < newScore) {
-      // Do we need provable here?
-      this.gameRecords.set(gameKey, newScore);
+    const betterScore = currentScore.lessThan(newScore);
+
+    // if (currentScore < newScore) {
+    {
+      // Everything that is done here, should be done only if <betterScore>
+      // So all set should be with <betterScore> check
+      this.gameRecords.set(
+        gameKey,
+        Provable.if(betterScore, newScore, currentScore),
+      );
 
       let looserIndex = UInt64.from(0);
       let looserScore = UInt64.from(0);
@@ -174,12 +183,19 @@ export class Gamehub<
         index: looserIndex,
       });
 
+      const looserGameRecord = this.leaderboard.get(looserKey);
+
       this.leaderboard.set(
         looserKey,
-        new LeaderboardScore({
-          score: newScore,
-          player: this.transaction.sender.value,
-        }),
+        Provable.if(
+          betterScore,
+          LeaderboardScore,
+          new LeaderboardScore({
+            score: newScore,
+            player: this.transaction.sender.value,
+          }),
+          looserGameRecord.value,
+        ),
       );
     }
   }
@@ -207,7 +223,8 @@ export class Gamehub<
 
     assert(winner.player.equals(this.transaction.sender.value));
 
-    this.balances.addBalance(
+    this.balances.mint(
+      ZNAKE_TOKEN_ID,
       this.transaction.sender.value,
       ProtoUInt64.from(competition.funds),
     );
@@ -217,7 +234,11 @@ export class Gamehub<
     let competition = this.competitions.get(competitionId).value;
     let fee = Provable.if(shouldPay, competition.participationFee, UInt64.zero);
 
-    this.balances.transferTo(PublicKey.empty(), ProtoUInt64.from(fee));
+    this.balances.mint(
+      ZNAKE_TOKEN_ID,
+      PublicKey.empty(),
+      ProtoUInt64.from(fee),
+    );
     competition.funds = competition.funds.add(fee);
     this.competitions.set(competitionId, competition);
   }
