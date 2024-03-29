@@ -31,6 +31,7 @@ import SnakeNoEvents from './assets/ZKNoid_Snake_Intro_03_05.json';
 import { Pagination } from '@/components/ui/games-store/shared/Pagination';
 import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
 import { Currency } from '@/constants/currency';
+import Link from 'next/link';
 
 export const GameStore = ({ games }: { games: IGame[] }) => {
   const [eventTypesSelected, setEventTypesSelected] = useState<
@@ -99,7 +100,9 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
   return (
     <div className="top-0 mb-[100px] flex h-full w-full flex-col gap-5 p-4 lg:p-10">
       <div className="flex flex-col gap-5">
-        <div className="pb-3 text-headline-1">Events & competitions</div>
+        <div className="pb-3 text-headline-2 lg:text-headline-1">
+          Events & competitions
+        </div>
         <div className="flex flex-row flex-wrap gap-3 lg:flex-nowrap">
           {ALL_GAME_EVENT_TYPES.map((eventType) => (
             <FilterCard
@@ -154,13 +157,14 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             }}
             whileHover={'visible'}
           >
-            <div
+            <Link
               className={
                 'w-full p-4 uppercase text-left-accent group-hover:text-dark-buttons-text lg:pt-5'
               }
+              href={'/games/arkanoid/competitions-list'}
             >
               Show me the all existing competitions
-            </div>
+            </Link>
             <div
               className={
                 'flex flex-col items-center justify-center rounded-[5px] bg-left-accent p-4 group-hover:bg-bg-dark'
@@ -217,13 +221,14 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             }}
             whileHover={'visible'}
           >
-            <div
+            <Link
               className={
                 'w-full p-4 uppercase text-left-accent group-hover:text-dark-buttons-text lg:pt-5'
               }
+              href={'/games/arkanoid/new-competition'}
             >
               Create your own competition!
-            </div>
+            </Link>
             <div
               className={
                 'flex flex-col items-center justify-center rounded-[5px] bg-left-accent p-4 group-hover:bg-bg-dark'
@@ -260,7 +265,9 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
       </div>
 
       <div className={'my-20'}>
-        <div className="text-headline-1">Popular genres</div>
+        <div className="text-headline-2 font-bold lg:text-headline-1">
+          Popular genres
+        </div>
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-4">
           <GenreCard
             animation={GamepadIllustration}
@@ -304,7 +311,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
               ></Lottie>
             </div>
 
-            <div className="z-0 text-headline-3">Coming Soon</div>
+            <div className="z-0 text-main lg:text-headline-3">Coming Soon</div>
           </div>
         </div>
       </div>
@@ -351,7 +358,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
         </div>
         <div className="flex w-full flex-col gap-6">
           <div className={'flex w-full flex-row items-center justify-between'}>
-            <div className="text-headline-1">Games</div>
+            <div className="text-headline-2 lg:text-headline-1">Games</div>
             <SortByFilter
               sortMethods={GAME_STORE_SORT_METHODS}
               sortBy={sortBy}

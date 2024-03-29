@@ -21,11 +21,11 @@ export const Footer = () => {
         </Link>
         <div
           className={
-            'col-start-1 col-end-4 flex flex-row items-center justify-center gap-4 self-center'
+            'col-start-1 col-end-4 grid grid-cols-3 grid-rows-2 flex-row items-center justify-center gap-4 self-center lg:flex'
           }
         >
           <Link
-            className="cursor-pointer text-buttons-menu ease-in-out even:text-right hover:opacity-80"
+            className="cursor-pointer text-buttons-menu ease-in-out hover:opacity-80 lg:even:text-right"
             href={'https://github.com/ZkNoid'}
             target="_blank"
             rel="noopener noreferrer"
@@ -33,15 +33,16 @@ export const Footer = () => {
             Github
           </Link>
           <Link
-            className="cursor-pointer text-buttons-menu ease-in-out even:text-right hover:opacity-80"
+            className="cursor-pointer text-buttons-menu ease-in-out hover:opacity-80 lg:even:text-right"
             href={'https://docs.zknoid.io'}
             target="_blank"
             rel="noopener noreferrer"
           >
             Documentation
           </Link>
+          <div />
           <Link
-            className="cursor-pointer text-buttons-menu ease-in-out even:text-right hover:opacity-80"
+            className="cursor-pointer text-buttons-menu ease-in-out hover:opacity-80 lg:even:text-right"
             href={'https://zknoid.medium.com'}
             target="_blank"
             rel="noopener noreferrer"
@@ -50,7 +51,11 @@ export const Footer = () => {
           </Link>
         </div>
       </div>
-      <div className={'grid grid-cols-3 grid-rows-1'}>
+      <div
+        className={
+          'grid grid-cols-3 grid-rows-2 gap-y-8 lg:grid-rows-1 lg:gap-y-0'
+        }
+      >
         <div className="flex gap-3">
           {SOCIALS.map((x) => (
             <Link href={x.link} key={x.id}>
@@ -60,7 +65,7 @@ export const Footer = () => {
         </div>
         <div
           className={
-            'col-start-3 col-end-3 text-end font-mono text-[14px]/[17px] font-light'
+            'col-start-1 col-end-4 row-start-2 font-mono text-[12px]/[12px] font-light lg:col-start-3 lg:col-end-3 lg:row-start-1 lg:text-end lg:text-[14px]/[17px]'
           }
         >
           © 2024 ZkNoid: all rights reserved

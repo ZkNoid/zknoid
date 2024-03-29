@@ -61,12 +61,14 @@ export const EventCard = ({
         </svg>
       </div>
       <div className="absolute left-0 top-0 flex h-full w-full flex-col lg:p-5">
-        <div className="pb-2 text-headline-2">{headText}</div>
-        <div className="max-w-full font-plexsans text-main lg:max-w-[462px]">
+        <div className="pb-2 text-[20px]/[20px] font-bold lg:text-headline-2">
+          {headText}
+        </div>
+        <div className="max-w-full font-plexsans text-[14px]/[18px] lg:max-w-[462px] lg:text-main">
           {description}
         </div>
         <div className="flex-grow" />
-        <div className="max-w-full text-big-uppercase lg:max-w-[462px] lg:max-[2000px]:pb-4 lg:max-[1600px]:pb-10">
+        <div className="max-w-full text-[20px]/[20px] font-medium lg:max-w-[462px] lg:text-big-uppercase lg:max-[2000px]:pb-4 lg:max-[1600px]:pb-10">
           {eventCounter.type == ZkNoidEventType.UPCOMING_EVENTS && (
             <>START IN {time}</>
           )}

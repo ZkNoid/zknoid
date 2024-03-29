@@ -49,7 +49,7 @@ export const GenreCard = ({
         ></Lottie>
       </div>
 
-      <div className="z-0 text-headline-3">{genre}</div>
+      <div className="z-0 text-main lg:text-headline-3">{genre}</div>
     </div>
   );
 };
