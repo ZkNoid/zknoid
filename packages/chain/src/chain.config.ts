@@ -6,12 +6,7 @@ const appChain = LocalhostAppChain.fromRuntime(runtime.modules);
 appChain.configurePartial({
   ...appChain.config,
 
-  Runtime: {
-    ThimblerigLogic: {},
-    Balances: {},
-    ArkanoidGameHub: {},
-    RandzuLogic: {},
-  },
+  Runtime: runtime.config,
 });
 
 export default appChain as any;
