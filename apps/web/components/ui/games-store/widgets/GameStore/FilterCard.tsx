@@ -21,7 +21,7 @@ export const FilterCard = ({
       )
     }
     className={clsx(
-      'cursor-pointer rounded border p-1 font-plexsans text-filtration-buttons',
+      'cursor-pointer rounded border p-1 font-plexsans text-[14px]/[21px] lg:text-filtration-buttons',
       selected
         ? 'border-left-accent bg-left-accent text-bg-dark'
         : 'hover:border-left-accent hover:text-left-accent'

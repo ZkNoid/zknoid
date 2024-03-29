@@ -26,7 +26,7 @@ export const CompetitionItem = ({
       <div className={'flex w-full flex-col justify-between gap-4 lg:w-2/6'}>
         <div
           className={
-            'flex flex-row gap-2 text-headline-2 font-medium uppercase'
+            'flex flex-row gap-2 text-[20px]/[20px] font-medium uppercase lg:text-headline-2'
           }
         >
           <span>[{id}]</span>
@@ -47,13 +47,15 @@ export const CompetitionItem = ({
       >
         <div className={'flex flex-col gap-1'}>
           <span
-            className={'font-plexsans text-[20px]/[20px] font-medium uppercase'}
+            className={
+              'font-plexsans text-[16px]/[16px] font-medium uppercase lg:text-[20px]/[20px]'
+            }
           >
             Preregistration dates
           </span>
           <span
             className={
-              'font-plexsans text-[16px]/[16px] font-light text-foreground'
+              'font-plexsans text-[14px]/[14px] font-light text-foreground lg:text-[16px]/[16px]'
             }
           >
             {preRegDate.start.toLocaleDateString('en-US', {
@@ -65,13 +67,15 @@ export const CompetitionItem = ({
         </div>
         <div className={'flex flex-col gap-1'}>
           <span
-            className={'font-plexsans text-[20px]/[20px] font-medium uppercase'}
+            className={
+              'font-plexsans text-[16px]/[16px] font-medium uppercase lg:text-[20px]/[20px]'
+            }
           >
             Competitions dates
           </span>
           <span
             className={
-              'font-plexsans text-[16px]/[16px] font-light text-foreground'
+              'font-plexsans text-[14px]/[14px] font-light text-foreground lg:text-[16px]/[16px]'
             }
           >
             {competitionDate.start.toLocaleDateString('en-US', {
@@ -85,7 +89,7 @@ export const CompetitionItem = ({
         </div>
         <Link
           className={
-            'block w-full max-w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent lg:hidden lg:max-w-[50%]'
+            'block w-full max-w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-main font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent lg:hidden lg:max-w-[50%] lg:text-headline-2'
           }
           href={`/games/${game.id}/${id}`}
           onClick={() => switchStore.setCompetitionId(id)}
@@ -95,7 +99,7 @@ export const CompetitionItem = ({
       </div>
       <div
         className={
-          'flex w-full flex-col gap-4 font-plexsans text-[20px]/[20px] font-medium lg:w-2/6'
+          'flex w-full flex-col gap-4 font-plexsans  text-[12px]/[12px] font-medium lg:w-2/6 lg:text-[20px]/[20px]'
         }
       >
         <div

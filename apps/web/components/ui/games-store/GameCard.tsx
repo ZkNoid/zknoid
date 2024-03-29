@@ -73,12 +73,14 @@ export const GameCard = ({
       <Image
         src={isFavorite ? heartFilledImg : heartImg}
         alt={'Favorite'}
-        className={'absolute right-7 top-7 h-[36px] w-[36px] cursor-pointer'}
+        className={
+          'absolute right-7 top-7 hidden h-[36px] w-[36px] cursor-pointer lg:block'
+        }
         onClick={() => setIsFavorite(!isFavorite)}
       />
       <Link
         href={game.active ? `/games/${game.id}/${game.defaultPage}` : '#'}
-        className="m-5 flex h-full flex-col gap-5"
+        className="flex h-full flex-col gap-5 p-2 lg:m-5"
       >
         <div
           className={clsx(
@@ -102,7 +104,7 @@ export const GameCard = ({
           />
         </div>
         <div className={'flex flex-row justify-between'}>
-          <div className="text-headline-1">{game.name}</div>
+          <div className="text-headline-2 lg:text-headline-1">{game.name}</div>
           <span
             className={
               'flex flex-row items-center justify-between gap-2 text-center'
@@ -115,7 +117,7 @@ export const GameCard = ({
             {Number.isInteger(game.rating) ? game.rating + '.0' : game.rating}
           </span>
         </div>
-        <div className="font-plexsans text-main font-normal">
+        <div className="font-plexsans text-[14px]/[18px] font-normal lg:text-main">
           {game.description}
         </div>
         <div className={'flex-grow max-[2000px]:hidden'} />
@@ -128,7 +130,7 @@ export const GameCard = ({
             <span
               key={i}
               className={clsx(
-                'rounded p-1 text-filtration-buttons text-dark-buttons-text',
+                'rounded p-1 text-[12px]/[18px] text-dark-buttons-text lg:text-filtration-buttons',
                 fillColor
               )}
             >
