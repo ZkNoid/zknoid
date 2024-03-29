@@ -74,13 +74,13 @@ export const GameCard = ({
         src={isFavorite ? heartFilledImg : heartImg}
         alt={'Favorite'}
         className={
-          'absolute right-7 top-7 hidden h-[36px] w-[36px] cursor-pointer lg:block'
+          'absolute right-9 top-9 hidden h-[36px] w-[36px] cursor-pointer lg:block'
         }
         onClick={() => setIsFavorite(!isFavorite)}
       />
       <Link
         href={game.active ? `/games/${game.id}/${game.defaultPage}` : '#'}
-        className="flex h-full flex-col gap-5 p-2 lg:m-5"
+        className="flex h-full flex-col gap-5 lg:m-5 lg:p-2"
       >
         <div
           className={clsx(
