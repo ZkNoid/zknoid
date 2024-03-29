@@ -52,14 +52,14 @@
         "util": "^0.12.5"
     },
     "dependencies": {
-        "@proto-kit/api": "^0.1.1-develop.600",
-        "@proto-kit/cli": "^0.1.1-develop.600",
-        "@proto-kit/common": "^0.1.1-develop.600",
-        "@proto-kit/library": "0.1.1-develop.600",
-        "@proto-kit/module": "^0.1.1-develop.600",
-        "@proto-kit/protocol": "^0.1.1-develop.600",
-        "@proto-kit/sdk": "^0.1.1-develop.600",
-        "@proto-kit/sequencer": "^0.1.1-develop.600",
+        "@proto-kit/api": "^0.1.1-develop.651",
+        "@proto-kit/cli": "^0.1.1-develop.651",
+        "@proto-kit/common": "^0.1.1-develop.651",
+        "@proto-kit/library": "0.1.1-develop.651",
+        "@proto-kit/module": "^0.1.1-develop.651",
+        "@proto-kit/protocol": "^0.1.1-develop.651",
+        "@proto-kit/sdk": "^0.1.1-develop.651",
+        "@proto-kit/sequencer": "^0.1.1-develop.651",
         "concurrently": "^8.2.2",
         "o1js": "0.13.1",
         "tsyringe": "^4.7.0"
