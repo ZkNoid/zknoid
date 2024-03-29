@@ -3,7 +3,7 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { GameRecordProof } from 'zknoid-chain';
 import { ClientAppChain } from 'zknoid-chain-dev';
-
+import { ModulesConfig } from "@proto-kit/common";
 import { dummyProofBase64 } from '@/app/constants/dummyProofBase64';
 
 export function cn(...inputs: ClassValue[]) {
@@ -42,17 +42,15 @@ export async function mockProof<O, P>(
 export function buildClient<
   RuntimeModules extends RuntimeModulesRecord = RuntimeModulesRecord,
 >(modules: RuntimeModules) {
-  const client = ClientAppChain.fromRuntime({
-    modules,
-  });
+  const client = ClientAppChain.fromRuntime(modules);
 
-  client.configure({
+  client.configurePartial({
     Runtime: {
       ArkanoidGameHub: {},
       Balances: {},
       RandzuLogic: {},
       ThimblerigLogic: {},
-    },
+    } as ModulesConfig<typeof modules>,
   });
 
   client.configurePartial({
