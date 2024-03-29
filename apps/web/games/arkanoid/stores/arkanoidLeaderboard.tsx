@@ -24,7 +24,7 @@ export interface LeaderboardState {
   };
   getLeaderboard: (competitionId: string) => ILeaderboardInfo[];
   loadLeaderboard: (
-    client: ClientAppChain<typeof arkanoidConfig.runtimeModules>,
+    client: ClientAppChain<typeof arkanoidConfig.runtimeModules, any, any, any>,
     competitionId: string
   ) => Promise<void>;
 }
@@ -40,7 +40,7 @@ export const useArkanoidLeaderboardStore = create<
       return this.leaderboard?.[competitionId] ?? [];
     },
     async loadLeaderboard(
-      client: ClientAppChain<typeof arkanoidConfig.runtimeModules>,
+      client: ClientAppChain<typeof arkanoidConfig.runtimeModules, any, any, any>,
       competitionId: string
     ) {
       if (isNaN(+competitionId)) {
@@ -80,7 +80,7 @@ export const useArkanoidLeaderboardStore = create<
 
 export const useObserveArkanoidLeaderboard = (competitionId: string) => {
   const client = useContext<
-    ClientAppChain<typeof arkanoidConfig.runtimeModules> | undefined
+    ClientAppChain<typeof arkanoidConfig.runtimeModules, any, any, any> | undefined
   >(AppChainClientContext);
   const chain = useProtokitChainStore();
   const network = useNetworkStore();

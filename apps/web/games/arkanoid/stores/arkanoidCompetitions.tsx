@@ -15,7 +15,7 @@ export interface CompetitionsState {
   loading: boolean;
   competitions: ICompetition[];
   loadCompetitions: (
-    client: ClientAppChain<typeof arkanoidConfig.runtimeModules>,
+    client: ClientAppChain<typeof arkanoidConfig.runtimeModules, any, any, any>,
     player: PublicKey
   ) => Promise<void>;
 }
@@ -28,7 +28,7 @@ export const useArkanoidCompetitionsStore = create<
     loading: false,
     competitions: [],
     async loadCompetitions(
-      client: ClientAppChain<typeof arkanoidConfig.runtimeModules>,
+      client: ClientAppChain<typeof arkanoidConfig.runtimeModules, any, any, any>,
       player: PublicKey
     ) {
       set((state) => {
@@ -68,7 +68,7 @@ export const useArkanoidCompetitionsStore = create<
 
 export const useObserveArkanoidCompetitions = () => {
   const client = useContext<
-    ClientAppChain<typeof arkanoidConfig.runtimeModules> | undefined
+    ClientAppChain<typeof arkanoidConfig.runtimeModules, any, any, any> | undefined
   >(AppChainClientContext);
   console.log('Client', client);
   const chain = useProtokitChainStore();

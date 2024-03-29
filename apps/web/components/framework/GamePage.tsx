@@ -30,7 +30,7 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
   image: string;
   defaultPage: 'Competitions List' | 'Game';
 }) {
-  const client = useContext(AppChainClientContext) as ClientAppChain<any>;
+  const client = useContext(AppChainClientContext) as ClientAppChain<any, any, any, any>;
 
   usePollMinaBlockHeight();
   usePollProtokitBlockHeight();
