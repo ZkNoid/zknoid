@@ -5,7 +5,7 @@ import {
   runtimeMethod,
 } from '@proto-kit/module';
 import type { Option } from '@proto-kit/protocol';
-import { UInt64 as ProtoUInt64 } from '@proto-kit/library';
+import { Balances, UInt64 as ProtoUInt64 } from '@proto-kit/library';
 import { State, StateMap, assert } from '@proto-kit/protocol';
 import {
   PublicKey,
@@ -19,7 +19,7 @@ import {
   Int64,
 } from 'o1js';
 import { inject } from 'tsyringe';
-import { Balances } from '../framework/balances';
+import { ZNAKE_TOKEN_ID } from '../constants';
 
 interface MatchMakerConfig {}
 
@@ -252,7 +252,12 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
       fee,
     );
 
-    this.balances.transferTo(PublicKey.empty(), amountToTransfer);
+    this.balances.transfer(
+      ZNAKE_TOKEN_ID,
+      this.transaction.sender.value,
+      PublicKey.empty(),
+      amountToTransfer,
+    );
     this.pendingBalances.set(
       this.transaction.sender.value,
       pendingBalance.add(amountToTransfer),
@@ -273,7 +278,7 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
       this.pendingBalances.get(sender).value,
     );
 
-    this.balances.addBalance(sender, pendingBalance);
+    this.balances.mint(ZNAKE_TOKEN_ID, sender, pendingBalance);
     this.pendingBalances.set(sender, ProtoUInt64.from(0));
   }
 
@@ -319,6 +324,6 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
 
     this.gameFinished.set(gameId, Bool(true));
 
-    this.balances.addBalance(winner, this.gameFund.get(gameId).value);
+    this.balances.mint(ZNAKE_TOKEN_ID, winner, this.gameFund.get(gameId).value);
   }
 }
