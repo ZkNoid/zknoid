@@ -80,7 +80,7 @@ export const GameCard = ({
       />
       <Link
         href={game.active ? `/games/${game.id}/${game.defaultPage}` : '#'}
-        className="flex h-full flex-col gap-5 lg:m-5 lg:p-2"
+        className="flex h-full flex-col gap-5 p-2 lg:m-5"
       >
         <div
           className={clsx(
