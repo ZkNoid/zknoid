@@ -16,7 +16,8 @@ import AppChainClientContext from '../contexts/AppChainClientContext';
 
 import { DefaultRuntimeModules } from '../runtimeModules';
 import { zkNoidConfig } from '@/games/config';
-import { ProtokitLibrary } from 'zknoid-chain-dev';
+import { ProtokitLibrary, ZNAKE_TOKEN_ID } from 'zknoid-chain-dev';
+import { BalancesKey } from '@proto-kit/library';
 
 export interface BalancesState {
   loading: boolean;
@@ -46,7 +47,11 @@ export const useProtokitBalancesStore = create<
       });
 
       const balance = await client.query.runtime.Balances.balances.get(
-        PublicKey.fromBase58(address)
+        // @ts-ignore
+        new BalancesKey({
+          tokenId: ZNAKE_TOKEN_ID,
+          address: PublicKey.fromBase58(address),
+        })
       );
 
       set((state) => {
@@ -141,7 +146,11 @@ export const useTestBalanceGetter = () => {
     const sender = PublicKey.fromBase58(network.address!);
 
     const l2tx = await contextAppChainClient.transaction(sender, () => {
-      balances.addBalance(sender, ProtokitLibrary.UInt64.from(defaultBalance));
+      balances.mint(
+        ZNAKE_TOKEN_ID,
+        sender,
+        ProtokitLibrary.UInt64.from(defaultBalance)
+      );
     });
 
     await l2tx.sign();
