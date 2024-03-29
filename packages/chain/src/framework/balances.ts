@@ -1,4 +1,9 @@
-import { UInt64 } from '@proto-kit/library';
+import {
+  UInt64,
+  Balances as BaseBalances,
+  TokenId,
+  Balance,
+} from '@proto-kit/library';
 import {
   RuntimeModule,
   runtimeModule,
@@ -11,7 +16,20 @@ import { PublicKey } from 'o1js';
 interface BalancesConfig {}
 
 @runtimeModule()
-export class Balances extends RuntimeModule<BalancesConfig> {
+export class Balances extends BaseBalances<BalancesConfig> {
+  @runtimeMethod()
+  public addBalance(
+    tokenId: TokenId,
+    address: PublicKey,
+    amount: Balance,
+  ): void {
+    this.mint(tokenId, address, amount);
+  }
+}
+
+/*
+@runtimeModule()
+export class OldBalances extends RuntimeModule<BalancesConfig> {
   @state() public balances = StateMap.from<PublicKey, UInt64>(
     PublicKey,
     UInt64,
@@ -52,3 +70,5 @@ export class Balances extends RuntimeModule<BalancesConfig> {
     this.balances.set(address, addrCurrentBalance.add(amount));
   }
 }
+
+*/
