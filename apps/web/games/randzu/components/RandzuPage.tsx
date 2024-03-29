@@ -46,7 +46,10 @@ export default function RandzuPage({
   );
 
   const client = useContext(AppChainClientContext) as ClientAppChain<
-    typeof randzuConfig.runtimeModules, any, any, any
+    typeof randzuConfig.runtimeModules,
+    any,
+    any,
+    any
   >;
 
   if (!client) {
@@ -328,22 +331,6 @@ export default function RandzuPage({
           loading={loading}
         />
         <div>Players in queue: {matchQueue.getQueueLength()}</div>
-        <div className="grow"></div>
-        <div className="flex flex-col gap-10">
-          <div>
-            Active competitions:
-            <div className="flex flex-col">
-              {randzuCompetitions.map((competition) => (
-                <Link
-                  href={`/games/randzu/${competition.id}`}
-                  key={competition.id}
-                >
-                  {competition.name} – {formatUnits(competition.prizeFund)} 🪙
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
       </main>
     </GamePage>
   );
