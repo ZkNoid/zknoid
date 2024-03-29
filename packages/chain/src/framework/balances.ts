@@ -11,7 +11,7 @@ import { PublicKey } from 'o1js';
 interface BalancesConfig {}
 
 @runtimeModule()
-export class Balances extends RuntimeModule<BalancesConfig> {
+export class OldBalances extends RuntimeModule<BalancesConfig> {
   @state() public balances = StateMap.from<PublicKey, UInt64>(
     PublicKey,
     UInt64,
