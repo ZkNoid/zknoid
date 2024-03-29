@@ -78,6 +78,24 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     setGameState(GameState.MatchRegistration);
   };
 
+  const collectPending = async () => {
+    const randzuLogic = client.runtime.resolve('ThimblerigLogic');
+
+    const tx = await client.transaction(sessionPrivateKey.toPublicKey(), () => {
+      randzuLogic.collectPendingBalance();
+    });
+
+    console.log('Collect tx', tx);
+
+    tx.transaction = tx.transaction?.sign(sessionPrivateKey);
+
+    console.log('Sending tx', tx);
+
+    await tx.send();
+
+    console.log('Tx sent', tx);
+  };
+
   /**
    *
    * @param id Number 0-2
@@ -158,6 +176,10 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   };
 
   useEffect(() => {
+    if (matchQueue.pendingBalance && !matchQueue.inQueue) {
+      console.log('Collecting pending balance', matchQueue.pendingBalance);
+      collectPending();
+    }
     if (matchQueue.inQueue && !matchQueue.activeGameId) {
       setGameState(GameState.Matchmaking);
     } else if (matchQueue.activeGameId) {
