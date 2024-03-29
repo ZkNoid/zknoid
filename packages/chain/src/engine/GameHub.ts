@@ -136,9 +136,16 @@ export class Gamehub<
     const currentScore = this.gameRecords.get(gameKey).value;
     const newScore = gameRecordProof.publicOutput.score;
 
-    if (currentScore < newScore) {
-      // Do we need provable here?
-      this.gameRecords.set(gameKey, newScore);
+    const betterScore = currentScore.lessThan(newScore);
+
+    // if (currentScore < newScore) {
+    {
+      // Everything that is done here, should be done only if <betterScore>
+      // So all set should be with <betterScore> check
+      this.gameRecords.set(
+        gameKey,
+        Provable.if(betterScore, newScore, currentScore),
+      );
 
       let looserIndex = UInt64.from(0);
       let looserScore = UInt64.from(0);
@@ -174,12 +181,19 @@ export class Gamehub<
         index: looserIndex,
       });
 
+      const looserGameRecord = this.leaderboard.get(looserKey);
+
       this.leaderboard.set(
         looserKey,
-        new LeaderboardScore({
-          score: newScore,
-          player: this.transaction.sender.value,
-        }),
+        Provable.if(
+          betterScore,
+          LeaderboardScore,
+          new LeaderboardScore({
+            score: newScore,
+            player: this.transaction.sender.value,
+          }),
+          looserGameRecord.value,
+        ),
       );
     }
   }
