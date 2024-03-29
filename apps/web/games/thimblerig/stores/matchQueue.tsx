@@ -12,7 +12,7 @@ export const useObserveThimblerigMatchQueue = () => {
   const network = useNetworkStore();
   const matchQueue = useMatchQueueStore();
   const client = useContext<
-    ClientAppChain<typeof thimblerigConfig.runtimeModules> | undefined
+    ClientAppChain<typeof thimblerigConfig.runtimeModules, any, any, any> | undefined
   >(AppChainClientContext);
 
   useEffect(() => {

@@ -7,6 +7,7 @@ import { useNetworkStore } from '@/lib/stores/network';
 import { useObserveProtokitBalance } from '@/lib/stores/protokitBalances';
 import { usePollProtokitBlockHeight } from '@/lib/stores/protokitChain';
 import { buildClient } from '@/lib/utils';
+import { ClientAppChain } from 'zknoid-chain-dev';
 
 export default function StoreProtokitUpdater() {
   const client = useMemo(() => buildClient(DefaultRuntimeModules), []);
@@ -22,7 +23,8 @@ export default function StoreProtokitUpdater() {
   }, []);
 
   // Order is important
-  useObserveProtokitBalance({ client });
+  // @todo remove any
+  useObserveProtokitBalance({ client: client as any as ClientAppChain<typeof DefaultRuntimeModules, any, any, any> });
 
   return <></>;
 }

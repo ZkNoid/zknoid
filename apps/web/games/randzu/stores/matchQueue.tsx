@@ -12,7 +12,7 @@ export const useObserveRandzuMatchQueue = () => {
   const network = useNetworkStore();
   const matchQueue = useMatchQueueStore();
   const client = useContext<
-    ClientAppChain<typeof randzuConfig.runtimeModules> | undefined
+    ClientAppChain<typeof randzuConfig.runtimeModules, any, any, any> | undefined
   >(AppChainClientContext);
 
   useEffect(() => {

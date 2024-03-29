@@ -46,7 +46,7 @@ export default function RandzuPage({
   );
 
   const client = useContext(AppChainClientContext) as ClientAppChain<
-    typeof randzuConfig.runtimeModules
+    typeof randzuConfig.runtimeModules, any, any, any
   >;
 
   if (!client) {
