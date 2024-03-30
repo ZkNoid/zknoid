@@ -126,6 +126,7 @@ export class RandzuLogic extends MatchMaker {
 
   public override initGame(
     opponentReady: Bool,
+    player: PublicKey,
     opponent: Option<QueueListItem>,
   ): UInt64 {
     const currentGameId = this.gamesNum
@@ -150,7 +151,7 @@ export class RandzuLogic extends MatchMaker {
     this.gamesNum.set(currentGameId);
     this.gameFund.set(currentGameId, this.getParticipationPrice().mul(2));
 
-    super.initGame(opponentReady, opponent);
+    super.initGame(opponentReady, player, opponent);
 
     return currentGameId;
   }
@@ -280,8 +281,6 @@ export class RandzuLogic extends MatchMaker {
       game.value.currentMoveUser,
       PublicKey.empty(),
     );
-
-    this.pendingBalances.set(sender, ProtoUInt64.from(0));
 
     game.value.field = newField;
     game.value.currentMoveUser = Provable.if(
