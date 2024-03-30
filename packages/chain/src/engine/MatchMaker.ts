@@ -319,11 +319,12 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     return DEFAULT_GAME_COST;
   }
 
-  protected getFunds(gameId: UInt64, winner: PublicKey) {
+  protected getFunds(gameId: UInt64, player1: PublicKey, player2: PublicKey, player1Share: ProtoUInt64, player2Share: ProtoUInt64) {
     assert(this.gameFinished.get(gameId).value.not());
 
     this.gameFinished.set(gameId, Bool(true));
 
-    this.balances.mint(ZNAKE_TOKEN_ID, winner, this.gameFund.get(gameId).value);
+    this.balances.mint(ZNAKE_TOKEN_ID, player1, ProtoUInt64.from(this.gameFund.get(gameId).value).mul(player1Share).div(player1Share.add(player2Share)));
+    this.balances.mint(ZNAKE_TOKEN_ID, player2, ProtoUInt64.from(this.gameFund.get(gameId).value).mul(player2Share).div(player1Share.add(player2Share)));
   }
 }
