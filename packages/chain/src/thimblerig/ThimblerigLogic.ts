@@ -60,6 +60,7 @@ export class ThimblerigLogic extends MatchMaker {
 
   public override initGame(
     opponentReady: Bool,
+    player: PublicKey,
     opponent: Option<QueueListItem>
   ): UInt64 {
     const currentGameId = this.gamesNum
@@ -84,7 +85,7 @@ export class ThimblerigLogic extends MatchMaker {
 
     this.gamesNum.set(currentGameId);
 
-    super.initGame(opponentReady, opponent);
+    super.initGame(opponentReady, player, opponent);
 
     return currentGameId;
   }

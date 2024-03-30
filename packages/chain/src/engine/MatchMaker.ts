@@ -109,14 +109,11 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
    */
   public initGame(
     opponentReady: Bool,
+    player: PublicKey,
     opponent: Option<QueueListItem>,
   ): UInt64 {
     this.pendingBalances.set(
-      Provable.if(
-        opponentReady,
-        this.transaction.sender.value,
-        PublicKey.empty(),
-      ),
+      Provable.if(opponentReady, player, PublicKey.empty()),
       ProtoUInt64.from(0),
     );
 
@@ -174,7 +171,26 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
       }),
     );
 
-    const gameId = this.initGame(opponentReady, opponent);
+    const pendingBalance = ProtoUInt64.from(
+      this.pendingBalances.get(this.transaction.sender.value).value,
+    );
+
+    const fee = this.getParticipationPrice();
+
+    const amountToTransfer = Provable.if<ProtoUInt64>(
+      pendingBalance.greaterThan(fee),
+      ProtoUInt64,
+      ProtoUInt64.from(0),
+      fee,
+    );
+
+    // Should be before initGame
+    this.pendingBalances.set(
+      this.transaction.sender.value,
+      pendingBalance.add(amountToTransfer),
+    );
+
+    const gameId = this.initGame(opponentReady, this.transaction.sender.value, opponent);
 
     // Assigning new game to player if opponent found
     this.activeGameId.set(
@@ -239,28 +255,11 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
       ),
     );
 
-    const fee = this.getParticipationPrice();
-
-    const pendingBalance = ProtoUInt64.from(
-      this.pendingBalances.get(this.transaction.sender.value).value,
-    );
-
-    const amountToTransfer = Provable.if<ProtoUInt64>(
-      pendingBalance.greaterThan(fee),
-      ProtoUInt64,
-      ProtoUInt64.from(0),
-      fee,
-    );
-
     this.balances.transfer(
       ZNAKE_TOKEN_ID,
       this.transaction.sender.value,
       PublicKey.empty(),
       amountToTransfer,
-    );
-    this.pendingBalances.set(
-      this.transaction.sender.value,
-      pendingBalance.add(amountToTransfer),
     );
   }
 
@@ -319,12 +318,30 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     return DEFAULT_GAME_COST;
   }
 
-  protected getFunds(gameId: UInt64, player1: PublicKey, player2: PublicKey, player1Share: ProtoUInt64, player2Share: ProtoUInt64) {
+  protected getFunds(
+    gameId: UInt64,
+    player1: PublicKey,
+    player2: PublicKey,
+    player1Share: ProtoUInt64,
+    player2Share: ProtoUInt64,
+  ) {
     assert(this.gameFinished.get(gameId).value.not());
 
     this.gameFinished.set(gameId, Bool(true));
 
-    this.balances.mint(ZNAKE_TOKEN_ID, player1, ProtoUInt64.from(this.gameFund.get(gameId).value).mul(player1Share).div(player1Share.add(player2Share)));
-    this.balances.mint(ZNAKE_TOKEN_ID, player2, ProtoUInt64.from(this.gameFund.get(gameId).value).mul(player2Share).div(player1Share.add(player2Share)));
+    this.balances.mint(
+      ZNAKE_TOKEN_ID,
+      player1,
+      ProtoUInt64.from(this.gameFund.get(gameId).value)
+        .mul(player1Share)
+        .div(player1Share.add(player2Share)),
+    );
+    this.balances.mint(
+      ZNAKE_TOKEN_ID,
+      player2,
+      ProtoUInt64.from(this.gameFund.get(gameId).value)
+        .mul(player2Share)
+        .div(player1Share.add(player2Share)),
+    );
   }
 }
