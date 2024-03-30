@@ -1,5 +1,5 @@
 import { clsx } from 'clsx';
-import { ReactNode } from 'react';
+import { HTMLInputTypeAttribute, InputHTMLAttributes, ReactNode } from 'react';
 
 export const Input = ({
   value,
@@ -7,29 +7,52 @@ export const Input = ({
   placeholder,
   startContent,
   isClearable = true,
+  type = 'text',
+  inputMode = 'text',
+  isBordered = true,
 }: {
   value: any;
   setValue: (value: any) => void;
   placeholder?: string;
   startContent?: ReactNode;
   isClearable?: boolean;
+  type?: HTMLInputTypeAttribute;
+  inputMode?:
+    | 'email'
+    | 'search'
+    | 'tel'
+    | 'text'
+    | 'url'
+    | 'none'
+    | 'numeric'
+    | 'decimal'
+    | undefined;
+  isBordered?: boolean;
 }) => {
   return (
     <div
-      className={
-        'group flex flex-row gap-2 rounded-[5px] border bg-bg-dark p-2 hover:border-left-accent'
-      }
+      className={clsx(
+        'group flex flex-row gap-2 rounded-[5px] bg-bg-dark p-2',
+        { 'border hover:border-left-accent': isBordered }
+      )}
     >
       {startContent}
       <input
-        type="text"
+        type={type}
+        inputMode={inputMode}
         placeholder={placeholder}
         className={
           'w-full appearance-none bg-bg-dark placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80'
         }
         value={value}
         onChange={(event) => {
-          setValue(event.target.value);
+          setValue(
+            type === 'number'
+              ? parseInt(event.target.value)
+                ? parseInt(event.target.value)
+                : value
+              : event.target.value
+          );
         }}
       />
       {isClearable && (
@@ -39,7 +62,7 @@ export const Input = ({
               value.length !== 0,
             invisible: value.length === 0,
           })}
-          onClick={() => setValue('')}
+          onClick={() => setValue(type === 'number' ? 0 : '')}
         >
           <svg
             aria-hidden="true"
