@@ -10,6 +10,7 @@ import {
   Field,
   Poseidon,
 } from "o1js";
+import { UInt64 as ProtoUInt64 } from '@proto-kit/library';
 
 import { MatchMaker } from "../engine/MatchMaker";
 
@@ -82,6 +83,8 @@ export class ThimblerigLogic extends MatchMaker {
     );
 
     this.gamesNum.set(currentGameId);
+
+    super.initGame(opponentReady, opponent);
 
     return currentGameId;
   }
@@ -230,5 +233,13 @@ export class ThimblerigLogic extends MatchMaker {
       game.value.player1.equals(sender),
       `Only player1 should prove value is not revealed`
     );
+  }
+
+  @runtimeMethod()
+  public win(gameId: UInt64): void {
+    let game = this.games.get(gameId).value;
+    assert(game.winner.equals(PublicKey.empty()).not());
+    const looser = Provable.if(game.winner.equals(game.player1), game.player2, game.player1);
+    this.getFunds(gameId, game.winner, looser, ProtoUInt64.from(2), ProtoUInt64.from(1));
   }
 }

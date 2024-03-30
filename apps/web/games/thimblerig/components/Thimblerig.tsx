@@ -33,7 +33,10 @@ enum GameState {
 
 export default function Thimblerig({}: { params: { competitionId: string } }) {
   const client = useContext(AppChainClientContext) as ClientAppChain<
-    typeof thimblerigConfig.runtimeModules, any, any, any
+    typeof thimblerigConfig.runtimeModules,
+    any,
+    any,
+    any
   >;
 
   const networkStore = useNetworkStore();
@@ -160,14 +163,28 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   };
 
   const proveOpponentTimeout = async () => {
-    const randzuLogic = client.runtime.resolve('ThimblerigLogic');
+    const thibmerigLogic = client.runtime.resolve('ThimblerigLogic');
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
       () => {
-        randzuLogic.proveOpponentTimeout(
+        thibmerigLogic.proveOpponentTimeout(
           UInt64.from(matchQueue.gameInfo!.gameId)
         );
+      }
+    );
+
+    await tx.sign();
+    await tx.send();
+  };
+
+  const getWinnings = async () => {
+    const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
+
+    const tx = await client.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        thimblerigLogic.win(UInt64.from(matchQueue.gameInfo!.gameId));
       }
     );
 
@@ -211,11 +228,19 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
             <div className="flex flex-row items-center justify-center gap-5">
               {(gameState == GameState.Won || gameState == GameState.Lost) && (
-                <div
-                  className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
-                  onClick={() => restart()}
-                >
-                  Restart
+                <div>
+                  <div
+                    className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
+                    onClick={() => getWinnings()}
+                  >
+                    Get winnings
+                  </div>
+                  <div
+                    className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
+                    onClick={() => restart()}
+                  >
+                    Restart
+                  </div>
                 </div>
               )}
               {gameState == GameState.NotStarted && (

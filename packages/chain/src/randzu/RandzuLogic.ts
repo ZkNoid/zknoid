@@ -14,6 +14,7 @@ import {
 } from 'o1js';
 import { DEFAULT_GAME_COST, MatchMaker } from '../engine/MatchMaker';
 import type { QueueListItem } from '../engine/MatchMaker';
+import { UInt64 as ProtoUInt64 } from '@proto-kit/library';
 
 const RANDZU_FIELD_SIZE = 15;
 const CELLS_LINE_TO_WIN = 5;
@@ -280,6 +281,8 @@ export class RandzuLogic extends MatchMaker {
       PublicKey.empty(),
     );
 
+    this.pendingBalances.set(sender, ProtoUInt64.from(0));
+
     game.value.field = newField;
     game.value.currentMoveUser = Provable.if(
       game.value.currentMoveUser.equals(game.value.player1),
@@ -304,6 +307,6 @@ export class RandzuLogic extends MatchMaker {
   public win(gameId: UInt64): void {
     let game = this.games.get(gameId).value;
     assert(game.winner.equals(PublicKey.empty()).not());
-    this.getFunds(gameId, game.winner);
+    this.getFunds(gameId, game.winner, PublicKey.empty(), ProtoUInt64.from(1), ProtoUInt64.from(0));
   }
 }
