@@ -235,12 +235,14 @@ export default function RandzuPage({
             <div className="flex flex-row items-center justify-center gap-5">
               {(gameState == GameState.Won || gameState == GameState.Lost) && (
                 <div>
-                  <div
-                    className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
-                    onClick={() => getWinnings()}
-                  >
-                    Get winnings
-                  </div>
+                  {gameState == GameState.Won && (
+                    <div
+                      className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
+                      onClick={() => getWinnings()}
+                    >
+                      Get winnings
+                    </div>
+                  )}
                   <div
                     className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
                     onClick={() => restart()}
