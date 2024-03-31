@@ -108,13 +108,16 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
     const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
 
+    const commitment = Poseidon.hash([
+      ...UInt64.from(id).toFields(),
+      salt,
+    ]);
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
       () => {
         thimblerigLogic.commitValue(
           UInt64.from(matchQueue.activeGameId),
-          UInt64.from(id),
-          salt
+          commitment
         );
       }
     );
