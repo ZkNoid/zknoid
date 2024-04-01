@@ -84,6 +84,7 @@ export class ThimblerigLogic extends MatchMaker {
     );
 
     this.gamesNum.set(currentGameId);
+    this.gameFund.set(currentGameId, this.getParticipationPrice().mul(2));
 
     super.initGame(opponentReady, player, opponent);
 
