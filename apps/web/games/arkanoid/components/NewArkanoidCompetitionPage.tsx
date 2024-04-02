@@ -11,7 +11,10 @@ import {
 } from 'zknoid-chain-dev';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useMinaBalancesStore } from '@/lib/stores/minaBalances';
-import { useMinaBridge, useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
+import {
+  useMinaBridge,
+  useProtokitBalancesStore,
+} from '@/lib/stores/protokitBalances';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { arkanoidConfig } from '../config';
 import GamePage from '@/components/framework/GamePage';
@@ -422,6 +425,8 @@ export default function NewArkanoidCompetitionPage() {
                 <div className={'flex flex-col items-end justify-end'}>
                   <div />
                   <DatePicker
+                    setDateTo={setPreregistrationTo}
+                    setDateFrom={setPreregistrationFrom}
                     trigger={
                       <div
                         className={
@@ -475,6 +480,8 @@ export default function NewArkanoidCompetitionPage() {
                 <div className={'flex flex-col items-end justify-end'}>
                   <div />
                   <DatePicker
+                    setDateFrom={setCompetitionFrom}
+                    setDateTo={setCompetitionTo}
                     trigger={
                       <div
                         className={

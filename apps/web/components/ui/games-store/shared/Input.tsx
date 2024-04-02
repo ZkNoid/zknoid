@@ -10,6 +10,7 @@ export const Input = ({
   type = 'text',
   inputMode = 'text',
   isBordered = true,
+  isReadonly = false,
 }: {
   value: any;
   setValue: (value: any) => void;
@@ -28,12 +29,16 @@ export const Input = ({
     | 'decimal'
     | undefined;
   isBordered?: boolean;
+  isReadonly?: boolean;
 }) => {
   return (
     <div
       className={clsx(
         'group flex flex-row gap-2 rounded-[5px] bg-bg-dark p-2',
-        { 'border hover:border-left-accent': isBordered }
+        {
+          border: isBordered,
+          'hover:border-left-accent': isBordered && !isReadonly,
+        }
       )}
     >
       {startContent}
@@ -41,9 +46,14 @@ export const Input = ({
         type={type}
         inputMode={inputMode}
         placeholder={placeholder}
-        className={
-          'w-full appearance-none bg-bg-dark placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80'
-        }
+        className={clsx(
+          'w-full appearance-none bg-bg-dark placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none',
+          {
+            'group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80':
+              !isReadonly,
+            'cursor-default': isReadonly,
+          }
+        )}
         value={value}
         onChange={(event) => {
           setValue(
@@ -54,8 +64,9 @@ export const Input = ({
               : event.target.value
           );
         }}
+        readOnly={isReadonly}
       />
-      {isClearable && (
+      {isClearable && !isReadonly && (
         <div
           className={clsx('flex items-center justify-center', {
             'visible cursor-pointer opacity-60 transition-opacity ease-in-out hover:opacity-100':
