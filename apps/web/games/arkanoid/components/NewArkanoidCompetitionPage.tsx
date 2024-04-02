@@ -11,7 +11,7 @@ import {
 } from 'zknoid-chain-dev';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useMinaBalancesStore } from '@/lib/stores/minaBalances';
-import { useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
+import { useMinaBridge, useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { arkanoidConfig } from '../config';
 import GamePage from '@/components/framework/GamePage';
@@ -62,6 +62,7 @@ export default function NewArkanoidCompetitionPage() {
   const networkStore = useNetworkStore();
   const minaBalances = useMinaBalancesStore();
   const protokitBalances = useProtokitBalancesStore();
+  const bridge = useMinaBridge();
 
   const client = useContext(AppChainClientContext);
 
@@ -133,6 +134,7 @@ export default function NewArkanoidCompetitionPage() {
 
   const createCompetition = async () => {
     const gameHub = client.runtime.resolve('ArkanoidGameHub');
+    if (await bridge(BigInt(funding) * 10n ** 9n)) return;
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),

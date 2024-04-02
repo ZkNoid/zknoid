@@ -14,6 +14,7 @@ import {
 } from 'o1js';
 import { DEFAULT_GAME_COST, MatchMaker } from '../engine/MatchMaker';
 import type { QueueListItem } from '../engine/MatchMaker';
+import { UInt64 as ProtoUInt64 } from '@proto-kit/library';
 
 const RANDZU_FIELD_SIZE = 15;
 const CELLS_LINE_TO_WIN = 5;
@@ -125,6 +126,7 @@ export class RandzuLogic extends MatchMaker {
 
   public override initGame(
     opponentReady: Bool,
+    player: PublicKey,
     opponent: Option<QueueListItem>,
   ): UInt64 {
     const currentGameId = this.gamesNum
@@ -149,7 +151,7 @@ export class RandzuLogic extends MatchMaker {
     this.gamesNum.set(currentGameId);
     this.gameFund.set(currentGameId, this.getParticipationPrice().mul(2));
 
-    super.initGame(opponentReady, opponent);
+    super.initGame(opponentReady, player, opponent);
 
     return currentGameId;
   }
@@ -304,6 +306,6 @@ export class RandzuLogic extends MatchMaker {
   public win(gameId: UInt64): void {
     let game = this.games.get(gameId).value;
     assert(game.winner.equals(PublicKey.empty()).not());
-    this.getFunds(gameId, game.winner);
+    this.getFunds(gameId, game.winner, PublicKey.empty(), ProtoUInt64.from(1), ProtoUInt64.from(0));
   }
 }

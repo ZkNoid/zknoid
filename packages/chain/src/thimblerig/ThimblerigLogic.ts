@@ -10,6 +10,7 @@ import {
   Field,
   Poseidon,
 } from "o1js";
+import { UInt64 as ProtoUInt64 } from '@proto-kit/library';
 
 import { MatchMaker } from "../engine/MatchMaker";
 
@@ -59,6 +60,7 @@ export class ThimblerigLogic extends MatchMaker {
 
   public override initGame(
     opponentReady: Bool,
+    player: PublicKey,
     opponent: Option<QueueListItem>
   ): UInt64 {
     const currentGameId = this.gamesNum
@@ -82,12 +84,15 @@ export class ThimblerigLogic extends MatchMaker {
     );
 
     this.gamesNum.set(currentGameId);
+    this.gameFund.set(currentGameId, this.getParticipationPrice().mul(2));
+
+    super.initGame(opponentReady, player, opponent);
 
     return currentGameId;
   }
 
   @runtimeMethod()
-  public commitValue(gameId: UInt64, value: UInt64, salt: Field): void {
+  public commitValue(gameId: UInt64, commitment: Field): void {
     const sessionSender = this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
@@ -97,8 +102,6 @@ export class ThimblerigLogic extends MatchMaker {
 
     const game = this.games.get(gameId);
     assert(game.isSome, "Invalid game id");
-    assert(value.lessThanOrEqual(UInt64.from(3)), "Invalid value");
-    assert(salt.greaterThan(0), "Invalid salt");
     assert(
       game.value.field.choice.equals(UInt64.from(0)),
       "Already chosen"
@@ -113,10 +116,7 @@ export class ThimblerigLogic extends MatchMaker {
     );
     assert(game.value.winner.equals(PublicKey.empty()), `Game finished`);
 
-    game.value.field.commitedHash = Poseidon.hash([
-      ...value.toFields(),
-      salt,
-    ]);
+    game.value.field.commitedHash = commitment;
     game.value.currentMoveUser = game.value.player2;
     game.value.lastMoveBlockHeight = this.network.block.height;
     this.games.set(gameId, game.value);
@@ -230,5 +230,13 @@ export class ThimblerigLogic extends MatchMaker {
       game.value.player1.equals(sender),
       `Only player1 should prove value is not revealed`
     );
+  }
+
+  @runtimeMethod()
+  public win(gameId: UInt64): void {
+    let game = this.games.get(gameId).value;
+    assert(game.winner.equals(PublicKey.empty()).not());
+    const looser = Provable.if(game.winner.equals(game.player1), game.player2, game.player1);
+    this.getFunds(gameId, game.winner, looser, ProtoUInt64.from(2), ProtoUInt64.from(1));
   }
 }
