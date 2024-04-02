@@ -46,7 +46,10 @@ export default function RandzuPage({
   );
 
   const client = useContext(AppChainClientContext) as ClientAppChain<
-    typeof randzuConfig.runtimeModules, any, any, any
+    typeof randzuConfig.runtimeModules,
+    any,
+    any,
+    any
   >;
 
   if (!client) {
@@ -232,12 +235,14 @@ export default function RandzuPage({
             <div className="flex flex-row items-center justify-center gap-5">
               {(gameState == GameState.Won || gameState == GameState.Lost) && (
                 <div>
-                  <div
-                    className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
-                    onClick={() => getWinnings()}
-                  >
-                    Get winnings
-                  </div>
+                  {gameState == GameState.Won && (
+                    <div
+                      className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
+                      onClick={() => getWinnings()}
+                    >
+                      Get winnings
+                    </div>
+                  )}
                   <div
                     className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
                     onClick={() => restart()}
@@ -328,22 +333,6 @@ export default function RandzuPage({
           loading={loading}
         />
         <div>Players in queue: {matchQueue.getQueueLength()}</div>
-        <div className="grow"></div>
-        <div className="flex flex-col gap-10">
-          <div>
-            Active competitions:
-            <div className="flex flex-col">
-              {randzuCompetitions.map((competition) => (
-                <Link
-                  href={`/games/randzu/${competition.id}`}
-                  key={competition.id}
-                >
-                  {competition.name} – {formatUnits(competition.prizeFund)} 🪙
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
       </main>
     </GamePage>
   );

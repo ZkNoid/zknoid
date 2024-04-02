@@ -18,6 +18,9 @@ import { walletInstalled } from '@/lib/helpers';
 import { useObserveThimblerigMatchQueue } from '../stores/matchQueue';
 import { useCommitmentStore } from '@/lib/stores/commitmentStorage';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
+import { DEFAULT_GAME_COST } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
+import { useMinaBridge } from '@/lib/stores/protokitBalances';
+import { formatUnits } from '@/lib/unit';
 
 enum GameState {
   NotStarted,
@@ -30,7 +33,10 @@ enum GameState {
 
 export default function Thimblerig({}: { params: { competitionId: string } }) {
   const client = useContext(AppChainClientContext) as ClientAppChain<
-    typeof thimblerigConfig.runtimeModules, any, any, any
+    typeof thimblerigConfig.runtimeModules,
+    any,
+    any,
+    any
   >;
 
   const networkStore = useNetworkStore();
@@ -52,8 +58,11 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     matchQueue.resetLastGameState();
     setGameState(GameState.NotStarted);
   };
+  const bridge = useMinaBridge();
 
   const startGame = async () => {
+    if (await bridge(DEFAULT_GAME_COST.toBigInt())) return;
+
     const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
 
     const tx = await client.transaction(
@@ -72,6 +81,24 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     setGameState(GameState.MatchRegistration);
   };
 
+  const collectPending = async () => {
+    const randzuLogic = client.runtime.resolve('ThimblerigLogic');
+
+    const tx = await client.transaction(sessionPrivateKey.toPublicKey(), () => {
+      randzuLogic.collectPendingBalance();
+    });
+
+    console.log('Collect tx', tx);
+
+    tx.transaction = tx.transaction?.sign(sessionPrivateKey);
+
+    console.log('Sending tx', tx);
+
+    await tx.send();
+
+    console.log('Tx sent', tx);
+  };
+
   /**
    *
    * @param id Number 0-2
@@ -81,13 +108,16 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
     const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
 
+    const commitment = Poseidon.hash([
+      ...UInt64.from(id).toFields(),
+      salt,
+    ]);
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
       () => {
         thimblerigLogic.commitValue(
           UInt64.from(matchQueue.activeGameId),
-          UInt64.from(id),
-          salt
+          commitment
         );
       }
     );
@@ -136,12 +166,12 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   };
 
   const proveOpponentTimeout = async () => {
-    const randzuLogic = client.runtime.resolve('ThimblerigLogic');
+    const thibmerigLogic = client.runtime.resolve('ThimblerigLogic');
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
       () => {
-        randzuLogic.proveOpponentTimeout(
+        thibmerigLogic.proveOpponentTimeout(
           UInt64.from(matchQueue.gameInfo!.gameId)
         );
       }
@@ -151,7 +181,25 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     await tx.send();
   };
 
+  const getWinnings = async () => {
+    const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
+
+    const tx = await client.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        thimblerigLogic.win(UInt64.from(matchQueue.gameInfo!.gameId));
+      }
+    );
+
+    await tx.sign();
+    await tx.send();
+  };
+
   useEffect(() => {
+    if (matchQueue.pendingBalance && !matchQueue.inQueue) {
+      console.log('Collecting pending balance', matchQueue.pendingBalance);
+      collectPending();
+    }
     if (matchQueue.inQueue && !matchQueue.activeGameId) {
       setGameState(GameState.Matchmaking);
     } else if (matchQueue.activeGameId) {
@@ -183,11 +231,19 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
             <div className="flex flex-row items-center justify-center gap-5">
               {(gameState == GameState.Won || gameState == GameState.Lost) && (
-                <div
-                  className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
-                  onClick={() => restart()}
-                >
-                  Restart
+                <div>
+                  <div
+                    className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
+                    onClick={() => getWinnings()}
+                  >
+                    Get winnings
+                  </div>
+                  <div
+                    className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
+                    onClick={() => restart()}
+                  >
+                    Restart
+                  </div>
                 </div>
               )}
               {gameState == GameState.NotStarted && (
@@ -195,7 +251,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                   className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
                   onClick={() => startGame()}
                 >
-                  Start for 0 🪙
+                  Start for {formatUnits(DEFAULT_GAME_COST.toBigInt())} 🪙
                 </div>
               )}
             </div>
