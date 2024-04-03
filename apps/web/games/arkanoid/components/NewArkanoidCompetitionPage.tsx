@@ -178,12 +178,24 @@ export default function NewArkanoidCompetitionPage() {
     await tx.send();
   };
 
-  const [game, setGame] = useState<string>('');
-  const [image, setImage] = useState<string>('Default 1');
+  // const [game, setGame] = useState<string>('Arkanoid');
+  // const [image, setImage] = useState<string>('Default 1');
   const [isPolicyAccepted, setIsPolicyAccepted] = useState<boolean>(false);
 
   const [isSeedPopoverOpen, setIsSeedPopoverOpen] = useState<boolean>(false);
   const [isRandomSeed, setIsRandomSeed] = useState<boolean>(false);
+
+  const [isNameInvalid, setIsNameInvalid] = useState<boolean>(false);
+  // const [isGameInvalid, setIsGameInvalid] = useState<boolean>(false)
+  const [isDescriptionInvalid, setIsDescriptionInvalid] =
+    useState<boolean>(false);
+  const [isCompetitionDateInvalid, setIsCompetitionDateInvalid] =
+    useState<boolean>(false);
+  const [isPreregDateInvalid, setIsPreregDateInvalid] =
+    useState<boolean>(false);
+  const [isParticipantFeeInvalid, setIsParticipantFeeInvalid] =
+    useState<boolean>(false);
+  const [isFundsInvalid, setIsFundsInvalid] = useState<boolean>(false);
 
   useEffect(() => {
     if (!isRandomSeed && seed.toString().length > 13)
@@ -192,6 +204,37 @@ export default function NewArkanoidCompetitionPage() {
 
   const getRandomSeed = () => {
     return Math.floor(Math.random() * Math.pow(2, 252));
+  };
+
+  const validateFields = () => {
+    !name ? setIsNameInvalid(true) : setIsNameInvalid(false);
+    !description
+      ? setIsDescriptionInvalid(true)
+      : setIsDescriptionInvalid(false);
+    !competitionFrom || !competitionTo
+      ? setIsCompetitionDateInvalid(true)
+      : setIsCompetitionDateInvalid(false);
+    !preregistrationFrom || !preregistrationTo
+      ? setIsPreregDateInvalid(true)
+      : setIsPreregDateInvalid(false);
+    !participationFee
+      ? setIsParticipantFeeInvalid(true)
+      : setIsParticipantFeeInvalid(false);
+    !isFundsInvalid ? setIsFundsInvalid(true) : setIsFundsInvalid(false);
+  };
+
+  const checkFieldsValidity = () => {
+    if (
+      isNameInvalid ||
+      isDescriptionInvalid ||
+      isCompetitionDateInvalid ||
+      isPreregDateInvalid ||
+      isParticipantFeeInvalid ||
+      isFundsInvalid
+    )
+      return false;
+    else if (!isPolicyAccepted) return false;
+    else return true;
   };
 
   return (
@@ -209,47 +252,32 @@ export default function NewArkanoidCompetitionPage() {
             <div className={'text-[20px]/[20px] font-bold'}>
               Description information
             </div>
-            <div className={'flex w-full flex-col gap-2'}>
-              <span
-                className={
-                  'font-plexsans text-main font-medium uppercase text-left-accent'
-                }
-              >
-                Enter the name of the competition*
-              </span>
+            <div className={'w-full'}>
               <Input
+                title={'Enter the name of the competition'}
                 value={name}
                 setValue={setName}
                 placeholder={'Type competition name here...'}
+                isRequired={true}
               />
             </div>
-            <div className={'flex w-full flex-col gap-2'}>
-              <span
-                className={
-                  'font-plexsans text-main font-medium uppercase text-left-accent'
-                }
-              >
-                Select the game*
-              </span>
-              <Input
-                value={game}
-                setValue={setGame}
-                placeholder={'Type game name here...'}
-              />
-            </div>
-            <div className={'flex h-full w-full flex-col gap-2'}>
-              <span
-                className={
-                  'font-plexsans text-main font-medium uppercase text-left-accent'
-                }
-              >
-                Enter the description of the competition*
-              </span>
+            {/*<div className={'w-full'}>*/}
+            {/*  <Input*/}
+            {/*    title={'Select the game'}*/}
+            {/*    value={game}*/}
+            {/*    setValue={setGame}*/}
+            {/*    placeholder={'Type game name here...'}*/}
+            {/*    isRequired={true}*/}
+            {/*  />*/}
+            {/*</div>*/}
+            <div className={'h-full w-full'}>
               <Textarea
+                title={'Enter the description of the competition'}
                 value={description}
                 setValue={setDescription}
                 placeholder={'Type description here...'}
-                className={'h-full'}
+                isRequired={true}
+                className={'h-full w-full'}
               />
             </div>
             {/*<div className={'flex w-full flex-col gap-2'}>*/}
@@ -289,7 +317,7 @@ export default function NewArkanoidCompetitionPage() {
                       'font-plexsans text-main font-medium uppercase text-left-accent'
                     }
                   >
-                    Map seed Generation*
+                    Map seed Generation
                   </span>
                   <Button
                     label={'Randomize'}
@@ -305,7 +333,7 @@ export default function NewArkanoidCompetitionPage() {
                       'font-plexsans text-main font-medium uppercase text-left-accent'
                     }
                   >
-                    Map seed:
+                    Map seed*
                   </span>
                   {seed.toString().length > 13 ? (
                     <Popover
@@ -420,7 +448,7 @@ export default function NewArkanoidCompetitionPage() {
                   'font-plexsans text-main font-medium uppercase text-left-accent'
                 }
               >
-                Preregiatration dates
+                Preregiatration dates*
               </span>
               <div className={'flex flex-row justify-between gap-8'}>
                 <div className={'flex flex-col items-end justify-end'}>
@@ -457,6 +485,7 @@ export default function NewArkanoidCompetitionPage() {
                     value={preregistrationFrom}
                     setValue={setPreregistrationFrom}
                     placeholder={'00.00.0000'}
+                    isInvalid={isPreregDateInvalid}
                   />
                 </div>
                 <div className={'flex flex-col'}>
@@ -465,6 +494,7 @@ export default function NewArkanoidCompetitionPage() {
                     value={preregistrationTo}
                     setValue={setPreregistrationTo}
                     placeholder={'00.00.0000'}
+                    isInvalid={isPreregDateInvalid}
                   />
                 </div>
               </div>
@@ -512,6 +542,7 @@ export default function NewArkanoidCompetitionPage() {
                     value={competitionFrom}
                     setValue={setCompetitionFrom}
                     placeholder={'00.00.0000'}
+                    isInvalid={isCompetitionDateInvalid}
                   />
                 </div>
                 <div className={'flex flex-col'}>
@@ -520,40 +551,33 @@ export default function NewArkanoidCompetitionPage() {
                     value={competitionTo}
                     setValue={setCompetitionTo}
                     placeholder={'00.00.0000'}
+                    isInvalid={isCompetitionDateInvalid}
                   />
                 </div>
               </div>
             </div>
             <div className={'flex w-full flex-col gap-1'}>
               <div className={'flex w-full flex-row gap-4'}>
-                <div className={'flex w-full flex-col gap-2'}>
-                  <span
-                    className={
-                      'font-plexsans text-main font-medium uppercase text-left-accent'
-                    }
-                  >
-                    Participant fee*
-                  </span>
+                <div className={'w-full'}>
                   <Input
+                    title={'Participant fee'}
                     type={'number'}
                     inputMode={'numeric'}
                     value={participationFee}
                     setValue={setPerticipationFee}
+                    isRequired={true}
+                    isInvalid={isParticipantFeeInvalid}
                   />
                 </div>
-                <div className={'flex w-full flex-col gap-2'}>
-                  <span
-                    className={
-                      'font-plexsans text-main font-medium uppercase text-left-accent'
-                    }
-                  >
-                    Funds*
-                  </span>
+                <div className={'w-full'}>
                   <Input
+                    title={'Funds'}
                     type={'number'}
                     inputMode={'numeric'}
                     value={funding}
                     setValue={setFunding}
+                    isRequired={true}
+                    isInvalid={isFundsInvalid}
                   />
                 </div>
               </div>
@@ -571,7 +595,10 @@ export default function NewArkanoidCompetitionPage() {
                 </div>
                 <Button
                   label={'Create competition'}
-                  onClick={createCompetition}
+                  onClick={() => {
+                    validateFields();
+                    if (checkFieldsValidity()) createCompetition();
+                  }}
                 />
               </div>
             </div>
