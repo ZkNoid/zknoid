@@ -237,7 +237,7 @@ export default function NewArkanoidCompetitionPage() {
                 placeholder={'Type game name here...'}
               />
             </div>
-            <div className={'flex w-full flex-col gap-2'}>
+            <div className={'flex h-full w-full flex-col gap-2'}>
               <span
                 className={
                   'font-plexsans text-main font-medium uppercase text-left-accent'
@@ -249,32 +249,33 @@ export default function NewArkanoidCompetitionPage() {
                 value={description}
                 setValue={setDescription}
                 placeholder={'Type description here...'}
+                className={'h-full'}
               />
             </div>
-            <div className={'flex w-full flex-col gap-2'}>
-              <span
-                className={
-                  'font-plexsans text-main font-medium uppercase text-left-accent'
-                }
-              >
-                Choose or upload cover for competition
-              </span>
-              <div className={'flex flex-row gap-4'}>
-                <Button label={'Upload image'} />
-                <DropdownList
-                  label={'Select image'}
-                  items={[
-                    'Default 1',
-                    'Default 2',
-                    'Default 3',
-                    'Default 4',
-                    'Default 5',
-                  ]}
-                  selectedItem={image}
-                  setSelectedItem={setImage}
-                />
-              </div>
-            </div>
+            {/*<div className={'flex w-full flex-col gap-2'}>*/}
+            {/*  <span*/}
+            {/*    className={*/}
+            {/*      'font-plexsans text-main font-medium uppercase text-left-accent'*/}
+            {/*    }*/}
+            {/*  >*/}
+            {/*    Choose or upload cover for competition*/}
+            {/*  </span>*/}
+            {/*  <div className={'flex flex-row gap-4'}>*/}
+            {/*    <Button label={'Upload image'} />*/}
+            {/*    <DropdownList*/}
+            {/*      label={'Select image'}*/}
+            {/*      items={[*/}
+            {/*        'Default 1',*/}
+            {/*        'Default 2',*/}
+            {/*        'Default 3',*/}
+            {/*        'Default 4',*/}
+            {/*        'Default 5',*/}
+            {/*      ]}*/}
+            {/*      selectedItem={image}*/}
+            {/*      setSelectedItem={setImage}*/}
+            {/*    />*/}
+            {/*  </div>*/}
+            {/*</div>*/}
           </div>
           <div className={'flex w-full flex-col gap-4'}>
             <div className={'text-[20px]/[20px] font-bold'}>

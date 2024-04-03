@@ -5,17 +5,17 @@ export const Textarea = ({
   setValue,
   startContent,
   placeholder,
+  className,
 }: {
   value: string;
   setValue: (value: string) => void;
   startContent?: ReactNode;
   placeholder?: string;
+  className?: string;
 }) => {
   return (
     <div
-      className={
-        'group flex flex-row gap-2 rounded-[5px] border bg-bg-dark p-2 hover:border-left-accent'
-      }
+      className={`group flex flex-row gap-2 rounded-[5px] border bg-bg-dark p-2 hover:border-left-accent ${className}`}
     >
       {startContent}
       <textarea
