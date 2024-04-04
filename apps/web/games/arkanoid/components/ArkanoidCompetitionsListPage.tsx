@@ -11,6 +11,7 @@ import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import GamePage from '@/components/framework/GamePage';
 import { arkanoidConfig } from '../config';
 import { CompetitionWidget } from '@/components/framework/CompetitionWidget/CompetitionWidget';
+import { ICompetition } from '@/lib/types';
 
 // const timeStampToStringDate = (timeStamp: number): string => {
 //   var date = new Date(timeStamp);
@@ -177,6 +178,12 @@ export default function ArkanoidCompetitionsListPage() {
 
   console.log('Competitions', compStore);
 
+  const competitionBlocks: ICompetition[] = [];
+  if (competitionBlocks.length < 3)
+    compStore.competitions.map((competition, index) => {
+      if (index < 3) competitionBlocks.push(competition);
+    });
+
   return (
     <GamePage
       gameConfig={arkanoidConfig}
@@ -185,11 +192,7 @@ export default function ArkanoidCompetitionsListPage() {
     >
       <CompetitionWidget
         gameId={arkanoidConfig.id}
-        competitionBlocks={[
-          compStore.competitions[0],
-          compStore.competitions[1],
-          compStore.competitions[2],
-        ]}
+        competitionBlocks={competitionBlocks}
         competitionList={compStore.competitions}
       />
     </GamePage>
