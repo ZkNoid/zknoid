@@ -3,9 +3,11 @@ import { clsx } from 'clsx';
 export const Checkbox = ({
   isSelected,
   setIsSelected,
+  isInvalid,
 }: {
   isSelected: boolean;
   setIsSelected: (selected: boolean) => void;
+  isInvalid?: boolean;
 }) => {
   return (
     <div
@@ -13,6 +15,8 @@ export const Checkbox = ({
         'cursor-pointer rounded-[5px] border bg-bg-dark p-1 hover:opacity-80',
         {
           'border-left-accent bg-left-accent': isSelected,
+          'hover:border-[#FF00009C]': isInvalid && !isSelected,
+          'border-[#FF0000]': isInvalid,
         }
       )}
       onClick={() => setIsSelected(!isSelected)}
