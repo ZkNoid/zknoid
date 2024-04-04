@@ -185,8 +185,12 @@ export default function ArkanoidCompetitionsListPage() {
     >
       <CompetitionWidget
         gameId={arkanoidConfig.id}
+        competitionBlocks={[
+          compStore.competitions[0],
+          compStore.competitions[1],
+          compStore.competitions[2],
+        ]}
         competitionList={compStore.competitions}
-        competitionsBlocks={compStore.competitions}
       />
     </GamePage>
   );
