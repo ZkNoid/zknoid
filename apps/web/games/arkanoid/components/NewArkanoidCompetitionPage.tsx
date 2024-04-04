@@ -21,10 +21,12 @@ import GamePage from '@/components/framework/GamePage';
 import { Input } from '@/components/ui/games-store/shared/Input';
 import { Textarea } from '@/components/ui/games-store/shared/Textarea';
 import { Button } from '@/components/ui/games-store/shared/Button';
-import { DropdownList } from '@/components/ui/games-store/shared/DropdownList';
 import { Checkbox } from '@/components/ui/games-store/shared/Checkbox';
 import { Popover } from '@/components/ui/games-store/shared/Popover';
 import { DatePicker } from '@/components/ui/games-store/shared/DatePicker';
+import { AnimatePresence, motion } from 'framer-motion';
+import znakesImg from '@/public/image/tokens/znakes.svg';
+import Image from 'next/image';
 
 interface IBrick {
   pos: [number, number];
@@ -196,6 +198,7 @@ export default function NewArkanoidCompetitionPage() {
   const [isParticipantFeeInvalid, setIsParticipantFeeInvalid] =
     useState<boolean>(false);
   const [isFundsInvalid, setIsFundsInvalid] = useState<boolean>(false);
+  const [isPolicyInvalid, setIsPolicyInvalid] = useState<boolean>(false);
 
   useEffect(() => {
     if (!isRandomSeed && seed.toString().length > 13)
@@ -211,16 +214,19 @@ export default function NewArkanoidCompetitionPage() {
     !description
       ? setIsDescriptionInvalid(true)
       : setIsDescriptionInvalid(false);
-    !competitionFrom || !competitionTo
+    !competitionFrom ||
+    !competitionTo ||
+    new Date(competitionFrom).getTime() <= new Date(preregistrationTo).getTime()
       ? setIsCompetitionDateInvalid(true)
       : setIsCompetitionDateInvalid(false);
     !preregistrationFrom || !preregistrationTo
       ? setIsPreregDateInvalid(true)
       : setIsPreregDateInvalid(false);
-    !participationFee
+    participationFee < 0
       ? setIsParticipantFeeInvalid(true)
       : setIsParticipantFeeInvalid(false);
-    !isFundsInvalid ? setIsFundsInvalid(true) : setIsFundsInvalid(false);
+    funding < 0 ? setIsFundsInvalid(true) : setIsFundsInvalid(false);
+    !isPolicyAccepted ? setIsPolicyInvalid(true) : setIsPolicyInvalid(false);
   };
 
   const checkFieldsValidity = () => {
@@ -230,7 +236,8 @@ export default function NewArkanoidCompetitionPage() {
       isCompetitionDateInvalid ||
       isPreregDateInvalid ||
       isParticipantFeeInvalid ||
-      isFundsInvalid
+      isFundsInvalid ||
+      isPolicyInvalid
     )
       return false;
     else if (!isPolicyAccepted) return false;
@@ -259,6 +266,9 @@ export default function NewArkanoidCompetitionPage() {
                 setValue={setName}
                 placeholder={'Type competition name here...'}
                 isRequired={true}
+                isInvalid={isNameInvalid}
+                invalidMessage={'Please fill out this field correctly'}
+                emptyFieldCheck={false}
               />
             </div>
             {/*<div className={'w-full'}>*/}
@@ -278,6 +288,9 @@ export default function NewArkanoidCompetitionPage() {
                 placeholder={'Type description here...'}
                 isRequired={true}
                 className={'h-full w-full'}
+                isInvalid={isDescriptionInvalid}
+                invalidMessage={'Please fill out this field correctly'}
+                emptyFieldCheck={false}
               />
             </div>
             {/*<div className={'flex w-full flex-col gap-2'}>*/}
@@ -451,8 +464,8 @@ export default function NewArkanoidCompetitionPage() {
                 Preregiatration dates*
               </span>
               <div className={'flex flex-row justify-between gap-8'}>
-                <div className={'flex flex-col items-end justify-end'}>
-                  <div />
+                <div className={'justify-cener flex flex-col items-center'}>
+                  <div className={'flex-grow'} />
                   <DatePicker
                     setDateTo={setPreregistrationTo}
                     setDateFrom={setPreregistrationFrom}
@@ -478,6 +491,7 @@ export default function NewArkanoidCompetitionPage() {
                       </div>
                     }
                   />
+                  {isPreregDateInvalid && <div className={'flex-grow'} />}
                 </div>
                 <div className={'flex flex-col'}>
                   <span>From</span>
@@ -486,6 +500,8 @@ export default function NewArkanoidCompetitionPage() {
                     setValue={setPreregistrationFrom}
                     placeholder={'00.00.0000'}
                     isInvalid={isPreregDateInvalid}
+                    invalidMessage={'Please fill out this field correctly'}
+                    emptyFieldCheck={false}
                   />
                 </div>
                 <div className={'flex flex-col'}>
@@ -495,6 +511,8 @@ export default function NewArkanoidCompetitionPage() {
                     setValue={setPreregistrationTo}
                     placeholder={'00.00.0000'}
                     isInvalid={isPreregDateInvalid}
+                    invalidMessage={'Please fill out this field correctly'}
+                    emptyFieldCheck={false}
                   />
                 </div>
               </div>
@@ -508,8 +526,8 @@ export default function NewArkanoidCompetitionPage() {
                 Competitions date*
               </span>
               <div className={'flex flex-row justify-between gap-8'}>
-                <div className={'flex flex-col items-end justify-end'}>
-                  <div />
+                <div className={'flex flex-col items-center justify-center'}>
+                  <div className={'flex-grow'} />
                   <DatePicker
                     setDateFrom={setCompetitionFrom}
                     setDateTo={setCompetitionTo}
@@ -535,6 +553,7 @@ export default function NewArkanoidCompetitionPage() {
                       </div>
                     }
                   />
+                  {isCompetitionDateInvalid && <div className={'flex-grow'} />}
                 </div>
                 <div className={'flex flex-col'}>
                   <span>From</span>
@@ -543,6 +562,8 @@ export default function NewArkanoidCompetitionPage() {
                     setValue={setCompetitionFrom}
                     placeholder={'00.00.0000'}
                     isInvalid={isCompetitionDateInvalid}
+                    invalidMessage={'Please fill out this field correctly'}
+                    emptyFieldCheck={false}
                   />
                 </div>
                 <div className={'flex flex-col'}>
@@ -552,6 +573,8 @@ export default function NewArkanoidCompetitionPage() {
                     setValue={setCompetitionTo}
                     placeholder={'00.00.0000'}
                     isInvalid={isCompetitionDateInvalid}
+                    invalidMessage={'Please fill out this field correctly'}
+                    emptyFieldCheck={false}
                   />
                 </div>
               </div>
@@ -567,6 +590,18 @@ export default function NewArkanoidCompetitionPage() {
                     setValue={setPerticipationFee}
                     isRequired={true}
                     isInvalid={isParticipantFeeInvalid}
+                    invalidMessage={'Please fill out this field correctly'}
+                    emptyFieldCheck={false}
+                    isClearable={false}
+                    endContent={
+                      <div
+                        className={
+                          'flex h-[28px] w-[28px] items-center justify-center rounded-full'
+                        }
+                      >
+                        <Image src={znakesImg} alt={'Znakes Tokens'} />
+                      </div>
+                    }
                   />
                 </div>
                 <div className={'w-full'}>
@@ -578,6 +613,18 @@ export default function NewArkanoidCompetitionPage() {
                     setValue={setFunding}
                     isRequired={true}
                     isInvalid={isFundsInvalid}
+                    invalidMessage={'Please fill out this field correctly'}
+                    emptyFieldCheck={false}
+                    isClearable={false}
+                    endContent={
+                      <div
+                        className={
+                          'flex h-[28px] w-[28px] items-center justify-center rounded-full'
+                        }
+                      >
+                        <Image src={znakesImg} alt={'Znakes Tokens'} />
+                      </div>
+                    }
                   />
                 </div>
               </div>
@@ -591,8 +638,52 @@ export default function NewArkanoidCompetitionPage() {
                   <Checkbox
                     isSelected={isPolicyAccepted}
                     setIsSelected={setIsPolicyAccepted}
+                    isInvalid={isPolicyInvalid}
                   />
                 </div>
+                <AnimatePresence>
+                  {isPolicyInvalid && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{
+                        type: 'spring',
+                        duration: 0.8,
+                        bounce: 0,
+                      }}
+                      className={'flex w-full flex-row gap-2'}
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 14 14"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <circle
+                          cx="7"
+                          cy="7"
+                          r="6"
+                          fill="#FF0000"
+                          stroke="#FF0000"
+                          strokeWidth="0.500035"
+                        />
+                        <path
+                          d="M6.71858 8.69036L6.29858 5.10236V2.71436H7.71458V5.10236L7.31858 8.69036H6.71858ZM7.01858 11.2344C6.71458 11.2344 6.49058 11.1624 6.34658 11.0184C6.21058 10.8664 6.14258 10.6744 6.14258 10.4424V10.2384C6.14258 10.0064 6.21058 9.81836 6.34658 9.67436C6.49058 9.52236 6.71458 9.44636 7.01858 9.44636C7.32258 9.44636 7.54258 9.52236 7.67858 9.67436C7.82258 9.81836 7.89458 10.0064 7.89458 10.2384V10.4424C7.89458 10.6744 7.82258 10.8664 7.67858 11.0184C7.54258 11.1624 7.32258 11.2344 7.01858 11.2344Z"
+                          fill="#F9F8F4"
+                        />
+                      </svg>
+                      <span
+                        className={
+                          'font-plexsans text-[14px]/[14px] text-[#FF0000]'
+                        }
+                      >
+                        Please indicate that you understood that
+                      </span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
                 <Button
                   label={'Create competition'}
                   onClick={() => {

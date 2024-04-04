@@ -51,8 +51,11 @@ export const Textarea = ({
       )}
       <div
         className={clsx(
-          `group flex h-full flex-row gap-2 rounded-[5px] border bg-bg-dark p-2 hover:border-left-accent`,
-          { 'border-[#FF0000] hover:border-[#FF00009C]': isInvalid }
+          `group flex h-full flex-row gap-2 rounded-[5px] border bg-bg-dark p-2`,
+          {
+            'hover:border-left-accent': !isInvalid,
+            'border-[#FF0000] hover:border-[#FF00009C]': isInvalid,
+          }
         )}
       >
         {startContent}
