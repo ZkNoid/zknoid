@@ -15,9 +15,9 @@ export const DatePicker = ({
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const [activeDate, setActiveDate] = useState<Date | undefined>(undefined);
-  const [possibleDate, setPossibleDate] = useState<Date | undefined>(undefined);
-  const [pickedDate, setPickedDate] = useState<Date | undefined>(undefined);
+  const [activeDate, setActiveDate] = useState<Date>();
+  const [possibleDate, setPossibleDate] = useState<Date>();
+  const [pickedDate, setPickedDate] = useState<Date>();
   const [_currentMonth, setCurrentMonth] = useState<number>(
     currentDate.getMonth()
   );
@@ -52,32 +52,59 @@ export const DatePicker = ({
             'opacity:80 border-left-accent text-left-accent':
               date.getTime() === possibleDate?.getTime(),
             'rounded-none border-left-accent bg-left-accent text-dark-buttons-text':
-              (date.getTime() < activeDate?.getTime() &&
-                date > possibleDate?.getTime()) ||
-              (date.getTime() > activeDate?.getTime() &&
-                date < possibleDate?.getTime()) ||
-              (date.getTime() < activeDate?.getTime() &&
-                date > pickedDate?.getTime()) ||
-              (date.getTime() > activeDate?.getTime() &&
-                date < pickedDate?.getTime()),
+              (activeDate &&
+                date.getTime() < activeDate.getTime() &&
+                possibleDate &&
+                date.getTime() > possibleDate.getTime()) ||
+              (activeDate &&
+                date.getTime() > activeDate.getTime() &&
+                possibleDate &&
+                date.getTime() < possibleDate.getTime()) ||
+              (activeDate &&
+                date.getTime() < activeDate.getTime() &&
+                pickedDate &&
+                date.getTime() > pickedDate.getTime()) ||
+              (activeDate &&
+                date.getTime() > activeDate.getTime() &&
+                pickedDate &&
+                date.getTime() < pickedDate.getTime()),
             'rounded-r-none':
-              (date.getTime() === activeDate?.getTime() &&
-                activeDate?.getTime() < possibleDate?.getTime()) ||
-              (date.getTime() === activeDate?.getTime() &&
-                activeDate?.getTime() < pickedDate?.getTime()) ||
-              (date.getTime() === pickedDate?.getTime() &&
-                pickedDate?.getTime() < activeDate?.getTime()) ||
-              (date.getTime() === possibleDate?.getTime() &&
-                possibleDate?.getTime() < activeDate?.getTime()),
+              (activeDate &&
+                date.getTime() === activeDate.getTime() &&
+                possibleDate &&
+                activeDate &&
+                activeDate.getTime() < possibleDate.getTime()) ||
+              (activeDate &&
+                date.getTime() === activeDate.getTime() &&
+                pickedDate &&
+                activeDate.getTime() < pickedDate.getTime()) ||
+              (pickedDate &&
+                date.getTime() === pickedDate.getTime() &&
+                activeDate &&
+                pickedDate.getTime() < activeDate.getTime()) ||
+              (possibleDate &&
+                date.getTime() === possibleDate.getTime() &&
+                activeDate &&
+                possibleDate.getTime() < activeDate.getTime()),
             'rounded-l-none':
-              (date.getTime() === activeDate?.getTime() &&
-                activeDate?.getTime() > possibleDate?.getTime()) ||
-              (date.getTime() === activeDate?.getTime() &&
-                activeDate?.getTime() > pickedDate?.getTime()) ||
-              (date.getTime() === pickedDate?.getTime() &&
-                pickedDate?.getTime() > activeDate?.getTime()) ||
-              (date.getTime() === possibleDate?.getTime() &&
-                possibleDate?.getTime() > activeDate?.getTime()),
+              (activeDate &&
+                date.getTime() === activeDate.getTime() &&
+                activeDate &&
+                possibleDate &&
+                activeDate.getTime() > possibleDate.getTime()) ||
+              (activeDate &&
+                date.getTime() === activeDate.getTime() &&
+                activeDate &&
+                pickedDate &&
+                activeDate.getTime() > pickedDate.getTime()) ||
+              (pickedDate &&
+                date.getTime() === pickedDate.getTime() &&
+                activeDate &&
+                pickedDate.getTime() > activeDate.getTime()) ||
+              (possibleDate &&
+                date.getTime() === possibleDate.getTime() &&
+                activeDate &&
+                possibleDate.getTime() > activeDate.getTime()),
             'col-start-1 col-end-1': date.getDay() == 0,
             'col-start-2 col-end-2': date.getDay() == 1,
             'col-start-3 col-end-3': date.getDay() == 2,
@@ -264,12 +291,15 @@ export const DatePicker = ({
                 <Button
                   label={'Done'}
                   onClick={() => {
-                    const formatDate = (item: string) => {
+                    const formatDate = (item: string | undefined) => {
+                      // @ts-ignore
                       if (item.length < 2) return '0' + item;
                       else return item;
                     };
-                    const formatMonth = (item: number) => {
+                    const formatMonth = (item: number | undefined) => {
+                      // @ts-ignore
                       item += 1;
+                      // @ts-ignore
                       if (item.toString().length < 2) return '0' + item;
                       else return item;
                     };
