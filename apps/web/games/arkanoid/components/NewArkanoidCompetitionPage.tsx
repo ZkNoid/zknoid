@@ -27,6 +27,7 @@ import { DatePicker } from '@/components/ui/games-store/shared/DatePicker';
 import { AnimatePresence, motion } from 'framer-motion';
 import znakesImg from '@/public/image/tokens/znakes.svg';
 import Image from 'next/image';
+import { clsx } from 'clsx';
 
 interface IBrick {
   pos: [number, number];
@@ -631,7 +632,12 @@ export default function NewArkanoidCompetitionPage() {
               <div className={'flex w-full flex-col gap-2'}>
                 <span className={'text-left-accent'}>Balance: 100 $znakes</span>
                 <div className={'flex flex-row items-center justify-between'}>
-                  <span className={'font-plexsans text-[12px]/[12px]'}>
+                  <span
+                    className={clsx('font-plexsans text-[12px]/[12px]', {
+                      'underline decoration-[#FF0000] underline-offset-4':
+                        isPolicyInvalid,
+                    })}
+                  >
                     I understand that this amount will be deducted from my
                     account for hosting the competition.
                   </span>
