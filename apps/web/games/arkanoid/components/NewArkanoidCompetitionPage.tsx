@@ -28,6 +28,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import znakesImg from '@/public/image/tokens/znakes.svg';
 import Image from 'next/image';
 import { clsx } from 'clsx';
+import { Currency } from '@/constants/currency';
 
 interface IBrick {
   pos: [number, number];
@@ -630,7 +631,18 @@ export default function NewArkanoidCompetitionPage() {
                 </div>
               </div>
               <div className={'flex w-full flex-col gap-2'}>
-                <span className={'text-left-accent'}>Balance: 100 $znakes</span>
+                <div className={'flex gap-2 text-left-accent'}>
+                  <span>Balance:</span>
+                  <span>
+                    {(
+                      Number(
+                        protokitBalances.balances[networkStore.address!] ?? 0n
+                      ) /
+                      10 ** 9
+                    ).toFixed(2)}
+                  </span>
+                  <span>{Currency.ZNAKES}</span>
+                </div>
                 <div className={'flex flex-row items-center justify-between'}>
                   <span
                     className={clsx('font-plexsans text-[12px]/[12px]', {
