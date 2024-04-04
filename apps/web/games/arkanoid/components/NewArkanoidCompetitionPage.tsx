@@ -631,7 +631,7 @@ export default function NewArkanoidCompetitionPage() {
                 </div>
               </div>
               <div className={'flex w-full flex-col gap-2'}>
-                <div className={'flex gap-2 text-left-accent'}>
+                <div className={'flex gap-2 text-left-accent font-plexsans'}>
                   <span>Balance:</span>
                   <span>
                     {(
