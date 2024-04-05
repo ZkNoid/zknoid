@@ -26,8 +26,8 @@ export const GameView = (props: IGameViewProps) => {
 
   return (
     <div
-      className={`grid grid-cols-15 gap-1 bg-gray-300 ${
-        fieldActive ? 'border-[6px] border-dashed border-green-500 p-0' : 'p-2'
+      className={`grid grid-cols-15 gap-px rounded-[5px] bg-foreground/50 ${
+        fieldActive ? 'border-4 border-left-accent p-0' : 'p-1'
       }`}
     >
       {[...Array(15).keys()].map((i) =>
@@ -35,17 +35,17 @@ export const GameView = (props: IGameViewProps) => {
           <div
             key={`${i}_${j}`}
             className={`
-              bg-gray-100 ${highlightCells ? 'hover:bg-gray-200' : ''} h-7 w-7 
+              bg-bg-dark ${highlightCells ? 'hover:bg-bg-dark/50' : ''} h-7 w-7 
               bg-[length:30px_30px] bg-center bg-no-repeat p-5 
               ${
                 displayBall(i, j) &&
                 (isCurrentRedBall
-                  ? "hover:bg-[url('/ball_red.png')]"
+                  ? "hover:bg-[url('/ball_green.png')]"
                   : "hover:bg-[url('/ball_blue.png')]")
               }
               ${
                 props.gameInfo?.field?.value?.[j]?.[i] == 1
-                  ? "bg-[url('/ball_red.png')]"
+                  ? "bg-[url('/ball_green.png')]"
                   : ''
               }
               ${
@@ -56,7 +56,7 @@ export const GameView = (props: IGameViewProps) => {
               ${
                 isLoadingBall(i, j) &&
                 (isCurrentRedBall
-                  ? "bg-opacity-50 bg-[url('/ball_red.png')]"
+                  ? "bg-opacity-50 bg-[url('/ball_green.png')]"
                   : "bg-opacity-50 bg-[url('/ball_blue.png')]")
               }
             `}
