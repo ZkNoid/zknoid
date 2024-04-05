@@ -55,6 +55,10 @@ export class Lobby extends Struct({
 
 @runtimeModule()
 export class LobbyManager extends RuntimeModule<void> {
+  @state() public activeGameId = StateMap.from<PublicKey, UInt64>(
+    PublicKey,
+    UInt64,
+  );
   @state() public activeLobby = StateMap.from<UInt64, Lobby>(UInt64, Lobby);
   @state() public lastLobbyId = State.from<UInt64>(UInt64);
 
@@ -94,7 +98,7 @@ export class LobbyManager extends RuntimeModule<void> {
     this.activeLobby.set(lobbyId, lobby);
   }
 
-  @runtimeMethod()
+  @runtimeMethod() // Move alll with pending lobby to matchmaker
   public joinPendingLobby(lobbyId: UInt64): Lobby {
     const lobby = this.pendingLobby.get(lobbyId).orElse(Lobby.default(lobbyId));
     this._joinLobby(lobby);
@@ -190,8 +194,10 @@ export class LobbyManager extends RuntimeModule<void> {
    * @returns Id of the new game. Will be set for player and opponent
    */
   public initGame(lobby: Lobby, shouldInit: Bool): UInt64 {
-    // Clear queueRegisteredRoundUsers
+    let gameId = this.getNextGameId();
+
     lobby.players.forEach((player) => {
+      // Clear queueRegisteredRoundUsers
       this.queueRegisteredRoundUsers.set(
         new RoundIdxUser({
           roundId: lobby.id,
@@ -199,10 +205,8 @@ export class LobbyManager extends RuntimeModule<void> {
         }),
         shouldInit.not(),
       );
-    });
 
-    // Eat pemdingBalances of users
-    lobby.players.forEach((player) => {
+      // Eat pendingBalances of users
       let curBalance = this.pendingBalances.get(player).value;
       this.pendingBalances.set(
         player,
@@ -213,13 +217,18 @@ export class LobbyManager extends RuntimeModule<void> {
           curBalance,
         ),
       );
+
+      // Set active game
+      this.activeGameId.set(player, gameId);
     });
+
+    // Set active game for each user
 
     lobby.started = Bool(true);
 
     this.activeLobby.set(lobby.id, lobby);
 
-    return UInt64.from(0);
+    return UInt64.from(gameId);
   }
 
   protected getFunds(
@@ -247,5 +256,9 @@ export class LobbyManager extends RuntimeModule<void> {
         .mul(player2Share)
         .div(player1Share.add(player2Share)),
     );
+  }
+
+  public getNextGameId(): UInt64 {
+    return UInt64.zero;
   }
 }

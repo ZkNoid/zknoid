@@ -74,11 +74,6 @@ export class MatchMaker extends LobbyManager {
   >(RoundIdxIndex, QueueListItem);
   @state() public queueLength = StateMap.from<UInt64, UInt64>(UInt64, UInt64);
 
-  @state() public activeGameId = StateMap.from<PublicKey, UInt64>(
-    PublicKey,
-    UInt64,
-  );
-
   // Game ids start from 1
   // abstract games: StateMap<UInt64, any>;
   @state() public games = StateMap.from<UInt64, any>(UInt64, UInt64);
