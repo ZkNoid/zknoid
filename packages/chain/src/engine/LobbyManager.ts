@@ -50,11 +50,14 @@ export class Lobby extends Struct({
         this.players[i],
       );
     }
+    this.curAmount = this.curAmount.add(1);
   }
 }
 
+interface LobbyManagerConfig {}
+
 @runtimeModule()
-export class LobbyManager extends RuntimeModule<void> {
+export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   @state() public activeGameId = StateMap.from<PublicKey, UInt64>(
     PublicKey,
     UInt64,
@@ -136,7 +139,16 @@ export class LobbyManager extends RuntimeModule<void> {
       this.pendingBalances.get(sender).value,
     );
 
-    const fee = lobby.participationFee;
+    // console.log(pendingBalance);
+    // console.log(lobby.participationFee);
+
+    // console.log(`Pending balance: ${pendingBalance.toString()}`);
+    // console.log(`Participation fee: ${lobby.participationFee.toString()}`);
+    // console.log(
+    //   `Sub: ${lobby.participationFee.sub(pendingBalance).toString()}`,
+    // );
+
+    const fee = ProtoUInt64.from(lobby.participationFee);
 
     const amountToTransfer = Provable.if<ProtoUInt64>(
       pendingBalance.greaterThan(fee),
@@ -228,7 +240,9 @@ export class LobbyManager extends RuntimeModule<void> {
 
     this.activeLobby.set(lobby.id, lobby);
 
-    return UInt64.from(gameId);
+    this.updateNextGameId(shouldInit);
+
+    return gameId;
   }
 
   protected getFunds(
@@ -261,4 +275,6 @@ export class LobbyManager extends RuntimeModule<void> {
   public getNextGameId(): UInt64 {
     return UInt64.zero;
   }
+
+  public updateNextGameId(shouldUpdate: Bool): void {}
 }

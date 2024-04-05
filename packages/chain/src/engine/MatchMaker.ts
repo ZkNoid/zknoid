@@ -81,7 +81,7 @@ export class MatchMaker extends LobbyManager {
   @state() public gamesNum = State.from<UInt64>(UInt64);
 
   @runtimeMethod()
-  public register2(sessionKey: PublicKey, timestamp: UInt64): void {
+  public register(sessionKey: PublicKey, timestamp: UInt64): void {
     const sender = this.transaction.sender.value;
     // If player in game – revert
     assert(
