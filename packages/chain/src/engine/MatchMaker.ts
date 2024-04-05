@@ -57,6 +57,9 @@ export class QueueListItem extends Struct({
 
 @runtimeModule()
 export class MatchMaker extends LobbyManager {
+  // Round => pending lobby
+  @state() public pendingLobby = StateMap.from<UInt64, Lobby>(UInt64, Lobby);
+
   // Session => user
   @state() public sessions = StateMap.from<PublicKey, PublicKey>(
     PublicKey,
@@ -111,6 +114,33 @@ export class MatchMaker extends LobbyManager {
       sender,
       Provable.if(lobbyReady, gameId, UInt64.from(0)),
     );
+  }
+
+  private joinPendingLobby(lobbyId: UInt64): Lobby {
+    const lobby = this.pendingLobby.get(lobbyId).orElse(Lobby.default(lobbyId));
+    this._joinLobby(lobby);
+    this.pendingLobby.set(lobbyId, lobby);
+    return lobby;
+  }
+
+  // Transform pending lobby to active lobby
+  // Returns activeLobby
+  private flushPendingLobby(pendingLobyId: UInt64, shouldFlush: Bool): Lobby {
+    let lobby = this.pendingLobby.get(pendingLobyId).value;
+
+    let activeLobby = this._addLobby(lobby, shouldFlush);
+
+    this.pendingLobby.set(
+      pendingLobyId,
+      Provable.if(
+        shouldFlush,
+        Lobby,
+        Lobby.default(pendingLobyId),
+        lobby,
+      ) as Lobby,
+    );
+
+    return activeLobby;
   }
 
   /**
