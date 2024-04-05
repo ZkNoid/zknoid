@@ -118,6 +118,14 @@ export class LobbyManager extends RuntimeModule<void> {
       'User already in queue',
     );
 
+    this.queueRegisteredRoundUsers.set(
+      new RoundIdxUser({
+        roundId: lobby.id,
+        userAddress: sender,
+      }),
+      Bool(true),
+    );
+
     lobby.addPlayer(sender);
 
     const pendingBalance = ProtoUInt64.from(
@@ -148,17 +156,6 @@ export class LobbyManager extends RuntimeModule<void> {
   // Returns activeLobby
   protected flushPendingLobby(pendingLobyId: UInt64, shouldFlush: Bool): Lobby {
     let lobby = this.pendingLobby.get(pendingLobyId).value;
-
-    // Clear queueRegisteredRoundUsers
-    lobby.players.forEach((player) => {
-      this.queueRegisteredRoundUsers.set(
-        new RoundIdxUser({
-          roundId: lobby.id,
-          userAddress: player,
-        }),
-        shouldFlush.not(),
-      );
-    });
 
     let activeLobby = this._addLobby(lobby, shouldFlush);
 
@@ -193,6 +190,17 @@ export class LobbyManager extends RuntimeModule<void> {
    * @returns Id of the new game. Will be set for player and opponent
    */
   public initGame(lobby: Lobby, shouldInit: Bool): UInt64 {
+    // Clear queueRegisteredRoundUsers
+    lobby.players.forEach((player) => {
+      this.queueRegisteredRoundUsers.set(
+        new RoundIdxUser({
+          roundId: lobby.id,
+          userAddress: player,
+        }),
+        shouldInit.not(),
+      );
+    });
+
     // Eat pemdingBalances of users
     lobby.players.forEach((player) => {
       let curBalance = this.pendingBalances.get(player).value;
