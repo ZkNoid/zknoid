@@ -71,20 +71,22 @@ export const GameCard = ({
         hoverColor
       )}
     >
-      <Image
-        src={
-          isFavorite
-            ? heartFilledImg
-            : color === 3
-              ? heartRightAccentImg
-              : heartImg
-        }
-        alt={'Favorite'}
-        className={
-          'absolute right-9 top-9 hidden h-[36px] w-[36px] cursor-pointer lg:block'
-        }
-        onClick={() => setIsFavorite(!isFavorite)}
-      />
+      {game.isReleased && (
+        <Image
+          src={
+            isFavorite
+              ? heartFilledImg
+              : color === 3
+                ? heartRightAccentImg
+                : heartImg
+          }
+          alt={'Favorite'}
+          className={
+            'absolute right-9 top-9 hidden h-[36px] w-[36px] cursor-pointer lg:block'
+          }
+          onClick={() => setIsFavorite(!isFavorite)}
+        />
+      )}
       <Link
         href={game.active ? `/games/${game.id}/${game.defaultPage}` : '#'}
         className="flex h-full flex-col gap-5 p-2 lg:m-5"
@@ -112,25 +114,27 @@ export const GameCard = ({
         </div>
         <div className={'flex flex-row justify-between'}>
           <div className="text-headline-2 lg:text-headline-1">{game.name}</div>
-          <span
-            className={
-              'flex flex-row items-center justify-between gap-2 text-center'
-            }
-          >
-            <StarSVG
-              fill={
-                color === 1
-                  ? '#D2FF00'
-                  : color === 2
-                    ? '#97FF00'
-                    : color === 3
-                      ? '#56EBFF'
-                      : '#D2FF00'
+          {game.isReleased && (
+            <span
+              className={
+                'flex flex-row items-center justify-between gap-2 text-center'
               }
-              className={'mb-1.5'}
-            />
-            {Number.isInteger(game.rating) ? game.rating + '.0' : game.rating}
-          </span>
+            >
+              <StarSVG
+                fill={
+                  color === 1
+                    ? '#D2FF00'
+                    : color === 2
+                      ? '#97FF00'
+                      : color === 3
+                        ? '#56EBFF'
+                        : '#D2FF00'
+                }
+                className={'mb-1.5'}
+              />
+              {Number.isInteger(game.rating) ? game.rating + '.0' : game.rating}
+            </span>
+          )}
         </div>
         <div className="font-plexsans text-[14px]/[18px] font-normal lg:text-main">
           {game.description}
