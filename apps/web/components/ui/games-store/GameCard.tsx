@@ -6,6 +6,7 @@ import { IGame } from '@/app/constants/games';
 import { useState } from 'react';
 import heartImg from '@/public/image/misc/heart.svg';
 import heartFilledImg from '@/public/image/misc/heart-filled.svg';
+import heartRightAccentImg from '@/public/image/misc/heart-right-accent.svg';
 import { clsx } from 'clsx';
 
 const StarSVG = ({
@@ -52,7 +53,7 @@ export const GameCard = ({
         ? 'bg-middle-accent'
         : color === 3
           ? 'bg-right-accent'
-          : 'bg-gradient-to-r from-left-accent to-middle-accent';
+          : 'bg-gradient-to-r from-left-accent via-middle-accent via-30% to-right-accent';
 
   const hoverColor =
     color === 1
@@ -71,7 +72,13 @@ export const GameCard = ({
       )}
     >
       <Image
-        src={isFavorite ? heartFilledImg : heartImg}
+        src={
+          isFavorite
+            ? heartFilledImg
+            : color === 3
+              ? heartRightAccentImg
+              : heartImg
+        }
         alt={'Favorite'}
         className={
           'absolute right-9 top-9 hidden h-[36px] w-[36px] cursor-pointer lg:block'
@@ -111,7 +118,15 @@ export const GameCard = ({
             }
           >
             <StarSVG
-              fill={color === 1 ? '#D2FF00' : '#97FF00'}
+              fill={
+                color === 1
+                  ? '#D2FF00'
+                  : color === 2
+                    ? '#97FF00'
+                    : color === 3
+                      ? '#56EBFF'
+                      : '#D2FF00'
+              }
               className={'mb-1.5'}
             />
             {Number.isInteger(game.rating) ? game.rating + '.0' : game.rating}
