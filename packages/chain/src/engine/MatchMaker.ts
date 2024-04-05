@@ -20,6 +20,7 @@ import {
 } from 'o1js';
 import { inject } from 'tsyringe';
 import { ZNAKE_TOKEN_ID } from '../constants';
+import { Lobby, LobbyManager } from './LobbyManager';
 
 interface MatchMakerConfig {}
 
@@ -55,7 +56,7 @@ export class QueueListItem extends Struct({
 // abstract class
 
 @runtimeModule()
-export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
+export class MatchMaker extends LobbyManager {
   // Session => user
   @state() public sessions = StateMap.from<PublicKey, PublicKey>(
     PublicKey,
@@ -78,51 +79,43 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     UInt64,
   );
 
-  @state() public pendingBalances = StateMap.from<PublicKey, ProtoUInt64>(
-    PublicKey,
-    ProtoUInt64,
-  );
-
   // Game ids start from 1
   // abstract games: StateMap<UInt64, any>;
   @state() public games = StateMap.from<UInt64, any>(UInt64, UInt64);
 
   @state() public gamesNum = State.from<UInt64>(UInt64);
 
-  @state() public gameFund = StateMap.from<UInt64, ProtoUInt64>(
-    UInt64,
-    ProtoUInt64,
-  );
-
-  @state() public gameFinished = StateMap.from<UInt64, Bool>(UInt64, Bool);
-
-  public constructor(@inject('Balances') private balances: Balances) {
-    super();
-  }
-
-  /**
-   * Initializes game when opponent is found
-   *
-   * @param opponentReady - Is opponent found. If not ready, function call should process this case without initialization
-   * @param opponent - Opponent if opponent is ready
-   * @returns Id of the new game. Will be set for player and opponent
-   */
-  public initGame(
-    opponentReady: Bool,
-    player: PublicKey,
-    opponent: Option<QueueListItem>,
-  ): UInt64 {
-    this.pendingBalances.set(
-      Provable.if(opponentReady, player, PublicKey.empty()),
-      ProtoUInt64.from(0),
+  @runtimeMethod()
+  public register2(sessionKey: PublicKey, timestamp: UInt64): void {
+    const sender = this.transaction.sender.value;
+    // If player in game – revert
+    assert(
+      this.activeGameId
+        .get(sender)
+        .orElse(UInt64.from(0))
+        .equals(UInt64.from(0)),
+      'Player already in game',
     );
 
-    this.pendingBalances.set(
-      Provable.if(opponentReady, opponent.value.userAddress, PublicKey.empty()),
-      ProtoUInt64.from(0),
-    );
+    this.sessions.set(sessionKey, sender);
+    const roundId = this.network.block.height.div(PENDING_BLOCKS_NUM);
 
-    return UInt64.from(0);
+    // Join lobby
+    let lobby = this.joinPendingLobby(roundId);
+
+    // If lobby is full - run game
+    const lobbyReady = lobby.isFull();
+
+    lobby = this.flushPendingLobby(lobby.id, lobbyReady);
+
+    const gameId = this.initGame(lobby, lobbyReady);
+
+    // Array call
+    // Assigning new game to player if opponent found
+    this.activeGameId.set(
+      sender,
+      Provable.if(lobbyReady, gameId, UInt64.from(0)),
+    );
   }
 
   /**
@@ -131,6 +124,7 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
    * @param sessionKey - Key of user background session
    * @param timestamp - Current user timestamp from front-end
    */
+  /*
   @runtimeMethod()
   public register(sessionKey: PublicKey, timestamp: UInt64): void {
     // If player in game – revert
@@ -159,6 +153,7 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
       'User already in queue',
     );
 
+    /// Call lobby add
     const queueLength = this.queueLength.get(roundId).orElse(UInt64.from(0));
 
     const opponentReady = queueLength.greaterThan(UInt64.from(0));
@@ -190,8 +185,13 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
       pendingBalance.add(amountToTransfer),
     );
 
-    const gameId = this.initGame(opponentReady, this.transaction.sender.value, opponent);
+    const gameId = this.initGame(
+      opponentReady,
+      this.transaction.sender.value,
+      opponent,
+    );
 
+    // Array call
     // Assigning new game to player if opponent found
     this.activeGameId.set(
       this.transaction.sender.value,
@@ -262,6 +262,7 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
       amountToTransfer,
     );
   }
+  */
 
   /**
    * Registers user in session queue
@@ -269,6 +270,7 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
    * @param sessionKey - Key of user background session
    * @param timestamp - Current user timestamp from front-end
    */
+  /*
   @runtimeMethod()
   public collectPendingBalance(): void {
     const sender = this.sessions.get(this.transaction.sender.value).value;
@@ -280,6 +282,7 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     this.balances.mint(ZNAKE_TOKEN_ID, sender, pendingBalance);
     this.pendingBalances.set(sender, ProtoUInt64.from(0));
   }
+  */
 
   @runtimeMethod()
   public proveOpponentTimeout(gameId: UInt64): void {
@@ -316,32 +319,5 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
 
   protected getParticipationPrice() {
     return DEFAULT_GAME_COST;
-  }
-
-  protected getFunds(
-    gameId: UInt64,
-    player1: PublicKey,
-    player2: PublicKey,
-    player1Share: ProtoUInt64,
-    player2Share: ProtoUInt64,
-  ) {
-    assert(this.gameFinished.get(gameId).value.not());
-
-    this.gameFinished.set(gameId, Bool(true));
-
-    this.balances.mint(
-      ZNAKE_TOKEN_ID,
-      player1,
-      ProtoUInt64.from(this.gameFund.get(gameId).value)
-        .mul(player1Share)
-        .div(player1Share.add(player2Share)),
-    );
-    this.balances.mint(
-      ZNAKE_TOKEN_ID,
-      player2,
-      ProtoUInt64.from(this.gameFund.get(gameId).value)
-        .mul(player2Share)
-        .div(player1Share.add(player2Share)),
-    );
   }
 }
