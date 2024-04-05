@@ -14,11 +14,11 @@ export const DatePicker = ({
 }) => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [activeDate, setActiveDate] = useState<number | undefined>(undefined);
-  const [possibleDate, setPossibleDate] = useState<number | undefined>(
-    undefined
+  const [activeDate, setActiveDate] = useState<number>(0);
+  const [possibleDate, setPossibleDate] = useState<number>(
+    0
   );
-  const [pickedDate, setPickedDate] = useState<number | undefined>(undefined);
+  const [pickedDate, setPickedDate] = useState<number>(0);
   const [currentMonth, setCurrentMonth] = useState<number>(
     currentDate.getMonth()
   );
@@ -30,9 +30,9 @@ export const DatePicker = ({
   const clearDates = () => {
     setDateTo('');
     setDateFrom('');
-    setActiveDate(undefined);
-    setPossibleDate(undefined);
-    setPickedDate(undefined);
+    setActiveDate(0);
+    setPossibleDate(0);
+    setPickedDate(0);
   };
 
   return (
@@ -203,7 +203,7 @@ export const DatePicker = ({
                         if (!activeDate) setActiveDate(index + 1);
                         if (activeDate) {
                           if (index + 1 === activeDate)
-                            setActiveDate(undefined);
+                            setActiveDate(0);
                           else {
                             setPickedDate(index + 1);
                             const currentPickedDate = index + 1;
@@ -246,7 +246,7 @@ export const DatePicker = ({
                           }
                         }
                       } else {
-                        setPickedDate(undefined);
+                        setPickedDate(0);
                         setActiveDate(index + 1);
                       }
                     }}
