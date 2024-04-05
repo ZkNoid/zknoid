@@ -65,9 +65,6 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   @state() public activeLobby = StateMap.from<UInt64, Lobby>(UInt64, Lobby);
   @state() public lastLobbyId = State.from<UInt64>(UInt64);
 
-  // Round => pending lobby
-  @state() public pendingLobby = StateMap.from<UInt64, Lobby>(UInt64, Lobby);
-
   @state() public pendingBalances = StateMap.from<PublicKey, ProtoUInt64>(
     PublicKey,
     ProtoUInt64,
@@ -101,15 +98,7 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
     this.activeLobby.set(lobbyId, lobby);
   }
 
-  @runtimeMethod() // Move alll with pending lobby to matchmaker
-  public joinPendingLobby(lobbyId: UInt64): Lobby {
-    const lobby = this.pendingLobby.get(lobbyId).orElse(Lobby.default(lobbyId));
-    this._joinLobby(lobby);
-    this.pendingLobby.set(lobbyId, lobby);
-    return lobby;
-  }
-
-  private _joinLobby(lobby: Lobby): void {
+  protected _joinLobby(lobby: Lobby): void {
     const sender = this.transaction.sender.value;
 
     // User can't re-register in round queue if already registered
@@ -168,27 +157,7 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
     );
   }
 
-  // Transform pending lobby to active lobby
-  // Returns activeLobby
-  protected flushPendingLobby(pendingLobyId: UInt64, shouldFlush: Bool): Lobby {
-    let lobby = this.pendingLobby.get(pendingLobyId).value;
-
-    let activeLobby = this._addLobby(lobby, shouldFlush);
-
-    this.pendingLobby.set(
-      pendingLobyId,
-      Provable.if(
-        shouldFlush,
-        Lobby,
-        Lobby.default(pendingLobyId),
-        lobby,
-      ) as Lobby,
-    );
-
-    return activeLobby;
-  }
-
-  private _addLobby(lobby: Lobby, shouldUpdate: Bool): Lobby {
+  protected _addLobby(lobby: Lobby, shouldUpdate: Bool): Lobby {
     const lobbyId = this.lastLobbyId.get().value;
     lobby.id = lobbyId;
     this.activeLobby.set(lobbyId, lobby); // It will be overwriteen later, so dont care about this
