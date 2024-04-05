@@ -1,7 +1,7 @@
 import { motion, useMotionValue } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
-
 import { animate, useMotionTemplate, useTransform } from 'framer-motion';
+import { formatUnits } from '@/lib/unit';
 
 const clamp = (number: number, min: number, max: number) => {
   return Math.max(min, Math.min(number, max));
@@ -120,7 +120,9 @@ export const ProgressBar = ({
           className={
             'max-w-[100px] rounded-[5px] border bg-bg-dark p-1 placeholder:font-plexsans placeholder:text-main hover:placeholder:text-left-accent/80 focus:outline-none'
           }
-          value={minValue}
+          // @ts-ignore
+          value={formatUnits(minValue)}
+          readOnly={true}
           // animate={{ y: dragging && percent < 0.4 ? 20 : 0 }}
           onChange={(event) => {
             if (
@@ -134,7 +136,9 @@ export const ProgressBar = ({
         <motion.input
           type="text"
           placeholder={'to'}
-          value={Math.round(Math.floor(maxValue * 100) / 100)}
+          // @ts-ignore
+          value={Math.round(parseInt(formatUnits(Math.round(Math.floor(maxValue * 100) / 100))))}
+          readOnly={true}
           max={max}
           min={min}
           className={
