@@ -219,7 +219,7 @@ export default function RandzuPage({
   return (
     <GamePage
       gameConfig={randzuConfig}
-      image={'/image/game-page/game-title-template.svg'}
+      image={'/image/game-page/randzu-title.svg'}
       defaultPage={'Game'}
     >
       <main className="flex grow flex-col items-center gap-5 p-5">
