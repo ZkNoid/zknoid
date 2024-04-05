@@ -12,13 +12,13 @@ export const L1_ASSETS: Record<string, ZkNoidAsset> = {
     name: 'Mina',
     ticker: '$MINA',
     icon: '/image/tokens/mina.svg',
-    decimals: 9
+    decimals: 9,
   },
   ZkNoid: {
     name: 'ZkNoid',
     ticker: '$ZkNoid',
-    icon: undefined,
-    decimals: 9
+    icon: '/image/tokens/znakes.svg',
+    decimals: 9,
   },
 };
 
@@ -27,6 +27,6 @@ export const ALL_ZKNOID_L1_ASSETS = [L1_ASSETS.Mina, L1_ASSETS.ZkNoid];
 export const L2_ASSET: ZkNoidAsset = {
   name: 'Znakes',
   ticker: '$znakes',
-  icon: undefined,
-  decimals: 9
+  icon: '/image/tokens/znakes.svg',
+  decimals: 9,
 };
