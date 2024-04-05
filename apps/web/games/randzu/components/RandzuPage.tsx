@@ -153,14 +153,17 @@ export default function RandzuPage({
 
   const onCellClicked = async (x: number, y: number) => {
     if (!matchQueue.gameInfo?.isCurrentUserMove) return;
-    if (matchQueue.gameInfo.field.value[x][y] != 0) return;
+    if (matchQueue.gameInfo.field.value[y][x] != 0) return;
+    console.log('After checks');
 
     const currentUserId = matchQueue.gameInfo.currentUserIndex + 1;
 
     const updatedField = (matchQueue.gameInfo.field as RandzuField).value.map(
       (x: UInt32[]) => x.map((x) => x.toBigint())
     );
+
     updatedField[y][x] = matchQueue.gameInfo.currentUserIndex + 1;
+    // updatedField[x][y] = matchQueue.gameInfo.currentUserIndex + 1;
 
     const randzuLogic = client.runtime.resolve('RandzuLogic');
 
