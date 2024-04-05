@@ -10,12 +10,12 @@ import { ICompetition } from '@/lib/types';
 import { useState } from 'react';
 
 export const CompetitionWidget = ({
-  competitionsBlocks,
+  competitionBlocks,
   competitionList,
   gameId,
 }: {
   gameId: string;
-  competitionsBlocks: ICompetition[];
+  competitionBlocks: ICompetition[];
   competitionList: ICompetition[];
 }) => {
   const [sortBy, setSortBy] = useState<CompetitionsSortBy>(
@@ -55,7 +55,7 @@ export const CompetitionWidget = ({
           The most interesting competitions
         </div>
         <div className={'flex flex-row gap-4'}>
-          {competitionsBlocks.map((item, index) => (
+          {competitionBlocks.map((item, index) => (
             <CompetitionBlock
               key={index}
               competition={item}
@@ -77,7 +77,7 @@ export const CompetitionWidget = ({
         </div>
         <div
           className={
-            'scrollbar-custom flex max-h-[400px] flex-col gap-4 overflow-y-scroll'
+            'flex max-h-[400px] flex-col gap-4 overflow-y-scroll scrollbar-custom'
           }
         >
           {competitionList
