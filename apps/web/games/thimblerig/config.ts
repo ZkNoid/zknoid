@@ -8,11 +8,11 @@ export const thimblerigConfig = createZkNoidGameConfig({
   name: 'Thimblerig game',
   description:
     'One player hides a boll behind a thimbler and second player needs to guess which thimbler it was',
-  image: '/image/games/soon.svg',
+  image: '/image/games/thimblerig.svg',
   rating: 0,
   genre: ZkNoidGameGenre.Lucky,
   features: [ZkNoidGameFeature.P2P],
-  isReleased: false,
+  isReleased: true,
   releaseDate: new Date(2024, 2, 25),
   popularity: 0,
   author: 'ZkNoid Team',
