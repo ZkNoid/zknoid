@@ -333,7 +333,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
               GameState.WaitingForReveal,
             ].includes(gameState) && (
               <div className="flex cursor-pointer items-center justify-center rounded border border-white py-2 font-plexsans text-[20px]/[20px] font-medium text-white">
-                OPPONENT'S TURN
+                {"OPPONENT'S TURN"}
               </div>
             )}
             {gameState == GameState.NotStarted && (
