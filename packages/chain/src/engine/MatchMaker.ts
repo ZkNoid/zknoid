@@ -26,7 +26,7 @@ interface MatchMakerConfig {}
 
 export const DEFAULT_GAME_COST = ProtoUInt64.from(10 ** 9);
 
-export const PENDING_BLOCKS_NUM_CONST = 20;
+export const PENDING_BLOCKS_NUM_CONST = 100;
 
 const BLOCK_PRODUCTION_SECONDS = 5;
 export const MOVE_TIMEOUT_IN_BLOCKS = 60 / BLOCK_PRODUCTION_SECONDS;
@@ -87,6 +87,16 @@ export class MatchMaker extends LobbyManager {
   public register(sessionKey: PublicKey, timestamp: UInt64): void {
     const sender = this.transaction.sender.value;
     // If player in game – revert
+
+    Provable.asProver(() => {
+      const gameId = this.activeGameId.get(sender).orElse(UInt64.from(0));
+      if (gameId.equals(UInt64.from(0)).not().toBoolean()) {
+        console.log(
+          `Register failed. Player already in game ${gameId.toString()}`,
+        );
+      }
+    });
+
     assert(
       this.activeGameId
         .get(sender)
@@ -107,17 +117,53 @@ export class MatchMaker extends LobbyManager {
     lobby = this.flushPendingLobby(lobby.id, lobbyReady);
 
     const gameId = this.initGame(lobby, lobbyReady);
-
-    // Array call
-    // Assigning new game to player if opponent found
-    this.activeGameId.set(
-      sender,
-      Provable.if(lobbyReady, gameId, UInt64.from(0)),
-    );
   }
 
   private joinPendingLobby(lobbyId: UInt64): Lobby {
+    const sender = this.transaction.sender.value;
     const lobby = this.pendingLobby.get(lobbyId).orElse(Lobby.default(lobbyId));
+
+    // Move to MatchMaker
+    // User can't re-register in round queue if already registered
+
+    // Provable.asProver(() => {
+    //   const gameId = this.activeGameId.get(sender).orElse(UInt64.from(0));
+    //   if (
+    //     this.queueRegisteredRoundUsers
+    //       .get(
+    //         new RoundIdxUser({
+    //           roundId: lobby.id,
+    //           userAddress: sender,
+    //         }),
+    //       )
+    //       .isSome.not()
+    //   ) {
+    //     console.log(
+    //       `Register failed. Player already in game ${gameId.toString()}`,
+    //     );
+    //   }
+    // });
+
+    assert(
+      this.queueRegisteredRoundUsers
+        .get(
+          new RoundIdxUser({
+            roundId: lobby.id,
+            userAddress: sender,
+          }),
+        )
+        .value.not(),
+      'User already in queue',
+    );
+
+    this.queueRegisteredRoundUsers.set(
+      new RoundIdxUser({
+        roundId: lobby.id,
+        userAddress: sender,
+      }),
+      Bool(true),
+    );
+
     this._joinLobby(lobby);
     this.pendingLobby.set(lobbyId, lobby);
     return lobby;
@@ -127,8 +173,6 @@ export class MatchMaker extends LobbyManager {
   // Returns activeLobby
   private flushPendingLobby(pendingLobyId: UInt64, shouldFlush: Bool): Lobby {
     let lobby = this.pendingLobby.get(pendingLobyId).value;
-
-    let activeLobby = this._addLobby(lobby, shouldFlush);
 
     this.pendingLobby.set(
       pendingLobyId,
@@ -140,7 +184,35 @@ export class MatchMaker extends LobbyManager {
       ) as Lobby,
     );
 
+    let activeLobby = this._addLobby(lobby, shouldFlush);
+
+    Provable.asProver(() => {
+      if (shouldFlush.toBoolean()) {
+        console.log('Flush');
+        console.log(
+          'Players afte flush' +
+            this.pendingLobby.get(pendingLobyId).value.curAmount.toString(),
+        );
+      }
+    });
+
     return activeLobby;
+  }
+
+  protected override forEachUserInInitGame(
+    lobby: Lobby,
+    player: PublicKey,
+    shouldInit: Bool,
+  ): void {
+    super.forEachUserInInitGame(lobby, player, shouldInit);
+    // Clear queueRegisteredRoundUsers
+    this.queueRegisteredRoundUsers.set(
+      new RoundIdxUser({
+        roundId: lobby.id,
+        userAddress: player,
+      }),
+      shouldInit.not(),
+    );
   }
 
   /**
