@@ -199,7 +199,7 @@ export const DepositMenuItem = () => {
       <HeaderCard
         svg={'top-up'}
         text="Top up"
-        onClick={() => bridgeStore.setOpen(100n)}
+        onClick={() => bridgeStore.setOpen(10n * 10n**9n)}
       />
       {contextAppChainClient && (
         <HeaderCard
