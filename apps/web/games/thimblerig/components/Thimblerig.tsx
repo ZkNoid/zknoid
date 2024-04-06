@@ -407,7 +407,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
           )}
           {gameState == GameState.Lost && (
             <div className="py-10 font-museo text-[24px]/[24px]">
-              {getRandomEmoji('sad')}You've lost...
+              {getRandomEmoji('sad')} {"You've lost..."}
             </div>
           )}
 
