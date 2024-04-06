@@ -9,7 +9,7 @@ import { Bool, Provable, PublicKey, Struct, UInt64 } from 'o1js';
 
 import { Balances, UInt64 as ProtoUInt64 } from '@proto-kit/library';
 import { inject } from 'tsyringe';
-import { ZNAKE_TOKEN_ID } from '../..';
+import { ZNAKE_TOKEN_ID } from '../constants';
 
 const PLAYER_AMOUNT = 2;
 const DEFAULT_PARTICIPATION_FEE = ProtoUInt64.from(0);
@@ -101,27 +101,6 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   protected _joinLobby(lobby: Lobby): void {
     const sender = this.transaction.sender.value;
 
-    // User can't re-register in round queue if already registered
-    assert(
-      this.queueRegisteredRoundUsers
-        .get(
-          new RoundIdxUser({
-            roundId: lobby.id,
-            userAddress: sender,
-          }),
-        )
-        .isSome.not(),
-      'User already in queue',
-    );
-
-    this.queueRegisteredRoundUsers.set(
-      new RoundIdxUser({
-        roundId: lobby.id,
-        userAddress: sender,
-      }),
-      Bool(true),
-    );
-
     lobby.addPlayer(sender);
 
     const pendingBalance = ProtoUInt64.from(
@@ -178,29 +157,7 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
     let gameId = this.getNextGameId();
 
     lobby.players.forEach((player) => {
-      // Clear queueRegisteredRoundUsers
-      this.queueRegisteredRoundUsers.set(
-        new RoundIdxUser({
-          roundId: lobby.id,
-          userAddress: player,
-        }),
-        shouldInit.not(),
-      );
-
-      // Eat pendingBalances of users
-      let curBalance = this.pendingBalances.get(player).value;
-      this.pendingBalances.set(
-        player,
-        Provable.if<ProtoUInt64>(
-          shouldInit,
-          ProtoUInt64,
-          ProtoUInt64.from(0),
-          curBalance,
-        ),
-      );
-
-      // Set active game
-      this.activeGameId.set(player, gameId);
+      this.forEachUserInInitGame(lobby, player, shouldInit);
     });
 
     // Set active game for each user
@@ -212,6 +169,34 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
     this.updateNextGameId(shouldInit);
 
     return gameId;
+  }
+
+  protected forEachUserInInitGame(
+    lobby: Lobby,
+    player: PublicKey,
+    shouldInit: Bool,
+  ): void {
+    let gameId = this.getNextGameId();
+
+    // Eat pendingBalances of users
+    let curBalance = this.pendingBalances.get(player).value;
+    this.pendingBalances.set(
+      player,
+      Provable.if<ProtoUInt64>(
+        shouldInit,
+        ProtoUInt64,
+        ProtoUInt64.from(0),
+        curBalance,
+      ),
+    );
+
+    // Set active game
+    Provable.asProver(() => {
+      console.log(
+        `Setting gameid = ${gameId.toString()} for ${player.toBase58()}`,
+      );
+    });
+    this.activeGameId.set(player, gameId);
   }
 
   protected getFunds(
