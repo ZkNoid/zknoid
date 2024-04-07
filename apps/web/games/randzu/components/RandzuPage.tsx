@@ -228,8 +228,9 @@ export default function RandzuPage({
     matchQueue.lastGameState,
   ]);
 
-  const mainButtonState =
-    GameState.CurrentPlayerTurn == gameState
+  const mainButtonState = loading
+    ? MainButtonState.TransactionExecution
+    : GameState.CurrentPlayerTurn == gameState
       ? MainButtonState.YourTurn
       : GameState.OpponentTurn == gameState
         ? MainButtonState.OpponentsTurn
@@ -249,6 +250,30 @@ export default function RandzuPage({
     [GameState.Lost]: 'YOU LOST',
   } as Record<GameState, string>;
 
+  const bottomButtonState = {
+    [GameState.Lost]: {
+      text: 'RESTART',
+      handler: () => {
+        restart();
+      },
+    },
+    [GameState.Won]: {
+      text: 'RESTART',
+      handler: () => {
+        restart();
+      },
+    },
+  } as Record<GameState, { text: string; handler: () => void }>;
+
+  const mainText = {
+    [GameState.CurrentPlayerTurn]: 'Make your move',
+    [GameState.OpponentTurn]:
+      'Wait for opponent to make a turn',
+    [GameState.Won]: `${getRandomEmoji('happy')}You won! Congratulations!`,
+    [GameState.Lost]: `${getRandomEmoji('sad')} You've lost...`,
+  } as Record<GameState, string>;
+
+
   return (
     <GamePage
       gameConfig={randzuConfig}
@@ -264,11 +289,9 @@ export default function RandzuPage({
         queueSize={matchQueue.getQueueLength()}
         gameRating={4.8}
         gameAuthor={'zkNoid team'}
-        mainText={''}
-        bottomButtonText={''}
-        bottomButtonHandler={function (): void {
-          throw new Error('Function not implemented.');
-        }}
+        mainText={mainText[gameState]}
+        bottomButtonText={bottomButtonState[gameState]?.text}
+        bottomButtonHandler={bottomButtonState[gameState]?.handler}
         competitionName={'Room 1'}
         gameName={'Randzu'}
         gameRules={`Randzu is a game played on a 15x15 grid, similar to tic-tac-toe. Two players take turns placing their mark, using balls of different colors. The goal is to get five of your marks in a row, either horizontally, vertically or diagonally.
