@@ -26,6 +26,7 @@ export const useObserveThimblerigMatchQueue = () => {
 
     matchQueue.loadMatchQueue(client.query.runtime.ThimblerigLogic, parseInt(chain.block?.height ?? '0'));
     matchQueue.loadActiveGame(
+      'thimblerig',
       client.query.runtime.ThimblerigLogic,
       parseInt(chain.block?.height ?? '0'),
       PublicKey.fromBase58(network.address!)

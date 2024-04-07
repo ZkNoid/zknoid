@@ -213,8 +213,8 @@ export default function RandzuPage({
     } else if (matchQueue.activeGameId) {
       setGameState(GameState.Active);
     } else {
-      if (matchQueue.lastGameState == 'win') setGameState(GameState.Won);
-      else if (matchQueue.lastGameState == 'lost') setGameState(GameState.Lost);
+      if (matchQueue.lastGameState['randzu'] == 'win') setGameState(GameState.Won);
+      else if (matchQueue.lastGameState['randzu'] == 'lost') setGameState(GameState.Lost);
       else setGameState(GameState.NotStarted);
     }
   }, [matchQueue.activeGameId, matchQueue.inQueue, matchQueue.lastGameState]);

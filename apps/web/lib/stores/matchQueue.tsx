@@ -14,7 +14,7 @@ export interface MatchQueueState {
   inQueue: boolean;
   activeGameId: bigint;
   gameInfo: any | undefined;
-  lastGameState: 'win' | 'lost' | undefined;
+  lastGameState: Record<string, 'win' | 'lost' | undefined>;
   pendingBalance: bigint;
   getQueueLength: () => number;
   loadMatchQueue(
@@ -22,11 +22,12 @@ export interface MatchQueueState {
     blockHeight: number
   ): Promise<void>;
   loadActiveGame: (
+    gameName: string,
     query: ModuleQuery<MatchMaker>,
     blockHeight: number,
     address: PublicKey
   ) => Promise<void>;
-  resetLastGameState: () => void;
+  resetLastGameState: (gameName: string) => void;
 }
 
 const PENDING_BLOCKS_NUM = UInt64.from(PENDING_BLOCKS_NUM_CONST);
@@ -41,11 +42,11 @@ export const useMatchQueueStore = create<
     activeGameId: BigInt(0),
     inQueue: Boolean(false),
     gameInfo: undefined as any | undefined,
-    lastGameState: undefined as 'win' | 'lost' | undefined,
+    lastGameState: {},
     pendingBalance: 0n,
-    resetLastGameState() {
+    resetLastGameState(gameName: string) {
       set((state) => {
-        state.lastGameState = undefined;
+        state.lastGameState[gameName] = undefined;
         state.gameInfo = undefined;
       });
     },
@@ -73,6 +74,7 @@ export const useMatchQueueStore = create<
       });
     },
     async loadActiveGame(
+      gameName: string,
       query: ModuleQuery<MatchMaker>,
       blockHeight: number,
       address: PublicKey
@@ -110,7 +112,7 @@ export const useMatchQueueStore = create<
         // );
 
         set((state) => {
-          state.lastGameState = gameInfo.winner.equals(address).toBoolean()
+          state.lastGameState[gameName] = gameInfo.winner.equals(address).toBoolean()
             ? 'win'
             : 'lost';
           state.gameInfo!.field = gameInfo.field;
@@ -174,7 +176,7 @@ export const useMatchQueueStore = create<
   }))
 );
 
-export const useObserveMatchQueue = (query: ModuleQuery<MatchMaker>) => {
+export const useObserveMatchQueue = (gameName: string, query: ModuleQuery<MatchMaker>) => {
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
   const matchQueue = useMatchQueueStore();
@@ -185,6 +187,7 @@ export const useObserveMatchQueue = (query: ModuleQuery<MatchMaker>) => {
     }
     matchQueue.loadMatchQueue(query, parseInt(chain.block?.height ?? '0'));
     matchQueue.loadActiveGame(
+      gameName,
       query,
       parseInt(chain.block?.height ?? '0'),
       PublicKey.fromBase58(network.address!)
