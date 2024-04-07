@@ -201,20 +201,6 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     await tx.send();
   };
 
-  const getWinnings = async () => {
-    const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
-
-    const tx = await client.transaction(
-      PublicKey.fromBase58(networkStore.address!),
-      () => {
-        thimblerigLogic.win(UInt64.from(matchQueue.gameInfo!.gameId));
-      }
-    );
-
-    await tx.sign();
-    await tx.send();
-  };
-
   useEffect(() => {
     if (matchQueue.pendingBalance && !matchQueue.inQueue) {
       console.log('Collecting pending balance', matchQueue.pendingBalance);

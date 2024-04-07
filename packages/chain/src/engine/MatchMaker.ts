@@ -94,8 +94,6 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     ProtoUInt64,
   );
 
-  @state() public gameFinished = StateMap.from<UInt64, Bool>(UInt64, Bool);
-
   public constructor(@inject('Balances') private balances: Balances) {
     super();
   }
@@ -190,7 +188,11 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
       pendingBalance.add(amountToTransfer),
     );
 
-    const gameId = this.initGame(opponentReady, this.transaction.sender.value, opponent);
+    const gameId = this.initGame(
+      opponentReady,
+      this.transaction.sender.value,
+      opponent,
+    );
 
     // Assigning new game to player if opponent found
     this.activeGameId.set(
@@ -318,30 +320,33 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     return DEFAULT_GAME_COST;
   }
 
-  protected getFunds(
+  protected acquireFunds(
     gameId: UInt64,
     player1: PublicKey,
     player2: PublicKey,
     player1Share: ProtoUInt64,
     player2Share: ProtoUInt64,
+    totalShares: ProtoUInt64
   ) {
-    assert(this.gameFinished.get(gameId).value.not());
+    const player1PendingBalance = this.pendingBalances.get(player1);
+    const player2PendingBalance = this.pendingBalances.get(player2);
 
-    this.gameFinished.set(gameId, Bool(true));
-
-    this.balances.mint(
-      ZNAKE_TOKEN_ID,
+    this.pendingBalances.set(
       player1,
-      ProtoUInt64.from(this.gameFund.get(gameId).value)
-        .mul(player1Share)
-        .div(player1Share.add(player2Share)),
+      ProtoUInt64.from(player1PendingBalance.value).add(
+        ProtoUInt64.from(this.gameFund.get(gameId).value)
+          .mul(player1Share)
+          .div(totalShares),
+      ),
     );
-    this.balances.mint(
-      ZNAKE_TOKEN_ID,
+
+    this.pendingBalances.set(
       player2,
-      ProtoUInt64.from(this.gameFund.get(gameId).value)
-        .mul(player2Share)
-        .div(player1Share.add(player2Share)),
+      ProtoUInt64.from(player2PendingBalance.value).add(
+        ProtoUInt64.from(this.gameFund.get(gameId).value)
+          .mul(player2Share)
+          .div(totalShares),
+      ),
     );
   }
 }
