@@ -14,7 +14,10 @@ import { Field, Poseidon, PublicKey, UInt64 } from 'o1js';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
 import { walletInstalled } from '@/lib/helpers';
-import { useObserveThimblerigMatchQueue, useThimblerigMatchQueueStore } from '../stores/matchQueue';
+import {
+  useObserveThimblerigMatchQueue,
+  useThimblerigMatchQueueStore,
+} from '../stores/matchQueue';
 import { useCommitmentStore } from '@/lib/stores/commitmentStorage';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import { DEFAULT_GAME_COST } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
@@ -22,6 +25,7 @@ import { useMinaBridge } from '@/lib/stores/protokitBalances';
 import { formatUnits } from '@/lib/unit';
 import ThimbleSVG from '../assets/thimble.svg';
 import ThimbleOpenedSVG from '../assets/thimble_opened_und.svg';
+import ThimbleOpenedCorrectSVG from '../assets/thimble_opened_correct.svg';
 
 import BallSVG from '../assets/ball.svg';
 import ArrowSVG from '../assets/arrow.svg';
@@ -61,6 +65,10 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
   const networkStore = useNetworkStore();
   const [gameState, setGameState] = useState(GameState.NotStarted);
+  const [revealedValue, setRevealedValue] = useState<
+    undefined | { choice: 0 | 1 | 2; value: 0 | 1 | 2 }
+  >(undefined);
+
   const matchQueue = useThimblerigMatchQueueStore();
   const sessionPublicKey = useStore(useSessionKeyStore, (state) =>
     state.getSessionKey()
@@ -80,6 +88,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
   const restart = () => {
     matchQueue.resetLastGameState();
+    setRevealedValue(undefined);
     setGameState(GameState.NotStarted);
   };
   const bridge = useMinaBridge();
@@ -258,11 +267,31 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     } else if (matchQueue.activeGameId) {
       setGameState(GameState.Active);
     } else {
-      if (matchQueue.lastGameState == 'win')
+      if (matchQueue.lastGameState == 'win') {
+        setRevealedValue({
+          value: (Number(matchQueue.gameInfo.field.value.toBigInt()) + 1) as
+            | 0
+            | 1
+            | 2,
+          choice: Number(matchQueue.gameInfo.field.choice.toBigInt()) as
+            | 0
+            | 1
+            | 2,
+        });
         setGameState(GameState.Won);
-      else if (matchQueue.lastGameState == 'lost')
+      } else if (matchQueue.lastGameState == 'lost') {
         setGameState(GameState.Lost);
-      else {
+        setRevealedValue({
+          value: (Number(matchQueue.gameInfo.field.value.toBigInt()) + 1) as
+            | 0
+            | 1
+            | 2,
+          choice: Number(matchQueue.gameInfo.field.choice.toBigInt()) as
+            | 0
+            | 1
+            | 2,
+        });
+      } else {
         setGameState(GameState.NotStarted);
       }
     }
@@ -385,11 +414,25 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
               return (
                 <Image
                   key={i}
-                  src={thimbleOpened != i + 1 ? ThimbleSVG : ThimbleOpenedSVG}
+                  src={
+                    gameState == GameState.CurrentPlayerGuessing &&
+                    thimbleOpened == i + 1
+                      ? ThimbleOpenedSVG
+                      : (gameState == GameState.Won ||
+                            gameState == GameState.Lost) &&
+                          revealedValue?.choice == i
+                        ? ThimbleOpenedCorrectSVG
+                        : (gameState == GameState.Won ||
+                              gameState == GameState.Lost) &&
+                            revealedValue?.value == i
+                          ? ThimbleOpenedSVG
+                          : ThimbleSVG
+                  }
                   alt={'Thimble'}
                   draggable="true"
                   onDrop={() => {
-                    commitThumblerig(i);
+                    gameState == GameState.CurrentPlayerHiding &&
+                      commitThumblerig(i);
                   }}
                   onDragOver={(e) => {
                     e.preventDefault();
@@ -408,7 +451,10 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                       setThimbleOpened(undefined);
                     }
                   }}
-                  onClick={() => chooseThumblerig(i + 1)}
+                  onClick={() =>
+                    gameState == GameState.CurrentPlayerGuessing &&
+                    chooseThumblerig(i + 1)
+                  }
                 />
               );
             })}
