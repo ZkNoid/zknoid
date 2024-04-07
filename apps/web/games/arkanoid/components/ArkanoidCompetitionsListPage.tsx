@@ -12,6 +12,7 @@ import GamePage from '@/components/framework/GamePage';
 import { arkanoidConfig } from '../config';
 import { CompetitionWidget } from '@/components/framework/CompetitionWidget/CompetitionWidget';
 import { ICompetition } from '@/lib/types';
+import ArkanoidCoverSVG from '../assets/game-cover.svg'
 
 // const timeStampToStringDate = (timeStamp: number): string => {
 //   var date = new Date(timeStamp);
@@ -187,7 +188,7 @@ export default function ArkanoidCompetitionsListPage() {
   return (
     <GamePage
       gameConfig={arkanoidConfig}
-      image={'/image/game-page/arkanoid-title.svg'}
+      image={ArkanoidCoverSVG}
       defaultPage={'Competitions List'}
     >
       <CompetitionWidget

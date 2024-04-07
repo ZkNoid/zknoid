@@ -27,6 +27,8 @@ import BallSVG from '../assets/ball.svg';
 import ArrowSVG from '../assets/arrow.svg';
 import ThimblesMixing from '../assets/thimbles_mixing.json';
 
+import ThimblerigCoverSVG from '../assets/game-cover.svg';
+
 import Image from 'next/image';
 import { formatPubkey } from '@/lib/utils';
 import Lottie from 'react-lottie';
@@ -271,12 +273,6 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     matchQueue.gameInfo,
   ]);
 
-  const currentUserMove =
-    matchQueue.gameInfo?.isCurrentUserMove &&
-    !loading &&
-    !matchQueue.gameInfo.field.commitedHash.toBigInt() &&
-    !matchQueue.gameInfo.field.choice.toBigInt();
-
   const statuses = {
     [GameState.NotStarted]: 'NOT STARTED',
     [GameState.MatchRegistration]: 'MATCH REGISTRATION',
@@ -351,7 +347,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   return (
     <GamePage
       gameConfig={thimblerigConfig}
-      image={'/image/game-page/game-title-template.svg'}
+      image={ThimblerigCoverSVG}
       defaultPage={'Game'}
     >
       <PvPGameView

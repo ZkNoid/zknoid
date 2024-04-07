@@ -34,6 +34,7 @@ import {
   MainButtonState,
   PvPGameView,
 } from '@/components/framework/GamePage/PvPGameView';
+import RandzuCoverSVG from '../assets/game-cover.svg';
 
 enum GameState {
   NotStarted,
@@ -275,7 +276,7 @@ export default function RandzuPage({
   return (
     <GamePage
       gameConfig={randzuConfig}
-      image={'/image/game-page/game-title-template.svg'}
+      image={RandzuCoverSVG}
       defaultPage={'Game'}
     >
       <PvPGameView
