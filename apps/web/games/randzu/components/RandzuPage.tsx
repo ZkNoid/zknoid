@@ -267,12 +267,10 @@ export default function RandzuPage({
 
   const mainText = {
     [GameState.CurrentPlayerTurn]: 'Make your move',
-    [GameState.OpponentTurn]:
-      'Wait for opponent to make a turn',
+    [GameState.OpponentTurn]: 'Wait for opponent to make a turn',
     [GameState.Won]: `${getRandomEmoji('happy')}You won! Congratulations!`,
     [GameState.Lost]: `${getRandomEmoji('sad')} You've lost...`,
   } as Record<GameState, string>;
-
 
   return (
     <GamePage
@@ -300,41 +298,6 @@ export default function RandzuPage({
         `}
         competitionFunds={DEFAULT_GAME_COST.toBigInt() * 2n}
       >
-        {/* {gameState == GameState.Active && (
-          <div className="flex flex-col items-center gap-2">
-            <>Game started. </>
-            Opponent: {matchQueue.gameInfo?.opponent.toBase58()}
-            {matchQueue.gameInfo?.isCurrentUserMove &&
-              !matchQueue.gameInfo?.winner &&
-              !loading && <div>✅ Your turn. </div>}
-            {!matchQueue.gameInfo?.isCurrentUserMove &&
-              !matchQueue.gameInfo?.winner &&
-              !loading && <div>✋ Opponent&apos;s turn. </div>}
-            {loading && <div> ⏳ Transaction execution </div>}
-            {matchQueue.gameInfo?.winner && (
-              <div> Winner: {matchQueue.gameInfo?.winner.toBase58()}. </div>
-            )}
-            {!matchQueue.gameInfo?.isCurrentUserMove &&
-              BigInt(protokitChain?.block?.height || '0') -
-                matchQueue.gameInfo?.lastMoveBlockHeight >
-                MOVE_TIMEOUT_IN_BLOCKS && (
-                <div className="flex flex-col items-center">
-                  <div>
-                    Opponent timeout {Number(protokitChain?.block?.height)}{' '}
-                    {' / '}
-                    {Number(matchQueue.gameInfo?.lastMoveBlockHeight)}
-                  </div>
-                  <div
-                    className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
-                    onClick={() => proveOpponentTimeout()}
-                  >
-                    Prove win
-                  </div>
-                </div>
-              )}
-          </div>
-        )} */}
-
         <GameView
           gameInfo={matchQueue.gameInfo}
           onCellClicked={onCellClicked}
