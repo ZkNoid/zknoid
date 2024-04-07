@@ -175,7 +175,7 @@ export class ThimblerigLogic extends MatchMaker {
     const game = this.games.get(gameId);
     assert(game.isSome, "Invalid game id");
     assert(
-      game.value.field.choice.greaterThan(UInt64.from(0)),
+      game.value.field.choice.greaterThanOrEqual(UInt64.from(1)),
       "Not chosen"
     );
     assert(
@@ -199,7 +199,7 @@ export class ThimblerigLogic extends MatchMaker {
     game.value.currentMoveUser = game.value.player2;
     game.value.lastMoveBlockHeight = this.network.block.height;
     game.value.winner = Provable.if(
-      value.add(1).equals(game.value.field.choice),
+      value.equals(game.value.field.choice),
       game.value.player2,
       game.value.player1
     );
@@ -218,5 +218,7 @@ export class ThimblerigLogic extends MatchMaker {
   @runtimeMethod()
   public proveCommitNotRevealed(gameId: UInt64): void {
     super.proveOpponentTimeout(gameId, false);
+    const game = this.games.get(gameId);
+    this.acquireFunds(gameId, game.value.winner, PublicKey.empty(), ProtoUInt64.from(1), ProtoUInt64.from(0), ProtoUInt64.from(1));
   }
 }

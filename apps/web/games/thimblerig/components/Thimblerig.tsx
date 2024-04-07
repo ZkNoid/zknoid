@@ -1,6 +1,5 @@
 import GamePage from '@/components/framework/GamePage';
 import { thimblerigConfig } from '../config';
-import Link from 'next/link';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useContext, useEffect, useState } from 'react';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
@@ -22,7 +21,6 @@ import { useCommitmentStore } from '@/lib/stores/commitmentStorage';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import { DEFAULT_GAME_COST } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
 import { useMinaBridge } from '@/lib/stores/protokitBalances';
-import { formatUnits } from '@/lib/unit';
 import ThimbleSVG from '../assets/thimble.svg';
 import ThimbleOpenedSVG from '../assets/thimble_opened_und.svg';
 import ThimbleOpenedCorrectSVG from '../assets/thimble_opened_correct.svg';
@@ -34,17 +32,17 @@ import ThimblesMixing from '../assets/thimbles_mixing.json';
 import ThimblerigCoverSVG from '../assets/game-cover.svg';
 
 import Image from 'next/image';
-import { formatPubkey } from '@/lib/utils';
 import Lottie from 'react-lottie';
 import {
   MainButtonState,
   PvPGameView,
 } from '@/components/framework/GamePage/PvPGameView';
+
 enum GameState {
   NotStarted,
   MatchRegistration,
   Matchmaking,
-  Active,
+  OpponentTimeout,
   CurrentPlayerHiding,
   WaitingForHiding,
   CurrentPlayerGuessing,
@@ -65,8 +63,9 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
   const networkStore = useNetworkStore();
   const [gameState, setGameState] = useState(GameState.NotStarted);
+  const [opponentTimeout, setOpponentTimeout] = useState(false);
   const [revealedValue, setRevealedValue] = useState<
-    undefined | { choice: 0 | 1 | 2; value: 0 | 1 | 2 }
+    undefined | { choice: 1 | 2 | 3; value: 1 | 2 | 3 }
   >(undefined);
 
   const matchQueue = useThimblerigMatchQueueStore();
@@ -134,7 +133,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
   /**
    *
-   * @param id Number 0-2
+   * @param id Number 1-3
    */
   const commitThumblerig = async (id: number) => {
     const salt = commitmentStore.commit(id);
@@ -219,6 +218,15 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     if (matchQueue.inQueue && !matchQueue.activeGameId) {
       setGameState(GameState.Matchmaking);
     } else if (
+      matchQueue.gameInfo &&
+      matchQueue.activeGameId &&
+      !matchQueue.gameInfo?.isCurrentUserMove &&
+      BigInt(protokitChain?.block?.height || '0') -
+        matchQueue.gameInfo?.lastMoveBlockHeight >
+        MOVE_TIMEOUT_IN_BLOCKS
+    ) {
+      setGameState(GameState.OpponentTimeout);
+    } else if (
       matchQueue.gameInfo?.isCurrentUserMove &&
       !loading &&
       matchQueue.activeGameId &&
@@ -264,33 +272,49 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       matchQueue.gameInfo.field.choice.toBigInt()
     ) {
       setGameState(GameState.WaitingForReveal);
-    } else if (matchQueue.activeGameId) {
-      setGameState(GameState.Active);
     } else {
       if (matchQueue.lastGameState == 'win') {
+        console.log(
+          'Win, value:',
+          Number(matchQueue.gameInfo.field.value.toBigInt())
+        );
+        console.log(
+          'Win, salt:',
+          Number(matchQueue.gameInfo.field.choice.toBigInt())
+        );
+
         setRevealedValue({
-          value: (Number(matchQueue.gameInfo.field.value.toBigInt()) + 1) as
-            | 0
+          value: Number(matchQueue.gameInfo.field.value.toBigInt()) as
             | 1
-            | 2,
+            | 2
+            | 3,
           choice: Number(matchQueue.gameInfo.field.choice.toBigInt()) as
-            | 0
             | 1
-            | 2,
+            | 2
+            | 3,
         });
         setGameState(GameState.Won);
       } else if (matchQueue.lastGameState == 'lost') {
-        setGameState(GameState.Lost);
+        console.log(
+          'Lost, value:',
+          Number(matchQueue.gameInfo.field.value.toBigInt())
+        );
+        console.log(
+          'Lost, salt:',
+          Number(matchQueue.gameInfo.field.choice.toBigInt())
+        );
+
         setRevealedValue({
-          value: (Number(matchQueue.gameInfo.field.value.toBigInt()) + 1) as
-            | 0
+          value: Number(matchQueue.gameInfo.field.value.toBigInt()) as
             | 1
-            | 2,
+            | 2
+            | 3,
           choice: Number(matchQueue.gameInfo.field.choice.toBigInt()) as
-            | 0
             | 1
-            | 2,
+            | 2
+            | 3,
         });
+        setGameState(GameState.Lost);
       } else {
         setGameState(GameState.NotStarted);
       }
@@ -304,6 +328,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
   const statuses = {
     [GameState.NotStarted]: 'NOT STARTED',
+    [GameState.OpponentTimeout]: 'OPPONENT TIMEOUT',
     [GameState.MatchRegistration]: 'MATCH REGISTRATION',
     [GameState.Matchmaking]: `MATCHMAKING ${
       parseInt(protokitChain.block?.height ?? '0') % PENDING_BLOCKS_NUM_CONST
@@ -319,6 +344,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   } as Record<GameState, string>;
 
   const mainText = {
+    [GameState.OpponentTimeout]: 'Opponent timed out. Prove to win',
     [GameState.CurrentPlayerHiding]: 'Choose thimble to hide ball behind',
     [GameState.WaitingForHiding]:
       'Your opponent hides the ball, wait for your turn',
@@ -337,6 +363,12 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       text: 'REVEAL POSITION',
       handler: () => {
         revealThumblerig();
+      },
+    },
+    [GameState.OpponentTimeout]: {
+      text: 'PROVE OPPONENT TIMEOUT',
+      handler: () => {
+        proveOpponentTimeout();
       },
     },
     [GameState.Lost]: {
@@ -372,6 +404,8 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       : gameState == GameState.NotStarted
         ? MainButtonState.NotStarted
         : MainButtonState.None;
+
+  console.log('Revealed value', revealedValue);
 
   return (
     <GamePage
@@ -420,11 +454,11 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                       ? ThimbleOpenedSVG
                       : (gameState == GameState.Won ||
                             gameState == GameState.Lost) &&
-                          revealedValue?.choice == i
+                          revealedValue?.value == i + 1
                         ? ThimbleOpenedCorrectSVG
                         : (gameState == GameState.Won ||
                               gameState == GameState.Lost) &&
-                            revealedValue?.value == i
+                            revealedValue?.choice == i + 1
                           ? ThimbleOpenedSVG
                           : ThimbleSVG
                   }
@@ -432,7 +466,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                   draggable="true"
                   onDrop={() => {
                     gameState == GameState.CurrentPlayerHiding &&
-                      commitThumblerig(i);
+                      commitThumblerig(i + 1);
                   }}
                   onDragOver={(e) => {
                     e.preventDefault();
