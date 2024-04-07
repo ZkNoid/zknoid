@@ -3,7 +3,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { GameView } from './GameView';
 import { Int64, PublicKey, UInt32, UInt64 } from 'o1js';
-import Link from 'next/link';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useMinaBridge } from '@/lib/stores/protokitBalances';
 import { randzuCompetitions } from '@/app/constants/randzuCompetitions';
@@ -42,6 +41,7 @@ enum GameState {
   Matchmaking,
   CurrentPlayerTurn,
   OpponentTurn,
+  OpponentTimeout,
   Won,
   Lost,
 }
@@ -213,6 +213,14 @@ export default function RandzuPage({
     ) {
       setGameState(GameState.CurrentPlayerTurn);
     } else if (
+      matchQueue.gameInfo &&
+      !matchQueue.gameInfo?.isCurrentUserMove &&
+      BigInt(protokitChain?.block?.height || '0') -
+        matchQueue.gameInfo?.lastMoveBlockHeight >
+        MOVE_TIMEOUT_IN_BLOCKS
+    ) {
+      setGameState(GameState.OpponentTimeout);
+    } else if (
       matchQueue.activeGameId &&
       !matchQueue.gameInfo?.isCurrentUserMove
     ) {
@@ -235,9 +243,11 @@ export default function RandzuPage({
       ? MainButtonState.YourTurn
       : GameState.OpponentTurn == gameState
         ? MainButtonState.OpponentsTurn
-        : gameState == GameState.NotStarted
-          ? MainButtonState.NotStarted
-          : MainButtonState.None;
+        : GameState.OpponentTimeout == gameState
+          ? MainButtonState.OpponentTimeOut
+          : gameState == GameState.NotStarted
+            ? MainButtonState.NotStarted
+            : MainButtonState.None;
 
   const statuses = {
     [GameState.NotStarted]: 'NOT STARTED',
@@ -247,11 +257,21 @@ export default function RandzuPage({
     }  / ${PENDING_BLOCKS_NUM_CONST} 🔍`,
     [GameState.CurrentPlayerTurn]: `YOUR TURN`,
     [GameState.OpponentTurn]: `OPPONENT TURN`,
+    [GameState.OpponentTimeout]: `OPPONENT TIMEOUT ${
+      Number(protokitChain?.block?.height) -
+      Number(matchQueue.gameInfo?.lastMoveBlockHeight)
+    }`,
     [GameState.Won]: 'YOU WON',
     [GameState.Lost]: 'YOU LOST',
   } as Record<GameState, string>;
 
   const bottomButtonState = {
+    [GameState.OpponentTimeout]: {
+      text: "PROVE OPPONENT'S TIMEOUT",
+      handler: () => {
+        proveOpponentTimeout();
+      },
+    },
     [GameState.Lost]: {
       text: 'RESTART',
       handler: () => {
@@ -268,6 +288,7 @@ export default function RandzuPage({
 
   const mainText = {
     [GameState.CurrentPlayerTurn]: 'Make your move',
+    [GameState.OpponentTimeout]: 'Opponent timed out. Prove it to get turn',
     [GameState.OpponentTurn]: 'Wait for opponent to make a turn',
     [GameState.Won]: `${getRandomEmoji('happy')}You won! Congratulations!`,
     [GameState.Lost]: `${getRandomEmoji('sad')} You've lost...`,
@@ -305,7 +326,6 @@ export default function RandzuPage({
           loadingElement={loadingElement}
           loading={loading}
         />
-        <div>Players in queue: {matchQueue.getQueueLength()}</div>
       </PvPGameView>
     </GamePage>
   );

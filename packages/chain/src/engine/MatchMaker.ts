@@ -283,8 +283,7 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     this.pendingBalances.set(sender, ProtoUInt64.from(0));
   }
 
-  @runtimeMethod()
-  public proveOpponentTimeout(gameId: UInt64): void {
+  protected proveOpponentTimeout(gameId: UInt64, passTurn: boolean): void {
     const sessionSender = this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
@@ -307,13 +306,22 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
 
     assert(isTimeout, 'Timeout not reached');
 
-    game.value.winner = sender;
-    game.value.lastMoveBlockHeight = this.network.block.height;
-    this.games.set(gameId, game.value);
+    if (passTurn) {
+      game.value.currentMoveUser = Provable.if(
+        game.value.currentMoveUser.equals(game.value.player1),
+        game.value.player2,
+        game.value.player1,
+      );
+      game.value.lastMoveBlockHeight = this.network.block.height;
+    } else {
+      game.value.winner = sender;
+      game.value.lastMoveBlockHeight = this.network.block.height;  
+      // Removing active game for players if game ended
+      this.activeGameId.set(game.value.player1, UInt64.from(0));
+      this.activeGameId.set(game.value.player2, UInt64.from(0));
+    }
 
-    // Removing active game for players if game ended
-    this.activeGameId.set(game.value.player1, UInt64.from(0));
-    this.activeGameId.set(game.value.player2, UInt64.from(0));
+    this.games.set(gameId, game.value);
   }
 
   protected getParticipationPrice() {
