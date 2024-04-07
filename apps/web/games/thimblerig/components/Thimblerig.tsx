@@ -192,7 +192,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
       () => {
-        thibmerigLogic.proveOpponentTimeout(
+        thibmerigLogic.proveCommitNotRevealed(
           UInt64.from(matchQueue.gameInfo!.gameId)
         );
       }
