@@ -14,7 +14,7 @@ export interface MatchQueueState {
   inQueue: boolean;
   activeGameId: bigint;
   gameInfo: any | undefined;
-  lastGameState: Record<string, 'win' | 'lost' | undefined>;
+  lastGameState: 'win' | 'lost' | undefined;
   pendingBalance: bigint;
   getQueueLength: () => number;
   loadMatchQueue(
@@ -22,31 +22,28 @@ export interface MatchQueueState {
     blockHeight: number
   ): Promise<void>;
   loadActiveGame: (
-    gameName: string,
     query: ModuleQuery<MatchMaker>,
     blockHeight: number,
     address: PublicKey
   ) => Promise<void>;
-  resetLastGameState: (gameName: string) => void;
+  resetLastGameState: () => void;
 }
 
 const PENDING_BLOCKS_NUM = UInt64.from(PENDING_BLOCKS_NUM_CONST);
 
-export const useMatchQueueStore = create<
-  MatchQueueState,
-  [['zustand/immer', never]]
->(
-  immer((set) => ({
+
+export const matchQueueInitializer = 
+  immer<MatchQueueState>((set) => ({
     loading: Boolean(false),
     queueLength: 0,
     activeGameId: BigInt(0),
     inQueue: Boolean(false),
     gameInfo: undefined as any | undefined,
-    lastGameState: {},
+    lastGameState: undefined as 'win' | 'lost' | undefined,
     pendingBalance: 0n,
-    resetLastGameState(gameName: string) {
+    resetLastGameState() {
       set((state) => {
-        state.lastGameState[gameName] = undefined;
+        state.lastGameState = undefined;
         state.gameInfo = undefined;
       });
     },
@@ -74,7 +71,6 @@ export const useMatchQueueStore = create<
       });
     },
     async loadActiveGame(
-      gameName: string,
       query: ModuleQuery<MatchMaker>,
       blockHeight: number,
       address: PublicKey
@@ -112,7 +108,7 @@ export const useMatchQueueStore = create<
         // );
 
         set((state) => {
-          state.lastGameState[gameName] = gameInfo.winner.equals(address).toBoolean()
+          state.lastGameState = gameInfo.winner.equals(address).toBoolean()
             ? 'win'
             : 'lost';
           state.gameInfo!.field = gameInfo.field;
@@ -173,27 +169,7 @@ export const useMatchQueueStore = create<
         state.pendingBalance = pendingBalance || 0n;
       });
     },
-  }))
-);
-
-export const useObserveMatchQueue = (gameName: string, query: ModuleQuery<MatchMaker>) => {
-  const chain = useProtokitChainStore();
-  const network = useNetworkStore();
-  const matchQueue = useMatchQueueStore();
-
-  useEffect(() => {
-    if (!network.walletConnected || !network.protokitClientStarted) {
-      return;
-    }
-    matchQueue.loadMatchQueue(query, parseInt(chain.block?.height ?? '0'));
-    matchQueue.loadActiveGame(
-      gameName,
-      query,
-      parseInt(chain.block?.height ?? '0'),
-      PublicKey.fromBase58(network.address!)
-    );
-  }, [chain.block?.height, network.walletConnected, network.address]);
-};
+  }));
 
 export interface IGameInfo<GameField> {
   player1: PublicKey;

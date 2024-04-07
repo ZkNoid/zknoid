@@ -26,7 +26,7 @@ type PvPGameViewProps = {
   competitionName: string;
   gameName: string;
   gameRules: string;
-  competitionFunds: bigint
+  competitionFunds: bigint;
 };
 export const PvPGameView = (props: PvPGameViewProps) => {
   return (
@@ -107,26 +107,15 @@ export const PvPGameView = (props: PvPGameViewProps) => {
         </div>
         <div className="flex w-[75%] flex-row justify-between font-plexsans text-[20px]/[20px] font-medium">
           <div className="text-left-accent">Funds:</div>
-          <div className="text-white">{formatUnits(props.competitionFunds)} $znakes</div>
+          <div className="text-white">
+            {formatUnits(props.competitionFunds)} $znakes
+          </div>
         </div>
         <div className="pt-10 font-museo text-[24px]/[24px]">
           {props.gameName} rules
         </div>
-        <div className="text-regular flex flex-col gap-3 py-10 font-plexsans text-[16px]">
-          <div>
-            1. Two players participate in each round of the game. One player
-            hides a ball under one of three thimbles, and the other player
-            attempts to guess the location of the ball.
-          </div>
-          <div>
-            2. The hiding player places ball under one of three thimbles trying
-            to confuse the guessing player.
-          </div>
-          <div>
-            3. The guessing player selects one of the thimbles, trying to guess
-            which thimble conceals the ball. The hiding player then reveals
-            whether the ball is under the chosen
-          </div>
+        <div className="text-regular flex flex-col gap-3 whitespace-pre-line py-10 font-plexsans text-[16px]/[20px]">
+          {props.gameRules}
         </div>
       </div>
     </main>
