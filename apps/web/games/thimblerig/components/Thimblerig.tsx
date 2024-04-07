@@ -5,7 +5,6 @@ import { useNetworkStore } from '@/lib/stores/network';
 import { useContext, useEffect, useState } from 'react';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { getRandomEmoji } from '@/games/randzu/utils';
-import { useMatchQueueStore } from '@/lib/stores/matchQueue';
 import {
   ClientAppChain,
   MOVE_TIMEOUT_IN_BLOCKS,
@@ -15,7 +14,7 @@ import { Field, Poseidon, PublicKey, UInt64 } from 'o1js';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
 import { walletInstalled } from '@/lib/helpers';
-import { useObserveThimblerigMatchQueue } from '../stores/matchQueue';
+import { useObserveThimblerigMatchQueue, useThimblerigMatchQueueStore } from '../stores/matchQueue';
 import { useCommitmentStore } from '@/lib/stores/commitmentStorage';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import { DEFAULT_GAME_COST } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
@@ -60,7 +59,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
   const networkStore = useNetworkStore();
   const [gameState, setGameState] = useState(GameState.NotStarted);
-  const matchQueue = useMatchQueueStore();
+  const matchQueue = useThimblerigMatchQueueStore();
   const sessionPublicKey = useStore(useSessionKeyStore, (state) =>
     state.getSessionKey()
   ).toPublicKey();
@@ -78,7 +77,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   const protokitChain = useProtokitChainStore();
 
   const restart = () => {
-    matchQueue.resetLastGameState('thimblerig');
+    matchQueue.resetLastGameState();
     setGameState(GameState.NotStarted);
   };
   const bridge = useMinaBridge();
@@ -211,6 +210,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     } else if (
       matchQueue.gameInfo?.isCurrentUserMove &&
       !loading &&
+      matchQueue.activeGameId &&
       !matchQueue.gameInfo.field.commitedHash.toBigInt() &&
       !matchQueue.gameInfo.field.choice.toBigInt()
     ) {
@@ -256,8 +256,10 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     } else if (matchQueue.activeGameId) {
       setGameState(GameState.Active);
     } else {
-      if (matchQueue.lastGameState['thimblerig'] == 'win') setGameState(GameState.Won);
-      else if (matchQueue.lastGameState['thimblerig'] == 'lost') setGameState(GameState.Lost);
+      if (matchQueue.lastGameState == 'win')
+        setGameState(GameState.Won);
+      else if (matchQueue.lastGameState == 'lost')
+        setGameState(GameState.Lost);
       else {
         setGameState(GameState.NotStarted);
       }
@@ -358,7 +360,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
         startPrice={DEFAULT_GAME_COST.toBigInt()}
         mainButtonState={mainButtonState}
         startGame={startGame}
-        queueSize={matchQueue.getQueueLength()}
+        queueSize={matchQueue.queueLength}
         gameRating={5.0}
         gameAuthor="ZkNoid Team"
         mainText={mainText[gameState]}
@@ -366,15 +368,15 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
         bottomButtonHandler={bottomButtonState[gameState]?.handler}
         competitionName="Room 1"
         gameName="Thimblerig"
-        gameRules={`1. Two players participate in each round of the game. One player
-        hides a ball under one of three thimbles, and the other player
-        attempts to guess the location of the ball.
-
-        2. The hiding player places ball under one of three thimbles trying
-            to confuse the guessing player.
-
-        3. The guessing player selects one of the thimbles, trying to guess
-        which thimble conceals the ball. The hiding player then reveals
+        gameRules={`1. Two players participate in each round of the game. One player \
+        hides a ball under one of three thimbles, and the other player \
+        attempts to guess the location of the ball. \
+        \n
+        2. The hiding player places ball under one of three thimbles trying \
+            to confuse the guessing player. \
+        \n
+        3. The guessing player selects one of the thimbles, trying to guess \
+        which thimble conceals the ball. The hiding player then reveals \
         whether the ball is under the chosen
         `}
         competitionFunds={DEFAULT_GAME_COST.toBigInt() * 100n}

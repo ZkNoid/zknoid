@@ -7,7 +7,10 @@ import Link from 'next/link';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useMinaBridge } from '@/lib/stores/protokitBalances';
 import { randzuCompetitions } from '@/app/constants/randzuCompetitions';
-import { useObserveRandzuMatchQueue } from '@/games/randzu/stores/matchQueue';
+import {
+  useObserveRandzuMatchQueue,
+  useRandzuMatchQueueStore,
+} from '@/games/randzu/stores/matchQueue';
 import { walletInstalled } from '@/lib/helpers';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
@@ -21,16 +24,23 @@ import GamePage from '@/components/framework/GamePage';
 import { randzuConfig } from '../config';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { getRandomEmoji } from '../utils';
-import { useMatchQueueStore } from '@/lib/stores/matchQueue';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
-import { MOVE_TIMEOUT_IN_BLOCKS } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
+import {
+  DEFAULT_GAME_COST,
+  MOVE_TIMEOUT_IN_BLOCKS,
+} from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
 import { formatUnits } from '@/lib/unit';
+import {
+  MainButtonState,
+  PvPGameView,
+} from '@/components/framework/GamePage/PvPGameView';
 
 enum GameState {
   NotStarted,
   MatchRegistration,
   Matchmaking,
-  Active,
+  CurrentPlayerTurn,
+  OpponentTurn,
   Won,
   Lost,
 }
@@ -62,7 +72,7 @@ export default function RandzuPage({
   >({ x: 0, y: 0 });
 
   const networkStore = useNetworkStore();
-  const matchQueue = useMatchQueueStore();
+  const matchQueue = useRandzuMatchQueueStore();
   const sessionPublicKey = useStore(useSessionKeyStore, (state) =>
     state.getSessionKey()
   ).toPublicKey();
@@ -76,7 +86,7 @@ export default function RandzuPage({
   const bridge = useMinaBridge();
 
   const restart = () => {
-    matchQueue.resetLastGameState('randzu');
+    matchQueue.resetLastGameState();
     setGameState(GameState.NotStarted);
   };
 
@@ -196,14 +206,48 @@ export default function RandzuPage({
     }
     if (matchQueue.inQueue && !matchQueue.activeGameId) {
       setGameState(GameState.Matchmaking);
-    } else if (matchQueue.activeGameId) {
-      setGameState(GameState.Active);
+    } else if (
+      matchQueue.activeGameId &&
+      matchQueue.gameInfo?.isCurrentUserMove
+    ) {
+      setGameState(GameState.CurrentPlayerTurn);
+    } else if (
+      matchQueue.activeGameId &&
+      !matchQueue.gameInfo?.isCurrentUserMove
+    ) {
+      setGameState(GameState.OpponentTurn);
     } else {
-      if (matchQueue.lastGameState['randzu'] == 'win') setGameState(GameState.Won);
-      else if (matchQueue.lastGameState['randzu'] == 'lost') setGameState(GameState.Lost);
+      if (matchQueue.lastGameState == 'win') setGameState(GameState.Won);
+      else if (matchQueue.lastGameState == 'lost') setGameState(GameState.Lost);
       else setGameState(GameState.NotStarted);
     }
-  }, [matchQueue.activeGameId, matchQueue.inQueue, matchQueue.lastGameState]);
+  }, [
+    matchQueue.activeGameId,
+    matchQueue.gameInfo,
+    matchQueue.inQueue,
+    matchQueue.lastGameState,
+  ]);
+
+  const mainButtonState =
+    GameState.CurrentPlayerTurn == gameState
+      ? MainButtonState.YourTurn
+      : GameState.OpponentTurn == gameState
+        ? MainButtonState.OpponentsTurn
+        : gameState == GameState.NotStarted
+          ? MainButtonState.NotStarted
+          : MainButtonState.None;
+
+  const statuses = {
+    [GameState.NotStarted]: 'NOT STARTED',
+    [GameState.MatchRegistration]: 'MATCH REGISTRATION',
+    [GameState.Matchmaking]: `MATCHMAKING ${
+      parseInt(protokitChain.block?.height ?? '0') % PENDING_BLOCKS_NUM_CONST
+    }  / ${PENDING_BLOCKS_NUM_CONST} 🔍`,
+    [GameState.CurrentPlayerTurn]: `YOUR TURN`,
+    [GameState.OpponentTurn]: `OPPONENT TURN`,
+    [GameState.Won]: 'YOU WON',
+    [GameState.Lost]: 'YOU LOST',
+  } as Record<GameState, string>;
 
   return (
     <GamePage
@@ -211,68 +255,29 @@ export default function RandzuPage({
       image={'/image/game-page/game-title-template.svg'}
       defaultPage={'Game'}
     >
-      <main className="flex grow flex-col items-center gap-5 p-5">
-        {networkStore.address ? (
-          <div className="flex flex-col gap-5">
-            {gameState == GameState.Won && (
-              <div>{getRandomEmoji('happy')} You won!</div>
-            )}
-            {gameState == GameState.Lost && (
-              <div>{getRandomEmoji('sad')} You lost!</div>
-            )}
+      <PvPGameView
+        status={statuses[gameState]}
+        opponent={matchQueue.gameInfo?.opponent}
+        startPrice={DEFAULT_GAME_COST.toBigInt()}
+        mainButtonState={mainButtonState}
+        startGame={() => startGame()}
+        queueSize={matchQueue.getQueueLength()}
+        gameRating={4.8}
+        gameAuthor={'zkNoid team'}
+        mainText={''}
+        bottomButtonText={''}
+        bottomButtonHandler={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+        competitionName={'Room 1'}
+        gameName={'Randzu'}
+        gameRules={`Randzu is a game played on a 15x15 grid, similar to tic-tac-toe. Two players take turns placing their mark, using balls of different colors. The goal is to get five of your marks in a row, either horizontally, vertically or diagonally.
 
-            <div className="flex flex-row items-center justify-center gap-5">
-              {(gameState == GameState.Won || gameState == GameState.Lost) && (
-                <div>
-                  <div
-                    className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
-                    onClick={() => restart()}
-                  >
-                    Restart
-                  </div>
-                </div>
-              )}
-              {gameState == GameState.NotStarted && (
-                <div
-                  className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
-                  onClick={() => startGame()}
-                >
-                  Start for{' '}
-                  {competition && formatUnits(competition.enteringPrice)} 🪙
-                </div>
-              )}
-            </div>
-          </div>
-        ) : walletInstalled() ? (
-          <div
-            className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
-            onClick={async () => networkStore.connectWallet()}
-          >
-            Connect wallet
-          </div>
-        ) : (
-          <Link
-            href="https://www.aurowallet.com/"
-            className="rounded-xl border-2 border-left-accent bg-bg-dark p-5 hover:bg-left-accent hover:text-bg-dark"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Install wallet
-          </Link>
-        )}
-
-        {gameState == GameState.MatchRegistration && (
-          <div>Registering in the match pool 📝 ...</div>
-        )}
-        {gameState == GameState.Matchmaking && (
-          <div>
-            Searching for opponents{' '}
-            {parseInt(protokitChain.block?.height ?? '0') %
-              PENDING_BLOCKS_NUM_CONST}{' '}
-            / {PENDING_BLOCKS_NUM_CONST}🔍 ...
-          </div>
-        )}
-        {gameState == GameState.Active && (
+        The game continues until one player achieves the winning pattern or until the entire grid is filled without a winner, resulting in a draw.
+        `}
+        competitionFunds={DEFAULT_GAME_COST.toBigInt() * 2n}
+      >
+        {/* {gameState == GameState.Active && (
           <div className="flex flex-col items-center gap-2">
             <>Game started. </>
             Opponent: {matchQueue.gameInfo?.opponent.toBase58()}
@@ -305,7 +310,7 @@ export default function RandzuPage({
                 </div>
               )}
           </div>
-        )}
+        )} */}
 
         <GameView
           gameInfo={matchQueue.gameInfo}
@@ -314,7 +319,7 @@ export default function RandzuPage({
           loading={loading}
         />
         <div>Players in queue: {matchQueue.getQueueLength()}</div>
-      </main>
+      </PvPGameView>
     </GamePage>
   );
 }
