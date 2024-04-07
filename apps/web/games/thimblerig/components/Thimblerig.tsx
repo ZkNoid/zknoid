@@ -78,7 +78,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   const protokitChain = useProtokitChainStore();
 
   const restart = () => {
-    matchQueue.resetLastGameState();
+    matchQueue.resetLastGameState('thimblerig');
     setGameState(GameState.NotStarted);
   };
   const bridge = useMinaBridge();
