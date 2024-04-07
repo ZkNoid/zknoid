@@ -26,6 +26,7 @@ export const useObserveRandzuMatchQueue = () => {
 
     matchQueue.loadMatchQueue(client.query.runtime.RandzuLogic, parseInt(chain.block?.height ?? '0'));
     matchQueue.loadActiveGame(
+      'randzu',
       client.query.runtime.RandzuLogic,
       parseInt(chain.block?.height ?? '0'),
       PublicKey.fromBase58(network.address!)
