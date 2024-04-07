@@ -200,6 +200,8 @@ export class ThimblerigLogic extends MatchMaker {
       game.value.player2,
       game.value.player1
     );
+    const looser = Provable.if(game.value.winner.equals(game.value.player1), game.value.player2, game.value.player1);
+    this.acquireFunds(gameId, game.value.winner, looser, ProtoUInt64.from(2), ProtoUInt64.from(1), ProtoUInt64.from(3));
 
     this.games.set(gameId, game.value);
 
@@ -230,13 +232,5 @@ export class ThimblerigLogic extends MatchMaker {
       game.value.player1.equals(sender),
       `Only player1 should prove value is not revealed`
     );
-  }
-
-  @runtimeMethod()
-  public win(gameId: UInt64): void {
-    let game = this.games.get(gameId).value;
-    assert(game.winner.equals(PublicKey.empty()).not());
-    const looser = Provable.if(game.winner.equals(game.player1), game.player2, game.player1);
-    this.getFunds(gameId, game.winner, looser, ProtoUInt64.from(2), ProtoUInt64.from(1));
   }
 }

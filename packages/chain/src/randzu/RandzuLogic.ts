@@ -282,6 +282,13 @@ export class RandzuLogic extends MatchMaker {
       PublicKey.empty(),
     );
 
+    const winnerShare = ProtoUInt64.from(Provable.if(
+      winProposed,
+      UInt64.from(1), UInt64.from(0)
+    ));
+
+    this.acquireFunds(gameId, game.value.winner, PublicKey.empty(), winnerShare, ProtoUInt64.from(0), ProtoUInt64.from(1));
+
     game.value.field = newField;
     game.value.currentMoveUser = Provable.if(
       game.value.currentMoveUser.equals(game.value.player1),
@@ -300,12 +307,5 @@ export class RandzuLogic extends MatchMaker {
       Provable.if(winProposed, game.value.player1, PublicKey.empty()),
       UInt64.from(0),
     );
-  }
-
-  @runtimeMethod()
-  public win(gameId: UInt64): void {
-    let game = this.games.get(gameId).value;
-    assert(game.winner.equals(PublicKey.empty()).not());
-    this.getFunds(gameId, game.winner, PublicKey.empty(), ProtoUInt64.from(1), ProtoUInt64.from(0));
   }
 }
