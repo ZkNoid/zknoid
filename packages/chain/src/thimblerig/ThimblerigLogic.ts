@@ -40,6 +40,8 @@ const MOVE_TIMEOUT_IN_BLOCKS = 60 / BLOCK_PRODUCTION_SECONDS;
 export class ThimblerigField extends Struct({
   commitedHash: Field,
   choice: UInt64,
+  salt: Field,
+  value: UInt64
 }) {}
 
 export class GameInfo extends Struct({
@@ -55,7 +57,6 @@ export class GameInfo extends Struct({
 export class ThimblerigLogic extends MatchMaker {
   // Game ids start from 1
   @state() public games = StateMap.from<UInt64, GameInfo>(UInt64, GameInfo);
-
   @state() public gamesNum = State.from<UInt64>(UInt64);
 
   public override initGame(
@@ -78,6 +79,8 @@ export class ThimblerigLogic extends MatchMaker {
         field: new ThimblerigField({
           choice: UInt64.from(0),
           commitedHash: Field.from(0),
+          salt: Field.from(0),
+          value: UInt64.from(0)
         }),
         winner: PublicKey.empty(),
       })
@@ -202,6 +205,9 @@ export class ThimblerigLogic extends MatchMaker {
     );
     const looser = Provable.if(game.value.winner.equals(game.value.player1), game.value.player2, game.value.player1);
     this.acquireFunds(gameId, game.value.winner, looser, ProtoUInt64.from(2), ProtoUInt64.from(1), ProtoUInt64.from(3));
+
+    game.value.field.salt = salt;
+    game.value.field.value = value;
 
     this.games.set(gameId, game.value);
 
