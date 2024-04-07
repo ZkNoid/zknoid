@@ -37,6 +37,7 @@ import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
 import { FullscreenButton } from '@/components/framework/GameWidget/FullscreenButton';
 import { AnimatePresence, motion } from 'framer-motion';
 import { LoadSpinner } from '@/components/ui/games-store/shared/LoadSpinner';
+import ArkanoidCoverSVG from '../assets/game-cover.svg'
 
 enum GameState {
   NotStarted,
@@ -195,7 +196,7 @@ export default function ArkanoidPage({
   return (
     <GamePage
       gameConfig={arkanoidConfig}
-      image={'/image/game-page/arkanoid-title.svg'}
+      image={ArkanoidCoverSVG}
       defaultPage={'Game'}
     >
       <motion.div
