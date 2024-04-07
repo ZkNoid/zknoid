@@ -211,26 +211,6 @@ export class ThimblerigLogic extends MatchMaker {
 
   @runtimeMethod()
   public proveCommitNotRevealed(gameId: UInt64): void {
-    const sessionSender = this.sessions.get(this.transaction.sender.value);
-    const sender = Provable.if(
-      sessionSender.isSome,
-      sessionSender.value,
-      this.transaction.sender.value
-    );
-
-    const game = this.games.get(gameId);
-    assert(game.isSome, "Invalid game id");
-    assert(
-      game.value.field.choice.equals(UInt64.from(0)),
-      "Already chosen"
-    );
-    assert(
-      game.value.field.commitedHash.equals(0),
-      "Already commited"
-    );
-    assert(
-      game.value.player1.equals(sender),
-      `Only player1 should prove value is not revealed`
-    );
+    super.proveOpponentTimeout(gameId, false);
   }
 }

@@ -158,31 +158,7 @@ export class RandzuLogic extends MatchMaker {
 
   @runtimeMethod()
   public proveOpponentTimeout(gameId: UInt64): void {
-    const sessionSender = this.sessions.get(this.transaction.sender.value);
-    const sender = Provable.if(
-      sessionSender.isSome,
-      sessionSender.value,
-      this.transaction.sender.value,
-    );
-
-    const game = this.games.get(gameId);
-    assert(game.isSome, 'Invalid game id');
-    assert(game.value.currentMoveUser.equals(sender), `Not your move`);
-    assert(game.value.winner.equals(PublicKey.empty()), `Game finished`);
-
-    const isTimeout = this.network.block.height
-      .sub(game.value.lastMoveBlockHeight)
-      .greaterThan(UInt64.from(MOVE_TIMEOUT_IN_BLOCKS));
-
-    assert(isTimeout, 'Timeout not reached');
-
-    game.value.currentMoveUser = Provable.if(
-      game.value.currentMoveUser.equals(game.value.player1),
-      game.value.player2,
-      game.value.player1,
-    );
-    game.value.lastMoveBlockHeight = this.network.block.height;
-    this.games.set(gameId, game.value);
+    super.proveOpponentTimeout(gameId, true);
   }
 
   @runtimeMethod()

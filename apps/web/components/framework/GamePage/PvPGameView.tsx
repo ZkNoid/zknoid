@@ -7,6 +7,7 @@ export enum MainButtonState {
   NotStarted,
   YourTurn,
   OpponentsTurn,
+  OpponentTimeOut,
   TransactionExecution,
   None,
 }
@@ -46,6 +47,11 @@ export const PvPGameView = (props: PvPGameViewProps) => {
           {props.mainButtonState == MainButtonState.OpponentsTurn && (
             <div className="flex cursor-pointer items-center justify-center rounded border border-white py-2 font-plexsans text-[20px]/[20px] font-medium text-white">
               {"OPPONENT'S TURN"}
+            </div>
+          )}
+          {props.mainButtonState == MainButtonState.OpponentTimeOut && (
+            <div className="flex cursor-pointer items-center justify-center rounded border border-white py-2 font-plexsans text-[20px]/[20px] font-medium text-white">
+              OPPONENT TIMED OUT
             </div>
           )}
           {props.mainButtonState == MainButtonState.TransactionExecution && (
