@@ -76,7 +76,7 @@ export default function RandzuPage({
   const bridge = useMinaBridge();
 
   const restart = () => {
-    matchQueue.resetLastGameState();
+    matchQueue.resetLastGameState('randzu');
     setGameState(GameState.NotStarted);
   };
 
