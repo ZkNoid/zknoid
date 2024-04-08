@@ -315,7 +315,7 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
       game.value.lastMoveBlockHeight = this.network.block.height;
     } else {
       game.value.winner = sender;
-      game.value.lastMoveBlockHeight = this.network.block.height;  
+      game.value.lastMoveBlockHeight = this.network.block.height;
       // Removing active game for players if game ended
       this.activeGameId.set(game.value.player1, UInt64.from(0));
       this.activeGameId.set(game.value.player2, UInt64.from(0));
@@ -334,11 +334,19 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     player2: PublicKey,
     player1Share: ProtoUInt64,
     player2Share: ProtoUInt64,
-    totalShares: ProtoUInt64
+    totalShares: ProtoUInt64,
   ) {
     const player1PendingBalance = this.pendingBalances.get(player1);
     const player2PendingBalance = this.pendingBalances.get(player2);
-
+    // Provable.log(player1, player2, player1Share, player2Share, totalShares);
+    // Provable.log(
+    //   ProtoUInt64.from(this.gameFund.get(gameId).value)
+    //     .mul(player1Share)
+    //     .div(totalShares),
+    //   ProtoUInt64.from(this.gameFund.get(gameId).value)
+    //     .mul(player2Share)
+    //     .div(totalShares),
+    // );
     this.pendingBalances.set(
       player1,
       ProtoUInt64.from(player1PendingBalance.value).add(

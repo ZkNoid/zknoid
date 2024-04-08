@@ -1,0 +1,32 @@
+diff --git a/dist/graphql/modules/MempoolResolver.js b/dist/graphql/modules/MempoolResolver.js
+index 7417748f3e346ac97e9fdacdeb7d54688fda8c56..87b20391ea9c57f3521a60eb4b76129df1dff25c 100644
+--- a/dist/graphql/modules/MempoolResolver.js
++++ b/dist/graphql/modules/MempoolResolver.js
+@@ -111,9 +111,9 @@ let MempoolResolver = class MempoolResolver extends GraphqlModule {
+         this.mempool = mempool;
+         this.transactionStorage = transactionStorage;
+     }
+-    submitTx(tx) {
++    async submitTx(tx) {
+         const decoded = PendingTransaction.fromJSON(tx);
+-        this.mempool.add(decoded);
++        await this.mempool.add(decoded);
+         return decoded.hash().toString();
+     }
+     async transactionState(hash) {
+diff --git a/src/graphql/modules/MempoolResolver.ts b/src/graphql/modules/MempoolResolver.ts
+index 531be51d94c6b92028ce512d0ec3c4272ddc7065..ede84ec8c1547eb766fd4a5df3bad23e13cef1bf 100644
+--- a/src/graphql/modules/MempoolResolver.ts
++++ b/src/graphql/modules/MempoolResolver.ts
+@@ -129,9 +129,9 @@ export class MempoolResolver extends GraphqlModule {
+   }
+ 
+   @Mutation(() => String)
+-  public submitTx(@Arg("tx") tx: TransactionObject): string {
++  public async submitTx(@Arg("tx") tx: TransactionObject): Promise<string> {
+     const decoded = PendingTransaction.fromJSON(tx);
+-    this.mempool.add(decoded);
++    await this.mempool.add(decoded);
+ 
+     return decoded.hash().toString();
+   }
