@@ -30,6 +30,7 @@ import Image from 'next/image';
 import { clsx } from 'clsx';
 import { Currency } from '@/constants/currency';
 import { Modal } from '@/components/ui/games-store/shared/Modal';
+import ArkanoidCoverSVG from '../assets/game-cover.svg';
 
 interface IBrick {
   pos: [number, number];
@@ -252,7 +253,7 @@ export default function NewArkanoidCompetitionPage() {
   return (
     <GamePage
       gameConfig={arkanoidConfig}
-      image={'/image/game-page/game-title-template.svg'}
+      image={ArkanoidCoverSVG}
       defaultPage={'New Competition'}
     >
       <div className={'flex w-full flex-col gap-8'}>

@@ -56,7 +56,7 @@ export default function DesktopNavbar({
         {networkStore.walletConnected && <BalanceInfo />}
 
         <div className="flex gap-5">
-          {networkStore.walletConnected ? (
+          {(networkStore.walletConnected && networkStore.address) ? (
             <>
               <HeaderCard
                 svg={'account'}

@@ -455,7 +455,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
         competitions={[
           {
             game: defaultGames[0],
-            title: 'Arcanoid',
+            title: 'Arkanoid',
             id: 0,
             preReg: false,
             preRegDate: {
@@ -474,7 +474,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
           },
           {
             game: defaultGames[0],
-            title: 'Arcanoid',
+            title: 'Arkanoid',
             id: 1,
             preReg: false,
             preRegDate: {

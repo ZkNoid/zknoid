@@ -5,14 +5,24 @@ import { useNetworkStore } from '@/lib/stores/network';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { randzuConfig } from '../config';
 import { ClientAppChain } from '@proto-kit/sdk';
-import { useMatchQueueStore } from '@/lib/stores/matchQueue';
+import {
+  MatchQueueState,
+  matchQueueInitializer,
+} from '@/lib/stores/matchQueue';
+import { create } from 'zustand';
+
+export const useRandzuMatchQueueStore = create<
+  MatchQueueState,
+  [['zustand/immer', never]]
+>(matchQueueInitializer);
 
 export const useObserveRandzuMatchQueue = () => {
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
-  const matchQueue = useMatchQueueStore();
+  const matchQueue = useRandzuMatchQueueStore();
   const client = useContext<
-    ClientAppChain<typeof randzuConfig.runtimeModules, any, any, any> | undefined
+    | ClientAppChain<typeof randzuConfig.runtimeModules, any, any, any>
+    | undefined
   >(AppChainClientContext);
 
   useEffect(() => {
@@ -24,7 +34,10 @@ export const useObserveRandzuMatchQueue = () => {
       throw Error('Context app chain client is not set');
     }
 
-    matchQueue.loadMatchQueue(client.query.runtime.RandzuLogic, parseInt(chain.block?.height ?? '0'));
+    matchQueue.loadMatchQueue(
+      client.query.runtime.RandzuLogic,
+      parseInt(chain.block?.height ?? '0')
+    );
     matchQueue.loadActiveGame(
       client.query.runtime.RandzuLogic,
       parseInt(chain.block?.height ?? '0'),
@@ -32,4 +45,3 @@ export const useObserveRandzuMatchQueue = () => {
     );
   }, [chain.block?.height, network.walletConnected, network.address]);
 };
-
