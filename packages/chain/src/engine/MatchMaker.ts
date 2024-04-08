@@ -174,6 +174,16 @@ export class MatchMaker extends LobbyManager {
   private flushPendingLobby(pendingLobyId: UInt64, shouldFlush: Bool): Lobby {
     let lobby = this.pendingLobby.get(pendingLobyId).value;
 
+    lobby.players.forEach((player) => {
+      this.queueRegisteredRoundUsers.set(
+        new RoundIdxUser({
+          roundId: lobby.id,
+          userAddress: player,
+        }),
+        shouldFlush.not(),
+      );
+    });
+
     this.pendingLobby.set(
       pendingLobyId,
       Provable.if(
@@ -199,21 +209,21 @@ export class MatchMaker extends LobbyManager {
     return activeLobby;
   }
 
-  protected override forEachUserInInitGame(
-    lobby: Lobby,
-    player: PublicKey,
-    shouldInit: Bool,
-  ): void {
-    super.forEachUserInInitGame(lobby, player, shouldInit);
-    // Clear queueRegisteredRoundUsers
-    this.queueRegisteredRoundUsers.set(
-      new RoundIdxUser({
-        roundId: lobby.id,
-        userAddress: player,
-      }),
-      shouldInit.not(),
-    );
-  }
+  // protected override forEachUserInInitGame(
+  //   lobby: Lobby,
+  //   player: PublicKey,
+  //   shouldInit: Bool,
+  // ): void {
+  //   super.forEachUserInInitGame(lobby, player, shouldInit);
+  //   // Clear queueRegisteredRoundUsers
+  //   Provable.asProver(() => {
+  //     console.log(
+  //       `Set queue for user ${player.toBase58()} = ${shouldInit
+  //         .not()
+  //         .toString()}`,
+  //     );
+  //   });
+  // }
 
   /**
    * Registers user in session queue
