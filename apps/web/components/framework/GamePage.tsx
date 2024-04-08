@@ -22,12 +22,12 @@ import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
 export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
   children,
   gameConfig,
-  image,
+  image = '/image/game-page/game-title-template.svg',
   defaultPage,
 }: {
   children: ReactNode;
   gameConfig: ZkNoidGameConfig<RuntimeModules>;
-  image: string;
+  image: any;
   defaultPage: 'Competitions List' | 'Game' | 'New Competition';
 }) {
   const client = useContext(AppChainClientContext) as ClientAppChain<
@@ -263,7 +263,7 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
         />
         <div
           className={
-            'relative flex w-full flex-col gap-20 rounded-2xl border-2 border-left-accent p-10 pb-[100px]'
+            'relative flex w-full flex-col gap-20 rounded-2xl border-2 border-left-accent p-10'
           }
         >
           <div

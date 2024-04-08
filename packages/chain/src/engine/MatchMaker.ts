@@ -94,8 +94,6 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     ProtoUInt64,
   );
 
-  @state() public gameFinished = StateMap.from<UInt64, Bool>(UInt64, Bool);
-
   public constructor(@inject('Balances') private balances: Balances) {
     super();
   }
@@ -190,7 +188,11 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
       pendingBalance.add(amountToTransfer),
     );
 
-    const gameId = this.initGame(opponentReady, this.transaction.sender.value, opponent);
+    const gameId = this.initGame(
+      opponentReady,
+      this.transaction.sender.value,
+      opponent,
+    );
 
     // Assigning new game to player if opponent found
     this.activeGameId.set(
@@ -281,8 +283,7 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
     this.pendingBalances.set(sender, ProtoUInt64.from(0));
   }
 
-  @runtimeMethod()
-  public proveOpponentTimeout(gameId: UInt64): void {
+  protected proveOpponentTimeout(gameId: UInt64, passTurn: boolean): void {
     const sessionSender = this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
@@ -305,43 +306,55 @@ export class MatchMaker extends RuntimeModule<MatchMakerConfig> {
 
     assert(isTimeout, 'Timeout not reached');
 
-    game.value.winner = sender;
-    game.value.lastMoveBlockHeight = this.network.block.height;
-    this.games.set(gameId, game.value);
+    if (passTurn) {
+      game.value.currentMoveUser = Provable.if(
+        game.value.currentMoveUser.equals(game.value.player1),
+        game.value.player2,
+        game.value.player1,
+      );
+      game.value.lastMoveBlockHeight = this.network.block.height;
+    } else {
+      game.value.winner = sender;
+      game.value.lastMoveBlockHeight = this.network.block.height;  
+      // Removing active game for players if game ended
+      this.activeGameId.set(game.value.player1, UInt64.from(0));
+      this.activeGameId.set(game.value.player2, UInt64.from(0));
+    }
 
-    // Removing active game for players if game ended
-    this.activeGameId.set(game.value.player1, UInt64.from(0));
-    this.activeGameId.set(game.value.player2, UInt64.from(0));
+    this.games.set(gameId, game.value);
   }
 
   protected getParticipationPrice() {
     return DEFAULT_GAME_COST;
   }
 
-  protected getFunds(
+  protected acquireFunds(
     gameId: UInt64,
     player1: PublicKey,
     player2: PublicKey,
     player1Share: ProtoUInt64,
     player2Share: ProtoUInt64,
+    totalShares: ProtoUInt64
   ) {
-    assert(this.gameFinished.get(gameId).value.not());
+    const player1PendingBalance = this.pendingBalances.get(player1);
+    const player2PendingBalance = this.pendingBalances.get(player2);
 
-    this.gameFinished.set(gameId, Bool(true));
-
-    this.balances.mint(
-      ZNAKE_TOKEN_ID,
+    this.pendingBalances.set(
       player1,
-      ProtoUInt64.from(this.gameFund.get(gameId).value)
-        .mul(player1Share)
-        .div(player1Share.add(player2Share)),
+      ProtoUInt64.from(player1PendingBalance.value).add(
+        ProtoUInt64.from(this.gameFund.get(gameId).value)
+          .mul(player1Share)
+          .div(totalShares),
+      ),
     );
-    this.balances.mint(
-      ZNAKE_TOKEN_ID,
+
+    this.pendingBalances.set(
       player2,
-      ProtoUInt64.from(this.gameFund.get(gameId).value)
-        .mul(player2Share)
-        .div(player1Share.add(player2Share)),
+      ProtoUInt64.from(player2PendingBalance.value).add(
+        ProtoUInt64.from(this.gameFund.get(gameId).value)
+          .mul(player2Share)
+          .div(totalShares),
+      ),
     );
   }
 }

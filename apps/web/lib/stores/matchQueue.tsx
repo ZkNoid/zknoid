@@ -31,11 +31,9 @@ export interface MatchQueueState {
 
 const PENDING_BLOCKS_NUM = UInt64.from(PENDING_BLOCKS_NUM_CONST);
 
-export const useMatchQueueStore = create<
-  MatchQueueState,
-  [['zustand/immer', never]]
->(
-  immer((set) => ({
+
+export const matchQueueInitializer = 
+  immer<MatchQueueState>((set) => ({
     loading: Boolean(false),
     queueLength: 0,
     activeGameId: BigInt(0),
@@ -171,26 +169,7 @@ export const useMatchQueueStore = create<
         state.pendingBalance = pendingBalance || 0n;
       });
     },
-  }))
-);
-
-export const useObserveMatchQueue = (query: ModuleQuery<MatchMaker>) => {
-  const chain = useProtokitChainStore();
-  const network = useNetworkStore();
-  const matchQueue = useMatchQueueStore();
-
-  useEffect(() => {
-    if (!network.walletConnected || !network.protokitClientStarted) {
-      return;
-    }
-    matchQueue.loadMatchQueue(query, parseInt(chain.block?.height ?? '0'));
-    matchQueue.loadActiveGame(
-      query,
-      parseInt(chain.block?.height ?? '0'),
-      PublicKey.fromBase58(network.address!)
-    );
-  }, [chain.block?.height, network.walletConnected, network.address]);
-};
+  }));
 
 export interface IGameInfo<GameField> {
   player1: PublicKey;

@@ -112,12 +112,12 @@ export const Competitions = ({
 
   useEffect(() => {
     const fundsMaximum = competitions.reduce((max, competition) => {
-      return Math.max(max, Number(competition.reward));
+      return Math.max(max, Number(competition.reward / 10n**9n));
     }, -Infinity);
     setFundsAbsoluteMaximum(fundsMaximum);
 
     const feesMaximum = competitions.reduce((max, competition) => {
-      return Math.max(max, Number(competition.participationFee));
+      return Math.max(max, Number(competition.participationFee / 10n**9n));
     }, -Infinity);
     setFeesAbsoluteMaximum(feesMaximum);
   }, [competitions]);
@@ -442,12 +442,12 @@ export const Competitions = ({
               if (timelineFilter(item)) return true;
 
               if (
-                item.participationFee >= feesMinValue &&
-                item.participationFee <= feesMaxValue
+                item.participationFee >= feesMinValue * 10 ** 9 &&
+                item.participationFee <= feesMaxValue * 10 ** 9
               )
                 return true;
 
-              if (item.reward >= fundsMinValue && item.reward <= fundsMaxValue)
+              if (item.reward >= fundsMinValue && item.reward <= fundsMaxValue * 10 ** 9)
                 return true;
             })
             .filter((value) => searchFilter(value))

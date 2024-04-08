@@ -158,31 +158,7 @@ export class RandzuLogic extends MatchMaker {
 
   @runtimeMethod()
   public proveOpponentTimeout(gameId: UInt64): void {
-    const sessionSender = this.sessions.get(this.transaction.sender.value);
-    const sender = Provable.if(
-      sessionSender.isSome,
-      sessionSender.value,
-      this.transaction.sender.value,
-    );
-
-    const game = this.games.get(gameId);
-    assert(game.isSome, 'Invalid game id');
-    assert(game.value.currentMoveUser.equals(sender), `Not your move`);
-    assert(game.value.winner.equals(PublicKey.empty()), `Game finished`);
-
-    const isTimeout = this.network.block.height
-      .sub(game.value.lastMoveBlockHeight)
-      .greaterThan(UInt64.from(MOVE_TIMEOUT_IN_BLOCKS));
-
-    assert(isTimeout, 'Timeout not reached');
-
-    game.value.currentMoveUser = Provable.if(
-      game.value.currentMoveUser.equals(game.value.player1),
-      game.value.player2,
-      game.value.player1,
-    );
-    game.value.lastMoveBlockHeight = this.network.block.height;
-    this.games.set(gameId, game.value);
+    super.proveOpponentTimeout(gameId, true);
   }
 
   @runtimeMethod()
@@ -282,6 +258,13 @@ export class RandzuLogic extends MatchMaker {
       PublicKey.empty(),
     );
 
+    const winnerShare = ProtoUInt64.from(Provable.if(
+      winProposed,
+      UInt64.from(1), UInt64.from(0)
+    ));
+
+    this.acquireFunds(gameId, game.value.winner, PublicKey.empty(), winnerShare, ProtoUInt64.from(0), ProtoUInt64.from(1));
+
     game.value.field = newField;
     game.value.currentMoveUser = Provable.if(
       game.value.currentMoveUser.equals(game.value.player1),
@@ -300,12 +283,5 @@ export class RandzuLogic extends MatchMaker {
       Provable.if(winProposed, game.value.player1, PublicKey.empty()),
       UInt64.from(0),
     );
-  }
-
-  @runtimeMethod()
-  public win(gameId: UInt64): void {
-    let game = this.games.get(gameId).value;
-    assert(game.winner.equals(PublicKey.empty()).not());
-    this.getFunds(gameId, game.winner, PublicKey.empty(), ProtoUInt64.from(1), ProtoUInt64.from(0));
   }
 }
