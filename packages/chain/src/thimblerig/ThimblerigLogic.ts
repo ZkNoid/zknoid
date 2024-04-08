@@ -13,6 +13,7 @@ import {
 import { UInt64 as ProtoUInt64 } from '@proto-kit/library';
 
 import { MatchMaker } from '../engine/MatchMaker';
+import { Lobby } from '../engine/LobbyManager';
 
 export class RoundIdxUser extends Struct({
   roundId: UInt64,
@@ -57,40 +58,39 @@ export class ThimblerigLogic extends MatchMaker {
   @state() public games = StateMap.from<UInt64, GameInfo>(UInt64, GameInfo);
 
   @state() public gamesNum = State.from<UInt64>(UInt64);
-  /*
-  public override initGame(
-    opponentReady: Bool,
-    player: PublicKey,
-    opponent: Option<QueueListItem>
-  ): UInt64 {
-    const currentGameId = this.gamesNum
-      .get()
-      .orElse(UInt64.from(0))
-      .add(UInt64.from(1));
+
+  public override initGame(lobby: Lobby, shouldUpdate: Bool): UInt64 {
+    const currentGameId = this.getNextGameId();
+
     // Setting active game if opponent found
     this.games.set(
-      Provable.if(opponentReady, currentGameId, UInt64.from(0)),
+      Provable.if(shouldUpdate, currentGameId, UInt64.from(0)),
       new GameInfo({
-        player1: this.transaction.sender.value,
-        player2: opponent.value.userAddress,
-        currentMoveUser: this.transaction.sender.value,
+        player1: lobby.players[0],
+        player2: lobby.players[1],
+        currentMoveUser: lobby.players[0],
         lastMoveBlockHeight: this.network.block.height,
         field: new ThimblerigField({
           choice: UInt64.from(0),
           commitedHash: Field.from(0),
         }),
         winner: PublicKey.empty(),
-      })
+      }),
     );
 
-    this.gamesNum.set(currentGameId);
     this.gameFund.set(currentGameId, this.getParticipationPrice().mul(2));
 
-    super.initGame(opponentReady, player, opponent);
-
-    return currentGameId;
+    return super.initGame(lobby, shouldUpdate);
   }
-  */
+
+  public override getNextGameId(): UInt64 {
+    return this.gamesNum.get().orElse(UInt64.from(1));
+  }
+  public override updateNextGameId(shouldUpdate: Bool): void {
+    let curGameId = this.getNextGameId();
+
+    this.gamesNum.set(Provable.if(shouldUpdate, curGameId.add(1), curGameId));
+  }
 
   @runtimeMethod()
   public commitValue(gameId: UInt64, commitment: Field): void {
