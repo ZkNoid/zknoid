@@ -60,11 +60,6 @@ export class MatchMaker extends LobbyManager {
   // Round => pending lobby
   @state() public pendingLobby = StateMap.from<UInt64, Lobby>(UInt64, Lobby);
 
-  // Session => user
-  @state() public sessions = StateMap.from<PublicKey, PublicKey>(
-    PublicKey,
-    PublicKey,
-  );
   // mapping(roundId => mapping(registered user address => bool))
   @state() public queueRegisteredRoundUsers = StateMap.from<RoundIdxUser, Bool>(
     RoundIdxUser,
