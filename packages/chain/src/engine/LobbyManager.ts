@@ -87,8 +87,8 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   }
 
   @runtimeMethod()
-  public addLobby(lobby: Lobby): Lobby {
-    return this._addLobby(lobby, Bool(true));
+  public createLobby(): Lobby {
+    return this._addLobby(Lobby.default(UInt64.zero), Bool(true));
   }
 
   @runtimeMethod()
@@ -144,6 +144,13 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
     this.lastLobbyId.set(lobbyId.add(addValue));
 
     return lobby;
+  }
+
+  @runtimeMethod()
+  public startGame(lobbyId: UInt64): void {
+    let lobby = this.activeLobby.get(lobbyId).value;
+
+    this.initGame(lobby, Bool(true));
   }
 
   /**
