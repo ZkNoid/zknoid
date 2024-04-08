@@ -65,6 +65,12 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   @state() public activeLobby = StateMap.from<UInt64, Lobby>(UInt64, Lobby);
   @state() public lastLobbyId = State.from<UInt64>(UInt64);
 
+  // Session => user
+  @state() public sessions = StateMap.from<PublicKey, PublicKey>(
+    PublicKey,
+    PublicKey,
+  );
+
   @state() public pendingBalances = StateMap.from<PublicKey, ProtoUInt64>(
     PublicKey,
     ProtoUInt64,
@@ -226,6 +232,18 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
         .mul(player2Share)
         .div(player1Share.add(player2Share)),
     );
+  }
+
+  @runtimeMethod()
+  public collectPendingBalance(): void {
+    const sender = this.sessions.get(this.transaction.sender.value).value;
+
+    const pendingBalance = ProtoUInt64.from(
+      this.pendingBalances.get(sender).value,
+    );
+
+    this.balances.mint(ZNAKE_TOKEN_ID, sender, pendingBalance);
+    this.pendingBalances.set(sender, ProtoUInt64.from(0));
   }
 
   public getNextGameId(): UInt64 {
