@@ -126,9 +126,9 @@ export class RandzuLogic extends MatchMaker {
   @state() public gamesNum = State.from<UInt64>(UInt64);
 
   public override initGame(lobby: Lobby, shouldUpdate: Bool): UInt64 {
-    Provable.asProver(() => {
-      console.log(`Init game with shoudUpdate = ${shouldUpdate.toBoolean()}`);
-    });
+    // Provable.asProver(() => {
+    //   console.log(`Init game with shoudUpdate = ${shouldUpdate.toBoolean()}`);
+    // });
     const currentGameId = this.getNextGameId();
 
     // Setting active game if opponent found
