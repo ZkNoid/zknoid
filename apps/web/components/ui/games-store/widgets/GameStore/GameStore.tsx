@@ -308,6 +308,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                   },
                 }}
                 height={animationHeights[3]}
+                isClickToPauseDisabled={true}
               ></Lottie>
             </div>
 
