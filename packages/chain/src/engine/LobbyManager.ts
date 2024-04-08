@@ -113,15 +113,6 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
       this.pendingBalances.get(sender).value,
     );
 
-    // console.log(pendingBalance);
-    // console.log(lobby.participationFee);
-
-    // console.log(`Pending balance: ${pendingBalance.toString()}`);
-    // console.log(`Participation fee: ${lobby.participationFee.toString()}`);
-    // console.log(
-    //   `Sub: ${lobby.participationFee.sub(pendingBalance).toString()}`,
-    // );
-
     const fee = ProtoUInt64.from(lobby.participationFee);
 
     const amountToTransfer = Provable.if<ProtoUInt64>(
