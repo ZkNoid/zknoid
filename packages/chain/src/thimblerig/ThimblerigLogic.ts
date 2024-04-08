@@ -1,6 +1,6 @@
-import { state, runtimeMethod, runtimeModule } from "@proto-kit/module";
-import type { Option } from "@proto-kit/protocol";
-import { State, StateMap, assert } from "@proto-kit/protocol";
+import { state, runtimeMethod, runtimeModule } from '@proto-kit/module';
+import type { Option } from '@proto-kit/protocol';
+import { State, StateMap, assert } from '@proto-kit/protocol';
 import {
   PublicKey,
   Struct,
@@ -9,10 +9,10 @@ import {
   Bool,
   Field,
   Poseidon,
-} from "o1js";
+} from 'o1js';
 import { UInt64 as ProtoUInt64 } from '@proto-kit/library';
 
-import { MatchMaker } from "../engine/MatchMaker";
+import { MatchMaker } from '../engine/MatchMaker';
 
 export class RoundIdxUser extends Struct({
   roundId: UInt64,
@@ -57,7 +57,7 @@ export class ThimblerigLogic extends MatchMaker {
   @state() public games = StateMap.from<UInt64, GameInfo>(UInt64, GameInfo);
 
   @state() public gamesNum = State.from<UInt64>(UInt64);
-
+  /*
   public override initGame(
     opponentReady: Bool,
     player: PublicKey,
@@ -90,6 +90,7 @@ export class ThimblerigLogic extends MatchMaker {
 
     return currentGameId;
   }
+  */
 
   @runtimeMethod()
   public commitValue(gameId: UInt64, commitment: Field): void {
@@ -97,22 +98,16 @@ export class ThimblerigLogic extends MatchMaker {
     const sender = Provable.if(
       sessionSender.isSome,
       sessionSender.value,
-      this.transaction.sender.value
+      this.transaction.sender.value,
     );
 
     const game = this.games.get(gameId);
-    assert(game.isSome, "Invalid game id");
-    assert(
-      game.value.field.choice.equals(UInt64.from(0)),
-      "Already chosen"
-    );
-    assert(
-      game.value.field.commitedHash.equals(0),
-      "Already commited"
-    );
+    assert(game.isSome, 'Invalid game id');
+    assert(game.value.field.choice.equals(UInt64.from(0)), 'Already chosen');
+    assert(game.value.field.commitedHash.equals(0), 'Already commited');
     assert(
       game.value.player1.equals(sender),
-      `Only player1 should commit value`
+      `Only player1 should commit value`,
     );
     assert(game.value.winner.equals(PublicKey.empty()), `Game finished`);
 
@@ -128,29 +123,23 @@ export class ThimblerigLogic extends MatchMaker {
     const sender = Provable.if(
       sessionSender.isSome,
       sessionSender.value,
-      this.transaction.sender.value
+      this.transaction.sender.value,
     );
 
     const game = this.games.get(gameId);
-    assert(game.isSome, "Invalid game id");
+    assert(game.isSome, 'Invalid game id');
     assert(
       Bool.and(
         choice.greaterThanOrEqual(UInt64.from(1)),
-        choice.lessThanOrEqual(UInt64.from(3))
+        choice.lessThanOrEqual(UInt64.from(3)),
       ),
-      "Invalid choice"
+      'Invalid choice',
     );
-    assert(
-      game.value.field.choice.equals(UInt64.from(0)),
-      "Already chosen"
-    );
-    assert(
-      game.value.field.commitedHash.greaterThan(0),
-      "Not commited"
-    );
+    assert(game.value.field.choice.equals(UInt64.from(0)), 'Already chosen');
+    assert(game.value.field.commitedHash.greaterThan(0), 'Not commited');
     assert(
       game.value.player2.equals(sender),
-      `Only player2 should make choice`
+      `Only player2 should make choice`,
     );
     assert(game.value.winner.equals(PublicKey.empty()), `Game finished`);
 
@@ -166,39 +155,33 @@ export class ThimblerigLogic extends MatchMaker {
     const sender = Provable.if(
       sessionSender.isSome,
       sessionSender.value,
-      this.transaction.sender.value
+      this.transaction.sender.value,
     );
 
     const game = this.games.get(gameId);
-    assert(game.isSome, "Invalid game id");
-    assert(
-      game.value.field.choice.greaterThan(UInt64.from(0)),
-      "Not chosen"
-    );
-    assert(
-      game.value.field.commitedHash.greaterThan(0),
-      "Not commited"
-    );
+    assert(game.isSome, 'Invalid game id');
+    assert(game.value.field.choice.greaterThan(UInt64.from(0)), 'Not chosen');
+    assert(game.value.field.commitedHash.greaterThan(0), 'Not commited');
     assert(
       game.value.player1.equals(sender),
-      `Only player1 should reveal value`
+      `Only player1 should reveal value`,
     );
     assert(game.value.winner.equals(PublicKey.empty()), `Game finished`);
     assert(
       Poseidon.hash([...value.toFields(), salt]).equals(
-        game.value.field.commitedHash
+        game.value.field.commitedHash,
       ),
-      "Incorrect reveal"
+      'Incorrect reveal',
     );
-    assert(value.lessThanOrEqual(UInt64.from(3)), "Invalid value");
-    assert(salt.greaterThan(0), "Invalid salt");
+    assert(value.lessThanOrEqual(UInt64.from(3)), 'Invalid value');
+    assert(salt.greaterThan(0), 'Invalid salt');
 
     game.value.currentMoveUser = game.value.player2;
     game.value.lastMoveBlockHeight = this.network.block.height;
     game.value.winner = Provable.if(
       value.add(1).equals(game.value.field.choice),
       game.value.player2,
-      game.value.player1
+      game.value.player1,
     );
 
     this.games.set(gameId, game.value);
@@ -213,22 +196,16 @@ export class ThimblerigLogic extends MatchMaker {
     const sender = Provable.if(
       sessionSender.isSome,
       sessionSender.value,
-      this.transaction.sender.value
+      this.transaction.sender.value,
     );
 
     const game = this.games.get(gameId);
-    assert(game.isSome, "Invalid game id");
-    assert(
-      game.value.field.choice.equals(UInt64.from(0)),
-      "Already chosen"
-    );
-    assert(
-      game.value.field.commitedHash.equals(0),
-      "Already commited"
-    );
+    assert(game.isSome, 'Invalid game id');
+    assert(game.value.field.choice.equals(UInt64.from(0)), 'Already chosen');
+    assert(game.value.field.commitedHash.equals(0), 'Already commited');
     assert(
       game.value.player1.equals(sender),
-      `Only player1 should prove value is not revealed`
+      `Only player1 should prove value is not revealed`,
     );
   }
 
@@ -236,7 +213,17 @@ export class ThimblerigLogic extends MatchMaker {
   public win(gameId: UInt64): void {
     let game = this.games.get(gameId).value;
     assert(game.winner.equals(PublicKey.empty()).not());
-    const looser = Provable.if(game.winner.equals(game.player1), game.player2, game.player1);
-    this.getFunds(gameId, game.winner, looser, ProtoUInt64.from(2), ProtoUInt64.from(1));
+    const looser = Provable.if(
+      game.winner.equals(game.player1),
+      game.player2,
+      game.player1,
+    );
+    this.getFunds(
+      gameId,
+      game.winner,
+      looser,
+      ProtoUInt64.from(2),
+      ProtoUInt64.from(1),
+    );
   }
 }

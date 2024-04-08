@@ -156,6 +156,12 @@ export class MatchMaker extends LobbyManager {
       'User already in queue',
     );
 
+    Provable.asProver(() => {
+      console.log(
+        `Enable for roundId: ${lobby.id.toString()}; user: ${sender.toBase58()}`,
+      );
+    });
+
     this.queueRegisteredRoundUsers.set(
       new RoundIdxUser({
         roundId: lobby.id,
@@ -186,15 +192,15 @@ export class MatchMaker extends LobbyManager {
 
     let activeLobby = this._addLobby(lobby, shouldFlush);
 
-    Provable.asProver(() => {
-      if (shouldFlush.toBoolean()) {
-        console.log('Flush');
-        console.log(
-          'Players afte flush' +
-            this.pendingLobby.get(pendingLobyId).value.curAmount.toString(),
-        );
-      }
-    });
+    // Provable.asProver(() => {
+    //   if (shouldFlush.toBoolean()) {
+    //     console.log('Flush');
+    //     console.log(
+    //       'Players afte flush' +
+    //         this.pendingLobby.get(pendingLobyId).value.curAmount.toString(),
+    //     );
+    //   }
+    // });
 
     return activeLobby;
   }

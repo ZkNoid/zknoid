@@ -191,12 +191,7 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
     );
 
     // Set active game
-    Provable.asProver(() => {
-      console.log(
-        `Setting gameid = ${gameId.toString()} for ${player.toBase58()}`,
-      );
-    });
-    this.activeGameId.set(player, gameId);
+    this.activeGameId.set(player, Provable.if(shouldInit, gameId, UInt64.zero));
   }
 
   protected getFunds(
