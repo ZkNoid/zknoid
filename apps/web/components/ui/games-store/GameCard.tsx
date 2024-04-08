@@ -4,9 +4,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { IGame } from '@/app/constants/games';
 import { useState } from 'react';
-import heartImg from '@/public/image/misc/heart.svg';
-import heartFilledImg from '@/public/image/misc/heart-filled.svg';
-import heartRightAccentImg from '@/public/image/misc/heart-right-accent.svg';
+import heart_1 from '@/public/image/misc/heart-1.svg';
+import heart_2 from '@/public/image/misc/heart-2.svg';
+import heart_3 from '@/public/image/misc/heart-3.svg';
+import heart_1_filled from '@/public/image/misc/heart-1-filled.svg';
+import heart_2_filled from '@/public/image/misc/heart-2-filled.svg';
+import heart_3_filled from '@/public/image/misc/heart-3-filled.svg';
 import { clsx } from 'clsx';
 
 const StarSVG = ({
@@ -55,6 +58,14 @@ export const GameCard = ({
           ? 'bg-right-accent'
           : 'bg-gradient-to-r from-left-accent via-middle-accent via-30% to-right-accent';
 
+  const heart = color === 1 ? heart_1 : color === 2 ? heart_2 : heart_3;
+  const heartActive =
+    color === 1
+      ? heart_1_filled
+      : color === 2
+        ? heart_2_filled
+        : heart_3_filled;
+
   const hoverColor =
     color === 1
       ? 'hover:border-left-accent group-hover:border-left-accent'
@@ -73,13 +84,7 @@ export const GameCard = ({
     >
       {game.isReleased && (
         <Image
-          src={
-            isFavorite
-              ? heartFilledImg
-              : color === 3
-                ? heartRightAccentImg
-                : heartImg
-          }
+          src={isFavorite ? heartActive : heart}
           alt={'Favorite'}
           className={
             'absolute right-9 top-9 hidden h-[36px] w-[36px] cursor-pointer lg:block'
