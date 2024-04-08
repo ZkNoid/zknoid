@@ -55,6 +55,9 @@ export class MatchMakerHelper extends MatchMaker {
 
     game.winner = sender;
     this.games.set(gameId, game);
+
+    this.activeGameId.set(game.player1, UInt64.zero);
+    this.activeGameId.set(game.player2, UInt64.zero);
   }
 
   public override proveOpponentTimeout(gameId: UInt64): void {}
