@@ -15,9 +15,5 @@ setInterval(async () => {
     await trigger.produceUnproven();
   } catch (e) {
     console.error('Run err', e);
-    if (/maximum leaf number/.test((e as any).toString())) {
-      console.log('[LEAF ERROR]');
-      exit(100);
-    }
   }
 }, 5000);

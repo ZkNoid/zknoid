@@ -41,6 +41,8 @@ const MOVE_TIMEOUT_IN_BLOCKS = 60 / BLOCK_PRODUCTION_SECONDS;
 export class ThimblerigField extends Struct({
   commitedHash: Field,
   choice: UInt64,
+  salt: Field,
+  value: UInt64,
 }) {}
 
 export class GameInfo extends Struct({
@@ -56,7 +58,6 @@ export class GameInfo extends Struct({
 export class ThimblerigLogic extends MatchMaker {
   // Game ids start from 1
   @state() public games = StateMap.from<UInt64, GameInfo>(UInt64, GameInfo);
-
   @state() public gamesNum = State.from<UInt64>(UInt64);
 
   public override initGame(lobby: Lobby, shouldUpdate: Bool): UInt64 {
@@ -73,6 +74,8 @@ export class ThimblerigLogic extends MatchMaker {
         field: new ThimblerigField({
           choice: UInt64.from(0),
           commitedHash: Field.from(0),
+          salt: Field.from(0),
+          value: UInt64.from(0),
         }),
         winner: PublicKey.empty(),
       }),
@@ -179,10 +182,26 @@ export class ThimblerigLogic extends MatchMaker {
     game.value.currentMoveUser = game.value.player2;
     game.value.lastMoveBlockHeight = this.network.block.height;
     game.value.winner = Provable.if(
-      value.add(1).equals(game.value.field.choice),
+      value.equals(game.value.field.choice),
       game.value.player2,
       game.value.player1,
     );
+    const looser = Provable.if(
+      game.value.winner.equals(game.value.player1),
+      game.value.player2,
+      game.value.player1,
+    );
+    this.acquireFunds(
+      gameId,
+      game.value.winner,
+      looser,
+      ProtoUInt64.from(2),
+      ProtoUInt64.from(1),
+      ProtoUInt64.from(3),
+    );
+
+    game.value.field.salt = salt;
+    game.value.field.value = value;
 
     this.games.set(gameId, game.value);
 
@@ -192,37 +211,14 @@ export class ThimblerigLogic extends MatchMaker {
 
   @runtimeMethod()
   public proveCommitNotRevealed(gameId: UInt64): void {
-    const sessionSender = this.sessions.get(this.transaction.sender.value);
-    const sender = Provable.if(
-      sessionSender.isSome,
-      sessionSender.value,
-      this.transaction.sender.value,
-    );
-
+    super.proveOpponentTimeout(gameId, false);
     const game = this.games.get(gameId);
-    assert(game.isSome, 'Invalid game id');
-    assert(game.value.field.choice.equals(UInt64.from(0)), 'Already chosen');
-    assert(game.value.field.commitedHash.equals(0), 'Already commited');
-    assert(
-      game.value.player1.equals(sender),
-      `Only player1 should prove value is not revealed`,
-    );
-  }
-
-  @runtimeMethod()
-  public win(gameId: UInt64): void {
-    let game = this.games.get(gameId).value;
-    assert(game.winner.equals(PublicKey.empty()).not());
-    const looser = Provable.if(
-      game.winner.equals(game.player1),
-      game.player2,
-      game.player1,
-    );
-    this.getFunds(
+    this.acquireFunds(
       gameId,
-      game.winner,
-      looser,
-      ProtoUInt64.from(2),
+      game.value.winner,
+      PublicKey.empty(),
+      ProtoUInt64.from(1),
+      ProtoUInt64.from(0),
       ProtoUInt64.from(1),
     );
   }

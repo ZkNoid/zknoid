@@ -391,8 +391,7 @@ export class MatchMaker extends LobbyManager {
   }
   */
 
-  @runtimeMethod()
-  public proveOpponentTimeout(gameId: UInt64): void {
+  protected proveOpponentTimeout(gameId: UInt64, passTurn: boolean): void {
     const sessionSender = this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
@@ -415,16 +414,55 @@ export class MatchMaker extends LobbyManager {
 
     assert(isTimeout, 'Timeout not reached');
 
-    game.value.winner = sender;
-    game.value.lastMoveBlockHeight = this.network.block.height;
-    this.games.set(gameId, game.value);
+    if (passTurn) {
+      game.value.currentMoveUser = Provable.if(
+        game.value.currentMoveUser.equals(game.value.player1),
+        game.value.player2,
+        game.value.player1,
+      );
+      game.value.lastMoveBlockHeight = this.network.block.height;
+    } else {
+      game.value.winner = sender;
+      game.value.lastMoveBlockHeight = this.network.block.height;
+      // Removing active game for players if game ended
+      this.activeGameId.set(game.value.player1, UInt64.from(0));
+      this.activeGameId.set(game.value.player2, UInt64.from(0));
+    }
 
-    // Removing active game for players if game ended
-    this.activeGameId.set(game.value.player1, UInt64.from(0));
-    this.activeGameId.set(game.value.player2, UInt64.from(0));
+    this.games.set(gameId, game.value);
   }
 
   protected getParticipationPrice() {
     return DEFAULT_GAME_COST;
+  }
+
+  protected acquireFunds(
+    gameId: UInt64,
+    player1: PublicKey,
+    player2: PublicKey,
+    player1Share: ProtoUInt64,
+    player2Share: ProtoUInt64,
+    totalShares: ProtoUInt64,
+  ) {
+    const player1PendingBalance = this.pendingBalances.get(player1);
+    const player2PendingBalance = this.pendingBalances.get(player2);
+
+    this.pendingBalances.set(
+      player1,
+      ProtoUInt64.from(player1PendingBalance.value).add(
+        ProtoUInt64.from(this.gameFund.get(gameId).value)
+          .mul(player1Share)
+          .div(totalShares),
+      ),
+    );
+
+    this.pendingBalances.set(
+      player2,
+      ProtoUInt64.from(player2PendingBalance.value).add(
+        ProtoUInt64.from(this.gameFund.get(gameId).value)
+          .mul(player2Share)
+          .div(totalShares),
+      ),
+    );
   }
 }

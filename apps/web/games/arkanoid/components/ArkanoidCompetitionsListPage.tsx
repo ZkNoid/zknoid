@@ -11,6 +11,8 @@ import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import GamePage from '@/components/framework/GamePage';
 import { arkanoidConfig } from '../config';
 import { CompetitionWidget } from '@/components/framework/CompetitionWidget/CompetitionWidget';
+import { ICompetition } from '@/lib/types';
+import ArkanoidCoverSVG from '../assets/game-cover.svg'
 
 // const timeStampToStringDate = (timeStamp: number): string => {
 //   var date = new Date(timeStamp);
@@ -177,16 +179,22 @@ export default function ArkanoidCompetitionsListPage() {
 
   console.log('Competitions', compStore);
 
+  const competitionBlocks: ICompetition[] = [];
+  if (competitionBlocks.length < 3)
+    compStore.competitions.map((competition, index) => {
+      if (index < 3) competitionBlocks.push(competition);
+    });
+
   return (
     <GamePage
       gameConfig={arkanoidConfig}
-      image={'/image/game-page/arkanoid-title.svg'}
+      image={ArkanoidCoverSVG}
       defaultPage={'Competitions List'}
     >
       <CompetitionWidget
         gameId={arkanoidConfig.id}
+        competitionBlocks={competitionBlocks}
         competitionList={compStore.competitions}
-        competitionsBlocks={compStore.competitions}
       />
     </GamePage>
   );
