@@ -51,26 +51,26 @@ export const GameCard = ({
 
   const fillColor =
     color === 1
-      ? 'bg-left-accent'
+      ? 'bg-middle-accent'
       : color === 2
-        ? 'bg-middle-accent'
+        ? 'bg-left-accent'
         : color === 3
           ? 'bg-right-accent'
           : 'bg-gradient-to-r from-left-accent via-middle-accent via-30% to-right-accent';
 
-  const heart = color === 1 ? heart_1 : color === 2 ? heart_2 : heart_3;
+  const heart = color === 1 ? heart_2 : color === 2 ? heart_1 : heart_3;
   const heartActive =
     color === 1
-      ? heart_1_filled
+      ? heart_2_filled
       : color === 2
-        ? heart_2_filled
+        ? heart_1_filled
         : heart_3_filled;
 
   const hoverColor =
     color === 1
-      ? 'hover:border-left-accent group-hover:border-left-accent'
+      ? 'hover:border-middle-accent group-hover:border-middle-accent'
       : color === 2
-        ? 'hover:border-middle-accent group-hover:border-middle-accent'
+        ? 'hover:border-left-accent group-hover:border-left-accent'
         : color === 3
           ? 'hover:border-right-accent group-hover:border-right-accent'
           : 'hover:border-middle-accent group-hover:border-middle-accent';
@@ -128,9 +128,9 @@ export const GameCard = ({
               <StarSVG
                 fill={
                   color === 1
-                    ? '#D2FF00'
+                    ? '#97FF00'
                     : color === 2
-                      ? '#97FF00'
+                      ? '#D2FF00'
                       : color === 3
                         ? '#56EBFF'
                         : '#D2FF00'
