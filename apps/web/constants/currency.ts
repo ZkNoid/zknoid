@@ -1,3 +1,4 @@
 export enum Currency {
-    MINA = '$MINA'
+  MINA = '$MINA',
+  ZNAKES = '$znakes',
 }

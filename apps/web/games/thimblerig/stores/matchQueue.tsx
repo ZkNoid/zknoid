@@ -5,12 +5,18 @@ import { useNetworkStore } from '@/lib/stores/network';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { thimblerigConfig } from '../config';
 import { ClientAppChain } from '@proto-kit/sdk';
-import { useMatchQueueStore } from '@/lib/stores/matchQueue';
+import { create } from 'zustand';
+import { MatchQueueState, matchQueueInitializer } from '@/lib/stores/matchQueue';
+
+export const useThimblerigMatchQueueStore = create<
+  MatchQueueState,
+  [['zustand/immer', never]]
+>(matchQueueInitializer);
 
 export const useObserveThimblerigMatchQueue = () => {
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
-  const matchQueue = useMatchQueueStore();
+  const matchQueue = useThimblerigMatchQueueStore();
   const client = useContext<
     ClientAppChain<typeof thimblerigConfig.runtimeModules, any, any, any> | undefined
   >(AppChainClientContext);
