@@ -203,6 +203,7 @@ export class ThimblerigLogic extends MatchMaker {
       game.value.player2,
       game.value.player1
     );
+
     const looser = Provable.if(game.value.winner.equals(game.value.player1), game.value.player2, game.value.player1);
     this.acquireFunds(gameId, game.value.winner, looser, ProtoUInt64.from(2), ProtoUInt64.from(1), ProtoUInt64.from(3));
 

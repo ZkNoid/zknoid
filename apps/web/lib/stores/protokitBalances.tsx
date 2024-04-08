@@ -140,7 +140,7 @@ export const useTestBalanceGetter = () => {
 
   return useCallback(async () => {
     if (!network.address) return;
-    if (balancesStore.balances[network.address]) return;
+    if (balancesStore.balances[network.address] >= 100 * 10 ** 9) return;
 
     const balances = contextAppChainClient.runtime.resolve(
       'Balances'
