@@ -26,7 +26,7 @@ export const useObserveRandzuMatchQueue = () => {
   >(AppChainClientContext);
 
   useEffect(() => {
-    if (!network.walletConnected) {
+    if (!network.walletConnected || !network.address) {
       return;
     }
 

@@ -73,6 +73,7 @@ export const useObserveProtokitBalance = ({
   useEffect(() => {
     if (!network.protokitClientStarted) return;
     if (!network.walletConnected) return;
+    if (!network.address) return;
     if (!client) throw Error('Client is not set');
 
     balances.loadBalance(client, network.address!);
