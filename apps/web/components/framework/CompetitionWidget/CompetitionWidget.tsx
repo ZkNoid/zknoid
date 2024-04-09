@@ -7,7 +7,7 @@ import {
 import { CompetitionListItem } from '@/components/framework/CompetitionWidget/CompetitionListItem';
 import Link from 'next/link';
 import { ICompetition } from '@/lib/types';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export const CompetitionWidget = ({
   competitionBlocks,
@@ -18,12 +18,17 @@ export const CompetitionWidget = ({
   competitionBlocks: ICompetition[];
   competitionList: ICompetition[];
 }) => {
+  const PAGINATION_LIMIT = 5;
+
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
   const [sortBy, setSortBy] = useState<CompetitionsSortBy>(
     CompetitionsSortBy.LowFunds
   );
 
+  const competitionsListRef = useRef<HTMLDivElement | null>(null);
+
   const sortByFilter = (a: ICompetition, b: ICompetition): number => {
-    console.log(a, b);
     switch (sortBy) {
       case CompetitionsSortBy.HighFees:
         return Number(a.participationFee - b.participationFee);
@@ -48,6 +53,30 @@ export const CompetitionWidget = ({
         );
     }
   };
+
+  const renderCompetitionsList = competitionList.slice(
+    0,
+    currentPage * PAGINATION_LIMIT
+  );
+
+  useEffect(() => {
+    const refObj = competitionsListRef.current;
+
+    const scrollHandler = () => {
+      if (
+        // @ts-ignore
+        refObj?.scrollHeight - refObj?.scrollTop === refObj?.clientHeight &&
+        renderCompetitionsList.length < competitionList.length
+      ) {
+        setCurrentPage((prevState) => prevState + 1);
+      }
+    };
+    refObj?.addEventListener('scroll', scrollHandler);
+    return () => {
+      refObj?.removeEventListener('scroll', scrollHandler);
+    };
+  });
+
   return (
     <>
       <div className={'mb-4 flex flex-col gap-8'}>
@@ -76,11 +105,12 @@ export const CompetitionWidget = ({
           />
         </div>
         <div
+          ref={competitionsListRef}
           className={
             'flex max-h-[400px] flex-col gap-4 overflow-y-scroll scrollbar-custom'
           }
         >
-          {competitionList
+          {renderCompetitionsList
             .toSorted((a, b) => sortByFilter(a, b))
             .map((item, index) => (
               <CompetitionListItem key={index} competition={item} />

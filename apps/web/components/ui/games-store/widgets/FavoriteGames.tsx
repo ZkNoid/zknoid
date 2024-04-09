@@ -9,10 +9,11 @@ import { Pagination } from '@/components/ui/games-store/shared/Pagination';
 import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
 
 export const FavoriteGames = ({ games }: { games: IGame[] }) => {
+  const PAGINATION_LIMIT = 8;
+
   const [genresSelected, setGenresSelected] = useState<ZkNoidGameGenre[]>([]);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pagesAmount, _setPagesAmount] = useState<number>(3);
 
   const [sortBy, setSortBy] = useState<GameStoreSortBy>(
     GameStoreSortBy.RatingLow
@@ -42,6 +43,15 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
         return 1;
     }
   };
+
+  const filteredGames = games.filter(
+    (x) => genresSelected.includes(x.genre) || genresSelected.length == 0
+  );
+
+  const renderGames = filteredGames.slice(
+    (currentPage - 1) * PAGINATION_LIMIT,
+    currentPage * PAGINATION_LIMIT
+  );
 
   return (
     <div className="top-0 flex h-full w-full flex-col gap-5 p-10 pb-[100px]">
@@ -85,11 +95,7 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
         </div>
         <div>
           <div className="grid grid-cols-4 gap-5 max-[1600px]:grid-cols-3 max-[1400px]:grid-cols-2">
-            {games
-              .filter(
-                (x) =>
-                  genresSelected.includes(x.genre) || genresSelected.length == 0
-              )
+            {renderGames
               .sort((a, b) => sortByFliter(a, b))
               .map((game) => (
                 <GameCard
@@ -111,7 +117,7 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
           </div>
         </div>
         <AnimatePresence initial={false} mode={'wait'}>
-          {genresSelected.length != 0 ? (
+          {filteredGames.length > PAGINATION_LIMIT ? (
             <motion.div
               className={'flex w-full items-center justify-center py-4'}
               initial={{ opacity: 0 }}
@@ -119,7 +125,7 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
               exit={{ opacity: 0 }}
             >
               <Pagination
-                pagesAmount={pagesAmount}
+                pagesAmount={Math.ceil(filteredGames.length / PAGINATION_LIMIT)}
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
               />

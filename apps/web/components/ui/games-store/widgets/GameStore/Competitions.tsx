@@ -22,8 +22,9 @@ export const Competitions = ({
 }: {
   competitions: ICompetition[];
 }) => {
+  const PAGINATION_LIMIT = 5;
+
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pagesAmount, _setPagesAmount] = useState<number>(3);
 
   const [sortBy, setSortBy] = useState<CompetitionsSortBy>(
     CompetitionsSortBy.LowFunds
@@ -110,14 +111,44 @@ export const Competitions = ({
     );
   };
 
+  const filteredCompetitions = competitions.filter((item) => {
+    if (
+      genresSelected.length == 0 &&
+      eventsSelected.length == 0 &&
+      feesMinValue == 0 &&
+      feesMaxValue == 0 &&
+      fundsMinValue == 0 &&
+      fundsMaxValue == 0
+    )
+      return true;
+
+    if (genresSelected.includes(item.game.genre)) return true;
+
+    if (timelineFilter(item)) return true;
+
+    if (
+      item.participationFee >= feesMinValue * 10 ** 9 &&
+      item.participationFee <= feesMaxValue * 10 ** 9
+    )
+      return true;
+
+    if (item.reward >= fundsMinValue && item.reward <= fundsMaxValue * 10 ** 9)
+      return true;
+  });
+
+  const renderCompetitions = filteredCompetitions.slice(
+    (currentPage - 1) * PAGINATION_LIMIT,
+    currentPage * PAGINATION_LIMIT
+  );
+
   useEffect(() => {
     const fundsMaximum = competitions.reduce((max, competition) => {
-      return Math.max(max, Number(competition.reward / 10n**9n));
+      return Math.max(max, Number(competition.reward / 10n ** 9n));
     }, -Infinity);
     setFundsAbsoluteMaximum(fundsMaximum);
 
     const feesMaximum = competitions.reduce((max, competition) => {
-      return Math.max(max, Number(competition.participationFee / 10n**9n));
+      return Math.max(max, Number(competition.participationFee / 10n ** 9n));
     }, -Infinity);
     setFeesAbsoluteMaximum(feesMaximum);
   }, [competitions]);
@@ -425,31 +456,7 @@ export const Competitions = ({
             </div>
           </div>
 
-          {competitions
-            .filter((item) => {
-              if (
-                genresSelected.length == 0 &&
-                eventsSelected.length == 0 &&
-                feesMinValue == 0 &&
-                feesMaxValue == 0 &&
-                fundsMinValue == 0 &&
-                fundsMaxValue == 0
-              )
-                return true;
-
-              if (genresSelected.includes(item.game.genre)) return true;
-
-              if (timelineFilter(item)) return true;
-
-              if (
-                item.participationFee >= feesMinValue * 10 ** 9 &&
-                item.participationFee <= feesMaxValue * 10 ** 9
-              )
-                return true;
-
-              if (item.reward >= fundsMinValue && item.reward <= fundsMaxValue * 10 ** 9)
-                return true;
-            })
+          {renderCompetitions
             .filter((value) => searchFilter(value))
             .sort((a, b) => sortByFilter(a, b))
             .map((competition, index) => (
@@ -471,12 +478,7 @@ export const Competitions = ({
         </div>
       </div>
       <AnimatePresence initial={false} mode={'wait'}>
-        {genresSelected.length != 0 ||
-        eventsSelected.length != 0 ||
-        fundsMaxValue != 0 ||
-        fundsMinValue != 0 ||
-        feesMaxValue != 0 ||
-        feesMinValue != 0 ? (
+        {filteredCompetitions.length > PAGINATION_LIMIT ? (
           <motion.div
             className={'flex w-full items-center justify-center py-4'}
             initial={{ opacity: 0 }}
@@ -484,7 +486,9 @@ export const Competitions = ({
             exit={{ opacity: 0 }}
           >
             <Pagination
-              pagesAmount={pagesAmount}
+              pagesAmount={Math.ceil(
+                filteredCompetitions.length / PAGINATION_LIMIT
+              )}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
             />
