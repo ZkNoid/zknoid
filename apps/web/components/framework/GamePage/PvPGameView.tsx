@@ -1,5 +1,6 @@
 import { formatUnits } from '@/lib/unit';
 import { formatPubkey } from '@/lib/utils';
+import { api } from '@/trpc/react';
 import { PublicKey } from 'o1js';
 import { ReactNode } from 'react';
 
@@ -31,6 +32,10 @@ type PvPGameViewProps = {
   competitionFunds: bigint;
 };
 export const PvPGameView = (props: PvPGameViewProps) => {
+  const getRatingQuery = api.ratings.getGameRating.useQuery({
+    gameId: props.gameName,
+  });
+
   return (
     <main className="flex grow flex-row items-stretch gap-5 p-5">
       <div className="flex min-h-[500px] basis-1/4 flex-col gap-2">
@@ -75,7 +80,7 @@ export const PvPGameView = (props: PvPGameViewProps) => {
         <div className="flex flex-grow flex-col justify-center font-plexsans font-medium">
           <div className="flex flex-row gap-2 text-[16px]/[16px]">
             <div className="text-left-accent">GAME RATING:</div>{' '}
-            {props.gameRating}
+            {(getRatingQuery.data?.rating || 0).toFixed(1)}
             <svg
               width="19"
               height="18"

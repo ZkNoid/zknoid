@@ -1,3 +1,4 @@
+import { api } from '@/trpc/react';
 import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
 
@@ -7,13 +8,19 @@ export const GameWidget = ({
   score,
   gameRating,
   author,
+  gameId
 }: {
   children: ReactNode;
   ticks: number;
   score: number;
   gameRating: number;
   author: string;
+  gameId: string;
 }) => {
+  const getRatingQuery = api.ratings.getGameRating.useQuery({
+    gameId,
+  });
+  
   return (
     <motion.div
       variants={{
@@ -59,7 +66,7 @@ export const GameWidget = ({
               />
             </svg>
             <span className={'font-plexsans text-buttons-menu font-normal'}>
-              {Number.isInteger(gameRating) ? gameRating + '.0' : gameRating}
+              {(getRatingQuery.data?.rating || 0).toFixed(1)}
             </span>
           </span>
           <span

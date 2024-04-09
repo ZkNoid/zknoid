@@ -18,7 +18,6 @@ export const favoritesRouter = createTRPCRouter({
             userAddress: input.userAddress,
           })
           .toArray(),
-        // deployments: res,
       };
     }),
 
