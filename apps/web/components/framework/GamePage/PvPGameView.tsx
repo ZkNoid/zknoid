@@ -1,10 +1,14 @@
+import { useNetworkStore } from '@/lib/stores/network';
 import { formatUnits } from '@/lib/unit';
 import { formatPubkey } from '@/lib/utils';
 import { api } from '@/trpc/react';
+import Link from 'next/link';
 import { PublicKey } from 'o1js';
 import { ReactNode } from 'react';
 
 export enum MainButtonState {
+  WalletNotInstalled,
+  WalletNotConnected,
   NotStarted,
   YourTurn,
   OpponentsTurn,
@@ -35,6 +39,8 @@ export const PvPGameView = (props: PvPGameViewProps) => {
   const getRatingQuery = api.ratings.getGameRating.useQuery({
     gameId: props.gameName,
   });
+
+  const networkStore = useNetworkStore();
 
   return (
     <main className="flex grow flex-row items-stretch gap-5 p-5">
@@ -71,6 +77,25 @@ export const PvPGameView = (props: PvPGameViewProps) => {
               onClick={props.startGame}
             >
               START FOR {formatUnits(props.startPrice)} 🪙
+            </div>
+          )}
+          {props.mainButtonState == MainButtonState.WalletNotInstalled && (
+            <Link
+              href="https://www.aurowallet.com/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <div className="flex cursor-pointer items-center justify-center rounded bg-left-accent py-2 font-plexsans text-[20px]/[20px] font-medium text-black">
+                Install wallet
+              </div>
+            </Link>
+          )}
+          {props.mainButtonState == MainButtonState.WalletNotConnected && (
+            <div
+              className="flex cursor-pointer items-center justify-center rounded bg-left-accent py-2 font-plexsans text-[20px]/[20px] font-medium text-black"
+              onClick={() => networkStore.connectWallet()}
+            >
+              Connect wallet
             </div>
           )}
         </div>
