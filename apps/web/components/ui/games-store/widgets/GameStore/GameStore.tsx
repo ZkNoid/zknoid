@@ -34,6 +34,8 @@ import { Currency } from '@/constants/currency';
 import Link from 'next/link';
 
 export const GameStore = ({ games }: { games: IGame[] }) => {
+  const PAGINATION_LIMIT = 9;
+
   const [eventTypesSelected, setEventTypesSelected] = useState<
     ZkNoidEventType[]
   >([]);
@@ -43,7 +45,6 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
   );
 
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pagesAmount, _setPagesAmount] = useState<number>(3);
 
   const [sortBy, setSortBy] = useState<GameStoreSortBy>(
     GameStoreSortBy.RatingLow
@@ -82,6 +83,18 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
         return 1;
     }
   };
+
+  const filteredGames = games.filter((x) => {
+    if (genresSelected.length == 0 && featuresSelected.length == 0) return true;
+    if (genresSelected.includes(x.genre)) return true;
+    if (x.features.some((feature) => featuresSelected.includes(feature)))
+      return true;
+  });
+
+  const renderGames = filteredGames.slice(
+    (currentPage - 1) * PAGINATION_LIMIT,
+    currentPage * PAGINATION_LIMIT
+  );
 
   useEffect(() => {
     const updateAnimationHeights = () => {
@@ -396,21 +409,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
           </div>
           <div>
             <div className="grid grid-cols-1 gap-5 lg:grid-cols-3 lg:max-[1700px]:grid-cols-2">
-              {games
-                .filter((x) => {
-                  if (
-                    genresSelected.length == 0 &&
-                    featuresSelected.length == 0
-                  )
-                    return true;
-                  if (genresSelected.includes(x.genre)) return true;
-                  if (
-                    x.features.some((feature) =>
-                      featuresSelected.includes(feature)
-                    )
-                  )
-                    return true;
-                })
+              {renderGames
                 .sort((a, b) => sortByFilter(a, b))
                 .map((game, index) => (
                   <GameCard
@@ -433,9 +432,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
           </div>
 
           <AnimatePresence initial={false} mode={'wait'}>
-            {featuresSelected.length != 0 ||
-            genresSelected.length != 0 ||
-            eventTypesSelected.length != 0 ? (
+            {filteredGames.length > PAGINATION_LIMIT ? (
               <motion.div
                 className={'flex w-full items-center justify-center py-4'}
                 initial={{ opacity: 0 }}
@@ -443,7 +440,9 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                 exit={{ opacity: 0 }}
               >
                 <Pagination
-                  pagesAmount={pagesAmount}
+                  pagesAmount={Math.ceil(
+                    filteredGames.length / PAGINATION_LIMIT
+                  )}
                   currentPage={currentPage}
                   setCurrentPage={setCurrentPage}
                 />
@@ -453,46 +452,25 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
         </div>
       </div>
       <Competitions
-        competitions={[
-          {
-            game: defaultGames[0],
-            title: 'Arkanoid',
-            id: 0,
-            preReg: false,
-            preRegDate: {
-              start: new Date(2024, 2, 15),
-              end: new Date(2024, 2, 20),
-            },
-            competitionDate: {
-              start: new Date(2024, 2, 15),
-              end: new Date(2024, 2, 20),
-            },
-            participationFee: 5n * 10n ** 9n,
-            currency: Currency.MINA,
-            reward: 1000n * 10n ** 9n,
-            seed: 123,
-            registered: false,
+        competitions={[...Array(17)].fill({
+          game: defaultGames[0],
+          title: 'Arkanoid',
+          id: 0,
+          preReg: false,
+          preRegDate: {
+            start: new Date(2024, 2, 15),
+            end: new Date(2024, 2, 20),
           },
-          {
-            game: defaultGames[0],
-            title: 'Arkanoid',
-            id: 1,
-            preReg: false,
-            preRegDate: {
-              start: new Date(2024, 2, 15),
-              end: new Date(2024, 2, 20),
-            },
-            competitionDate: {
-              start: new Date(2024, 2, 15),
-              end: new Date(2024, 2, 20),
-            },
-            participationFee: 5n * 10n ** 9n,
-            currency: Currency.MINA,
-            reward: 1000n * 10n ** 9n,
-            seed: 123,
-            registered: false,
+          competitionDate: {
+            start: new Date(2024, 2, 15),
+            end: new Date(2024, 2, 20),
           },
-        ]}
+          participationFee: 5n * 10n ** 9n,
+          currency: Currency.MINA,
+          reward: 1000n * 10n ** 9n,
+          seed: 123,
+          registered: false,
+        })}
       />
     </div>
   );
