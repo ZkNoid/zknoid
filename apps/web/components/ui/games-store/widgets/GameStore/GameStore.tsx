@@ -32,6 +32,7 @@ import { Pagination } from '@/components/ui/games-store/shared/Pagination';
 import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
 import { Currency } from '@/constants/currency';
 import Link from 'next/link';
+import { api } from '@/trpc/react';
 
 export const GameStore = ({ games }: { games: IGame[] }) => {
   const [eventTypesSelected, setEventTypesSelected] = useState<
@@ -41,6 +42,10 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
   const [featuresSelected, setFeaturesSelected] = useState<ZkNoidGameFeature[]>(
     []
   );
+
+  // const mapSettings = api.favorites.getFavoriteGames.useQuery({});
+
+  // console.log('Map settings', mapSettings);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pagesAmount, _setPagesAmount] = useState<number>(3);

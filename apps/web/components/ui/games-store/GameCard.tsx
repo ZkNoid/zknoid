@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { IGame } from '@/app/constants/games';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import heart_1 from '@/public/image/misc/heart-1.svg';
 import heart_2 from '@/public/image/misc/heart-2.svg';
 import heart_3 from '@/public/image/misc/heart-3.svg';
@@ -11,6 +11,8 @@ import heart_1_filled from '@/public/image/misc/heart-1-filled.svg';
 import heart_2_filled from '@/public/image/misc/heart-2-filled.svg';
 import heart_3_filled from '@/public/image/misc/heart-3-filled.svg';
 import { clsx } from 'clsx';
+import { api } from '@/trpc/react';
+import { useNetworkStore } from '@/lib/stores/network';
 
 const StarSVG = ({
   fill = 'white',
@@ -48,6 +50,28 @@ export const GameCard = ({
   color: 1 | 2 | 3 | 4;
 }) => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const networkStore = useNetworkStore();
+
+  const setFavoriteMutation = api.favorites.setFavoriteGameStatus.useMutation({
+    onSuccess: async () => {},
+  });
+
+  const getFavoritesQuery = api.favorites.getFavoriteGames.useQuery({
+    userAddress: networkStore.address ?? '',
+  });
+
+  useEffect(() => {
+    if (getFavoritesQuery.data) {
+      if (
+        getFavoritesQuery.data.favorites.some(
+          (x) => x.status && x.gameId == game.id
+        )
+      ) {
+        console.log(getFavoritesQuery.data.favorites, game.id);
+        setIsFavorite(true);
+      }
+    }
+  }, [getFavoritesQuery.data]);
 
   const fillColor =
     color === 1
@@ -89,7 +113,16 @@ export const GameCard = ({
           className={
             'absolute right-9 top-9 hidden h-[36px] w-[36px] cursor-pointer lg:block'
           }
-          onClick={() => setIsFavorite(!isFavorite)}
+          onClick={() => {
+            if (!networkStore.address) return;
+
+            setFavoriteMutation.mutate({
+              gameId: game.id,
+              userAddress: networkStore.address,
+              status: !isFavorite,
+            });
+            setIsFavorite(!isFavorite);
+          }}
         />
       )}
       <Link
