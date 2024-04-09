@@ -213,14 +213,17 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   };
 
   useEffect(() => {
+    if (matchQueue.pendingBalance && !matchQueue.inQueue) {
+      console.log('Collecting pending balance', matchQueue.pendingBalance);
+      collectPending();
+    }
+
     if (!walletInstalled()) {
       setGameState(GameState.WalletNotInstalled);
     } else if (!networkStore.address) {
       setGameState(GameState.WalletNotConnected);
-    } else if (matchQueue.pendingBalance && !matchQueue.inQueue) {
-      console.log('Collecting pending balance', matchQueue.pendingBalance);
-      collectPending();
     } else if (matchQueue.inQueue && !matchQueue.activeGameId) {
+      console.log(matchQueue.inQueue, !matchQueue.activeGameId)
       setGameState(GameState.Matchmaking);
     } else if (
       matchQueue.gameInfo &&
