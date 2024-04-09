@@ -60,6 +60,10 @@ export const GameCard = ({
     userAddress: networkStore.address ?? '',
   });
 
+  const getRatingQuery = api.ratings.getGameRating.useQuery({
+    gameId: game.id,
+  });
+
   useEffect(() => {
     if (getFavoritesQuery.data) {
       if (
@@ -115,7 +119,6 @@ export const GameCard = ({
           }
           onClick={() => {
             if (!networkStore.address) return;
-
             setFavoriteMutation.mutate({
               gameId: game.id,
               userAddress: networkStore.address,
@@ -170,7 +173,7 @@ export const GameCard = ({
                 }
                 className={'mb-1.5'}
               />
-              {Number.isInteger(game.rating) ? game.rating + '.0' : game.rating}
+              {(getRatingQuery.data?.rating || 0).toFixed(1)}
             </span>
           )}
         </div>
