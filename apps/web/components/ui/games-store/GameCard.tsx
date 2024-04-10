@@ -87,14 +87,14 @@ export const GameCard = ({
           src={isFavorite ? heartActive : heart}
           alt={'Favorite'}
           className={
-            'absolute right-9 top-9 hidden h-[36px] w-[36px] cursor-pointer lg:block'
+            'absolute right-6 top-6 hidden h-[36px] w-[36px] cursor-pointer lg:block'
           }
           onClick={() => setIsFavorite(!isFavorite)}
         />
       )}
       <Link
         href={game.active ? `/games/${game.id}/${game.defaultPage}` : '#'}
-        className="flex h-full flex-col gap-5 p-2 lg:m-5"
+        className="flex h-full flex-col gap-5 p-2 lg:m-1.5"
       >
         <div
           className={clsx(
@@ -141,7 +141,7 @@ export const GameCard = ({
             </span>
           )}
         </div>
-        <div className="font-plexsans text-[14px]/[18px] font-normal lg:text-main">
+        <div className="font-plexsans text-[16px]/[16px] font-normal lg:text-main">
           {game.description}
         </div>
         <div className={'flex-grow max-[2000px]:hidden'} />
