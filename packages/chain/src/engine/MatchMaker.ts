@@ -26,7 +26,7 @@ interface MatchMakerConfig {}
 
 export const DEFAULT_GAME_COST = ProtoUInt64.from(10 ** 9);
 
-export const PENDING_BLOCKS_NUM_CONST = 100;
+export const PENDING_BLOCKS_NUM_CONST = 20;
 
 const BLOCK_PRODUCTION_SECONDS = 5;
 export const MOVE_TIMEOUT_IN_BLOCKS = 60 / BLOCK_PRODUCTION_SECONDS;
