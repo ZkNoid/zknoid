@@ -12,6 +12,8 @@ import { useNetworkStore } from '@/lib/stores/network';
 import { useRegisterWorkerClient } from '@/lib/stores/workerClient';
 
 import { HeaderCard } from './HeaderCard';
+import { api } from '@/trpc/react';
+import { getEnvContext } from '@/lib/envContext';
 
 const BalanceInfo = dynamic(
   () => import('@/components/ui/games-store/BalanceInfo'),
@@ -30,7 +32,6 @@ export default function DesktopNavbar({
   autoconnect: boolean;
 }) {
   const networkStore = useNetworkStore();
-
   useEffect(() => {
     if (!walletInstalled()) return;
 
@@ -38,6 +39,17 @@ export default function DesktopNavbar({
       networkStore.connectWallet();
     }
   }, []);
+  const logWalletConnectedMutation =
+    api.logging.logWalletConnected.useMutation();
+
+  useEffect(() => {
+    if (networkStore.walletConnected) {
+      logWalletConnectedMutation.mutate({
+        userAddress: networkStore.address ?? '',
+        envContext: getEnvContext(),
+      });
+    }
+  }, [networkStore.walletConnected]);
 
   return (
     <header className="z-10 hidden h-[91px] w-full items-center px-3 lg:flex lg:px-[50px]">
@@ -53,7 +65,9 @@ export default function DesktopNavbar({
             height={47}
           />
         </Link>
-        {networkStore.walletConnected && networkStore.address && <BalanceInfo />}
+        {networkStore.walletConnected && networkStore.address && (
+          <BalanceInfo />
+        )}
 
         <div className="flex gap-5">
           {networkStore.walletConnected && networkStore.address ? (

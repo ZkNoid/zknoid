@@ -34,6 +34,8 @@ import {
   PvPGameView,
 } from '@/components/framework/GamePage/PvPGameView';
 import RandzuCoverSVG from '../assets/game-cover.svg';
+import { api } from '@/trpc/react';
+import { getEnvContext } from '@/lib/envContext';
 
 enum GameState {
   WalletNotInstalled,
@@ -93,10 +95,16 @@ export default function RandzuPage({
     setGameState(GameState.NotStarted);
   };
 
+  const gameStartedMutation = api.logging.logGameStarted.useMutation();
+
   const startGame = async () => {
-    if (competition!.enteringPrice > 0) {
-      if (await bridge(competition?.enteringPrice!)) return;
-    }
+    if (await bridge(DEFAULT_GAME_COST.toBigInt())) return;
+
+    gameStartedMutation.mutate({
+      gameId: 'randzu',
+      userAddress: networkStore.address ?? '',
+      envContext: getEnvContext(),
+    });
 
     const randzuLogic = client.runtime.resolve('RandzuLogic');
 
