@@ -31,7 +31,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
         <div
           className={clsx(
             'flex gap-2 text-headline-3 text-left-accent hover:opacity-80',
-            { underline: page === Pages.Support }
+            { 'underline underline-offset-[10px]': page === Pages.Support }
           )}
           onClick={() => setPage(Pages.Support)}
         >
