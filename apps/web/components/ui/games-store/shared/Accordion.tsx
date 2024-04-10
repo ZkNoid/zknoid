@@ -62,48 +62,29 @@ export const Accordion = ({
             strokeWidth="2"
             fill={isOpen ? '#D2FF00' : 'none'}
           />
-
-          {isOpen ? (
-            <>
-              <rect
-                x="694.775"
-                y="5"
-                width="20"
-                height="2"
-                transform="rotate(45 696.775 6.89062)"
-                fill="#252525"
-              />
-              <rect
-                x="701"
-                y="7.5"
-                width="20"
-                height="2"
-                transform="rotate(135 705.924 8.30469)"
-                fill="#252525"
-              />
-            </>
-          ) : (
-            <>
-              <rect
-                x="692.775"
-                y="-0.5"
-                width="17"
-                height="2"
-                transform="rotate(90 695.775 6.89062)"
-                fill="#D2FF00"
-              />
-              <rect
-                x="711.924"
-                y="4.30469"
-                width="17"
-                height="2"
-                transform="rotate(-180 710.924 8.30469)"
-                fill="#D2FF00"
-              />
-            </>
-          )}
         </svg>
-
+        <div
+          className={
+            'absolute right-1 top-3 mx-auto flex flex-col items-center justify-center'
+          }
+        >
+          <motion.div
+            className={clsx('h-[3px] w-5 bg-bg-dark', {
+              'bg-bg-dark': isOpen,
+              'bg-left-accent': !isOpen,
+            })}
+            animate={isOpen ? { rotate: 45, y: 1 } : { rotate: 0, x: -2, y: 2 }}
+          />
+          <motion.div
+            className={clsx('h-[3px] w-5 bg-bg-dark', {
+              'bg-bg-dark': isOpen,
+              'bg-left-accent': !isOpen,
+            })}
+            animate={
+              isOpen ? { rotate: -45, y: -1 } : { rotate: -90, x: -1, y: 1 }
+            }
+          />
+        </div>
         <div className="flex flex-grow rounded-b-2xl border-left-accent max-[2000px]:mr-[1.5px] max-[2000px]:border-x-2 max-[2000px]:border-b-2 min-[2000px]:mr-[1.7px] min-[2000px]:border-x-[3px] min-[2000px]:border-b-[3px]"></div>
       </div>
     </div>

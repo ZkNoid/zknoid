@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
+import { clsx } from 'clsx';
 
 export function FiltrationBox<T extends string>({
   defaultExpanded,
@@ -17,7 +18,7 @@ export function FiltrationBox<T extends string>({
   const [isExpanded, setIsExpanded] = useState<boolean>(defaultExpanded);
 
   return (
-    <div className="relative flex min-h-[80px] w-full flex-col gap-2 p-5">
+    <div className="relative flex min-h-[60px] w-full flex-col gap-2 p-5">
       <div className="text-headline-3 font-bold">{title}</div>
       <AnimatePresence initial={false} mode={'wait'}>
         {isExpanded && (
@@ -26,7 +27,7 @@ export function FiltrationBox<T extends string>({
             animate={{ height: 'auto' }}
             exit={{ height: 0 }}
             transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
-            className={'z-10 overflow-hidden'}
+            className={'z-10 flex flex-col gap-4 overflow-hidden'}
           >
             {items.map((item) => (
               <div
@@ -70,47 +71,31 @@ export function FiltrationBox<T extends string>({
             stroke="#D2FF00"
             strokeWidth="2"
           />
-
-          {isExpanded ? (
-            <>
-              <rect
-                x="331.775"
-                y="6.89062"
-                width="20"
-                height="2"
-                transform="rotate(45 331.775 6.89062)"
-                fill="#252525"
-              />
-              <rect
-                x="345.924"
-                y="8.30469"
-                width="20"
-                height="2"
-                transform="rotate(135 345.924 8.30469)"
-                fill="#252525"
-              />
-            </>
-          ) : (
-            <>
-              <rect
-                x="330.775"
-                y="-0.5"
-                width="17"
-                height="2"
-                transform="rotate(90 331.775 6.89062)"
-                fill="#D2FF00"
-              />
-              <rect
-                x="345.924"
-                y="1.30469"
-                width="17"
-                height="2"
-                transform="rotate(-180 345.924 8.30469)"
-                fill="#D2FF00"
-              />
-            </>
-          )}
         </svg>
+        <div
+          className={
+            'absolute right-0.5 top-2.5 mx-auto flex flex-col items-center justify-center'
+          }
+        >
+          <motion.div
+            className={clsx('h-[2px] w-4 bg-bg-dark', {
+              'bg-bg-dark': isExpanded,
+              'bg-left-accent': !isExpanded,
+            })}
+            animate={
+              isExpanded ? { rotate: 45, y: 1 } : { rotate: 0, x: -1, y: 1 }
+            }
+          />
+          <motion.div
+            className={clsx('h-[2px] w-4 bg-bg-dark', {
+              'bg-bg-dark': isExpanded,
+              'bg-left-accent': !isExpanded,
+            })}
+            animate={
+              isExpanded ? { rotate: -45, y: -1 } : { rotate: -90, x: -1, y: 1 }
+            }
+          />
+        </div>
         <div className="flex w-full flex-grow rounded-b-2xl border-x-2 border-b-2 border-left-accent"></div>
       </div>
     </div>
