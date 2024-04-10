@@ -20,7 +20,7 @@ export const CompetitionItem = ({
   return (
     <div
       className={
-        'grid grid-cols-1 flex-row justify-between gap-6 border-t border-left-accent pt-4 text-left-accent last:border-b last:pb-4 lg:flex'
+        'grid grid-cols-1 flex-row justify-between gap-6 border-t border-left-accent py-4 text-left-accent last:border-b last:pb-5 hover:bg-[#252525] lg:flex'
       }
     >
       <div className={'flex w-full flex-col justify-between gap-4 lg:w-2/6'}>
