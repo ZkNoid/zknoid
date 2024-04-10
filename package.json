@@ -15,6 +15,10 @@
   },
   "packageManager": "pnpm@8.6.10",
   "name": "starter-kit",
-  "dependencies": {
+  "pnpm": {
+    "patchedDependencies": {
+      "@proto-kit/sdk@0.1.1-develop.651": "patches/@proto-kit__sdk@0.1.1-develop.651.patch",
+      "@proto-kit/api@0.1.1-develop.651": "patches/@proto-kit__api@0.1.1-develop.651.patch"
+    }
   }
 }

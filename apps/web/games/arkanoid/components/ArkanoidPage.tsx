@@ -221,6 +221,7 @@ export default function ArkanoidPage({
           />
         )}
         <GameWidget
+          gameId={arkanoidConfig.id}
           ticks={ticksAmount}
           score={score}
           gameRating={arkanoidConfig.rating}

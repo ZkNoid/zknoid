@@ -36,6 +36,8 @@ import {
 import RandzuCoverSVG from '../assets/game-cover.svg';
 
 enum GameState {
+  WalletNotInstalled,
+  WalletNotConnected,
   NotStarted,
   MatchRegistration,
   Matchmaking,
@@ -205,7 +207,11 @@ export default function RandzuPage({
       console.log('Collecting pending balance', matchQueue.pendingBalance);
       collectPending();
     }
-    if (matchQueue.inQueue && !matchQueue.activeGameId) {
+    if (!walletInstalled()) {
+      setGameState(GameState.WalletNotInstalled);
+    } else if (!networkStore.address) {
+      setGameState(GameState.WalletNotConnected);
+    } else if (matchQueue.inQueue && !matchQueue.activeGameId) {
       setGameState(GameState.Matchmaking);
     } else if (
       matchQueue.activeGameId &&
@@ -235,6 +241,7 @@ export default function RandzuPage({
     matchQueue.gameInfo,
     matchQueue.inQueue,
     matchQueue.lastGameState,
+    networkStore.address,
   ]);
 
   const mainButtonState = loading
@@ -247,9 +254,15 @@ export default function RandzuPage({
           ? MainButtonState.OpponentTimeOut
           : gameState == GameState.NotStarted
             ? MainButtonState.NotStarted
-            : MainButtonState.None;
+            : gameState == GameState.WalletNotInstalled
+              ? MainButtonState.WalletNotInstalled
+              : gameState == GameState.WalletNotConnected
+                ? MainButtonState.WalletNotConnected
+                : MainButtonState.None;
 
   const statuses = {
+    [GameState.WalletNotInstalled]: 'WALLET NOT INSTALLED',
+    [GameState.WalletNotConnected]: 'WALLET NOT CONNECTED',
     [GameState.NotStarted]: 'NOT STARTED',
     [GameState.MatchRegistration]: 'MATCH REGISTRATION',
     [GameState.Matchmaking]: `MATCHMAKING ${

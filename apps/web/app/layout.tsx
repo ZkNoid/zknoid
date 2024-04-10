@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import 'reflect-metadata';
+import { TRPCReactProvider } from "@/trpc/react";
 
 import './globals.css';
 import AsyncLayoutDynamic from '@/containers/async-layout-dynamic';
@@ -35,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${museoSlab.variable} ${plexMono.variable} ${plexSans.variable}`}>
-        <AsyncLayoutDynamic>{children}</AsyncLayoutDynamic>
+        <AsyncLayoutDynamic><TRPCReactProvider>{children}</TRPCReactProvider></AsyncLayoutDynamic>
         <Analytics />
         <SpeedInsights />
       </body>

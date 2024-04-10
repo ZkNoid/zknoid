@@ -22,7 +22,7 @@ export const useObserveThimblerigMatchQueue = () => {
   >(AppChainClientContext);
 
   useEffect(() => {
-    if (!network.walletConnected) {
+    if (!network.walletConnected || !network.address) {
       return;
     }
 
