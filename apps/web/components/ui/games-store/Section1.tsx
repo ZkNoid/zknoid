@@ -6,6 +6,8 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import { Autoplay } from 'swiper/modules';
 import mobileCoverIMG from '@/public/image/section1/mobile-cover.svg';
+import defaultSlide from '@/public/image/slides/slide1.svg';
+import snakeSlide from '@/public/image/slides/snake.svg';
 
 export const Section1 = () => {
   return (
@@ -41,20 +43,18 @@ export const Section1 = () => {
               <SwiperSlide key={0} className='bg-[url("/image/grid.svg")]'>
                 <div className="flex h-full w-full items-center justify-center">
                   <Image
-                    src="/image/slides/slide1.svg"
-                    width={1092}
-                    height={378}
+                    src={defaultSlide}
                     alt="Slide"
+                    className="mb-16 h-[80%] w-[90%] object-contain"
                   />
                 </div>
               </SwiperSlide>
               <SwiperSlide key={1} className='bg-[url("/image/grid.svg")]'>
                 <div className="flex h-full w-full items-center justify-center">
                   <Image
-                    src="/image/slides/snake.svg"
-                    width={1092}
-                    height={378}
+                    src={snakeSlide}
                     alt="Slide"
+                    className="h-full w-full object-cover"
                   />
                 </div>
               </SwiperSlide>
