@@ -445,25 +445,27 @@ export const Competitions = ({
             </div>
           </div>
 
-          {renderCompetitions
-            .filter((value) => searchFilter(value))
-            .sort((a, b) => sortByFilter(a, b))
-            .map((competition, index) => (
-              <CompetitionItem
-                key={index}
-                game={competition.game}
-                title={competition.title}
-                id={competition.id}
-                preReg={competition.preReg}
-                preRegDate={competition.preRegDate}
-                competitionDate={competition.competitionDate}
-                participationFee={competition.participationFee}
-                currency={competition.currency}
-                reward={competition.reward}
-                seed={competition.seed}
-                registered={competition.registered}
-              />
-            ))}
+          <div>
+            {renderCompetitions
+              .filter((value) => searchFilter(value))
+              .sort((a, b) => sortByFilter(a, b))
+              .map((competition, index) => (
+                <CompetitionItem
+                  key={index}
+                  game={competition.game}
+                  title={competition.title}
+                  id={competition.id}
+                  preReg={competition.preReg}
+                  preRegDate={competition.preRegDate}
+                  competitionDate={competition.competitionDate}
+                  participationFee={competition.participationFee}
+                  currency={competition.currency}
+                  reward={competition.reward}
+                  seed={competition.seed}
+                  registered={competition.registered}
+                />
+              ))}
+          </div>
         </div>
       </div>
       <AnimatePresence initial={false} mode={'wait'}>
