@@ -67,7 +67,7 @@ export const HeaderCard = ({
         'rounded-b-none border-middle-accent text-middle-accent hover:bg-middle-accent/20':
           expanded,
         'hover:border-middle-accent hover:text-middle-accent': isMiddle,
-        'bg-middle-accent': !expanded,
+        'bg-middle-accent': !expanded && isMiddle,
         'bg-left-accent': !expanded && !isMiddle,
       },
       className && className
