@@ -12,8 +12,8 @@ import supportImg from '@/public/image/misc/support.svg';
 import { clsx } from 'clsx';
 
 enum Pages {
-  GameStore = 'GameStore',
-  FavoriteGames = 'FavoriteGames',
+  GameStore = 'Game Store',
+  FavoriteGames = 'Favorite Games',
   Support = 'Support',
 }
 
@@ -83,7 +83,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
   }) => {
     return (
       <div
-        className={`group relative flex w-full flex-row items-center justify-start gap-2 rounded-t-[10px] border-x border-t border-left-accent py-2 pl-4 first:-mb-2 first:pb-4 lg:rounded-none lg:border-none ${
+        className={`group relative flex w-full flex-row items-center justify-start gap-2 rounded-t-[10px] border-x border-t border-left-accent py-1 pl-4 pt-3 lg:rounded-none lg:border-none ${
           page === switchPage ? 'text-left-accent' : ''
         } ${className}`}
         data-iscurrentpage={page === switchPage}
@@ -92,12 +92,12 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
         <button
           onClick={() => setPage(switchPage)}
           className={
-            'text-[20px]/[20px] group-hover:opacity-80 lg:text-headline-3'
+            'min-w-[210px] text-left text-[20px]/[20px] group-hover:opacity-80 lg:text-headline-3'
           }
         >
           {switchPage}
         </button>
-        <div className={'absolute -left-5 -top-5 -z-20 hidden lg:block'}>
+        <div className={'absolute -left-5 top-0 -z-20 hidden lg:block'}>
           <svg
             width="380"
             height="190"
@@ -121,7 +121,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
     return (
       <div
         className={
-          'flex flex-col items-center justify-start lg:ml-5 lg:mt-20 lg:flex-row lg:gap-14 lg:max-[2000px]:pb-4'
+          'flex flex-col items-center justify-start lg:ml-5 lg:mt-20 lg:flex-row lg:gap-[22px]'
         }
       >
         <SwitchBtn switchPage={Pages.GameStore}>
