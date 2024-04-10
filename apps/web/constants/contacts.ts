@@ -32,7 +32,7 @@ export const CONTACTS = [
   {
     id: 'discord',
     image: DiscordImage,
-    link: '#',
+    link: 'https://discord.gg/hndRCZwQnb',
     label: '@ZkNoid_discord',
   },
 ];
