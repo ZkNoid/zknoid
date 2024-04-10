@@ -407,7 +407,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             <div className="grid grid-cols-1 gap-5 lg:grid-cols-3 lg:max-[1700px]:grid-cols-2">
               {renderGames
                 .sort((a, b) => sortByFilter(a, b))
-                .map((game, index) => (
+                .map((game) => (
                   <GameCard
                     game={game}
                     key={game.id}
