@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { clsx } from 'clsx';
-import {AnimatePresence, motion} from "framer-motion";
+import { motion } from 'framer-motion';
 
 const AccountSVG = ({
   fill = '#fff',
