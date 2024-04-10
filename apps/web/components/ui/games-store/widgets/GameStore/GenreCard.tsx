@@ -36,7 +36,7 @@ export const GenreCard = ({
       }}
     >
       <div className="z-1 absolute bottom-0 left-0 -z-10 h-[60%] w-full rounded bg-[#252525]"></div>
-      <div className="h-full w-full">
+      <div className="absolute bottom-5 left-0 flex h-full w-full flex-col items-end justify-end">
         <Lottie
           options={{
             animationData: animation,
@@ -50,7 +50,9 @@ export const GenreCard = ({
         ></Lottie>
       </div>
 
-      <div className="z-0 text-main lg:text-headline-3">{genre}</div>
+      <div className="absolute bottom-5 z-0 text-main lg:text-headline-3">
+        {genre}
+      </div>
     </div>
   );
 };

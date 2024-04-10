@@ -287,23 +287,19 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             genre={ZkNoidGameGenre.Arcade}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
-            height={animationHeights[0]}
           />
           <GenreCard
             animation={ChessIllustration}
             genre={ZkNoidGameGenre.BoardGames}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
-            height={animationHeights[1]}
-            className={'lg:max-[2000px]:mt-[25px]'}
           />
           <GenreCard
             animation={CubesIllustration}
             genre={ZkNoidGameGenre.Lucky}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
-            height={animationHeights[2]}
-            className={'lg:mt-[35px] lg:max-[2000px]:mt-[50px]'}
+            height={450}
           />
           <div
             className="relative flex h-full w-full flex-col items-center justify-center p-5"
