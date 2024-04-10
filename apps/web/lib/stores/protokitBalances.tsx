@@ -18,6 +18,8 @@ import { DefaultRuntimeModules } from '../runtimeModules';
 import { zkNoidConfig } from '@/games/config';
 import { Balances, ProtokitLibrary, ZNAKE_TOKEN_ID } from 'zknoid-chain-dev';
 import { BalancesKey } from '@proto-kit/library';
+import { api } from '@/trpc/react';
+import { getEnvContext } from '../envContext';
 
 export interface BalancesState {
   loading: boolean;
@@ -138,6 +140,8 @@ export const useTestBalanceGetter = () => {
   const contextAppChainClient = useContext(
     AppChainClientContext
   ) as ClientAppChain<typeof DefaultRuntimeModules, any, any, any>;
+  const logTestBalanceRecevied =
+    api.logging.logTestBalanceRecevied.useMutation();
 
   return useCallback(async () => {
     if (!network.address) return;
@@ -160,5 +164,10 @@ export const useTestBalanceGetter = () => {
 
     await l2tx.sign();
     await l2tx.send();
+
+    await logTestBalanceRecevied.mutateAsync({
+      userAddress: network.address!,
+      envContext: getEnvContext(),
+    });
   }, [network.walletConnected, balancesStore.balances]);
 };

@@ -38,6 +38,8 @@ import { FullscreenButton } from '@/components/framework/GameWidget/FullscreenBu
 import { AnimatePresence, motion } from 'framer-motion';
 import { LoadSpinner } from '@/components/ui/games-store/shared/LoadSpinner';
 import ArkanoidCoverSVG from '../assets/game-cover.svg'
+import { api } from '@/trpc/react';
+import { getEnvContext } from '@/lib/envContext';
 
 enum GameState {
   NotStarted,
@@ -87,6 +89,7 @@ export default function ArkanoidPage({
   let [level, setLevel] = useState<Bricks>(Bricks.empty);
 
   const networkStore = useNetworkStore();
+  const gameStartedMutation = api.logging.logGameStarted.useMutation();
 
   let bridge = useMinaBridge();
 
@@ -94,6 +97,12 @@ export default function ArkanoidPage({
     if (competition!.participationFee > 0) {
       if (await bridge(competition!.participationFee)) return;
     }
+
+    gameStartedMutation.mutate({
+      gameId: 'arkanoid',
+      userAddress: networkStore.address ?? '',
+      envContext: getEnvContext(),
+    })
 
     setGameState(GameState.Active);
     setGameId(gameId + 1);

@@ -36,6 +36,8 @@ import { BRIDGE_ADDR } from '@/app/constants';
 import { zkNoidConfig } from '@/games/config';
 import { ProtokitLibrary, ZNAKE_TOKEN_ID } from 'zknoid-chain-dev';
 import { formatUnits } from '@/lib/unit';
+import { api } from '@/trpc/react';
+import { getEnvContext } from '@/lib/envContext';
 
 const BridgeInput = ({
   assets,
@@ -152,6 +154,8 @@ export const DepositMenuItem = () => {
     console.log('Balance update');
   }, [protokitBalancesStore.balances[networkStore.address!]]);
 
+  const logBridged = api.logging.logBridged.useMutation();
+
   const bridge = async (amount: bigint) => {
     console.log('Bridging', amount);
     const l1tx = await Mina.transaction(() => {
@@ -191,6 +195,12 @@ export const DepositMenuItem = () => {
 
     await l2tx.sign();
     await l2tx.send();
+
+    await logBridged.mutateAsync({
+      userAddress: network.address ?? '',
+      amount: amountIn,
+      envContext: getEnvContext()
+    })
   };
   const testBalanceGetter = useTestBalanceGetter();
   const balancesStore = useProtokitBalancesStore();

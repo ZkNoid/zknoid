@@ -37,6 +37,8 @@ import {
   MainButtonState,
   PvPGameView,
 } from '@/components/framework/GamePage/PvPGameView';
+import { api } from '@/trpc/react';
+import { getEnvContext } from '@/lib/envContext';
 
 enum GameState {
   WalletNotInstalled,
@@ -94,8 +96,16 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   };
   const bridge = useMinaBridge();
 
+  const gameStartedMutation = api.logging.logGameStarted.useMutation();
+
   const startGame = async () => {
     if (await bridge(DEFAULT_GAME_COST.toBigInt())) return;
+
+    gameStartedMutation.mutate({
+      gameId: 'thimblerig',
+      userAddress: networkStore.address ?? '',
+      envContext: getEnvContext(),
+    });
 
     const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
 
