@@ -228,7 +228,15 @@ export class MatchMaker extends LobbyManager {
   ) {
     const player1PendingBalance = this.pendingBalances.get(player1);
     const player2PendingBalance = this.pendingBalances.get(player2);
-
+    // Provable.log(player1, player2, player1Share, player2Share, totalShares);
+    // Provable.log(
+    //   ProtoUInt64.from(this.gameFund.get(gameId).value)
+    //     .mul(player1Share)
+    //     .div(totalShares),
+    //   ProtoUInt64.from(this.gameFund.get(gameId).value)
+    //     .mul(player2Share)
+    //     .div(totalShares),
+    // );
     this.pendingBalances.set(
       player1,
       ProtoUInt64.from(player1PendingBalance.value).add(

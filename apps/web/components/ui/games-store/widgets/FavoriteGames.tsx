@@ -7,6 +7,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { GAME_STORE_SORT_METHODS, GameStoreSortBy } from '@/constants/sortBy';
 import { Pagination } from '@/components/ui/games-store/shared/Pagination';
 import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
+import { api } from '@/trpc/react';
+import { useNetworkStore } from '@/lib/stores/network';
 
 export const FavoriteGames = ({ games }: { games: IGame[] }) => {
   const [genresSelected, setGenresSelected] = useState<ZkNoidGameGenre[]>([]);
@@ -42,6 +44,12 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
         return 1;
     }
   };
+
+  const networkStore = useNetworkStore();
+
+  const getFavoritesQuery = api.favorites.getFavoriteGames.useQuery({
+    userAddress: networkStore.address ?? '',
+  });
 
   return (
     <div className="top-0 flex h-full w-full flex-col gap-5 p-10 pb-[100px]">
@@ -88,7 +96,12 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
             {games
               .filter(
                 (x) =>
-                  genresSelected.includes(x.genre) || genresSelected.length == 0
+                  (genresSelected.includes(x.genre) ||
+                    genresSelected.length == 0) &&
+                  getFavoritesQuery.data &&
+                  getFavoritesQuery.data.favorites.some(
+                    (y) => y.gameId == x.id && y.status
+                  )
               )
               .sort((a, b) => sortByFliter(a, b))
               .map((game) => (

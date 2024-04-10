@@ -53,10 +53,10 @@ export default function DesktopNavbar({
             height={47}
           />
         </Link>
-        {networkStore.walletConnected && <BalanceInfo />}
+        {networkStore.walletConnected && networkStore.address && <BalanceInfo />}
 
         <div className="flex gap-5">
-          {(networkStore.walletConnected && networkStore.address) ? (
+          {networkStore.walletConnected && networkStore.address ? (
             <>
               <HeaderCard
                 svg={'account'}
@@ -75,14 +75,15 @@ export default function DesktopNavbar({
               }}
             />
           ) : (
-            <Link href="https://www.aurowallet.com/">
+            <Link
+              href="https://www.aurowallet.com/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
               <HeaderCard
                 svg={'account'}
                 text="Install wallet"
                 isMiddle={true}
-                onClick={() => {
-                  networkStore.connectWallet();
-                }}
               />
             </Link>
           )}

@@ -73,6 +73,7 @@ export const useObserveProtokitBalance = ({
   useEffect(() => {
     if (!network.protokitClientStarted) return;
     if (!network.walletConnected) return;
+    if (!network.address) return;
     if (!client) throw Error('Client is not set');
 
     balances.loadBalance(client, network.address!);
@@ -140,7 +141,7 @@ export const useTestBalanceGetter = () => {
 
   return useCallback(async () => {
     if (!network.address) return;
-    if (balancesStore.balances[network.address]) return;
+    if (balancesStore.balances[network.address] >= 100 * 10 ** 9) return;
 
     const balances = contextAppChainClient.runtime.resolve(
       'Balances'

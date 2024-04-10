@@ -193,6 +193,9 @@ export const DepositMenuItem = () => {
     await l2tx.send();
   };
   const testBalanceGetter = useTestBalanceGetter();
+  const balancesStore = useProtokitBalancesStore();
+  const network = useNetworkStore();
+
   const rate = 1;
   return (
     <>
@@ -201,7 +204,7 @@ export const DepositMenuItem = () => {
         text="Top up"
         onClick={() => bridgeStore.setOpen(10n * 10n**9n)}
       />
-      {contextAppChainClient && (
+      {contextAppChainClient && network.address && balancesStore.balances[network.address] < 100 * 10 ** 9 && (
         <HeaderCard
           svg={'top-up'}
           text="Get test balance"

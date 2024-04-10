@@ -3,10 +3,16 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { IGame } from '@/app/constants/games';
-import { useState } from 'react';
-import heartImg from '@/public/image/misc/heart.svg';
-import heartFilledImg from '@/public/image/misc/heart-filled.svg';
+import { useEffect, useState } from 'react';
+import heart_1 from '@/public/image/misc/heart-1.svg';
+import heart_2 from '@/public/image/misc/heart-2.svg';
+import heart_3 from '@/public/image/misc/heart-3.svg';
+import heart_1_filled from '@/public/image/misc/heart-1-filled.svg';
+import heart_2_filled from '@/public/image/misc/heart-2-filled.svg';
+import heart_3_filled from '@/public/image/misc/heart-3-filled.svg';
 import { clsx } from 'clsx';
+import { api } from '@/trpc/react';
+import { useNetworkStore } from '@/lib/stores/network';
 
 const StarSVG = ({
   fill = 'white',
@@ -44,6 +50,32 @@ export const GameCard = ({
   color: 1 | 2 | 3 | 4;
 }) => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const networkStore = useNetworkStore();
+
+  const setFavoriteMutation = api.favorites.setFavoriteGameStatus.useMutation({
+    onSuccess: async () => {},
+  });
+
+  const getFavoritesQuery = api.favorites.getFavoriteGames.useQuery({
+    userAddress: networkStore.address ?? '',
+  });
+
+  const getRatingQuery = api.ratings.getGameRating.useQuery({
+    gameId: game.id,
+  });
+
+  useEffect(() => {
+    if (getFavoritesQuery.data) {
+      if (
+        getFavoritesQuery.data.favorites.some(
+          (x) => x.status && x.gameId == game.id
+        )
+      ) {
+        console.log(getFavoritesQuery.data.favorites, game.id);
+        setIsFavorite(true);
+      }
+    }
+  }, [getFavoritesQuery.data]);
 
   const fillColor =
     color === 1
@@ -52,7 +84,15 @@ export const GameCard = ({
         ? 'bg-middle-accent'
         : color === 3
           ? 'bg-right-accent'
-          : 'bg-gradient-to-r from-left-accent to-middle-accent';
+          : 'bg-gradient-to-r from-left-accent via-middle-accent via-30% to-right-accent';
+
+  const heart = color === 1 ? heart_1 : color === 2 ? heart_2 : heart_3;
+  const heartActive =
+    color === 1
+      ? heart_1_filled
+      : color === 2
+        ? heart_2_filled
+        : heart_3_filled;
 
   const hoverColor =
     color === 1
@@ -70,14 +110,24 @@ export const GameCard = ({
         hoverColor
       )}
     >
-      <Image
-        src={isFavorite ? heartFilledImg : heartImg}
-        alt={'Favorite'}
-        className={
-          'absolute right-9 top-9 hidden h-[36px] w-[36px] cursor-pointer lg:block'
-        }
-        onClick={() => setIsFavorite(!isFavorite)}
-      />
+      {game.isReleased && (
+        <Image
+          src={isFavorite ? heartActive : heart}
+          alt={'Favorite'}
+          className={
+            'absolute right-9 top-9 hidden h-[36px] w-[36px] cursor-pointer lg:block'
+          }
+          onClick={() => {
+            if (!networkStore.address) return;
+            setFavoriteMutation.mutate({
+              gameId: game.id,
+              userAddress: networkStore.address,
+              status: !isFavorite,
+            });
+            setIsFavorite(!isFavorite);
+          }}
+        />
+      )}
       <Link
         href={game.active ? `/games/${game.id}/${game.defaultPage}` : '#'}
         className="flex h-full flex-col gap-5 p-2 lg:m-5"
@@ -105,17 +155,27 @@ export const GameCard = ({
         </div>
         <div className={'flex flex-row justify-between'}>
           <div className="text-headline-2 lg:text-headline-1">{game.name}</div>
-          <span
-            className={
-              'flex flex-row items-center justify-between gap-2 text-center'
-            }
-          >
-            <StarSVG
-              fill={color === 1 ? '#D2FF00' : '#97FF00'}
-              className={'mb-1.5'}
-            />
-            {Number.isInteger(game.rating) ? game.rating + '.0' : game.rating}
-          </span>
+          {game.isReleased && (
+            <span
+              className={
+                'flex flex-row items-center justify-between gap-2 text-center'
+              }
+            >
+              <StarSVG
+                fill={
+                  color === 1
+                    ? '#D2FF00'
+                    : color === 2
+                      ? '#97FF00'
+                      : color === 3
+                        ? '#56EBFF'
+                        : '#D2FF00'
+                }
+                className={'mb-1.5'}
+              />
+              {(getRatingQuery.data?.rating || 0).toFixed(1)}
+            </span>
+          )}
         </div>
         <div className="font-plexsans text-[14px]/[18px] font-normal lg:text-main">
           {game.description}

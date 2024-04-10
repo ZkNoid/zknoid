@@ -39,6 +39,8 @@ import {
 } from '@/components/framework/GamePage/PvPGameView';
 
 enum GameState {
+  WalletNotInstalled,
+  WalletNotConnected,
   NotStarted,
   MatchRegistration,
   Matchmaking,
@@ -215,7 +217,13 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       console.log('Collecting pending balance', matchQueue.pendingBalance);
       collectPending();
     }
-    if (matchQueue.inQueue && !matchQueue.activeGameId) {
+
+    if (!walletInstalled()) {
+      setGameState(GameState.WalletNotInstalled);
+    } else if (!networkStore.address) {
+      setGameState(GameState.WalletNotConnected);
+    } else if (matchQueue.inQueue && !matchQueue.activeGameId) {
+      console.log(matchQueue.inQueue, !matchQueue.activeGameId)
       setGameState(GameState.Matchmaking);
     } else if (
       matchQueue.gameInfo &&
@@ -327,6 +335,8 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   ]);
 
   const statuses = {
+    [GameState.WalletNotInstalled]: 'WALLET NOT INSTALLED',
+    [GameState.WalletNotConnected]: 'WALLET NOT CONNECTED',
     [GameState.NotStarted]: 'NOT STARTED',
     [GameState.OpponentTimeout]: 'OPPONENT TIMEOUT',
     [GameState.MatchRegistration]: 'MATCH REGISTRATION',
@@ -385,9 +395,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     },
   } as Record<GameState, { text: string; handler: () => void }>;
 
-  const status = !networkStore.address
-    ? 'WALLET NOT CONNECTED'
-    : statuses[gameState] ?? 'NONE';
+  const status = statuses[gameState] ?? 'NONE';
 
   const mainButtonState = [
     GameState.CurrentPlayerHiding,
@@ -403,7 +411,11 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       ? MainButtonState.OpponentsTurn
       : gameState == GameState.NotStarted
         ? MainButtonState.NotStarted
-        : MainButtonState.None;
+        : gameState == GameState.WalletNotInstalled
+          ? MainButtonState.WalletNotInstalled
+          : gameState == GameState.WalletNotConnected
+            ? MainButtonState.WalletNotConnected
+            : MainButtonState.None;
 
   console.log('Revealed value', revealedValue);
 

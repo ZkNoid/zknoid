@@ -1,0 +1,25 @@
+diff --git a/dist/transaction/InMemoryTransactionSender.js b/dist/transaction/InMemoryTransactionSender.js
+index 6f2a4d6d5ba8229df94da46376f3a6b2ec3fd9a2..2fe7c4a8a6b6e418499d96a03a4d825d9ffa298a 100644
+--- a/dist/transaction/InMemoryTransactionSender.js
++++ b/dist/transaction/InMemoryTransactionSender.js
+@@ -20,7 +20,7 @@ let InMemoryTransactionSender = class InMemoryTransactionSender extends AppChain
+         this.mempool = this.sequencer.resolveOrFail("Mempool", PrivateMempool);
+     }
+     async send(transaction) {
+-        this.mempool.add(transaction);
++        await this.mempool.add(transaction);
+     }
+ };
+ InMemoryTransactionSender = __decorate([
+diff --git a/src/transaction/InMemoryTransactionSender.ts b/src/transaction/InMemoryTransactionSender.ts
+index 43bcf305319e775c431bf2e5d8dd2ade62fbacbf..044145822a8a9f10bc3e8108ffada40d3a901897 100644
+--- a/src/transaction/InMemoryTransactionSender.ts
++++ b/src/transaction/InMemoryTransactionSender.ts
+@@ -28,6 +28,6 @@ export class InMemoryTransactionSender
+   }
+ 
+   public async send(transaction: PendingTransaction) {
+-    this.mempool.add(transaction);
++    await this.mempool.add(transaction);
+   }
+ }

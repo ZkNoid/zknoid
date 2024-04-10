@@ -46,6 +46,7 @@ export const GenreCard = ({
           }}
           height={height}
           isStopped={!visible && false}
+          isClickToPauseDisabled={true}
         ></Lottie>
       </div>
 
