@@ -65,21 +65,27 @@ export const Accordion = ({
         </svg>
         <div
           className={
-            'absolute right-1 top-3 mx-auto flex flex-col items-center justify-center'
+            'absolute mx-auto flex h-[24px] w-[24px] flex-col items-center justify-center max-[2000px]:right-0 max-[2000px]:top-0 min-[2000px]:right-1 min-[2000px]:top-1'
           }
         >
           <motion.div
-            className={clsx('h-[3px] w-5 bg-bg-dark', {
-              'bg-bg-dark': isOpen,
-              'bg-left-accent': !isOpen,
-            })}
+            className={clsx(
+              'bg-bg-dark max-[2000px]:h-[2px] max-[2000px]:w-4 min-[2000px]:h-[3px] min-[2000px]:w-5',
+              {
+                'bg-bg-dark': isOpen,
+                'bg-left-accent': !isOpen,
+              }
+            )}
             animate={isOpen ? { rotate: 45, y: 1 } : { rotate: 0, x: -2, y: 2 }}
           />
           <motion.div
-            className={clsx('h-[3px] w-5 bg-bg-dark', {
-              'bg-bg-dark': isOpen,
-              'bg-left-accent': !isOpen,
-            })}
+            className={clsx(
+              'bg-bg-dark max-[2000px]:h-[2px] max-[2000px]:w-4 min-[2000px]:h-[3px] min-[2000px]:w-5',
+              {
+                'bg-bg-dark': isOpen,
+                'bg-left-accent': !isOpen,
+              }
+            )}
             animate={
               isOpen ? { rotate: -45, y: -1 } : { rotate: -90, x: -1, y: 1 }
             }
