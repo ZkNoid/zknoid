@@ -3,7 +3,7 @@ import "reflect-metadata";
 import { BRIDGE_CACHE } from '@/constants/bridge_cache';
 import { WebFileSystem, fetchCache } from '@/lib/cache';
 import { mockProof } from '@/lib/utils';
-import { Mina, PublicKey, UInt64 } from 'o1js016';
+import { Mina, PublicKey, UInt64 } from 'o1jsprod';
 
 import { Field as Field014 } from 'o1js';
 import {

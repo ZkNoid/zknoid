@@ -1,3 +1,5 @@
+const TerserPlugin = require('terser-webpack-plugin')
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
@@ -12,12 +14,25 @@ const nextConfig = {
       },
     ];
   },
-  webpack(config) {
+  webpack(config, { isServer }) {
+    if (!isServer) {
+      // config.optimization.splitChunks.cacheGroups = {
+      //   ...config.optimization.splitChunks.cacheGroups,
+      //   victory: {
+      //     test: /o1js@0.13.1/,
+      //     name: "o1js",
+      //     priority: 50,
+      //     reuseExistingChunk: true,
+      //   },
+      // };
+    }
+
     config.experiments = { ...config.experiments, topLevelAwait: true };
     return {
       ...config,
       optimization: {
-        minimize: false
+        minimize: true,
+        minimizer: [new TerserPlugin({})]
       }
     };
   },
