@@ -35,8 +35,6 @@ const nextConfig = {
         minimizer: [new TerserPlugin({
           terserOptions: {
             compress: {
-              // drop_console: true
-              passes: 1,
               keep_classnames: true,
               keep_fnames: true
             },
