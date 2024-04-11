@@ -4,10 +4,10 @@ import { Bool, PublicKey, UInt64 } from 'o1js';
 import { useContext, useEffect } from 'react';
 import { useProtokitChainStore } from '../../../lib/stores/protokitChain';
 import { useNetworkStore } from '../../../lib/stores/network';
-import { GameRecordKey, LeaderboardIndex } from 'zknoid-chain-dev';
+import { GameRecordKey } from 'zknoid-chain-dev';
 import { ICompetition } from '@/lib/types';
 import { fromContractCompetition } from '@/lib/typesConverter';
-import { ClientAppChain } from '@proto-kit/sdk';
+import { type ClientAppChain } from '@proto-kit/sdk';
 import { arkanoidConfig } from '../config';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 

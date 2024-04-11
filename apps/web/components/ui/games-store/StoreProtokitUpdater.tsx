@@ -7,7 +7,7 @@ import { useNetworkStore } from '@/lib/stores/network';
 import { useObserveProtokitBalance } from '@/lib/stores/protokitBalances';
 import { usePollProtokitBlockHeight } from '@/lib/stores/protokitChain';
 import { buildClient } from '@/lib/utils';
-import { ClientAppChain } from 'zknoid-chain-dev';
+import { type ClientAppChain } from 'zknoid-chain-dev';
 
 export default function StoreProtokitUpdater() {
   const client = useMemo(() => buildClient(DefaultRuntimeModules), []);
