@@ -1,11 +1,10 @@
-import { RuntimeModulesRecord } from '@proto-kit/module';
+import { type RuntimeModulesRecord } from '@proto-kit/module';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { GameRecordProof } from 'zknoid-chain';
-import { ClientAppChain, client } from 'zknoid-chain-dev';
-import { ModulesConfig } from '@proto-kit/common';
+import {  client } from 'zknoid-chain-dev';
+// import { ModulesConfig } from '@proto-kit/common';
 import { dummyProofBase64 } from '@/app/constants/dummyProofBase64';
-import { UInt64 } from '@proto-kit/library';
 import { PublicKey } from 'o1js';
 
 export function cn(...inputs: ClassValue[]) {

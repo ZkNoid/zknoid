@@ -1,4 +1,4 @@
-import { ClientAppChain } from '@proto-kit/sdk';
+import { type ClientAppChain } from '@proto-kit/sdk';
 import { createContext } from 'react';
 
 const AppChainClientContext = createContext<

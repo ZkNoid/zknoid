@@ -1,11 +1,9 @@
 import "reflect-metadata";
 
-import { dummyProofBase64 } from '@/app/constants/dummyProofBase64';
 import { BRIDGE_CACHE } from '@/constants/bridge_cache';
 import { WebFileSystem, fetchCache } from '@/lib/cache';
 import { mockProof } from '@/lib/utils';
-import { GetServerSideProps } from 'next';
-import { Field, Bool, Mina, PublicKey, UInt64 } from 'o1js016';
+import { Mina, PublicKey, UInt64 } from 'o1js016';
 
 import { Field as Field014 } from 'o1js';
 import {
