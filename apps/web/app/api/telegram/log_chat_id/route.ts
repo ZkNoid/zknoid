@@ -1,7 +1,7 @@
 import TelegramBot from 'node-telegram-bot-api';
 
 export async function GET(request: Request) {
-  if (process.env.NODE_ENV == 'development') {
+  if (process.env.LOG_MESSAGES) {
     const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN!, {
       polling: true,
     });
@@ -13,9 +13,9 @@ export async function GET(request: Request) {
       // send a message to the chat acknowledging receipt of their message
       bot.sendMessage(chatId, 'Received your message');
     });
-
-    return Response.json({
-      status: 'ok',
-    });
   }
+
+  return Response.json({
+    status: 'ok',
+  });
 }
