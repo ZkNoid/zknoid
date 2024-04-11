@@ -1,5 +1,5 @@
-import { RuntimeModulesRecord } from '@proto-kit/module';
-import { ClientAppChain } from 'zknoid-chain-dev';
+import { type RuntimeModulesRecord } from '@proto-kit/module';
+import { type ClientAppChain } from 'zknoid-chain-dev';
 import { createStore } from 'zustand';
 import { ZkNoidGameFeature, ZkNoidGameGenre } from './platform/game_tags';
 import { buildClient } from './utils';
