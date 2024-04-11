@@ -32,7 +32,20 @@ const nextConfig = {
       ...config,
       optimization: {
         minimize: true,
-        minimizer: [new TerserPlugin({})]
+        minimizer: [new TerserPlugin({
+          terserOptions: {
+            compress: {
+              // drop_console: true
+              passes: 1,
+              keep_classnames: true,
+              keep_fnames: true
+            },
+            mangle: {
+              keep_classnames: true,
+              keep_fnames: true
+            },
+          }
+        })]
       }
     };
   },
