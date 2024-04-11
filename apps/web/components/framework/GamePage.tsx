@@ -1,7 +1,7 @@
 'use client';
 
-import { RuntimeModulesRecord } from '@proto-kit/module';
-import { ClientAppChain } from '@proto-kit/sdk';
+import { type RuntimeModulesRecord } from '@proto-kit/module';
+import { type ClientAppChain } from '@proto-kit/sdk';
 import { ReactNode, useContext, useEffect, useState } from 'react';
 
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';

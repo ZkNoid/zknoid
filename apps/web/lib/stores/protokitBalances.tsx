@@ -1,22 +1,19 @@
 import 'reflect-metadata';
 
-import { ClientAppChain } from '@proto-kit/sdk';
-import { PendingTransaction, UnsignedTransaction } from '@proto-kit/sequencer';
-import { AccountUpdate, Mina, PublicKey, UInt64 } from 'o1js';
+import { type ClientAppChain } from '@proto-kit/sdk';
+import { PublicKey } from 'o1js';
 import { useCallback, useContext, useEffect } from 'react';
 import { create } from 'zustand';
 
 import { immer } from 'zustand/middleware/immer';
-
-import { BRIDGE_ADDR } from '@/app/constants';
 
 import { useNetworkStore } from './network';
 import { useProtokitChainStore } from './protokitChain';
 import AppChainClientContext from '../contexts/AppChainClientContext';
 
 import { DefaultRuntimeModules } from '../runtimeModules';
-import { zkNoidConfig } from '@/games/config';
-import { Balances, ProtokitLibrary, ZNAKE_TOKEN_ID } from 'zknoid-chain-dev';
+import { Balances, ProtoUInt64, ZNAKE_TOKEN_ID } from 'zknoid-chain-dev';
+
 import { BalancesKey } from '@proto-kit/library';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '../envContext';
@@ -158,7 +155,7 @@ export const useTestBalanceGetter = () => {
       balances.addBalance(
         ZNAKE_TOKEN_ID,
         sender,
-        ProtokitLibrary.UInt64.from(defaultBalance)
+        ProtoUInt64.from(defaultBalance)
       );
     });
 

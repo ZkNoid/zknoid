@@ -1,12 +1,8 @@
-import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { PublicKey, UInt64 } from 'o1js';
-import { useEffect } from 'react';
-import { useProtokitChainStore } from '@/lib/stores/protokitChain';
-import { useNetworkStore } from '@/lib/stores/network';
 import { RoundIdxUser } from 'zknoid-chain-dev';
 import { MatchMaker, PENDING_BLOCKS_NUM_CONST } from 'zknoid-chain-dev';
-import { ModuleQuery } from '@proto-kit/sequencer';
+import { type ModuleQuery } from '@proto-kit/sequencer';
 
 export interface MatchQueueState {
   loading: boolean;

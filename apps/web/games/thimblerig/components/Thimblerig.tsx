@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { getRandomEmoji } from '@/games/randzu/utils';
 import {
-  ClientAppChain,
+  type ClientAppChain,
   MOVE_TIMEOUT_IN_BLOCKS,
   PENDING_BLOCKS_NUM_CONST,
 } from 'zknoid-chain-dev';

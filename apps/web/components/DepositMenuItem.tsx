@@ -12,7 +12,6 @@ import ChangeSvg from '@/public/image/bridge/change.svg';
 
 import Image from 'next/image';
 import {
-  ALL_ZKNOID_L1_ASSETS,
   L1_ASSETS,
   L2_ASSET,
   ZkNoidAsset,
@@ -22,18 +21,9 @@ import { useMinaBalancesStore } from '@/lib/stores/minaBalances';
 import { AnimatePresence, motion } from 'framer-motion';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import 'reflect-metadata';
-
-import { ClientAppChain } from '@proto-kit/sdk';
-import { PendingTransaction, UnsignedTransaction } from '@proto-kit/sequencer';
-import { AccountUpdate, Mina, PublicKey, UInt64 } from 'o1js';
-import { useCallback, useEffect } from 'react';
-import { create } from 'zustand';
-
-import { immer } from 'zustand/middleware/immer';
-
+import { AccountUpdate, Mina, PublicKey } from 'o1js';
+import {  useEffect } from 'react';
 import { BRIDGE_ADDR } from '@/app/constants';
-
-import { zkNoidConfig } from '@/games/config';
 import { ProtokitLibrary, ZNAKE_TOKEN_ID } from 'zknoid-chain-dev';
 import { formatUnits } from '@/lib/unit';
 import { api } from '@/trpc/react';

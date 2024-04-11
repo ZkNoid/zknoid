@@ -4,7 +4,7 @@ import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import { useNetworkStore } from '@/lib/stores/network';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { thimblerigConfig } from '../config';
-import { ClientAppChain } from '@proto-kit/sdk';
+import { type ClientAppChain } from '@proto-kit/sdk';
 import { create } from 'zustand';
 import { MatchQueueState, matchQueueInitializer } from '@/lib/stores/matchQueue';
 
