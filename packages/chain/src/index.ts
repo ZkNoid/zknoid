@@ -1,5 +1,5 @@
 import { ClientAppChain } from '@proto-kit/sdk';
-import ProtokitLibrary from '@proto-kit/library';
+import * as ProtokitLibrary from '@proto-kit/library';
 import { UInt64 } from '@proto-kit/library';
 
 export * from './client.config.js';
