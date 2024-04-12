@@ -234,29 +234,35 @@ export const Competitions = ({
               </svg>
               <div
                 className={
-                  'absolute right-0.5 top-2.5 mx-auto flex flex-col items-center justify-center'
+                  'absolute mx-auto flex h-[20px] w-[20px] flex-col items-center justify-center max-[2000px]:right-0 max-[2000px]:top-0 min-[2000px]:right-0.5 min-[2000px]:top-1'
                 }
               >
                 <motion.div
-                  className={clsx('h-[2px] w-4 bg-bg-dark', {
-                    'bg-bg-dark': isFundsAndFeesExpanded,
-                    'bg-left-accent': !isFundsAndFeesExpanded,
-                  })}
+                  className={clsx(
+                    'bg-bg-dark max-[2000px]:h-[1.5px] max-[2000px]:w-3 min-[2000px]:h-[2px] min-[2000px]:w-4',
+                    {
+                      'bg-bg-dark': isFundsAndFeesExpanded,
+                      'bg-left-accent': !isFundsAndFeesExpanded,
+                    }
+                  )}
                   animate={
                     isFundsAndFeesExpanded
-                      ? { rotate: 45, y: 1 }
+                      ? { rotate: 45 }
                       : { rotate: 0, x: -1, y: 1 }
                   }
                 />
                 <motion.div
-                  className={clsx('h-[2px] w-4 bg-bg-dark', {
-                    'bg-bg-dark': isFundsAndFeesExpanded,
-                    'bg-left-accent': !isFundsAndFeesExpanded,
-                  })}
+                  className={clsx(
+                    'bg-bg-dark max-[2000px]:h-[1.5px] max-[2000px]:w-3 min-[2000px]:h-[2px] min-[2000px]:w-4',
+                    {
+                      'bg-bg-dark': isFundsAndFeesExpanded,
+                      'bg-left-accent': !isFundsAndFeesExpanded,
+                    }
+                  )}
                   animate={
                     isFundsAndFeesExpanded
                       ? { rotate: -45, y: -1 }
-                      : { rotate: -90, x: -1, y: 1 }
+                      : { rotate: -90, x: -1 }
                   }
                 />
               </div>
