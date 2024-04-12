@@ -1,13 +1,16 @@
 import Image from 'next/image';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/scrollbar';
-import { Autoplay } from 'swiper/modules';
+import useEmblaCarousel from 'embla-carousel-react';
+import Autoplay from 'embla-carousel-autoplay';
 import mobileCoverIMG from '@/public/image/section1/mobile-cover.svg';
 
 export const Section1 = () => {
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    {
+      loop: true,
+    },
+    [Autoplay({ playOnInit: true, delay: 8000, isPlaying: true })]
+  );
+
   return (
     <>
       <div className="banner-mask relative">
@@ -27,18 +30,12 @@ export const Section1 = () => {
         </svg>
 
         <div className="absolute left-0 top-0 hidden h-full w-full lg:block">
-          <div className="h-full w-full">
-            <Swiper
-              autoplay={{
-                delay: 8000,
-                disableOnInteraction: false,
-              }}
-              speed={600}
-              loop
-              modules={[Autoplay]}
-              className="h-full w-full"
-            >
-              <SwiperSlide key={0} className='bg-[url("/image/grid.svg")]'>
+          <div className="h-full w-full overflow-hidden" ref={emblaRef}>
+            <div className="flex h-full w-full">
+              <div
+                key={0}
+                className='min-w-0 flex-[0_0_100%] bg-[url("/image/grid.svg")]'
+              >
                 <div className="flex h-full w-full items-center justify-center">
                   <Image
                     src="/image/slides/slide1.svg"
@@ -47,8 +44,11 @@ export const Section1 = () => {
                     alt="Slide"
                   />
                 </div>
-              </SwiperSlide>
-              <SwiperSlide key={1} className='bg-[url("/image/grid.svg")]'>
+              </div>
+              <div
+                key={1}
+                className='min-w-0 flex-[0_0_100%] bg-[url("/image/grid.svg")]'
+              >
                 <div className="flex h-full w-full items-center justify-center">
                   <Image
                     src="/image/slides/snake.svg"
@@ -57,13 +57,16 @@ export const Section1 = () => {
                     alt="Slide"
                   />
                 </div>
-              </SwiperSlide>
-              <SwiperSlide key={2} className='bg-[url("/image/grid.svg")]'>
+              </div>
+              <div
+                key={2}
+                className='min-w-0 flex-[0_0_100%] bg-[url("/image/grid.svg")]'
+              >
                 <div className="flex h-full w-full items-center justify-center">
                   <div className="text-[35px]">Explore more games!</div>
                 </div>
-              </SwiperSlide>
-            </Swiper>
+              </div>
+            </div>
           </div>
         </div>
 
