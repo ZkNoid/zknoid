@@ -77,10 +77,12 @@ module.exports = {
   plugins: [
       plugin(function ({addUtilities}: {addUtilities: any}) {
         addUtilities({
-          ".scrollbar-custom": {
-            "scrollbar-width": "auto",
-            "scrollbar-color": "#D2FF00 #212121",
-            "padding-right": "1rem",
+          ".no-scrollbar::-webkit-scrollbar": {
+            "display": "none",
+          },
+          ".no-scrollbar": {
+            "-ms-overflow-style": "none",
+            "scrollbar-width": "none"
           },
         }, ['responsive', 'hover'])
       }),

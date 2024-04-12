@@ -1,10 +1,10 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
-import { clsx } from 'clsx';
-import Link from 'next/link';
+import { useState } from 'react';
 import { ICompetition } from '@/lib/types';
 import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
 import { formatUnits } from '@/lib/unit';
+import { Checkbox } from '@/components/ui/games-store/shared/Checkbox';
+import { Button } from '@/components/ui/games-store/shared/Button';
 
 export const CompetitionListItem = ({
   competition,
@@ -22,13 +22,13 @@ export const CompetitionListItem = ({
   return (
     <div
       className={
-        'w-full border-t border-left-accent pl-4 pt-4 last:border-b last:pb-4'
+        'flex w-full flex-col gap-4 border-t border-left-accent pl-4 pt-4 last:border-b last:pb-4'
       }
     >
-      <div className={'flex flex-row items-center justify-between gap-8'}>
+      <div className={'grid grid-cols-5 items-center gap-8'}>
         <div
           className={
-            'flex min-w-[400px] flex-row items-center gap-4 text-headline-2 font-medium uppercase text-left-accent'
+            'flex flex-row items-center gap-4 text-headline-2 font-medium uppercase text-left-accent'
           }
           onClick={() => setIsOpen(!isOpen)}
         >
@@ -41,50 +41,43 @@ export const CompetitionListItem = ({
         </div>
         <div
           className={
-            'flex w-full flex-row gap-10 font-plexsans text-[20px]/[20px] font-medium'
+            'col-start-2 col-end-4 flex w-full flex-row gap-0 font-plexsans text-[20px]/[20px] font-medium max-[2000px]:gap-2 min-[2000px]:gap-4'
           }
         >
           <div
             className={
-              'flex w-full max-w-fit items-center justify-center rounded-2xl border border-left-accent bg-left-accent p-1 px-2 text-center text-dark-buttons-text'
+              'flex w-full min-w-fit items-center justify-center rounded-2xl border border-left-accent bg-left-accent p-1 px-2 text-center text-dark-buttons-text'
             }
           >
             {Number(competition.reward)} {competition.currency} REWARDS
           </div>
           <div
             className={
-              'w-full max-w-fit items-center justify-center rounded-2xl border border-left-accent p-1 px-2 text-center'
+              'w-full min-w-fit items-center justify-center rounded-2xl border border-left-accent p-1 px-2 text-center'
             }
           >
             {formatUnits(competition.participationFee)} {competition.currency}{' '}
             Participants fee
           </div>
         </div>
-        <Link
-          className={
-            'w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent max-[2000px]:max-w-[250px] min-[2000px]:max-w-[350px]'
-          }
+        <Button
+          label={'Play'}
+          asLink
           href={`/games/${competition.game.id}/${competition.id}`}
           onClick={() => switchStore.setCompetitionId(competition.id)}
-        >
-          Play
-        </Link>
-        <div
-          className={
-            'flex w-full max-w-[200px] flex-col items-end justify-center'
-          }
-        >
+        />
+        <div className={'flex w-full flex-col items-end justify-center'}>
           <div
             className={
               'flex h-[24px] w-[24px] cursor-pointer flex-col items-center justify-center border-2 border-left-accent hover:opacity-80'
             }
             onClick={() => setIsOpen(!isOpen)}
           >
-            <div className={'h-[2px] w-4 bg-left-accent'} />
+            <div className={'h-[2px] w-full bg-left-accent'} />
             <motion.div
               animate={isOpen ? 'open' : 'close'}
               variants={{ open: { opacity: 0 }, close: { opacity: 1 } }}
-              className={'h-[2px] w-4 rotate-90 bg-left-accent'}
+              className={'h-[2px] w-full rotate-90 bg-left-accent'}
             />
           </div>
         </div>
@@ -92,80 +85,38 @@ export const CompetitionListItem = ({
       <AnimatePresence initial={false} mode={'wait'}>
         {isOpen && (
           <motion.div
-            className={'flex w-full flex-row gap-8 overflow-hidden pt-4'}
+            className={
+              'grid w-full grid-cols-5 items-center gap-8 overflow-hidden'
+            }
             initial={{ height: 0 }}
             animate={{ height: 'auto' }}
             exit={{ height: 0 }}
             transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
           >
-            <div className={'flex flex-col gap-4'}>
-              <div className={'flex w-full flex-row justify-between gap-10'}>
+            <div className={'flex w-full flex-col gap-4'}>
+              <div className={'grid grid-cols-2'}>
                 <span
                   className={'text-buttons-menu uppercase text-left-accent'}
                 >
                   Preregiatration
                 </span>
-                <div
-                  className={clsx('rounded-[5px] border bg-bg-dark p-1', {
-                    'border-left-accent bg-left-accent': isPreReg,
-                  })}
-                  // onClick={() => setIsPreReg(!isPreReg)}
-                >
-                  <svg
-                    aria-hidden="true"
-                    role="presentation"
-                    viewBox="0 0 17 18"
-                    className={'h-3.5 w-3.5'}
-                  >
-                    <polyline
-                      fill="none"
-                      points="1 9 7 14 15 4"
-                      stroke="#252525"
-                      strokeDasharray="22"
-                      strokeDashoffset="44"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      className={isPreReg ? 'opacity-100' : 'opacity-0'}
-                    ></polyline>
-                  </svg>
+                <div className={'flex w-full items-center justify-center'}>
+                  <Checkbox isSelected={isPreReg} isReadonly />
                 </div>
               </div>
-              <div className={'flex w-full flex-row justify-between gap-10'}>
+              <div className={'grid grid-cols-2'}>
                 <span
                   className={'text-buttons-menu uppercase text-left-accent'}
                 >
                   Registered
                 </span>
-                <div
-                  className={clsx('rounded-[5px] border bg-bg-dark p-1', {
-                    'border-left-accent bg-left-accent': isRegistered,
-                  })}
-                  // onClick={() => setIsRegistered(!isRegistered)}
-                >
-                  <svg
-                    aria-hidden="true"
-                    role="presentation"
-                    viewBox="0 0 17 18"
-                    className={'h-3.5 w-3.5'}
-                  >
-                    <polyline
-                      fill="none"
-                      points="1 9 7 14 15 4"
-                      stroke="#252525"
-                      strokeDasharray="22"
-                      strokeDashoffset="44"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      className={isRegistered ? 'opacity-100' : 'opacity-0'}
-                    ></polyline>
-                  </svg>
+                <div className={'flex w-full items-center justify-center'}>
+                  <Checkbox isSelected={isRegistered} isReadonly />
                 </div>
               </div>
             </div>
-            <div className={'flex flex-row gap-[84px] pl-28'}>
-              <div className={'flex flex-col gap-2'}>
+            <div className={'col-start-2 col-end-4 flex flex-row gap-10'}>
+              <div className={'flex w-full flex-col gap-2'}>
                 <span
                   className={
                     'font-plexsans text-[16px]/[16px] font-semibold uppercase text-left-accent'
@@ -203,7 +154,7 @@ export const CompetitionListItem = ({
                   </div>
                 </div>
               </div>
-              <div className={'flex flex-col gap-2'}>
+              <div className={'flex w-full flex-col gap-2'}>
                 <span
                   className={
                     'font-plexsans text-[16px]/[16px] font-semibold uppercase text-left-accent'
