@@ -8,6 +8,7 @@ export const Button = ({
   isBordered = true,
   asLink,
   href = '#',
+  className,
 }: {
   label: string;
   onClick?: () => void;
@@ -15,6 +16,7 @@ export const Button = ({
   isBordered?: boolean;
   asLink?: boolean;
   href?: string;
+  className?: string;
 }) => {
   if (asLink)
     return (
@@ -27,7 +29,8 @@ export const Button = ({
               isFilled,
             'text-left-accent hover:opacity-80': !isFilled,
             'border border-left-accent': isBordered,
-          }
+          },
+          className
         )}
         onClick={onClick}
       >
@@ -44,7 +47,8 @@ export const Button = ({
               isFilled,
             'text-left-accent hover:opacity-80': !isFilled,
             'border border-left-accent': isBordered,
-          }
+          },
+          className
         )}
         onClick={onClick}
       >
