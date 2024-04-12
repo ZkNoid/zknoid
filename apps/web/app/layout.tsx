@@ -1,18 +1,23 @@
 import type { Metadata } from 'next';
 import 'reflect-metadata';
-import { TRPCReactProvider } from "@/trpc/react";
+import { TRPCReactProvider } from '@/trpc/react';
 
 import './globals.css';
 import AsyncLayoutDynamic from '@/containers/async-layout-dynamic';
 
 import { plexMono, museoSlab, plexSans } from './fonts';
 import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import Head from 'next/head';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://app.zknoid.io'),
   alternates: {
     canonical: '/',
+  },
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/favicon.ico',
   },
   title: 'ZkNoid gaming platform',
   description:
@@ -35,8 +40,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${museoSlab.variable} ${plexMono.variable} ${plexSans.variable}`}>
-        <AsyncLayoutDynamic><TRPCReactProvider>{children}</TRPCReactProvider></AsyncLayoutDynamic>
+      <body
+        className={`${museoSlab.variable} ${plexMono.variable} ${plexSans.variable}`}
+      >
+        <AsyncLayoutDynamic>
+          <TRPCReactProvider>{children}</TRPCReactProvider>
+        </AsyncLayoutDynamic>
         <Analytics />
         <SpeedInsights />
       </body>
