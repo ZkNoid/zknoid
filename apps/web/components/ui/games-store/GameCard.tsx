@@ -56,7 +56,7 @@ export const GameCard = ({
         ? 'bg-left-accent'
         : color === 3
           ? 'bg-right-accent'
-          : 'bg-gradient-to-r from-left-accent via-middle-accent via-30% to-right-accent';
+          : 'bg-gradient-to-r from-left-accent to-right-accent';
 
   const heart = color === 1 ? heart_2 : color === 2 ? heart_1 : heart_3;
   const heartActive =
@@ -68,20 +68,21 @@ export const GameCard = ({
 
   const hoverColor =
     color === 1
-      ? 'hover:border-middle-accent group-hover:border-middle-accent'
+      ? 'hover:bg-middle-accent group-hover:bg-middle-accent'
       : color === 2
-        ? 'hover:border-left-accent group-hover:border-left-accent'
+        ? 'hover:bg-left-accent group-hover:bg-left-accent'
         : color === 3
-          ? 'hover:border-right-accent group-hover:border-right-accent'
-          : 'hover:border-middle-accent group-hover:border-middle-accent';
+          ? 'hover:bg-right-accent group-hover:bg-right-accent'
+          : 'hover:bg-gradient-to-br from-left-accent to-right-accent group-hover:bg-gradient-to-br from-left-accent to-right-accent';
 
   return (
-    <div
-      className={clsx(
-        'group relative flex flex-col rounded-xl border border-bg-dark bg-[#252525]',
-        hoverColor
-      )}
-    >
+    <div className={'group relative flex flex-col rounded-xl'}>
+      <div
+        className={clsx(
+          'absolute left-0 top-0 -z-10 h-full w-full rounded-xl bg-bg-dark',
+          hoverColor
+        )}
+      />
       {game.isReleased && (
         <Image
           src={isFavorite ? heartActive : heart}
@@ -94,28 +95,39 @@ export const GameCard = ({
       )}
       <Link
         href={game.active ? `/games/${game.id}/${game.defaultPage}` : '#'}
-        className="flex h-full flex-col gap-5 p-2 lg:m-1.5"
+        className="m-px flex h-full flex-col gap-5 rounded-xl bg-[#252525] p-4"
       >
         <div
-          className={clsx(
-            'flex items-center justify-center rounded-[5px] border max-[2000px]:h-[300px] min-[2000px]:h-[400px]',
-            hoverColor
-          )}
+          className={
+            'relative m-px flex items-center justify-center rounded-[5px] max-[2000px]:h-[300px] min-[2000px]:h-[400px]'
+          }
         >
-          <Image
-            src={game.logo}
-            alt="Game logo"
-            width={300}
-            height={300}
+          <div
             className={clsx(
-              'h-full max-h-[70%] w-full object-contain object-center',
-              {
-                'max-w-full': fullImageW,
-                'max-h-full': fullImageH,
-                'max-[2000px]:w-[300px] min-[2000px]:w-[400px]': !fullImageW,
-              }
+              'absolute left-0 top-0 h-full w-full rounded-[5px] bg-foreground',
+              hoverColor
             )}
           />
+          <div
+            className={
+              'z-10 m-px flex h-full w-full items-center justify-center rounded-[5px] bg-[#252525] max-[2000px]:h-[298px] min-[2000px]:h-[398px]'
+            }
+          >
+            <Image
+              src={game.logo}
+              alt="Game logo"
+              width={300}
+              height={300}
+              className={clsx(
+                'm-px h-full max-h-[70%] w-full bg-[#252525] object-contain object-center',
+                {
+                  'max-w-full': fullImageW,
+                  'max-h-full': fullImageH,
+                  'max-[2000px]:w-[298px] min-[2000px]:w-[398px]': !fullImageW,
+                }
+              )}
+            />
+          </div>
         </div>
         <div className={'flex flex-row justify-between'}>
           <div className="text-headline-2 lg:text-headline-1">{game.name}</div>
