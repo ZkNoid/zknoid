@@ -1,7 +1,7 @@
 import GamePage from '@/components/framework/GamePage';
 import { thimblerigConfig } from '../config';
 import { useNetworkStore } from '@/lib/stores/network';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { getRandomEmoji } from '@/games/randzu/utils';
 import {
@@ -26,6 +26,8 @@ import ThimbleOpenedSVG from '../assets/thimble_opened_und.svg';
 import ThimbleOpenedCorrectSVG from '../assets/thimble_opened_correct.svg';
 
 import BallSVG from '../assets/ball.svg';
+import BallDashedSVG from '../assets/ball-dashed.svg';
+
 import ArrowSVG from '../assets/arrow.svg';
 import ThimblesMixing from '../assets/thimbles_mixing.json';
 
@@ -67,10 +69,10 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
   const networkStore = useNetworkStore();
   const [gameState, setGameState] = useState(GameState.NotStarted);
-  const [opponentTimeout, setOpponentTimeout] = useState(false);
   const [revealedValue, setRevealedValue] = useState<
     undefined | { choice: 1 | 2 | 3; value: 1 | 2 | 3 }
   >(undefined);
+  const [ballDragged, setBallDragged] = useState<boolean>(false);
 
   const matchQueue = useThimblerigMatchQueueStore();
   const sessionPublicKey = useStore(useSessionKeyStore, (state) =>
@@ -83,6 +85,11 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
   let [loading, setLoading] = useState(false);
   let [thimbleOpened, setThimbleOpened] = useState<undefined | 1 | 2 | 3>(
+    undefined
+  );
+  let thimbleOpenedRef = useRef<undefined | 1 | 2 | 3>(undefined);
+
+  let [thimbleGuessed, setThimbleGuessed] = useState<undefined | 1 | 2 | 3>(
     undefined
   );
 
@@ -172,19 +179,24 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
    * @param choice Number 1-3
    */
   const chooseThumblerig = async (choice: number) => {
-    const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
-    const tx = await client.transaction(
-      PublicKey.fromBase58(networkStore.address!),
-      () => {
-        thimblerigLogic.chooseThumble(
-          UInt64.from(matchQueue.activeGameId),
-          UInt64.from(choice)
-        );
-      }
-    );
-
-    await tx.sign();
-    await tx.send();
+    setLoading(true);
+    try {
+      const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
+      const tx = await client.transaction(
+        PublicKey.fromBase58(networkStore.address!),
+        () => {
+          thimblerigLogic.chooseThumble(
+            UInt64.from(matchQueue.activeGameId),
+            UInt64.from(choice)
+          );
+        }
+      );
+      await tx.sign();
+      await tx.send();
+    } catch {
+      setThimbleGuessed(undefined);
+      setLoading(false);
+    }
   };
 
   const revealThumblerig = async () => {
@@ -233,7 +245,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     } else if (!networkStore.address) {
       setGameState(GameState.WalletNotConnected);
     } else if (matchQueue.inQueue && !matchQueue.activeGameId) {
-      console.log(matchQueue.inQueue, !matchQueue.activeGameId)
+      console.log(matchQueue.inQueue, !matchQueue.activeGameId);
       setGameState(GameState.Matchmaking);
     } else if (
       matchQueue.gameInfo &&
@@ -427,7 +439,24 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
             ? MainButtonState.WalletNotConnected
             : MainButtonState.None;
 
-  console.log('Revealed value', revealedValue);
+  const getThimbleImage = (i: number) => {
+    if (gameState == GameState.Won || gameState == GameState.Lost) {
+      if (revealedValue?.value == i + 1) {
+        return ThimbleOpenedCorrectSVG;
+      }
+      if (revealedValue?.choice == i + 1) {
+        return ThimbleOpenedSVG;
+      }
+    }
+
+    if (gameState == GameState.CurrentPlayerHiding) {
+      if (thimbleOpened == i + 1) {
+        return ThimbleOpenedCorrectSVG;
+      }
+    }
+
+    return ThimbleSVG;
+  };
 
   return (
     <GamePage
@@ -462,30 +491,15 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
         `}
         competitionFunds={DEFAULT_GAME_COST.toBigInt() * 100n}
       >
-        <div className="flex gap-10">
+        <div className="flex">
           {![GameState.WaitingForHiding, GameState.WaitingForGuessing].includes(
             gameState
           ) &&
             Array.from({ length: 3 }, (_, i) => {
               return (
-                <Image
+                <div
                   key={i}
-                  src={
-                    gameState == GameState.CurrentPlayerGuessing &&
-                    thimbleOpened == i + 1
-                      ? ThimbleOpenedSVG
-                      : (gameState == GameState.Won ||
-                            gameState == GameState.Lost) &&
-                          revealedValue?.value == i + 1
-                        ? ThimbleOpenedCorrectSVG
-                        : (gameState == GameState.Won ||
-                              gameState == GameState.Lost) &&
-                            revealedValue?.choice == i + 1
-                          ? ThimbleOpenedSVG
-                          : ThimbleSVG
-                  }
-                  alt={'Thimble'}
-                  draggable="true"
+                  className="p-5"
                   onDrop={() => {
                     gameState == GameState.CurrentPlayerHiding &&
                       commitThumblerig(i + 1);
@@ -494,24 +508,57 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                     e.preventDefault();
                     return false;
                   }}
-                  onPointerEnter={(e) => {
-                    if (gameState == GameState.CurrentPlayerGuessing)
-                      setThimbleOpened((i + 1) as 1 | 2 | 3);
-                    // console.log('Pointer enter', i);
-                  }}
-                  onPointerLeave={(e) => {
+                  onDragLeave={(e) => {
                     if (
-                      thimbleOpened == i + 1 &&
-                      gameState == GameState.CurrentPlayerGuessing
+                      thimbleOpenedRef.current == i + 1 &&
+                      gameState == GameState.CurrentPlayerHiding
                     ) {
                       setThimbleOpened(undefined);
+                    }
+                  }}
+                  onDragEnter={(e) => {
+                    if (gameState == GameState.CurrentPlayerHiding) {
+                      thimbleOpenedRef.current = (i + 1) as 1 | 2 | 3;
+                      setThimbleOpened(thimbleOpenedRef.current);
+                    }
+                  }}
+                  onPointerEnter={() => {
+                    if (
+                      gameState == GameState.CurrentPlayerGuessing &&
+                      thimbleGuessed != i + 1
+                    ) {
+                      console.log('Revealing', i);
+                      setThimbleGuessed((i + 1) as 1 | 2 | 3);
+                    }
+                  }}
+                  onPointerLeave={() => {
+                    if (
+                      gameState == GameState.CurrentPlayerGuessing &&
+                      !loading &&
+                      thimbleGuessed == i + 1
+                    ) {
+                      setThimbleGuessed(undefined);
                     }
                   }}
                   onClick={() =>
                     gameState == GameState.CurrentPlayerGuessing &&
                     chooseThumblerig(i + 1)
                   }
-                />
+                >
+                  <Image
+                    src={getThimbleImage(i)}
+                    alt={'Thimble'}
+                    className={
+                      (thimbleOpened && thimbleOpenedRef.current != i + 1) ||
+                      (thimbleGuessed != undefined &&
+                        thimbleGuessed != i + 1) ||
+                      (gameState == GameState.CurrentPlayerRevealing &&
+                        Number(commitmentStore.value) != i + 1)
+                        ? 'pointer-events-none opacity-50'
+                        : 'pointer-events-none'
+                    }
+                  />
+                </div>
               );
             })}
           {[GameState.WaitingForHiding, GameState.WaitingForGuessing].includes(
@@ -533,14 +580,20 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
         <div className="">
           {gameState == GameState.CurrentPlayerHiding && (
             <div className="flex w-1/2 flex-row items-center justify-between gap-1 py-10 font-museo text-[24px]/[24px]">
-              <div className="block min-h-[56px] min-w-[56px]" draggable={true}>
-                <Image src={BallSVG} alt="Ball" className="pr-2" />
+              <div
+                className="block min-h-[56px] min-w-[56px]"
+                draggable={true}
+                onDrag={() => setBallDragged(true)}
+                onDragEnd={() => setBallDragged(false)}
+              >
+                <Image
+                  src={ballDragged ? BallDashedSVG : BallSVG}
+                  alt="Ball"
+                  className="pr-2"
+                />
               </div>
 
-              <div
-                className="font-plex text-[16px]/[16px] uppercase text-left-accent"
-                draggable={true}
-              >
+              <div className="font-plex text-[16px]/[16px] uppercase text-left-accent">
                 Drag the ball under one the thimbles and confirm your selection
               </div>
               <Image src={ArrowSVG} alt="Arrow" />
@@ -548,10 +601,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
           )}
           {gameState == GameState.CurrentPlayerGuessing && (
             <div className="flex w-1/2 flex-row items-center justify-between gap-1 py-10 font-museo text-[24px]/[24px]">
-              <div
-                className="font-plex text-[16px]/[16px] uppercase text-left-accent"
-                draggable={true}
-              >
+              <div className="font-plex text-[16px]/[16px] uppercase text-left-accent">
                 Select the thimble under which you think your opponent has
                 hidden the ball
               </div>
