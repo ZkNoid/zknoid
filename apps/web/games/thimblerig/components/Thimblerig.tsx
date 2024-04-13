@@ -84,6 +84,8 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   useObserveThimblerigMatchQueue();
 
   let [loading, setLoading] = useState(false);
+  let [pendingChoosing, setPendingChoosing] = useState(false);
+
   let [thimbleOpened, setThimbleOpened] = useState<undefined | 1 | 2 | 3>(
     undefined
   );
@@ -179,7 +181,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
    * @param choice Number 1-3
    */
   const chooseThumblerig = async (choice: number) => {
-    setLoading(true);
+    setPendingChoosing(true);
     try {
       const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
       const tx = await client.transaction(
@@ -195,7 +197,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       await tx.send();
     } catch {
       setThimbleGuessed(undefined);
-      setLoading(false);
+      setPendingChoosing(false);
     }
   };
 
@@ -286,6 +288,8 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       matchQueue.gameInfo.field.commitedHash.toBigInt() &&
       !matchQueue.gameInfo.field.choice.toBigInt()
     ) {
+      thimbleOpenedRef.current = undefined;
+      setThimbleOpened(undefined);
       setGameState(GameState.WaitingForGuessing);
     } else if (
       matchQueue.gameInfo?.isCurrentUserMove &&
@@ -301,6 +305,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       matchQueue.gameInfo.field.commitedHash.toBigInt() &&
       matchQueue.gameInfo.field.choice.toBigInt()
     ) {
+      setThimbleGuessed(undefined);
       setGameState(GameState.WaitingForReveal);
     } else {
       if (matchQueue.lastGameState == 'win') {
@@ -492,7 +497,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
         competitionFunds={DEFAULT_GAME_COST.toBigInt() * 100n}
       >
         <div className="flex">
-          {![GameState.WaitingForHiding, GameState.WaitingForGuessing].includes(
+          {![GameState.WaitingForHiding, GameState.WaitingForGuessing, GameState.WaitingForReveal].includes(
             gameState
           ) &&
             Array.from({ length: 3 }, (_, i) => {
@@ -534,7 +539,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                   onPointerLeave={() => {
                     if (
                       gameState == GameState.CurrentPlayerGuessing &&
-                      !loading &&
+                      !pendingChoosing &&
                       thimbleGuessed == i + 1
                     ) {
                       setThimbleGuessed(undefined);
@@ -549,8 +554,8 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                     src={getThimbleImage(i)}
                     alt={'Thimble'}
                     className={
-                      (thimbleOpened && thimbleOpenedRef.current != i + 1) ||
-                      (thimbleGuessed != undefined &&
+                      (gameState == GameState.CurrentPlayerHiding && thimbleOpened && thimbleOpenedRef.current != i + 1) ||
+                      (gameState == GameState.CurrentPlayerGuessing && thimbleGuessed != undefined &&
                         thimbleGuessed != i + 1) ||
                       (gameState == GameState.CurrentPlayerRevealing &&
                         Number(commitmentStore.value) != i + 1)
@@ -561,7 +566,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                 </div>
               );
             })}
-          {[GameState.WaitingForHiding, GameState.WaitingForGuessing].includes(
+          {[GameState.WaitingForHiding, GameState.WaitingForGuessing, GameState.WaitingForReveal].includes(
             gameState
           ) && (
             <Lottie
