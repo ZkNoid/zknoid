@@ -6,14 +6,12 @@ export const GameWidget = ({
   children,
   ticks,
   score,
-  gameRating,
   author,
   gameId
 }: {
   children: ReactNode;
   ticks: number;
   score: number;
-  gameRating: number;
   author: string;
   gameId: string;
 }) => {
