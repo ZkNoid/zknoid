@@ -24,7 +24,6 @@ type PvPGameViewProps = {
   mainButtonState: MainButtonState;
   startGame: () => void;
   queueSize: number;
-  gameRating: number;
   gameAuthor: string;
   mainText: string;
   children: ReactNode;

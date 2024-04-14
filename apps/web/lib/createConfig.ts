@@ -13,7 +13,6 @@ export type ZkNoidGameConfig<
   genre: ZkNoidGameGenre;
   features: ZkNoidGameFeature[];
   image: string;
-  rating: number;
   isReleased: boolean;
   releaseDate: Date;
   popularity: number;
@@ -33,7 +32,6 @@ export function createZkNoidGameConfig<
   genre: ZkNoidGameGenre;
   features: ZkNoidGameFeature[];
   image: string;
-  rating: number;
   isReleased: boolean;
   releaseDate: Date;
   popularity: number;

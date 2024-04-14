@@ -3,7 +3,6 @@ import { thimblerigConfig } from '../config';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useContext, useEffect, useRef, useState } from 'react';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
-import { getRandomEmoji } from '@/games/randzu/utils';
 import {
   type ClientAppChain,
   MOVE_TIMEOUT_IN_BLOCKS,
@@ -41,6 +40,7 @@ import {
 } from '@/components/framework/GamePage/PvPGameView';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
+import { getRandomEmoji } from '@/lib/emoji';
 
 enum GameState {
   WalletNotInstalled,
@@ -424,25 +424,20 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
   const status = statuses[gameState] ?? 'NONE';
 
-  const mainButtonState = [
-    GameState.CurrentPlayerHiding,
-    GameState.CurrentPlayerGuessing,
-    GameState.CurrentPlayerRevealing,
-  ].includes(gameState)
-    ? MainButtonState.YourTurn
-    : [
-          GameState.WaitingForHiding,
-          GameState.WaitingForGuessing,
-          GameState.WaitingForReveal,
-        ].includes(gameState)
-      ? MainButtonState.OpponentsTurn
-      : gameState == GameState.NotStarted
-        ? MainButtonState.NotStarted
-        : gameState == GameState.WalletNotInstalled
-          ? MainButtonState.WalletNotInstalled
-          : gameState == GameState.WalletNotConnected
-            ? MainButtonState.WalletNotConnected
-            : MainButtonState.None;
+  const mainButtonState =
+    (
+      {
+        [GameState.CurrentPlayerHiding]: MainButtonState.YourTurn,
+        [GameState.CurrentPlayerGuessing]: MainButtonState.YourTurn,
+        [GameState.CurrentPlayerRevealing]: MainButtonState.YourTurn,
+        [GameState.WaitingForHiding]: MainButtonState.OpponentsTurn,
+        [GameState.WaitingForGuessing]: MainButtonState.OpponentsTurn,
+        [GameState.WaitingForReveal]: MainButtonState.OpponentsTurn,
+        [GameState.NotStarted]: MainButtonState.NotStarted,
+        [GameState.WalletNotInstalled]: MainButtonState.WalletNotInstalled,
+        [GameState.WalletNotConnected]: MainButtonState.WalletNotConnected,
+      } as Record<GameState, MainButtonState>
+    )[gameState] || MainButtonState.None;
 
   const getThimbleImage = (i: number) => {
     if (gameState == GameState.Won || gameState == GameState.Lost) {
@@ -476,7 +471,6 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
         mainButtonState={mainButtonState}
         startGame={startGame}
         queueSize={matchQueue.queueLength}
-        gameRating={5.0}
         gameAuthor="ZkNoid Team"
         mainText={mainText[gameState]}
         bottomButtonText={bottomButtonState[gameState]?.text}
@@ -497,9 +491,11 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
         competitionFunds={DEFAULT_GAME_COST.toBigInt() * 100n}
       >
         <div className="flex">
-          {![GameState.WaitingForHiding, GameState.WaitingForGuessing, GameState.WaitingForReveal].includes(
-            gameState
-          ) &&
+          {![
+            GameState.WaitingForHiding,
+            GameState.WaitingForGuessing,
+            GameState.WaitingForReveal,
+          ].includes(gameState) &&
             Array.from({ length: 3 }, (_, i) => {
               return (
                 <div
@@ -554,8 +550,11 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                     src={getThimbleImage(i)}
                     alt={'Thimble'}
                     className={
-                      (gameState == GameState.CurrentPlayerHiding && thimbleOpened && thimbleOpenedRef.current != i + 1) ||
-                      (gameState == GameState.CurrentPlayerGuessing && thimbleGuessed != undefined &&
+                      (gameState == GameState.CurrentPlayerHiding &&
+                        thimbleOpened &&
+                        thimbleOpenedRef.current != i + 1) ||
+                      (gameState == GameState.CurrentPlayerGuessing &&
+                        thimbleGuessed != undefined &&
                         thimbleGuessed != i + 1) ||
                       (gameState == GameState.CurrentPlayerRevealing &&
                         Number(commitmentStore.value) != i + 1)
@@ -566,9 +565,11 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                 </div>
               );
             })}
-          {[GameState.WaitingForHiding, GameState.WaitingForGuessing, GameState.WaitingForReveal].includes(
-            gameState
-          ) && (
+          {[
+            GameState.WaitingForHiding,
+            GameState.WaitingForGuessing,
+            GameState.WaitingForReveal,
+          ].includes(gameState) && (
             <Lottie
               options={{
                 animationData: ThimblesMixing,

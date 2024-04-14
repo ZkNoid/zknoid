@@ -6,9 +6,9 @@ import { Int64, PublicKey, UInt32, UInt64 } from 'o1js';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useMinaBridge } from '@/lib/stores/protokitBalances';
 import {
-  useObserveRandzuMatchQueue,
-  useRandzuMatchQueueStore,
-} from '@/games/randzu/stores/matchQueue';
+  useObserveCheckersMatchQueue,
+  useCheckersMatchQueueStore,
+} from '@/games/checkers/stores/matchQueue';
 import { walletInstalled } from '@/lib/helpers';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
@@ -19,7 +19,7 @@ import {
   WinWitness,
 } from 'zknoid-chain-dev';
 import GamePage from '@/components/framework/GamePage';
-import { randzuConfig } from '../config';
+import { checkersConfig } from '../config';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import {
@@ -31,7 +31,7 @@ import {
   MainButtonState,
   PvPGameView,
 } from '@/components/framework/GamePage/PvPGameView';
-import RandzuCoverSVG from '../assets/game-cover.svg';
+import RandzuCoverSVG from '@/public/image/game-page/game-title-template.svg';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import { getRandomEmoji } from '@/lib/emoji';
@@ -55,8 +55,9 @@ export default function RandzuPage({
   params: { competitionId: string };
 }) {
   const [gameState, setGameState] = useState(GameState.NotStarted);
+
   const client = useContext(AppChainClientContext) as ClientAppChain<
-    typeof randzuConfig.runtimeModules,
+    typeof checkersConfig.runtimeModules,
     any,
     any,
     any
@@ -72,7 +73,7 @@ export default function RandzuPage({
   >({ x: 0, y: 0 });
 
   const networkStore = useNetworkStore();
-  const matchQueue = useRandzuMatchQueueStore();
+  const matchQueue = useCheckersMatchQueueStore();
   const sessionPublicKey = useStore(useSessionKeyStore, (state) =>
     state.getSessionKey()
   ).toPublicKey();
@@ -80,7 +81,7 @@ export default function RandzuPage({
     state.getSessionKey()
   );
 
-  useObserveRandzuMatchQueue();
+  useObserveCheckersMatchQueue();
   const protokitChain = useProtokitChainStore();
 
   const bridge = useMinaBridge();
@@ -96,12 +97,12 @@ export default function RandzuPage({
     if (await bridge(DEFAULT_GAME_COST.toBigInt())) return;
 
     gameStartedMutation.mutate({
-      gameId: 'randzu',
+      gameId: 'checkers',
       userAddress: networkStore.address ?? '',
       envContext: getEnvContext(),
     });
 
-    const randzuLogic = client.runtime.resolve('RandzuLogic');
+    const randzuLogic = client.runtime.resolve('CheckersLogic');
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
@@ -120,7 +121,7 @@ export default function RandzuPage({
   };
 
   const collectPending = async () => {
-    const randzuLogic = client.runtime.resolve('RandzuLogic');
+    const randzuLogic = client.runtime.resolve('CheckersLogic');
 
     const tx = await client.transaction(sessionPrivateKey.toPublicKey(), () => {
       randzuLogic.collectPendingBalance();
@@ -138,7 +139,7 @@ export default function RandzuPage({
   };
 
   const proveOpponentTimeout = async () => {
-    const randzuLogic = client.runtime.resolve('RandzuLogic');
+    const randzuLogic = client.runtime.resolve('CheckersLogic');
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
@@ -167,7 +168,7 @@ export default function RandzuPage({
     updatedField[y][x] = matchQueue.gameInfo.currentUserIndex + 1;
     // updatedField[x][y] = matchQueue.gameInfo.currentUserIndex + 1;
 
-    const randzuLogic = client.runtime.resolve('RandzuLogic');
+    const randzuLogic = client.runtime.resolve('CheckersLogic');
 
     const updatedRandzuField = RandzuField.from(updatedField);
 
@@ -177,16 +178,16 @@ export default function RandzuPage({
       randzuLogic.makeMove(
         UInt64.from(matchQueue.gameInfo!.gameId),
         updatedRandzuField,
-        winWitness1 ??
-          new WinWitness(
-            // @ts-ignore
-            {
-              x: UInt32.from(0),
-              y: UInt32.from(0),
-              directionX: Int64.from(0),
-              directionY: Int64.from(0),
-            }
-          )
+        // winWitness1 ??
+        //   new WinWitness(
+        //     // @ts-ignore
+        //     {
+        //       x: UInt32.from(0),
+        //       y: UInt32.from(0),
+        //       directionX: Int64.from(0),
+        //       directionY: Int64.from(0),
+        //     }
+        //   )
       );
     });
 
@@ -309,7 +310,7 @@ export default function RandzuPage({
 
   return (
     <GamePage
-      gameConfig={randzuConfig}
+      gameConfig={checkersConfig}
       image={RandzuCoverSVG}
       defaultPage={'Game'}
     >

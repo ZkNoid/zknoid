@@ -233,7 +233,6 @@ export default function ArkanoidPage({
           gameId={arkanoidConfig.id}
           ticks={ticksAmount}
           score={score}
-          gameRating={arkanoidConfig.rating}
           author={arkanoidConfig.author}
         >
           {networkStore.address ? (
