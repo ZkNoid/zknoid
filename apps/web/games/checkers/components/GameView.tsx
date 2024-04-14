@@ -10,6 +10,8 @@ interface IGameViewProps {
   loading: boolean;
 }
 
+const CHECKERS_FIELD_SIZE = 8;
+
 export const GameView = (props: IGameViewProps) => {
   const fieldActive =
     props.gameInfo?.isCurrentUserMove && !props.gameInfo?.winner;
@@ -18,30 +20,38 @@ export const GameView = (props: IGameViewProps) => {
     props.gameInfo?.isCurrentUserMove &&
     !props.loading &&
     props.gameInfo?.field?.value?.[j]?.[i] == 0;
+  const canMove = (i: number, j: number) =>
+    !displayBall(i, j) && displayBall(i+1, j);
+
   const isLoadingBall = (i: number, j: number) =>
     props.loadingElement &&
     props.loadingElement.x == i &&
     props.loadingElement.y == j;
   const isCurrentRedBall = props.gameInfo?.currentUserIndex == 0;
-
   return (
     <div
       className={`grid grid-cols-8 gap-px rounded-[5px] bg-foreground/50 ${
         fieldActive ? 'border-4 border-left-accent p-0' : 'p-1'
       }`}
     >
-      {[...Array(8).keys()].map((i) =>
-        [...Array(8).keys()].map((j) => (
-          <div
-            key={`${i}_${j}`}
-            className={`
-              bg-bg-dark ${highlightCells ? 'hover:bg-bg-dark/50' : ''} h-14 w-14
+      {[...Array(8).keys()]
+        .map((i) =>
+          props.gameInfo?.opponent == props.gameInfo?.player2
+            ? CHECKERS_FIELD_SIZE - 1 - i
+            : i
+        )
+        .map((i) =>
+          [...Array(8).keys()].map((j) => (
+            <div
+              key={`${i}_${j}`}
+              className={`
+              bg-bg-dark ${highlightCells ? '' : ''} h-14 w-14
               bg-[length:30px_30px] bg-center bg-no-repeat p-5 
               ${
-                displayBall(i, j) &&
+                canMove(i, j) &&
                 (isCurrentRedBall
-                  ? "hover:bg-[url('/ball_green.png')]"
-                  : "hover:bg-[url('/ball_blue.png')]")
+                  ? ' hover:bg-bg-dark/50'
+                  : ' hover:bg-bg-dark/50')
               }
               ${
                 props.gameInfo?.field?.value?.[j]?.[i] == 1
@@ -60,12 +70,12 @@ export const GameView = (props: IGameViewProps) => {
                   : "bg-opacity-50 bg-[url('/ball_blue.png')]")
               }
             `}
-            style={{ imageRendering: 'pixelated' }}
-            id={`${i}_${j}`}
-            onClick={() => props.onCellClicked(i, j)}
-          ></div>
-        ))
-      )}
+              style={{ imageRendering: 'pixelated' }}
+              id={`${i}_${j}`}
+              onClick={() => props.onCellClicked(i, j)}
+            ></div>
+          ))
+        )}
     </div>
   );
 };
