@@ -326,10 +326,10 @@ export default function RandzuPage({
         bottomButtonText={bottomButtonState[gameState]?.text}
         bottomButtonHandler={bottomButtonState[gameState]?.handler}
         competitionName={'Room 1'}
-        gameName={'Randzu'}
-        gameRules={`Randzu is a game played on a 15x15 grid, similar to tic-tac-toe. Two players take turns placing their mark, using balls of different colors. The goal is to get five of your marks in a row, either horizontally, vertically or diagonally.
-
-        The game continues until one player achieves the winning pattern or until the entire grid is filled without a winner, resulting in a draw.
+        gameName={'Checkers'}
+        gameRules={`Checkers is a two-player game played on an 8x8 board. Players take turns moving their pieces diagonally forward, capturing opponent's pieces by jumping over them. A piece reaching the opponent's back row becomes a king and can move backward. 
+        
+        The game is won by capturing all of the opponent's pieces or by blocking them from moving
         `}
         competitionFunds={DEFAULT_GAME_COST.toBigInt() * 2n}
       >

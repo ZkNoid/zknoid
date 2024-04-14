@@ -4,12 +4,14 @@ import { RandzuLogic } from './randzu/RandzuLogic';
 import { ThimblerigLogic } from './thimblerig/ThimblerigLogic';
 import { Balances } from './framework';
 import { ModulesConfig } from '@proto-kit/common';
+import { CheckersLogic } from './checkers';
 
 const modules = {
   ArkanoidGameHub,
   ThimblerigLogic,
   Balances,
   RandzuLogic,
+  CheckersLogic
 };
 
 const config: ModulesConfig<typeof modules> = {
@@ -19,6 +21,7 @@ const config: ModulesConfig<typeof modules> = {
     totalSupply: UInt64.from(10000),
   },
   RandzuLogic: {},
+  CheckersLogic: {}
 };
 
 export default {

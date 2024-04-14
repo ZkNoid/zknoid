@@ -17,7 +17,7 @@ import type { QueueListItem } from '../engine/MatchMaker';
 import { UInt64 as ProtoUInt64 } from '@proto-kit/library';
 import { Lobby } from '../engine/LobbyManager';
 
-const RANDZU_FIELD_SIZE = 15;
+const CHECKERS_FIELD_SIZE = 8;
 const CELLS_LINE_TO_WIN = 5;
 
 const BLOCK_PRODUCTION_SECONDS = 5;
@@ -26,8 +26,8 @@ const MOVE_TIMEOUT_IN_BLOCKS = 60 / BLOCK_PRODUCTION_SECONDS;
 
 export class CheckersField extends Struct({
   value: Provable.Array(
-    Provable.Array(UInt32, RANDZU_FIELD_SIZE),
-    RANDZU_FIELD_SIZE,
+    Provable.Array(UInt32, CHECKERS_FIELD_SIZE),
+    CHECKERS_FIELD_SIZE,
   ),
 }) {
   static from(value: number[][]) {
@@ -54,11 +54,18 @@ export class GameInfo extends Struct({
 export class CheckersLogic extends MatchMaker {
   // Game ids start from 1
   @state() public games = StateMap.from<UInt64, GameInfo>(UInt64, GameInfo);
-
   @state() public gamesNum = State.from<UInt64>(UInt64);
 
   public override initGame(lobby: Lobby, shouldUpdate: Bool): UInt64 {
     const currentGameId = this.getNextGameId();
+    const field = Array(CHECKERS_FIELD_SIZE).fill(Array(CHECKERS_FIELD_SIZE).fill(0));
+    
+    
+    field[0][0] = 1;
+    field[0][1] = 1;
+
+    field[0][CHECKERS_FIELD_SIZE - 2] = 2;
+    field[0][CHECKERS_FIELD_SIZE - 1] = 2;
 
     // Setting active game if opponent found
     this.games.set(
@@ -69,7 +76,7 @@ export class CheckersLogic extends MatchMaker {
         currentMoveUser: lobby.players[0],
         lastMoveBlockHeight: this.network.block.height,
         field: CheckersField.from(
-          Array(RANDZU_FIELD_SIZE).fill(Array(RANDZU_FIELD_SIZE).fill(0)),
+          field
         ),
         winner: PublicKey.empty(),
       }),
@@ -107,7 +114,7 @@ export class CheckersLogic extends MatchMaker {
         currentMoveUser: this.transaction.sender.value,
         lastMoveBlockHeight: this.network.block.height,
         field: CheckersField.from(
-          Array(RANDZU_FIELD_SIZE).fill(Array(RANDZU_FIELD_SIZE).fill(0)),
+          Array(CHECKERS_FIELD_SIZE).fill(Array(CHECKERS_FIELD_SIZE).fill(0)),
         ),
         winner: PublicKey.empty(),
       }),
@@ -152,8 +159,8 @@ export class CheckersLogic extends MatchMaker {
     );
 
     const addedCellsNum = UInt64.from(0);
-    for (let i = 0; i < RANDZU_FIELD_SIZE; i++) {
-      for (let j = 0; j < RANDZU_FIELD_SIZE; j++) {
+    for (let i = 0; i < CHECKERS_FIELD_SIZE; i++) {
+      for (let j = 0; j < CHECKERS_FIELD_SIZE; j++) {
         const currentFieldCell = game.value.field.value[i][j];
         const nextFieldCell = newField.value[i][j];
 
