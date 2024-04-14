@@ -34,6 +34,8 @@ export const useObserveCheckersMatchQueue = () => {
       throw Error('Context app chain client is not set');
     }
 
+    console.log('Query', client.query.runtime.CheckersLogic)
+
     matchQueue.loadMatchQueue(
       client.query.runtime.CheckersLogic,
       parseInt(chain.block?.height ?? '0')

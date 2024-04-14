@@ -26,16 +26,16 @@ export const GameView = (props: IGameViewProps) => {
 
   return (
     <div
-      className={`grid grid-cols-15 gap-px rounded-[5px] bg-foreground/50 ${
+      className={`grid grid-cols-8 gap-px rounded-[5px] bg-foreground/50 ${
         fieldActive ? 'border-4 border-left-accent p-0' : 'p-1'
       }`}
     >
-      {[...Array(15).keys()].map((i) =>
-        [...Array(15).keys()].map((j) => (
+      {[...Array(8).keys()].map((i) =>
+        [...Array(8).keys()].map((j) => (
           <div
             key={`${i}_${j}`}
             className={`
-              bg-bg-dark ${highlightCells ? 'hover:bg-bg-dark/50' : ''} h-7 w-7 
+              bg-bg-dark ${highlightCells ? 'hover:bg-bg-dark/50' : ''} h-14 w-14
               bg-[length:30px_30px] bg-center bg-no-repeat p-5 
               ${
                 displayBall(i, j) &&
