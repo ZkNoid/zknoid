@@ -13,6 +13,7 @@ import { walletInstalled } from '@/lib/helpers';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
 import {
+  CheckersField,
   ClientAppChain,
   PENDING_BLOCKS_NUM_CONST,
   RandzuField,
@@ -153,31 +154,49 @@ export default function RandzuPage({
     await tx.sign();
     await tx.send();
   };
+  const isPlayer1 = matchQueue.gameInfo?.opponent == matchQueue.gameInfo?.player2;
 
-  const onCellClicked = async (x: number, y: number) => {
+  const onMoveChosen = async (moveId: number, x: number, y: number) => {
     if (!matchQueue.gameInfo?.isCurrentUserMove) return;
-    if (matchQueue.gameInfo.field.value[y][x] != 0) return;
     console.log('After checks');
 
     const currentUserId = matchQueue.gameInfo.currentUserIndex + 1;
 
-    const updatedField = (matchQueue.gameInfo.field as RandzuField).value.map(
+    const updatedField = (matchQueue.gameInfo.field as CheckersField).value.map(
       (x: UInt32[]) => x.map((x) => x.toBigint())
     );
 
-    updatedField[y][x] = matchQueue.gameInfo.currentUserIndex + 1;
-    // updatedField[x][y] = matchQueue.gameInfo.currentUserIndex + 1;
+    console.log('On move chosen', moveId, x, y);
+
+    console.log('On move chosen', updatedField);
+
+    updatedField[x][y] = 0;
+
+    if (moveId == 0) {
+      updatedField[x - 1][y + (isPlayer1 ? 1 : -1)] = currentUserId;
+    } else if (moveId == 1) {
+      updatedField[x + 1][y + (isPlayer1 ? 1 : -1)] = currentUserId;
+    } else if (moveId == 2) {
+      console.log(x, y);
+      updatedField[x - 1][y + (isPlayer1 ? 1 : -1)] = 0;
+      updatedField[x - 2][y + (isPlayer1 ? 2 : -2)] = currentUserId;
+    } else if (moveId == 3) {
+      updatedField[x + 1][y + (isPlayer1 ? 1 : -1)] = 0;
+      updatedField[x + 2][y + (isPlayer1 ? 2 : -2)] = currentUserId;
+    }
+
+
+    console.log('On move chosen', updatedField);
+
 
     const randzuLogic = client.runtime.resolve('CheckersLogic');
 
-    const updatedRandzuField = RandzuField.from(updatedField);
-
-    const winWitness1 = updatedRandzuField.checkWin(currentUserId);
+    const updatedCheckersField = CheckersField.from(updatedField);
 
     const tx = await client.transaction(sessionPrivateKey.toPublicKey(), () => {
       randzuLogic.makeMove(
         UInt64.from(matchQueue.gameInfo!.gameId),
-        updatedRandzuField,
+        updatedCheckersField,
         UInt64.from(x),
         UInt64.from(y),
         UInt64.from(0)
@@ -189,7 +208,8 @@ export default function RandzuPage({
       x,
       y,
     });
-
+    console.log('Sending tx')
+    // await tx.sign()
     tx.transaction = tx.transaction?.sign(sessionPrivateKey);
     await tx.send();
   };
@@ -328,7 +348,7 @@ export default function RandzuPage({
       >
         <GameView
           gameInfo={matchQueue.gameInfo}
-          onCellClicked={onCellClicked}
+          onMoveChosen={onMoveChosen}
           loadingElement={loadingElement}
           loading={loading}
         />

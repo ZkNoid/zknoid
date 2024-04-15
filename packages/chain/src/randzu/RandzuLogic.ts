@@ -20,9 +20,6 @@ import { Lobby } from '../engine/LobbyManager';
 const RANDZU_FIELD_SIZE = 15;
 const CELLS_LINE_TO_WIN = 5;
 
-const BLOCK_PRODUCTION_SECONDS = 5;
-const MOVE_TIMEOUT_IN_BLOCKS = 60 / BLOCK_PRODUCTION_SECONDS;
-
 export class WinWitness extends Struct({
   x: UInt32,
   y: UInt32,
