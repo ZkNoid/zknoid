@@ -29,13 +29,13 @@ export const CustomScrollbar = ({
     >
       <motion.div
         ref={handleRef}
-        className={'h-[20%] w-4 cursor-grab rounded-[5px] bg-left-accent'}
-        drag={'y'}
+        className={'h-[20%] w-4 rounded-[5px] bg-left-accent'}
+        // drag={'y'}
         dragElastic={0}
         dragMomentum={false}
         dragConstraints={scrollbarRef}
-        whileDrag={{ cursor: 'grabbing' }}
-        whileHover={{ opacity: 0.8 }}
+        // whileDrag={{ cursor: 'grabbing' }}
+        // whileHover={{ opacity: 0.8 }}
         style={{
           y: yPos,
         }}
