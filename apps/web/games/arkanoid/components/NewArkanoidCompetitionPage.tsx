@@ -110,7 +110,7 @@ export default function NewArkanoidCompetitionPage() {
       return;
     }
     ctx!.rect(0, 0, 300, 300);
-    ctx!.fillStyle = 'white';
+    ctx!.fillStyle = '#212121';
     ctx!.fill();
   };
 
@@ -124,11 +124,12 @@ export default function NewArkanoidCompetitionPage() {
         resizeToConvasSize(BRICK_HALF_WIDTH * 2)
       );
 
-      ctx!.stroke();
+      // ctx!.strokeStyle = '#D2FF00';
+      // ctx!.stroke();
       ctx!.closePath();
 
       if (brick.value > 1) {
-        ctx!.fillStyle = 'black';
+        ctx!.fillStyle = '#D2FF00';
         ctx!.font = '24px serif';
         ctx!.fillText(
           (brick.value - 1).toString(),
