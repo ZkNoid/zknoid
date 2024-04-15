@@ -12,7 +12,7 @@ export const DatePicker = ({
   setDateFrom: (date: string) => void;
   setDateTo: (date: string) => void;
 }) => {
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  const [currentDate, _setCurrentDate] = useState<Date>(new Date());
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const [activeDate, setActiveDate] = useState<Date>();
@@ -21,8 +21,6 @@ export const DatePicker = ({
   const [_currentMonth, setCurrentMonth] = useState<number>(
     currentDate.getMonth()
   );
-  const [prevDateFrom, setPrevDateFrom] = useState<Date>();
-  const [prevDateTo, setPrevDateTo] = useState<Date>();
 
   const getDaysInMonth = (year: number, month: number) => {
     return new Date(year, month, 0).getDate();
@@ -41,77 +39,88 @@ export const DatePicker = ({
   };
 
   const DateItem = ({ date }: { date: Date }) => {
+    const [dateTime, _setDateTime] = useState<number>(date.getTime());
+    const [dateDay, _setDateDay] = useState<number>(date.getDay());
+    const [activeDateTime, _setActiveDateTime] = useState<number | undefined>(
+      activeDate?.getTime()
+    );
+    const [pickedDateTime, _setPickedDateTime] = useState<number | undefined>(
+      pickedDate?.getTime()
+    );
+    const [possibleDateTime, _setPossibleDateTime] = useState<
+      number | undefined
+    >(possibleDate?.getTime());
+
     return (
       <span
         className={clsx(
           'cursor-pointer rounded-[5px] border border-bg-dark p-4 text-center font-plexsans text-main font-medium hover:opacity-80',
           {
             'border-left-accent text-left-accent':
-              date.getTime() === activeDate?.getTime() ||
-              date.getTime() === pickedDate?.getTime(),
+              dateTime === activeDateTime || dateTime === pickedDateTime,
             'opacity:80 border-left-accent text-left-accent':
-              date.getTime() === possibleDate?.getTime(),
+              dateTime === possibleDateTime,
             'rounded-none border-left-accent bg-left-accent text-dark-buttons-text':
-              (activeDate &&
-                date.getTime() < activeDate.getTime() &&
-                possibleDate &&
-                date.getTime() > possibleDate.getTime()) ||
-              (activeDate &&
-                date.getTime() > activeDate.getTime() &&
-                possibleDate &&
-                date.getTime() < possibleDate.getTime()) ||
-              (activeDate &&
-                date.getTime() < activeDate.getTime() &&
-                pickedDate &&
-                date.getTime() > pickedDate.getTime()) ||
-              (activeDate &&
-                date.getTime() > activeDate.getTime() &&
-                pickedDate &&
-                date.getTime() < pickedDate.getTime()),
+              (activeDateTime &&
+                dateTime < activeDateTime &&
+                possibleDateTime &&
+                dateTime > possibleDateTime) ||
+              (activeDateTime &&
+                dateTime > activeDateTime &&
+                possibleDateTime &&
+                dateTime < possibleDateTime) ||
+              (activeDateTime &&
+                dateTime < activeDateTime &&
+                pickedDateTime &&
+                dateTime > pickedDateTime) ||
+              (activeDateTime &&
+                dateTime > activeDateTime &&
+                pickedDateTime &&
+                dateTime < pickedDateTime),
             'rounded-r-none':
-              (activeDate &&
-                date.getTime() === activeDate.getTime() &&
-                possibleDate &&
-                activeDate &&
-                activeDate.getTime() < possibleDate.getTime()) ||
-              (activeDate &&
-                date.getTime() === activeDate.getTime() &&
-                pickedDate &&
-                activeDate.getTime() < pickedDate.getTime()) ||
-              (pickedDate &&
-                date.getTime() === pickedDate.getTime() &&
-                activeDate &&
-                pickedDate.getTime() < activeDate.getTime()) ||
-              (possibleDate &&
-                date.getTime() === possibleDate.getTime() &&
-                activeDate &&
-                possibleDate.getTime() < activeDate.getTime()),
+              (activeDateTime &&
+                dateTime === activeDateTime &&
+                possibleDateTime &&
+                activeDateTime &&
+                activeDateTime < possibleDateTime) ||
+              (activeDateTime &&
+                dateTime === activeDateTime &&
+                pickedDateTime &&
+                activeDateTime < pickedDateTime) ||
+              (pickedDateTime &&
+                dateTime === pickedDateTime &&
+                activeDateTime &&
+                pickedDateTime < activeDateTime) ||
+              (possibleDateTime &&
+                dateTime === possibleDateTime &&
+                activeDateTime &&
+                possibleDateTime < activeDateTime),
             'rounded-l-none':
-              (activeDate &&
-                date.getTime() === activeDate.getTime() &&
-                activeDate &&
-                possibleDate &&
-                activeDate.getTime() > possibleDate.getTime()) ||
-              (activeDate &&
-                date.getTime() === activeDate.getTime() &&
-                activeDate &&
-                pickedDate &&
-                activeDate.getTime() > pickedDate.getTime()) ||
-              (pickedDate &&
-                date.getTime() === pickedDate.getTime() &&
-                activeDate &&
-                pickedDate.getTime() > activeDate.getTime()) ||
-              (possibleDate &&
-                date.getTime() === possibleDate.getTime() &&
-                activeDate &&
-                possibleDate.getTime() > activeDate.getTime()),
-            'col-start-1 col-end-1': date.getDay() == 0,
-            'col-start-2 col-end-2': date.getDay() == 1,
-            'col-start-3 col-end-3': date.getDay() == 2,
-            'col-start-4 col-end-4': date.getDay() == 3,
-            'col-start-5 col-end-5': date.getDay() == 4,
-            'col-start-6 col-end-6': date.getDay() == 5,
-            'col-start-7 col-end-7': date.getDay() == 6,
+              (activeDateTime &&
+                dateTime === activeDateTime &&
+                activeDateTime &&
+                possibleDateTime &&
+                activeDateTime > possibleDateTime) ||
+              (activeDateTime &&
+                dateTime === activeDateTime &&
+                activeDateTime &&
+                pickedDateTime &&
+                activeDateTime > pickedDateTime) ||
+              (pickedDateTime &&
+                dateTime === pickedDateTime &&
+                activeDateTime &&
+                pickedDateTime > activeDateTime) ||
+              (possibleDateTime &&
+                dateTime === possibleDateTime &&
+                activeDateTime &&
+                possibleDateTime > activeDateTime),
+            'col-start-1 col-end-1': dateDay == 0,
+            'col-start-2 col-end-2': dateDay == 1,
+            'col-start-3 col-end-3': dateDay == 2,
+            'col-start-4 col-end-4': dateDay == 3,
+            'col-start-5 col-end-5': dateDay == 4,
+            'col-start-6 col-end-6': dateDay == 5,
+            'col-start-7 col-end-7': dateDay == 6,
           }
         )}
         onMouseOver={() => {
@@ -124,13 +133,41 @@ export const DatePicker = ({
               if (date === activeDate) setActiveDate(undefined);
               else {
                 setPickedDate(date);
+                const formatDate = (item: string | undefined) => {
+                  // @ts-ignore
+                  if (item.length < 2) return '0' + item;
+                  else return item;
+                };
+                const formatMonth = (item: number | undefined) => {
+                  // @ts-ignore
+                  item += 1;
+                  // @ts-ignore
+                  if (item.toString().length < 2) return '0' + item;
+                  else return item;
+                };
                 if (activeDate < date) {
-                  setPrevDateFrom(activeDate);
-                  setPrevDateTo(date);
+                  setDateFrom(
+                    `${activeDate?.getFullYear().toString()}-${formatMonth(
+                      activeDate?.getMonth()
+                    )}-${formatDate(activeDate?.getDate().toString())}`
+                  );
+                  setDateTo(
+                    `${date?.getFullYear().toString()}-${formatMonth(
+                      date?.getMonth()
+                    )}-${formatDate(date?.getDate().toString())}`
+                  );
                 }
                 if (activeDate > date) {
-                  setPrevDateFrom(date);
-                  setPrevDateTo(activeDate);
+                  setDateFrom(
+                    `${date?.getFullYear().toString()}-${formatMonth(
+                      date?.getMonth()
+                    )}-${formatDate(date?.getDate().toString())}`
+                  );
+                  setDateTo(
+                    `${activeDate?.getFullYear().toString()}-${formatMonth(
+                      activeDate?.getMonth()
+                    )}-${formatDate(activeDate?.getDate().toString())}`
+                  );
                 }
               }
             }
@@ -288,34 +325,7 @@ export const DatePicker = ({
                   isBordered={false}
                 />
                 <div className={'w-full'} />
-                <Button
-                  label={'Done'}
-                  onClick={() => {
-                    const formatDate = (item: string | undefined) => {
-                      // @ts-ignore
-                      if (item.length < 2) return '0' + item;
-                      else return item;
-                    };
-                    const formatMonth = (item: number | undefined) => {
-                      // @ts-ignore
-                      item += 1;
-                      // @ts-ignore
-                      if (item.toString().length < 2) return '0' + item;
-                      else return item;
-                    };
-                    setDateTo(
-                      `${prevDateTo?.getFullYear().toString()}-${formatMonth(
-                        prevDateTo?.getMonth()
-                      )}-${formatDate(prevDateTo?.getDate().toString())}`
-                    );
-                    setDateFrom(
-                      `${prevDateFrom?.getFullYear().toString()}-${formatMonth(
-                        prevDateFrom?.getMonth()
-                      )}-${formatDate(prevDateFrom?.getDate().toString())}`
-                    );
-                    setIsOpen(false);
-                  }}
-                />
+                <Button label={'Done'} onClick={() => setIsOpen(false)} />
               </div>
             </div>
           </motion.div>
