@@ -305,7 +305,6 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       matchQueue.gameInfo.field.commitedHash.toBigInt() &&
       matchQueue.gameInfo.field.choice.toBigInt()
     ) {
-      setThimbleGuessed(undefined);
       setGameState(GameState.WaitingForReveal);
     } else {
       if (matchQueue.lastGameState == 'win') {
@@ -494,7 +493,6 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
           {![
             GameState.WaitingForHiding,
             GameState.WaitingForGuessing,
-            GameState.WaitingForReveal,
           ].includes(gameState) &&
             Array.from({ length: 3 }, (_, i) => {
               return (
@@ -553,7 +551,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                       (gameState == GameState.CurrentPlayerHiding &&
                         thimbleOpened &&
                         thimbleOpenedRef.current != i + 1) ||
-                      (gameState == GameState.CurrentPlayerGuessing &&
+                      ((gameState == GameState.CurrentPlayerGuessing || gameState == GameState.WaitingForReveal) &&
                         thimbleGuessed != undefined &&
                         thimbleGuessed != i + 1) ||
                       (gameState == GameState.CurrentPlayerRevealing &&
@@ -568,7 +566,6 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
           {[
             GameState.WaitingForHiding,
             GameState.WaitingForGuessing,
-            GameState.WaitingForReveal,
           ].includes(gameState) && (
             <Lottie
               options={{
