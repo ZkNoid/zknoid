@@ -23,6 +23,12 @@ const CELLS_LINE_TO_WIN = 5;
 const BLOCK_PRODUCTION_SECONDS = 5;
 const MOVE_TIMEOUT_IN_BLOCKS = 60 / BLOCK_PRODUCTION_SECONDS;
 
+export const MOVE_DOUBLE_UP = UInt64.from(0)
+export const MOVE_UP = UInt64.from(1)
+export const MOVE_DIAGONAL_TOP_RIGHT = UInt64.from(2)
+export const MOVE_DIAGONAL_TOP_LEFT = UInt64.from(3)
+export const MOVE_DIAGONAL_BOTTON_RIGHT = UInt64.from(4)
+export const MOVE_DIAGONAL_BOTTON_LEFT = UInt64.from(5)
 
 export class CheckersField extends Struct({
   value: Provable.Array(
@@ -30,12 +36,6 @@ export class CheckersField extends Struct({
     CHECKERS_FIELD_SIZE,
   ),
 }) {
-  static from(value: number[][]) {
-    return new CheckersField({
-      value: value.map((row) => row.map((x) => UInt32.from(x))),
-    });
-  }
-
   hash() {
     return Poseidon.hash(this.value.flat().map((x) => x.value));
   }
@@ -58,14 +58,18 @@ export class CheckersLogic extends MatchMaker {
 
   public override initGame(lobby: Lobby, shouldUpdate: Bool): UInt64 {
     const currentGameId = this.getNextGameId();
-    const field = Array(CHECKERS_FIELD_SIZE).fill(Array(CHECKERS_FIELD_SIZE).fill(0));
+    const field = Array.from({length: CHECKERS_FIELD_SIZE}, () => Array(CHECKERS_FIELD_SIZE).fill(0).map(x => UInt32.from(x)));
     
-    
-    field[0][0] = 1;
-    field[0][1] = 1;
-
-    field[0][CHECKERS_FIELD_SIZE - 2] = 2;
-    field[0][CHECKERS_FIELD_SIZE - 1] = 2;
+    for(let i = 0; i < CHECKERS_FIELD_SIZE; i++) {
+      for(let j = 0; j < CHECKERS_FIELD_SIZE; j++) {
+        if ((i + j) % 2 == 0 && (i <= 2)) {
+          field[j][i] = UInt32.from(1);
+        }
+        if ((i + j) % 2 == 0 && (i >= CHECKERS_FIELD_SIZE - 3)) {
+          field[j][i] = UInt32.from(2);
+        }
+      }
+    }
 
     // Setting active game if opponent found
     this.games.set(
@@ -75,9 +79,9 @@ export class CheckersLogic extends MatchMaker {
         player2: lobby.players[1],
         currentMoveUser: lobby.players[0],
         lastMoveBlockHeight: this.network.block.height,
-        field: CheckersField.from(
-          field
-        ),
+        field: new CheckersField({
+          value: field,
+        }),
         winner: PublicKey.empty(),
       }),
     );
@@ -96,38 +100,6 @@ export class CheckersLogic extends MatchMaker {
     this.gamesNum.set(Provable.if(shouldUpdate, curGameId.add(1), curGameId));
   }
 
-  public initGameOld(
-    opponentReady: Bool,
-    player: PublicKey,
-    opponent: Option<QueueListItem>,
-  ): UInt64 {
-    const currentGameId = this.gamesNum
-      .get()
-      .orElse(UInt64.from(0))
-      .add(UInt64.from(1));
-    // Setting active game if opponent found
-    this.games.set(
-      Provable.if(opponentReady, currentGameId, UInt64.from(0)),
-      new GameInfo({
-        player1: this.transaction.sender.value,
-        player2: opponent.value.userAddress,
-        currentMoveUser: this.transaction.sender.value,
-        lastMoveBlockHeight: this.network.block.height,
-        field: CheckersField.from(
-          Array(CHECKERS_FIELD_SIZE).fill(Array(CHECKERS_FIELD_SIZE).fill(0)),
-        ),
-        winner: PublicKey.empty(),
-      }),
-    );
-
-    this.gamesNum.set(currentGameId);
-    this.gameFund.set(currentGameId, this.getParticipationPrice().mul(2));
-
-    // super.initGame(...);
-
-    return currentGameId;
-  }
-
   @runtimeMethod()
   public proveOpponentTimeout(gameId: UInt64): void {
     super.proveOpponentTimeout(gameId, true);
@@ -137,6 +109,9 @@ export class CheckersLogic extends MatchMaker {
   public makeMove(
     gameId: UInt64,
     newField: CheckersField,
+    x: UInt64,
+    y: UInt64,
+    moveType: UInt64
   ): void {
     const sessionSender = this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
@@ -145,10 +120,26 @@ export class CheckersLogic extends MatchMaker {
       this.transaction.sender.value,
     );
 
+    const moveFromX = x;
+    const moveFromY = y;
+
+    let moveToX;
+    let moveToY;
+
+    let figureToEatX;
+    let figureToEatY;
+
+    if (moveType.equals(MOVE_DOUBLE_UP)) {
+      moveToX = x.add(2);
+      moveToY = y.add(2);
+
+    }
+
     const game = this.games.get(gameId);
     assert(game.isSome, 'Invalid game id');
     assert(game.value.currentMoveUser.equals(sender), `Not your move`);
     assert(game.value.winner.equals(PublicKey.empty()), `Game finished`);
+    assert(moveType.lessThanOrEqual(UInt64.from(5)), 'Invalid game type');
 
     const winProposed = Bool(false);
 
