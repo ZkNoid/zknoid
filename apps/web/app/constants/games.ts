@@ -12,6 +12,7 @@ export interface IGame {
   isReleased: boolean;
   releaseDate: Date;
   popularity: number;
+  rating: number;
   author: string;
 }
 
@@ -34,6 +35,7 @@ export const defaultGames: IGame[] = [
     releaseDate: new Date(2023, 11, 1),
     popularity: 60,
     author: 'ZkNoid Team',
+    rating: 0
   },
   {
     id: 'randzu',
@@ -49,19 +51,6 @@ export const defaultGames: IGame[] = [
     releaseDate: new Date(2024, 0, 1),
     popularity: 50,
     author: 'ZkNoid Team',
-  },
-  {
-    id: 'checkers',
-    logo: '/image/games/soon.svg',
-    name: 'Checkers game',
-    description: 'Compete other players in the classic board game',
-    genre: ZkNoidGameGenre.BoardGames,
-    features: [ZkNoidGameFeature.Multiplayer],
-    defaultPage: 'global',
-    active: false,
-    isReleased: false,
-    releaseDate: new Date(2024, 2, 25),
-    popularity: 0,
-    author: 'ZkNoid Team',
+    rating: 0
   },
 ];
