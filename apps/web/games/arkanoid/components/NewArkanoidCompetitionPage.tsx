@@ -190,6 +190,10 @@ export default function NewArkanoidCompetitionPage() {
 
   const [game, setGame] = useState<string>(defaultGames[0].name);
   // const [image, setImage] = useState<string>('Default 1');
+
+  const [allGames, setAllGames] = useState<IGame[]>(defaultGames);
+  const [gamesForPick, setGamesForPick] = useState<string[]>([game]);
+
   const [isPolicyAccepted, setIsPolicyAccepted] = useState<boolean>(false);
 
   const [isSeedPopoverOpen, setIsSeedPopoverOpen] = useState<boolean>(false);
@@ -254,8 +258,6 @@ export default function NewArkanoidCompetitionPage() {
     else return true;
   };
 
-  const [allGames, setAllGames] = useState<IGame[]>(defaultGames);
-
   useEffect(() => {
     zkNoidConfig.then((zkNoidGames) => {
       setAllGames(
@@ -282,8 +284,6 @@ export default function NewArkanoidCompetitionPage() {
       );
     });
   }, []);
-
-  const [gamesForPick, setGamesForPick] = useState<string[]>([game]);
 
   useEffect(() => {
     let games: string[] = [];
@@ -703,10 +703,13 @@ export default function NewArkanoidCompetitionPage() {
                 </div>
                 <div className={'flex flex-row items-center justify-between'}>
                   <span
-                    className={clsx('font-plexsans text-[12px]/[12px]', {
-                      'underline decoration-[#FF0000] underline-offset-4':
-                        isPolicyInvalid,
-                    })}
+                    className={clsx(
+                      'font-plexsans text-[12px]/[12px] font-normal',
+                      {
+                        'underline decoration-[#FF0000] underline-offset-4':
+                          isPolicyInvalid,
+                      }
+                    )}
                   >
                     I understand that this amount will be deducted from my
                     account for hosting the competition.
