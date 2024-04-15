@@ -31,6 +31,10 @@ import { clsx } from 'clsx';
 import { Currency } from '@/constants/currency';
 import { Modal } from '@/components/ui/games-store/shared/Modal';
 import ArkanoidCoverSVG from '../assets/game-cover.svg';
+import { DropdownList } from '@/components/ui/games-store/shared/DropdownList';
+import { announcedGames, defaultGames, IGame } from '@/app/constants/games';
+
+const zkNoidConfig = import('@/games/config');
 
 interface IBrick {
   pos: [number, number];
@@ -184,7 +188,7 @@ export default function NewArkanoidCompetitionPage() {
     await tx.send();
   };
 
-  // const [game, setGame] = useState<string>('Arkanoid');
+  const [game, setGame] = useState<string>(defaultGames[0].name);
   // const [image, setImage] = useState<string>('Default 1');
   const [isPolicyAccepted, setIsPolicyAccepted] = useState<boolean>(false);
 
@@ -250,6 +254,45 @@ export default function NewArkanoidCompetitionPage() {
     else return true;
   };
 
+  const [allGames, setAllGames] = useState<IGame[]>(defaultGames);
+
+  useEffect(() => {
+    zkNoidConfig.then((zkNoidGames) => {
+      setAllGames(
+        (
+          zkNoidGames.zkNoidConfig.games.map((x) => ({
+            id: x.id,
+            logo: x.image,
+            rating: x.rating,
+            name: x.name,
+            description: x.description,
+            genre: x.genre,
+            features: x.features,
+            tags: [],
+            defaultPage: x.pageCompetitionsList
+              ? 'competitions-list'
+              : 'global',
+            active: true,
+            isReleased: x.isReleased,
+            releaseDate: x.releaseDate,
+            popularity: x.popularity,
+            author: x.author,
+          })) as IGame[]
+        ).concat(announcedGames)
+      );
+    });
+  }, []);
+
+  const [gamesForPick, setGamesForPick] = useState<string[]>([game]);
+
+  useEffect(() => {
+    let games: string[] = [];
+    allGames.map((item) => {
+      if (item.isReleased && item.active) games.push(item.name);
+    });
+    setGamesForPick(games);
+  }, [allGames]);
+
   return (
     <GamePage
       gameConfig={arkanoidConfig}
@@ -277,15 +320,16 @@ export default function NewArkanoidCompetitionPage() {
                 emptyFieldCheck={false}
               />
             </div>
-            {/*<div className={'w-full'}>*/}
-            {/*  <Input*/}
-            {/*    title={'Select the game'}*/}
-            {/*    value={game}*/}
-            {/*    setValue={setGame}*/}
-            {/*    placeholder={'Type game name here...'}*/}
-            {/*    isRequired={true}*/}
-            {/*  />*/}
-            {/*</div>*/}
+            <div className={'w-full'}>
+              <DropdownList
+                title={'Select the game'}
+                titleColor={'left-accent'}
+                items={gamesForPick}
+                selectedItem={game}
+                setSelectedItem={setGame}
+                isRequired
+              />
+            </div>
             <div className={'h-full w-full'}>
               <Textarea
                 title={'Enter the description of the competition'}
@@ -461,68 +505,78 @@ export default function NewArkanoidCompetitionPage() {
                 setIsSelected={setPreregistrationEnabled}
               />
             </div>
-            <div className={'flex w-full flex-col gap-2'}>
-              <span
-                className={
-                  'font-plexsans text-main font-medium uppercase text-left-accent'
-                }
-              >
-                Preregiatration dates*
-              </span>
-              <div className={'flex flex-row justify-between gap-8'}>
-                <div className={'justify-cener flex flex-col items-center'}>
-                  <div className={'flex-grow'} />
-                  <DatePicker
-                    setDateTo={setPreregistrationTo}
-                    setDateFrom={setPreregistrationFrom}
-                    trigger={
-                      <div
-                        className={
-                          'group rounded-[5px] border p-2 hover:border-left-accent'
-                        }
-                      >
-                        <svg
-                          width="29"
-                          height="29"
-                          viewBox="0 0 18 20"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M16 18H2V7H16M13 0V2H5V0H3V2H2C0.89 2 0 2.89 0 4V18C0 18.5304 0.210714 19.0391 0.585786 19.4142C0.960859 19.7893 1.46957 20 2 20H16C16.5304 20 17.0391 19.7893 17.4142 19.4142C17.7893 19.0391 18 18.5304 18 18V4C18 3.46957 17.7893 2.96086 17.4142 2.58579C17.0391 2.21071 16.5304 2 16 2H15V0M14 11H9V16H14V11Z"
-                            fill="#F9F8F4"
-                            className={'group-active:fill-left-accent'}
-                          />
-                        </svg>
-                      </div>
+            <AnimatePresence initial={false} mode={'wait'}>
+              {preregistrationEnabled && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ type: 'spring', duration: 0.8, bounce: 0 }}
+                  className={'flex w-full flex-col gap-2'}
+                >
+                  <span
+                    className={
+                      'font-plexsans text-main font-medium uppercase text-left-accent'
                     }
-                  />
-                  {isPreregDateInvalid && <div className={'flex-grow'} />}
-                </div>
-                <div className={'flex flex-col'}>
-                  <span>From</span>
-                  <Input
-                    value={preregistrationFrom}
-                    setValue={setPreregistrationFrom}
-                    placeholder={'00.00.0000'}
-                    isInvalid={isPreregDateInvalid}
-                    invalidMessage={'Please fill out this field correctly'}
-                    emptyFieldCheck={false}
-                  />
-                </div>
-                <div className={'flex flex-col'}>
-                  <span>To</span>
-                  <Input
-                    value={preregistrationTo}
-                    setValue={setPreregistrationTo}
-                    placeholder={'00.00.0000'}
-                    isInvalid={isPreregDateInvalid}
-                    invalidMessage={'Please fill out this field correctly'}
-                    emptyFieldCheck={false}
-                  />
-                </div>
-              </div>
-            </div>
+                  >
+                    Preregiatration dates*
+                  </span>
+                  <div className={'flex flex-row justify-between gap-8'}>
+                    <div className={'justify-cener flex flex-col items-center'}>
+                      <div className={'flex-grow'} />
+                      <DatePicker
+                        setDateTo={setPreregistrationTo}
+                        setDateFrom={setPreregistrationFrom}
+                        trigger={
+                          <div
+                            className={
+                              'group rounded-[5px] border p-2 hover:border-left-accent'
+                            }
+                          >
+                            <svg
+                              width="29"
+                              height="29"
+                              viewBox="0 0 18 20"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M16 18H2V7H16M13 0V2H5V0H3V2H2C0.89 2 0 2.89 0 4V18C0 18.5304 0.210714 19.0391 0.585786 19.4142C0.960859 19.7893 1.46957 20 2 20H16C16.5304 20 17.0391 19.7893 17.4142 19.4142C17.7893 19.0391 18 18.5304 18 18V4C18 3.46957 17.7893 2.96086 17.4142 2.58579C17.0391 2.21071 16.5304 2 16 2H15V0M14 11H9V16H14V11Z"
+                                fill="#F9F8F4"
+                                className={'group-active:fill-left-accent'}
+                              />
+                            </svg>
+                          </div>
+                        }
+                      />
+                      {isPreregDateInvalid && <div className={'flex-grow'} />}
+                    </div>
+                    <div className={'flex flex-col'}>
+                      <span>From</span>
+                      <Input
+                        value={preregistrationFrom}
+                        setValue={setPreregistrationFrom}
+                        placeholder={'00.00.0000'}
+                        isInvalid={isPreregDateInvalid}
+                        invalidMessage={'Please fill out this field correctly'}
+                        emptyFieldCheck={false}
+                      />
+                    </div>
+                    <div className={'flex flex-col'}>
+                      <span>To</span>
+                      <Input
+                        value={preregistrationTo}
+                        setValue={setPreregistrationTo}
+                        placeholder={'00.00.0000'}
+                        isInvalid={isPreregDateInvalid}
+                        invalidMessage={'Please fill out this field correctly'}
+                        emptyFieldCheck={false}
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
             <div className={'flex w-full flex-col gap-2'}>
               <span
                 className={
