@@ -178,16 +178,9 @@ export default function RandzuPage({
       randzuLogic.makeMove(
         UInt64.from(matchQueue.gameInfo!.gameId),
         updatedRandzuField,
-        // winWitness1 ??
-        //   new WinWitness(
-        //     // @ts-ignore
-        //     {
-        //       x: UInt32.from(0),
-        //       y: UInt32.from(0),
-        //       directionX: Int64.from(0),
-        //       directionY: Int64.from(0),
-        //     }
-        //   )
+        UInt64.from(x),
+        UInt64.from(y),
+        UInt64.from(0)
       );
     });
 
