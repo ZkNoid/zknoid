@@ -1,5 +1,5 @@
 import { state, runtimeMethod, runtimeModule } from '@proto-kit/module';
-import type { Option } from '@proto-kit/protocol';
+import { Option } from '@proto-kit/protocol';
 import { State, StateMap, assert } from '@proto-kit/protocol';
 import {
   PublicKey,
@@ -18,17 +18,11 @@ import { UInt64 as ProtoUInt64 } from '@proto-kit/library';
 import { Lobby } from '../engine/LobbyManager';
 
 const CHECKERS_FIELD_SIZE = 8;
-const CELLS_LINE_TO_WIN = 5;
 
-const BLOCK_PRODUCTION_SECONDS = 5;
-const MOVE_TIMEOUT_IN_BLOCKS = 60 / BLOCK_PRODUCTION_SECONDS;
-
-export const MOVE_DOUBLE_UP = UInt64.from(0)
-export const MOVE_UP = UInt64.from(1)
-export const MOVE_DIAGONAL_TOP_RIGHT = UInt64.from(2)
-export const MOVE_DIAGONAL_TOP_LEFT = UInt64.from(3)
-export const MOVE_DIAGONAL_BOTTON_RIGHT = UInt64.from(4)
-export const MOVE_DIAGONAL_BOTTON_LEFT = UInt64.from(5)
+export const MOVE_TOP_RIGHT = UInt64.from(0);
+export const MOVE_TOP_LEFT = UInt64.from(1);
+export const CAPTURE_TOP_RIGHT = UInt64.from(2);
+export const CAPTURE_TOP_LEFT = UInt64.from(3);
 
 export class CheckersField extends Struct({
   value: Provable.Array(
@@ -38,6 +32,19 @@ export class CheckersField extends Struct({
 }) {
   hash() {
     return Poseidon.hash(this.value.flat().map((x) => x.value));
+  }
+  getPossibleMoves(x: number, y: number) {
+    if (x < CHECKERS_FIELD_SIZE - 1 && y < CHECKERS_FIELD_SIZE - 1 && this.value[x + 1][y - 1].equals(UInt32.from(0))) {
+      return 1;
+    }
+    if (x < CHECKERS_FIELD_SIZE - 1 && y < CHECKERS_FIELD_SIZE - 1 && this.value[x + 1][y + 1].equals(UInt32.from(0))) {
+      return 0;
+    }
+  }
+  static from(value: number[][]) {
+    return new CheckersField({
+      value: value.map((row) => row.map((x) => UInt32.from(x))),
+    });
   }
 }
 
@@ -58,14 +65,18 @@ export class CheckersLogic extends MatchMaker {
 
   public override initGame(lobby: Lobby, shouldUpdate: Bool): UInt64 {
     const currentGameId = this.getNextGameId();
-    const field = Array.from({length: CHECKERS_FIELD_SIZE}, () => Array(CHECKERS_FIELD_SIZE).fill(0).map(x => UInt32.from(x)));
-    
-    for(let i = 0; i < CHECKERS_FIELD_SIZE; i++) {
-      for(let j = 0; j < CHECKERS_FIELD_SIZE; j++) {
-        if ((i + j) % 2 == 0 && (i <= 2)) {
+    const field = Array.from({ length: CHECKERS_FIELD_SIZE }, () =>
+      Array(CHECKERS_FIELD_SIZE)
+        .fill(0)
+        .map((x) => UInt32.from(x)),
+    );
+
+    for (let i = 0; i < CHECKERS_FIELD_SIZE; i++) {
+      for (let j = 0; j < CHECKERS_FIELD_SIZE; j++) {
+        if ((i + j) % 2 == 0 && i <= 2) {
           field[j][i] = UInt32.from(1);
         }
-        if ((i + j) % 2 == 0 && (i >= CHECKERS_FIELD_SIZE - 3)) {
+        if ((i + j) % 2 == 0 && i >= CHECKERS_FIELD_SIZE - 3) {
           field[j][i] = UInt32.from(2);
         }
       }
@@ -111,7 +122,7 @@ export class CheckersLogic extends MatchMaker {
     newField: CheckersField,
     x: UInt64,
     y: UInt64,
-    moveType: UInt64
+    moveType: UInt64,
   ): void {
     const sessionSender = this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
@@ -126,14 +137,36 @@ export class CheckersLogic extends MatchMaker {
     let moveToX;
     let moveToY;
 
-    let figureToEatX;
-    let figureToEatY;
+    let figureToEatX: Option<UInt64> = Option.from(
+      Bool(false),
+      UInt64.from(0),
+      UInt64,
+    );
+    let figureToEatY: Option<UInt64> = Option.from(
+      Bool(false),
+      UInt64.from(0),
+      UInt64,
+    );
 
-    if (moveType.equals(MOVE_DOUBLE_UP)) {
-      moveToX = x.add(2);
-      moveToY = y.add(2);
+    let captureProposed;
 
-    }
+    // if (moveType.equals(MOVE_TOP_LEFT)) {
+    //   moveToX = x.sub(1);
+    //   moveToY = y.add(1);
+    //   captureProposed = Bool(false);
+    // } else if (moveType.equals(MOVE_TOP_RIGHT)) {
+    //   moveToX = x.add(1);
+    //   moveToY = y.add(1);
+    //   captureProposed = Bool(false);
+    // } else if (moveType.equals(CAPTURE_TOP_RIGHT)) {
+    //   moveToX = x.sub(2);
+    //   moveToY = x.add(2);
+    //   captureProposed = Bool(true);
+    // } else {
+    //   moveToX = x.add(2);
+    //   moveToY = x.add(2);
+    //   captureProposed = Bool(true);
+    // }
 
     const game = this.games.get(gameId);
     assert(game.isSome, 'Invalid game id');
@@ -150,18 +183,38 @@ export class CheckersLogic extends MatchMaker {
     );
 
     const addedCellsNum = UInt64.from(0);
+
     for (let i = 0; i < CHECKERS_FIELD_SIZE; i++) {
       for (let j = 0; j < CHECKERS_FIELD_SIZE; j++) {
         const currentFieldCell = game.value.field.value[i][j];
         const nextFieldCell = newField.value[i][j];
 
-        assert(
-          Bool.or(
-            currentFieldCell.equals(UInt32.from(0)),
-            currentFieldCell.equals(nextFieldCell),
-          ),
-          `Modified filled cell at ${i}, ${j}`,
-        );
+        const isMoveFromCell = Bool.and(UInt64.from(i).equals(moveFromX), UInt64.from(j).equals(moveFromY));
+        // const isMoveToCell = Bool.and(UInt64.from(i).equals(moveToX), UInt64.from(j).equals(moveToY));
+
+        // assert(
+        //   Bool.or(
+        //     Bool.or(isMoveFromCell, isMoveToCell),
+        //     currentFieldCell.equals(nextFieldCell),
+        //   ),
+        //   `Modified filled cell at ${i}, ${j}`,
+        // );
+
+        // assert(
+        //   Bool.or(
+        //     isMoveFromCell.not(),
+        //     nextFieldCell.equals(UInt32.from(0))
+        //   ),
+        //   `Not empty cell at from ${i}, ${j}`,
+        // );
+
+        // assert(
+        //   Bool.or(
+        //     isMoveToCell.not(),
+        //     nextFieldCell.equals(UInt32.from(currentUserId))
+        //   ),
+        //   `Not player cell at from ${i}, ${j}`,
+        // );
 
         addedCellsNum.add(
           Provable.if(
@@ -175,14 +228,16 @@ export class CheckersLogic extends MatchMaker {
           addedCellsNum.lessThanOrEqual(UInt64.from(1)),
           `Exactly one cell should be added. Error at ${i}, ${j}`,
         );
-        assert(
-          Provable.if(
-            currentFieldCell.equals(nextFieldCell),
-            Bool(true),
-            nextFieldCell.equals(currentUserId),
-          ),
-          'Added opponent`s color',
-        );
+
+        /// !!!
+        // assert(
+        //   Provable.if(
+        //     currentFieldCell.equals(nextFieldCell),
+        //     Bool(true),
+        //     nextFieldCell.equals(currentUserId),
+        //   ),
+        //   'Added opponent`s color',
+        // );
 
         // for (let wi = 0; wi < CELLS_LINE_TO_WIN; wi++) {
         //   const winPosX = winWitness.directionX
