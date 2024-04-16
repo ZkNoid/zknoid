@@ -19,10 +19,10 @@ import { Lobby } from '../engine/LobbyManager';
 
 const CHECKERS_FIELD_SIZE = 8;
 
-export const MOVE_TOP_RIGHT = UInt64.from(0);
-export const MOVE_TOP_LEFT = UInt64.from(1);
-export const CAPTURE_TOP_RIGHT = UInt64.from(2);
-export const CAPTURE_TOP_LEFT = UInt64.from(3);
+export const MOVE_TOP_LEFT = UInt64.from(0);
+export const MOVE_TOP_RIGHT = UInt64.from(1);
+export const CAPTURE_TOP_LEFT = UInt64.from(2);
+export const CAPTURE_TOP_RIGHT = UInt64.from(3);
 
 export class CheckersField extends Struct({
   value: Provable.Array(
@@ -34,10 +34,18 @@ export class CheckersField extends Struct({
     return Poseidon.hash(this.value.flat().map((x) => x.value));
   }
   getPossibleMoves(x: number, y: number) {
-    if (x < CHECKERS_FIELD_SIZE - 1 && y < CHECKERS_FIELD_SIZE - 1 && this.value[x + 1][y - 1].equals(UInt32.from(0))) {
+    if (
+      x < CHECKERS_FIELD_SIZE - 1 &&
+      y < CHECKERS_FIELD_SIZE - 1 &&
+      this.value[x + 1][y - 1].equals(UInt32.from(0))
+    ) {
       return 1;
     }
-    if (x < CHECKERS_FIELD_SIZE - 1 && y < CHECKERS_FIELD_SIZE - 1 && this.value[x + 1][y + 1].equals(UInt32.from(0))) {
+    if (
+      x < CHECKERS_FIELD_SIZE - 1 &&
+      y < CHECKERS_FIELD_SIZE - 1 &&
+      this.value[x + 1][y + 1].equals(UInt32.from(0))
+    ) {
       return 0;
     }
   }
@@ -189,7 +197,58 @@ export class CheckersLogic extends MatchMaker {
         const currentFieldCell = game.value.field.value[i][j];
         const nextFieldCell = newField.value[i][j];
 
-        const isMoveFromCell = Bool.and(UInt64.from(i).equals(moveFromX), UInt64.from(j).equals(moveFromY));
+        const isMoveFromCell = Bool.and(
+          UInt64.from(i).equals(moveFromX),
+          UInt64.from(j).equals(moveFromY),
+        );
+        if (j < CHECKERS_FIELD_SIZE - 1 && i < CHECKERS_FIELD_SIZE - 1) {
+          Provable.log(
+            moveType.equals(UInt64.from(MOVE_TOP_RIGHT)).not(),
+          isMoveFromCell.not()
+        )
+          Provable.log(
+            moveType, game.value.field.value[j][i].equals(currentUserId), game.value.field.value[j + 1][i + 1].equals(UInt32.from(0)), 
+            newField.value[j][i].equals(UInt32.from(0)), game.value.field.value[j + 1][i + 1].equals(currentUserId)
+          );
+          assert(
+            Bool.or(
+              Bool.or(
+                moveType.equals(UInt64.from(MOVE_TOP_RIGHT)).not(),
+                isMoveFromCell.not(),
+              ), // Skip condition
+              Bool.and(
+                game.value.field.value[j][i].equals(currentUserId),
+                Bool.and(
+                  game.value.field.value[j + 1][i + 1].equals(UInt32.from(0)),
+                  Bool.and(
+                    newField.value[j][i].equals(UInt32.from(0)),
+                    game.value.field.value[j + 1][i + 1].equals(currentUserId),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+        if (j > 0 && i < CHECKERS_FIELD_SIZE - 1) {
+          assert(
+            Bool.or(
+              Bool.or(
+                moveType.equals(UInt64.from(MOVE_TOP_RIGHT)).not(),
+                isMoveFromCell.not(),
+              ), // Skip condition
+              Bool.and(
+                game.value.field.value[j][i].equals(currentUserId),
+                Bool.and(
+                  game.value.field.value[j - 1][i + 1].equals(UInt32.from(0)),
+                  Bool.and(
+                    newField.value[j][i].equals(UInt32.from(0)),
+                    game.value.field.value[j - 1][i + 1].equals(currentUserId),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
         // const isMoveToCell = Bool.and(UInt64.from(i).equals(moveToX), UInt64.from(j).equals(moveToY));
 
         // assert(
