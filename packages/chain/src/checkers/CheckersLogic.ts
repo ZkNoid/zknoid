@@ -112,7 +112,7 @@ export class CheckersLogic extends MatchMaker {
   }
 
   @runtimeMethod()
-  public makeMove(
+  public makeMoveChecker(
     gameId: UInt64,
     newField: CheckersField,
     x: UInt64,
@@ -186,26 +186,6 @@ export class CheckersLogic extends MatchMaker {
       UInt64,
     );
 
-    let captureProposed;
-
-    // if (moveType.equals(MOVE_TOP_LEFT)) {
-    //   moveToX = x.sub(1);
-    //   moveToY = y.add(1);
-    //   captureProposed = Bool(false);
-    // } else if (moveType.equals(MOVE_TOP_RIGHT)) {
-    //   moveToX = x.add(1);
-    //   moveToY = y.add(1);
-    //   captureProposed = Bool(false);
-    // } else if (moveType.equals(CAPTURE_TOP_RIGHT)) {
-    //   moveToX = x.sub(2);
-    //   moveToY = x.add(2);
-    //   captureProposed = Bool(true);
-    // } else {
-    //   moveToX = x.add(2);
-    //   moveToY = x.add(2);
-    //   captureProposed = Bool(true);
-    // }
-
     assert(gameOption.isSome, 'Invalid game id');
     assert(game.currentMoveUser.equals(sender), `Not your move`);
     assert(game.winner.equals(PublicKey.empty()), `Game finished`);
@@ -218,8 +198,6 @@ export class CheckersLogic extends MatchMaker {
       UInt32.from(1),
       UInt32.from(2),
     );
-
-    const addedCellsNum = UInt64.from(0);
 
     for (let i = 0; i < CHECKERS_FIELD_SIZE; i++) {
       for (let j = 0; j < CHECKERS_FIELD_SIZE; j++) {
@@ -281,82 +259,216 @@ export class CheckersLogic extends MatchMaker {
             );
           }
         });
+      }
+    }
 
-        /*
+    Provable.log('AAAAAAAA');
 
-        if (
-          j > 0 &&
-          j < CHECKERS_FIELD_SIZE - 1 &&
-          i < CHECKERS_FIELD_SIZE - 1 &&
-          i > 0
-        ) {
-          Provable.log(
-            moveType.equals(UInt64.from(MOVE_TOP_RIGHT)).not(),
-            isMoveFromCell.not(),
-          );
+    game.winner = Provable.if(
+      winProposed,
+      game.currentMoveUser,
+      PublicKey.empty(),
+    );
 
-          const targetValue = Provable.if(
-            game.player1.equals(game.currentMoveUser),
-            UInt32,
-            game.field.value[i + 1][j - 1],
-            game.field.value[i + 1][j + 1],
-          );
+    const winnerShare = ProtoUInt64.from(
+      Provable.if(winProposed, UInt64.from(1), UInt64.from(0)),
+    );
 
-          Provable.log(
-            moveType,
-            game.field.value[i][j].equals(currentUserId),
-            targetValue.equals(UInt32.from(0)),
-            newField.value[i][j].equals(UInt32.from(0)),
-            targetValue.equals(currentUserId),
-          );
-          assert(
-            Bool.or(
-              Bool.or(
-                moveType.equals(UInt64.from(MOVE_TOP_RIGHT)).not(),
-                isMoveFromCell.not(),
-              ), // Skip condition
-              Bool.and(
-                game.field.value[i][j].equals(currentUserId),
-                Bool.and(
-                  game.field.value[i + 1][j + 1].equals(UInt32.from(0)),
-                  Bool.and(
-                    newField.value[i][j].equals(UInt32.from(0)),
-                    targetValue.equals(currentUserId),
-                  ),
-                ),
-              ),
-            ),
-          );
-        }
-        if (i > 0 && j < CHECKERS_FIELD_SIZE - 1) {
-          const targetValue = Provable.if(
-            game.player1.equals(game.currentMoveUser),
-            UInt32,
-            game.field.value[i - 1][j - 1],
-            game.field.value[i - 1][j + 1],
-          );
+    this.acquireFunds(
+      gameId,
+      game.winner,
+      PublicKey.empty(),
+      winnerShare,
+      ProtoUInt64.from(0),
+      ProtoUInt64.from(1),
+    );
 
-          assert(
-            Bool.or(
-              Bool.or(
-                moveType.equals(UInt64.from(MOVE_TOP_LEFT)).not(),
-                isMoveFromCell.not(),
-              ), // Skip condition
-              Bool.and(
-                game.field.value[i][j].equals(currentUserId),
-                Bool.and(
-                  targetValue.equals(UInt32.from(0)),
-                  Bool.and(
-                    newField.value[i][j].equals(UInt32.from(0)),
-                    targetValue.equals(currentUserId),
-                  ),
-                ),
-              ),
-            ),
-          );
-        }
+    game.field = newField;
+    game.currentMoveUser = Provable.if(
+      game.currentMoveUser.equals(game.player1),
+      game.player2,
+      game.player1,
+    );
+    game.lastMoveBlockHeight = this.network.block.height;
+    this.games.set(gameId, game);
 
-        */
+    // Removing active game for players if game ended
+    this.activeGameId.set(
+      Provable.if(winProposed, game.player2, PublicKey.empty()),
+      UInt64.from(0),
+    );
+    this.activeGameId.set(
+      Provable.if(winProposed, game.player1, PublicKey.empty()),
+      UInt64.from(0),
+    );
+  }
+
+  @runtimeMethod()
+  public makeMoveCapture(
+    gameId: UInt64,
+    newField: CheckersField,
+    x: UInt64,
+    y: UInt64,
+    moveType: UInt64,
+  ): void {
+    const sessionSender = this.sessions.get(this.transaction.sender.value);
+    const sender = Provable.if(
+      sessionSender.isSome,
+      sessionSender.value,
+      this.transaction.sender.value,
+    );
+
+    const gameOption = this.games.get(gameId);
+    const game = gameOption.value;
+
+    const moveFromX = x;
+    const moveFromY = y;
+
+    const firstPlayerMove = game.player1.equals(game.currentMoveUser);
+
+    assert(
+      moveType
+        .equals(CAPTURE_TOP_LEFT)
+        .not()
+        .or(moveFromX.greaterThan(UInt64.zero)),
+    );
+    assert(
+      moveType
+        .equals(CAPTURE_TOP_RIGHT)
+        .not()
+        .or(moveFromX.lessThan(UInt64.from(CHECKERS_FIELD_SIZE))),
+    );
+    assert(firstPlayerMove.or(moveFromY.greaterThan(UInt64.zero)));
+    assert(
+      firstPlayerMove
+        .not()
+        .or(moveFromY.lessThan(UInt64.from(CHECKERS_FIELD_SIZE))),
+    );
+
+    const xSubValue = Provable.if(
+      moveFromX.greaterThan(UInt64.zero),
+      UInt64.from(1),
+      UInt64.zero,
+    );
+    const ySubValue = Provable.if(
+      moveFromY.greaterThan(UInt64.zero),
+      UInt64.from(1),
+      UInt64.zero,
+    );
+
+    let capturedCellX = Provable.if(
+      moveType.equals(CAPTURE_TOP_LEFT),
+      moveFromX.sub(xSubValue.mul(1)),
+      moveFromX.add(1),
+    );
+    let capturedCellY = Provable.if(
+      firstPlayerMove,
+      moveFromY.add(UInt64.from(1)),
+      moveFromY.sub(ySubValue.mul(1)),
+    );
+
+    let moveToX = Provable.if(
+      moveType.equals(CAPTURE_TOP_LEFT),
+      moveFromX.sub(xSubValue.mul(2)),
+      moveFromX.add(2),
+    );
+    let moveToY = Provable.if(
+      firstPlayerMove,
+      moveFromY.add(UInt64.from(2)),
+      moveFromY.sub(ySubValue.mul(2)),
+    );
+
+    assert(gameOption.isSome, 'Invalid game id');
+    assert(game.currentMoveUser.equals(sender), `Not your move`);
+    assert(game.winner.equals(PublicKey.empty()), `Game finished`);
+    assert(moveType.lessThanOrEqual(UInt64.from(5)), 'Invalid game type');
+
+    const winProposed = Bool(false);
+
+    const currentUserId = Provable.if(
+      game.currentMoveUser.equals(game.player1),
+      UInt32.from(1),
+      UInt32.from(2),
+    );
+    const opponentUserId = Provable.if(
+      game.currentMoveUser.equals(game.player1),
+      UInt32.from(2),
+      UInt32.from(1),
+    );
+
+    for (let i = 0; i < CHECKERS_FIELD_SIZE; i++) {
+      for (let j = 0; j < CHECKERS_FIELD_SIZE; j++) {
+        const isMoveFromCell = Bool.and(
+          UInt64.from(i).equals(moveFromX),
+          UInt64.from(j).equals(moveFromY),
+        );
+
+        const isCapturedCell = Bool.and(
+          UInt64.from(i).equals(capturedCellX),
+          UInt64.from(j).equals(capturedCellY),
+        );
+
+        const isMoveToCell = Bool.and(
+          UInt64.from(i).equals(moveToX),
+          UInt64.from(j).equals(moveToY),
+        );
+
+        const isNotChanged = isMoveFromCell.not().and(isMoveToCell.not()).and(isCapturedCell.not());
+
+        const cellEquals = isNotChanged.and(
+          game.field.value[i][j].equals(newField.value[i][j]),
+        );
+        const moveFromEquals = isMoveFromCell.and(
+          newField.value[i][j].equals(UInt32.zero),
+        );
+        const capturedCellEquals = isCapturedCell.and(
+          newField.value[i][j].equals(UInt32.zero),
+        );
+        const moveToEquals = isMoveToCell.and(
+          newField.value[i][j].equals(currentUserId),
+        );
+
+        // Check that player owns moved figure
+        assert(
+          moveFromEquals.not().or(game.field.value[i][j].equals(currentUserId)),
+        );
+
+        // Check that on captured position opponent's figure located
+        assert(
+          capturedCellEquals.not().or(game.field.value[i][j].equals(opponentUserId)),
+        );
+        
+        // Check that on new spot no figures located
+        assert(
+          moveToEquals.not().or(game.field.value[i][j].equals(UInt32.zero)),
+        );
+
+        // Check that either
+        // 1) Cell is not changed
+        // 2) Figure moved from that cell
+        // 3) Figure moved to that cell
+        assert(cellEquals.or(moveFromEquals).or(moveToEquals).or(capturedCellEquals));
+
+        Provable.asProver(() => {
+          if (
+            gameOption.isSome
+              .and(cellEquals.or(moveFromEquals).or(moveToEquals).or(capturedCellEquals).not())
+              .toBoolean()
+          ) {
+            console.log(isMoveFromCell.toString());
+            console.log(isMoveToCell.toString());
+            console.log(
+              game.field.value[i][j].equals(newField.value[i][j]).toString(),
+            );
+
+            console.log(`[${i}: ${j}]`);
+            console.log(
+              `${game.field.value[i][j].toString()} != ${newField.value[i][
+                j
+              ].toString()}`,
+            );
+          }
+        });
       }
     }
 
