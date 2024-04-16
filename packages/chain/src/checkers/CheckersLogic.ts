@@ -356,6 +356,18 @@ export class CheckersLogic extends MatchMaker {
       UInt64.zero,
     );
 
+    const xSubValue2 = Provable.if(
+      moveFromX.greaterThan(UInt64.one),
+      UInt64.from(2),
+      UInt64.zero,
+    );
+    const ySubValue2 = Provable.if(
+      moveFromY.greaterThan(UInt64.one),
+      UInt64.from(2),
+      UInt64.zero,
+    );
+
+
     let capturedCellX = Provable.if(
       moveType.equals(CAPTURE_TOP_LEFT),
       moveFromX.sub(xSubValue.mul(1)),
@@ -369,13 +381,13 @@ export class CheckersLogic extends MatchMaker {
 
     let moveToX = Provable.if(
       moveType.equals(CAPTURE_TOP_LEFT),
-      moveFromX.sub(xSubValue.mul(2)),
+      moveFromX.sub(xSubValue2),
       moveFromX.add(2),
     );
     let moveToY = Provable.if(
       firstPlayerMove,
       moveFromY.add(UInt64.from(2)),
-      moveFromY.sub(ySubValue.mul(2)),
+      moveFromY.sub(ySubValue2),
     );
 
     assert(gameOption.isSome, 'Invalid game id');
@@ -446,8 +458,9 @@ export class CheckersLogic extends MatchMaker {
         // Check that either
         // 1) Cell is not changed
         // 2) Figure moved from that cell
-        // 3) Figure moved to that cell
-        assert(cellEquals.or(moveFromEquals).or(moveToEquals).or(capturedCellEquals));
+        // 3) Figure is captured in that cell
+        // 4) Figure moved to that cell
+        assert(cellEquals.or(moveFromEquals).or(capturedCellEquals).or(moveToEquals));
 
         Provable.asProver(() => {
           if (
