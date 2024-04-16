@@ -4,6 +4,7 @@ import { State, StateMap } from '@proto-kit/protocol';
 import { Bool, Provable, PublicKey, Struct, UInt64 } from 'o1js';
 import { Lobby } from 'src/engine/LobbyManager';
 import { assert } from 'console';
+import { UInt64 as ProtoUInt64 } from '@proto-kit/library';
 
 export class GameInfo extends Struct({
   player1: PublicKey,
@@ -32,7 +33,10 @@ export class MatchMakerHelper extends MatchMaker {
     );
 
     this.gamesNum.set(currentGameId);
-    this.gameFund.set(currentGameId, this.getParticipationPrice().mul(2));
+    this.gameFund.set(
+      currentGameId,
+      ProtoUInt64.from(lobby.participationFee).mul(2),
+    );
 
     return super.initGame(lobby, shouldUpdate);
   }
