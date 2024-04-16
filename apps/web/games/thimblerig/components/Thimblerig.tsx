@@ -18,7 +18,6 @@ import {
 } from '../stores/matchQueue';
 import { useCommitmentStore } from '@/lib/stores/commitmentStorage';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
-import { DEFAULT_GAME_COST } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
 import { useMinaBridge } from '@/lib/stores/protokitBalances';
 import ThimbleSVG from '../assets/thimble.svg';
 import ThimbleOpenedSVG from '../assets/thimble_opened_und.svg';
@@ -41,6 +40,7 @@ import {
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import { getRandomEmoji } from '@/lib/emoji';
+import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
 
 enum GameState {
   WalletNotInstalled,
@@ -108,7 +108,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   const gameStartedMutation = api.logging.logGameStarted.useMutation();
 
   const startGame = async () => {
-    if (await bridge(DEFAULT_GAME_COST.toBigInt())) return;
+    if (await bridge(DEFAULT_PARTICIPATION_FEE.toBigInt())) return;
 
     gameStartedMutation.mutate({
       gameId: 'thimblerig',
@@ -466,7 +466,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       <PvPGameView
         status={status}
         opponent={matchQueue.gameInfo?.opponent}
-        startPrice={DEFAULT_GAME_COST.toBigInt()}
+        startPrice={DEFAULT_PARTICIPATION_FEE.toBigInt()}
         mainButtonState={mainButtonState}
         startGame={startGame}
         queueSize={matchQueue.queueLength}
@@ -487,13 +487,12 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
         which thimble conceals the ball. The hiding player then reveals \
         whether the ball is under the chosen
         `}
-        competitionFunds={DEFAULT_GAME_COST.toBigInt() * 100n}
+        competitionFunds={DEFAULT_PARTICIPATION_FEE.toBigInt() * 100n}
       >
         <div className="flex">
-          {![
-            GameState.WaitingForHiding,
-            GameState.WaitingForGuessing,
-          ].includes(gameState) &&
+          {![GameState.WaitingForHiding, GameState.WaitingForGuessing].includes(
+            gameState
+          ) &&
             Array.from({ length: 3 }, (_, i) => {
               return (
                 <div
@@ -551,7 +550,8 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                       (gameState == GameState.CurrentPlayerHiding &&
                         thimbleOpened &&
                         thimbleOpenedRef.current != i + 1) ||
-                      ((gameState == GameState.CurrentPlayerGuessing || gameState == GameState.WaitingForReveal) &&
+                      ((gameState == GameState.CurrentPlayerGuessing ||
+                        gameState == GameState.WaitingForReveal) &&
                         thimbleGuessed != undefined &&
                         thimbleGuessed != i + 1) ||
                       (gameState == GameState.CurrentPlayerRevealing &&
@@ -563,10 +563,9 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                 </div>
               );
             })}
-          {[
-            GameState.WaitingForHiding,
-            GameState.WaitingForGuessing,
-          ].includes(gameState) && (
+          {[GameState.WaitingForHiding, GameState.WaitingForGuessing].includes(
+            gameState
+          ) && (
             <Lottie
               options={{
                 animationData: ThimblesMixing,

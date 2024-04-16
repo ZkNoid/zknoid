@@ -12,7 +12,7 @@ import {
   Field,
   Int64,
 } from 'o1js';
-import { DEFAULT_GAME_COST, MatchMaker } from '../engine/MatchMaker';
+import { MatchMaker } from '../engine/MatchMaker';
 import type { QueueListItem } from '../engine/MatchMaker';
 import { UInt64 as ProtoUInt64 } from '@proto-kit/library';
 import { Lobby } from '../engine/LobbyManager';
@@ -140,7 +140,10 @@ export class RandzuLogic extends MatchMaker {
       }),
     );
 
-    this.gameFund.set(currentGameId, this.getParticipationPrice().mul(2));
+    this.gameFund.set(
+      currentGameId,
+      ProtoUInt64.from(lobby.participationFee).mul(2),
+    );
 
     return super.initGame(lobby, shouldUpdate);
   }
@@ -152,38 +155,6 @@ export class RandzuLogic extends MatchMaker {
     let curGameId = this.getNextGameId();
 
     this.gamesNum.set(Provable.if(shouldUpdate, curGameId.add(1), curGameId));
-  }
-
-  public initGameOld(
-    opponentReady: Bool,
-    player: PublicKey,
-    opponent: Option<QueueListItem>,
-  ): UInt64 {
-    const currentGameId = this.gamesNum
-      .get()
-      .orElse(UInt64.from(0))
-      .add(UInt64.from(1));
-    // Setting active game if opponent found
-    this.games.set(
-      Provable.if(opponentReady, currentGameId, UInt64.from(0)),
-      new GameInfo({
-        player1: this.transaction.sender.value,
-        player2: opponent.value.userAddress,
-        currentMoveUser: this.transaction.sender.value,
-        lastMoveBlockHeight: this.network.block.height,
-        field: RandzuField.from(
-          Array(RANDZU_FIELD_SIZE).fill(Array(RANDZU_FIELD_SIZE).fill(0)),
-        ),
-        winner: PublicKey.empty(),
-      }),
-    );
-
-    this.gamesNum.set(currentGameId);
-    this.gameFund.set(currentGameId, this.getParticipationPrice().mul(2));
-
-    // super.initGame(...);
-
-    return currentGameId;
   }
 
   @runtimeMethod()
