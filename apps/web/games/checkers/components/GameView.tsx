@@ -14,6 +14,11 @@ interface IGameViewProps {
 
 const CHECKERS_FIELD_SIZE = 8;
 
+export const MOVE_TOP_LEFT = 0;
+export const MOVE_TOP_RIGHT = 1;
+export const CAPTURE_TOP_LEFT = 2;
+export const CAPTURE_TOP_RIGHT = 3;
+
 interface Moves {
   fromCellX: number;
   fromCellY: number;
@@ -56,7 +61,7 @@ export const GameView = (props: IGameViewProps) => {
         .equals(UInt32.from(0))
         .toBoolean()
     ) {
-      moves.push(0);
+      moves.push(MOVE_TOP_LEFT);
     }
     if (
       x < CHECKERS_FIELD_SIZE - 1 &&
@@ -65,7 +70,7 @@ export const GameView = (props: IGameViewProps) => {
         .equals(UInt32.from(0))
         .toBoolean()
     ) {
-      moves.push(1);
+      moves.push(MOVE_TOP_RIGHT);
     }
     if ( x >= 2 && y <= CHECKERS_FIELD_SIZE - 2 && 
       props.gameInfo?.field.value[x - 1][y + (isPlayer1 ? 1 : -1)]
@@ -75,7 +80,7 @@ export const GameView = (props: IGameViewProps) => {
         .equals(UInt32.from(0))
         .toBoolean()
     ) {
-      moves.push(2);
+      moves.push(CAPTURE_TOP_LEFT);
     }
 
     if ( x <= CHECKERS_FIELD_SIZE - 3 && y >= 2 && 
@@ -86,7 +91,7 @@ export const GameView = (props: IGameViewProps) => {
         .equals(UInt32.from(0))
         .toBoolean()
     ) {
-      moves.push(3);
+      moves.push(CAPTURE_TOP_RIGHT);
     }
 
     return moves;
@@ -118,42 +123,42 @@ export const GameView = (props: IGameViewProps) => {
                 console.log('MOVE CHOOSING', moveChoosing);
                 if (moveChoosing) {
                   if (
-                    possibleMoves.moves.includes(1) &&
+                    possibleMoves.moves.includes(MOVE_TOP_RIGHT) &&
                     j == possibleMoves.fromCellX + 1 &&
                     i == possibleMoves.fromCellY + (isPlayer1 ? 1 : -1)
                   ) {
                     props.onMoveChosen(
-                      1,
+                      MOVE_TOP_RIGHT,
                       possibleMoves.fromCellX,
                       possibleMoves.fromCellY
                     );
                   } else if (
-                    possibleMoves.moves.includes(0) &&
+                    possibleMoves.moves.includes(MOVE_TOP_LEFT) &&
                     j == possibleMoves.fromCellX - 1 &&
                     i == possibleMoves.fromCellY + (isPlayer1 ? 1 : -1)
                   ) {
                     props.onMoveChosen(
-                      0,
+                      MOVE_TOP_LEFT,
                       possibleMoves.fromCellX,
                       possibleMoves.fromCellY
                     );
                   } else if (
-                    possibleMoves.moves.includes(2) &&
+                    possibleMoves.moves.includes(CAPTURE_TOP_LEFT) &&
                     j == possibleMoves.fromCellX - 2 &&
                     i == possibleMoves.fromCellY + (isPlayer1 ? 2 : -2)
                   ) {
                     props.onMoveChosen(
-                      2,
+                      CAPTURE_TOP_LEFT,
                       possibleMoves.fromCellX,
                       possibleMoves.fromCellY
                     );
                   } else if (
-                    possibleMoves.moves.includes(3) &&
+                    possibleMoves.moves.includes(CAPTURE_TOP_RIGHT) &&
                     j == possibleMoves.fromCellX + 2 &&
                     i == possibleMoves.fromCellY + (isPlayer1 ? 2 : -2)
                   ) {
                     props.onMoveChosen(
-                      3,
+                      CAPTURE_TOP_RIGHT,
                       possibleMoves.fromCellX,
                       possibleMoves.fromCellY
                     );
@@ -193,16 +198,16 @@ export const GameView = (props: IGameViewProps) => {
                   : "bg-opacity-50 bg-[url('/ball_blue.png')]")
               }
               ${
-                ((possibleMoves.moves.includes(1) &&
+                ((possibleMoves.moves.includes(MOVE_TOP_RIGHT) &&
                   j == possibleMoves.fromCellX + 1 &&
                   i == possibleMoves.fromCellY + (isPlayer1 ? 1 : -1)) ||
-                  (possibleMoves.moves.includes(0) &&
+                  (possibleMoves.moves.includes( MOVE_TOP_LEFT) &&
                     j == possibleMoves.fromCellX - 1 &&
                     i == possibleMoves.fromCellY + (isPlayer1 ? 1 : -1)) ||
-                  (possibleMoves.moves.includes(2) &&
+                  (possibleMoves.moves.includes(CAPTURE_TOP_LEFT) &&
                     j == possibleMoves.fromCellX - 2 &&
                     i == possibleMoves.fromCellY + (isPlayer1 ? 2 : -2)) ||
-                  (possibleMoves.moves.includes(3) &&
+                  (possibleMoves.moves.includes(CAPTURE_TOP_RIGHT) &&
                     j == possibleMoves.fromCellX + 2 &&
                     i == possibleMoves.fromCellY + (isPlayer1 ? 2 : -2))) &&
                 'bg-bg-dark/50'
