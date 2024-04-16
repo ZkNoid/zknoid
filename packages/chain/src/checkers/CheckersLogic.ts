@@ -12,7 +12,7 @@ import {
   Field,
   Int64,
 } from 'o1js';
-import { DEFAULT_GAME_COST, MatchMaker } from '../engine/MatchMaker';
+import { MatchMaker } from '../engine/MatchMaker';
 import type { QueueListItem } from '../engine/MatchMaker';
 import { UInt64 as ProtoUInt64 } from '@proto-kit/library';
 import { Lobby } from '../engine/LobbyManager';
@@ -34,10 +34,18 @@ export class CheckersField extends Struct({
     return Poseidon.hash(this.value.flat().map((x) => x.value));
   }
   getPossibleMoves(x: number, y: number) {
-    if (x < CHECKERS_FIELD_SIZE - 1 && y < CHECKERS_FIELD_SIZE - 1 && this.value[x + 1][y - 1].equals(UInt32.from(0))) {
+    if (
+      x < CHECKERS_FIELD_SIZE - 1 &&
+      y < CHECKERS_FIELD_SIZE - 1 &&
+      this.value[x + 1][y - 1].equals(UInt32.from(0)).toBoolean()
+    ) {
       return 1;
     }
-    if (x < CHECKERS_FIELD_SIZE - 1 && y < CHECKERS_FIELD_SIZE - 1 && this.value[x + 1][y + 1].equals(UInt32.from(0))) {
+    if (
+      x < CHECKERS_FIELD_SIZE - 1 &&
+      y < CHECKERS_FIELD_SIZE - 1 &&
+      this.value[x + 1][y + 1].equals(UInt32.from(0)).toBoolean()
+    ) {
       return 0;
     }
   }
@@ -97,7 +105,10 @@ export class CheckersLogic extends MatchMaker {
       }),
     );
 
-    this.gameFund.set(currentGameId, this.getParticipationPrice().mul(2));
+    this.gameFund.set(
+      currentGameId,
+      ProtoUInt64.from(lobby.participationFee).mul(2),
+    );
 
     return super.initGame(lobby, shouldUpdate);
   }
@@ -189,7 +200,10 @@ export class CheckersLogic extends MatchMaker {
         const currentFieldCell = game.value.field.value[i][j];
         const nextFieldCell = newField.value[i][j];
 
-        const isMoveFromCell = Bool.and(UInt64.from(i).equals(moveFromX), UInt64.from(j).equals(moveFromY));
+        const isMoveFromCell = Bool.and(
+          UInt64.from(i).equals(moveFromX),
+          UInt64.from(j).equals(moveFromY),
+        );
         // const isMoveToCell = Bool.and(UInt64.from(i).equals(moveToX), UInt64.from(j).equals(moveToY));
 
         // assert(
