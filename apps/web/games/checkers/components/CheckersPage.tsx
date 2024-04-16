@@ -24,7 +24,6 @@ import { checkersConfig } from '../config';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import {
-  DEFAULT_GAME_COST,
   MOVE_TIMEOUT_IN_BLOCKS,
 } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
 import { formatUnits } from '@/lib/unit';
@@ -36,6 +35,7 @@ import RandzuCoverSVG from '@/public/image/game-page/game-title-template.svg';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import { getRandomEmoji } from '@/lib/emoji';
+import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
 
 enum GameState {
   WalletNotInstalled,
@@ -95,7 +95,7 @@ export default function RandzuPage({
   const gameStartedMutation = api.logging.logGameStarted.useMutation();
 
   const startGame = async () => {
-    if (await bridge(DEFAULT_GAME_COST.toBigInt())) return;
+    if (await bridge(DEFAULT_PARTICIPATION_FEE.toBigInt())) return;
 
     gameStartedMutation.mutate({
       gameId: 'checkers',
@@ -198,7 +198,7 @@ export default function RandzuPage({
         updatedCheckersField,
         UInt64.from(x),
         UInt64.from(y),
-        UInt64.from(0)
+        UInt64.from(moveId)
       );
     });
 
@@ -329,7 +329,7 @@ export default function RandzuPage({
       <PvPGameView
         status={statuses[gameState]}
         opponent={matchQueue.gameInfo?.opponent}
-        startPrice={DEFAULT_GAME_COST.toBigInt()}
+        startPrice={DEFAULT_PARTICIPATION_FEE.toBigInt()}
         mainButtonState={mainButtonState}
         startGame={() => startGame()}
         queueSize={matchQueue.getQueueLength()}
@@ -343,7 +343,7 @@ export default function RandzuPage({
         
         The game is won by capturing all of the opponent's pieces or by blocking them from moving
         `}
-        competitionFunds={DEFAULT_GAME_COST.toBigInt() * 2n}
+        competitionFunds={DEFAULT_PARTICIPATION_FEE.toBigInt() * 2n}
       >
         <GameView
           gameInfo={matchQueue.gameInfo}
