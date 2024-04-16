@@ -14,4 +14,4 @@ export * from './framework/index.js';
 export * from './constants.js';
 import * as ProtoO1js from 'o1js';
 
-export { ClientAppChain, ProtokitLibrary, UInt64 as ProtoUInt64};
+export { ClientAppChain, ProtokitLibrary, UInt64 as ProtoUInt64 };

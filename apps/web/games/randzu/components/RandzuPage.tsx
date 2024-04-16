@@ -22,10 +22,7 @@ import GamePage from '@/components/framework/GamePage';
 import { randzuConfig } from '../config';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
-import {
-  DEFAULT_GAME_COST,
-  MOVE_TIMEOUT_IN_BLOCKS,
-} from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
+import { MOVE_TIMEOUT_IN_BLOCKS } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
 import { formatUnits } from '@/lib/unit';
 import {
   MainButtonState,
@@ -35,6 +32,7 @@ import RandzuCoverSVG from '../assets/game-cover.svg';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import { getRandomEmoji } from '@/lib/emoji';
+import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
 
 enum GameState {
   WalletNotInstalled,
@@ -93,7 +91,7 @@ export default function RandzuPage({
   const gameStartedMutation = api.logging.logGameStarted.useMutation();
 
   const startGame = async () => {
-    if (await bridge(DEFAULT_GAME_COST.toBigInt())) return;
+    if (await bridge(DEFAULT_PARTICIPATION_FEE.toBigInt())) return;
 
     gameStartedMutation.mutate({
       gameId: 'randzu',
@@ -316,7 +314,7 @@ export default function RandzuPage({
       <PvPGameView
         status={statuses[gameState]}
         opponent={matchQueue.gameInfo?.opponent}
-        startPrice={DEFAULT_GAME_COST.toBigInt()}
+        startPrice={DEFAULT_PARTICIPATION_FEE.toBigInt()}
         mainButtonState={mainButtonState}
         startGame={() => startGame()}
         queueSize={matchQueue.getQueueLength()}
@@ -330,7 +328,7 @@ export default function RandzuPage({
 
         The game continues until one player achieves the winning pattern or until the entire grid is filled without a winner, resulting in a draw.
         `}
-        competitionFunds={DEFAULT_GAME_COST.toBigInt() * 2n}
+        competitionFunds={DEFAULT_PARTICIPATION_FEE.toBigInt() * 2n}
       >
         <GameView
           gameInfo={matchQueue.gameInfo}

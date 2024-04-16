@@ -81,7 +81,10 @@ export class ThimblerigLogic extends MatchMaker {
       }),
     );
 
-    this.gameFund.set(currentGameId, this.getParticipationPrice().mul(2));
+    this.gameFund.set(
+      currentGameId,
+      ProtoUInt64.from(lobby.participationFee).mul(2),
+    );
 
     return super.initGame(lobby, shouldUpdate);
   }
