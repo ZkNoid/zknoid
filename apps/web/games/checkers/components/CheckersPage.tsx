@@ -192,8 +192,17 @@ export default function RandzuPage({
 
     const updatedCheckersField = CheckersField.from(updatedField);
 
-    const tx = await client.transaction(sessionPrivateKey.toPublicKey(), () => {
-      randzuLogic.makeMove(
+    const tx = (moveId == MOVE_TOP_LEFT || moveId == MOVE_TOP_RIGHT)  ? 
+    await client.transaction(sessionPrivateKey.toPublicKey(), () => {
+      randzuLogic.makeMoveChecker(
+        UInt64.from(matchQueue.gameInfo!.gameId),
+        updatedCheckersField,
+        UInt64.from(x),
+        UInt64.from(y),
+        UInt64.from(moveId)
+      );
+    }) : await client.transaction(sessionPrivateKey.toPublicKey(), () => {
+      randzuLogic.makeMoveCapture(
         UInt64.from(matchQueue.gameInfo!.gameId),
         updatedCheckersField,
         UInt64.from(x),
