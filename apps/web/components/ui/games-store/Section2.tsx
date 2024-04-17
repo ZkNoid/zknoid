@@ -14,7 +14,7 @@ import { clsx } from 'clsx';
 enum Pages {
   GameStore = 'Game Store',
   FavoriteGames = 'Favorite Games',
-  Support = 'Support',
+  Support = 'Contacts & Support',
 }
 
 export const Section2 = ({ games }: { games: IGame[] }) => {
