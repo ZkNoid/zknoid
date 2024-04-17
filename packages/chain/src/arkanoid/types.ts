@@ -160,6 +160,20 @@ export class Ball extends Struct({
     this.position.x = this.position.x.add(this.speed.x);
     this.position.y = this.position.y.add(this.speed.y);
   }
+
+  checkBrickCollision(brick: Brick): Collision {
+    return new Collision({
+      time: UInt64.zero,
+    });
+  }
+}
+
+export class Collision extends Struct({
+  time: UInt64,
+}) {
+  earlierThan(c: Collision): Bool {
+    return this.time.lessThan(c.time);
+  }
 }
 
 export class Platform extends Struct({
