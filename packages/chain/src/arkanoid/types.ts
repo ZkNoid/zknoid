@@ -108,6 +108,13 @@ export class IntPoint extends Struct({
   equals(b: IntPoint): Bool {
     return this.x.equals(b.x).and(this.y.equals(b.y));
   }
+
+  mulByPoint(p: IntPoint): IntPoint {
+    return new IntPoint({
+      x: this.x.mul(p.x),
+      y: this.y.mul(p.y),
+    });
+  }
 }
 
 export class Brick extends Struct({
@@ -156,6 +163,12 @@ export class Ball extends Struct({
       .equals(other.position)
       .and(this.speed.equals(other.speed));
   }
+
+  movePortion(portion: UInt64): void {
+    this.position.x = this.position.x.add(this.speed.x.mul(portion).div(100));
+    this.position.y = this.position.y.add(this.speed.y.mul(portion).div(100));
+  }
+
   move(): void {
     this.position.x = this.position.x.add(this.speed.x);
     this.position.y = this.position.y.add(this.speed.y);
@@ -164,12 +177,18 @@ export class Ball extends Struct({
   checkBrickCollision(brick: Brick): Collision {
     return new Collision({
       time: UInt64.zero,
+      target: brick,
+      position: this.position,
+      speedModifier: IntPoint.from(1, 1),
     });
   }
 }
 
 export class Collision extends Struct({
   time: UInt64,
+  target: Brick,
+  position: IntPoint,
+  speedModifier: IntPoint,
 }) {
   earlierThan(c: Collision): Bool {
     return this.time.lessThan(c.time);
