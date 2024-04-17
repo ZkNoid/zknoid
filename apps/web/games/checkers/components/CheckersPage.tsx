@@ -1,7 +1,7 @@
 'use client';
 
 import { useContext, useEffect, useState } from 'react';
-import { CAPTURE_TOP_LEFT, CAPTURE_TOP_RIGHT, GameView, MOVE_TOP_LEFT, MOVE_TOP_RIGHT } from './GameView';
+import { CAPTURE_TOP_LEFT, CAPTURE_TOP_RIGHT, GameView, MOVE_TOP_LEFT, MOVE_TOP_RIGHT, CHECKERS_FIELD_SIZE } from './GameView';
 import { Int64, PublicKey, UInt32, UInt64 } from 'o1js';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useMinaBridge } from '@/lib/stores/protokitBalances';
@@ -173,16 +173,16 @@ export default function RandzuPage({
     updatedField[x][y] = 0;
 
     if (moveId == MOVE_TOP_LEFT) {
-      updatedField[x - 1][y + (isPlayer1 ? 1 : -1)] = currentUserId;
+      updatedField[x - 1][y + (isPlayer1 ? 1 : -1)] = (isPlayer1 ? x == CHECKERS_FIELD_SIZE - 2 : x == 1) ? currentUserId : currentUserId + 2;
     } else if (moveId == MOVE_TOP_RIGHT) {
-      updatedField[x + 1][y + (isPlayer1 ? 1 : -1)] = currentUserId;
+      updatedField[x + 1][y + (isPlayer1 ? 1 : -1)] = (isPlayer1 ? x == CHECKERS_FIELD_SIZE - 2 : x == 1) ? currentUserId : currentUserId + 2;
     } else if (moveId == CAPTURE_TOP_LEFT) {
       console.log(x, y);
       updatedField[x - 1][y + (isPlayer1 ? 1 : -1)] = 0;
-      updatedField[x - 2][y + (isPlayer1 ? 2 : -2)] = currentUserId;
+      updatedField[x - 2][y + (isPlayer1 ? 2 : -2)] = (isPlayer1 ? x == CHECKERS_FIELD_SIZE - 3 : x == 2) ? currentUserId : currentUserId + 2;
     } else if (moveId == CAPTURE_TOP_RIGHT) {
       updatedField[x + 1][y + (isPlayer1 ? 1 : -1)] = 0;
-      updatedField[x + 2][y + (isPlayer1 ? 2 : -2)] = currentUserId;
+      updatedField[x + 2][y + (isPlayer1 ? 2 : -2)] = (isPlayer1 ? x == CHECKERS_FIELD_SIZE - 3 : x == 2) ? currentUserId : currentUserId + 2;
     }
 
 

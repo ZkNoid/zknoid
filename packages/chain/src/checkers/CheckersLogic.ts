@@ -108,7 +108,7 @@ export class CheckersLogic extends MatchMaker {
 
   @runtimeMethod()
   public proveOpponentTimeout(gameId: UInt64): void {
-    super.proveOpponentTimeout(gameId, true);
+    super.proveOpponentTimeout(gameId, false);
   }
 
   @runtimeMethod()
@@ -367,16 +367,15 @@ export class CheckersLogic extends MatchMaker {
       UInt64.zero,
     );
 
-
     let capturedCellX = Provable.if(
       moveType.equals(CAPTURE_TOP_LEFT),
-      moveFromX.sub(xSubValue.mul(1)),
+      moveFromX.sub(xSubValue),
       moveFromX.add(1),
     );
     let capturedCellY = Provable.if(
       firstPlayerMove,
       moveFromY.add(UInt64.from(1)),
-      moveFromY.sub(ySubValue.mul(1)),
+      moveFromY.sub(ySubValue),
     );
 
     let moveToX = Provable.if(
@@ -389,6 +388,20 @@ export class CheckersLogic extends MatchMaker {
       moveFromY.add(UInt64.from(2)),
       moveFromY.sub(ySubValue2),
     );
+
+    const isKing = Provable.if(
+      firstPlayerMove,
+      moveToY.equals(UInt64.from(CHECKERS_FIELD_SIZE - 1)),
+      moveToY.equals(UInt64.from(0)),
+    );
+
+    Provable.asProver(() => {
+      console.log('Is king', isKing, moveToY, Provable.if(
+        firstPlayerMove,
+        UInt64.from(CHECKERS_FIELD_SIZE - 1),
+        UInt64.from(0),
+      ).toBigInt());
+    })
 
     assert(gameOption.isSome, 'Invalid game id');
     assert(game.currentMoveUser.equals(sender), `Not your move`);

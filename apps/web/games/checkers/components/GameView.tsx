@@ -12,7 +12,7 @@ interface IGameViewProps {
   loading: boolean;
 }
 
-const CHECKERS_FIELD_SIZE = 8;
+export const CHECKERS_FIELD_SIZE = 8;
 
 export const MOVE_TOP_LEFT = 0;
 export const MOVE_TOP_RIGHT = 1;
