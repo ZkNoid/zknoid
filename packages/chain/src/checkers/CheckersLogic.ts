@@ -175,16 +175,20 @@ export class CheckersLogic extends MatchMaker {
       moveFromY.sub(ySubValue),
     );
 
-    let figureToEatX: Option<UInt64> = Option.from(
-      Bool(false),
-      UInt64.from(0),
-      UInt64,
+    const isKing = Provable.if(
+      firstPlayerMove,
+      moveToY.equals(UInt64.from(CHECKERS_FIELD_SIZE - 1)),
+      moveToY.equals(UInt64.from(0)),
     );
-    let figureToEatY: Option<UInt64> = Option.from(
-      Bool(false),
-      UInt64.from(0),
-      UInt64,
-    );
+
+    Provable.asProver(() => {
+      console.log('Is king', isKing.toBoolean(), moveToY, Provable.if(
+        firstPlayerMove,
+        UInt64.from(CHECKERS_FIELD_SIZE - 1),
+        UInt64.from(0),
+      ).toBigInt());
+    })
+
 
     assert(gameOption.isSome, 'Invalid game id');
     assert(game.currentMoveUser.equals(sender), `Not your move`);
@@ -220,7 +224,7 @@ export class CheckersLogic extends MatchMaker {
           newField.value[i][j].equals(UInt32.zero),
         );
         const moveToEquals = isMoveToCell.and(
-          newField.value[i][j].equals(currentUserId),
+          newField.value[i][j].equals(Provable.if(isKing, currentUserId.add(2), currentUserId)),
         );
 
         // Check that player owns moved figure
@@ -450,7 +454,7 @@ export class CheckersLogic extends MatchMaker {
           newField.value[i][j].equals(UInt32.zero),
         );
         const moveToEquals = isMoveToCell.and(
-          newField.value[i][j].equals(currentUserId),
+          newField.value[i][j].equals(Provable.if(isKing, currentUserId.add(2), currentUserId)),
         );
 
         // Check that player owns moved figure

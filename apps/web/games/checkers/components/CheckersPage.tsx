@@ -173,16 +173,16 @@ export default function RandzuPage({
     updatedField[x][y] = 0;
 
     if (moveId == MOVE_TOP_LEFT) {
-      updatedField[x - 1][y + (isPlayer1 ? 1 : -1)] = (isPlayer1 ? x == CHECKERS_FIELD_SIZE - 2 : x == 1) ? currentUserId : currentUserId + 2;
+      updatedField[x - 1][y + (isPlayer1 ? 1 : -1)] = (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 2 : y == 1) ? currentUserId + 2 : currentUserId;
     } else if (moveId == MOVE_TOP_RIGHT) {
-      updatedField[x + 1][y + (isPlayer1 ? 1 : -1)] = (isPlayer1 ? x == CHECKERS_FIELD_SIZE - 2 : x == 1) ? currentUserId : currentUserId + 2;
+      updatedField[x + 1][y + (isPlayer1 ? 1 : -1)] = (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 2 : y == 1) ? currentUserId + 2 : currentUserId;
     } else if (moveId == CAPTURE_TOP_LEFT) {
       console.log(x, y);
       updatedField[x - 1][y + (isPlayer1 ? 1 : -1)] = 0;
-      updatedField[x - 2][y + (isPlayer1 ? 2 : -2)] = (isPlayer1 ? x == CHECKERS_FIELD_SIZE - 3 : x == 2) ? currentUserId : currentUserId + 2;
+      updatedField[x - 2][y + (isPlayer1 ? 2 : -2)] = (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 3 : y == 2) ? currentUserId + 2 : currentUserId;
     } else if (moveId == CAPTURE_TOP_RIGHT) {
       updatedField[x + 1][y + (isPlayer1 ? 1 : -1)] = 0;
-      updatedField[x + 2][y + (isPlayer1 ? 2 : -2)] = (isPlayer1 ? x == CHECKERS_FIELD_SIZE - 3 : x == 2) ? currentUserId : currentUserId + 2;
+      updatedField[x + 2][y + (isPlayer1 ? 2 : -2)] = (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 3 : y == 2) ? currentUserId + 2 : currentUserId;
     }
 
 
