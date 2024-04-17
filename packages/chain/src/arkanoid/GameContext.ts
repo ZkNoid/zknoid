@@ -95,7 +95,7 @@ export class GameContext extends Struct({
     const movedLeft = gr(prevPlatformPosition, this.platform.position);
 
     /// 3) Update ball position
-    const prevBallPos = new IntPoint({
+    let prevBallPos = new IntPoint({
       x: this.ball.position.x,
       y: this.ball.position.y,
     });
@@ -200,6 +200,27 @@ export class GameContext extends Struct({
 
     // Update nearest bricks
     this.updateNearestBricks();
+
+    /*
+      1) Check collision for each nearest brick
+      2) Pick earliest collision
+      3) Update values according to this collision
+    */
+
+    // #TODO Calc time for border collision too
+    let curTime = UInt64.zero;
+
+    for (let i = 0; i < COLLISION_FINDING_ITERATIONS; i++) {
+      let collisions: Collision[] = [];
+
+      for (let j = 0; j < NEAREST_BRICKS_NUM; j++) {
+        collisions[j] = this.ball.checkBrickCollision(this.nearestBricks[j]);
+      }
+
+      let collision = pickNearestCollision(collisions);
+
+      [curTime, prevBallPos] = this.applyCollision(curTime, collision);
+    }
 
     //6) Check bricks bump
     for (let j = 0; j < NEAREST_BRICKS_NUM; j++) {
@@ -488,6 +509,24 @@ export class GameContext extends Struct({
         this.bricks.bricks[i].value,
       );
     }
+  }
+
+  // Returns new newTime and prevPosition
+  applyCollision(
+    currentTime: UInt64,
+    collision: Collision,
+  ): [UInt64, IntPoint] {
+    // Update brick health
+    this.updateBrick(collision.target.pos, collision.target.value.sub(1));
+
+    // Update ball speed
+    this.ball.speed = this.ball.speed.mulByPoint(collision.speedModifier);
+
+    // Update ball position
+    this.ball.position = collision.position;
+    this.ball.movePortion(collision.time.sub(currentTime));
+
+    return [collision.time, collision.position];
   }
 }
 export function createBricksBySeed(seed: Field): Bricks {
