@@ -46,6 +46,7 @@ export default function Home() {
             releaseDate: x.releaseDate,
             popularity: x.popularity,
             author: x.author,
+            rules: x.rules,
           })) as IGame[]
         ).concat(announcedGames)
       );

@@ -276,25 +276,25 @@ export const DatePicker = ({
               <div
                 className={'grid h-full w-full grid-cols-7 grid-rows-5 gap-y-1'}
               >
-                <span className="rounded-[5px] p-4 text-center font-plexsans text-[15px]/[15px] font-medium text-left-accent">
+                <span className="rounded-[5px] p-4 text-center font-plexsans text-[15px]/[15px] font-[900] text-left-accent">
                   S
                 </span>
-                <span className="rounded-[5px] p-4 text-center font-plexsans text-[15px]/[15px] font-medium text-left-accent">
+                <span className="rounded-[5px] p-4 text-center font-plexsans text-[15px]/[15px] font-[900] text-left-accent">
                   M
                 </span>
-                <span className="rounded-[5px] p-4 text-center font-plexsans text-[15px]/[15px] font-medium text-left-accent">
+                <span className="rounded-[5px] p-4 text-center font-plexsans text-[15px]/[15px] font-[900] text-left-accent">
                   T
                 </span>
-                <span className="rounded-[5px] p-4 text-center font-plexsans text-[15px]/[15px] font-medium text-left-accent">
+                <span className="rounded-[5px] p-4 text-center font-plexsans text-[15px]/[15px] font-[900] text-left-accent">
                   W
                 </span>
-                <span className="rounded-[5px] p-4 text-center font-plexsans text-[15px]/[15px] font-medium text-left-accent">
+                <span className="rounded-[5px] p-4 text-center font-plexsans text-[15px]/[15px] font-[900] text-left-accent">
                   T
                 </span>
-                <span className="rounded-[5px] p-4 text-center font-plexsans text-[15px]/[15px] font-medium text-left-accent">
+                <span className="rounded-[5px] p-4 text-center font-plexsans text-[15px]/[15px] font-[900] text-left-accent">
                   F
                 </span>
-                <span className="rounded-[5px] p-4 text-center font-plexsans text-[15px]/[15px] font-medium text-left-accent">
+                <span className="rounded-[5px] p-4 text-center font-plexsans text-[15px]/[15px] font-[900] text-left-accent">
                   S
                 </span>
                 {[
