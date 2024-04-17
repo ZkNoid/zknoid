@@ -7,12 +7,16 @@ export const GameWidget = ({
   score,
   gameRating,
   author,
+  isPvp = false,
+  playersCount,
 }: {
   children: ReactNode;
-  ticks: number;
-  score: number;
+  ticks?: number;
+  score?: number;
   gameRating: number;
   author: string;
+  isPvp?: boolean;
+  playersCount?: number;
 }) => {
   return (
     <motion.div
@@ -26,15 +30,19 @@ export const GameWidget = ({
           gridColumnEnd: 4,
         },
       }}
-      className={'h-full min-h-[75vh] w-full'}
+      className={`h-full min-h-[75vh] w-full`}
     >
-      <div
-        className={
-          'relative h-full w-full rounded-[5px] border-2 border-left-accent'
-        }
-      >
-        {children}
-      </div>
+      {isPvp ? (
+        <div className={'relative w-full'}>{children}</div>
+      ) : (
+        <div
+          className={
+            'relative h-full w-full rounded-[5px] border-2 border-left-accent'
+          }
+        >
+          {children}
+        </div>
+      )}
       <div className={'flex w-full flex-row justify-between pt-4'}>
         <div className={'flex flex-row gap-4'}>
           <span
@@ -73,14 +81,26 @@ export const GameWidget = ({
             {author}
           </span>
         </div>
-        <div
-          className={
-            'flex flex-row gap-4 font-plexsans text-[20px]/[20px] text-left-accent'
-          }
-        >
-          <span className={'uppercase'}>Ticks: {ticks}</span>
-          <span className={'uppercase'}>Score: {score}</span>
-        </div>
+        {isPvp ? (
+          <div
+            className={
+              'flex flex-row gap-4 font-plexsans text-[20px]/[20px] text-left-accent'
+            }
+          >
+            <span className={'uppercase'}>
+              Players in queue: {playersCount}
+            </span>
+          </div>
+        ) : (
+          <div
+            className={
+              'flex flex-row gap-4 font-plexsans text-[20px]/[20px] text-left-accent'
+            }
+          >
+            <span className={'uppercase'}>Ticks: {ticks}</span>
+            <span className={'uppercase'}>Score: {score}</span>
+          </div>
+        )}
       </div>
     </motion.div>
   );

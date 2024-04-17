@@ -1,6 +1,16 @@
 import { motion } from 'framer-motion';
 
-export const Win = ({ sendProof }: { sendProof: () => void }) => {
+export const Win = ({
+  onBtnClick,
+  title,
+  subTitle,
+  btnText,
+}: {
+  onBtnClick: () => void;
+  title: string;
+  btnText: string;
+  subTitle?: string;
+}) => {
   return (
     <div className={'flex h-full w-full items-center justify-center'}>
       <div className={'flex flex-col items-center justify-center gap-4'}>
@@ -44,7 +54,7 @@ export const Win = ({ sendProof }: { sendProof: () => void }) => {
             strokeMiterlimit="10"
           />
         </svg>
-        <span className={'text-headline-1'}>You won! Congratulations!</span>
+        <span className={'text-headline-1'}>{title}</span>
         <motion.div
           className={
             'group relative flex w-full cursor-pointer flex-row justify-between rounded-[5px] border border-left-accent'
@@ -57,14 +67,14 @@ export const Win = ({ sendProof }: { sendProof: () => void }) => {
             },
           }}
           whileHover={'visible'}
-          onClick={sendProof}
+          onClick={onBtnClick}
         >
           <div
             className={
               'w-full p-4 pt-5 uppercase text-left-accent group-hover:text-dark-buttons-text'
             }
           >
-            Send proof
+            {btnText}
           </div>
           <div
             className={
@@ -86,14 +96,15 @@ export const Win = ({ sendProof }: { sendProof: () => void }) => {
             </svg>
           </div>
         </motion.div>
-        <div
-          className={
-            'w-[80%] text-center font-plexsans text-[14px]/[14px] font-normal text-foreground'
-          }
-        >
-          If you want to see your name in leaderboard you have to send the poof!
-          ;)
-        </div>
+        {subTitle && (
+          <div
+            className={
+              'w-[80%] text-center font-plexsans text-[14px]/[14px] font-normal text-foreground'
+            }
+          >
+            {subTitle}
+          </div>
+        )}
       </div>
     </div>
   );

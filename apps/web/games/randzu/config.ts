@@ -16,6 +16,8 @@ export const randzuConfig = createZkNoidGameConfig({
   releaseDate: new Date(2024, 0, 1),
   popularity: 50,
   author: 'ZkNoid Team',
+  rules:
+    'Randzu is a game played on a 15x15 grid, similar to tic-tac-toe. Two players take turns placing their mark, using balls of different colors. The goal is to get five of your marks in a row, either horizontally, vertically or diagonally.',
   runtimeModules: {
     RandzuLogic,
   },

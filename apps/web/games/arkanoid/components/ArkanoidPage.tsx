@@ -35,9 +35,8 @@ import { DebugCheckbox } from '@/components/framework/GameWidget/DebugCheckbox';
 import { UnsetCompetitionPopup } from '@/components/framework/GameWidget/UnsetCompetitionPopup';
 import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
 import { FullscreenButton } from '@/components/framework/GameWidget/FullscreenButton';
-import { AnimatePresence, motion } from 'framer-motion';
-import { LoadSpinner } from '@/components/ui/games-store/shared/LoadSpinner';
-import ArkanoidCoverSVG from '../assets/game-cover.svg'
+import ArkanoidCoverSVG from '../assets/game-cover.svg';
+import { FullscreenWrap } from '@/components/framework/GameWidget/FullscreenWrap';
 
 enum GameState {
   NotStarted,
@@ -199,22 +198,7 @@ export default function ArkanoidPage({
       image={ArkanoidCoverSVG}
       defaultPage={'Game'}
     >
-      <motion.div
-        animate={isFullscreen ? 'fullscreen' : 'windowed'}
-        initial={false}
-        variants={{
-          fullscreen: {
-            gridTemplateRows: 'repeat(2, minmax(0, 1fr))',
-            gap: '5rem',
-          },
-          windowed: {
-            gridTemplateRows: 'repeat(1, minmax(0, 1fr))',
-          },
-        }}
-        className={'grid grid-cols-4 gap-4'}
-        onAnimationStart={() => setIsFullscreenLoading(true)}
-        onAnimationComplete={() => setIsFullscreenLoading(false)}
-      >
+      <FullscreenWrap isFullscreen={isFullscreen}>
         {competition && (
           <Leaderboard
             leaderboard={leaderboardStore.getLeaderboard(params.competitionId)}
@@ -232,7 +216,16 @@ export default function ArkanoidPage({
                 <UnsetCompetitionPopup gameId={arkanoidConfig.id} />
               ) : (
                 <>
-                  {gameState == GameState.Won && <Win sendProof={proof} />}
+                  {gameState == GameState.Won && (
+                    <Win
+                      onBtnClick={proof}
+                      title={'You won! Congratulations!'}
+                      subTitle={
+                        'If you want to see your name in leaderboard you have to send the poof! ;)'
+                      }
+                      btnText={'Send proof'}
+                    />
+                  )}
                   {gameState == GameState.Lost && (
                     <Lost startGame={startGame} />
                   )}
@@ -294,22 +287,8 @@ export default function ArkanoidPage({
           competition={competition}
           isRestartBtn={isRestartButton}
         />
-      </motion.div>
+      </FullscreenWrap>
       <DebugCheckbox debug={debug} setDebug={setDebug} />
-      <AnimatePresence initial={false}>
-        {isFullscreenLoading && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className={
-              'fixed left-0 top-0 z-50 flex h-full w-full flex-col items-center justify-center backdrop-blur-md'
-            }
-          >
-            <LoadSpinner width={50} height={50} />
-          </motion.div>
-        )}
-      </AnimatePresence>
     </GamePage>
   );
 }

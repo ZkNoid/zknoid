@@ -1,4 +1,4 @@
-import { ICompetition } from '@/lib/types';
+import { ICompetition, ICompetitionPVP } from '@/lib/types';
 import { formatUnits } from '@/lib/unit';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -6,10 +6,12 @@ export const Competition = ({
   startGame,
   competition,
   isRestartBtn,
+  isPvp = false,
 }: {
   startGame: () => void;
-  competition: ICompetition | undefined;
+  competition: ICompetition | ICompetitionPVP | undefined;
   isRestartBtn: boolean;
+  isPvp?: boolean;
 }) => {
   return (
     <motion.div
@@ -70,54 +72,68 @@ export const Competition = ({
             </motion.span>
           </div>
         </div>
-        <div className={'flex flex-col gap-2 font-plexsans text-buttons-menu'}>
-          <span className={'uppercase text-left-accent'}>
-            Preregistration dates
-          </span>
-          <span className={'font-normal'}>
-            {!competition ? (
-              ' - '
-            ) : (
-              <>
-                {competition.preRegDate.start.toLocaleDateString('en-US', {
-                  dateStyle: 'long',
-                })}{' '}
-                -{' '}
-                {competition.preRegDate.end.toLocaleDateString('en-US', {
-                  dateStyle: 'long',
-                })}
-              </>
-            )}
-          </span>
-          <span className={'uppercase text-left-accent'}>
-            Competitions dates
-          </span>
-          <span className={'font-normal'}>
-            {!competition ? (
-              ' - '
-            ) : (
-              <>
-                {competition.competitionDate.start.toLocaleDateString('en-US', {
-                  dateStyle: 'long',
-                })}{' '}
-                -{' '}
-                {competition.competitionDate.end.toLocaleDateString('en-US', {
-                  dateStyle: 'long',
-                })}
-              </>
-            )}
-          </span>
-        </div>
+        {!isPvp && (
+          <div
+            className={'flex flex-col gap-2 font-plexsans text-buttons-menu'}
+          >
+            <span className={'uppercase text-left-accent'}>
+              Preregistration dates
+            </span>
+            <span className={'font-normal'}>
+              {!competition ? (
+                ' - '
+              ) : (
+                <>
+                  {'preRegDate' in competition
+                    ? competition.preRegDate.start.toLocaleDateString('en-US', {
+                        dateStyle: 'long',
+                      })
+                    : undefined}{' '}
+                  -{' '}
+                  {'preRegDate' in competition
+                    ? competition.preRegDate.end.toLocaleDateString('en-US', {
+                        dateStyle: 'long',
+                      })
+                    : undefined}
+                </>
+              )}
+            </span>
+            <span className={'uppercase text-left-accent'}>
+              Competitions dates
+            </span>
+            <span className={'font-normal'}>
+              {!competition ? (
+                ' - '
+              ) : (
+                <>
+                  {'competitionDate' in competition
+                    ? competition.competitionDate.start.toLocaleDateString(
+                        'en-US',
+                        {
+                          dateStyle: 'long',
+                        }
+                      )
+                    : undefined}{' '}
+                  -{' '}
+                  {'competitionDate' in competition
+                    ? competition.competitionDate.end.toLocaleDateString(
+                        'en-US',
+                        {
+                          dateStyle: 'long',
+                        }
+                      )
+                    : undefined}
+                </>
+              )}
+            </span>
+          </div>
+        )}
       </div>
       <div className={'flex w-full flex-col gap-10'}>
         <div className={'flex flex-col gap-4'}>
           <span className={'w-full text-headline-2 font-bold'}>Rules</span>
           <span className={'font-plexsans text-buttons-menu font-normal'}>
-            In Ankanoid, your objective is to break all the bricks on the screen
-            using a bouncing ball and a platform. You can control the game by
-            using the left and right arrow keys on your keyboard to move the
-            platform. You need to bounce the ball and prevent it from falling
-            off the bottom of the screen.
+            {competition ? competition.game.rules : <> - </>}
           </span>
         </div>
         <AnimatePresence>

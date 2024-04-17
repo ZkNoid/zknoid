@@ -2,7 +2,7 @@ import { Competition } from 'zknoid-chain-dev';
 
 import { ICompetition } from './types';
 import { Currency } from '@/constants/currency';
-import { ZkNoidGameGenre } from '@/lib/platform/game_tags';
+import { arkanoidConfig } from '@/games/arkanoid/config';
 
 // Converts contract competition to ICompetition
 export function fromContractCompetition(
@@ -12,7 +12,11 @@ export function fromContractCompetition(
   return {
     id: competitionId,
     seed: competition.seed.toString(),
-    game: { id: 'arkanoid', genre: ZkNoidGameGenre.Arcade }, // only for arkanoid
+    game: {
+      id: arkanoidConfig.id,
+      genre: arkanoidConfig.genre,
+      rules: arkanoidConfig.rules,
+    }, // only for arkanoid
     title: competition.name.toString(),
     preReg: competition.prereg.toBoolean(),
     preRegDate: {
