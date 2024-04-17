@@ -56,7 +56,7 @@ export const GameView = (props: IGameViewProps) => {
 
     if (
       x >= 1 &&
-      y < CHECKERS_FIELD_SIZE - 1 &&
+      (isPlayer1 ? y < CHECKERS_FIELD_SIZE - 1 : y > 0) &&
       props.gameInfo?.field.value[x - 1][y + (isPlayer1 ? 1 : -1)]
         .equals(UInt32.from(0))
         .toBoolean()
@@ -65,14 +65,14 @@ export const GameView = (props: IGameViewProps) => {
     }
     if (
       x < CHECKERS_FIELD_SIZE - 1 &&
-      y < CHECKERS_FIELD_SIZE - 1 &&
+      (isPlayer1 ? y < CHECKERS_FIELD_SIZE - 1 : y > 0) &&
       props.gameInfo?.field.value[x + 1][y + (isPlayer1 ? 1 : -1)]
         .equals(UInt32.from(0))
         .toBoolean()
     ) {
       moves.push(MOVE_TOP_RIGHT);
     }
-    if ( x >= 2 && y <= CHECKERS_FIELD_SIZE - 2 && 
+    if ( x >= 2 && (isPlayer1 ? y <= CHECKERS_FIELD_SIZE - 3: y >= 2) && 
       props.gameInfo?.field.value[x - 1][y + (isPlayer1 ? 1 : -1)]
         .equals(UInt32.from(2 - props.gameInfo?.currentUserIndex))
         .toBoolean() &&
@@ -83,7 +83,7 @@ export const GameView = (props: IGameViewProps) => {
       moves.push(CAPTURE_TOP_LEFT);
     }
 
-    if ( x <= CHECKERS_FIELD_SIZE - 3 && y >= 2 && 
+    if ( x <= CHECKERS_FIELD_SIZE - 3 && (isPlayer1 ? y <= CHECKERS_FIELD_SIZE - 3: y >= 2)  && 
       props.gameInfo?.field.value[x + 1][y + (isPlayer1 ? 1 : -1)]
         .equals(UInt32.from(2 - props.gameInfo?.currentUserIndex))
         .toBoolean() &&
@@ -175,7 +175,7 @@ export const GameView = (props: IGameViewProps) => {
               }}
               className={`
               bg-bg-dark ${highlightCells ? '' : ''} h-14 w-14
-              bg-[length:30px_30px] bg-center bg-no-repeat p-5 
+              bg-[length:40px_40px] bg-center bg-no-repeat p-5 
               ${
                 isCurrentRedBall
                   ? ' hover:bg-bg-dark/50'
@@ -183,12 +183,22 @@ export const GameView = (props: IGameViewProps) => {
               }
               ${
                 props.gameInfo?.field?.value?.[j]?.[i] == 1
-                  ? "bg-[url('/ball_green.png')]"
+                  ? "bg-[url('/ball_green.svg')]"
                   : ''
               }
               ${
                 props.gameInfo?.field?.value?.[j]?.[i] == 2
-                  ? "bg-[url('/ball_blue.png')]"
+                  ? "bg-[url('/ball_blue.svg')]"
+                  : ''
+              }
+              ${
+                props.gameInfo?.field?.value?.[j]?.[i] == 3
+                  ? "bg-[url('/ball_green_adv.svg')]"
+                  : ''
+              }
+              ${
+                props.gameInfo?.field?.value?.[j]?.[i] == 4
+                  ? "bg-[url('/ball_blue_adv.svg')]"
                   : ''
               }
               ${
