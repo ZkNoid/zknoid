@@ -31,7 +31,7 @@ import SnakeNoEvents from './assets/ZKNoid_Snake_Intro_03_05.json';
 import { Pagination } from '@/components/ui/games-store/shared/Pagination';
 import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
 import { Currency } from '@/constants/currency';
-import Link from 'next/link';
+import { GradientButton } from '@/components/ui/games-store/shared/GradientButton';
 
 export const GameStore = ({ games }: { games: IGame[] }) => {
   const PAGINATION_LIMIT = 9;
@@ -157,32 +157,11 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             'flex grid-cols-2 flex-col gap-5 text-[11px]/[11px] lg:grid lg:text-main'
           }
         >
-          <motion.div
-            className={
-              'group relative flex flex-row justify-between rounded-[5px] border border-left-accent lg:mr-[11.2%]'
-            }
-            variants={{
-              visible: {
-                background:
-                  'linear-gradient(to right, #D2FF00 100%, #212121 100%)',
-                transition: { duration: 0.5, delayChildren: 0.5 },
-              },
-            }}
-            whileHover={'visible'}
-          >
-            <Link
-              className={
-                'w-full p-4 uppercase text-left-accent group-hover:text-dark-buttons-text lg:pt-5'
-              }
-              href={'/games/arkanoid/competitions-list'}
-            >
-              Show me the all existing competitions
-            </Link>
-            <div
-              className={
-                'flex flex-col items-center justify-center rounded-[5px] bg-left-accent p-4 group-hover:bg-bg-dark'
-              }
-            >
+          <GradientButton
+            title={'Show me the all existing competitions'}
+            asLink
+            href={'/games/arkanoid/competitions-list'}
+            icon={
               <svg
                 width="32"
                 height="32"
@@ -219,34 +198,13 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                   </clipPath>
                 </defs>
               </svg>
-            </div>
-          </motion.div>
-          <motion.div
-            className={
-              'group relative flex flex-row justify-between rounded-[5px] border border-left-accent lg:mr-[11.2%]'
             }
-            variants={{
-              visible: {
-                background:
-                  'linear-gradient(to right, #D2FF00 100%, #212121 100%)',
-                transition: { duration: 0.5, delayChildren: 0.5 },
-              },
-            }}
-            whileHover={'visible'}
-          >
-            <Link
-              className={
-                'w-full p-4 uppercase text-left-accent group-hover:text-dark-buttons-text lg:pt-5'
-              }
-              href={'/games/arkanoid/new-competition'}
-            >
-              Create your own competition!
-            </Link>
-            <div
-              className={
-                'flex flex-col items-center justify-center rounded-[5px] bg-left-accent p-4 group-hover:bg-bg-dark'
-              }
-            >
+          />
+          <GradientButton
+            title={'Create your own competition!'}
+            asLink
+            href={'/games/arkanoid/new-competition'}
+            icon={
               <svg
                 width="32"
                 height="32"
@@ -272,8 +230,8 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                   className={'group-hover:stroke-left-accent'}
                 />
               </svg>
-            </div>
-          </motion.div>
+            }
+          />
         </div>
       </div>
 
