@@ -1,7 +1,7 @@
 'use client';
 
 import { IGameInfo } from '@/lib/stores/matchQueue';
-import { UInt32 } from 'o1js';
+import { Bool, UInt32 } from 'o1js';
 import { useState } from 'react';
 import { CheckersField } from 'zknoid-chain-dev';
 
@@ -18,6 +18,10 @@ export const MOVE_TOP_LEFT = 0;
 export const MOVE_TOP_RIGHT = 1;
 export const CAPTURE_TOP_LEFT = 2;
 export const CAPTURE_TOP_RIGHT = 3;
+export const MOVE_KING_BOTTOM_LEFT = 4;
+export const MOVE_KING_BOTTOM_RIGHT = 5;
+export const CAPTURE_KING_BOTTOM_LEFT = 6;
+export const CAPTURE_KING_BOTTOM_RIGHT = 7;
 
 interface Moves {
   fromCellX: number;
@@ -46,33 +50,24 @@ export const GameView = (props: IGameViewProps) => {
 
   const getPossibleMoves = (x: number, y: number) => {
     const moves = [];
+
+    const fieldValue = props.gameInfo?.field.value[x][y];
     if (
-      props.gameInfo?.field.value[x][y]
-        .equals(UInt32.from(props.gameInfo?.currentUserIndex + 1))
+      Bool.or(
+        fieldValue.equals(UInt32.from(props.gameInfo?.currentUserIndex! + 1)),
+        fieldValue.equals(UInt32.from(props.gameInfo?.currentUserIndex! + 3))
+      )
+
         .not()
         .toBoolean()
     )
       return [];
 
+    console.log('Passed', isPlayer1);
+
     if (
-      x >= 1 &&
-      (isPlayer1 ? y < CHECKERS_FIELD_SIZE - 1 : y > 0) &&
-      props.gameInfo?.field.value[x - 1][y + (isPlayer1 ? 1 : -1)]
-        .equals(UInt32.from(0))
-        .toBoolean()
-    ) {
-      moves.push(MOVE_TOP_LEFT);
-    }
-    if (
-      x < CHECKERS_FIELD_SIZE - 1 &&
-      (isPlayer1 ? y < CHECKERS_FIELD_SIZE - 1 : y > 0) &&
-      props.gameInfo?.field.value[x + 1][y + (isPlayer1 ? 1 : -1)]
-        .equals(UInt32.from(0))
-        .toBoolean()
-    ) {
-      moves.push(MOVE_TOP_RIGHT);
-    }
-    if ( x >= 2 && (isPlayer1 ? y <= CHECKERS_FIELD_SIZE - 3: y >= 2) && 
+      x >= 2 &&
+      (isPlayer1 ? y <= CHECKERS_FIELD_SIZE - 3 : y >= 2) &&
       props.gameInfo?.field.value[x - 1][y + (isPlayer1 ? 1 : -1)]
         .equals(UInt32.from(2 - props.gameInfo?.currentUserIndex))
         .toBoolean() &&
@@ -83,7 +78,24 @@ export const GameView = (props: IGameViewProps) => {
       moves.push(CAPTURE_TOP_LEFT);
     }
 
-    if ( x <= CHECKERS_FIELD_SIZE - 3 && (isPlayer1 ? y <= CHECKERS_FIELD_SIZE - 3: y >= 2)  && 
+    if (
+      x >= 2 &&
+      (!isPlayer1 ? y <= CHECKERS_FIELD_SIZE - 3 : y >= 2) &&
+      props.gameInfo?.field.value[x][y] ==
+        props.gameInfo?.currentUserIndex! + 3 &&
+      props.gameInfo?.field.value[x - 1][y + (isPlayer1 ? -1 : 1)]
+        .equals(UInt32.from(2 - props.gameInfo?.currentUserIndex))
+        .toBoolean() &&
+      props.gameInfo?.field.value[x - 2][y + (isPlayer1 ? -2 : 2)]
+        .equals(UInt32.from(0))
+        .toBoolean()
+    ) {
+      moves.push(CAPTURE_KING_BOTTOM_LEFT);
+    }
+
+    if (
+      x <= CHECKERS_FIELD_SIZE - 3 &&
+      (isPlayer1 ? y <= CHECKERS_FIELD_SIZE - 3 : y >= 2) &&
       props.gameInfo?.field.value[x + 1][y + (isPlayer1 ? 1 : -1)]
         .equals(UInt32.from(2 - props.gameInfo?.currentUserIndex))
         .toBoolean() &&
@@ -92,6 +104,70 @@ export const GameView = (props: IGameViewProps) => {
         .toBoolean()
     ) {
       moves.push(CAPTURE_TOP_RIGHT);
+    }
+
+    if (
+      x <= CHECKERS_FIELD_SIZE - 3 &&
+      (!isPlayer1 ? y <= CHECKERS_FIELD_SIZE - 3 : y >= 2) &&
+      props.gameInfo?.field.value[x][y] ==
+        props.gameInfo?.currentUserIndex! + 3 &&
+      props.gameInfo?.field.value[x + 1][y + (isPlayer1 ? -1 : 1)]
+        .equals(UInt32.from(2 - props.gameInfo?.currentUserIndex))
+        .toBoolean() &&
+      props.gameInfo?.field.value[x + 2][y + (isPlayer1 ? -2 : 2)]
+        .equals(UInt32.from(0))
+        .toBoolean()
+    ) {
+      moves.push(CAPTURE_KING_BOTTOM_RIGHT);
+    }
+
+    const canMove = !moves.includes(CAPTURE_TOP_LEFT) && !moves.includes(CAPTURE_TOP_RIGHT) 
+      && !moves.includes(CAPTURE_KING_BOTTOM_LEFT) && !moves.includes(CAPTURE_KING_BOTTOM_RIGHT);
+
+    if (
+      canMove &&
+      x >= 1 &&
+      (isPlayer1 ? y < CHECKERS_FIELD_SIZE - 1 : y > 0) &&
+      props.gameInfo?.field.value[x - 1][y + (isPlayer1 ? 1 : -1)]
+        .equals(UInt32.from(0))
+        .toBoolean()
+    ) {
+      moves.push(MOVE_TOP_LEFT);
+    }
+
+    if (
+      canMove &&
+      x >= 1 &&
+      (!isPlayer1 ? y < CHECKERS_FIELD_SIZE - 1 : y > 0) &&
+      props.gameInfo?.field.value[x][y] ==
+        props.gameInfo?.currentUserIndex! + 3 &&
+      props.gameInfo?.field.value[x - 1][y + (isPlayer1 ? -1 : 1)]
+        .equals(UInt32.from(0))
+        .toBoolean()
+    ) {
+      moves.push(MOVE_KING_BOTTOM_LEFT);
+    }
+    if (
+      canMove &&
+      x < CHECKERS_FIELD_SIZE - 1 &&
+      (isPlayer1 ? y < CHECKERS_FIELD_SIZE - 1 : y > 0) &&
+      props.gameInfo?.field.value[x + 1][y + (isPlayer1 ? 1 : -1)]
+        .equals(UInt32.from(0))
+        .toBoolean()
+    ) {
+      moves.push(MOVE_TOP_RIGHT);
+    }
+    if (
+      canMove &&
+      x < CHECKERS_FIELD_SIZE - 1 &&
+      (!isPlayer1 ? y < CHECKERS_FIELD_SIZE - 1 : y > 0) &&
+      props.gameInfo?.field.value[x][y] ==
+        props.gameInfo?.currentUserIndex! + 3 &&
+      props.gameInfo?.field.value[x + 1][y + (isPlayer1 ? -1 : 1)]
+        .equals(UInt32.from(0))
+        .toBoolean()
+    ) {
+      moves.push(MOVE_KING_BOTTOM_RIGHT);
     }
 
     return moves;
@@ -133,12 +209,32 @@ export const GameView = (props: IGameViewProps) => {
                       possibleMoves.fromCellY
                     );
                   } else if (
+                    possibleMoves.moves.includes(MOVE_KING_BOTTOM_RIGHT) &&
+                    j == possibleMoves.fromCellX + 1 &&
+                    i == possibleMoves.fromCellY + (isPlayer1 ? -1 : 1)
+                  ) {
+                    props.onMoveChosen(
+                      MOVE_KING_BOTTOM_RIGHT,
+                      possibleMoves.fromCellX,
+                      possibleMoves.fromCellY
+                    );
+                  } else if (
                     possibleMoves.moves.includes(MOVE_TOP_LEFT) &&
                     j == possibleMoves.fromCellX - 1 &&
                     i == possibleMoves.fromCellY + (isPlayer1 ? 1 : -1)
                   ) {
                     props.onMoveChosen(
                       MOVE_TOP_LEFT,
+                      possibleMoves.fromCellX,
+                      possibleMoves.fromCellY
+                    );
+                  } else if (
+                    possibleMoves.moves.includes(MOVE_KING_BOTTOM_LEFT) &&
+                    j == possibleMoves.fromCellX - 1 &&
+                    i == possibleMoves.fromCellY + (isPlayer1 ? -1 : 1)
+                  ) {
+                    props.onMoveChosen(
+                      MOVE_KING_BOTTOM_LEFT,
                       possibleMoves.fromCellX,
                       possibleMoves.fromCellY
                     );
@@ -153,12 +249,32 @@ export const GameView = (props: IGameViewProps) => {
                       possibleMoves.fromCellY
                     );
                   } else if (
+                    possibleMoves.moves.includes(CAPTURE_KING_BOTTOM_LEFT) &&
+                    j == possibleMoves.fromCellX - 2 &&
+                    i == possibleMoves.fromCellY + (isPlayer1 ? -2 : 2)
+                  ) {
+                    props.onMoveChosen(
+                      CAPTURE_KING_BOTTOM_LEFT,
+                      possibleMoves.fromCellX,
+                      possibleMoves.fromCellY
+                    );
+                  } else if (
                     possibleMoves.moves.includes(CAPTURE_TOP_RIGHT) &&
                     j == possibleMoves.fromCellX + 2 &&
                     i == possibleMoves.fromCellY + (isPlayer1 ? 2 : -2)
                   ) {
                     props.onMoveChosen(
                       CAPTURE_TOP_RIGHT,
+                      possibleMoves.fromCellX,
+                      possibleMoves.fromCellY
+                    );
+                  } else if (
+                    possibleMoves.moves.includes(CAPTURE_KING_BOTTOM_RIGHT) &&
+                    j == possibleMoves.fromCellX + 2 &&
+                    i == possibleMoves.fromCellY + (isPlayer1 ? -2 : 2)
+                  ) {
+                    props.onMoveChosen(
+                      CAPTURE_KING_BOTTOM_RIGHT,
                       possibleMoves.fromCellX,
                       possibleMoves.fromCellY
                     );
@@ -211,15 +327,27 @@ export const GameView = (props: IGameViewProps) => {
                 ((possibleMoves.moves.includes(MOVE_TOP_RIGHT) &&
                   j == possibleMoves.fromCellX + 1 &&
                   i == possibleMoves.fromCellY + (isPlayer1 ? 1 : -1)) ||
-                  (possibleMoves.moves.includes( MOVE_TOP_LEFT) &&
+                  (possibleMoves.moves.includes(MOVE_KING_BOTTOM_RIGHT) &&
+                    j == possibleMoves.fromCellX + 1 &&
+                    i == possibleMoves.fromCellY + (!isPlayer1 ? 1 : -1)) ||
+                  (possibleMoves.moves.includes(MOVE_TOP_LEFT) &&
                     j == possibleMoves.fromCellX - 1 &&
                     i == possibleMoves.fromCellY + (isPlayer1 ? 1 : -1)) ||
+                  (possibleMoves.moves.includes(MOVE_KING_BOTTOM_LEFT) &&
+                    j == possibleMoves.fromCellX - 1 &&
+                    i == possibleMoves.fromCellY + (!isPlayer1 ? 1 : -1)) ||
                   (possibleMoves.moves.includes(CAPTURE_TOP_LEFT) &&
                     j == possibleMoves.fromCellX - 2 &&
                     i == possibleMoves.fromCellY + (isPlayer1 ? 2 : -2)) ||
+                  (possibleMoves.moves.includes(CAPTURE_KING_BOTTOM_LEFT) &&
+                    j == possibleMoves.fromCellX - 2 &&
+                    i == possibleMoves.fromCellY + (isPlayer1 ? -2 : 2)) ||
                   (possibleMoves.moves.includes(CAPTURE_TOP_RIGHT) &&
                     j == possibleMoves.fromCellX + 2 &&
-                    i == possibleMoves.fromCellY + (isPlayer1 ? 2 : -2))) &&
+                    i == possibleMoves.fromCellY + (isPlayer1 ? 2 : -2)) ||
+                  (possibleMoves.moves.includes(CAPTURE_KING_BOTTOM_RIGHT) &&
+                    j == possibleMoves.fromCellX + 2 &&
+                    i == possibleMoves.fromCellY + (isPlayer1 ? -2 : 2))) &&
                 'bg-bg-dark/50'
               }
             `}

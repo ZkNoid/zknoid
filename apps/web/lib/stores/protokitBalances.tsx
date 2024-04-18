@@ -126,7 +126,7 @@ export const useMinaBridge = () => {
       console.log('Setting open', amount);
       return true;
     },
-    [network.walletConnected, balancesStore.balances]
+    [network.walletConnected, network.address, balancesStore.balances]
   );
 };
 
