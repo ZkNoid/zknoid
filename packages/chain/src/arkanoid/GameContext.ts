@@ -72,6 +72,8 @@ export class GameContext extends Struct({
   }
 
   processTick(tick: Tick): void {
+    let curTime = UInt64.zero;
+
     // 1) Update score
     this.score = Provable.if(
       this.alreadyWon,
@@ -100,6 +102,11 @@ export class GameContext extends Struct({
       y: this.ball.position.y,
     });
 
+    let prevBallSpeed = new IntPoint({
+      x: this.ball.speed.x,
+      y: this.ball.speed.y,
+    });
+
     this.ball.move();
 
     /// 4) Check for edge bumps
@@ -114,12 +121,29 @@ export class GameContext extends Struct({
     /// Add come constrains just in case
 
     // If bumf - just return it and change speed
+    curTime = curTime.add(
+      Provable.if(
+        leftBump,
+        prevBallPos.x.mul(100).div(this.ball.speed.x),
+        Int64.zero,
+      ).magnitude,
+    );
     this.ball.position.x = Provable.if(
       leftBump,
       this.ball.position.x.neg(),
       this.ball.position.x,
     );
 
+    curTime = curTime.add(
+      Provable.if(
+        leftBump,
+        Int64.from(FIELD_PIXEL_WIDTH)
+          .sub(prevBallPos.x)
+          .mul(100)
+          .div(this.ball.speed.x),
+        Int64.zero,
+      ).magnitude,
+    );
     this.ball.position.x = Provable.if(
       rightBump,
       Int64.from(2 * FIELD_PIXEL_WIDTH).sub(this.ball.position.x),
@@ -181,10 +205,28 @@ export class GameContext extends Struct({
 
     this.winable = this.winable.and(isFail.not());
 
+    curTime = curTime.add(
+      Provable.if(
+        bottomBump,
+        Int64.from(FIELD_PIXEL_HEIGHT)
+          .sub(prevBallPos.y)
+          .mul(100)
+          .div(prevBallSpeed.y),
+        Int64.zero,
+      ).magnitude,
+    );
     this.ball.position.y = Provable.if(
       bottomBump,
       Int64.from(2 * FIELD_PIXEL_HEIGHT).sub(this.ball.position.y),
       this.ball.position.y,
+    );
+
+    curTime = curTime.add(
+      Provable.if(
+        bottomBump,
+        prevBallPos.y.mul(100).div(prevBallSpeed.y),
+        Int64.zero,
+      ).magnitude,
     );
     this.ball.position.y = Provable.if(
       topBump,
@@ -206,9 +248,6 @@ export class GameContext extends Struct({
       2) Pick earliest collision
       3) Update values according to this collision
     */
-
-    // #TODO Calc time for border collision too
-    let curTime = UInt64.zero;
 
     for (let i = 0; i < COLLISION_FINDING_ITERATIONS; i++) {
       let collisions: Collision[] = [];
