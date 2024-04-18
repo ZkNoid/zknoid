@@ -1,8 +1,8 @@
 'use client';
 
 import { useContext, useEffect, useState } from 'react';
-import { CAPTURE_TOP_LEFT, CAPTURE_TOP_RIGHT, GameView, MOVE_TOP_LEFT, MOVE_TOP_RIGHT, CHECKERS_FIELD_SIZE } from './GameView';
-import { Int64, PublicKey, UInt32, UInt64 } from 'o1js';
+import { CAPTURE_TOP_LEFT, CAPTURE_TOP_RIGHT, GameView, MOVE_TOP_LEFT, MOVE_TOP_RIGHT, CHECKERS_FIELD_SIZE, MOVE_KING_BOTTOM_LEFT, MOVE_KING_BOTTOM_RIGHT, CAPTURE_KING_BOTTOM_LEFT, CAPTURE_KING_BOTTOM_RIGHT } from './GameView';
+import { Bool, Int64, PublicKey, UInt32, UInt64 } from 'o1js';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useMinaBridge } from '@/lib/stores/protokitBalances';
 import {
@@ -166,6 +166,8 @@ export default function RandzuPage({
       (x: UInt32[]) => x.map((x) => x.toBigint())
     );
 
+    const isKing = updatedField[x][y] > 2n;
+
     console.log('On move chosen', moveId, x, y);
 
     console.log('On move chosen', updatedField);
@@ -173,16 +175,27 @@ export default function RandzuPage({
     updatedField[x][y] = 0;
 
     if (moveId == MOVE_TOP_LEFT) {
-      updatedField[x - 1][y + (isPlayer1 ? 1 : -1)] = (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 2 : y == 1) ? currentUserId + 2 : currentUserId;
+      updatedField[x - 1][y + (isPlayer1 ? 1 : -1)] = (isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 2 : y == 1)) ? currentUserId + 2 : currentUserId;
+    } else if (moveId == MOVE_KING_BOTTOM_LEFT) {
+      updatedField[x - 1][y + (isPlayer1 ? -1 : 1)] = currentUserId + 2;
     } else if (moveId == MOVE_TOP_RIGHT) {
-      updatedField[x + 1][y + (isPlayer1 ? 1 : -1)] = (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 2 : y == 1) ? currentUserId + 2 : currentUserId;
+      updatedField[x + 1][y + (isPlayer1 ? 1 : -1)] = (isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 2 : y == 1)) ? currentUserId + 2 : currentUserId;
+    } else if (moveId == MOVE_KING_BOTTOM_RIGHT) {
+      updatedField[x + 1][y + (isPlayer1 ? -1 : 1)] = currentUserId + 2;
     } else if (moveId == CAPTURE_TOP_LEFT) {
       console.log(x, y);
       updatedField[x - 1][y + (isPlayer1 ? 1 : -1)] = 0;
-      updatedField[x - 2][y + (isPlayer1 ? 2 : -2)] = (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 3 : y == 2) ? currentUserId + 2 : currentUserId;
+      updatedField[x - 2][y + (isPlayer1 ? 2 : -2)] = (isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 3 : y == 2)) ? currentUserId + 2 : currentUserId;
+    } else if (moveId == CAPTURE_KING_BOTTOM_LEFT) {
+      console.log(x, y);
+      updatedField[x - 1][y + (isPlayer1 ? -1 : 1)] = 0;
+      updatedField[x - 2][y + (isPlayer1 ? -2 : 2)] = (isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 3 : y == 2)) ? currentUserId + 2 : currentUserId;
     } else if (moveId == CAPTURE_TOP_RIGHT) {
       updatedField[x + 1][y + (isPlayer1 ? 1 : -1)] = 0;
-      updatedField[x + 2][y + (isPlayer1 ? 2 : -2)] = (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 3 : y == 2) ? currentUserId + 2 : currentUserId;
+      updatedField[x + 2][y + (isPlayer1 ? 2 : -2)] = (isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 3 : y == 2)) ? currentUserId + 2 : currentUserId;
+    } else if (moveId == CAPTURE_KING_BOTTOM_RIGHT) {
+      updatedField[x + 1][y + (isPlayer1 ? -1 : 1)] = 0;
+      updatedField[x + 2][y + (isPlayer1 ? -2 : 2)] = (isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 3 : y == 2)) ? currentUserId + 2 : currentUserId;
     }
 
 
@@ -192,14 +205,17 @@ export default function RandzuPage({
 
     const updatedCheckersField = CheckersField.from(updatedField);
 
-    const tx = (moveId == MOVE_TOP_LEFT || moveId == MOVE_TOP_RIGHT)  ? 
+    console.log('Proposed is king', isKing);
+
+    const tx = (moveId == MOVE_TOP_LEFT || moveId == MOVE_TOP_RIGHT || moveId == MOVE_KING_BOTTOM_LEFT || moveId == MOVE_KING_BOTTOM_RIGHT)  ? 
     await client.transaction(sessionPrivateKey.toPublicKey(), () => {
       randzuLogic.makeMoveChecker(
         UInt64.from(matchQueue.gameInfo!.gameId),
         updatedCheckersField,
         UInt64.from(x),
         UInt64.from(y),
-        UInt64.from(moveId)
+        UInt64.from(moveId),
+        Bool(isKing)
       );
     }) : await client.transaction(sessionPrivateKey.toPublicKey(), () => {
       randzuLogic.makeMoveCapture(
@@ -207,7 +223,8 @@ export default function RandzuPage({
         updatedCheckersField,
         UInt64.from(x),
         UInt64.from(y),
-        UInt64.from(moveId)
+        UInt64.from(moveId),
+        Bool(isKing)
       );
     });
 
