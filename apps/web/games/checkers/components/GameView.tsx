@@ -68,9 +68,11 @@ export const GameView = (props: IGameViewProps) => {
     if (
       x >= 2 &&
       (isPlayer1 ? y <= CHECKERS_FIELD_SIZE - 3 : y >= 2) &&
-      props.gameInfo?.field.value[x - 1][y + (isPlayer1 ? 1 : -1)]
+      (props.gameInfo?.field.value[x - 1][y + (isPlayer1 ? 1 : -1)]
         .equals(UInt32.from(2 - props.gameInfo?.currentUserIndex))
-        .toBoolean() &&
+        .toBoolean() || props.gameInfo?.field.value[x - 1][y + (isPlayer1 ? 1 : -1)]
+        .equals(UInt32.from(4 - props.gameInfo?.currentUserIndex))
+        .toBoolean()) &&
       props.gameInfo?.field.value[x - 2][y + (isPlayer1 ? 2 : -2)]
         .equals(UInt32.from(0))
         .toBoolean()
@@ -83,9 +85,13 @@ export const GameView = (props: IGameViewProps) => {
       (!isPlayer1 ? y <= CHECKERS_FIELD_SIZE - 3 : y >= 2) &&
       props.gameInfo?.field.value[x][y] ==
         props.gameInfo?.currentUserIndex! + 3 &&
-      props.gameInfo?.field.value[x - 1][y + (isPlayer1 ? -1 : 1)]
+      (props.gameInfo?.field.value[x - 1][y + (isPlayer1 ? -1 : 1)]
         .equals(UInt32.from(2 - props.gameInfo?.currentUserIndex))
-        .toBoolean() &&
+        .toBoolean() ||
+        props.gameInfo?.field.value[x - 1][y + (isPlayer1 ? -1 : 1)]
+        .equals(UInt32.from(4 - props.gameInfo?.currentUserIndex))
+        .toBoolean()
+      ) &&
       props.gameInfo?.field.value[x - 2][y + (isPlayer1 ? -2 : 2)]
         .equals(UInt32.from(0))
         .toBoolean()
@@ -96,9 +102,13 @@ export const GameView = (props: IGameViewProps) => {
     if (
       x <= CHECKERS_FIELD_SIZE - 3 &&
       (isPlayer1 ? y <= CHECKERS_FIELD_SIZE - 3 : y >= 2) &&
-      props.gameInfo?.field.value[x + 1][y + (isPlayer1 ? 1 : -1)]
+      (props.gameInfo?.field.value[x + 1][y + (isPlayer1 ? 1 : -1)]
         .equals(UInt32.from(2 - props.gameInfo?.currentUserIndex))
-        .toBoolean() &&
+        .toBoolean() ||
+        props.gameInfo?.field.value[x + 1][y + (isPlayer1 ? 1 : -1)]
+        .equals(UInt32.from(4 - props.gameInfo?.currentUserIndex))
+        .toBoolean()
+      ) &&
       props.gameInfo?.field.value[x + 2][y + (isPlayer1 ? 2 : -2)]
         .equals(UInt32.from(0))
         .toBoolean()
@@ -111,9 +121,12 @@ export const GameView = (props: IGameViewProps) => {
       (!isPlayer1 ? y <= CHECKERS_FIELD_SIZE - 3 : y >= 2) &&
       props.gameInfo?.field.value[x][y] ==
         props.gameInfo?.currentUserIndex! + 3 &&
-      props.gameInfo?.field.value[x + 1][y + (isPlayer1 ? -1 : 1)]
+      (props.gameInfo?.field.value[x + 1][y + (isPlayer1 ? -1 : 1)]
         .equals(UInt32.from(2 - props.gameInfo?.currentUserIndex))
-        .toBoolean() &&
+        .toBoolean() || 
+      props.gameInfo?.field.value[x + 1][y + (isPlayer1 ? -1 : 1)]
+        .equals(UInt32.from(4 - props.gameInfo?.currentUserIndex))
+        .toBoolean()) &&
       props.gameInfo?.field.value[x + 2][y + (isPlayer1 ? -2 : 2)]
         .equals(UInt32.from(0))
         .toBoolean()
