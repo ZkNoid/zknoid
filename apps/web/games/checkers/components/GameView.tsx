@@ -2,7 +2,7 @@
 
 import { IGameInfo } from '@/lib/stores/matchQueue';
 import { Bool, UInt32 } from 'o1js';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CheckersField } from 'zknoid-chain-dev';
 
 interface IGameViewProps {
@@ -40,11 +40,27 @@ export const GameView = (props: IGameViewProps) => {
     moves: [],
   });
   const [moveChoosing, setMoveChoosing] = useState(false);
+  const [canEat, setCanEat] = useState(false);
 
-  const isLoadingBall = (i: number, j: number) =>
-    props.loadingElement &&
-    props.loadingElement.x == j &&
-    props.loadingElement.y == i;
+  useEffect(() => {
+    if (!props.gameInfo?.field) return;
+    
+    for (let i = 0; i < CHECKERS_FIELD_SIZE; i++) {
+      for (let j = 0; j < CHECKERS_FIELD_SIZE; j++) {
+        const moves = getPossibleMoves(i, j);
+        if (
+          moves.includes(CAPTURE_TOP_LEFT) || moves.includes(CAPTURE_TOP_RIGHT) || 
+          moves.includes(CAPTURE_KING_BOTTOM_LEFT) || moves.includes(CAPTURE_KING_BOTTOM_RIGHT)
+        ) {
+            setCanEat(true);
+            return;
+          }
+      }
+    }
+    setCanEat(false);
+
+  }, [props.gameInfo?.field])
+
   const isCurrentRedBall = props.gameInfo?.currentUserIndex == 0;
   const isPlayer1 = props.gameInfo?.opponent == props.gameInfo?.player2;
 
@@ -135,7 +151,7 @@ export const GameView = (props: IGameViewProps) => {
     }
 
     const canMove = !moves.includes(CAPTURE_TOP_LEFT) && !moves.includes(CAPTURE_TOP_RIGHT) 
-      && !moves.includes(CAPTURE_KING_BOTTOM_LEFT) && !moves.includes(CAPTURE_KING_BOTTOM_RIGHT);
+      && !moves.includes(CAPTURE_KING_BOTTOM_LEFT) && !moves.includes(CAPTURE_KING_BOTTOM_RIGHT) && !canEat;
 
     if (
       canMove &&
