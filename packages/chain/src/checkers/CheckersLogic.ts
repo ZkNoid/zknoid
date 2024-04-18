@@ -677,7 +677,7 @@ export class CheckersLogic extends MatchMaker {
         assert(
           capturedCellEquals
             .not()
-            .or(game.field.value[i][j].equals(opponentUserId)),
+            .or(Bool.or(game.field.value[i][j].equals(opponentUserId), game.field.value[i][j].equals(opponentUserId.add(2)))),
           'ERR6',
         );
 
