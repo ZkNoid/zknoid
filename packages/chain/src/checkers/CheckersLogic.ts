@@ -218,13 +218,12 @@ export class CheckersLogic extends MatchMaker {
     assert(game.winner.equals(PublicKey.empty()), `Game finished`);
     assert(moveType.lessThanOrEqual(UInt64.from(5)), 'Invalid game type');
 
-    const winProposed = Bool(false);
-
     const currentUserId = Provable.if(
       game.currentMoveUser.equals(game.player1),
       UInt32.from(1),
       UInt32.from(2),
     );
+
 
     for (let i = 0; i < CHECKERS_FIELD_SIZE; i++) {
       for (let j = 0; j < CHECKERS_FIELD_SIZE; j++) {
@@ -326,25 +325,6 @@ export class CheckersLogic extends MatchMaker {
 
     Provable.log('AAAAAAAA');
 
-    game.winner = Provable.if(
-      winProposed,
-      game.currentMoveUser,
-      PublicKey.empty(),
-    );
-
-    const winnerShare = ProtoUInt64.from(
-      Provable.if(winProposed, UInt64.from(1), UInt64.from(0)),
-    );
-
-    this.acquireFunds(
-      gameId,
-      game.winner,
-      PublicKey.empty(),
-      winnerShare,
-      ProtoUInt64.from(0),
-      ProtoUInt64.from(1),
-    );
-
     game.field = newField;
     game.currentMoveUser = Provable.if(
       game.currentMoveUser.equals(game.player1),
@@ -353,16 +333,6 @@ export class CheckersLogic extends MatchMaker {
     );
     game.lastMoveBlockHeight = this.network.block.height;
     this.games.set(gameId, game);
-
-    // Removing active game for players if game ended
-    this.activeGameId.set(
-      Provable.if(winProposed, game.player2, PublicKey.empty()),
-      UInt64.from(0),
-    );
-    this.activeGameId.set(
-      Provable.if(winProposed, game.player1, PublicKey.empty()),
-      UInt64.from(0),
-    );
   }
 
   private getCaptureCells(
@@ -545,8 +515,6 @@ export class CheckersLogic extends MatchMaker {
     assert(game.winner.equals(PublicKey.empty()), `Game finished`);
     assert(moveType.lessThanOrEqual(UInt64.from(7)), 'Invalid game type');
 
-    const winProposed = Bool(false);
-
     let canCaptureNextLeft1 = Bool(false);
     let canCaptureNextLeft2 = Bool(false);
 
@@ -564,8 +532,14 @@ export class CheckersLogic extends MatchMaker {
       UInt32.from(1),
     );
 
+    let hasOpponentPieces = Bool(false);
+
     for (let i = 0; i < CHECKERS_FIELD_SIZE; i++) {
       for (let j = 0; j < CHECKERS_FIELD_SIZE; j++) {
+        hasOpponentPieces = Bool.or(hasOpponentPieces,
+          Bool.or(newField.value[i][j].equals(opponentUserId), newField.value[i][j].equals(opponentUserId.add(2))),
+        )
+
         const isMoveFromCell = Bool.and(
           UInt64.from(i).equals(moveFromX),
           UInt64.from(j).equals(moveFromY),
@@ -736,6 +710,8 @@ export class CheckersLogic extends MatchMaker {
     });
 
     Provable.log('AAAAAAAA');
+
+    const winProposed = hasOpponentPieces.not();
 
     game.winner = Provable.if(
       winProposed,
