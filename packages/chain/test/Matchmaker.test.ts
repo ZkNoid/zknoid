@@ -11,7 +11,10 @@ import {
 } from 'o1js';
 import { log } from '@proto-kit/common';
 import { Pickles } from 'o1js/dist/node/snarky';
-import { MatchMakerHelper } from './contracts/MatchMakerHelper';
+import { MatchMakerHelper, Lobby } from './contracts/MatchMakerHelper';
+
+import { UInt64 as ProtoUInt64 } from '@proto-kit/library';
+import { Balances, ZNAKE_TOKEN_ID } from '../src';
 
 interface IUser {
   publicKey: PublicKey;
@@ -33,6 +36,7 @@ log.setLevel('ERROR');
 describe('Matchmaker', () => {
   let appChain = TestingAppChain.fromRuntime({
     MatchMakerHelper,
+    Balances,
   });
 
   let alice: IUser;
@@ -41,6 +45,7 @@ describe('Matchmaker', () => {
   let user4: IUser;
 
   let game: MatchMakerHelper;
+  let balances: Balances;
 
   let createLobby: (user: IUser) => Promise<UInt64>;
   let joinLobby: (user: IUser, lobbyId: UInt64) => Promise<any>;
@@ -57,11 +62,38 @@ describe('Matchmaker', () => {
       },
     });
 
-    [alice, bob, user3, user4] = getTestAccounts(4);
+    let accounts = getTestAccounts(4);
+
+    [alice, bob, user3, user4] = accounts;
 
     await appChain.start();
 
     game = appChain.runtime.resolve('MatchMakerHelper');
+    balances = appChain.runtime.resolve('Balances');
+
+    for (const account of accounts) {
+      appChain.setSigner(account.privateKey);
+      let tx = await appChain.transaction(account.publicKey, () => {
+        balances.addBalance(
+          ZNAKE_TOKEN_ID,
+          account.publicKey,
+          ProtoUInt64.from(100 ** 9),
+        );
+      });
+      await tx.sign();
+      await tx.send();
+      await appChain.produceBlock();
+    }
+
+    appChain.setSigner(alice.privateKey);
+    let tx = await appChain.transaction(alice.publicKey, () => {
+      game.addDefaultLobby(ProtoUInt64.zero);
+    });
+
+    await tx.sign();
+    await tx.send();
+    let block = await appChain.produceBlock();
+    expect(block!.transactions[0].status.toBoolean()).toBeTruthy();
 
     createLobby = async (user: IUser): Promise<UInt64> => {
       let lobbyId =
@@ -111,7 +143,7 @@ describe('Matchmaker', () => {
     register = async (user: IUser) => {
       appChain.setSigner(user.privateKey);
       let tx = await appChain.transaction(user.publicKey, () => {
-        game.register(user.publicKey, UInt64.zero);
+        game.register(user.publicKey, UInt64.zero, UInt64.zero);
       });
 
       await tx.sign();

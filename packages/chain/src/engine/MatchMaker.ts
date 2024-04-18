@@ -4,22 +4,9 @@ import {
   state,
   runtimeMethod,
 } from '@proto-kit/module';
-import type { Option } from '@proto-kit/protocol';
-import { Balances, UInt64 as ProtoUInt64 } from '@proto-kit/library';
+import { UInt64 as ProtoUInt64 } from '@proto-kit/library';
 import { State, StateMap, assert } from '@proto-kit/protocol';
-import {
-  PublicKey,
-  Struct,
-  UInt64,
-  Provable,
-  Bool,
-  UInt32,
-  Poseidon,
-  Field,
-  Int64,
-} from 'o1js';
-import { inject } from 'tsyringe';
-import { ZNAKE_TOKEN_ID } from '../constants';
+import { PublicKey, Struct, UInt64, Provable, Bool } from 'o1js';
 import { Lobby, LobbyManager } from './LobbyManager';
 
 interface MatchMakerConfig {}
@@ -51,12 +38,20 @@ export class QueueListItem extends Struct({
   registrationTimestamp: UInt64,
 }) {}
 
+export class PendingLobbyIndex extends Struct({
+  roundId: UInt64,
+  type: UInt64,
+}) {}
+
 // abstract class
 
 @runtimeModule()
 export class MatchMaker extends LobbyManager {
   // Round => pending lobby
-  @state() public pendingLobby = StateMap.from<UInt64, Lobby>(UInt64, Lobby);
+  @state() public pendingLobby = StateMap.from<PendingLobbyIndex, Lobby>(
+    PendingLobbyIndex,
+    Lobby,
+  );
 
   // mapping(roundId => mapping(registered user address => bool))
   @state() public queueRegisteredRoundUsers = StateMap.from<RoundIdxUser, Bool>(
@@ -76,8 +71,23 @@ export class MatchMaker extends LobbyManager {
 
   @state() public gamesNum = State.from<UInt64>(UInt64);
 
+  @state() public defaultLobbies = StateMap.from<UInt64, Lobby>(UInt64, Lobby);
+  @state() public lastDefaultLobby = State.from<UInt64>(UInt64);
+
   @runtimeMethod()
-  public register(sessionKey: PublicKey, timestamp: UInt64): void {
+  public addDefaultLobby(participationFee: ProtoUInt64): void {
+    let lobby = Lobby.default(UInt64.zero);
+    lobby.participationFee = participationFee;
+    this.defaultLobbies.set(this.lastDefaultLobby.get().value, lobby);
+    this.lastDefaultLobby.set(this.lastDefaultLobby.get().value.add(1));
+  }
+
+  @runtimeMethod()
+  public register(
+    sessionKey: PublicKey,
+    type: UInt64,
+    timestamp: UInt64,
+  ): void {
     const sender = this.transaction.sender.value;
     // If player in game – revert
 
@@ -100,21 +110,27 @@ export class MatchMaker extends LobbyManager {
 
     this.sessions.set(sessionKey, sender);
     const roundId = this.network.block.height.div(PENDING_BLOCKS_NUM);
+    const pendingLobbyIndex = new PendingLobbyIndex({
+      roundId,
+      type,
+    });
 
     // Join lobby
-    let lobby = this.joinPendingLobby(roundId);
+    let lobby = this.joinPendingLobby(pendingLobbyIndex);
 
     // If lobby is full - run game
     const lobbyReady = lobby.isFull();
 
-    lobby = this.flushPendingLobby(lobby.id, lobbyReady);
+    lobby = this.flushPendingLobby(pendingLobbyIndex, lobbyReady);
 
     const gameId = this.initGame(lobby, lobbyReady);
   }
 
-  private joinPendingLobby(lobbyId: UInt64): Lobby {
+  private joinPendingLobby(lobbyIndex: PendingLobbyIndex): Lobby {
     const sender = this.transaction.sender.value;
-    const lobby = this.pendingLobby.get(lobbyId).orElse(Lobby.default(lobbyId));
+    const lobby = this.pendingLobby
+      .get(lobbyIndex)
+      .orElse(this.getDefaultLobby(lobbyIndex.type));
 
     assert(
       this.queueRegisteredRoundUsers
@@ -137,14 +153,17 @@ export class MatchMaker extends LobbyManager {
     );
 
     this._joinLobby(lobby);
-    this.pendingLobby.set(lobbyId, lobby);
+    this.pendingLobby.set(lobbyIndex, lobby);
     return lobby;
   }
 
   // Transform pending lobby to active lobby
   // Returns activeLobby
-  private flushPendingLobby(pendingLobyId: UInt64, shouldFlush: Bool): Lobby {
-    let lobby = this.pendingLobby.get(pendingLobyId).value;
+  private flushPendingLobby(
+    pendingLobyIndex: PendingLobbyIndex,
+    shouldFlush: Bool,
+  ): Lobby {
+    let lobby = this.pendingLobby.get(pendingLobyIndex).value;
 
     lobby.players.forEach((player) => {
       this.queueRegisteredRoundUsers.set(
@@ -157,11 +176,11 @@ export class MatchMaker extends LobbyManager {
     });
 
     this.pendingLobby.set(
-      pendingLobyId,
+      pendingLobyIndex,
       Provable.if(
         shouldFlush,
         Lobby,
-        Lobby.default(pendingLobyId),
+        this.getDefaultLobby(pendingLobyIndex.type),
         lobby,
       ) as Lobby,
     );
@@ -169,6 +188,10 @@ export class MatchMaker extends LobbyManager {
     let activeLobby = this._addLobby(lobby, shouldFlush);
 
     return activeLobby;
+  }
+
+  private getDefaultLobby(type: UInt64): Lobby {
+    return this.defaultLobbies.get(type).value;
   }
 
   protected proveOpponentTimeout(gameId: UInt64, passTurn: boolean): void {

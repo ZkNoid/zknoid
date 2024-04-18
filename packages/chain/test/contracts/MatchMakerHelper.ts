@@ -2,7 +2,7 @@ import { runtimeMethod, runtimeModule, state } from '@proto-kit/module';
 import { MatchMaker } from '../../src';
 import { State, StateMap } from '@proto-kit/protocol';
 import { Bool, Provable, PublicKey, Struct, UInt64 } from 'o1js';
-import { Lobby } from 'src/engine/LobbyManager';
+import { Lobby } from '../../src/engine/LobbyManager';
 import { assert } from 'console';
 import { UInt64 as ProtoUInt64 } from '@proto-kit/library';
 
@@ -11,6 +11,8 @@ export class GameInfo extends Struct({
   player2: PublicKey,
   winner: PublicKey,
 }) {}
+
+export { Lobby };
 
 @runtimeModule()
 export class MatchMakerHelper extends MatchMaker {
