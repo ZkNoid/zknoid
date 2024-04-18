@@ -318,12 +318,6 @@ export const GameView = (props: IGameViewProps) => {
                   : ''
               }
               ${
-                isLoadingBall(i, j) &&
-                (isCurrentRedBall
-                  ? "bg-opacity-50 bg-[url('/ball_green.png')]"
-                  : "bg-opacity-50 bg-[url('/ball_blue.png')]")
-              }
-              ${
                 ((possibleMoves.moves.includes(MOVE_TOP_RIGHT) &&
                   j == possibleMoves.fromCellX + 1 &&
                   i == possibleMoves.fromCellY + (isPlayer1 ? 1 : -1)) ||
