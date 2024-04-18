@@ -29,6 +29,19 @@ export const MOVE_KING_BOTTOM_RIGHT = UInt64.from(5);
 export const CAPTURE_KING_BOTTOM_LEFT = UInt64.from(6);
 export const CAPTURE_KING_BOTTOM_RIGHT = UInt64.from(7);
 
+const overflowSub = (a: UInt64, b: UInt64 | number): UInt64 => {
+  b = UInt64.from(b);
+  const overFlowVal = UInt64.from(666);
+  const isOverflow = a.lessThan(b);
+  const subValue = Provable.if(isOverflow, UInt64.zero, b);
+
+  return Provable.if(a.lessThan(b), overFlowVal, a.sub(subValue));
+};
+
+const isOpponent = (value: UInt32, opponentId: UInt32): Bool => {
+  return value.equals(opponentId).or(value.equals(opponentId.add(2)));
+};
+
 export class CheckersField extends Struct({
   value: Provable.Array(
     Provable.Array(UInt32, CHECKERS_FIELD_SIZE),
@@ -224,7 +237,6 @@ export class CheckersLogic extends MatchMaker {
       UInt32.from(2),
     );
 
-
     for (let i = 0; i < CHECKERS_FIELD_SIZE; i++) {
       for (let j = 0; j < CHECKERS_FIELD_SIZE; j++) {
         const isMoveFromCell = Bool.and(
@@ -341,40 +353,25 @@ export class CheckersLogic extends MatchMaker {
     moveFromX: UInt64,
     moveFromY: UInt64,
   ) {
-    const xSubValue = Provable.if(
-      moveFromX.greaterThan(UInt64.zero),
-      UInt64.from(1),
-      UInt64.zero,
-    );
-    const ySubValue = Provable.if(
-      moveFromY.greaterThan(UInt64.zero),
-      UInt64.from(1),
-      UInt64.zero,
-    );
-
-    const xSubValue2 = Provable.if(
-      moveFromX.greaterThan(UInt64.one),
-      UInt64.from(2),
-      UInt64.zero,
-    );
-    const ySubValue2 = Provable.if(
-      moveFromY.greaterThan(UInt64.one),
-      UInt64.from(2),
-      UInt64.zero,
-    );
+    const isKingMove = moveType
+      .equals(CAPTURE_KING_BOTTOM_LEFT)
+      .or(moveType.equals(CAPTURE_KING_BOTTOM_RIGHT));
+    const moveUp = firstPlayerMove
+      .and(isKingMove.not())
+      .or(firstPlayerMove.not().and(isKingMove));
 
     let capturedCellX = Provable.if(
       Bool.or(
         moveType.equals(CAPTURE_TOP_LEFT),
         moveType.equals(CAPTURE_KING_BOTTOM_LEFT),
       ),
-      moveFromX.sub(xSubValue),
+      overflowSub(moveFromX, 1),
       moveFromX.add(1),
     );
     let capturedCellY = Provable.if(
-      firstPlayerMove,
+      moveUp,
       moveFromY.add(UInt64.from(1)),
-      moveFromY.sub(ySubValue),
+      overflowSub(moveFromY, 1),
     );
 
     let moveToX = Provable.if(
@@ -382,13 +379,13 @@ export class CheckersLogic extends MatchMaker {
         moveType.equals(CAPTURE_TOP_LEFT),
         moveType.equals(CAPTURE_KING_BOTTOM_LEFT),
       ),
-      moveFromX.sub(xSubValue2),
+      overflowSub(moveFromX, 2),
       moveFromX.add(2),
     );
     let moveToY = Provable.if(
-      firstPlayerMove,
+      moveUp,
       moveFromY.add(UInt64.from(2)),
-      moveFromY.sub(ySubValue2),
+      overflowSub(moveFromY, 2),
     );
 
     return { capturedCellX, capturedCellY, moveToX, moveToY };
@@ -461,6 +458,20 @@ export class CheckersLogic extends MatchMaker {
       moveToY,
     );
 
+    const nextBottomLeftCaptureCandidateCell = this.getCaptureCells(
+      CAPTURE_KING_BOTTOM_LEFT,
+      firstPlayerMove,
+      moveToX,
+      moveToY,
+    );
+
+    const nextBottomRightCaptureCandidateCell = this.getCaptureCells(
+      CAPTURE_KING_BOTTOM_RIGHT,
+      firstPlayerMove,
+      moveToX,
+      moveToY,
+    );
+
     Provable.asProver(() => {
       if (gameOption.isSome.toBoolean()) {
         console.log(
@@ -496,7 +507,7 @@ export class CheckersLogic extends MatchMaker {
     );
 
     Provable.asProver(() => {
-      if (gameOption.isSome) {
+      if (gameOption.isSome.toBoolean()) {
         console.log(
           'Is king',
           isKing,
@@ -518,8 +529,14 @@ export class CheckersLogic extends MatchMaker {
     let canCaptureNextLeft1 = Bool(false);
     let canCaptureNextLeft2 = Bool(false);
 
+    let canCaptureNextBottomLeft1 = Bool(false);
+    let canCaptureNextBottomLeft2 = Bool(false);
+
     let canCaptureNextRight1 = Bool(false);
     let canCaptureNextRight2 = Bool(false);
+
+    let canCaptureNextBottomRight1 = Bool(false);
+    let canCaptureNextBottomRight2 = Bool(false);
 
     const currentUserId = Provable.if(
       game.currentMoveUser.equals(game.player1),
@@ -536,9 +553,10 @@ export class CheckersLogic extends MatchMaker {
 
     for (let i = 0; i < CHECKERS_FIELD_SIZE; i++) {
       for (let j = 0; j < CHECKERS_FIELD_SIZE; j++) {
-        hasOpponentPieces = Bool.or(hasOpponentPieces,
-          Bool.or(newField.value[i][j].equals(opponentUserId), newField.value[i][j].equals(opponentUserId.add(2))),
-        )
+        hasOpponentPieces = Bool.or(
+          hasOpponentPieces,
+          isOpponent(newField.value[i][j], opponentUserId),
+        );
 
         const isMoveFromCell = Bool.and(
           UInt64.from(i).equals(moveFromX),
@@ -568,12 +586,39 @@ export class CheckersLogic extends MatchMaker {
         canCaptureNextLeft1 = Bool.or(
           canCaptureNextLeft1,
           isNextLeftCaptureCell.and(
-            game.field.value[i][j].equals(opponentUserId),
+            isOpponent(game.field.value[i][j], opponentUserId),
           ),
         );
         canCaptureNextLeft2 = Bool.or(
           canCaptureNextLeft2,
           isNextLeftMoveToCell.and(game.field.value[i][j].equals(UInt32.zero)),
+        );
+
+        const isNextBottomLeftCaptureCell = Bool.and(
+          UInt64.from(i).equals(
+            nextBottomLeftCaptureCandidateCell.capturedCellX,
+          ),
+          UInt64.from(j).equals(
+            nextBottomLeftCaptureCandidateCell.capturedCellY,
+          ),
+        );
+
+        const isBottomNextLeftMoveToCell = Bool.and(
+          UInt64.from(i).equals(nextBottomLeftCaptureCandidateCell.moveToX),
+          UInt64.from(j).equals(nextBottomLeftCaptureCandidateCell.moveToY),
+        );
+
+        canCaptureNextBottomLeft1 = Bool.or(
+          canCaptureNextBottomLeft1,
+          isNextBottomLeftCaptureCell.and(
+            isOpponent(game.field.value[i][j], opponentUserId),
+          ),
+        );
+        canCaptureNextBottomLeft2 = Bool.or(
+          canCaptureNextBottomLeft2,
+          isBottomNextLeftMoveToCell.and(
+            game.field.value[i][j].equals(UInt32.zero),
+          ),
         );
 
         //
@@ -591,12 +636,39 @@ export class CheckersLogic extends MatchMaker {
         canCaptureNextRight1 = Bool.or(
           canCaptureNextRight1,
           isNextRightCaptureCell.and(
-            game.field.value[i][j].equals(opponentUserId),
+            isOpponent(game.field.value[i][j], opponentUserId),
           ),
         );
         canCaptureNextRight2 = Bool.or(
           canCaptureNextRight2,
           isNextRightMoveToCell.and(game.field.value[i][j].equals(UInt32.zero)),
+        );
+
+        const isNextBottomRightCaptureCell = Bool.and(
+          UInt64.from(i).equals(
+            nextBottomRightCaptureCandidateCell.capturedCellX,
+          ),
+          UInt64.from(j).equals(
+            nextBottomRightCaptureCandidateCell.capturedCellY,
+          ),
+        );
+
+        const isNextBottomRightMoveToCell = Bool.and(
+          UInt64.from(i).equals(nextBottomRightCaptureCandidateCell.moveToX),
+          UInt64.from(j).equals(nextBottomRightCaptureCandidateCell.moveToY),
+        );
+
+        canCaptureNextBottomRight1 = Bool.or(
+          canCaptureNextBottomRight1,
+          isNextBottomRightCaptureCell.and(
+            isOpponent(game.field.value[i][j], opponentUserId),
+          ),
+        );
+        canCaptureNextBottomRight2 = Bool.or(
+          canCaptureNextBottomRight2,
+          isNextBottomRightMoveToCell.and(
+            game.field.value[i][j].equals(UInt32.zero),
+          ),
         );
 
         const isNotChanged = isMoveFromCell
@@ -651,7 +723,7 @@ export class CheckersLogic extends MatchMaker {
         assert(
           capturedCellEquals
             .not()
-            .or(Bool.or(game.field.value[i][j].equals(opponentUserId), game.field.value[i][j].equals(opponentUserId.add(2)))),
+            .or(isOpponent(game.field.value[i][j], opponentUserId)),
           'ERR6',
         );
 
@@ -733,11 +805,21 @@ export class CheckersLogic extends MatchMaker {
     );
 
     game.field = newField;
+    const canEatMore = canCaptureNextLeft1
+      .and(canCaptureNextLeft2)
+      .or(canCaptureNextRight1.and(canCaptureNextRight2))
+      .or(
+        canCaptureNextBottomLeft1
+          .and(canCaptureNextBottomLeft2)
+          .and(proposedIsKing.or(isKing)),
+      )
+      .or(
+        canCaptureNextBottomRight1
+          .and(canCaptureNextBottomRight2)
+          .and(proposedIsKing.or(isKing)),
+      );
     game.currentMoveUser = Provable.if(
-      Bool.or(
-        canCaptureNextLeft1.and(canCaptureNextLeft2),
-        canCaptureNextRight1.and(canCaptureNextRight2),
-      ),
+      canEatMore,
       game.currentMoveUser,
       Provable.if(
         game.currentMoveUser.equals(game.player1),
