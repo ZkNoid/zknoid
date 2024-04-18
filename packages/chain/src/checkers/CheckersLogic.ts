@@ -81,6 +81,11 @@ export class CheckersLogic extends MatchMaker {
         .map((x) => UInt32.from(x)),
     );
 
+    // field[2][5] = UInt32.from(3);
+    // field[3][6] = UInt32.from(2);
+    // field[5][6] = UInt32.from(4);
+    // field[5][4] = UInt32.from(4);
+
     for (let i = 0; i < CHECKERS_FIELD_SIZE; i++) {
       for (let j = 0; j < CHECKERS_FIELD_SIZE; j++) {
         if ((i + j) % 2 == 0 && i <= 2) {
@@ -151,18 +156,19 @@ export class CheckersLogic extends MatchMaker {
     const moveFromX = x;
     const moveFromY = y;
 
-    const firstPlayerMove = Provable.if(
-      Bool.or(
-        moveType.equals(MOVE_KING_BOTTOM_LEFT),
-        moveType.equals(MOVE_KING_BOTTOM_RIGHT),
-      ),
-      game.player1.equals(game.currentMoveUser).not(),
-      game.player1.equals(game.currentMoveUser),
-    );
+    const firstPlayerMove = game.player1.equals(game.currentMoveUser);
+
+    const isKingMove = moveType
+      .equals(MOVE_KING_BOTTOM_LEFT)
+      .or(moveType.equals(MOVE_KING_BOTTOM_RIGHT));
+    const moveUp = firstPlayerMove
+      .and(isKingMove.not())
+      .or(firstPlayerMove.not().and(isKingMove));
 
     assert(
       moveType
         .equals(MOVE_TOP_LEFT)
+        .or(moveType.equals(MOVE_KING_BOTTOM_LEFT))
         .not()
         .or(moveFromX.greaterThan(UInt64.zero)),
       'ERR1',
@@ -170,15 +176,14 @@ export class CheckersLogic extends MatchMaker {
     assert(
       moveType
         .equals(MOVE_TOP_RIGHT)
+        .or(moveType.equals(MOVE_KING_BOTTOM_RIGHT))
         .not()
         .or(moveFromX.lessThan(UInt64.from(CHECKERS_FIELD_SIZE))),
       'ERR2',
     );
-    assert(firstPlayerMove.or(moveFromY.greaterThan(UInt64.zero)), 'ERR3');
+    assert(moveUp.or(moveFromY.greaterThan(UInt64.zero)), 'ERR3');
     assert(
-      firstPlayerMove
-        .not()
-        .or(moveFromY.lessThan(UInt64.from(CHECKERS_FIELD_SIZE))),
+      moveUp.not().or(moveFromY.lessThan(UInt64.from(CHECKERS_FIELD_SIZE))),
       'ERR4',
     );
 
@@ -202,7 +207,7 @@ export class CheckersLogic extends MatchMaker {
       moveFromX.add(1),
     );
     let moveToY = Provable.if(
-      firstPlayerMove,
+      moveUp,
       moveFromY.add(UInt64.from(1)),
       moveFromY.sub(ySubValue),
     );
@@ -413,14 +418,23 @@ export class CheckersLogic extends MatchMaker {
     const moveFromX = x;
     const moveFromY = y;
 
-    const firstPlayerMove = Provable.if(
-      Bool.or(
-        moveType.equals(CAPTURE_KING_BOTTOM_LEFT),
-        moveType.equals(CAPTURE_KING_BOTTOM_RIGHT),
-      ),
-      game.player1.equals(game.currentMoveUser).not(),
-      game.player1.equals(game.currentMoveUser),
-    );
+    const firstPlayerMove = game.player1.equals(game.currentMoveUser);
+
+    const isKingMove = moveType
+      .equals(CAPTURE_KING_BOTTOM_LEFT)
+      .or(moveType.equals(CAPTURE_KING_BOTTOM_RIGHT));
+    const moveUp = firstPlayerMove
+      .and(isKingMove.not())
+      .or(firstPlayerMove.not().and(isKingMove));
+
+    // const firstPlayerMove = Provable.if(
+    //   Bool.or(
+    //     moveType.equals(CAPTURE_KING_BOTTOM_LEFT),
+    //     moveType.equals(CAPTURE_KING_BOTTOM_RIGHT),
+    //   ),
+    //   game.player1.equals(game.currentMoveUser).not(),
+    //   game.player1.equals(game.currentMoveUser),
+    // );
 
     assert(
       moveType
@@ -434,15 +448,22 @@ export class CheckersLogic extends MatchMaker {
         .not()
         .or(moveFromX.lessThan(UInt64.from(CHECKERS_FIELD_SIZE))),
     );
-    assert(firstPlayerMove.or(moveFromY.greaterThan(UInt64.zero)));
+    assert(moveUp.or(moveFromY.greaterThan(UInt64.zero)));
     assert(
-      firstPlayerMove
-        .not()
-        .or(moveFromY.lessThan(UInt64.from(CHECKERS_FIELD_SIZE))),
+      moveUp.not().or(moveFromY.lessThan(UInt64.from(CHECKERS_FIELD_SIZE))),
     );
 
     const { capturedCellX, capturedCellY, moveToX, moveToY } =
       this.getCaptureCells(moveType, firstPlayerMove, moveFromX, moveFromY);
+
+    Provable.asProver(() => {
+      if (gameOption.isSome.toBoolean()) {
+        console.log('capturedCellX: ', capturedCellX.toString());
+        console.log('capturedCellY: ', capturedCellY.toString());
+        console.log('moveToX: ', moveToX.toString());
+        console.log('moveToY: ', moveToY.toString());
+      }
+    });
 
     const nextLeftCaptureCandidateCell = this.getCaptureCells(
       CAPTURE_TOP_LEFT,
