@@ -194,13 +194,32 @@ export class ThimblerigLogic extends MatchMaker {
       game.value.player2,
       game.value.player1,
     );
+
+    const hiderWins = game.value.winner.equals(game.value.player1);
+
+    /*
+      If hider wins he get 3/4 of bank. Looser gets 1/4 of bank.
+      If hider lost he gets nothing, and winner gets all.
+      In such case hider win expected value equals 0.
+    */
+    const winnerPortion = Provable.if(
+      hiderWins,
+      UInt64.from(3),
+      UInt64.from(4),
+    );
+    const looserPortion = Provable.if(
+      hiderWins,
+      UInt64.from(1),
+      UInt64.from(0),
+    );
+
     this.acquireFunds(
       gameId,
       game.value.winner,
       looser,
-      ProtoUInt64.from(2),
-      ProtoUInt64.from(1),
-      ProtoUInt64.from(3),
+      ProtoUInt64.from(winnerPortion),
+      ProtoUInt64.from(looserPortion),
+      ProtoUInt64.from(winnerPortion.add(looserPortion)),
     );
 
     game.value.field.salt = salt;
