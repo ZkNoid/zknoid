@@ -78,12 +78,18 @@ export class MatchMaker extends LobbyManager {
   public addDefaultLobby(participationFee: ProtoUInt64): void {
     let lobby = Lobby.default(UInt64.zero);
     lobby.participationFee = participationFee;
-    this.defaultLobbies.set(this.lastDefaultLobby.get().value, lobby);
-    this.lastDefaultLobby.set(this.lastDefaultLobby.get().value.add(1));
+    const lastLobbyId = this.lastDefaultLobby.get().orElse(UInt64.from(1));
+    this.defaultLobbies.set(lastLobbyId, lobby);
+    this.lastDefaultLobby.set(lastLobbyId.add(1));
   }
 
   @runtimeMethod()
-  public register(
+  public register(sessionKey: PublicKey, timestamp: UInt64): void {
+    this.registerWithType(sessionKey, UInt64.zero, timestamp);
+  }
+
+  @runtimeMethod()
+  public registerWithType(
     sessionKey: PublicKey,
     type: UInt64,
     timestamp: UInt64,
@@ -191,7 +197,16 @@ export class MatchMaker extends LobbyManager {
   }
 
   private getDefaultLobby(type: UInt64): Lobby {
-    return this.defaultLobbies.get(type).value;
+    assert(
+      type.lessThanOrEqual(this.lastDefaultLobby.get().value),
+      'No such lobby',
+    );
+    return Provable.if<Lobby>(
+      type.equals(UInt64.zero),
+      Lobby,
+      Lobby.default(UInt64.zero),
+      this.defaultLobbies.get(type).value,
+    );
   }
 
   protected proveOpponentTimeout(gameId: UInt64, passTurn: boolean): void {
