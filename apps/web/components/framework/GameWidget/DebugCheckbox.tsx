@@ -8,7 +8,7 @@ export const DebugCheckbox = ({
   setDebug: (debug: boolean) => void;
 }) => {
   return (
-    <div className={'flex w-full items-center justify-end'}>
+    <div className={'hidden w-full items-center justify-end lg:flex'}>
       <div
         onClick={() => setDebug(!debug)}
         className={

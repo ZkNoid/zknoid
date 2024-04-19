@@ -5,9 +5,11 @@ import {
   CompetitionsSortBy,
 } from '@/constants/sortBy';
 import { CompetitionListItem } from '@/components/framework/CompetitionWidget/CompetitionListItem';
-import Link from 'next/link';
 import { ICompetition } from '@/lib/types';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Button } from '@/components/ui/games-store/shared/Button';
+import { CustomScrollbar } from '@/components/ui/games-store/shared/CustomScrollbar';
+import { AnimatePresence, useScroll } from 'framer-motion';
 
 export const CompetitionWidget = ({
   competitionBlocks,
@@ -18,12 +20,19 @@ export const CompetitionWidget = ({
   competitionBlocks: ICompetition[];
   competitionList: ICompetition[];
 }) => {
+  const PAGINATION_LIMIT = 5;
+
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
   const [sortBy, setSortBy] = useState<CompetitionsSortBy>(
     CompetitionsSortBy.LowFunds
   );
 
+  const [containerHeight, setContainerHeight] = useState<number>(0);
+
+  const competitionsListRef = useRef<HTMLDivElement | null>(null);
+
   const sortByFilter = (a: ICompetition, b: ICompetition): number => {
-    console.log(a, b);
     switch (sortBy) {
       case CompetitionsSortBy.HighFees:
         return Number(a.participationFee - b.participationFee);
@@ -48,6 +57,47 @@ export const CompetitionWidget = ({
         );
     }
   };
+
+  const renderCompetitionsList = competitionList.slice(
+    0,
+    currentPage * PAGINATION_LIMIT
+  );
+
+  useEffect(() => {
+    const refObj = competitionsListRef.current;
+
+    const scrollHandler = () => {
+      if (
+        // @ts-ignore
+        refObj?.scrollHeight - refObj?.scrollTop === refObj?.clientHeight &&
+        renderCompetitionsList.length < competitionList.length
+      ) {
+        setCurrentPage((prevState) => prevState + 1);
+      }
+    };
+    refObj?.addEventListener('scroll', scrollHandler);
+    return () => {
+      refObj?.removeEventListener('scroll', scrollHandler);
+    };
+  });
+
+  useEffect(() => {
+    const refObj = competitionsListRef.current;
+    const resizeHandler = () => {
+      if (containerHeight != refObj?.clientHeight) {
+        // @ts-ignore
+        setContainerHeight(refObj?.clientHeight);
+      }
+    };
+    resizeHandler();
+    refObj?.addEventListener('resize', resizeHandler);
+    return () => {
+      refObj?.removeEventListener('resize', resizeHandler);
+    };
+  });
+
+  const { scrollYProgress } = useScroll({ container: competitionsListRef });
+
   return (
     <>
       <div className={'mb-4 flex flex-col gap-8'}>
@@ -75,25 +125,31 @@ export const CompetitionWidget = ({
             setSortBy={setSortBy}
           />
         </div>
-        <div
-          className={
-            'flex max-h-[400px] flex-col gap-4 overflow-y-scroll scrollbar-custom'
-          }
-        >
-          {competitionList
-            .toSorted((a, b) => sortByFilter(a, b))
-            .map((item, index) => (
-              <CompetitionListItem key={index} competition={item} />
-            ))}
+        <div className={'flex w-full flex-row gap-4'}>
+          <div
+            ref={competitionsListRef}
+            className={
+              'flex max-h-[400px] w-full flex-col gap-4 overflow-y-scroll no-scrollbar'
+            }
+          >
+            {renderCompetitionsList
+              .toSorted((a, b) => sortByFilter(a, b))
+              .map((item, index) => (
+                <CompetitionListItem key={index} competition={item} />
+              ))}
+          </div>
+          <AnimatePresence initial={false} mode={'wait'}>
+            {containerHeight === 400 && (
+              <CustomScrollbar scrollYProgress={scrollYProgress} />
+            )}
+          </AnimatePresence>
         </div>
-        <Link
-          className={
-            'w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent max-[2000px]:max-w-[40%] min-[2000px]:max-w-[30%]'
-          }
+        <Button
+          label={'Create new competition'}
+          asLink
           href={`/games/${gameId}/new-competition`}
-        >
-          Create new competition
-        </Link>
+          className={'max-[2000px]:max-w-[40%] min-[2000px]:max-w-[30%]'}
+        />
       </div>
     </>
   );

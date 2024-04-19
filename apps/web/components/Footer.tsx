@@ -8,7 +8,7 @@ export const Footer = () => {
     <div
       className={'mx-6 mb-10 mt-[100px] flex flex-col justify-between gap-4'}
     >
-      <div className={'grid grid-cols-3 grid-rows-2 lg:grid-rows-1'}>
+      <div className={'grid grid-cols-3 grid-rows-2 gap-4 lg:grid-rows-1'}>
         <Link
           href={'/'}
           target="_blank"
@@ -21,9 +21,17 @@ export const Footer = () => {
         </Link>
         <div
           className={
-            'col-start-1 col-end-4 grid grid-cols-3 grid-rows-2 flex-row items-center justify-center gap-4 self-center lg:flex'
+            'col-start-1 col-end-4 grid grid-cols-2 grid-rows-2 flex-row items-center justify-center gap-x-4 gap-y-1 self-center lg:flex'
           }
         >
+          <Link
+            className="cursor-pointer text-buttons-menu ease-in-out hover:opacity-80 lg:even:text-right"
+            href={'https://zknoid.io'}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            About us
+          </Link>
           <Link
             className="cursor-pointer text-buttons-menu ease-in-out hover:opacity-80 lg:even:text-right"
             href={'https://github.com/ZkNoid'}
@@ -34,20 +42,19 @@ export const Footer = () => {
           </Link>
           <Link
             className="cursor-pointer text-buttons-menu ease-in-out hover:opacity-80 lg:even:text-right"
-            href={'https://docs.zknoid.io'}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </Link>
-          <div />
-          <Link
-            className="cursor-pointer text-buttons-menu ease-in-out hover:opacity-80 lg:even:text-right"
             href={'https://zknoid.medium.com'}
             target="_blank"
             rel="noopener noreferrer"
           >
             Blog
+          </Link>
+          <Link
+            className="cursor-pointer text-buttons-menu ease-in-out hover:opacity-80 lg:even:text-right"
+            href={'https://docs.zknoid.io'}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Documentation
           </Link>
         </div>
       </div>
@@ -56,7 +63,7 @@ export const Footer = () => {
           'grid grid-cols-3 grid-rows-2 gap-y-8 lg:grid-rows-1 lg:gap-y-0'
         }
       >
-        <div className="flex gap-3">
+        <div className="col-start-1 col-end-4 flex gap-3">
           {SOCIALS.map((x) => (
             <Link href={x.link} key={x.id}>
               <Image alt={x.name} src={x.whiteImage} />

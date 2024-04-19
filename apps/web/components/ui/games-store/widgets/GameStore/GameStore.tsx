@@ -33,8 +33,11 @@ import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
 import { Currency } from '@/constants/currency';
 import Link from 'next/link';
 import { api } from '@/trpc/react';
+import { GradientButton } from '@/components/ui/games-store/shared/GradientButton';
 
 export const GameStore = ({ games }: { games: IGame[] }) => {
+  const PAGINATION_LIMIT = 9;
+
   const [eventTypesSelected, setEventTypesSelected] = useState<
     ZkNoidEventType[]
   >([]);
@@ -48,7 +51,6 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
   // console.log('Map settings', mapSettings);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pagesAmount, _setPagesAmount] = useState<number>(3);
 
   const [sortBy, setSortBy] = useState<GameStoreSortBy>(
     GameStoreSortBy.RatingLow
@@ -60,8 +62,9 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
 
   const filteredEvents = GAME_EVENTS.filter(
     (x) =>
-      eventTypesSelected.includes(getEventType(x)) ||
-      eventTypesSelected.length == 0
+      (eventTypesSelected.includes(getEventType(x)) ||
+        eventTypesSelected.length == 0) &&
+      x.eventEnds > Date.now()
   );
   const sortByFilter = (a: IGame, b: IGame) => {
     switch (sortBy) {
@@ -87,6 +90,18 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
         return 1;
     }
   };
+
+  const filteredGames = games.filter((x) => {
+    if (genresSelected.length == 0 && featuresSelected.length == 0) return true;
+    if (genresSelected.includes(x.genre)) return true;
+    if (x.features.some((feature) => featuresSelected.includes(feature)))
+      return true;
+  });
+
+  const renderGames = filteredGames.slice(
+    (currentPage - 1) * PAGINATION_LIMIT,
+    currentPage * PAGINATION_LIMIT
+  );
 
   useEffect(() => {
     const updateAnimationHeights = () => {
@@ -132,7 +147,11 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
           </div>
         )}
         {filteredEvents.length > 0 && (
-          <div className="grid min-h-[600px] grid-cols-1 gap-5 lg:min-h-[352px] lg:grid-cols-2">
+          <div
+            className={
+              'grid min-h-[600px] grid-cols-1 gap-5 lg:min-h-[352px] lg:grid-cols-2'
+            }
+          >
             {filteredEvents.map((event) => (
               <EventCard
                 key={event.name}
@@ -149,32 +168,11 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             'flex grid-cols-2 flex-col gap-5 text-[11px]/[11px] lg:grid lg:text-main'
           }
         >
-          <motion.div
-            className={
-              'group relative flex flex-row justify-between rounded-[5px] border border-left-accent lg:mr-[11.2%]'
-            }
-            variants={{
-              visible: {
-                background:
-                  'linear-gradient(to right, #D2FF00 100%, #212121 100%)',
-                transition: { duration: 0.5, delayChildren: 0.5 },
-              },
-            }}
-            whileHover={'visible'}
-          >
-            <Link
-              className={
-                'w-full p-4 uppercase text-left-accent group-hover:text-dark-buttons-text lg:pt-5'
-              }
-              href={'/games/arkanoid/competitions-list'}
-            >
-              Show me the all existing competitions
-            </Link>
-            <div
-              className={
-                'flex flex-col items-center justify-center rounded-[5px] bg-left-accent p-4 group-hover:bg-bg-dark'
-              }
-            >
+          <GradientButton
+            title={'Show me the all existing competitions'}
+            asLink
+            href={'/games/arkanoid/competitions-list'}
+            icon={
               <svg
                 width="32"
                 height="32"
@@ -211,61 +209,42 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                   </clipPath>
                 </defs>
               </svg>
-            </div>
-          </motion.div>
-          <motion.div
-            className={
-              'group relative flex flex-row justify-between rounded-[5px] border border-left-accent lg:mr-[11.2%]'
             }
-            variants={{
-              visible: {
-                background:
-                  'linear-gradient(to right, #D2FF00 100%, #212121 100%)',
-                transition: { duration: 0.5, delayChildren: 0.5 },
-              },
-            }}
-            whileHover={'visible'}
-          >
-            <Link
-              className={
-                'w-full p-4 uppercase text-left-accent group-hover:text-dark-buttons-text lg:pt-5'
-              }
+          />
+          {filteredEvents.length === 2 && (
+            <GradientButton
+              title={'Create your own competition!'}
+              asLink
               href={'/games/arkanoid/new-competition'}
-            >
-              Create your own competition!
-            </Link>
-            <div
-              className={
-                'flex flex-col items-center justify-center rounded-[5px] bg-left-accent p-4 group-hover:bg-bg-dark'
+              icon={
+                <svg
+                  width="32"
+                  height="32"
+                  viewBox="0 0 25 26"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={'h-[24px] w-[24px] lg:h-auto lg:w-auto'}
+                >
+                  <path
+                    d="M10.9822 4.79724H9.69879C9.38351 4.79818 9.07587 4.89429 8.81615 5.07303C8.55643 5.25177 8.35675 5.50476 8.24324 5.79892L7.57024 7.53617L5.25387 8.85088L3.40703 8.56915C3.09953 8.52742 2.78655 8.57803 2.50786 8.71459C2.22918 8.85114 1.99739 9.06747 1.84192 9.33606L1.21589 10.4316C1.05547 10.7045 0.981555 11.0196 1.00391 11.3354C1.02626 11.6511 1.14383 11.9527 1.3411 12.2002L2.51492 13.6558V16.2852L1.3724 17.7407C1.17513 17.9883 1.05756 18.2898 1.03521 18.6056C1.01286 18.9213 1.08677 19.2364 1.24719 19.5093L1.87323 20.6048C2.0287 20.8734 2.26049 21.0897 2.53915 21.2263C2.81784 21.3629 3.13084 21.4135 3.43834 21.3718L5.28518 21.0901L7.57024 22.4047L8.24324 24.142C8.35675 24.4361 8.55643 24.6892 8.81615 24.868C9.07587 25.0466 9.38351 25.1428 9.69879 25.1437H11.0135C11.3288 25.1428 11.6364 25.0466 11.8961 24.868C12.1559 24.6892 12.3555 24.4361 12.469 24.142L13.142 22.4047L15.4271 21.0901L17.2739 21.3718C17.5814 21.4135 17.8944 21.3629 18.1731 21.2263C18.4518 21.0897 18.6837 20.8734 18.8391 20.6048L19.4651 19.5093C19.6256 19.2364 19.6994 18.9213 19.6771 18.6056C19.6547 18.2898 19.5372 17.9883 19.3399 17.7407L18.1661 16.2852V14.5898M7.21026 14.9705C7.21026 15.5896 7.39385 16.1947 7.73781 16.7095C8.08176 17.2243 8.57062 17.6255 9.1426 17.8624C9.71457 18.0993 10.344 18.1613 10.9512 18.0405C11.5584 17.9197 12.1161 17.6216 12.5539 17.1839C12.9917 16.7461 13.2898 16.1883 13.4106 15.5811C13.5313 14.9739 13.4694 14.3445 13.2324 13.7726C12.9955 13.2006 12.5943 12.7117 12.0795 12.3678C11.5648 12.0238 10.9596 11.8402 10.3405 11.8402C9.5103 11.8402 8.71411 12.17 8.12708 12.7571C7.54005 13.3441 7.21026 14.1403 7.21026 14.9705Z"
+                    stroke="#212121"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className={'group-hover:stroke-left-accent'}
+                  />
+                  <path
+                    d="M13.4302 6.61253C12.8566 6.51275 12.8566 5.68937 13.4302 5.58958C15.5081 5.22808 17.1608 3.64535 17.6118 1.585L17.6463 1.42706C17.7706 0.86019 18.5776 0.856661 18.7067 1.42243L18.7487 1.60648C19.2165 3.65712 20.8695 5.22647 22.9418 5.58698C23.5183 5.68728 23.5183 6.51484 22.9418 6.61514C20.8695 6.97565 19.2165 8.545 18.7487 10.5956L18.7067 10.7797C18.5776 11.3455 17.7706 11.3419 17.6463 10.7751L17.6118 10.6171C17.1608 8.55677 15.5081 6.97404 13.4302 6.61253Z"
+                    stroke="#212121"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className={'group-hover:stroke-left-accent'}
+                  />
+                </svg>
               }
-            >
-              <svg
-                width="32"
-                height="32"
-                viewBox="0 0 25 26"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className={'h-[24px] w-[24px] lg:h-auto lg:w-auto'}
-              >
-                <path
-                  d="M10.9822 4.79724H9.69879C9.38351 4.79818 9.07587 4.89429 8.81615 5.07303C8.55643 5.25177 8.35675 5.50476 8.24324 5.79892L7.57024 7.53617L5.25387 8.85088L3.40703 8.56915C3.09953 8.52742 2.78655 8.57803 2.50786 8.71459C2.22918 8.85114 1.99739 9.06747 1.84192 9.33606L1.21589 10.4316C1.05547 10.7045 0.981555 11.0196 1.00391 11.3354C1.02626 11.6511 1.14383 11.9527 1.3411 12.2002L2.51492 13.6558V16.2852L1.3724 17.7407C1.17513 17.9883 1.05756 18.2898 1.03521 18.6056C1.01286 18.9213 1.08677 19.2364 1.24719 19.5093L1.87323 20.6048C2.0287 20.8734 2.26049 21.0897 2.53915 21.2263C2.81784 21.3629 3.13084 21.4135 3.43834 21.3718L5.28518 21.0901L7.57024 22.4047L8.24324 24.142C8.35675 24.4361 8.55643 24.6892 8.81615 24.868C9.07587 25.0466 9.38351 25.1428 9.69879 25.1437H11.0135C11.3288 25.1428 11.6364 25.0466 11.8961 24.868C12.1559 24.6892 12.3555 24.4361 12.469 24.142L13.142 22.4047L15.4271 21.0901L17.2739 21.3718C17.5814 21.4135 17.8944 21.3629 18.1731 21.2263C18.4518 21.0897 18.6837 20.8734 18.8391 20.6048L19.4651 19.5093C19.6256 19.2364 19.6994 18.9213 19.6771 18.6056C19.6547 18.2898 19.5372 17.9883 19.3399 17.7407L18.1661 16.2852V14.5898M7.21026 14.9705C7.21026 15.5896 7.39385 16.1947 7.73781 16.7095C8.08176 17.2243 8.57062 17.6255 9.1426 17.8624C9.71457 18.0993 10.344 18.1613 10.9512 18.0405C11.5584 17.9197 12.1161 17.6216 12.5539 17.1839C12.9917 16.7461 13.2898 16.1883 13.4106 15.5811C13.5313 14.9739 13.4694 14.3445 13.2324 13.7726C12.9955 13.2006 12.5943 12.7117 12.0795 12.3678C11.5648 12.0238 10.9596 11.8402 10.3405 11.8402C9.5103 11.8402 8.71411 12.17 8.12708 12.7571C7.54005 13.3441 7.21026 14.1403 7.21026 14.9705Z"
-                  stroke="#212121"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className={'group-hover:stroke-left-accent'}
-                />
-                <path
-                  d="M13.4302 6.61253C12.8566 6.51275 12.8566 5.68937 13.4302 5.58958C15.5081 5.22808 17.1608 3.64535 17.6118 1.585L17.6463 1.42706C17.7706 0.86019 18.5776 0.856661 18.7067 1.42243L18.7487 1.60648C19.2165 3.65712 20.8695 5.22647 22.9418 5.58698C23.5183 5.68728 23.5183 6.51484 22.9418 6.61514C20.8695 6.97565 19.2165 8.545 18.7487 10.5956L18.7067 10.7797C18.5776 11.3455 17.7706 11.3419 17.6463 10.7751L17.6118 10.6171C17.1608 8.55677 15.5081 6.97404 13.4302 6.61253Z"
-                  stroke="#212121"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className={'group-hover:stroke-left-accent'}
-                />
-              </svg>
-            </div>
-          </motion.div>
+            />
+          )}
         </div>
       </div>
 
@@ -273,29 +252,25 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
         <div className="text-headline-2 font-bold lg:text-headline-1">
           Popular genres
         </div>
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-4">
+        <div className="grid grid-cols-1 lg:grid-cols-4 lg:gap-5">
           <GenreCard
             animation={GamepadIllustration}
             genre={ZkNoidGameGenre.Arcade}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
-            height={animationHeights[0]}
           />
           <GenreCard
             animation={ChessIllustration}
             genre={ZkNoidGameGenre.BoardGames}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
-            height={animationHeights[1]}
-            className={'lg:max-[2000px]:mt-[25px]'}
           />
           <GenreCard
             animation={CubesIllustration}
             genre={ZkNoidGameGenre.Lucky}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
-            height={animationHeights[2]}
-            className={'lg:mt-[35px] lg:max-[2000px]:mt-[50px]'}
+            height={450}
           />
           <div
             className="relative flex h-full w-full flex-col items-center justify-center p-5"
@@ -401,23 +376,9 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
           </div>
           <div>
             <div className="grid grid-cols-1 gap-5 lg:grid-cols-3 lg:max-[1700px]:grid-cols-2">
-              {games
-                .filter((x) => {
-                  if (
-                    genresSelected.length == 0 &&
-                    featuresSelected.length == 0
-                  )
-                    return true;
-                  if (genresSelected.includes(x.genre)) return true;
-                  if (
-                    x.features.some((feature) =>
-                      featuresSelected.includes(feature)
-                    )
-                  )
-                    return true;
-                })
+              {renderGames
                 .sort((a, b) => sortByFilter(a, b))
-                .map((game, index) => (
+                .map((game) => (
                   <GameCard
                     game={game}
                     key={game.id}
@@ -438,9 +399,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
           </div>
 
           <AnimatePresence initial={false} mode={'wait'}>
-            {featuresSelected.length != 0 ||
-            genresSelected.length != 0 ||
-            eventTypesSelected.length != 0 ? (
+            {filteredGames.length > PAGINATION_LIMIT ? (
               <motion.div
                 className={'flex w-full items-center justify-center py-4'}
                 initial={{ opacity: 0 }}
@@ -448,7 +407,9 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                 exit={{ opacity: 0 }}
               >
                 <Pagination
-                  pagesAmount={pagesAmount}
+                  pagesAmount={Math.ceil(
+                    filteredGames.length / PAGINATION_LIMIT
+                  )}
                   currentPage={currentPage}
                   setCurrentPage={setCurrentPage}
                 />
@@ -458,46 +419,25 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
         </div>
       </div>
       <Competitions
-        competitions={[
-          {
-            game: defaultGames[0],
-            title: 'Arkanoid',
-            id: 0,
-            preReg: false,
-            preRegDate: {
-              start: new Date(2024, 2, 15),
-              end: new Date(2024, 2, 20),
-            },
-            competitionDate: {
-              start: new Date(2024, 2, 15),
-              end: new Date(2024, 2, 20),
-            },
-            participationFee: 5n * 10n ** 9n,
-            currency: Currency.MINA,
-            reward: 1000n * 10n ** 9n,
-            seed: 123,
-            registered: false,
+        competitions={[...Array(17)].fill({
+          game: defaultGames[0],
+          title: 'Arkanoid',
+          id: 0,
+          preReg: false,
+          preRegDate: {
+            start: new Date(2024, 2, 15),
+            end: new Date(2024, 2, 20),
           },
-          {
-            game: defaultGames[0],
-            title: 'Arkanoid',
-            id: 1,
-            preReg: false,
-            preRegDate: {
-              start: new Date(2024, 2, 15),
-              end: new Date(2024, 2, 20),
-            },
-            competitionDate: {
-              start: new Date(2024, 2, 15),
-              end: new Date(2024, 2, 20),
-            },
-            participationFee: 5n * 10n ** 9n,
-            currency: Currency.MINA,
-            reward: 1000n * 10n ** 9n,
-            seed: 123,
-            registered: false,
+          competitionDate: {
+            start: new Date(2024, 2, 15),
+            end: new Date(2024, 2, 20),
           },
-        ]}
+          participationFee: 5n * 10n ** 9n,
+          currency: Currency.MINA,
+          reward: 1000n * 10n ** 9n,
+          seed: 123,
+          registered: false,
+        })}
       />
     </div>
   );

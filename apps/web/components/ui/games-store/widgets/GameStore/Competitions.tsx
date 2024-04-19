@@ -22,8 +22,9 @@ export const Competitions = ({
 }: {
   competitions: ICompetition[];
 }) => {
+  const PAGINATION_LIMIT = 5;
+
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pagesAmount, _setPagesAmount] = useState<number>(3);
 
   const [sortBy, setSortBy] = useState<CompetitionsSortBy>(
     CompetitionsSortBy.LowFunds
@@ -110,14 +111,44 @@ export const Competitions = ({
     );
   };
 
+  const filteredCompetitions = competitions.filter((item) => {
+    if (
+      genresSelected.length == 0 &&
+      eventsSelected.length == 0 &&
+      feesMinValue == 0 &&
+      feesMaxValue == 0 &&
+      fundsMinValue == 0 &&
+      fundsMaxValue == 0
+    )
+      return true;
+
+    if (genresSelected.includes(item.game.genre)) return true;
+
+    if (timelineFilter(item)) return true;
+
+    if (
+      item.participationFee >= feesMinValue * 10 ** 9 &&
+      item.participationFee <= feesMaxValue * 10 ** 9
+    )
+      return true;
+
+    if (item.reward >= fundsMinValue && item.reward <= fundsMaxValue * 10 ** 9)
+      return true;
+  });
+
+  const renderCompetitions = filteredCompetitions.slice(
+    (currentPage - 1) * PAGINATION_LIMIT,
+    currentPage * PAGINATION_LIMIT
+  );
+
   useEffect(() => {
     const fundsMaximum = competitions.reduce((max, competition) => {
-      return Math.max(max, Number(competition.reward / 10n**9n));
+      return Math.max(max, Number(competition.reward / 10n ** 9n));
     }, -Infinity);
     setFundsAbsoluteMaximum(fundsMaximum);
 
     const feesMaximum = competitions.reduce((max, competition) => {
-      return Math.max(max, Number(competition.participationFee / 10n**9n));
+      return Math.max(max, Number(competition.participationFee / 10n ** 9n));
     }, -Infinity);
     setFeesAbsoluteMaximum(feesMaximum);
   }, [competitions]);
@@ -200,46 +231,41 @@ export const Competitions = ({
                   stroke="#D2FF00"
                   strokeWidth="2"
                 />
-                {isFundsAndFeesExpanded ? (
-                  <>
-                    <rect
-                      x="331.775"
-                      y="6.89062"
-                      width="20"
-                      height="2"
-                      transform="rotate(45 331.775 6.89062)"
-                      fill="#252525"
-                    />
-                    <rect
-                      x="345.924"
-                      y="8.30469"
-                      width="20"
-                      height="2"
-                      transform="rotate(135 345.924 8.30469)"
-                      fill="#252525"
-                    />
-                  </>
-                ) : (
-                  <>
-                    <rect
-                      x="330.775"
-                      y="-0.5"
-                      width="17"
-                      height="2"
-                      transform="rotate(90 331.775 6.89062)"
-                      fill="#D2FF00"
-                    />
-                    <rect
-                      x="345.924"
-                      y="1.30469"
-                      width="17"
-                      height="2"
-                      transform="rotate(-180 345.924 8.30469)"
-                      fill="#D2FF00"
-                    />
-                  </>
-                )}
               </svg>
+              <div
+                className={
+                  'absolute mx-auto flex h-[20px] w-[20px] flex-col items-center justify-center max-[2000px]:right-0 max-[2000px]:top-0 min-[2000px]:right-0.5 min-[2000px]:top-1'
+                }
+              >
+                <motion.div
+                  className={clsx(
+                    'bg-bg-dark max-[2000px]:h-[1.5px] max-[2000px]:w-3 min-[2000px]:h-[2px] min-[2000px]:w-4',
+                    {
+                      'bg-bg-dark': isFundsAndFeesExpanded,
+                      'bg-left-accent': !isFundsAndFeesExpanded,
+                    }
+                  )}
+                  animate={
+                    isFundsAndFeesExpanded
+                      ? { rotate: 45 }
+                      : { rotate: 0, x: -1, y: 1 }
+                  }
+                />
+                <motion.div
+                  className={clsx(
+                    'bg-bg-dark max-[2000px]:h-[1.5px] max-[2000px]:w-3 min-[2000px]:h-[2px] min-[2000px]:w-4',
+                    {
+                      'bg-bg-dark': isFundsAndFeesExpanded,
+                      'bg-left-accent': !isFundsAndFeesExpanded,
+                    }
+                  )}
+                  animate={
+                    isFundsAndFeesExpanded
+                      ? { rotate: -45, y: -1 }
+                      : { rotate: -90, x: -1 }
+                  }
+                />
+              </div>
               <div className="flex w-full flex-grow rounded-b-2xl border-x-2 border-b-2 border-left-accent"></div>
             </div>
           </div>
@@ -309,7 +335,7 @@ export const Competitions = ({
                 type="search"
                 placeholder={'Enter competition or game name...'}
                 className={
-                  'max-w-[200px] appearance-none bg-bg-dark placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80 lg:min-w-[300px]'
+                  'w-full appearance-none bg-bg-dark placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80 lg:min-w-[300px]'
                 }
                 value={searchValue}
                 onChange={(event) => {
@@ -392,7 +418,7 @@ export const Competitions = ({
                 type="search"
                 placeholder={'Enter competition or game name...'}
                 className={
-                  'max-w-[210px] appearance-none bg-bg-dark placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80 lg:min-w-[300px]'
+                  'w-full appearance-none bg-bg-dark placeholder:font-plexsans placeholder:text-[11px]/[18px] placeholder:opacity-50 focus:border-none focus:outline-none group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80 lg:min-w-[300px] lg:placeholder:text-main'
                 }
                 value={searchValue}
                 onChange={(event) => {
@@ -425,58 +451,31 @@ export const Competitions = ({
             </div>
           </div>
 
-          {competitions
-            .filter((item) => {
-              if (
-                genresSelected.length == 0 &&
-                eventsSelected.length == 0 &&
-                feesMinValue == 0 &&
-                feesMaxValue == 0 &&
-                fundsMinValue == 0 &&
-                fundsMaxValue == 0
-              )
-                return true;
-
-              if (genresSelected.includes(item.game.genre)) return true;
-
-              if (timelineFilter(item)) return true;
-
-              if (
-                item.participationFee >= feesMinValue * 10 ** 9 &&
-                item.participationFee <= feesMaxValue * 10 ** 9
-              )
-                return true;
-
-              if (item.reward >= fundsMinValue && item.reward <= fundsMaxValue * 10 ** 9)
-                return true;
-            })
-            .filter((value) => searchFilter(value))
-            .sort((a, b) => sortByFilter(a, b))
-            .map((competition, index) => (
-              <CompetitionItem
-                key={index}
-                game={competition.game}
-                title={competition.title}
-                id={competition.id}
-                preReg={competition.preReg}
-                preRegDate={competition.preRegDate}
-                competitionDate={competition.competitionDate}
-                participationFee={competition.participationFee}
-                currency={competition.currency}
-                reward={competition.reward}
-                seed={competition.seed}
-                registered={competition.registered}
-              />
-            ))}
+          <div>
+            {renderCompetitions
+              .filter((value) => searchFilter(value))
+              .sort((a, b) => sortByFilter(a, b))
+              .map((competition, index) => (
+                <CompetitionItem
+                  key={index}
+                  game={competition.game}
+                  title={competition.title}
+                  id={competition.id}
+                  preReg={competition.preReg}
+                  preRegDate={competition.preRegDate}
+                  competitionDate={competition.competitionDate}
+                  participationFee={competition.participationFee}
+                  currency={competition.currency}
+                  reward={competition.reward}
+                  seed={competition.seed}
+                  registered={competition.registered}
+                />
+              ))}
+          </div>
         </div>
       </div>
       <AnimatePresence initial={false} mode={'wait'}>
-        {genresSelected.length != 0 ||
-        eventsSelected.length != 0 ||
-        fundsMaxValue != 0 ||
-        fundsMinValue != 0 ||
-        feesMaxValue != 0 ||
-        feesMinValue != 0 ? (
+        {filteredCompetitions.length > PAGINATION_LIMIT ? (
           <motion.div
             className={'flex w-full items-center justify-center py-4'}
             initial={{ opacity: 0 }}
@@ -484,7 +483,9 @@ export const Competitions = ({
             exit={{ opacity: 0 }}
           >
             <Pagination
-              pagesAmount={pagesAmount}
+              pagesAmount={Math.ceil(
+                filteredCompetitions.length / PAGINATION_LIMIT
+              )}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
             />

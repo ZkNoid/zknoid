@@ -4,7 +4,11 @@ export const ConnectWallet = ({
   connectWallet: () => void;
 }) => {
   return (
-    <div className={'flex h-full w-full items-center justify-center px-[10%]'}>
+    <div
+      className={
+        'flex h-full w-full items-center justify-center px-[5%] py-[15%] lg:px-[10%] lg:py-0'
+      }
+    >
       <div
         className={
           'max-w-[600px] rounded-2xl border border-left-accent bg-[#252525] p-4'
