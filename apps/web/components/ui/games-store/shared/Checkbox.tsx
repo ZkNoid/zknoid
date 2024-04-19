@@ -1,33 +1,43 @@
 import { clsx } from 'clsx';
+import { motion } from 'framer-motion';
 
 export const Checkbox = ({
   isSelected,
   setIsSelected,
   isInvalid,
+  isReadonly,
 }: {
   isSelected: boolean;
-  setIsSelected: (selected: boolean) => void;
+  setIsSelected?: (selected: boolean) => void;
   isInvalid?: boolean;
+  isReadonly?: boolean;
 }) => {
   return (
-    <div
-      className={clsx(
-        'cursor-pointer rounded-[5px] border bg-bg-dark p-1 hover:opacity-80',
-        {
-          'border-left-accent bg-left-accent': isSelected,
-          'hover:border-[#FF00009C]': isInvalid && !isSelected,
-          'border-[#FF0000]': isInvalid,
-        }
-      )}
-      onClick={() => setIsSelected(!isSelected)}
+    <motion.div
+      className={clsx('rounded-[5px] border p-1', {
+        'hover:border-[#FF00009C]': isInvalid && !isSelected,
+        'border-[#FF0000]': isInvalid,
+        'cursor-pointer hover:opacity-80': !isReadonly,
+      })}
+      onClick={
+        !isReadonly && setIsSelected
+          ? () => setIsSelected(!isSelected)
+          : undefined
+      }
+      animate={
+        isSelected
+          ? { borderColor: '#D2FF00', backgroundColor: '#D2FF00' }
+          : { borderColor: '#F9F8F4', backgroundColor: '#212121' }
+      }
+      transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
     >
-      <svg
+      <motion.svg
         aria-hidden="true"
         role="presentation"
         viewBox="0 0 17 18"
         className={'h-3.5 w-3.5'}
       >
-        <polyline
+        <motion.polyline
           fill="none"
           points="1 9 7 14 15 4"
           stroke="#252525"
@@ -36,9 +46,9 @@ export const Checkbox = ({
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth="2"
-          className={isSelected ? 'opacity-100' : 'opacity-0'}
-        ></polyline>
-      </svg>
-    </div>
+          animate={isSelected ? { pathLength: 1 } : { pathLength: 0 }}
+        ></motion.polyline>
+      </motion.svg>
+    </motion.div>
   );
 };

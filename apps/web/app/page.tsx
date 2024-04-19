@@ -45,6 +45,7 @@ export default function Home() {
             releaseDate: x.releaseDate,
             popularity: x.popularity,
             author: x.author,
+            rules: x.rules,
             rating: 0
           })) as IGame[]
         ).concat(announcedGames)
@@ -56,7 +57,7 @@ export default function Home() {
     <div className="flex min-h-screen flex-col">
       <StoreProtokitUpdater />
       <DesktopNavbar autoconnect={true} />
-      <MobileNavbar />
+      <MobileNavbar autoconnect={true} />
 
       <main className="flex flex-col px-5">
         <Section1 />

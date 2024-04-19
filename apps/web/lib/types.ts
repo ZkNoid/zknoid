@@ -27,24 +27,10 @@ export interface Cart {
   hitMomentum: number;
 }
 
-// export interface ICompetition {
-//   competitionId: number;
-//   name: string;
-//   seed: number;
-//   prereg: boolean;
-//   preregStartTime: number;
-//   preregEndTime: number;
-//   competitionStartTime: number;
-//   competitionEndTime: number;
-//   funds: number;
-//   participationFee: number;
-//   registered?: boolean;
-// }
-
 export interface ICompetition {
   id: number;
   seed: number;
-  game: { id: string; genre: ZkNoidGameGenre };
+  game: { id: string; genre: ZkNoidGameGenre; rules: string };
   title: string;
   preReg: boolean;
   preRegDate: {
@@ -59,6 +45,21 @@ export interface ICompetition {
   currency: Currency;
   reward: bigint;
   registered?: boolean;
+}
+
+export interface ICompetitionPVP {
+  id: number;
+  game: {
+    id: string;
+    name: string;
+    rules: string;
+    rating: number;
+    author: string;
+  };
+  title: string;
+  reward: bigint;
+  currency: Currency;
+  startPrice: bigint;
 }
 
 const bricksInRow = 5;

@@ -2,6 +2,7 @@
 
 import { IGameInfo } from '@/lib/stores/matchQueue';
 import { RandzuField } from 'zknoid-chain-dev';
+import { useEffect, useRef, useState } from 'react';
 
 interface IGameViewProps {
   gameInfo: IGameInfo<RandzuField> | undefined;
@@ -23,20 +24,37 @@ export const GameView = (props: IGameViewProps) => {
     props.loadingElement.x == i &&
     props.loadingElement.y == j;
   const isCurrentRedBall = props.gameInfo?.currentUserIndex == 0;
+  const fieldRef = useRef<HTMLDivElement>(null);
+
+  const [fieldHeight, setFieldHeight] = useState(0);
+
+  useEffect(() => {
+    const resizeField = () => {
+      fieldRef.current && setFieldHeight(fieldRef.current.offsetWidth);
+    };
+    resizeField();
+    addEventListener('resize', resizeField);
+    return () => {
+      removeEventListener('resize', resizeField);
+    };
+  }, []);
 
   return (
     <div
-      className={`grid grid-cols-15 gap-px rounded-[5px] bg-foreground/50 ${
-        fieldActive ? 'border-4 border-left-accent p-0' : 'p-1'
+      ref={fieldRef}
+      className={`mx-auto grid grid-cols-15 gap-0 rounded-[5px] bg-foreground/50 ${
+        fieldActive ? 'border-4 border-left-accent p-px' : 'p-1'
       }`}
+      style={{ height: fieldHeight }}
     >
       {[...Array(15).keys()].map((i) =>
         [...Array(15).keys()].map((j) => (
           <div
             key={`${i}_${j}`}
             className={`
-              bg-bg-dark ${highlightCells ? 'hover:bg-bg-dark/50' : ''} h-7 w-7 
-              bg-[length:30px_30px] bg-center bg-no-repeat p-5 
+              bg-bg-dark ${
+                highlightCells ? 'hover:border-bg-dark/50' : ''
+              } m-px h-auto max-w-full border border-foreground/50 bg-center bg-no-repeat p-4
               ${
                 displayBall(i, j) &&
                 (isCurrentRedBall
@@ -60,7 +78,9 @@ export const GameView = (props: IGameViewProps) => {
                   : "bg-opacity-50 bg-[url('/ball_blue.png')]")
               }
             `}
-            style={{ imageRendering: 'pixelated' }}
+            style={{
+              imageRendering: 'pixelated',
+            }}
             id={`${i}_${j}`}
             onClick={() => props.onCellClicked(i, j)}
           ></div>

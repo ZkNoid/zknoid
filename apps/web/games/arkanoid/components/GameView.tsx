@@ -750,7 +750,9 @@ export const GameView = (props: IGameViewProps) => {
       width={`${FIELD_WIDTH}`}
       height={`${FIELD_HEIGHT + 10}`}
       ref={canvas}
-      className={winable ? 'border border-[#D2FF00]' : 'border border-red-500'}
+      className={`rounded-[5px] lg:rounded-none ${
+        winable ? 'border border-[#D2FF00]' : 'border border-red-500'
+      }`}
     ></canvas>
   );
 };

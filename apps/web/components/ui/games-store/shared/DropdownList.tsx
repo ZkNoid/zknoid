@@ -1,29 +1,48 @@
 import { clsx } from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 
 export const DropdownList = ({
-  label,
+  title,
+  titleColor,
   items,
   selectedItem,
   setSelectedItem,
   defaultOpen = false,
   className,
+  isRequired,
+  startContent,
+  endContent,
 }: {
-  label: string;
+  title: string;
+  titleColor?: 'left-accent' | 'foreground';
   items: string[];
   selectedItem: string;
   setSelectedItem: (item: string) => void;
   defaultOpen?: boolean;
   className?: string;
+  isRequired?: boolean;
+  startContent?: ReactNode;
+  endContent?: ReactNode;
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(defaultOpen);
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative ${className} flex flex-col gap-2`}>
+      {title && (
+        <span
+          className={clsx('font-plexsans text-main font-medium uppercase', {
+            'text-left-accent': titleColor === 'left-accent',
+            'text-foreground': titleColor === 'foreground',
+          })}
+        >
+          {title}
+          {isRequired && '*'}
+        </span>
+      )}
       <span
         className={clsx(
-          'group flex h-full min-w-[300px] cursor-pointer flex-row items-center justify-between gap-2 rounded-[5px] border border-foreground px-4 py-1 hover:border-b hover:border-left-accent hover:text-left-accent',
+          'group flex h-full min-w-[300px] cursor-pointer flex-row items-center justify-between gap-2 rounded-[5px] border border-foreground p-2 hover:border-b hover:border-left-accent hover:text-left-accent',
           {
             'rounded-b-none border-white border-b-bg-dark duration-75 ease-out':
               isOpen,
@@ -31,9 +50,8 @@ export const DropdownList = ({
         )}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span className={'font-plexsans text-main'}>
-          {label}: {selectedItem}
-        </span>
+        {startContent}
+        <span className={'font-plexsans text-main'}>{selectedItem}</span>
         <motion.svg
           width="16"
           height="10"
@@ -56,6 +74,7 @@ export const DropdownList = ({
             className={'stroke-white group-hover:stroke-left-accent'}
           />
         </motion.svg>
+        {endContent}
       </span>
       <AnimatePresence initial={false} mode={'wait'}>
         {isOpen && (
@@ -76,7 +95,7 @@ export const DropdownList = ({
                   setIsOpen(false);
                 }}
                 className={
-                  'h-full w-full cursor-pointer px-4 py-2 font-plexsans text-main last:pb-4 hover:text-left-accent'
+                  'h-full w-full cursor-pointer p-2 font-plexsans text-main last:pb-4 hover:bg-[#252525] hover:text-left-accent'
                 }
               >
                 {value}

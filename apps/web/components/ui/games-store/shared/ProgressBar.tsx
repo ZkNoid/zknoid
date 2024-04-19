@@ -120,7 +120,6 @@ export const ProgressBar = ({
             'max-w-[100px] rounded-[5px] border bg-bg-dark p-1 placeholder:font-plexsans placeholder:text-main hover:placeholder:text-left-accent/80 focus:outline-none'
           }
           value={minValue}
-          readOnly={true}
           // animate={{ y: dragging && percent < 0.4 ? 20 : 0 }}
           onChange={(event) => {
             if (
@@ -135,7 +134,6 @@ export const ProgressBar = ({
           type="text"
           placeholder={'to'}
           value={Math.round(Math.floor(maxValue * 100) / 100)}
-          readOnly={true}
           max={max}
           min={min}
           className={

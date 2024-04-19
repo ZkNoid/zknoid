@@ -54,7 +54,7 @@ export function SortByFilter<T extends string>({
         {isOpen && (
           <motion.div
             className={
-              'absolute top-full z-10 flex w-full min-w-[300px] flex-col items-center justify-start overflow-hidden rounded-[5px] rounded-t-none border border-t-0 bg-bg-dark'
+              'absolute top-full z-30 flex w-full min-w-[300px] flex-col items-center justify-start overflow-hidden rounded-[5px] rounded-t-none border border-t-0 bg-bg-dark'
             }
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
@@ -69,7 +69,7 @@ export function SortByFilter<T extends string>({
                   setIsOpen(false);
                 }}
                 className={
-                  'h-full w-full cursor-pointer px-4 py-2 font-plexsans text-main last:pb-4 hover:text-left-accent'
+                  'h-full w-full cursor-pointer px-4 py-2 font-plexsans text-main last:pb-4 hover:bg-[#252525] hover:text-left-accent'
                 }
               >
                 {value}

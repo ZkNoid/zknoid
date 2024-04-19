@@ -99,9 +99,12 @@ export const Leaderboard = ({
         )}
       >
         <div
-          className="z-10 cursor-pointer px-5 pb-10 pt-5 text-headline-2 font-bold hover:opacity-80"
+          className="z-10 hidden cursor-pointer px-0 pb-10 pt-5 text-headline-2 font-bold hover:opacity-80 lg:block lg:px-5"
           onClick={() => setIsExpanded(!isExpanded)}
         >
+          Leaderboard
+        </div>
+        <div className="z-10 block px-0 pb-10 pt-5 text-headline-2 font-bold hover:opacity-80 lg:hidden lg:px-5">
           Leaderboard
         </div>
         <AnimatePresence initial={false} mode={'wait'}>
@@ -111,7 +114,9 @@ export const Leaderboard = ({
               animate={{ height: 'auto' }}
               exit={{ height: 0 }}
               transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
-              className={'relative z-0 flex flex-col overflow-hidden px-5'}
+              className={
+                'relative z-0 flex flex-col overflow-hidden px-0 lg:px-5'
+              }
             >
               <div
                 className={
@@ -155,7 +160,7 @@ export const Leaderboard = ({
             </motion.div>
           )}
         </AnimatePresence>
-        <div className="absolute left-0 top-0 -z-10 flex h-auto w-full flex-col">
+        <div className="absolute left-0 top-0 -z-10 flex hidden h-auto w-full flex-col lg:block">
           <svg
             width="auto"
             height="auto"
@@ -198,7 +203,7 @@ export const Leaderboard = ({
             />
           </motion.div>
         </div>
-        <div className="z-10 flex w-full flex-grow border-b-2 border-left-accent" />
+        <div className="z-10 hidden w-full flex-grow border-b-2 border-left-accent lg:flex" />
       </div>
     </motion.div>
   );

@@ -30,7 +30,7 @@ export const SupportAndFaq = () => {
             <Link
               key={item.id}
               href={item.link}
-              className={'flex flex-row items-start justify-start gap-4'}
+              className={'group flex flex-row items-start justify-start gap-4'}
             >
               <Image
                 src={item.image}
@@ -38,7 +38,11 @@ export const SupportAndFaq = () => {
                 width={30}
                 height={30}
               />
-              <span className={'font-plexsans text-[20px]/[22px] font-medium'}>
+              <span
+                className={
+                  'font-plexsans text-[20px]/[22px] font-medium group-hover:opacity-80'
+                }
+              >
                 {item.label}
               </span>
             </Link>
@@ -46,7 +50,7 @@ export const SupportAndFaq = () => {
         </div>
       </div>
       <div className={'hidden flex-col lg:flex'}>
-        <div className={'pb-2 text-headline-1'}>FAQ</div>
+        <div className={'pb-5 text-headline-1'}>FAQ</div>
         <div className={'flex flex-row justify-between gap-5'}>
           <div className={'flex h-fit w-full flex-col gap-4'}>
             {[...Array(5)].map((_value, index) => (

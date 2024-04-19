@@ -1,16 +1,9 @@
-import PhoneImage from '@/public/image/contacts/phone.svg';
 import MailImage from '@/public/image/contacts/mail.svg';
 import TwitterImage from '@/public/image/socials/twitter.svg';
 import TelegramImage from '@/public/image/socials/telegram.svg';
 import DiscordImage from '@/public/image/socials/discord.svg';
 
 export const CONTACTS = [
-  {
-    id: 'phone',
-    image: PhoneImage,
-    link: 'tel:+9059634715',
-    label: '+905 963 47 15',
-  },
   {
     id: 'email',
     image: MailImage,
@@ -21,18 +14,18 @@ export const CONTACTS = [
     id: 'twitter',
     image: TwitterImage,
     link: 'https://twitter.com/ZkNoid',
-    label: '@ZkNoid',
+    label: 'ZkNoid on twitter',
   },
   {
     id: 'telegram',
     image: TelegramImage,
     link: 'https://t.me/ZkNoid',
-    label: '@ZkNoid',
+    label: 'ZkNoid telegram channel',
   },
   {
     id: 'discord',
     image: DiscordImage,
-    link: '#',
-    label: '@ZkNoid_discord',
+    link: 'https://discord.gg/hndRCZwQnb',
+    label: 'ZkNoid discord server',
   },
 ];

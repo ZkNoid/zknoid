@@ -15,6 +15,8 @@ export const thimblerigConfig = createZkNoidGameConfig({
   releaseDate: new Date(2024, 2, 25),
   popularity: 0,
   author: 'ZkNoid Team',
+  rules:
+    'A luck game where one player hides ball behind one of three thimbles and second player guesses under which one',
   runtimeModules: {
     ThimblerigLogic,
   },
