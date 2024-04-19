@@ -143,7 +143,7 @@ describe('Matchmaker', () => {
     register = async (user: IUser) => {
       appChain.setSigner(user.privateKey);
       let tx = await appChain.transaction(user.publicKey, () => {
-        game.register(user.publicKey, UInt64.zero, UInt64.zero);
+        game.register(user.publicKey, UInt64.zero);
       });
 
       await tx.sign();
