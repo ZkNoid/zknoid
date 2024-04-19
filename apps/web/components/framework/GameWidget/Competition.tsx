@@ -45,7 +45,7 @@ export const Competition = ({
               variants={{
                 fullscreen: { gridColumnStart: 2, gridColumnEnd: 4 },
               }}
-              className={'font-normal'}
+              className={'col-start-2 col-end-4 font-normal'}
             >
               {!competition ? ' - ' : competition.title}
             </motion.span>
@@ -60,7 +60,7 @@ export const Competition = ({
               variants={{
                 fullscreen: { gridColumnStart: 2, gridColumnEnd: 4 },
               }}
-              className={'font-normal'}
+              className={'col-start-2 col-end-4 font-normal'}
             >
               {!competition ? (
                 ' - '
@@ -130,7 +130,7 @@ export const Competition = ({
         )}
       </div>
       <div className={'flex w-full flex-col gap-10'}>
-        <div className={'flex flex-col gap-4'}>
+        <div className={'hidden flex-col gap-4 lg:flex'}>
           <span className={'w-full text-headline-2 font-bold'}>Rules</span>
           <span className={'font-plexsans text-buttons-menu font-normal'}>
             {competition ? competition.game.rules : <> - </>}

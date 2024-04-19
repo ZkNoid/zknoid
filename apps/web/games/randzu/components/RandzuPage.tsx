@@ -29,6 +29,7 @@ import {
 } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
 import { MainButtonState } from '@/components/framework/GamePage/PvPGameView';
 import RandzuCoverSVG from '../assets/game-cover.svg';
+import RandzuCoverMobileSVG from '../assets/game-cover-mobile.svg';
 import { GameWidget } from '@/components/framework/GameWidget/GameWidget';
 import { motion } from 'framer-motion';
 import { formatPubkey } from '@/lib/utils';
@@ -321,6 +322,7 @@ export default function RandzuPage({
     <GamePage
       gameConfig={randzuConfig}
       image={RandzuCoverSVG}
+      mobileImage={RandzuCoverMobileSVG}
       defaultPage={'Game'}
     >
       <motion.div className={'grid grid-cols-4 gap-4'} animate={'windowed'}>

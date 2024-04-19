@@ -12,7 +12,11 @@ export const Win = ({
   subTitle?: string;
 }) => {
   return (
-    <div className={'flex h-full w-full items-center justify-center'}>
+    <div
+      className={
+        'flex h-full w-full items-center justify-center px-[10%] py-[15%] lg:p-0'
+      }
+    >
       <div className={'flex flex-col items-center justify-center gap-4'}>
         <svg
           width="161"

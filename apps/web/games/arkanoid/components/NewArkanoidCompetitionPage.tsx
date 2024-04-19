@@ -30,6 +30,7 @@ import { clsx } from 'clsx';
 import { Currency } from '@/constants/currency';
 import { Modal } from '@/components/ui/games-store/shared/Modal';
 import ArkanoidCoverSVG from '../assets/game-cover.svg';
+import ArkanoidCoverMobileSVG from '../assets/game-cover-mobile.svg';
 import { DropdownList } from '@/components/ui/games-store/shared/DropdownList';
 import { announcedGames, defaultGames, IGame } from '@/app/constants/games';
 import Image from 'next/image';
@@ -298,6 +299,7 @@ export default function NewArkanoidCompetitionPage() {
     <GamePage
       gameConfig={arkanoidConfig}
       image={ArkanoidCoverSVG}
+      mobileImage={ArkanoidCoverMobileSVG}
       defaultPage={'New Competition'}
     >
       <div className={'flex w-full flex-col gap-8'}>

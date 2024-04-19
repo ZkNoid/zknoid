@@ -8,7 +8,7 @@ export const FullscreenButton = ({
   return (
     <div
       className={
-        'group absolute bottom-2 right-2 cursor-pointer rounded-[5px] bg-[#252525] p-2'
+        'group absolute bottom-2 right-2 hidden cursor-pointer rounded-[5px] bg-[#252525] p-2 lg:block'
       }
       onClick={() => setIsFullscreen(!isFullscreen)}
     >
