@@ -335,7 +335,7 @@ export const Competitions = ({
                 type="search"
                 placeholder={'Enter competition or game name...'}
                 className={
-                  'max-w-[200px] appearance-none bg-bg-dark placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80 lg:min-w-[300px]'
+                  'w-full appearance-none bg-bg-dark placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80 lg:min-w-[300px]'
                 }
                 value={searchValue}
                 onChange={(event) => {
@@ -418,7 +418,7 @@ export const Competitions = ({
                 type="search"
                 placeholder={'Enter competition or game name...'}
                 className={
-                  'max-w-[210px] appearance-none bg-bg-dark placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80 lg:min-w-[300px]'
+                  'w-full appearance-none bg-bg-dark placeholder:font-plexsans placeholder:text-[11px]/[18px] placeholder:opacity-50 focus:border-none focus:outline-none group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80 lg:min-w-[300px] lg:placeholder:text-main'
                 }
                 value={searchValue}
                 onChange={(event) => {

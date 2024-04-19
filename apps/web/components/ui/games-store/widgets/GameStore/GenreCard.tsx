@@ -36,7 +36,7 @@ export const GenreCard = ({
       }}
     >
       <div className="z-1 absolute bottom-0 left-0 -z-10 h-[60%] w-full rounded bg-[#252525]"></div>
-      <div className="absolute bottom-5 left-0 flex h-full w-full flex-col items-end justify-end">
+      <div className="bottom-5 left-0 flex h-full w-full flex-col items-end justify-end lg:absolute">
         <Lottie
           options={{
             animationData: animation,
@@ -44,7 +44,7 @@ export const GenreCard = ({
               className: `z-0 h-full ${className}`,
             },
           }}
-          height={height}
+          height={'80%'}
           isStopped={!visible && false}
           isClickToPauseDisabled={true}
         ></Lottie>

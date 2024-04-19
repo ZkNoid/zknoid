@@ -41,7 +41,7 @@ export const GradientButton = ({
       ) : (
         <button
           className={
-            'm-auto mt-1 w-full p-4 uppercase text-left-accent group-hover:text-dark-buttons-text lg:pt-5 xl:mt-0.5'
+            'm-auto mt-2 w-full p-4 uppercase text-left-accent group-hover:text-dark-buttons-text lg:pt-5 xl:mt-0.5'
           }
           onClick={onClick ? onClick : undefined}
         >
