@@ -63,7 +63,7 @@ export const HeaderCard = ({
 }) => (
   <div
     className={clsx(
-      'group flex cursor-pointer items-center gap-[10px] rounded border border-bg-dark p-1 px-2 text-header-menu text-bg-dark transition duration-75 ease-in hover:border-left-accent hover:bg-bg-dark hover:text-left-accent',
+      'group flex justify-center lg:justify-normal cursor-pointer items-center gap-[10px] rounded border border-bg-dark p-1 px-2 text-header-menu text-bg-dark transition duration-75 ease-in hover:border-left-accent hover:bg-bg-dark hover:text-left-accent',
       {
         'rounded-b-none border-middle-accent text-middle-accent hover:bg-middle-accent/20':
           expanded,
