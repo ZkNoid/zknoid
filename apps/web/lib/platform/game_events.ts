@@ -5,14 +5,14 @@ export enum ZkNoidEventType {
   PAST_EVENTS = 'Past events',
   CURRENT_EVENTS = 'Current events',
   UPCOMING_EVENTS = 'Upcoming events',
-  PREREGISTRAION = 'Preregistration of the event'
+  PREREGISTRAION = 'Preregistration of the event',
 }
 
 export const ALL_GAME_EVENT_TYPES = [
   ZkNoidEventType.PAST_EVENTS,
   ZkNoidEventType.CURRENT_EVENTS,
   ZkNoidEventType.UPCOMING_EVENTS,
-  ZkNoidEventType.PREREGISTRAION
+  ZkNoidEventType.PREREGISTRAION,
 ];
 
 export type ZkNoidEvent = {
@@ -27,15 +27,15 @@ export const GAME_EVENTS: ZkNoidEvent[] = [
   {
     name: 'Randzu meetup',
     description: 'This time players can meet up and play together',
-    eventStarts: new Date('2024-02-30').getTime(),
-    eventEnds: new Date('2024-03-30').getTime(),
+    eventStarts: new Date('2024-06-30').getTime(),
+    eventEnds: new Date('2024-11-30').getTime(),
     link: '/randzu/global',
   },
   {
     name: 'Arkanoid competition',
     description: 'This time players can meet up and play together',
     eventStarts: new Date('2024-02-01').getTime(),
-    eventEnds: new Date('2024-03-30').getTime(),
+    eventEnds: new Date('2024-11-30').getTime(),
     link: '/arkanoid/competitions',
   },
 ];
