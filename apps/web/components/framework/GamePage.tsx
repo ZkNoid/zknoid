@@ -18,16 +18,19 @@ import Image from 'next/image';
 import { clsx } from 'clsx';
 import Link from 'next/link';
 import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
+import { MobileNavbar } from '@/components/ui/games-store/MobileNavbar';
 
 export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
   children,
   gameConfig,
   image = '/image/game-page/game-title-template.svg',
+  mobileImage = '/image/game-page/game-title-mobile-template.svg',
   defaultPage,
 }: {
   children: ReactNode;
   gameConfig: ZkNoidGameConfig<RuntimeModules>;
   image: any;
+  mobileImage: any;
   defaultPage: 'Competitions List' | 'Game' | 'New Competition';
 }) {
   const client = useContext(AppChainClientContext) as ClientAppChain<
@@ -119,7 +122,7 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
 
   const WidgetsSwitch = (props: { competitionsSupported: boolean }) => {
     return (
-      <div className={'flex flex-col lg:flex-row'}>
+      <div className={'-mb-4 flex flex-col lg:-mb-0 lg:flex-row'}>
         {props.competitionsSupported &&
           defaultPage !== Pages.NewCompetition && (
             <SwitchBtn
@@ -204,14 +207,26 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
   return (
     <>
       <DesktopNavbar autoconnect={true} />
+      <MobileNavbar autoconnect={true} />
       <div className={'flex flex-col px-5'}>
-        <div className={'mb-12 w-full rounded-2xl border-2 border-left-accent'}>
+        <div
+          className={
+            'mb-12 w-full rounded-[10px] border border-left-accent lg:rounded-2xl lg:border-2'
+          }
+        >
           <Image
             src={image}
             alt={'Game'}
             width={1500}
             height={30}
-            className={'w-full object-contain object-center'}
+            className={'hidden w-full object-contain object-center lg:block'}
+          />
+          <Image
+            src={mobileImage}
+            alt={'Game'}
+            width={1500}
+            height={30}
+            className={'block w-full object-contain object-center lg:hidden'}
           />
         </div>
         <WidgetsSwitch
@@ -219,7 +234,7 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
         />
         <div
           className={
-            'relative flex w-full flex-col gap-20 rounded-2xl border-2 border-left-accent p-10'
+            'relative flex w-full flex-col gap-20 rounded-b-[10px] border-x border-b border-left-accent p-4 lg:rounded-2xl lg:border-2 lg:p-10'
           }
         >
           <div

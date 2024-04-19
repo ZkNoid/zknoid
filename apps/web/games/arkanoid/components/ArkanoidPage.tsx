@@ -36,6 +36,7 @@ import { UnsetCompetitionPopup } from '@/components/framework/GameWidget/UnsetCo
 import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
 import { FullscreenButton } from '@/components/framework/GameWidget/FullscreenButton';
 import ArkanoidCoverSVG from '../assets/game-cover.svg';
+import ArkanoidMobileCoverSVG from '../assets/game-cover-mobile.svg';
 import { FullscreenWrap } from '@/components/framework/GameWidget/FullscreenWrap';
 
 enum GameState {
@@ -196,13 +197,24 @@ export default function ArkanoidPage({
     <GamePage
       gameConfig={arkanoidConfig}
       image={ArkanoidCoverSVG}
+      mobileImage={ArkanoidMobileCoverSVG}
       defaultPage={'Game'}
     >
       <FullscreenWrap isFullscreen={isFullscreen}>
         {competition && (
-          <Leaderboard
-            leaderboard={leaderboardStore.getLeaderboard(params.competitionId)}
-          />
+          <>
+            <Leaderboard
+              leaderboard={leaderboardStore.getLeaderboard(
+                params.competitionId
+              )}
+            />
+            <div className={'flex flex-col gap-4 lg:hidden'}>
+              <span className={'w-full text-headline-2 font-bold'}>Rules</span>
+              <span className={'font-plexsans text-buttons-menu font-normal'}>
+                {competition ? competition.game.rules : <> - </>}
+              </span>
+            </div>
+          </>
         )}
         <GameWidget
           ticks={ticksAmount}
@@ -232,12 +244,12 @@ export default function ArkanoidPage({
                   {gameState === GameState.NotStarted && (
                     <div
                       className={
-                        'flex h-full w-full items-center justify-center'
+                        'flex min-h-[50vh] w-full items-center justify-center lg:h-full lg:min-h-min'
                       }
                     >
                       <button
                         className={
-                          'w-full max-w-[40%] rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-[20px]/[20px] font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
+                          'w-full max-w-[80%] rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-[20px]/[20px] font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent lg:max-w-[40%]'
                         }
                         onClick={startGame}
                       >
@@ -254,7 +266,11 @@ export default function ArkanoidPage({
             <InstallWallet />
           )}
           {gameState === GameState.Active && (
-            <div className={'flex h-full w-full items-center justify-center'}>
+            <div
+              className={
+                'flex h-full w-full items-center justify-center p-[10%] lg:p-0'
+              }
+            >
               <GameView
                 onWin={(ticks) => {
                   console.log('Ticks', ticks);

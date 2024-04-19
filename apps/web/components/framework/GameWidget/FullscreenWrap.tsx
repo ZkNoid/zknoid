@@ -24,7 +24,9 @@ export const FullscreenWrap = ({
             gridTemplateRows: 'repeat(1, minmax(0, 1fr))',
           },
         }}
-        className={'grid grid-cols-4 gap-4'}
+        className={
+          'flex grid-cols-4 flex-col-reverse gap-4 pt-10 lg:grid lg:pt-0'
+        }
         onAnimationStart={() => setIsLoading(true)}
         onAnimationComplete={() => setIsLoading(false)}
       >
