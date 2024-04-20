@@ -12,7 +12,7 @@ export const Input = ({
   setValue,
   placeholder,
   startContent,
-    endContent,
+  endContent,
   isClearable = true,
   type = 'text',
   inputMode = 'text',

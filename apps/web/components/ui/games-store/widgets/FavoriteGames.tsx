@@ -51,8 +51,12 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
   const getFavoritesQuery = api.favorites.getFavoriteGames.useQuery({
     userAddress: networkStore.address ?? '',
   });
+
   const filteredGames = games.filter(
-    (x) => genresSelected.includes(x.genre) || genresSelected.length == 0
+    (x) =>
+      (genresSelected.includes(x.genre) || genresSelected.length == 0) &&
+      getFavoritesQuery.data &&
+      getFavoritesQuery.data.favorites.some((y) => y.gameId == x.id && y.status)
   );
 
   const renderGames = filteredGames.slice(
