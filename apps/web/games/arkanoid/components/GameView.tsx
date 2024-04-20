@@ -70,6 +70,24 @@ export const GameView = (props: IGameViewProps) => {
   brickImages[1].src = '/sprite/brick/2.png';
   brickImages[2].src = '/sprite/brick/3.png';
 
+  let crack1Images: HTMLImageElement[] = [
+    new Image(),
+    new Image(),
+    new Image(),
+  ];
+  crack1Images[0].src = '/sprite/brick/1_crack1.png';
+  crack1Images[1].src = '/sprite/brick/2_crack1.png';
+  crack1Images[2].src = '/sprite/brick/3_crack1.png';
+
+  let crack2Images: HTMLImageElement[] = [
+    new Image(),
+    new Image(),
+    new Image(),
+  ];
+  crack2Images[0].src = '/sprite/brick/1_crack2.png';
+  crack2Images[1].src = '/sprite/brick/2_crack2.png';
+  crack2Images[2].src = '/sprite/brick/3_crack2.png';
+
   let cartImage = new Image();
   cartImage.src = '/sprite/cart.png';
 
@@ -90,6 +108,7 @@ export const GameView = (props: IGameViewProps) => {
   let contractCart: Cart;
   let bricks: IBrick[] = [];
   let contractBricks: IBrick[] = [];
+  let initialBrickValues: number[] = [];
   let contractNearestBricks: IBrick[] = [];
   let stopped: boolean = false;
   const debugMode = props.debug;
@@ -314,32 +333,18 @@ export const GameView = (props: IGameViewProps) => {
   };
 
   const drawBricks = () => {
-    bricks.forEach((brick) => {
+    bricks.forEach((brick, i) => {
       if (brick.value > 1) {
-        ctx!.drawImage(
-          brickImages[brick.value - 2],
-          brick.x,
-          brick.y,
-          brick.w,
-          brick.h
-        );
+        const dValue = initialBrickValues[i] - brick.value;
+        const brickType = initialBrickValues[i] - 2;
+        const brickImage =
+          dValue == 0
+            ? brickImages[brickType]
+            : dValue == 1
+              ? crack1Images[brickType]
+              : crack2Images[brickType];
+        ctx!.drawImage(brickImage, brick.x, brick.y, brick.w, brick.h);
       }
-
-      // ctx!.beginPath();
-      // ctx!.rect(brick.x, brick.y, brick.w, brick.h);
-      // ctx!.fillStyle = brick.value > 1 ? '#0095dd' : 'transparent';
-      // // ctx!.fill();
-      // ctx!.closePath();
-
-      // if (brick.value > 1) {
-      //   ctx!.fillStyle = 'black';
-      //   ctx!.font = '36px serif';
-      //   ctx!.fillText(
-      //     (brick.value - 1).toString(),
-      //     brick.x + brick.w / 4,
-      //     brick.y + (3 * brick.h) / 4
-      //   );
-      // }
     });
   };
 
@@ -347,12 +352,14 @@ export const GameView = (props: IGameViewProps) => {
     ctx!.strokeStyle = '#4DC7D7';
     ctx!.setLineDash([5, 5]);
 
-    contractBricks.forEach((brick) => {
-      ctx!.beginPath();
-      ctx!.rect(brick.x, brick.y, brick.w, brick.h);
-      ctx!.stroke();
-      ctx!.closePath();
-    });
+    contractBricks
+      .filter((brick: IContractBrickPorted) => brick.value > 1)
+      .forEach((brick) => {
+        ctx!.beginPath();
+        ctx!.rect(brick.x, brick.y, brick.w, brick.h);
+        ctx!.stroke();
+        ctx!.closePath();
+      });
     ctx!.setLineDash([]);
   };
 
@@ -522,13 +529,13 @@ export const GameView = (props: IGameViewProps) => {
 
     for (let i = 0; i < props.level.bricks.length; i++) {
       const brickValue = props.level.bricks[i].value * 1;
-      if (brickValue > 0)
-        bricks[i] = {
-          x: props.level.bricks[i].pos.x * 1,
-          y: props.level.bricks[i].pos.y * 1,
-          value: brickValue,
-          ...commonBrick,
-        };
+      bricks[i] = {
+        x: props.level.bricks[i].pos.x * 1,
+        y: props.level.bricks[i].pos.y * 1,
+        value: brickValue,
+        ...commonBrick,
+      };
+      initialBrickValues[i] = brickValue;
     }
 
     console.log(' bricks', bricks);
@@ -723,9 +730,8 @@ export const GameView = (props: IGameViewProps) => {
       } as IContractBrickPorted;
     };
 
-    contractBricks = gameContext.bricks.bricks
-      .map(contractBrickToBrick)
-      .filter((brick: IContractBrickPorted) => brick.value > 1);
+    contractBricks = gameContext.bricks.bricks.map(contractBrickToBrick);
+    // .filter((brick: IContractBrickPorted) => brick.value > 1);
 
     contractNearestBricks = gameContext.nearestBricks.map(contractBrickToBrick);
 
