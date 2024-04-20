@@ -84,9 +84,9 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   const [guessedBallAnimation, setGuessedBallAnimation] = useState<
     undefined | 1 | 2 | 3
   >(undefined);
-  const [pausedAnimation, setPausedAnimation] = useState<
-    undefined | 1 | 2 | 3
-  >(undefined);
+  const [pausedAnimation, setPausedAnimation] = useState<undefined | 1 | 2 | 3>(
+    undefined
+  );
 
   const matchQueue = useThimblerigMatchQueueStore();
   const sessionPublicKey = useStore(useSessionKeyStore, (state) =>
@@ -509,9 +509,10 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
             gameState
           ) &&
             Array.from({ length: 3 }, (_, i) => {
-              const isCorrectAnimated = gameState == GameState.CurrentPlayerHiding &&
-              thimbleOpened &&
-              thimbleOpenedRef.current == i + 1;
+              const isCorrectAnimated =
+                gameState == GameState.CurrentPlayerHiding &&
+                thimbleOpened &&
+                thimbleOpenedRef.current == i + 1;
 
               return (
                 <div
@@ -570,7 +571,9 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                       src={getThimbleImage(i)}
                       alt={'Thimble'}
                       className={
-                        
+                        (gameState == GameState.CurrentPlayerHiding &&
+                          thimbleOpened &&
+                          thimbleOpenedRef.current != i + 1) ||
                         ((gameState == GameState.CurrentPlayerGuessing ||
                           gameState == GameState.WaitingForReveal) &&
                           thimbleGuessed != undefined &&
@@ -596,12 +599,10 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                         {
                           eventName: 'enterFrame',
                           callback: ((e: any) => {
-                            console.log('the animation completed:', e)
                             if (e.currentTime > e.totalTime / 2) {
-                              setPausedAnimation(i + 1 as 1 | 2 | 3)
+                              setPausedAnimation((i + 1) as 1 | 2 | 3);
                             }
-                          
-                          }) as any
+                          }) as any,
                         },
                       ]}
                     ></Lottie>
