@@ -30,6 +30,7 @@ import ArrowSVG from '../assets/arrow.svg';
 import ThimblesMixing from '../assets/thimbles_mixing.json';
 
 import ThimblerigCoverSVG from '../assets/game-cover.svg';
+import ThimblerigCoverMobileSVG from '@/public/image/game-page/game-title-mobile-template.svg';
 
 import Image from 'next/image';
 import Lottie from 'react-lottie';
@@ -461,6 +462,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     <GamePage
       gameConfig={thimblerigConfig}
       image={ThimblerigCoverSVG}
+      mobileImage={ThimblerigCoverMobileSVG}
       defaultPage={'Game'}
     >
       <PvPGameView

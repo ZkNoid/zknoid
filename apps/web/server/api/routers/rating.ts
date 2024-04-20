@@ -35,11 +35,12 @@ export const ratingsRouter = createTRPCRouter({
       };
     }),
 
-  setFavoriteGameStatus: publicProcedure
+  setGameFeedback: publicProcedure
     .input(
       z.object({
         userAddress: z.string(),
         gameId: z.string(),
+        feedback: z.string(),
         rating: z.number(),
       })
     )
@@ -49,6 +50,7 @@ export const ratingsRouter = createTRPCRouter({
         {
           $set: {
             rating: input.rating,
+            feedback: input.feedback,
           },
         },
         {
@@ -59,6 +61,7 @@ export const ratingsRouter = createTRPCRouter({
         gameId: input.gameId,
         userAddress: input.userAddress,
         rating: input.rating,
+        feedback: input.feedback,
       };
     }),
 });

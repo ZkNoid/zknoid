@@ -18,21 +18,6 @@ export interface IGame {
 
 export const announcedGames: IGame[] = [
   {
-    id: 'checkers',
-    logo: '/image/games/soon.svg',
-    rating: 0,
-    name: 'Checkers game',
-    description: 'Compete other players in the classic board game',
-    genre: ZkNoidGameGenre.BoardGames,
-    features: [ZkNoidGameFeature.Multiplayer],
-    defaultPage: 'global',
-    active: false,
-    isReleased: false,
-    releaseDate: new Date(2024, 2, 25),
-    popularity: 0,
-    author: 'ZkNoid Team',
-  },
-  {
     id: 'znake',
     logo: '/image/games/soon.svg',
     rating: 0,

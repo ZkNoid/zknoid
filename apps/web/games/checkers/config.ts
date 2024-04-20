@@ -19,4 +19,8 @@ export const checkersConfig = createZkNoidGameConfig({
     CheckersLogic,
   },
   page: RandzuPage,
+  rules: `Checkers is a two-player game played on an 8x8 board. Players take turns moving their pieces diagonally forward, capturing opponent's pieces by jumping over them. A piece reaching the opponent's back row becomes a king and can move backward. 
+        
+  The game is won by capturing all of the opponent's pieces or by blocking them from moving
+  `
 });
