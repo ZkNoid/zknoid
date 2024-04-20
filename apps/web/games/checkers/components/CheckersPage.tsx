@@ -31,7 +31,9 @@ import {
   MainButtonState,
   PvPGameView,
 } from '@/components/framework/GamePage/PvPGameView';
-import RandzuCoverSVG from '@/public/image/game-page/game-title-template.svg';
+import CheckersCoverSVG from '@/public/image/game-page/game-title-template.svg';
+import CheckersCoverMobileSVG from '@/public/image/game-page/game-title-mobile-template.svg';
+
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import { getRandomEmoji } from '@/lib/emoji';
@@ -349,7 +351,9 @@ export default function RandzuPage({
   return (
     <GamePage
       gameConfig={checkersConfig}
-      image={RandzuCoverSVG}
+      image={CheckersCoverSVG}
+      mobileImage={CheckersCoverMobileSVG}
+
       defaultPage={'Game'}
     >
       <PvPGameView
