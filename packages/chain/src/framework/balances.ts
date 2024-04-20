@@ -25,6 +25,13 @@ export class Balances extends BaseBalances<BalancesConfig> {
   ): void {
     this.mint(tokenId, address, amount);
   }
+  @runtimeMethod()
+  public burnBalance(
+    tokenId: TokenId,
+    amount: Balance,
+  ): void {
+    this.burn(tokenId, this.transaction.sender.value, amount);
+  }
 }
 
 /*
