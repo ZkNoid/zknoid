@@ -96,6 +96,7 @@ export const loggingRouter = createTRPCRouter({
     .input(
       z.object({
         envContext: EnvContext,
+        isUnbridged: z.boolean(),
         amount: z.bigint(),
         userAddress: z.string(),
       })
@@ -110,7 +111,7 @@ export const loggingRouter = createTRPCRouter({
         ) {
           await telegramBot.sendMessage(
             process.env.MAIN_CHAT_ID,
-            `🚰 Bridged ${formatUnits(input.amount)} tokens by ${
+            `🚰 ${input.isUnbridged ? 'Unbridged' : 'Bridged'} ${formatUnits(input.amount)} tokens by ${
               input.userAddress
             }`
           );
@@ -119,6 +120,7 @@ export const loggingRouter = createTRPCRouter({
 
       await db.collection('logs').insertOne({
         event,
+        status: input.isUnbridged ? 'unbridged' : 'bridged',
         hostname: input.envContext,
         amount: input.amount,
         userAddress: input.userAddress,
