@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 
 import {
   useBridgeStore,
@@ -28,6 +28,8 @@ import { ProtokitLibrary, ZNAKE_TOKEN_ID } from 'zknoid-chain-dev';
 import { formatUnits } from '@/lib/unit';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
+import { DefaultRuntimeModules } from '@/lib/runtimeModules';
+import { buildClient } from '@/lib/utils';
 
 const BridgeInput = ({
   assets,
@@ -128,7 +130,9 @@ export const DepositMenuItem = () => {
   const protokitBalancesStore = useProtokitBalancesStore();
 
   const networkStore = useNetworkStore();
-  const contextAppChainClient = useContext(AppChainClientContext);
+
+  const defaultClient = useMemo(() => buildClient(DefaultRuntimeModules), []);
+  const contextAppChainClient = useContext(AppChainClientContext) || defaultClient;
 
   useEffect(() => {
     setAmountIn(bridgeStore.amount);
@@ -172,7 +176,7 @@ export const DepositMenuItem = () => {
       amount: formatUnits(amountIn, assetIn.decimals),
     });
 
-    const balances = contextAppChainClient!.runtime.resolve('Balances');
+    const balances = (contextAppChainClient!.runtime as any).resolve('Balances');
     const sender = PublicKey.fromBase58(networkStore.address!);
 
     const l2tx = await contextAppChainClient!.transaction(sender, () => {
@@ -196,7 +200,7 @@ export const DepositMenuItem = () => {
 
   const unbridge = async (amount: bigint) => {
     console.log('Burning', amount)
-    const balances = contextAppChainClient!.runtime.resolve('Balances');
+    const balances = (contextAppChainClient!.runtime as any).resolve('Balances');
     const sender = PublicKey.fromBase58(networkStore.address!);
 
     const l2tx = await contextAppChainClient!.transaction(sender, () => {

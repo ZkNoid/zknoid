@@ -3,13 +3,16 @@
 import 'reflect-metadata';
 
 import dynamic from 'next/dynamic';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Footer } from '@/components/Footer';
 import DesktopNavbar from '@/components/ui/games-store/DesktopNavbar';
 import { Section1 } from '@/components/ui/games-store/Section1';
 import { Section2 } from '@/components/ui/games-store/Section2';
 import { IGame, announcedGames, defaultGames } from './constants/games';
 import { MobileNavbar } from '@/components/ui/games-store/MobileNavbar';
+import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import { buildClient } from '@/lib/utils';
+import { DefaultRuntimeModules } from '@/lib/runtimeModules';
 
 const zkNoidConfig = import('@/games/config');
 
