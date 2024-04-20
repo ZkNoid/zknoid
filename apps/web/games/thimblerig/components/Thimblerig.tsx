@@ -28,6 +28,8 @@ import BallDashedSVG from '../assets/ball-dashed.svg';
 
 import ArrowSVG from '../assets/arrow.svg';
 import ThimblesMixing from '../assets/thimbles_mixing.json';
+import ThimblerigBallInsideLifting from '../assets/thimblerig_ball_lifting.json';
+import ThimblerigNoBallInsideLifting from '../assets/thimblerig_noball_lifting.json';
 
 import ThimblerigCoverSVG from '../assets/game-cover.svg';
 import ThimblerigCoverMobileSVG from '@/public/image/game-page/game-title-mobile-template.svg';
@@ -42,6 +44,7 @@ import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import { getRandomEmoji } from '@/lib/emoji';
 import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
+import { cn } from '@/lib/utils';
 
 enum GameState {
   WalletNotInstalled,
@@ -74,6 +77,16 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     undefined | { choice: 1 | 2 | 3; value: 1 | 2 | 3 }
   >(undefined);
   const [ballDragged, setBallDragged] = useState<boolean>(false);
+
+  const [correctBallAnimation, setCorrectBallAnimation] = useState<
+    undefined | 1 | 2 | 3
+  >(undefined);
+  const [guessedBallAnimation, setGuessedBallAnimation] = useState<
+    undefined | 1 | 2 | 3
+  >(undefined);
+  const [pausedAnimation, setPausedAnimation] = useState<
+    undefined | 1 | 2 | 3
+  >(undefined);
 
   const matchQueue = useThimblerigMatchQueueStore();
   const sessionPublicKey = useStore(useSessionKeyStore, (state) =>
@@ -496,10 +509,17 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
             gameState
           ) &&
             Array.from({ length: 3 }, (_, i) => {
+              const isCorrectAnimated = gameState == GameState.CurrentPlayerHiding &&
+              thimbleOpened &&
+              thimbleOpenedRef.current == i + 1;
+
               return (
                 <div
                   key={i}
-                  className="p-5"
+                  className={cn(
+                    'p-5',
+                    isCorrectAnimated && 'mx-[-20px] mt-[-55px]'
+                  )}
                   onDrop={() => {
                     gameState == GameState.CurrentPlayerHiding &&
                       commitThumblerig(i + 1);
@@ -513,7 +533,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                       thimbleOpenedRef.current == i + 1 &&
                       gameState == GameState.CurrentPlayerHiding
                     ) {
-                      setThimbleOpened(undefined);
+                      setPausedAnimation(undefined);
                     }
                   }}
                   onDragEnter={(e) => {
@@ -545,23 +565,47 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                     chooseThumblerig(i + 1)
                   }
                 >
-                  <Image
-                    src={getThimbleImage(i)}
-                    alt={'Thimble'}
-                    className={
-                      (gameState == GameState.CurrentPlayerHiding &&
-                        thimbleOpened &&
-                        thimbleOpenedRef.current != i + 1) ||
-                      ((gameState == GameState.CurrentPlayerGuessing ||
-                        gameState == GameState.WaitingForReveal) &&
-                        thimbleGuessed != undefined &&
-                        thimbleGuessed != i + 1) ||
-                      (gameState == GameState.CurrentPlayerRevealing &&
-                        Number(commitmentStore.value) != i + 1)
-                        ? 'pointer-events-none opacity-50'
-                        : 'pointer-events-none'
-                    }
-                  />
+                  {!isCorrectAnimated ? (
+                    <Image
+                      src={getThimbleImage(i)}
+                      alt={'Thimble'}
+                      className={
+                        
+                        ((gameState == GameState.CurrentPlayerGuessing ||
+                          gameState == GameState.WaitingForReveal) &&
+                          thimbleGuessed != undefined &&
+                          thimbleGuessed != i + 1) ||
+                        (gameState == GameState.CurrentPlayerRevealing &&
+                          Number(commitmentStore.value) != i + 1)
+                          ? 'pointer-events-none opacity-50'
+                          : 'pointer-events-none'
+                      }
+                    />
+                  ) : (
+                    <Lottie
+                      style={{}}
+                      options={{
+                        loop: false,
+                        animationData:
+                          correctBallAnimation == i + 1
+                            ? ThimblerigNoBallInsideLifting
+                            : ThimblerigNoBallInsideLifting,
+                      }}
+                      isPaused={pausedAnimation == i + 1}
+                      eventListeners={[
+                        {
+                          eventName: 'enterFrame',
+                          callback: ((e: any) => {
+                            console.log('the animation completed:', e)
+                            if (e.currentTime > e.totalTime / 2) {
+                              setPausedAnimation(i + 1 as 1 | 2 | 3)
+                            }
+                          
+                          }) as any
+                        },
+                      ]}
+                    ></Lottie>
+                  )}
                 </div>
               );
             })}
