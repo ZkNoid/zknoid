@@ -62,6 +62,7 @@ export const RateGame = ({
           >
             {[5, 4, 3, 2, 1].map((i) => (
               <svg
+                key={i}
                 width="40"
                 height="37"
                 viewBox="0 0 40 37"
