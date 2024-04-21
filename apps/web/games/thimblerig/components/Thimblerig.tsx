@@ -20,7 +20,6 @@ import { useCommitmentStore } from '@/lib/stores/commitmentStorage';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import { useMinaBridge } from '@/lib/stores/protokitBalances';
 import ThimbleSVG from '../assets/thimble.svg';
-import ThimbleOpenedSVG from '../assets/thimble_opened_und.svg';
 import ThimbleOpenedCorrectSVG from '../assets/thimble_opened_correct.svg';
 
 import BallSVG from '../assets/ball.svg';
@@ -29,6 +28,7 @@ import BallDashedSVG from '../assets/ball-dashed.svg';
 import ArrowSVG from '../assets/arrow.svg';
 import ThimblesMixing from '../assets/thimbles_mixing.json';
 import ThimblerigBallInsideLifting from '../assets/thimblerig_ball_lifting.json';
+import ThimblerigGuessedBallInsideLifting from '../assets/thimblerig_dashed_ball_lifting.json';
 import ThimblerigNoBallInsideLifting from '../assets/thimblerig_noball_lifting.json';
 
 import ThimblerigCoverSVG from '../assets/game-cover.svg';
@@ -45,6 +45,7 @@ import { getEnvContext } from '@/lib/envContext';
 import { getRandomEmoji } from '@/lib/emoji';
 import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
 import { cn } from '@/lib/utils';
+import AnimatedThimble from './AnimatedThimble';
 
 enum GameState {
   WalletNotInstalled,
@@ -77,16 +78,8 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     undefined | { choice: 1 | 2 | 3; value: 1 | 2 | 3 }
   >(undefined);
   const [ballDragged, setBallDragged] = useState<boolean>(false);
-
-  const [correctBallAnimation, setCorrectBallAnimation] = useState<
-    undefined | 1 | 2 | 3
-  >(undefined);
-  const [guessedBallAnimation, setGuessedBallAnimation] = useState<
-    undefined | 1 | 2 | 3
-  >(undefined);
-  const [pausedAnimation, setPausedAnimation] = useState<undefined | 1 | 2 | 3>(
-    undefined
-  );
+  const [finalAnimationStep, setFinalAnimationStep] = useState<number>(0);
+  let finalAnimationStepRef = useRef<number>(0);
 
   const matchQueue = useThimblerigMatchQueueStore();
   const sessionPublicKey = useStore(useSessionKeyStore, (state) =>
@@ -454,12 +447,6 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
   const getThimbleImage = (i: number) => {
     if (gameState == GameState.Won || gameState == GameState.Lost) {
-      if (revealedValue?.value == i + 1) {
-        return ThimbleOpenedCorrectSVG;
-      }
-      if (revealedValue?.choice == i + 1) {
-        return ThimbleOpenedSVG;
-      }
     }
 
     if (gameState == GameState.CurrentPlayerHiding) {
@@ -509,18 +496,25 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
             gameState
           ) &&
             Array.from({ length: 3 }, (_, i) => {
-              const isCorrectAnimated =
+              const hidingAnimation =
                 gameState == GameState.CurrentPlayerHiding &&
                 thimbleOpened &&
                 thimbleOpenedRef.current == i + 1;
 
+              const correctBallAnimation =
+                (gameState == GameState.Won || gameState == GameState.Lost) &&
+                revealedValue?.value == i + 1;
+              const guessedBallAnimation =
+                (gameState == GameState.Won || gameState == GameState.Lost) &&
+                finalAnimationStep == 1 &&
+                revealedValue?.choice == i + 1;
+              const isAnimated =
+                hidingAnimation || correctBallAnimation || guessedBallAnimation;
+
               return (
                 <div
                   key={i}
-                  className={cn(
-                    'p-5',
-                    isCorrectAnimated && 'mx-[-20px] mt-[-55px]'
-                  )}
+                  className={cn('p-5', isAnimated && 'mx-[-20px] mt-[-55px]')}
                   onDrop={() => {
                     gameState == GameState.CurrentPlayerHiding &&
                       commitThumblerig(i + 1);
@@ -529,14 +523,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                     e.preventDefault();
                     return false;
                   }}
-                  onDragLeave={(e) => {
-                    if (
-                      thimbleOpenedRef.current == i + 1 &&
-                      gameState == GameState.CurrentPlayerHiding
-                    ) {
-                      setPausedAnimation(undefined);
-                    }
-                  }}
+                  onDragLeave={(e) => {}}
                   onDragEnter={(e) => {
                     if (gameState == GameState.CurrentPlayerHiding) {
                       thimbleOpenedRef.current = (i + 1) as 1 | 2 | 3;
@@ -566,7 +553,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                     chooseThumblerig(i + 1)
                   }
                 >
-                  {!isCorrectAnimated ? (
+                  {!isAnimated ? (
                     <Image
                       src={getThimbleImage(i)}
                       alt={'Thimble'}
@@ -585,27 +572,21 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                       }
                     />
                   ) : (
-                    <Lottie
-                      style={{}}
-                      options={{
-                        loop: false,
-                        animationData:
-                          correctBallAnimation == i + 1
-                            ? ThimblerigNoBallInsideLifting
-                            : ThimblerigNoBallInsideLifting,
+                    <AnimatedThimble
+                      animation={
+                        correctBallAnimation
+                          ? ThimblerigBallInsideLifting
+                          : guessedBallAnimation
+                            ? ThimblerigGuessedBallInsideLifting
+                            : ThimblerigNoBallInsideLifting
+                      }
+                      onAnimationEnded={function (): void {
+                        if (gameState == GameState.Won || gameState == GameState.Lost) {
+                          finalAnimationStepRef.current = 1;
+                          setFinalAnimationStep(finalAnimationStepRef.current);
+                        }
                       }}
-                      isPaused={pausedAnimation == i + 1}
-                      eventListeners={[
-                        {
-                          eventName: 'enterFrame',
-                          callback: ((e: any) => {
-                            if (e.currentTime > e.totalTime / 2) {
-                              setPausedAnimation((i + 1) as 1 | 2 | 3);
-                            }
-                          }) as any,
-                        },
-                      ]}
-                    ></Lottie>
+                    />
                   )}
                 </div>
               );
