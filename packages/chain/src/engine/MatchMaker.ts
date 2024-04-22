@@ -136,7 +136,7 @@ export class MatchMaker extends LobbyManager {
     const sender = this.transaction.sender.value;
     const lobby = this.pendingLobby
       .get(lobbyIndex)
-      .orElse(this.getDefaultLobby(lobbyIndex.type));
+      .orElse(this.getDefaultLobby(lobbyIndex.type, lobbyIndex.roundId));
 
     assert(
       this.queueRegisteredRoundUsers
@@ -186,7 +186,7 @@ export class MatchMaker extends LobbyManager {
       Provable.if(
         shouldFlush,
         Lobby,
-        this.getDefaultLobby(pendingLobyIndex.type),
+        this.getDefaultLobby(pendingLobyIndex.type, lobby.id),
         lobby,
       ) as Lobby,
     );
@@ -196,16 +196,21 @@ export class MatchMaker extends LobbyManager {
     return activeLobby;
   }
 
-  private getDefaultLobby(type: UInt64): Lobby {
+  // Gets default lobby with id
+  private getDefaultLobby(type: UInt64, id: UInt64): Lobby {
     assert(
       type.lessThanOrEqual(this.lastDefaultLobby.get().value),
       'No such lobby',
     );
+
+    const customDefaultLobby = this.defaultLobbies.get(type).value;
+    customDefaultLobby.id = id;
+
     return Provable.if<Lobby>(
       type.equals(UInt64.zero),
       Lobby,
-      Lobby.default(UInt64.zero),
-      this.defaultLobbies.get(type).value,
+      Lobby.default(id),
+      customDefaultLobby,
     );
   }
 
