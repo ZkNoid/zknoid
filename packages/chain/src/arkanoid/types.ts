@@ -306,7 +306,7 @@ export class Ball extends Struct({
       Int64.from(1),
     );
 
-    let time = UInt64.from(1000);
+    let time = UInt64.from(PRECISION * 1000);
 
     time = Provable.if(
       hasLeftBump,
@@ -340,6 +340,9 @@ export class Ball extends Struct({
         .div(this.speed.y.magnitude),
       time,
     );
+
+    // If brick is destroyed - set collision time to insinite
+    time = Provable.if(isAlive, time, UInt64.from(PRECISION * 1000));
 
     let position = IntPoint.from(0, 0);
     position.x = prevBallPos.x.add(this.speed.x.mul(time).div(PRECISION));
