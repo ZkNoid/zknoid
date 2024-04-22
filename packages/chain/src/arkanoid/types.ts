@@ -13,6 +13,7 @@ import {
   CHUNK_LENGTH,
   GAME_LENGTH,
   MAX_BRICKS,
+  PRECISION,
 } from './constants';
 import { inRange } from './utility';
 
@@ -293,11 +294,62 @@ export class Ball extends Struct({
       hasRightBump.or(hasLeftBump).or(hasTopBump).or(hasBottomBump),
     );
 
+    let speedModifier = IntPoint.from(1, 1);
+    speedModifier.x = Provable.if(
+      hasRightBump.or(hasLeftBump),
+      Int64.from(-1),
+      Int64.from(1),
+    );
+    speedModifier.y = Provable.if(
+      hasTopBump.or(hasBottomBump),
+      Int64.from(-1),
+      Int64.from(1),
+    );
+
+    let time = UInt64.from(1000);
+
+    time = Provable.if(
+      hasLeftBump,
+      leftBorder
+        .sub(prevBallPos.x)
+        .magnitude.mul(PRECISION)
+        .div(this.speed.x.magnitude),
+      time,
+    );
+    time = Provable.if(
+      hasRightBump,
+      prevBallPos.x
+        .sub(rightBorder)
+        .magnitude.mul(PRECISION)
+        .div(this.speed.x.magnitude),
+      time,
+    );
+    time = Provable.if(
+      hasTopBump,
+      prevBallPos.y
+        .sub(topBorder)
+        .magnitude.mul(PRECISION)
+        .div(this.speed.y.magnitude),
+      time,
+    );
+    time = Provable.if(
+      hasBottomBump,
+      bottomBorder
+        .sub(prevBallPos.y)
+        .magnitude.mul(PRECISION)
+        .div(this.speed.y.magnitude),
+      time,
+    );
+
+    let position = IntPoint.from(0, 0);
+    position.x = prevBallPos.x.add(this.speed.x.mul(time).div(PRECISION));
+    position.y = prevBallPos.y.add(this.speed.y.mul(time).div(PRECISION));
+
     return new Collision({
-      time: UInt64.zero,
+      time,
       target: brick,
-      position: this.position,
-      speedModifier: IntPoint.from(1, 1),
+      position,
+      speedModifier,
     });
 
     // Reduce health if coliision happend and brick is not dead
