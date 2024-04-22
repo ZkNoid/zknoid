@@ -35,8 +35,6 @@ import { DebugCheckbox } from '@/components/framework/GameWidget/DebugCheckbox';
 import { UnsetCompetitionPopup } from '@/components/framework/GameWidget/UnsetCompetitionPopup';
 import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
 import { FullscreenButton } from '@/components/framework/GameWidget/FullscreenButton';
-import { AnimatePresence, motion } from 'framer-motion';
-import { LoadSpinner } from '@/components/ui/games-store/shared/LoadSpinner';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import ArkanoidCoverSVG from '../assets/game-cover.svg';
@@ -104,7 +102,7 @@ export default function ArkanoidPage({
       gameId: 'arkanoid',
       userAddress: networkStore.address ?? '',
       envContext: getEnvContext(),
-    })
+    });
 
     setGameState(GameState.Active);
     setGameId(gameId + 1);
@@ -227,6 +225,7 @@ export default function ArkanoidPage({
             </div>
           </>
         )}
+
         <GameWidget
           gameId={arkanoidConfig.id}
           ticks={ticksAmount}
@@ -309,6 +308,9 @@ export default function ArkanoidPage({
             setIsFullscreen={setIsFullscreen}
           />
         </GameWidget>
+        <span className={'block w-full text-headline-2 font-bold lg:hidden'}>
+          Game
+        </span>
         <Competition
           startGame={startGame}
           competition={competition}
