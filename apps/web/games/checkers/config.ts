@@ -1,10 +1,12 @@
 import { createZkNoidGameConfig } from '@/lib/createConfig';
+import { ZkNoidGameType } from '@/lib/platform/game_types';
 import { CheckersLogic } from 'zknoid-chain-dev';
 import RandzuPage from './components/CheckersPage';
 import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
 
 export const checkersConfig = createZkNoidGameConfig({
   id: 'checkers',
+  type: ZkNoidGameType.PVP,
   name: 'Checkers game',
   description:
     'Two players take turns placing pieces on the board attempting to create lines of 5 of their own color',
@@ -22,5 +24,5 @@ export const checkersConfig = createZkNoidGameConfig({
   rules: `Checkers is a two-player game played on an 8x8 board. Players take turns moving their pieces diagonally forward, capturing opponent's pieces by jumping over them. A piece reaching the opponent's back row becomes a king and can move backward. 
         
   The game is won by capturing all of the opponent's pieces or by blocking them from moving
-  `
+  `,
 });
