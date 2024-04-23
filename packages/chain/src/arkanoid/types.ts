@@ -172,8 +172,12 @@ export class Ball extends Struct({
   }
 
   movePortion(portion: UInt64): void {
-    this.position.x = this.position.x.add(this.speed.x.mul(portion).div(100));
-    this.position.y = this.position.y.add(this.speed.y.mul(portion).div(100));
+    this.position.x = this.position.x.add(
+      this.speed.x.mul(portion).div(PRECISION),
+    );
+    this.position.y = this.position.y.add(
+      this.speed.y.mul(portion).div(PRECISION),
+    );
   }
 
   move(): void {

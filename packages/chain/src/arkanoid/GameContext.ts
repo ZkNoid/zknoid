@@ -137,7 +137,7 @@ export class GameContext extends Struct({
 
     curTime = curTime.add(
       Provable.if(
-        leftBump,
+        rightBump,
         Int64.from(FIELD_PIXEL_WIDTH)
           .sub(prevBallPos.x)
           .mul(PRECISION)
@@ -240,6 +240,17 @@ export class GameContext extends Struct({
       this.ball.speed.y.neg(),
       this.ball.speed.y,
     );
+
+    Provable.asProver(() => {
+      if (curTime.greaterThan(UInt64.from(PRECISION)).toBoolean()) {
+        console.log(`Problem with time`);
+        console.log('Current time: ', curTime.toString());
+        console.log(`Left bump ${leftBump.toString()}`);
+        console.log(`Right bump ${rightBump.toString()}`);
+        console.log(`Top bump ${topBump.toString()}`);
+        console.log(`Bottom bump ${bottomBump.toString()}`);
+      }
+    });
 
     // Update nearest bricks
     this.updateNearestBricks();
@@ -559,6 +570,30 @@ export class GameContext extends Struct({
   ): [UInt64, IntPoint] {
     const collisionHappen = collision.time.lessThan(UInt64.from(PRECISION));
 
+    Provable.asProver(() => {
+      if (collisionHappen.toBoolean()) {
+        let modifier = collision.speedModifier;
+        console.log(
+          `Speed modifier: [${modifier.x.toString()}][${modifier.y.toString()}]`,
+        );
+
+        console.log(
+          `Speed before: [${this.ball.speed.x.toString()}][${this.ball.speed.y.toString()}]`,
+        );
+
+        let newSpeed = Provable.if<IntPoint>(
+          collisionHappen,
+          IntPoint,
+          this.ball.speed.mulByPoint(collision.speedModifier),
+          this.ball.speed,
+        );
+
+        console.log(
+          `Speed before: [${newSpeed.x.toString()}][${newSpeed.y.toString()}]`,
+        );
+      }
+    });
+
     this.totalLeft = Provable.if(
       collisionHappen,
       this.totalLeft.sub(1),
@@ -598,9 +633,17 @@ export class GameContext extends Struct({
 
     const moveTime = Provable.if(
       collisionHappen,
-      collision.time.sub(currentTime),
+      Int64.from(PRECISION).sub(currentTime).sub(collision.time).magnitude,
       UInt64.from(0),
     );
+
+    Provable.asProver(() => {
+      if (collisionHappen.toBoolean()) {
+        console.log(`Current time: [${currentTime.toString()}]`);
+        console.log(`collision time: [${collision.time.toString()}]`);
+        console.log(`Move time: [${moveTime.toString()}]`);
+      }
+    });
 
     this.ball.movePortion(moveTime);
 
