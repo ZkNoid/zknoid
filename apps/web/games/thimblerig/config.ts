@@ -1,10 +1,12 @@
 import { createZkNoidGameConfig } from '@/lib/createConfig';
+import { ZkNoidGameType } from '@/lib/platform/game_types';
 import { ThimblerigLogic } from 'zknoid-chain-dev';
 import Thimblerig from './components/Thimblerig';
 import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
 
 export const thimblerigConfig = createZkNoidGameConfig({
   id: 'thimblerig',
+  type: ZkNoidGameType.PVP,
   name: 'Thimblerig game',
   description:
     'One player hides a ball behind a thimbler and second player needs to guess which thimbler it was',

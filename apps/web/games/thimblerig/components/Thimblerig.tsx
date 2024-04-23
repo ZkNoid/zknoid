@@ -581,7 +581,10 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                             : ThimblerigNoBallInsideLifting
                       }
                       onAnimationEnded={function (): void {
-                        if (gameState == GameState.Won || gameState == GameState.Lost) {
+                        if (
+                          gameState == GameState.Won ||
+                          gameState == GameState.Lost
+                        ) {
                           finalAnimationStepRef.current = 1;
                           setFinalAnimationStep(finalAnimationStepRef.current);
                         }
@@ -611,7 +614,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
           {gameState == GameState.CurrentPlayerHiding && (
             <div className="flex w-1/2 flex-row items-center justify-between gap-1 py-10 font-museo text-[24px]/[24px]">
               <div
-                className="block min-h-[56px] min-w-[56px]"
+                className="block min-h-[56px] min-w-[56px] cursor-grab"
                 draggable={true}
                 onDrag={() => setBallDragged(true)}
                 onDragEnd={() => setBallDragged(false)}

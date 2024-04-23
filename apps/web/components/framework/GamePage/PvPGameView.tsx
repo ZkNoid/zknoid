@@ -5,6 +5,8 @@ import { api } from '@/trpc/react';
 import Link from 'next/link';
 import { PublicKey } from 'o1js';
 import { ReactNode } from 'react';
+import Image from 'next/image';
+import znakesImg from '@/public/image/tokens/znakes.svg';
 
 export enum MainButtonState {
   WalletNotInstalled,
@@ -75,7 +77,12 @@ export const PvPGameView = (props: PvPGameViewProps) => {
               className="flex cursor-pointer items-center justify-center rounded bg-left-accent py-2 font-plexsans text-[20px]/[20px] font-medium text-black"
               onClick={props.startGame}
             >
-              START FOR {formatUnits(props.startPrice)} 🪙
+              START FOR {formatUnits(props.startPrice)}
+              <Image
+                src={znakesImg}
+                alt={'Znakes token'}
+                className={'h-[24px] w-[24px] pl-2'}
+              />
             </div>
           )}
           {props.mainButtonState == MainButtonState.WalletNotInstalled && (
