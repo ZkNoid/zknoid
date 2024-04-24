@@ -348,6 +348,13 @@ export class Ball extends Struct({
     // If brick is destroyed - set collision time to insinite
     time = Provable.if(isAlive, time, UInt64.from(PRECISION * 1000));
 
+    // Do not account collisions in zero time
+    time = Provable.if(
+      time.equals(UInt64.zero),
+      UInt64.from(PRECISION * 1000),
+      time,
+    );
+
     let position = IntPoint.from(0, 0);
     position.x = prevBallPos.x.add(this.speed.x.mul(time).div(PRECISION));
     position.y = prevBallPos.y.add(this.speed.y.mul(time).div(PRECISION));
