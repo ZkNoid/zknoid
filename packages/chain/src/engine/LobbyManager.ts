@@ -117,6 +117,12 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   }
 
   @runtimeMethod()
+  public joinLobbyWithSessionKey(lobbyId: UInt64, sessionKey: PublicKey): void {
+    this.sessions.set(sessionKey, this.transaction.sender.value);
+    this.joinLobby(lobbyId);
+  }
+
+  @runtimeMethod()
   public joinLobby(lobbyId: UInt64): void {
     const lobby = this.activeLobby.get(lobbyId).orElse(Lobby.default(lobbyId));
     this._joinLobby(lobby);
