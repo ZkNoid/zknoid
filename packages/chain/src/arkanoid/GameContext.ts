@@ -553,10 +553,10 @@ export class GameContext extends Struct({
     return dist;
   }
 
-  updateBrick(pos: IntPoint, value: UInt64): void {
+  updateBrick(pos: IntPoint, value: UInt64, shouldUpdate: Bool): void {
     for (let i = 0; i < MAX_BRICKS; i++) {
       this.bricks.bricks[i].value = Provable.if(
-        pos.equals(this.bricks.bricks[i].pos),
+        pos.equals(this.bricks.bricks[i].pos).and(shouldUpdate),
         value,
         this.bricks.bricks[i].value,
       );
@@ -613,7 +613,7 @@ export class GameContext extends Struct({
     );
 
     // Update brick health
-    this.updateBrick(collision.target.pos, newBrickValue);
+    this.updateBrick(collision.target.pos, newBrickValue, collisionHappen);
 
     // Update ball speed
     this.ball.speed = Provable.if<IntPoint>(
