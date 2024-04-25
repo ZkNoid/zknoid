@@ -1,62 +1,16 @@
-import { Currency } from '@/constants/currency';
 import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
 import { useState } from 'react';
 import { Popover } from '@/components/ui/games-store/shared/Popover';
+import { ILobby } from '@/lib/types';
+import { LobbyItem } from '@/components/framework/Lobby/LobbyItem';
 
-export const LobbyList = () => {
-  const LobbyItem = ({
-    index,
-    name,
-    reward,
-    fee,
-    maxPlayers,
-    players,
-  }: {
-    index: number;
-    name: string;
-    reward: number;
-    fee: number;
-    maxPlayers: number;
-    players: number;
-  }) => {
-    return (
-      <div className="my-2 grid grid-cols-4 gap-y-2 border-y p-3 uppercase">
-        <span
-          className={
-            'flex flex-row items-center gap-2 text-[20px]/[20px] font-medium uppercase text-left-accent'
-          }
-        >
-          <span>[{index}]</span>
-          <span>{name}</span>
-        </span>
-        <div className="max-w-fit rounded-2xl bg-left-accent p-2 text-center font-plexsans text-[14px]/[14px] font-medium uppercase text-bg-dark">
-          {reward} {Currency.ZNAKES} Max reward
-        </div>
-        <div className="max-w-fit rounded-2xl border border-foreground bg-bg-dark p-2 text-center font-plexsans text-[14px]/[14px] font-medium uppercase text-foreground">
-          {fee} {Currency.ZNAKES} Participants fee
-        </div>
-        <div
-          className={
-            'col-start-2 col-end-2 row-start-2 flex flex-row gap-2 text-left-accent'
-          }
-        >
-          <span className={'uppercase'}>Max participants:</span>
-          <span>{maxPlayers} players</span>
-        </div>
-        <div
-          className={'col-start-3 col-end-3 row-start-2 flex flex-row gap-2'}
-        >
-          <span className={'uppercase'}>Players in Lobby:</span>
-          <span>{players} players</span>
-        </div>
-      </div>
-    );
-  };
-
+export const LobbyList = ({ lobbys }: { lobbys: ILobby[] }) => {
   const [sortBy, setSortBy] = useState<string>('From high to low');
 
   return (
-    <div className={'col-start-1 col-end-4 row-start-3 flex flex-col'}>
+    <div
+      className={'col-start-1 col-end-4 row-span-4 row-start-3 flex flex-col'}
+    >
       <div className={'flex w-full flex-row justify-between py-2'}>
         <div className={'flex flex-row gap-1'}>
           <div className={'text-headline-1'}>Lobby list</div>
@@ -111,38 +65,21 @@ export const LobbyList = () => {
           setSortBy={setSortBy}
         />
       </div>
-      <LobbyItem
-        index={1}
-        name={'Test Lobby'}
-        reward={6}
-        fee={3}
-        maxPlayers={2}
-        players={0}
-      />
-      <LobbyItem
-        index={2}
-        name={'Test Lobby'}
-        reward={6}
-        fee={3}
-        maxPlayers={2}
-        players={0}
-      />
-      <LobbyItem
-        index={3}
-        name={'Test Lobby'}
-        reward={6}
-        fee={3}
-        maxPlayers={2}
-        players={0}
-      />
-      <LobbyItem
-        index={4}
-        name={'Test Lobby'}
-        reward={6}
-        fee={3}
-        maxPlayers={2}
-        players={0}
-      />
+      <div className={'flex w-full flex-col gap-0'}>
+        {lobbys.map((item, index) => (
+          <LobbyItem
+            key={index}
+            id={item.id}
+            name={item.name}
+            reward={item.reward}
+            fee={item.fee}
+            maxPlayers={item.maxPlayers}
+            players={item.players}
+            currency={item.currency}
+            accessKey={item.accessKey}
+          />
+        ))}
+      </div>
     </div>
   );
 };

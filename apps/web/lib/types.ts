@@ -62,5 +62,16 @@ export interface ICompetitionPVP {
   startPrice: bigint;
 }
 
+export interface ILobby {
+  id: number;
+  name: string;
+  reward: bigint;
+  fee: bigint;
+  maxPlayers: number;
+  players: number;
+  currency: Currency;
+  accessKey: string; // TEMPORARY!!!
+}
+
 const bricksInRow = 5;
 const bricksInCol = 2;
