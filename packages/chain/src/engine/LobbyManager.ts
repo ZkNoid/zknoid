@@ -64,6 +64,10 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   );
   @state() public activeLobby = StateMap.from<UInt64, Lobby>(UInt64, Lobby);
   @state() public lastLobbyId = State.from<UInt64>(UInt64);
+  @state() public currentLobby = StateMap.from<PublicKey, UInt64>(
+    PublicKey,
+    UInt64,
+  );
 
   // Session => user
   @state() public sessions = StateMap.from<PublicKey, PublicKey>(
@@ -101,6 +105,7 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   public joinLobby(lobbyId: UInt64): void {
     const lobby = this.activeLobby.get(lobbyId).orElse(Lobby.default(lobbyId));
     this._joinLobby(lobby);
+    this.currentLobby.set(this.transaction.sender.value, lobbyId);
     this.activeLobby.set(lobbyId, lobby);
   }
 
@@ -134,7 +139,7 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   }
 
   protected _addLobby(lobby: Lobby, shouldUpdate: Bool): Lobby {
-    const lobbyId = this.lastLobbyId.get().value;
+    const lobbyId = this.lastLobbyId.get().orElse(UInt64.from(1));
     lobby.id = lobbyId;
     this.activeLobby.set(lobbyId, lobby); // It will be overwriteen later, so dont care about this
     const addValue = Provable.if(shouldUpdate, UInt64.from(1), UInt64.from(0));

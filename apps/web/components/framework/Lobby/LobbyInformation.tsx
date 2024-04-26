@@ -108,21 +108,13 @@ export const LobbyInformation = ({
             <span className={'col-start-4 col-end-6'}>Status</span>
           </div>
           <div className={'flex flex-col'}>
-            <PlayersListItem
-              account={'1N4Qbzg6LSXUXyX...'}
-              state={PlayerStates.Waiting}
-              index={1}
-            />
-            <PlayersListItem
-              account={'1N4Qbzg6LSXUXyX...'}
-              state={PlayerStates.Ready}
-              index={2}
-            />
-            <PlayersListItem
-              account={'1N4Qbzg6LSXUXyX...'}
-              state={PlayerStates.Waiting}
-              index={3}
-            />
+            {lobby.playersAddresses && lobby.playersAddresses.map((player, index) => {
+              return <PlayersListItem
+                account={player.toBase58()}
+                state={PlayerStates.Ready}
+                index={index}
+              />
+            })}
           </div>
         </div>
         <div className={'flex-grow'} />

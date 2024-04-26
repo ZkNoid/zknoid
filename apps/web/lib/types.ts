@@ -1,5 +1,6 @@
 import { Currency } from '@/constants/currency';
 import { ZkNoidGameGenre } from '@/lib/platform/game_tags';
+import { PublicKey } from 'o1js';
 
 export interface Ball {
   x: number;
@@ -69,6 +70,7 @@ export interface ILobby {
   fee: bigint;
   maxPlayers: number;
   players: number;
+  playersAddresses?: PublicKey[];
   currency: Currency;
   accessKey: string; // TEMPORARY!!!
 }
