@@ -7,12 +7,14 @@ import { FastMatchmaking } from '@/components/framework/Lobby/FastMatchmaking';
 import { LobbyList } from '@/components/framework/Lobby/LobbyList';
 import { Popover } from '@/components/ui/games-store/shared/Popover';
 import { LobbyInformation } from '@/components/framework/Lobby/LobbyInformation';
-import { CreateNewLobby } from '@/components/framework/Lobby/CreateNewLobby';
+import { CreateNewLobbyBtn } from '@/components/framework/Lobby/CreateNewLobbyBtn';
 import { usePvpLobbyStorage } from '@/lib/stores/pvpLobbyStore';
 import { ILobby } from '@/lib/types';
 import { Currency } from '@/constants/currency';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { CreateNewLobby } from '@/components/framework/Lobby/CreateNewLobby';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export default function RandzuLobby({
   params,
@@ -20,8 +22,11 @@ export default function RandzuLobby({
   params: { lobbyId: string };
 }) {
   const pvpLobbyStorage = usePvpLobbyStorage();
-
   const searchParams = useSearchParams();
+  const [currentLobby, setCurrentLobby] = useState<ILobby | undefined>(
+    undefined
+  );
+  const [isCreationMode, setIsCreationMode] = useState<boolean>(false);
 
   useEffect(() => {
     const lobbyKey = searchParams.get('key');
@@ -99,10 +104,6 @@ export default function RandzuLobby({
   //     pvpLobbyStorage.setLastLobbyId(currentLobby.id);
   // }, [currentLobby, params.lobbyId]);
 
-  const [currentLobby, setCurrentLobby] = useState<ILobby | undefined>(
-    undefined
-  );
-
   useEffect(() => {
     if (params.lobbyId !== 'undefined') {
       const lobby = lobbys.find(
@@ -179,27 +180,51 @@ export default function RandzuLobby({
             </div>
           )}
         </div>
-        {currentLobby ? (
-          <>
-            <div className={'col-start-4 col-end-6 row-span-4 h-full w-full'}>
+        <AnimatePresence mode={'wait'} initial={false}>
+          {isCreationMode ? (
+            <CreateNewLobby
+              onClick={() => setIsCreationMode(!isCreationMode)}
+            />
+          ) : currentLobby ? (
+            <>
               <LobbyInformation
                 lobby={currentLobby}
                 gameName={randzuConfig.name}
               />
-            </div>
-            <span className={'text-headline-1'}>Lobby creation</span>
-            <div className={'col-start-4 col-end-6 row-span-1 h-full w-full'}>
-              <CreateNewLobby />
-            </div>
-          </>
-        ) : (
-          <>
-            <span className={'text-headline-1'}>Lobby creation</span>
-            <div className={'col-start-4 col-end-6 row-span-1 h-full w-full'}>
-              <CreateNewLobby />
-            </div>
-          </>
-        )}
+              <motion.span
+                className={'text-headline-1'}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ type: 'spring', duration: 0.8, bounce: 0 }}
+              >
+                Lobby creation
+              </motion.span>
+
+              <CreateNewLobbyBtn
+                onClick={() => setIsCreationMode(!isCreationMode)}
+              />
+            </>
+          ) : (
+            <>
+              <motion.span
+                className={
+                  ' col-start-4 col-end-6 row-span-1 row-start-1 text-headline-1'
+                }
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ type: 'spring', duration: 0.8, bounce: 0 }}
+              >
+                Lobby creation
+              </motion.span>
+
+              <CreateNewLobbyBtn
+                onClick={() => setIsCreationMode(!isCreationMode)}
+              />
+            </>
+          )}
+        </AnimatePresence>
         <LobbyList lobbys={lobbys} />
       </LobbyWrap>
     </GamePage>

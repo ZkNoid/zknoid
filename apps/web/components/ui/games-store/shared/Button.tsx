@@ -40,17 +40,14 @@ export const Button = ({
           },
           className
         )}
+        onClick={!isReadonly ? onClick : undefined}
       >
         {(startContent || endContent) && (
           <div className={'flex flex-row items-center justify-end'}>
             {startContent}
           </div>
         )}
-        <Link
-          href={!isReadonly ? href : '#'}
-          onClick={!isReadonly ? onClick : undefined}
-          className={'w-full min-w-[40%]'}
-        >
+        <Link href={!isReadonly ? href : '#'} className={'w-full min-w-[40%]'}>
           {label}
         </Link>
         {(startContent || endContent) && (
@@ -76,18 +73,14 @@ export const Button = ({
           },
           className
         )}
+        onClick={!isReadonly ? onClick : undefined}
       >
         {(startContent || endContent) && (
           <div className={'flex flex-row items-center justify-end'}>
             {startContent}
           </div>
         )}
-        <button
-          className={'min-w-[40%]'}
-          onClick={!isReadonly ? onClick : undefined}
-        >
-          {label}
-        </button>
+        <button className={'min-w-[40%]'}>{label}</button>
         {(startContent || endContent) && (
           <div className={'flex flex-row items-center justify-end'}>
             {endContent}

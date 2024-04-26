@@ -69,7 +69,7 @@ export default function NewArkanoidCompetitionPage() {
   const [competitionFrom, setCompetitionFrom] = useState(getDate(2));
   const [competitionTo, setCompetitionTo] = useState(getDate(5));
   const [funding, setFunding] = useState(0);
-  const [participationFee, setPerticipationFee] = useState(0);
+  const [participationFee, setParticipationFee] = useState(0);
 
   const [bricks, setBricks] = useState<IBrick[]>([]);
 
@@ -650,7 +650,7 @@ export default function NewArkanoidCompetitionPage() {
                     type={'number'}
                     inputMode={'numeric'}
                     value={participationFee}
-                    setValue={setPerticipationFee}
+                    setValue={setParticipationFee}
                     isRequired={true}
                     isInvalid={isParticipantFeeInvalid}
                     invalidMessage={'Please fill out this field correctly'}
