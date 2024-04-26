@@ -30,7 +30,16 @@ export default function RandzuLobby({
 
   useEffect(() => {
     const lobbyKey = searchParams.get('key');
-    if (lobbyKey) pvpLobbyStorage.setConnectedLobbyKey(lobbyKey);
+    if (
+      lobbyKey &&
+      lobbys.find(
+        (lobby) =>
+          lobby.accessKey === lobbyKey && lobby.id.toString() === params.lobbyId
+      )
+    ) {
+      pvpLobbyStorage.setConnectedLobbyKey(lobbyKey);
+      pvpLobbyStorage.setConnectedLobbyId(Number(params.lobbyId));
+    }
   }, [searchParams]);
 
   const lobbys: ILobby[] = [
