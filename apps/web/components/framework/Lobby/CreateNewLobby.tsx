@@ -9,7 +9,8 @@ import { motion, useCycle } from 'framer-motion';
 import { Modal } from '@/components/ui/games-store/shared/Modal';
 import { usePvpLobbyStorage } from '@/lib/stores/pvpLobbyStore';
 
-export const CreateNewLobby = ({ onClick }: { onClick: () => void }) => {
+export const CreateNewLobby = (
+  { createLobby, setIsCreationMode }: { createLobby: (name: string, participationFee: number) => Promise<void>, setIsCreationMode: (val: boolean) => void }) => {
   const [newLobbyName, setNewLobbyName] = useState<string>();
   const [participationFee, setParticipationFee] = useState<number>();
   const [isParticipantFeeInvalid, setIsParticipantFeeInvalid] =
@@ -179,7 +180,13 @@ export const CreateNewLobby = ({ onClick }: { onClick: () => void }) => {
           trigger={
             <Button
               label={'Create lobby'}
-              onClick={() => {
+              onClick={async () => {
+                if (!newLobbyName || !participationFee) {
+                  console.log("No lobby name or participation fee");
+                  return;
+                }
+                await createLobby(newLobbyName, participationFee);
+
                 pvpLobbyStore.setOwnedLobbyId(createdLobbyID);
                 pvpLobbyStore.setOwnedLobbyKey(createdLobbyKey);
                 pvpLobbyStore.setConnectedLobbyId(createdLobbyID);
@@ -241,7 +248,7 @@ export const CreateNewLobby = ({ onClick }: { onClick: () => void }) => {
               label={'Close'}
               onClick={() => {
                 toggleSuccessModalOpen();
-                onClick();
+                setIsCreationMode(false);
               }}
             />
           </div>
