@@ -9,8 +9,13 @@ import { motion, useCycle } from 'framer-motion';
 import { Modal } from '@/components/ui/games-store/shared/Modal';
 import { usePvpLobbyStorage } from '@/lib/stores/pvpLobbyStore';
 
-export const CreateNewLobby = (
-  { createLobby, setIsCreationMode }: { createLobby: (name: string, participationFee: number) => Promise<void>, setIsCreationMode: (val: boolean) => void }) => {
+export const CreateNewLobby = ({
+  createLobby,
+  setIsCreationMode,
+}: {
+  createLobby: (name: string, participationFee: number) => Promise<void>;
+  setIsCreationMode: (val: boolean) => void;
+}) => {
   const [newLobbyName, setNewLobbyName] = useState<string>();
   const [participationFee, setParticipationFee] = useState<number>();
   const [isParticipantFeeInvalid, setIsParticipantFeeInvalid] =
@@ -181,8 +186,13 @@ export const CreateNewLobby = (
             <Button
               label={'Create lobby'}
               onClick={async () => {
-                if (!newLobbyName || !participationFee) {
-                  console.log("No lobby name or participation fee");
+                if (
+                  newLobbyName == undefined ||
+                  participationFee == undefined
+                ) {
+                  console.log(newLobbyName);
+                  console.log(participationFee);
+                  console.log('No lobby name or participation fee');
                   return;
                 }
                 await createLobby(newLobbyName, participationFee);
