@@ -22,7 +22,7 @@ export const lobbyInitializer =
     lobbies: [],
     currentLobby: undefined,
     async loadLobbies(query: ModuleQuery<LobbyManager>) {
-            set((state) => {
+      set((state) => {
         state.loading = true;
       });
 
@@ -34,6 +34,7 @@ export const lobbyInitializer =
         return;
       }
 
+      console.log('Last lobby id: ', +lastLobbyId);
       for (let i = 0; i < +lastLobbyId; i++) {
         let curLobby = await query.activeLobby.get(UInt64.from(i));
 
@@ -41,7 +42,7 @@ export const lobbyInitializer =
           const players = +curLobby.curAmount;
           lobbies.push({
             id: i,
-            name: "?",
+            name: curLobby.name.toString(),
             reward: 0n,
             fee: curLobby.participationFee.toBigInt(),
             maxPlayers: 2,

@@ -5,7 +5,7 @@ import {
   state,
 } from '@proto-kit/module';
 import { State, StateMap, assert } from '@proto-kit/protocol';
-import { Bool, Provable, PublicKey, Struct, UInt64 } from 'o1js';
+import { Bool, CircuitString, Provable, PublicKey, Struct, UInt64 } from 'o1js';
 
 import { Balances, UInt64 as ProtoUInt64 } from '@proto-kit/library';
 import { inject } from 'tsyringe';
@@ -21,14 +21,26 @@ export class RoundIdxUser extends Struct({
 
 export class Lobby extends Struct({
   id: UInt64,
+  name: CircuitString,
   players: Provable.Array(PublicKey, PLAYER_AMOUNT),
   curAmount: UInt64,
   participationFee: ProtoUInt64,
   started: Bool,
 }) {
+  static from(name: CircuitString, participationFee: ProtoUInt64): Lobby {
+    return new Lobby({
+      id: UInt64.zero,
+      name,
+      players: [...Array(PLAYER_AMOUNT)].map((n) => PublicKey.empty()),
+      curAmount: UInt64.zero,
+      participationFee,
+      started: Bool(false),
+    });
+  }
   static default(id: UInt64): Lobby {
     return new Lobby({
       id,
+      name: CircuitString.fromString('Default'),
       players: [...Array(PLAYER_AMOUNT)].map((n) => PublicKey.empty()),
       curAmount: UInt64.zero,
       participationFee: DEFAULT_PARTICIPATION_FEE,
@@ -97,8 +109,11 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   }
 
   @runtimeMethod()
-  public createLobby(): Lobby {
-    return this._addLobby(Lobby.default(UInt64.zero), Bool(true));
+  public createLobby(
+    name: CircuitString,
+    participationFee: ProtoUInt64,
+  ): Lobby {
+    return this._addLobby(Lobby.from(name, participationFee), Bool(true));
   }
 
   @runtimeMethod()

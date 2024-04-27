@@ -16,11 +16,12 @@ import { useContext, useEffect, useState } from 'react';
 import { CreateNewLobby } from '@/components/framework/Lobby/CreateNewLobby';
 import { AnimatePresence, motion } from 'framer-motion';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
-import { ClientAppChain } from 'zknoid-chain-dev';
-import { PublicKey } from 'o1js';
+import { ClientAppChain, ProtoUInt64 } from 'zknoid-chain-dev';
+import { CircuitString, PublicKey } from 'o1js';
 import { useNetworkStore } from '@/lib/stores/network';
+import { useObserveRandzuLobbiesStore, useRandzuLobbiesStore } from '../stores/lobbiesStore';
 
-const lobbys: ILobby[] = [
+const lobbysOld: ILobby[] = [
   {
     id: 1,
     name: 'Test Lobby',
@@ -88,6 +89,7 @@ export default function RandzuLobby({
 }: {
   params: { lobbyId: string };
 }) {
+  const lobbiesStore = useRandzuLobbiesStore();
   const pvpLobbyStorage = usePvpLobbyStorage();
   const searchParams = useSearchParams();
   const networkStore = useNetworkStore();
@@ -95,6 +97,7 @@ export default function RandzuLobby({
     undefined
   );
   const [isCreationMode, setIsCreationMode] = useState<boolean>(false);
+  
 
   const client = useContext(AppChainClientContext) as ClientAppChain<
     typeof randzuConfig.runtimeModules,
@@ -107,11 +110,13 @@ export default function RandzuLobby({
     throw Error('Context app chain client is not set');
   }
 
+  useObserveRandzuLobbiesStore();
+
   useEffect(() => {
     const lobbyKey = searchParams.get('key');
     if (
       lobbyKey &&
-      lobbys.find(
+      lobbiesStore.lobbies.find(
         (lobby) =>
           lobby.accessKey === lobbyKey && lobby.id.toString() === params.lobbyId
       )
@@ -131,23 +136,23 @@ export default function RandzuLobby({
 
   useEffect(() => {
     if (params.lobbyId !== 'undefined') {
-      const lobby = lobbys.find(
+      const lobby = lobbiesStore.lobbies.find(
         (lobby) => lobby.id.toString() === params.lobbyId
       );
       setCurrentLobby(lobby);
     } else {
-      const lobby = lobbys.find(
+      const lobby = lobbiesStore.lobbies.find(
         (lobby) => lobby.id === pvpLobbyStorage.lastLobbyId
       );
       setCurrentLobby(lobby);
     }
-  }, [lobbys, params.lobbyId, pvpLobbyStorage.lastLobbyId]);
+  }, [lobbiesStore.lobbies, params.lobbyId, pvpLobbyStorage.lastLobbyId]);
 
-  const createNewLobby = async () => {
+  const createNewLobby = async (name: string, participationFee: number) => {
     const randzuLobbyManager = await client.runtime.resolve('RandzuLogic');
 
     const tx = await client.transaction(PublicKey.fromBase58(networkStore.address!), () => {
-      randzuLobbyManager.createLobby();
+      randzuLobbyManager.createLobby(CircuitString.fromString(name), ProtoUInt64.from(participationFee));
     });
 
     await tx.sign();
@@ -219,11 +224,8 @@ export default function RandzuLobby({
         <AnimatePresence mode={'wait'} initial={false}>
           {isCreationMode ? (
             <CreateNewLobby
-              onClick={() => {
-                createNewLobby();
-                // console.log("Create lobby onclick");
-                setIsCreationMode(!isCreationMode)
-              }}
+              createLobby={createNewLobby}
+              setIsCreationMode={setIsCreationMode}
             />
           ) : currentLobby ? (
             <>
@@ -265,7 +267,7 @@ export default function RandzuLobby({
             </>
           )}
         </AnimatePresence>
-        <LobbyList lobbys={lobbys} />
+        <LobbyList lobbys={lobbiesStore.lobbies} />
       </LobbyWrap>
     </GamePage>
   );
