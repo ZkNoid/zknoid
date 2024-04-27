@@ -174,7 +174,6 @@ export default function RandzuLobby({
   };
 
   const joinLobby = async (lobbyId: number) => {
-    console.log('joinLobby');
     const randzuLobbyManager = await client.runtime.resolve('RandzuLogic');
 
     const tx = await client.transaction(
