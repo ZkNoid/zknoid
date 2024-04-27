@@ -23,6 +23,8 @@ import {
   useObserveRandzuLobbiesStore,
   useRandzuLobbiesStore,
 } from '../stores/lobbiesStore';
+import { useStore } from 'zustand';
+import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
 
 const lobbysOld: ILobby[] = [
   {
@@ -108,6 +110,10 @@ export default function RandzuLobby({
     any
   >;
 
+  const sessionPrivateKey = useStore(useSessionKeyStore, (state) =>
+    state.getSessionKey()
+  );
+
   if (!client) {
     throw Error('Context app chain client is not set');
   }
@@ -174,7 +180,10 @@ export default function RandzuLobby({
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
       () => {
-        randzuLobbyManager.joinLobby(UInt64.from(lobbyId));
+        randzuLobbyManager.joinLobbyWithSessionKey(
+          UInt64.from(lobbyId),
+          sessionPrivateKey.toPublicKey()
+        );
       }
     );
 
