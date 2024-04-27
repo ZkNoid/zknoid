@@ -28,7 +28,9 @@ const PlayersListItem = ({
       )}
     >
       <span className={'col-start-1 col-end-1'}>[{index}]</span>
-      <span className={'col-start-2 col-end-3'}>{account}</span>
+      <span className={'col-start-2 col-end-3'}>
+        {account.slice(0, 5) + '...' + account.slice(-5)}
+      </span>
       <span className={'col-start-4 col-end-6'}>
         {state === PlayerStates.Waiting && 'Waiting opponent'}
         {state === PlayerStates.Ready && 'Ready to play'}
