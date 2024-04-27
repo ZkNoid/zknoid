@@ -17,9 +17,12 @@ import { CreateNewLobby } from '@/components/framework/Lobby/CreateNewLobby';
 import { AnimatePresence, motion } from 'framer-motion';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { ClientAppChain, ProtoUInt64 } from 'zknoid-chain-dev';
-import { CircuitString, PublicKey } from 'o1js';
+import { CircuitString, PublicKey, UInt64 } from 'o1js';
 import { useNetworkStore } from '@/lib/stores/network';
-import { useObserveRandzuLobbiesStore, useRandzuLobbiesStore } from '../stores/lobbiesStore';
+import {
+  useObserveRandzuLobbiesStore,
+  useRandzuLobbiesStore,
+} from '../stores/lobbiesStore';
 
 const lobbysOld: ILobby[] = [
   {
@@ -97,7 +100,6 @@ export default function RandzuLobby({
     undefined
   );
   const [isCreationMode, setIsCreationMode] = useState<boolean>(false);
-  
 
   const client = useContext(AppChainClientContext) as ClientAppChain<
     typeof randzuConfig.runtimeModules,
@@ -151,13 +153,34 @@ export default function RandzuLobby({
   const createNewLobby = async (name: string, participationFee: number) => {
     const randzuLobbyManager = await client.runtime.resolve('RandzuLogic');
 
-    const tx = await client.transaction(PublicKey.fromBase58(networkStore.address!), () => {
-      randzuLobbyManager.createLobby(CircuitString.fromString(name), ProtoUInt64.from(participationFee));
-    });
+    const tx = await client.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        randzuLobbyManager.createLobby(
+          CircuitString.fromString(name),
+          ProtoUInt64.from(participationFee)
+        );
+      }
+    );
 
     await tx.sign();
     await tx.send();
-  }
+  };
+
+  const joinLobby = async (lobbyId: number) => {
+    console.log('joinLobby');
+    const randzuLobbyManager = await client.runtime.resolve('RandzuLogic');
+
+    const tx = await client.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        randzuLobbyManager.joinLobby(UInt64.from(lobbyId));
+      }
+    );
+
+    await tx.sign();
+    await tx.send();
+  };
 
   return (
     <GamePage
@@ -232,6 +255,7 @@ export default function RandzuLobby({
               <LobbyInformation
                 lobby={currentLobby}
                 gameName={randzuConfig.name}
+                joinLobby={joinLobby}
               />
               <motion.span
                 className={'text-headline-1'}
