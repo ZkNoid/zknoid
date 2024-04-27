@@ -44,10 +44,14 @@ export const LobbyInformation = ({
   gameName,
   lobby,
   joinLobby,
+  ready,
+  selfReady,
 }: {
   gameName: string;
   lobby: ILobby;
   joinLobby: (lobbyId: number) => Promise<void>;
+  ready: () => Promise<void>;
+  selfReady: boolean;
 }) => {
   const pvpLobbyStorage = usePvpLobbyStorage();
   return (
@@ -118,7 +122,11 @@ export const LobbyInformation = ({
                   <PlayersListItem
                     key={player.toBase58()}
                     account={player.toBase58()}
-                    state={PlayerStates.Ready}
+                    state={
+                      lobby.playersReady![index]
+                        ? PlayerStates.Ready
+                        : PlayerStates.Waiting
+                    }
                     index={index}
                   />
                 );
@@ -127,7 +135,10 @@ export const LobbyInformation = ({
         </div>
         <div className={'flex-grow'} />
         {pvpLobbyStorage.connectedLobbyKey === lobby.accessKey ? (
-          <Button label={'Ready to play'} />
+          <Button
+            label={selfReady ? 'Not ready' : 'Ready to play'}
+            onClick={ready}
+          />
         ) : (
           <Button
             label={'Connect to lobby'}

@@ -23,6 +23,8 @@ export class Lobby extends Struct({
   id: UInt64,
   name: CircuitString,
   players: Provable.Array(PublicKey, PLAYER_AMOUNT),
+  ready: Provable.Array(Bool, PLAYER_AMOUNT),
+  readyAmount: UInt64,
   curAmount: UInt64,
   participationFee: ProtoUInt64,
   started: Bool,
@@ -32,6 +34,8 @@ export class Lobby extends Struct({
       id: UInt64.zero,
       name,
       players: [...Array(PLAYER_AMOUNT)].map((n) => PublicKey.empty()),
+      ready: [...Array(PLAYER_AMOUNT)].map((n) => Bool(false)),
+      readyAmount: UInt64.zero,
       curAmount: UInt64.zero,
       participationFee,
       started: Bool(false),
@@ -42,6 +46,8 @@ export class Lobby extends Struct({
       id,
       name: CircuitString.fromString('Default'),
       players: [...Array(PLAYER_AMOUNT)].map((n) => PublicKey.empty()),
+      ready: [...Array(PLAYER_AMOUNT)].map((n) => Bool(false)),
+      readyAmount: UInt64.zero,
       curAmount: UInt64.zero,
       participationFee: DEFAULT_PARTICIPATION_FEE,
       started: Bool(false),
@@ -63,6 +69,37 @@ export class Lobby extends Struct({
       );
     }
     this.curAmount = this.curAmount.add(1);
+  }
+
+  getIndex(player: PublicKey): UInt64 {
+    let result = UInt64.from(PLAYER_AMOUNT);
+    for (let i = 0; i < PLAYER_AMOUNT; i++) {
+      let curI = UInt64.from(i);
+      result = Provable.if(this.players[i].equals(player), curI, result);
+    }
+
+    return result;
+  }
+
+  setReady(index: UInt64): void {
+    for (let i = 0; i < PLAYER_AMOUNT; i++) {
+      let curI = UInt64.from(i);
+      let found = curI.equals(index);
+      this.ready[i] = Provable.if(found, this.ready[i].not(), this.ready[i]);
+
+      let addAmount = Provable.if(
+        found.and(this.ready[i]),
+        UInt64.from(1),
+        UInt64.zero,
+      );
+      let subAmount = Provable.if(
+        found.and(this.ready[i].not()),
+        UInt64.from(1),
+        UInt64.zero,
+      );
+
+      this.readyAmount = this.readyAmount.add(addAmount).sub(subAmount);
+    }
   }
 }
 
@@ -157,6 +194,20 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
       PublicKey.empty(),
       amountToTransfer,
     );
+  }
+
+  @runtimeMethod()
+  public ready(): void {
+    const sender = this.transaction.sender.value;
+    let currentLobby = this.currentLobby.get(sender).value;
+
+    let lobby = this.activeLobby.get(currentLobby).value;
+
+    let playerIndex = lobby.getIndex(sender);
+
+    lobby.setReady(playerIndex);
+
+    this.activeLobby.set(currentLobby, lobby);
   }
 
   protected _addLobby(lobby: Lobby, shouldUpdate: Bool): Lobby {

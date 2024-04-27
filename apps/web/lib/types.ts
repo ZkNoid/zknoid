@@ -71,6 +71,7 @@ export interface ILobby {
   maxPlayers: number;
   players: number;
   playersAddresses?: PublicKey[];
+  playersReady?: boolean[];
   currency: Currency;
   accessKey: string; // TEMPORARY!!!
 }
