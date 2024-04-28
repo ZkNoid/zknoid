@@ -10,7 +10,11 @@ export interface LobbiesState {
   lobbies: ILobby[];
   currentLobby?: ILobby;
   selfReady: boolean;
-  loadLobbies(query: ModuleQuery<LobbyManager>): Promise<void>;
+  activeGameId?: number;
+  loadLobbies(
+    query: ModuleQuery<LobbyManager>,
+    address: PublicKey
+  ): Promise<void>;
   loadCurrentLobby(
     query: ModuleQuery<LobbyManager>,
     address: PublicKey
@@ -22,7 +26,8 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
   lobbies: [],
   currentLobby: undefined,
   selfReady: false,
-  async loadLobbies(query: ModuleQuery<LobbyManager>) {
+  activeGameId: undefined,
+  async loadLobbies(query: ModuleQuery<LobbyManager>, address: PublicKey) {
     set((state) => {
       state.loading = true;
     });
@@ -34,6 +39,11 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
       console.log(`Can't get lobby info`);
       return;
     }
+
+    const contractActiveGameId = await query.activeGameId.get(address);
+    const activeGameId = contractActiveGameId
+      ? +contractActiveGameId
+      : contractActiveGameId;
 
     console.log('Last lobby id: ', +lastLobbyId);
     for (let i = 0; i < +lastLobbyId; i++) {
@@ -62,6 +72,7 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
       // @ts-ignore
       state.lobbies = lobbies;
       state.loading = false;
+      state.activeGameId = activeGameId;
     });
   },
 

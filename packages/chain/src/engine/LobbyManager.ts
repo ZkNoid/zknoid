@@ -208,6 +208,10 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
     lobby.setReady(playerIndex);
 
     this.activeLobby.set(currentLobby, lobby);
+
+    const lobbyReady = lobby.readyAmount.equals(UInt64.from(PLAYER_AMOUNT));
+
+    this.initGame(lobby, lobbyReady);
   }
 
   protected _addLobby(lobby: Lobby, shouldUpdate: Bool): Lobby {
@@ -243,7 +247,7 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
 
     // Set active game for each user
 
-    lobby.started = Bool(true);
+    lobby.started = Provable.if(shouldInit, Bool(true), lobby.started);
 
     this.activeLobby.set(lobby.id, lobby);
 
