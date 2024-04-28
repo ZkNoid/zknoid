@@ -6,13 +6,18 @@ export const Modal = ({
   trigger,
   isOpen,
   setIsOpen,
+  isDismissible = true,
+  defaultOpen = false,
 }: {
   children: ReactNode;
   trigger: ReactNode;
   isOpen?: boolean;
   setIsOpen?: (isOpen: boolean) => void;
+  isDismissible?: boolean;
+  defaultOpen?: boolean;
 }) => {
-  const [isOpenUncontrolled, setIsOpenUncontrolled] = useState<boolean>(false);
+  const [isOpenUncontrolled, setIsOpenUncontrolled] =
+    useState<boolean>(defaultOpen);
 
   return (
     <div className={'relative flex flex-col items-center justify-center'}>
@@ -42,11 +47,48 @@ export const Modal = ({
           >
             <div
               className={
-                'flex flex-col rounded-[5px] border border-left-accent bg-bg-dark p-4'
+                'relative flex flex-col rounded-[5px] border border-left-accent bg-bg-dark p-4'
               }
               onClick={(e) => e.stopPropagation()}
             >
               {children}
+              {isDismissible && (
+                <div
+                  className={
+                    'absolute -right-12 -top-3 z-50 cursor-pointer hover:opacity-80'
+                  }
+                  onClick={
+                    setIsOpen
+                      ? () => setIsOpen(false)
+                      : () => setIsOpenUncontrolled(false)
+                  }
+                >
+                  <svg
+                    width="53"
+                    height="64"
+                    viewBox="0 0 53 64"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <rect
+                      x="13.5469"
+                      y="16.7344"
+                      width="40"
+                      height="4"
+                      transform="rotate(45 13.5469 16.7344)"
+                      fill="#D2FF00"
+                    />
+                    <rect
+                      x="41.8438"
+                      y="19.5625"
+                      width="40"
+                      height="4"
+                      transform="rotate(135 41.8438 19.5625)"
+                      fill="#D2FF00"
+                    />
+                  </svg>
+                </div>
+              )}
             </div>
           </motion.div>
         )}

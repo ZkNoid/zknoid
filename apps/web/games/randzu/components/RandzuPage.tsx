@@ -48,6 +48,7 @@ import { Lost } from '@/components/framework/GameWidget/Lost';
 import { walletInstalled } from '@/lib/helpers';
 import { ConnectWallet } from '@/components/framework/GameWidget/ConnectWallet';
 import { InstallWallet } from '@/components/framework/GameWidget/InstallWallet';
+import {GameWrap} from "@/components/framework/GamePage/GameWrap";
 
 enum GameState {
   WalletNotInstalled,
@@ -327,18 +328,6 @@ export default function RandzuPage({
     [GameState.Lost]: `${getRandomEmoji('sad')} You've lost...`,
   } as Record<GameState, string>;
 
-  const Wrap = ({ children }: { children: ReactNode }) => {
-    return (
-      <div
-        className={
-          'flex min-h-[60vh] w-full flex-col items-center justify-center rounded-[5px] border-2 border-foreground/50'
-        }
-      >
-        {children}
-      </div>
-    );
-  };
-
   const getRatingQuery = api.ratings.getGameRating.useQuery({
     gameId: 'randzu',
   });
@@ -392,7 +381,6 @@ export default function RandzuPage({
                   <path d="M1 7L10 16L25 1" stroke="#252525" strokeWidth="2" />
                 </svg>
               }
-              className="uppercase"
               label={'YOUR TURN'}
               isReadonly
             />
@@ -415,17 +403,12 @@ export default function RandzuPage({
                   />
                 </svg>
               }
-              className="uppercase"
               label={"OPPONENT'S TURN"}
               isReadonly
             />
           )}
           {mainButtonState == MainButtonState.OpponentTimeOut && (
-            <Button
-              className="uppercase"
-              label={'OPPONENT TIMED OUT'}
-              isReadonly
-            />
+            <Button label={'OPPONENT TIMED OUT'} isReadonly />
           )}
           {mainButtonState == MainButtonState.TransactionExecution && (
             <Button
@@ -443,7 +426,6 @@ export default function RandzuPage({
                   />
                 </svg>
               }
-              className="uppercase"
               label={'TRANSACTION EXECUTION'}
               isReadonly
             />
@@ -458,27 +440,27 @@ export default function RandzuPage({
           {networkStore.address ? (
             <>
               {!competition ? (
-                <Wrap>
+                <GameWrap>
                   <UnsetCompetitionPopup gameId={arkanoidConfig.id} />
-                </Wrap>
+                </GameWrap>
               ) : (
                 <>
                   {gameState == GameState.Won && (
-                    <Wrap>
+                    <GameWrap>
                       <Win
                         onBtnClick={restart}
                         title={'You won! Congratulations!'}
                         btnText={'Find new game'}
                       />
-                    </Wrap>
+                    </GameWrap>
                   )}
                   {gameState == GameState.Lost && (
-                    <Wrap>
+                    <GameWrap>
                       <Lost startGame={restart} />
-                    </Wrap>
+                    </GameWrap>
                   )}
                   {gameState === GameState.NotStarted && (
-                    <Wrap>
+                    <GameWrap>
                       <Button
                         label={`START FOR ${formatUnits(
                           competition.enteringPrice
@@ -493,10 +475,10 @@ export default function RandzuPage({
                           />
                         }
                       />
-                    </Wrap>
+                    </GameWrap>
                   )}
                   {gameState === GameState.OpponentTimeout && (
-                    <Wrap>
+                    <GameWrap>
                       <div className={'flex max-w-[60%] flex-col gap-6'}>
                         <span>Opponent timeout :(</span>
                         <Button
@@ -504,19 +486,19 @@ export default function RandzuPage({
                           onClick={() => restart()}
                         />
                       </div>
-                    </Wrap>
+                    </GameWrap>
                   )}
                 </>
               )}
             </>
           ) : walletInstalled() ? (
-            <Wrap>
+            <GameWrap>
               <ConnectWallet connectWallet={networkStore.connectWallet} />
-            </Wrap>
+            </GameWrap>
           ) : (
-            <Wrap>
+            <GameWrap>
               <InstallWallet />
-            </Wrap>
+            </GameWrap>
           )}
           {(gameState === GameState.Matchmaking ||
             gameState === GameState.MatchRegistration ||
@@ -603,7 +585,7 @@ export default function RandzuPage({
         </div>
         <div
           className={
-            'flex flex-row gap-4 font-plexsans text-[14px]/[14px] text-left-accent lg:text-[20px]/[20px]'
+            'flex flex-row gap-4 font-plexsans text-[14px]/[14px] text-left-accent lg:hidden lg:text-[20px]/[20px]'
           }
         >
           <span className={'uppercase'}>Players in queue: {2}</span>
