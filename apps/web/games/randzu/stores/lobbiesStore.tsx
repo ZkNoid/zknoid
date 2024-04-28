@@ -32,10 +32,12 @@ export const useObserveRandzuLobbiesStore = () => {
       throw Error('Context app chain client is not set');
     }
 
+    // #TODO redo so loadCurrentLobby execute after loadLobbies. Or just merge them
     matchQueue.loadLobbies(
       client.query.runtime.RandzuLogic,
       PublicKey.fromBase58(network.address!)
     );
+
     matchQueue.loadCurrentLobby(
       client.query.runtime.RandzuLogic,
       PublicKey.fromBase58(network.address!)

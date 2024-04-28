@@ -213,6 +213,20 @@ export default function RandzuLobby({
     await tx.send();
   };
 
+  const leaveLobby = async () => {
+    const randzuLobbyManager = await client.runtime.resolve('RandzuLogic');
+
+    const tx = await client.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        randzuLobbyManager.leaveLobby();
+      }
+    );
+
+    await tx.sign();
+    await tx.send();
+  };
+
   return (
     <GamePage
       gameConfig={randzuConfig}
@@ -287,7 +301,9 @@ export default function RandzuLobby({
                 lobby={currentLobby}
                 gameName={randzuConfig.name}
                 joinLobby={joinLobby}
+                leaveLobby={leaveLobby}
                 ready={ready}
+                currentLobbyId={lobbiesStore.currentLobby?.id}
                 selfReady={lobbiesStore.selfReady}
               />
               <motion.span
