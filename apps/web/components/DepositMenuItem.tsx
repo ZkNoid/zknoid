@@ -11,18 +11,14 @@ import MinaTokenSvg from '@/public/image/tokens/mina.svg';
 import ChangeSvg from '@/public/image/bridge/change.svg';
 
 import Image from 'next/image';
-import {
-  L1_ASSETS,
-  L2_ASSET,
-  ZkNoidAsset,
-} from '@/constants/assets';
+import { L1_ASSETS, L2_ASSET, ZkNoidAsset } from '@/constants/assets';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useMinaBalancesStore } from '@/lib/stores/minaBalances';
 import { AnimatePresence, motion } from 'framer-motion';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import 'reflect-metadata';
 import { AccountUpdate, Mina, PublicKey } from 'o1js';
-import {  useEffect } from 'react';
+import { useEffect } from 'react';
 import { BRIDGE_ADDR } from '@/app/constants';
 import { ProtokitLibrary, ZNAKE_TOKEN_ID } from 'zknoid-chain-dev';
 import { formatUnits } from '@/lib/unit';
@@ -61,7 +57,8 @@ const BridgeInput = ({
               onChange={(value) => {
                 setAmount?.(
                   BigInt(
-                    parseFloat(value.target.value) * 10 ** currentAsset.decimals || 0
+                    parseFloat(value.target.value) *
+                      10 ** currentAsset.decimals || 0
                   )
                 );
               }}
@@ -132,7 +129,8 @@ export const DepositMenuItem = () => {
   const networkStore = useNetworkStore();
 
   const defaultClient = useMemo(() => buildClient(DefaultRuntimeModules), []);
-  const contextAppChainClient = useContext(AppChainClientContext) || defaultClient;
+  const contextAppChainClient =
+    useContext(AppChainClientContext) || defaultClient;
 
   useEffect(() => {
     setAmountIn(bridgeStore.amount);
@@ -176,7 +174,9 @@ export const DepositMenuItem = () => {
       amount: formatUnits(amountIn, assetIn.decimals),
     });
 
-    const balances = (contextAppChainClient!.runtime as any).resolve('Balances');
+    const balances = (contextAppChainClient!.runtime as any).resolve(
+      'Balances'
+    );
     const sender = PublicKey.fromBase58(networkStore.address!);
 
     const l2tx = await contextAppChainClient!.transaction(sender, () => {
@@ -194,13 +194,15 @@ export const DepositMenuItem = () => {
       userAddress: network.address ?? '',
       amount: amountIn,
       isUnbridged: false,
-      envContext: getEnvContext()
-    })
+      envContext: getEnvContext(),
+    });
   };
 
   const unbridge = async (amount: bigint) => {
-    console.log('Burning', amount)
-    const balances = (contextAppChainClient!.runtime as any).resolve('Balances');
+    console.log('Burning', amount);
+    const balances = (contextAppChainClient!.runtime as any).resolve(
+      'Balances'
+    );
     const sender = PublicKey.fromBase58(networkStore.address!);
 
     const l2tx = await contextAppChainClient!.transaction(sender, () => {
@@ -217,8 +219,8 @@ export const DepositMenuItem = () => {
       userAddress: network.address ?? '',
       amount: amountIn,
       isUnbridged: true,
-      envContext: getEnvContext()
-    })
+      envContext: getEnvContext(),
+    });
   };
 
   const testBalanceGetter = useTestBalanceGetter();
@@ -231,15 +233,17 @@ export const DepositMenuItem = () => {
       <HeaderCard
         svg={'top-up'}
         text="Top up"
-        onClick={() => bridgeStore.setOpen(10n * 10n**9n)}
+        onClick={() => bridgeStore.setOpen(10n * 10n ** 9n)}
       />
-      {contextAppChainClient && network.address && balancesStore.balances[network.address] < 100 * 10 ** 9 && (
-        <HeaderCard
-          svg={'top-up'}
-          text="Get test balance"
-          onClick={() => testBalanceGetter()}
-        />
-      )}
+      {contextAppChainClient &&
+        network.address &&
+        balancesStore.balances[network.address] < 100 * 10 ** 9 && (
+          <HeaderCard
+            svg={'top-up'}
+            text="Get test balance"
+            onClick={() => testBalanceGetter()}
+          />
+        )}
       <AnimatePresence>
         {bridgeStore.open && (
           <motion.div
@@ -253,10 +257,12 @@ export const DepositMenuItem = () => {
               className="flex w-96 flex-col items-center gap-5 rounded-xl border border-left-accent bg-bg-dark p-7 text-xs"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="text-[32px]">{!isUnbridge ? 'Bridge': 'Unbridge'}</div>
+              <div className="text-[32px]">
+                {!isUnbridge ? 'Bridge' : 'Unbridge'}
+              </div>
               <div className="flex flex-col items-center gap-1">
                 <BridgeInput
-                  assets={!isUnbridge ? [L1_ASSETS.Mina]: [L2_ASSET]}
+                  assets={!isUnbridge ? [L1_ASSETS.Mina] : [L2_ASSET]}
                   currentAsset={!isUnbridge ? assetIn : assetOut}
                   setCurrentAsset={setAssetIn}
                   amount={amountIn}
@@ -265,7 +271,10 @@ export const DepositMenuItem = () => {
                     setAmountOut(amount * BigInt(rate) || 0n);
                   }}
                   balance={
-                    !isUnbridge ? minaBalancesStore.balances[networkStore.address!] ?? 0n : protokitBalancesStore.balances[networkStore.address!] ?? 0n
+                    !isUnbridge
+                      ? minaBalancesStore.balances[networkStore.address!] ?? 0n
+                      : protokitBalancesStore.balances[networkStore.address!] ??
+                        0n
                   }
                   isPay={true}
                 />
@@ -277,7 +286,7 @@ export const DepositMenuItem = () => {
                 ></Image>
                 <BridgeInput
                   assets={!isUnbridge ? [L2_ASSET] : [L1_ASSETS.Mina]}
-                  currentAsset={!isUnbridge ? assetOut: assetIn}
+                  currentAsset={!isUnbridge ? assetOut : assetIn}
                   setCurrentAsset={setAssetOut}
                   amount={amountOut}
                   setAmount={(amount) => {
@@ -285,14 +294,19 @@ export const DepositMenuItem = () => {
                     setAmountOut(amount || 0n);
                   }}
                   balance={
-                    !isUnbridge ? protokitBalancesStore.balances[networkStore.address!] ?? 0n : minaBalancesStore.balances[networkStore.address!] ?? 0n
+                    !isUnbridge
+                      ? protokitBalancesStore.balances[networkStore.address!] ??
+                        0n
+                      : minaBalancesStore.balances[networkStore.address!] ?? 0n
                   }
                   isPay={false}
                 />
               </div>
               <div
-                className="cursor-pointer rounded-xl bg-left-accent px-7 py-3 text-[24px] text-black w-full text-center"
-                onClick={() => isUnbridge ? unbridge(amountIn) : bridge(amountIn)}
+                className="w-full cursor-pointer rounded-xl bg-left-accent px-7 py-3 text-center text-[24px] text-black"
+                onClick={() =>
+                  isUnbridge ? unbridge(amountIn) : bridge(amountIn)
+                }
               >
                 Bridge
               </div>
