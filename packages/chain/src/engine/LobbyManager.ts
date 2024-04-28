@@ -71,6 +71,47 @@ export class Lobby extends Struct({
     this.curAmount = this.curAmount.add(1);
   }
 
+  removePlayer(player: PublicKey): void {
+    let removed = Bool(false);
+
+    for (let i = 0; i < PLAYER_AMOUNT - 1; i++) {
+      let curI = UInt64.from(i);
+
+      let found = this.players[i].equals(player);
+      removed = removed.or(found);
+
+      this.players[i] = Provable.if(
+        removed,
+        this.players[i + 1],
+        this.players[i],
+      );
+
+      this.ready[i] = Provable.if(removed, this.ready[i + 1], this.ready[i]);
+    }
+
+    let found = this.players[PLAYER_AMOUNT - 1].equals(player);
+    removed = removed.or(found);
+
+    // Last item
+    this.players[PLAYER_AMOUNT - 1] = Provable.if(
+      removed,
+      PublicKey.empty(),
+      this.players[PLAYER_AMOUNT - 1],
+    );
+
+    this.ready[PLAYER_AMOUNT - 1] = Provable.if(
+      removed,
+      Bool(false),
+      this.ready[PLAYER_AMOUNT - 1],
+    );
+
+    let subAmount = Provable.if(removed, UInt64.from(1), UInt64.zero);
+    this.curAmount = this.curAmount.sub(subAmount);
+    this.readyAmount = this.ready
+      .map((elem) => Provable.if(elem, UInt64.from(1), UInt64.zero))
+      .reduce((acc, val) => acc.add(val));
+  }
+
   getIndex(player: PublicKey): UInt64 {
     let result = UInt64.from(PLAYER_AMOUNT);
     for (let i = 0; i < PLAYER_AMOUNT; i++) {
@@ -194,6 +235,18 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
       PublicKey.empty(),
       amountToTransfer,
     );
+  }
+
+  @runtimeMethod()
+  public leaveLobby(): void {
+    const sender = this.transaction.sender.value;
+    let currentLobbyId = this.currentLobby.get(sender).value;
+
+    let lobby = this.activeLobby.get(currentLobbyId).value;
+    lobby.removePlayer(sender);
+
+    this.activeLobby.set(currentLobbyId, lobby);
+    this.currentLobby.set(sender, UInt64.zero);
   }
 
   @runtimeMethod()
