@@ -34,6 +34,7 @@ export const useObserveRandzuLobbiesStore = () => {
 
     matchQueue.loadLobbies(
       client.query.runtime.RandzuLogic,
+      PublicKey.fromBase58(network.address!)
     );
     matchQueue.loadCurrentLobby(
       client.query.runtime.RandzuLogic,

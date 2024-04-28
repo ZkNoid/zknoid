@@ -11,7 +11,7 @@ import { CreateNewLobbyBtn } from '@/components/framework/Lobby/CreateNewLobbyBt
 import { usePvpLobbyStorage } from '@/lib/stores/pvpLobbyStore';
 import { ILobby } from '@/lib/types';
 import { Currency } from '@/constants/currency';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useContext, useEffect, useState } from 'react';
 import { CreateNewLobby } from '@/components/framework/Lobby/CreateNewLobby';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -94,6 +94,7 @@ export default function RandzuLobby({
 }: {
   params: { lobbyId: string };
 }) {
+  const router = useRouter();
   const lobbiesStore = useRandzuLobbiesStore();
   const pvpLobbyStorage = usePvpLobbyStorage();
   const searchParams = useSearchParams();
@@ -133,6 +134,14 @@ export default function RandzuLobby({
       pvpLobbyStorage.setConnectedLobbyId(Number(params.lobbyId));
     }
   }, [searchParams]);
+
+  useEffect(() => {
+    if (lobbiesStore.activeGameId) {
+      console.log(`Active gameId: `, lobbiesStore.activeGameId);
+      console.log(`Move to game page`);
+      router.push(`/games/randzu/${lobbiesStore.activeGameId}`);
+    }
+  }, [lobbiesStore.activeGameId]);
 
   // useEffect(() => {
   //   if (
