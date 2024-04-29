@@ -7,15 +7,18 @@ import { IMatchamkingOption } from '@/lib/stores/lobbiesStore';
 const OpponentItem = ({
   option,
   winCoef,
+  register,
 }: {
   option: IMatchamkingOption;
   winCoef: number;
+  register: (id: number) => Promise<void>;
 }) => {
   return (
     <div
       className={
-        'flex flex-col justify-between rounded-[5px] bg-left-accent p-2'
+        'flex cursor-pointer flex-col justify-between rounded-[5px] bg-left-accent p-2'
       }
+      onClick={() => register(option.id)}
     >
       <span
         className={
@@ -79,9 +82,11 @@ const OpponentItem = ({
 export const FastMatchmaking = ({
   options,
   winCoef,
+  register,
 }: {
   options: IMatchamkingOption[];
   winCoef: number;
+  register: (id: number) => Promise<void>;
 }) => {
   return (
     <>
@@ -136,7 +141,12 @@ export const FastMatchmaking = ({
         }
       >
         {options.map((option) => (
-          <OpponentItem key={option.id} option={option} winCoef={winCoef} />
+          <OpponentItem
+            key={option.id}
+            option={option}
+            winCoef={winCoef}
+            register={register}
+          />
         ))}
         <div
           className={
