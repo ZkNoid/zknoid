@@ -4,6 +4,12 @@ import { type ModuleQuery } from '@proto-kit/sequencer';
 import { LobbyManager } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
 import { ILobby } from '../types';
 import { Currency } from '@/constants/currency';
+import { MatchMaker } from 'zknoid-chain-dev';
+
+export interface IMatchamkingOption {
+  id: number;
+  pay: number;
+}
 
 export interface LobbiesState {
   loading: boolean;
@@ -11,6 +17,7 @@ export interface LobbiesState {
   currentLobby?: ILobby;
   selfReady: boolean;
   activeGameId?: number;
+  mathcmakingOptions: IMatchamkingOption[];
   loadLobbies(
     query: ModuleQuery<LobbyManager>,
     address: PublicKey
@@ -19,6 +26,7 @@ export interface LobbiesState {
     query: ModuleQuery<LobbyManager>,
     address: PublicKey
   ): Promise<void>;
+  loadMathcmakingOptions(query: ModuleQuery<MatchMaker>): Promise<void>;
 }
 
 export const lobbyInitializer = immer<LobbiesState>((set) => ({
@@ -27,6 +35,7 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
   currentLobby: undefined,
   selfReady: false,
   activeGameId: undefined,
+  mathcmakingOptions: [],
   async loadLobbies(query: ModuleQuery<LobbyManager>, address: PublicKey) {
     set((state) => {
       state.loading = true;
@@ -103,5 +112,25 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
         state.currentLobby = curLobby;
       });
     }
+  },
+
+  async loadMathcmakingOptions(query: ModuleQuery<MatchMaker>) {
+    let lastDefaultLobbyId = await query.lastDefaultLobby.get();
+    let mathcmakingOptions: IMatchamkingOption[] = [];
+
+    if (lastDefaultLobbyId) {
+      for (let i = 1; i < +lastDefaultLobbyId; i++) {
+        let curDefaultLobby = await query.defaultLobbies.get(UInt64.from(i));
+
+        mathcmakingOptions.push({
+          id: i,
+          pay: +curDefaultLobby!.participationFee,
+        });
+      }
+    }
+
+    set((state) => {
+      state.mathcmakingOptions = mathcmakingOptions;
+    });
   },
 }));

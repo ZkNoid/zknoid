@@ -235,7 +235,10 @@ export default function RandzuLobby({
       defaultPage={'Lobby list'}
     >
       <LobbyWrap>
-        <FastMatchmaking />
+        <FastMatchmaking
+          options={lobbiesStore.mathcmakingOptions}
+          winCoef={1.67}
+        />
         <div className={'col-start-4 col-end-6 row-start-1'}>
           {pvpLobbyStorage.lastLobbyId && (
             <div className={'flex flex-row gap-1'}>
