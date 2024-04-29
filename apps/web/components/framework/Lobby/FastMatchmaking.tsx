@@ -2,8 +2,15 @@ import Image from 'next/image';
 import znakesImg from '@/public/image/tokens/znakes.svg';
 import { Currency } from '@/constants/currency';
 import { Popover } from '@/components/ui/games-store/shared/Popover';
+import { IMatchamkingOption } from '@/lib/stores/lobbiesStore';
 
-const OpponentItem = () => {
+const OpponentItem = ({
+  option,
+  winCoef,
+}: {
+  option: IMatchamkingOption;
+  winCoef: number;
+}) => {
   return (
     <div
       className={
@@ -37,7 +44,7 @@ const OpponentItem = () => {
               width={25}
               height={25}
             />
-            <span>1.00</span>
+            <span>{option.pay}</span>
             <span>{Currency.ZNAKES}</span>
           </span>
         </div>
@@ -60,7 +67,7 @@ const OpponentItem = () => {
               width={25}
               height={25}
             />
-            <span>1.67</span>
+            <span>{option.pay * winCoef}</span>
             <span>{Currency.ZNAKES}</span>
           </span>
         </div>
@@ -69,7 +76,13 @@ const OpponentItem = () => {
   );
 };
 
-export const FastMatchmaking = () => {
+export const FastMatchmaking = ({
+  options,
+  winCoef,
+}: {
+  options: IMatchamkingOption[];
+  winCoef: number;
+}) => {
   return (
     <>
       <div className={'col-start-1 col-end-4 row-start-1 flex flex-row gap-1'}>
@@ -122,8 +135,9 @@ export const FastMatchmaking = () => {
           'col-start-1 col-end-4 row-start-2 row-end-2 grid grid-cols-3 gap-4'
         }
       >
-        <OpponentItem />
-        <OpponentItem />
+        {options.map((option) => (
+          <OpponentItem key={option.id} option={option} winCoef={winCoef} />
+        ))}
         <div
           className={
             'flex flex-col gap-2 rounded-[5px] border border-foreground bg-[#252525] p-2'

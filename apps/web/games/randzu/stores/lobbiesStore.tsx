@@ -17,7 +17,7 @@ export const useRandzuLobbiesStore = create<
 export const useObserveRandzuLobbiesStore = () => {
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
-  const matchQueue = useRandzuLobbiesStore();
+  const lobbiesStore = useRandzuLobbiesStore();
   const client = useContext<
     | ClientAppChain<typeof randzuConfig.runtimeModules, any, any, any>
     | undefined
@@ -33,14 +33,27 @@ export const useObserveRandzuLobbiesStore = () => {
     }
 
     // #TODO redo so loadCurrentLobby execute after loadLobbies. Or just merge them
-    matchQueue.loadLobbies(
+    lobbiesStore.loadLobbies(
       client.query.runtime.RandzuLogic,
       PublicKey.fromBase58(network.address!)
     );
 
-    matchQueue.loadCurrentLobby(
+    lobbiesStore.loadCurrentLobby(
       client.query.runtime.RandzuLogic,
       PublicKey.fromBase58(network.address!)
     );
   }, [chain.block?.height, network.walletConnected, network.address]);
+
+  // Update once wallet connected
+  useEffect(() => {
+    if (!network.walletConnected || !network.address) {
+      return;
+    }
+
+    if (!client) {
+      throw Error('Context app chain client is not set');
+    }
+
+    lobbiesStore.loadMathcmakingOptions(client.query.runtime.RandzuLogic);
+  }, [network.walletConnected, network.address]);
 };
