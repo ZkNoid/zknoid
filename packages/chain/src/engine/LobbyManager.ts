@@ -190,8 +190,11 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   public createLobby(
     name: CircuitString,
     participationFee: ProtoUInt64,
-  ): Lobby {
-    return this._addLobby(Lobby.from(name, participationFee), Bool(true));
+    creatorSessionKey: PublicKey,
+  ): void {
+    let lobby = this._addLobby(Lobby.from(name, participationFee), Bool(true));
+
+    this.joinLobbyWithSessionKey(lobby.id, creatorSessionKey);
   }
 
   @runtimeMethod()

@@ -22,10 +22,6 @@ export interface LobbiesState {
     query: ModuleQuery<LobbyManager>,
     address: PublicKey
   ): Promise<void>;
-  loadCurrentLobby(
-    query: ModuleQuery<LobbyManager>,
-    address: PublicKey
-  ): Promise<void>;
   loadMathcmakingOptions(query: ModuleQuery<MatchMaker>): Promise<void>;
 }
 
@@ -77,41 +73,30 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
       }
     }
 
+    const currentLobbyId = await query.currentLobby.get(address);
+    let curLobby: ILobby | undefined = undefined;
+    let selfReady: boolean = false;
+
+    if (currentLobbyId) {
+      curLobby = lobbies.find((lobby) => lobby.id == +currentLobbyId);
+
+      if (curLobby) {
+        for (let i = 0; i < curLobby.players; i++) {
+          if (curLobby.playersAddresses![i].equals(address).toBoolean()) {
+            selfReady = curLobby!.playersReady![i];
+          }
+        }
+      }
+    }
+
     set((state) => {
       // @ts-ignore
       state.lobbies = lobbies;
       state.loading = false;
       state.activeGameId = activeGameId;
+      state.currentLobby = curLobby;
+      state.selfReady = selfReady;
     });
-  },
-
-  async loadCurrentLobby(query: ModuleQuery<LobbyManager>, address: PublicKey) {
-    set((state) => {
-      state.currentLobby = undefined;
-    });
-
-    const currentLobbyId = await query.currentLobby.get(address);
-
-    if (currentLobbyId) {
-      const curLobby = this.lobbies.find(
-        (lobby) => lobby.id == +currentLobbyId
-      );
-
-      if (curLobby) {
-        for (let i = 0; i < curLobby.players; i++) {
-          if (curLobby.playersAddresses![i].equals(address).toBoolean()) {
-            set((state) => {
-              console.log(`Player selfStatus: ${curLobby.playersReady![i]}`);
-              state.selfReady = curLobby.playersReady![i];
-            });
-          }
-        }
-      }
-
-      set((state) => {
-        state.currentLobby = curLobby;
-      });
-    }
   },
 
   async loadMathcmakingOptions(query: ModuleQuery<MatchMaker>) {
