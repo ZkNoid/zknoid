@@ -173,7 +173,8 @@ export default function RandzuLobby({
       () => {
         randzuLobbyManager.createLobby(
           CircuitString.fromString(name),
-          ProtoUInt64.from(participationFee)
+          ProtoUInt64.from(participationFee),
+          sessionPrivateKey.toPublicKey()
         );
       }
     );
