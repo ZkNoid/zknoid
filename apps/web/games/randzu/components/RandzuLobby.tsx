@@ -227,6 +227,24 @@ export default function RandzuLobby({
     await tx.send();
   };
 
+  const register = async (id: number) => {
+    const randzuLobbyManager = await client.runtime.resolve('RandzuLogic');
+
+    const tx = await client.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        randzuLobbyManager.registerWithType(
+          sessionPrivateKey.toPublicKey(),
+          UInt64.from(id),
+          UInt64.zero
+        );
+      }
+    );
+
+    await tx.sign();
+    await tx.send();
+  };
+
   return (
     <GamePage
       gameConfig={randzuConfig}
@@ -238,6 +256,7 @@ export default function RandzuLobby({
         <FastMatchmaking
           options={lobbiesStore.mathcmakingOptions}
           winCoef={1.67}
+          register={register}
         />
         <div className={'col-start-4 col-end-6 row-start-1'}>
           {pvpLobbyStorage.lastLobbyId && (
