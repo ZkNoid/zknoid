@@ -66,19 +66,22 @@ export const LobbyList = ({ lobbys }: { lobbys: ILobby[] }) => {
         />
       </div>
       <div className={'flex w-full flex-col gap-0'}>
-        {lobbys.map((item, index) => (
-          <LobbyItem
-            key={index}
-            id={item.id}
-            name={item.name}
-            reward={item.reward}
-            fee={item.fee}
-            maxPlayers={item.maxPlayers}
-            players={item.players}
-            currency={item.currency}
-            accessKey={item.accessKey}
-          />
-        ))}
+        {lobbys
+          .filter((lobby) => !lobby.privateLobby)
+          .map((item, index) => (
+            <LobbyItem
+              key={index}
+              id={item.id}
+              name={item.name}
+              reward={item.reward}
+              fee={item.fee}
+              maxPlayers={item.maxPlayers}
+              players={item.players}
+              currency={item.currency}
+              privateLobby={item.privateLobby}
+              accessKey={item.accessKey}
+            />
+          ))}
       </div>
     </div>
   );

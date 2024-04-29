@@ -27,9 +27,14 @@ export class Lobby extends Struct({
   readyAmount: UInt64,
   curAmount: UInt64,
   participationFee: ProtoUInt64,
+  privateLobby: Bool,
   started: Bool,
 }) {
-  static from(name: CircuitString, participationFee: ProtoUInt64): Lobby {
+  static from(
+    name: CircuitString,
+    participationFee: ProtoUInt64,
+    privateLobby: Bool,
+  ): Lobby {
     return new Lobby({
       id: UInt64.zero,
       name,
@@ -38,10 +43,11 @@ export class Lobby extends Struct({
       readyAmount: UInt64.zero,
       curAmount: UInt64.zero,
       participationFee,
+      privateLobby,
       started: Bool(false),
     });
   }
-  static default(id: UInt64): Lobby {
+  static default(id: UInt64, privateLobby: Bool): Lobby {
     return new Lobby({
       id,
       name: CircuitString.fromString('Default'),
@@ -50,6 +56,7 @@ export class Lobby extends Struct({
       readyAmount: UInt64.zero,
       curAmount: UInt64.zero,
       participationFee: DEFAULT_PARTICIPATION_FEE,
+      privateLobby,
       started: Bool(false),
     });
   }
@@ -190,9 +197,13 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   public createLobby(
     name: CircuitString,
     participationFee: ProtoUInt64,
+    privateLobby: Bool,
     creatorSessionKey: PublicKey,
   ): void {
-    let lobby = this._addLobby(Lobby.from(name, participationFee), Bool(true));
+    let lobby = this._addLobby(
+      Lobby.from(name, participationFee, privateLobby),
+      Bool(true),
+    );
 
     this.joinLobbyWithSessionKey(lobby.id, creatorSessionKey);
   }
@@ -205,7 +216,9 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
 
   @runtimeMethod()
   public joinLobby(lobbyId: UInt64): void {
-    const lobby = this.activeLobby.get(lobbyId).orElse(Lobby.default(lobbyId));
+    const lobby = this.activeLobby
+      .get(lobbyId)
+      .orElse(Lobby.default(lobbyId, Bool(false)));
     this._joinLobby(lobby);
     this.currentLobby.set(this.transaction.sender.value, lobbyId);
     this.activeLobby.set(lobbyId, lobby);

@@ -67,6 +67,7 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
           playersReady: curLobby.ready
             .slice(0, players)
             .map((val: Bool) => val.toBoolean()),
+          privateLobby: curLobby.privateLobby.toBoolean(),
           currency: Currency.ZNAKES,
           accessKey: '',
         });

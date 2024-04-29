@@ -17,7 +17,7 @@ import { CreateNewLobby } from '@/components/framework/Lobby/CreateNewLobby';
 import { AnimatePresence, motion } from 'framer-motion';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { ClientAppChain, ProtoUInt64 } from 'zknoid-chain-dev';
-import { CircuitString, PublicKey, UInt64 } from 'o1js';
+import { Bool, CircuitString, PublicKey, UInt64 } from 'o1js';
 import { useNetworkStore } from '@/lib/stores/network';
 import {
   useObserveRandzuLobbiesStore,
@@ -25,69 +25,6 @@ import {
 } from '../stores/lobbiesStore';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
-
-const lobbysOld: ILobby[] = [
-  {
-    id: 1,
-    name: 'Test Lobby',
-    reward: 5n * 1000000000n,
-    fee: 10n * 1000000000n,
-    maxPlayers: 10,
-    players: 5,
-    currency: Currency.ZNAKES,
-    accessKey: 'f4d23bf0-5a83-4468-a974-9eb95c32c3fa',
-  },
-  {
-    id: 2,
-    name: 'Test Lobby',
-    reward: 4n * 1000000000n,
-    fee: 11n * 1000000000n,
-    maxPlayers: 10,
-    players: 5,
-    currency: Currency.ZNAKES,
-    accessKey: 'f49e171f-6b2f-4c63-a4f6-917db739d7a9',
-  },
-  {
-    id: 3,
-    name: 'Test Lobby',
-    reward: 8n * 1000000000n,
-    fee: 0n * 1000000000n,
-    maxPlayers: 12,
-    players: 0,
-    currency: Currency.ZNAKES,
-    accessKey: '8f007986-d2c3-4b3f-bd37-224679e642ee',
-  },
-  {
-    id: 4,
-    name: 'Test Lobby',
-    reward: 0n * 1000000000n,
-    fee: 0n * 1000000000n,
-    maxPlayers: 2,
-    players: 0,
-    currency: Currency.ZNAKES,
-    accessKey: '66f52dfc-7a7c-45ec-a210-0e51ab93b312',
-  },
-  {
-    id: 5,
-    name: 'Test Lobby',
-    reward: 88n * 1000000000n,
-    fee: 10n * 1000000000n,
-    maxPlayers: 20,
-    players: 19,
-    currency: Currency.ZNAKES,
-    accessKey: 'e79af9d6-c98e-482e-989b-6f04db407606',
-  },
-  {
-    id: 6,
-    name: 'Test Lobby',
-    reward: 541n * 1000000000n,
-    fee: 0n * 1000000000n,
-    maxPlayers: 2,
-    players: 0,
-    currency: Currency.ZNAKES,
-    accessKey: '2a4dcfbb-5c10-4557-aac7-b4511abb8b15',
-  },
-];
 
 export default function RandzuLobby({
   params,
@@ -165,7 +102,11 @@ export default function RandzuLobby({
     }
   }, [lobbiesStore.lobbies, params.lobbyId, pvpLobbyStorage.lastLobbyId]);
 
-  const createNewLobby = async (name: string, participationFee: number) => {
+  const createNewLobby = async (
+    name: string,
+    participationFee: number,
+    privateLobby: boolean
+  ) => {
     const randzuLobbyManager = await client.runtime.resolve('RandzuLogic');
 
     const tx = await client.transaction(
@@ -174,6 +115,7 @@ export default function RandzuLobby({
         randzuLobbyManager.createLobby(
           CircuitString.fromString(name),
           ProtoUInt64.from(participationFee),
+          Bool(privateLobby),
           sessionPrivateKey.toPublicKey()
         );
       }
