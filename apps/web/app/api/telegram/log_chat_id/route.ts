@@ -11,7 +11,7 @@ export async function GET(request: Request) {
       const chatId = msg.chat.id;
 
       // send a message to the chat acknowledging receipt of their message
-      bot.sendMessage(chatId, 'Received your message');
+      bot.sendMessage(chatId, `Received your message ${chatId}`);
     });
   }
 
