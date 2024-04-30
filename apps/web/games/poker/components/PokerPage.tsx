@@ -207,7 +207,9 @@ export const PokerPage = () => {
             <span>Game Status:</span>
             <span>Game started</span>
           </div>
-          <Button label={'Leave game'} className={'w-[20%]'} />
+          <div className={'w-[20%]'}>
+            <Button label={'Leave game'} />
+          </div>
         </div>
         <div
           className={
