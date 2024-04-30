@@ -1,10 +1,5 @@
 import { clsx } from 'clsx';
-import {
-  HTMLInputTypeAttribute,
-  InputHTMLAttributes,
-  ReactNode,
-  useState,
-} from 'react';
+import { HTMLInputTypeAttribute, ReactNode, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 export const Input = ({
