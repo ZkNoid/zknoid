@@ -3,9 +3,8 @@ import "reflect-metadata";
 import { BRIDGE_CACHE } from '@/constants/bridge_cache';
 import { WebFileSystem, fetchCache } from '@/lib/cache';
 import { mockProof } from '@/lib/utils';
-import { Mina, PublicKey, UInt64 } from 'o1jsprod';
 
-import { Field as Field014 } from 'o1js';
+import { Field as Field014, UInt64, PublicKey } from 'o1js';
 import {
   checkMapGeneration,
   checkGameRecord,
@@ -21,7 +20,7 @@ import {
 } from 'zknoid-chain-dev';
 import { DummyBridge } from 'zknoidcontractsl1';
 
-type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
+// type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
 // ---------------------------------------------------------------------------------------
 
@@ -29,7 +28,7 @@ const state = {
   gameRecord: null as null | typeof GameRecord,
   dummyBridge: null as null | typeof DummyBridge,
   dummyBridgeApp: null as null | DummyBridge,
-  transaction: null as null | Transaction,
+  // transaction: null as null | Transaction,
 };
 
 // ---------------------------------------------------------------------------------------
@@ -51,8 +50,8 @@ const functions = {
     console.log('[Worker] compiling contracts ended');
   },
   initZkappInstance: async (args: { bridgePublicKey58: string }) => {
-    const publicKey = PublicKey.fromBase58(args.bridgePublicKey58);
-    state.dummyBridgeApp = new state.dummyBridge!(publicKey);
+    // const publicKey = PublicKey.fromBase58(args.bridgePublicKey58);
+    // state.dummyBridgeApp = new state.dummyBridge!(publicKey);
   },
   bridge: async (amount: UInt64) => {
     // const transaction = await Mina.transaction(() => {
@@ -61,10 +60,10 @@ const functions = {
     // state.transaction = transaction;
   },
   proveBridgeTransaction: async (args: {}) => {
-    await state.transaction!.prove();
+    // await state.transaction!.prove();
   },
   getBridgeTransactionJSON: async (args: {}) => {
-    return state.transaction!.toJSON();
+    // return state.transaction!.toJSON();
   },
   proveGameRecord: async (args: { seedJson: any; inputs: any; debug: any }) => {
     let seed = Field014.fromJSON(args.seedJson);
