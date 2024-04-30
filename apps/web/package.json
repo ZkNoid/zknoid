@@ -48,7 +48,7 @@
     "next": "^14.2.0",
     "node-telegram-bot-api": "^0.65.1",
     "o1js": "link:../../packages/chain/node_modules/o1js",
-    "o1jsprod": "npm:o1js@^0.18.0",
+    "o1jsprod": "npm:o1js@^1.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.51.2",
@@ -61,7 +61,7 @@
     "truncate-middle": "^1.0.6",
     "zknoid-chain": "^1.4.5",
     "zknoid-chain-dev": "workspace:*",
-    "zknoidcontractsl1": "^0.1.8",
+    "zknoidcontractsl1": "^0.1.9",
     "zod": "^3.22.4",
     "zustand": "^4.5.2"
   },
