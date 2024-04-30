@@ -18,7 +18,7 @@ import {
   GameRecordProof,
   client,
 } from 'zknoid-chain-dev';
-import { DummyBridge } from 'zknoidcontractsl1';
+// import { DummyBridge } from 'zknoidcontractsl1';
 
 // type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
@@ -26,8 +26,8 @@ import { DummyBridge } from 'zknoidcontractsl1';
 
 const state = {
   gameRecord: null as null | typeof GameRecord,
-  dummyBridge: null as null | typeof DummyBridge,
-  dummyBridgeApp: null as null | DummyBridge,
+  // dummyBridge: null as null | typeof DummyBridge,
+  // dummyBridgeApp: null as null | DummyBridge,
   // transaction: null as null | Transaction,
 };
 
@@ -37,16 +37,16 @@ const functions = {
   loadContracts: async (args: {}) => {
     console.log('[Worker] loading contracts');
     state.gameRecord = GameRecord;
-    state.dummyBridge = DummyBridge;
+    // state.dummyBridge = DummyBridge;
   },
   compileContracts: async (args: {}) => {
     console.log('[Worker] compiling contracts');
 
     const fetchedCache = await fetchCache(BRIDGE_CACHE);
 
-    await DummyBridge.compile({
-      cache: WebFileSystem(fetchedCache),
-    });
+    // await DummyBridge.compile({
+    //   cache: WebFileSystem(fetchedCache),
+    // });
     console.log('[Worker] compiling contracts ended');
   },
   initZkappInstance: async (args: { bridgePublicKey58: string }) => {
