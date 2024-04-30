@@ -65,7 +65,7 @@ export const defaultGames: IGame[] = [
     releaseDate: new Date(2023, 11, 1),
     popularity: 60,
     author: 'ZkNoid Team',
-    rating: 0
+    rating: 0,
   },
   {
     id: 'randzu',
@@ -81,6 +81,6 @@ export const defaultGames: IGame[] = [
     releaseDate: new Date(2024, 0, 1),
     popularity: 50,
     author: 'ZkNoid Team',
-    rating: 0
+    rating: 0,
   },
 ];
