@@ -60,7 +60,7 @@ export const CreateNewLobby = ({
 
   return (
     <motion.div
-      className={'col-start-4 col-end-6 row-span-4 h-full max-h-[60%] w-full'}
+      className={'col-start-4 col-end-6 row-span-4 w-full'}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -151,7 +151,7 @@ export const CreateNewLobby = ({
               isInvalid={isParticipantFeeInvalid}
               invalidMessage={'Please fill out this field correctly'}
               emptyFieldCheck={false}
-              isClearable={false}
+              isClearable={true}
               endContent={
                 <div
                   className={
