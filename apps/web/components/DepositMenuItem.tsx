@@ -128,9 +128,7 @@ export const DepositMenuItem = () => {
 
   const networkStore = useNetworkStore();
 
-  const defaultClient = useMemo(() => buildClient(DefaultRuntimeModules), []);
-  const contextAppChainClient =
-    useContext(AppChainClientContext) || defaultClient;
+  const contextAppChainClient = useContext(AppChainClientContext);
 
   useEffect(() => {
     setAmountIn(bridgeStore.amount);

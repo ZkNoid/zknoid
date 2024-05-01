@@ -34,6 +34,8 @@ import ArkanoidCoverMobileSVG from '../assets/game-cover-mobile.svg';
 import { DropdownList } from '@/components/ui/games-store/shared/DropdownList';
 import { announcedGames, defaultGames, IGame } from '@/app/constants/games';
 import Image from 'next/image';
+import { api } from '@/trpc/react';
+import { getEnvContext } from '@/lib/envContext';
 
 const zkNoidConfig = import('@/games/config');
 
@@ -79,6 +81,8 @@ export default function NewArkanoidCompetitionPage() {
   const bridge = useMinaBridge();
 
   const client = useContext(AppChainClientContext);
+
+  const progress = api.progress.setSolvedQuests.useMutation();
 
   if (!client) {
     throw Error('Context app chain client is not set');
@@ -149,7 +153,8 @@ export default function NewArkanoidCompetitionPage() {
 
   const createCompetition = async () => {
     const gameHub = client.runtime.resolve('ArkanoidGameHub');
-    if (await bridge(BigInt(funding) * 10n ** 9n)) return;
+    if (await bridge(BigInt(funding) * 10n ** 9n))
+      throw Error('Not enough funds');
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
@@ -188,6 +193,17 @@ export default function NewArkanoidCompetitionPage() {
 
     await tx.sign();
     await tx.send();
+
+    if (funding >= 30) {
+      tx.transaction?.hash
+      await progress.mutateAsync({
+        userAddress: networkStore.address!,
+        section: 'ARKANOID',
+        id: 1,
+        txHash: tx.transaction!.hash().toString(),
+        envContext: getEnvContext(),
+      });
+    }
   };
 
   const [game, setGame] = useState<string>(defaultGames[0].name);
@@ -769,11 +785,18 @@ export default function NewArkanoidCompetitionPage() {
                 <Button
                   label={'Create competition'}
                   onClick={() => {
+                    console.log('Validation')
                     validateFields();
+                    console.log('Fields checked')
+
                     if (checkFieldsValidity()) {
-                      createCompetition().finally(() =>
-                        setIsSuccessModalOpen(true)
-                      );
+                      console.log('Creation request')
+
+                      createCompetition()
+                        .then(() => setIsSuccessModalOpen(true))
+                        .catch((e) => {
+                          console.log('Creation error', e);
+                        });
                     }
                   }}
                 />
