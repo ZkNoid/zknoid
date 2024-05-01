@@ -28,6 +28,7 @@ export class Lobby extends Struct({
   curAmount: UInt64,
   participationFee: ProtoUInt64,
   privateLobby: Bool,
+  active: Bool,
   started: Bool,
 }) {
   static from(
@@ -44,9 +45,21 @@ export class Lobby extends Struct({
       curAmount: UInt64.zero,
       participationFee,
       privateLobby,
+      active: Bool(true),
       started: Bool(false),
     });
   }
+
+  static inactive(): Lobby {
+    let lobby = Lobby.from(
+      CircuitString.fromString(''),
+      ProtoUInt64.from(0),
+      Bool(false),
+    );
+    lobby.active = Bool(false);
+    return lobby;
+  }
+
   static default(id: UInt64, privateLobby: Bool): Lobby {
     return new Lobby({
       id,
@@ -57,6 +70,7 @@ export class Lobby extends Struct({
       curAmount: UInt64.zero,
       participationFee: DEFAULT_PARTICIPATION_FEE,
       privateLobby,
+      active: Bool(true),
       started: Bool(false),
     });
   }
@@ -216,6 +230,10 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
 
   @runtimeMethod()
   public joinLobby(lobbyId: UInt64): void {
+    const currentLobby = this.currentLobby.get(
+      this.transaction.sender.value,
+    ).value;
+    assert(currentLobby.equals(UInt64.zero), 'You already in lobby');
     const lobby = this.activeLobby
       .get(lobbyId)
       .orElse(Lobby.default(lobbyId, Bool(false)));
@@ -392,4 +410,20 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   }
 
   public updateNextGameId(shouldUpdate: Bool): void {}
+
+  protected _onLobbyEnd(lobbyId: UInt64, shouldEnd: Bool): void {
+    let lobby = this.activeLobby.get(lobbyId).value;
+
+    for (let i = 0; i < PLAYER_AMOUNT; i++) {
+      this.currentLobby.set(
+        Provable.if(shouldEnd, lobby.players[i], PublicKey.empty()),
+        UInt64.zero,
+      );
+    }
+
+    this.activeLobby.set(
+      Provable.if(shouldEnd, lobbyId, UInt64.zero),
+      Lobby.inactive(),
+    );
+  }
 }

@@ -66,6 +66,7 @@ export interface ICompetitionPVP {
 
 export interface ILobby {
   id: number;
+  active: boolean;
   name: string;
   reward: bigint;
   fee: bigint;

@@ -229,6 +229,8 @@ export class ThimblerigLogic extends MatchMaker {
 
     this.activeGameId.set(game.value.player2, UInt64.from(0));
     this.activeGameId.set(game.value.player1, UInt64.from(0));
+
+    this._onLobbyEnd(gameId, Bool(true));
   }
 
   @runtimeMethod()
@@ -243,5 +245,7 @@ export class ThimblerigLogic extends MatchMaker {
       ProtoUInt64.from(0),
       ProtoUInt64.from(1),
     );
+
+    this._onLobbyEnd(gameId, Bool(true));
   }
 }
