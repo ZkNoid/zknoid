@@ -92,6 +92,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   const [ballDragged, setBallDragged] = useState<boolean>(false);
   const [finalAnimationStep, setFinalAnimationStep] = useState<number>(0);
   let finalAnimationStepRef = useRef<number>(0);
+  const progress = api.progress.setSolvedQuests.useMutation();
 
   const matchQueue = useThimblerigMatchQueueStore();
   const sessionPublicKey = useStore(useSessionKeyStore, (state) =>
@@ -214,6 +215,15 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       );
       await tx.sign();
       await tx.send();
+
+      await progress.mutateAsync({
+        userAddress: networkStore.address!,
+        section: 'THIMBLERIG',
+        id: 0,
+        txHash: tx.transaction!.hash().toString(),
+        roomId: competition.id.toString(),
+        envContext: getEnvContext(),
+      });  
     } catch {
       setThimbleGuessed(undefined);
       setPendingChoosing(false);
@@ -234,6 +244,15 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
         );
       }
     );
+
+    await progress.mutateAsync({
+      userAddress: networkStore.address!,
+      section: 'THIMBLERIG',
+      id: 0,
+      txHash: tx.transaction!.hash().toString(),
+      roomId: competition.id.toString(),
+      envContext: getEnvContext(),
+    });
 
     await tx.sign();
     await tx.send();
