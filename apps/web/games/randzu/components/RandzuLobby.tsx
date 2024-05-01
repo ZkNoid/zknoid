@@ -26,6 +26,7 @@ import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
 import { Modal } from '@/components/ui/games-store/shared/Modal';
 import { Button } from '@/components/ui/games-store/shared/Button';
+import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 
 export default function RandzuLobby({
   params,
@@ -33,6 +34,7 @@ export default function RandzuLobby({
   params: { lobbyId: string };
 }) {
   const router = useRouter();
+  const chainStore = useProtokitChainStore();
   const lobbiesStore = useRandzuLobbiesStore();
   const pvpLobbyStorage = usePvpLobbyStorage();
   const searchParams = useSearchParams();
@@ -260,6 +262,7 @@ export default function RandzuLobby({
         <FastMatchmaking
           options={lobbiesStore.mathcmakingOptions}
           winCoef={1.67}
+          blockNumber={chainStore.block ? +chainStore.block.height : 0}
           register={register}
         />
         <div className={'col-start-4 col-end-6 row-start-1'}>
