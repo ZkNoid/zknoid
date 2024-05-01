@@ -110,7 +110,7 @@ export const LobbyInformation = ({
           </div>
         </div>
         <div className={'flex-grow'} />
-        <div className={'flex flex-col gap-2'}>
+        <div className={'flex flex-col gap-2 pt-4'}>
           <span className={'text-[16px]/[16px] font-medium uppercase'}>
             Players list
           </span>
@@ -139,13 +139,17 @@ export const LobbyInformation = ({
         </div>
         <div className={'flex-grow'} />
         {currentLobbyId == lobby.id ? (
-          <>
-            <Button label={'Leave lobby'} onClick={leaveLobby} />
+          <div className={'flex flex-row gap-2 pt-2'}>
             <Button
               label={selfReady ? 'Not ready' : 'Ready to play'}
               onClick={ready}
             />
-          </>
+            <Button
+              label={'Leave lobby'}
+              onClick={leaveLobby}
+              color={'tertiary'}
+            />
+          </div>
         ) : (
           <Button
             label={'Connect to lobby'}

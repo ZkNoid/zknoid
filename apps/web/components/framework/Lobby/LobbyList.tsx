@@ -1,16 +1,39 @@
 import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Popover } from '@/components/ui/games-store/shared/Popover';
 import { ILobby } from '@/lib/types';
 import { LobbyItem } from '@/components/framework/Lobby/LobbyItem';
 
 export const LobbyList = ({ lobbys }: { lobbys: ILobby[] }) => {
+  const PAGINATION_LIMIT = 6;
+
   const [sortBy, setSortBy] = useState<string>('From high to low');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const lobbyListRef = useRef<HTMLDivElement>(null);
+  const filteredLobbys = lobbys.filter((lobby) => !lobby.privateLobby);
+  const renderLobbys = filteredLobbys.slice(0, currentPage * PAGINATION_LIMIT);
+
+  useEffect(() => {
+    const refObj = lobbyListRef.current;
+
+    const scrollHandler = () => {
+      if (
+        // @ts-ignore
+        refObj?.scrollHeight - refObj?.scrollTop === refObj?.clientHeight &&
+        renderLobbys.length < filteredLobbys.length
+      ) {
+        setCurrentPage((prevState) => prevState + 1);
+      }
+    };
+    refObj?.addEventListener('scroll', scrollHandler);
+    return () => {
+      refObj?.removeEventListener('scroll', scrollHandler);
+    };
+  });
 
   return (
-    <div
-      className={'col-start-1 col-end-4 row-span-4 row-start-3 flex flex-col'}
-    >
+    <div className={'col-start-1 col-end-4 row-start-3 flex h-full flex-col'}>
       <div className={'flex w-full flex-row justify-between py-2'}>
         <div className={'flex flex-row gap-1'}>
           <div className={'text-headline-1'}>Lobby list</div>
@@ -65,23 +88,24 @@ export const LobbyList = ({ lobbys }: { lobbys: ILobby[] }) => {
           setSortBy={setSortBy}
         />
       </div>
-      <div className={'flex w-full flex-col gap-0'}>
-        {lobbys
-          .filter((lobby) => !lobby.privateLobby)
-          .map((item, index) => (
-            <LobbyItem
-              key={index}
-              id={item.id}
-              name={item.name}
-              reward={item.reward}
-              fee={item.fee}
-              maxPlayers={item.maxPlayers}
-              players={item.players}
-              currency={item.currency}
-              privateLobby={item.privateLobby}
-              accessKey={item.accessKey}
-            />
-          ))}
+      <div
+        className={'flex max-h-[500px] w-full flex-col gap-0 overflow-y-scroll'}
+        ref={lobbyListRef}
+      >
+        {renderLobbys.map((item, index) => (
+          <LobbyItem
+            key={index}
+            id={item.id}
+            name={item.name}
+            reward={item.reward}
+            fee={item.fee}
+            maxPlayers={item.maxPlayers}
+            players={item.players}
+            currency={item.currency}
+            privateLobby={item.privateLobby}
+            accessKey={item.accessKey}
+          />
+        ))}
       </div>
     </div>
   );
