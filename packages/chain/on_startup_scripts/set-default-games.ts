@@ -21,4 +21,40 @@ const setDefaultGames = async () => {
   }
 };
 
+const setDefaultMatchmaking = async () => {
+  const matchmakingOptions = [
+    {
+      participationFee: 0,
+    },
+    {
+      participationFee: 5,
+    },
+  ];
+
+  const alicePrivateKey = PrivateKey.random();
+  const alice = alicePrivateKey.toPublicKey();
+  await client.start();
+
+  const games = ['RandzuLogic', 'CheckersLogic', 'ThimblerigLogic'];
+
+  let nonce = 0;
+
+  for (const game of games) {
+    const matchmaking = client.runtime.resolve(game as any);
+
+    for (const option of matchmakingOptions) {
+      const tx = await client.transaction(alice, () => {
+        matchmaking.addDefaultLobby(UInt64.from(option.participationFee));
+      });
+
+      tx.transaction!.nonce = UInt64.from(nonce++);
+
+      tx.transaction = tx.transaction?.sign(alicePrivateKey);
+
+      await tx.send();
+    }
+  }
+};
+
 await setDefaultGames();
+await setDefaultMatchmaking();

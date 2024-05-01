@@ -105,9 +105,8 @@ export const Competitions = ({
     const searchWords = searchValue.toLowerCase().split(' ');
     const titleWords = competition.title?.toLowerCase().split(' ');
 
-    return searchWords.every(
-      (searchWord) =>
-        titleWords?.some((titleWord) => titleWord.startsWith(searchWord))
+    return searchWords.every((searchWord) =>
+      titleWords?.some((titleWord) => titleWord.startsWith(searchWord))
     );
   };
 

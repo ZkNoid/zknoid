@@ -1,10 +1,13 @@
 import { createZkNoidGameConfig } from '@/lib/createConfig';
+import { ZkNoidGameType } from '@/lib/platform/game_types';
 import { RandzuLogic } from 'zknoid-chain-dev';
 import RandzuPage from './components/RandzuPage';
 import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
+import RandzuLobby from '@/games/randzu/components/RandzuLobby';
 
 export const randzuConfig = createZkNoidGameConfig({
   id: 'randzu',
+  type: ZkNoidGameType.PVP,
   name: 'Randzu game',
   description:
     'Two players take turns placing pieces on the board attempting to create lines of 5 of their own color',
@@ -21,4 +24,5 @@ export const randzuConfig = createZkNoidGameConfig({
     RandzuLogic,
   },
   page: RandzuPage,
+  lobby: RandzuLobby,
 });

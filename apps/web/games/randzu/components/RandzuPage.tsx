@@ -30,9 +30,7 @@ import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import { getRandomEmoji } from '@/lib/emoji';
 import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
-import {
-  MOVE_TIMEOUT_IN_BLOCKS,
-} from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
+import { MOVE_TIMEOUT_IN_BLOCKS } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
 import RandzuCoverMobileSVG from '../assets/game-cover-mobile.svg';
 import { GameWidget } from '@/components/framework/GameWidget/GameWidget';
 import { motion } from 'framer-motion';
@@ -50,6 +48,7 @@ import { Lost } from '@/components/framework/GameWidget/Lost';
 import { walletInstalled } from '@/lib/helpers';
 import { ConnectWallet } from '@/components/framework/GameWidget/ConnectWallet';
 import { InstallWallet } from '@/components/framework/GameWidget/InstallWallet';
+import {GameWrap} from "@/components/framework/GamePage/GameWrap";
 
 enum GameState {
   WalletNotInstalled,
@@ -69,7 +68,7 @@ const competition = {
   name: 'Global competition',
   enteringPrice: BigInt(+DEFAULT_PARTICIPATION_FEE.toString()),
   prizeFund: 0n,
-}
+};
 
 export default function RandzuPage({
   params,
@@ -329,18 +328,6 @@ export default function RandzuPage({
     [GameState.Lost]: `${getRandomEmoji('sad')} You've lost...`,
   } as Record<GameState, string>;
 
-  const Wrap = ({ children }: { children: ReactNode }) => {
-    return (
-      <div
-        className={
-          'flex min-h-[75vh] w-full flex-col items-center justify-center rounded-[5px] border-2 border-foreground/50'
-        }
-      >
-        {children}
-      </div>
-    );
-  };
-
   const getRatingQuery = api.ratings.getGameRating.useQuery({
     gameId: 'randzu',
   });
@@ -352,8 +339,19 @@ export default function RandzuPage({
       mobileImage={RandzuCoverMobileSVG}
       defaultPage={'Game'}
     >
-      <motion.div className={'grid grid-cols-4 gap-4'} animate={'windowed'}>
-        <div className={'flex h-full w-full flex-col gap-4'}>
+      <motion.div
+        className={
+          'flex grid-cols-4 flex-col-reverse gap-4 pt-10 lg:grid lg:pt-0'
+        }
+        animate={'windowed'}
+      >
+        <div className={'flex flex-col gap-4 lg:hidden'}>
+          <span className={'w-full text-headline-2 font-bold'}>Rules</span>
+          <span className={'font-plexsans text-buttons-menu font-normal'}>
+            {randzuConfig.rules}
+          </span>
+        </div>
+        <div className={'hidden h-full w-full flex-col gap-4 lg:flex'}>
           <div
             className={
               'flex w-full gap-2 font-plexsans text-[20px]/[20px] uppercase text-left-accent'
@@ -370,6 +368,151 @@ export default function RandzuPage({
             <span>Your opponent:</span>
             <span>{formatPubkey(matchQueue.gameInfo?.opponent)}</span>
           </div>
+          {mainButtonState == MainButtonState.YourTurn && (
+            <Button
+              startContent={
+                <svg
+                  width="26"
+                  height="18"
+                  viewBox="0 0 26 18"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M1 7L10 16L25 1" stroke="#252525" strokeWidth="2" />
+                </svg>
+              }
+              label={'YOUR TURN'}
+              isReadonly
+            />
+          )}
+          {mainButtonState == MainButtonState.OpponentsTurn && (
+            <Button
+              startContent={
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M12.5134 10.5851L1.476 0L0.00136988 1.41421L11.0387 11.9994L0 22.5858L1.47463 24L12.5134 13.4136L22.5242 23.0143L23.9989 21.6001L13.988 11.9994L23.9975 2.39996L22.5229 0.98575L12.5134 10.5851Z"
+                    fill="#252525"
+                  />
+                </svg>
+              }
+              label={"OPPONENT'S TURN"}
+              isReadonly
+            />
+          )}
+          {mainButtonState == MainButtonState.OpponentTimeOut && (
+            <Button label={'OPPONENT TIMED OUT'} isReadonly />
+          )}
+          {mainButtonState == MainButtonState.TransactionExecution && (
+            <Button
+              startContent={
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M24 12C24 15.1826 22.7357 18.2348 20.4853 20.4853C18.2348 22.7357 15.1826 24 12 24C8.8174 24 5.76515 22.7357 3.51472 20.4853C1.26428 18.2348 0 15.1826 0 12C0 11.633 0.017 11.269 0.049 10.91L2.041 11.091C2.01367 11.3903 2 11.6933 2 12C2 13.9778 2.58649 15.9112 3.6853 17.5557C4.78412 19.2002 6.3459 20.4819 8.17317 21.2388C10.0004 21.9957 12.0111 22.1937 13.9509 21.8079C15.8907 21.422 17.6725 20.4696 19.0711 19.0711C20.4696 17.6725 21.422 15.8907 21.8079 13.9509C22.1937 12.0111 21.9957 10.0004 21.2388 8.17317C20.4819 6.3459 19.2002 4.78412 17.5557 3.6853C15.9112 2.58649 13.9778 2 12 2C11.6933 2 11.3903 2.01367 11.091 2.041L10.91 0.049C11.269 0.017 11.633 0 12 0C15.1815 0.00344108 18.2318 1.26883 20.4815 3.51852C22.7312 5.76821 23.9966 8.81846 24 12ZM5.663 4.263L4.395 2.717C3.78121 3.2216 3.2185 3.78531 2.715 4.4L4.262 5.665C4.68212 5.15305 5.15135 4.68348 5.663 4.263ZM9.142 2.415L8.571 0.5C7.80965 0.726352 7.0727 1.02783 6.371 1.4L7.31 3.166C7.89418 2.85539 8.50789 2.60381 9.142 2.415ZM3.164 7.315L1.4 6.375C1.02801 7.07678 0.726533 7.81372 0.5 8.575L2.417 9.146C2.60454 8.51172 2.85478 7.89769 3.164 7.313V7.315ZM11 6V10.277C10.7004 10.4513 10.4513 10.7004 10.277 11H7V13H10.277C10.4297 13.2652 10.6414 13.4917 10.8958 13.662C11.1501 13.8323 11.4402 13.9417 11.7436 13.9818C12.047 14.0219 12.3556 13.9917 12.6454 13.8934C12.9353 13.7951 13.1986 13.6314 13.415 13.415C13.6314 13.1986 13.7951 12.9353 13.8934 12.6454C13.9917 12.3556 14.0219 12.047 13.9818 11.7436C13.9417 11.4402 13.8323 11.1501 13.662 10.8958C13.4917 10.6414 13.2652 10.4297 13 10.277V6H11Z"
+                    fill="#252525"
+                  />
+                </svg>
+              }
+              label={'TRANSACTION EXECUTION'}
+              isReadonly
+            />
+          )}
+        </div>
+        <GameWidget
+          author={randzuConfig.author}
+          isPvp
+          playersCount={matchQueue.getQueueLength()}
+          gameId="randzu"
+        >
+          {networkStore.address ? (
+            <>
+              {!competition ? (
+                <GameWrap>
+                  <UnsetCompetitionPopup gameId={arkanoidConfig.id} />
+                </GameWrap>
+              ) : (
+                <>
+                  {gameState == GameState.Won && (
+                    <GameWrap>
+                      <Win
+                        onBtnClick={restart}
+                        title={'You won! Congratulations!'}
+                        btnText={'Find new game'}
+                      />
+                    </GameWrap>
+                  )}
+                  {gameState == GameState.Lost && (
+                    <GameWrap>
+                      <Lost startGame={restart} />
+                    </GameWrap>
+                  )}
+                  {gameState === GameState.NotStarted && (
+                    <GameWrap>
+                      <Button
+                        label={`START FOR ${formatUnits(
+                          competition.enteringPrice
+                        )}`}
+                        onClick={startGame}
+                        className={'max-w-[40%]'}
+                        endContent={
+                          <Image
+                            src={znakesImg}
+                            alt={'Znakes token'}
+                            className={'h-[24px] w-[24px] pb-0.5'}
+                          />
+                        }
+                      />
+                    </GameWrap>
+                  )}
+                  {gameState === GameState.OpponentTimeout && (
+                    <GameWrap>
+                      <div className={'flex max-w-[60%] flex-col gap-6'}>
+                        <span>Opponent timeout :(</span>
+                        <Button
+                          label={'Restart game'}
+                          onClick={() => restart()}
+                        />
+                      </div>
+                    </GameWrap>
+                  )}
+                </>
+              )}
+            </>
+          ) : walletInstalled() ? (
+            <GameWrap>
+              <ConnectWallet connectWallet={networkStore.connectWallet} />
+            </GameWrap>
+          ) : (
+            <GameWrap>
+              <InstallWallet />
+            </GameWrap>
+          )}
+          {(gameState === GameState.Matchmaking ||
+            gameState === GameState.MatchRegistration ||
+            gameState === GameState.CurrentPlayerTurn ||
+            gameState === GameState.OpponentTurn) && (
+            <GameView
+              gameInfo={matchQueue.gameInfo}
+              onCellClicked={onCellClicked}
+              loadingElement={loadingElement}
+              loading={loading}
+            />
+          )}
+        </GameWidget>
+        <div className={'flex flex-col lg:hidden'}>
           {mainButtonState == MainButtonState.YourTurn && (
             <Button
               startContent={
@@ -440,87 +583,32 @@ export default function RandzuPage({
             />
           )}
         </div>
-        <GameWidget
-          author={randzuConfig.author}
-          isPvp
-          playersCount={matchQueue.getQueueLength()}
-          gameId='randzu'
+        <div
+          className={
+            'flex flex-row gap-4 font-plexsans text-[14px]/[14px] text-left-accent lg:hidden lg:text-[20px]/[20px]'
+          }
         >
-          {networkStore.address ? (
-            <>
-              {!competition ? (
-                <Wrap>
-                  <UnsetCompetitionPopup gameId={arkanoidConfig.id} />
-                </Wrap>
-              ) : (
-                <>
-                  {gameState == GameState.Won && (
-                    <Wrap>
-                      <Win
-                        onBtnClick={restart}
-                        title={'You won! Congratulations!'}
-                        btnText={'Find new game'}
-                      />
-                    </Wrap>
-                  )}
-                  {gameState == GameState.Lost && (
-                    <Wrap>
-                      <Lost startGame={restart} />
-                    </Wrap>
-                  )}
-                  {gameState === GameState.NotStarted && (
-                    <Wrap>
-                      <Button
-                        label={`START FOR ${formatUnits(
-                          competition.enteringPrice
-                        )}`}
-                        onClick={startGame}
-                        className={'max-w-[40%]'}
-                        endContent={
-                          <Image
-                            src={znakesImg}
-                            alt={'Znakes token'}
-                            className={'h-[24px] w-[24px] pb-0.5'}
-                          />
-                        }
-                      />
-                    </Wrap>
-                  )}
-                  {gameState === GameState.OpponentTimeout && (
-                    <Wrap>
-                      <div className={'flex max-w-[60%] flex-col gap-6'}>
-                        <span>Opponent timeout :(</span>
-                        <Button
-                          label={'Restart game'}
-                          onClick={() => restart()}
-                        />
-                      </div>
-                    </Wrap>
-                  )}
-                </>
-              )}
-            </>
-          ) : walletInstalled() ? (
-            <Wrap>
-              <ConnectWallet connectWallet={networkStore.connectWallet} />
-            </Wrap>
-          ) : (
-            <Wrap>
-              <InstallWallet />
-            </Wrap>
-          )}
-          {(gameState === GameState.Matchmaking ||
-            gameState === GameState.MatchRegistration ||
-            gameState === GameState.CurrentPlayerTurn ||
-            gameState === GameState.OpponentTurn) && (
-            <GameView
-              gameInfo={matchQueue.gameInfo}
-              onCellClicked={onCellClicked}
-              loadingElement={loadingElement}
-              loading={loading}
-            />
-          )}
-        </GameWidget>
+          <span className={'uppercase'}>Players in queue: {2}</span>
+        </div>
+        <div className={'flex h-full w-full flex-col gap-4 lg:hidden'}>
+          <span className={'w-full text-headline-2 font-bold'}>Game</span>
+          <div
+            className={
+              'flex w-full gap-2 font-plexsans text-[16px]/[16px] uppercase text-left-accent lg:text-[20px]/[20px]'
+            }
+          >
+            <span>Game status:</span>
+            <span>{statuses[gameState]}</span>
+          </div>
+          <div
+            className={
+              'flex w-full items-center gap-2 font-plexsans text-[14px]/[14px] text-foreground lg:text-[20px]/[20px]'
+            }
+          >
+            <span>Your opponent:</span>
+            <span>{formatPubkey(matchQueue.gameInfo?.opponent)}</span>
+          </div>
+        </div>
         <Competition
           isPvp
           startGame={restart}
@@ -545,7 +633,6 @@ export default function RandzuPage({
           }
         />
       </motion.div>
-      
     </GamePage>
   );
 }

@@ -29,7 +29,7 @@ export const Button = ({
     return (
       <div
         className={clsx(
-          'flex w-full flex-row items-center justify-center gap-2 rounded-[5px] py-2 text-center text-[20px]/[20px] font-medium',
+          'flex w-full flex-row items-center justify-center gap-2 rounded-[5px] py-2 text-center text-[16px]/[16px] font-medium lg:text-[20px]/[20px]',
           {
             'bg-left-accent text-dark-buttons-text': isFilled,
             'hover:bg-bg-dark hover:text-left-accent': isFilled && !isReadonly,
@@ -40,17 +40,14 @@ export const Button = ({
           },
           className
         )}
+        onClick={!isReadonly ? onClick : undefined}
       >
         {(startContent || endContent) && (
           <div className={'flex flex-row items-center justify-end'}>
             {startContent}
           </div>
         )}
-        <Link
-          href={!isReadonly ? href : '#'}
-          onClick={!isReadonly ? onClick : undefined}
-          className={'w-full min-w-[40%]'}
-        >
+        <Link href={!isReadonly ? href : '#'} className={'w-full min-w-[40%]'}>
           {label}
         </Link>
         {(startContent || endContent) && (
@@ -64,7 +61,7 @@ export const Button = ({
     return (
       <div
         className={clsx(
-          'flex w-full flex-row items-center justify-center gap-2 rounded-[5px] py-2 text-center text-[20px]/[20px] font-medium',
+          'flex w-full flex-row items-center justify-center gap-2 rounded-[5px] py-2 text-center text-[16px]/[16px] font-medium lg:text-[20px]/[20px]',
           {
             'bg-left-accent text-dark-buttons-text': isFilled,
             'hover:bg-bg-dark hover:text-left-accent': isFilled && !isReadonly,
@@ -76,18 +73,14 @@ export const Button = ({
           },
           className
         )}
+        onClick={!isReadonly ? onClick : undefined}
       >
         {(startContent || endContent) && (
           <div className={'flex flex-row items-center justify-end'}>
             {startContent}
           </div>
         )}
-        <button
-          className={'min-w-[40%]'}
-          onClick={!isReadonly ? onClick : undefined}
-        >
-          {label}
-        </button>
+        <button className={'min-w-[40%]'}>{label}</button>
         {(startContent || endContent) && (
           <div className={'flex flex-row items-center justify-end'}>
             {endContent}

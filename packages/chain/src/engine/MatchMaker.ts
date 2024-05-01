@@ -76,7 +76,7 @@ export class MatchMaker extends LobbyManager {
 
   @runtimeMethod()
   public addDefaultLobby(participationFee: ProtoUInt64): void {
-    let lobby = Lobby.default(UInt64.zero);
+    let lobby = Lobby.default(UInt64.zero, Bool(false));
     lobby.participationFee = participationFee;
     const lastLobbyId = this.lastDefaultLobby.get().orElse(UInt64.from(1));
     this.defaultLobbies.set(lastLobbyId, lobby);
@@ -209,7 +209,7 @@ export class MatchMaker extends LobbyManager {
     return Provable.if<Lobby>(
       type.equals(UInt64.zero),
       Lobby,
-      Lobby.default(id),
+      Lobby.default(id, Bool(false)),
       customDefaultLobby,
     );
   }

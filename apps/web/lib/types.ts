@@ -1,5 +1,6 @@
 import { Currency } from '@/constants/currency';
 import { ZkNoidGameGenre } from '@/lib/platform/game_tags';
+import { PublicKey } from 'o1js';
 
 export interface Ball {
   x: number;
@@ -60,6 +61,20 @@ export interface ICompetitionPVP {
   reward: bigint;
   currency: Currency;
   startPrice: bigint;
+}
+
+export interface ILobby {
+  id: number;
+  name: string;
+  reward: bigint;
+  fee: bigint;
+  maxPlayers: number;
+  players: number;
+  playersAddresses?: PublicKey[];
+  playersReady?: boolean[];
+  privateLobby: boolean;
+  currency: Currency;
+  accessKey: string; // TEMPORARY!!!
 }
 
 const bricksInRow = 5;

@@ -9,6 +9,8 @@ import { Pagination } from '@/components/ui/games-store/shared/Pagination';
 import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
 import { api } from '@/trpc/react';
 import { useNetworkStore } from '@/lib/stores/network';
+import Lottie from 'react-lottie';
+import SnakeNoEvents from '@/components/ui/games-store/widgets/GameStore/assets/ZKNoid_Snake_Intro_03_05.json';
 
 export const FavoriteGames = ({ games }: { games: IGame[] }) => {
   const PAGINATION_LIMIT = 8;
@@ -51,8 +53,12 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
   const getFavoritesQuery = api.favorites.getFavoriteGames.useQuery({
     userAddress: networkStore.address ?? '',
   });
+
   const filteredGames = games.filter(
-    (x) => genresSelected.includes(x.genre) || genresSelected.length == 0
+    (x) =>
+      (genresSelected.includes(x.genre) || genresSelected.length == 0) &&
+      getFavoritesQuery.data &&
+      getFavoritesQuery.data.favorites.some((y) => y.gameId == x.id && y.status)
   );
 
   const renderGames = filteredGames.slice(
@@ -121,6 +127,18 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
                   }
                 />
               ))}
+            {renderGames.length == 0 && (
+              <div className="h-[352px] w-fit">
+                <Lottie
+                  options={{
+                    animationData: SnakeNoEvents,
+                    rendererSettings: {
+                      className: 'z-0 h-full',
+                    },
+                  }}
+                ></Lottie>
+              </div>
+            )}
           </div>
         </div>
         <AnimatePresence initial={false} mode={'wait'}>

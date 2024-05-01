@@ -1,7 +1,7 @@
 import GamePage from '@/components/framework/GamePage';
 import { thimblerigConfig } from '../config';
 import { useNetworkStore } from '@/lib/stores/network';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import {
   type ClientAppChain,
@@ -36,16 +36,28 @@ import ThimblerigCoverMobileSVG from '@/public/image/game-page/game-title-mobile
 
 import Image from 'next/image';
 import Lottie from 'react-lottie';
-import {
-  MainButtonState,
-  PvPGameView,
-} from '@/components/framework/GamePage/PvPGameView';
+import { MainButtonState } from '@/components/framework/GamePage/PvPGameView';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import { getRandomEmoji } from '@/lib/emoji';
 import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
-import { cn } from '@/lib/utils';
+import { cn, formatPubkey } from '@/lib/utils';
 import AnimatedThimble from './AnimatedThimble';
+import { Button } from '@/components/ui/games-store/shared/Button';
+import { GameWidget } from '@/components/framework/GameWidget/GameWidget';
+import { UnsetCompetitionPopup } from '@/components/framework/GameWidget/UnsetCompetitionPopup';
+import { Win } from '@/components/framework/GameWidget/Win';
+import { Lost } from '@/components/framework/GameWidget/Lost';
+import { formatUnits } from '@/lib/unit';
+import znakesImg from '@/public/image/tokens/znakes.svg';
+import { ConnectWallet } from '@/components/framework/GameWidget/ConnectWallet';
+import { InstallWallet } from '@/components/framework/GameWidget/InstallWallet';
+import { Competition } from '@/components/framework/GameWidget/Competition';
+import { Currency } from '@/constants/currency';
+import { motion, useAnimationControls } from 'framer-motion';
+import { ICompetitionPVP } from '@/lib/types';
+import { GameWrap } from '@/components/framework/GamePage/GameWrap';
+import { Modal } from '@/components/ui/games-store/shared/Modal';
 
 enum GameState {
   WalletNotInstalled,
@@ -458,6 +470,27 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     return ThimbleSVG;
   };
 
+  const getRatingQuery = api.ratings.getGameRating.useQuery({
+    gameId: 'thimblerig',
+  });
+
+  const competition: ICompetitionPVP = {
+    id: 12,
+    game: {
+      id: thimblerigConfig.id,
+      name: thimblerigConfig.name,
+      rules: thimblerigConfig.rules,
+      rating: getRatingQuery.data?.rating,
+      author: thimblerigConfig.author,
+    },
+    title: 'TEST COMPETITION',
+    reward: BigInt(+DEFAULT_PARTICIPATION_FEE.toString()),
+    currency: Currency.MINA,
+    startPrice: BigInt(+DEFAULT_PARTICIPATION_FEE.toString()),
+  };
+
+  const draggableBallControls = useAnimationControls();
+
   return (
     <GamePage
       gameConfig={thimblerigConfig}
@@ -465,181 +498,484 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       mobileImage={ThimblerigCoverMobileSVG}
       defaultPage={'Game'}
     >
-      <PvPGameView
-        status={status}
-        opponent={matchQueue.gameInfo?.opponent}
-        startPrice={DEFAULT_PARTICIPATION_FEE.toBigInt()}
-        mainButtonState={mainButtonState}
-        startGame={startGame}
-        queueSize={matchQueue.queueLength}
-        gameAuthor="ZkNoid Team"
-        mainText={mainText[gameState]}
-        bottomButtonText={bottomButtonState[gameState]?.text}
-        bottomButtonHandler={bottomButtonState[gameState]?.handler}
-        competitionName="Room 1"
-        gameName="Thimblerig"
-        gameRules={`1. Two players participate in each round of the game. One player \
-        hides a ball under one of three thimbles, and the other player \
-        attempts to guess the location of the ball. \
-        \n
-        2. The hiding player places ball under one of three thimbles trying \
-            to confuse the guessing player. \
-        \n
-        3. The guessing player selects one of the thimbles, trying to guess \
-        which thimble conceals the ball. The hiding player then reveals \
-        whether the ball is under the chosen
-        `}
-        competitionFunds={DEFAULT_PARTICIPATION_FEE.toBigInt() * 100n}
+      <motion.div
+        className={
+          'flex grid-cols-4 flex-col-reverse gap-4 pt-10 lg:grid lg:pt-0'
+        }
+        animate={'windowed'}
       >
-        <div className="flex">
-          {![GameState.WaitingForHiding, GameState.WaitingForGuessing].includes(
-            gameState
-          ) &&
-            Array.from({ length: 3 }, (_, i) => {
-              const hidingAnimation =
-                gameState == GameState.CurrentPlayerHiding &&
-                thimbleOpened &&
-                thimbleOpenedRef.current == i + 1;
-
-              const correctBallAnimation =
-                (gameState == GameState.Won || gameState == GameState.Lost) &&
-                revealedValue?.value == i + 1;
-              const guessedBallAnimation =
-                (gameState == GameState.Won || gameState == GameState.Lost) &&
-                finalAnimationStep == 1 &&
-                revealedValue?.choice == i + 1;
-              const isAnimated =
-                hidingAnimation || correctBallAnimation || guessedBallAnimation;
-
-              return (
-                <div
-                  key={i}
-                  className={cn('p-5', isAnimated && 'mx-[-20px] mt-[-55px]')}
-                  onDrop={() => {
-                    gameState == GameState.CurrentPlayerHiding &&
-                      commitThumblerig(i + 1);
-                  }}
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                    return false;
-                  }}
-                  onDragLeave={(e) => {}}
-                  onDragEnter={(e) => {
-                    if (gameState == GameState.CurrentPlayerHiding) {
-                      thimbleOpenedRef.current = (i + 1) as 1 | 2 | 3;
-                      setThimbleOpened(thimbleOpenedRef.current);
-                    }
-                  }}
-                  onPointerEnter={() => {
-                    if (
-                      gameState == GameState.CurrentPlayerGuessing &&
-                      thimbleGuessed != i + 1
-                    ) {
-                      console.log('Revealing', i);
-                      setThimbleGuessed((i + 1) as 1 | 2 | 3);
-                    }
-                  }}
-                  onPointerLeave={() => {
-                    if (
-                      gameState == GameState.CurrentPlayerGuessing &&
-                      !pendingChoosing &&
-                      thimbleGuessed == i + 1
-                    ) {
-                      setThimbleGuessed(undefined);
-                    }
-                  }}
-                  onClick={() =>
-                    gameState == GameState.CurrentPlayerGuessing &&
-                    chooseThumblerig(i + 1)
-                  }
-                >
-                  {!isAnimated ? (
-                    <Image
-                      src={getThimbleImage(i)}
-                      alt={'Thimble'}
-                      className={
-                        (gameState == GameState.CurrentPlayerHiding &&
-                          thimbleOpened &&
-                          thimbleOpenedRef.current != i + 1) ||
-                        ((gameState == GameState.CurrentPlayerGuessing ||
-                          gameState == GameState.WaitingForReveal) &&
-                          thimbleGuessed != undefined &&
-                          thimbleGuessed != i + 1) ||
-                        (gameState == GameState.CurrentPlayerRevealing &&
-                          Number(commitmentStore.value) != i + 1)
-                          ? 'pointer-events-none opacity-50'
-                          : 'pointer-events-none'
-                      }
-                    />
-                  ) : (
-                    <AnimatedThimble
-                      animation={
-                        correctBallAnimation
-                          ? ThimblerigBallInsideLifting
-                          : guessedBallAnimation
-                            ? ThimblerigGuessedBallInsideLifting
-                            : ThimblerigNoBallInsideLifting
-                      }
-                      onAnimationEnded={function (): void {
-                        if (gameState == GameState.Won || gameState == GameState.Lost) {
-                          finalAnimationStepRef.current = 1;
-                          setFinalAnimationStep(finalAnimationStepRef.current);
-                        }
-                      }}
-                    />
-                  )}
-                </div>
-              );
-            })}
-          {[GameState.WaitingForHiding, GameState.WaitingForGuessing].includes(
-            gameState
-          ) && (
-            <Lottie
-              options={{
-                animationData: ThimblesMixing,
-                rendererSettings: {
-                  className: `z-0 h-full`,
+        <div className={'flex flex-col gap-4 lg:hidden'}>
+          <span className={'w-full text-headline-2 font-bold'}>Rules</span>
+          <span className={'font-plexsans text-buttons-menu font-normal'}>
+            {thimblerigConfig.rules}
+          </span>
+        </div>
+        <div className={'hidden h-full w-full flex-col gap-4 lg:flex'}>
+          <div
+            className={
+              'flex w-full gap-2 font-plexsans text-[20px]/[20px] uppercase text-left-accent'
+            }
+          >
+            <span>Game status:</span>
+            <span>{statuses[gameState]}</span>
+          </div>
+          <div
+            className={
+              'flex w-full gap-2 font-plexsans text-[20px]/[20px] text-foreground'
+            }
+          >
+            <span>Your opponent:</span>
+            <span>{formatPubkey(matchQueue.gameInfo?.opponent)}</span>
+          </div>
+          {gameState == GameState.CurrentPlayerRevealing ? (
+            <motion.div
+              animate={{
+                scale: 1.05,
+                transition: {
+                  repeat: Infinity,
+                  repeatType: 'reverse',
+                  duration: 0.6,
                 },
               }}
-              speed={0.6}
-              // height={height}
-              // isStopped={!visible && false}
-            ></Lottie>
-          )}
-        </div>
-        <div className="">
-          {gameState == GameState.CurrentPlayerHiding && (
-            <div className="flex w-1/2 flex-row items-center justify-between gap-1 py-10 font-museo text-[24px]/[24px]">
-              <div
-                className="block min-h-[56px] min-w-[56px]"
-                draggable={true}
-                onDrag={() => setBallDragged(true)}
-                onDragEnd={() => setBallDragged(false)}
-              >
-                <Image
-                  src={ballDragged ? BallDashedSVG : BallSVG}
-                  alt="Ball"
-                  className="pr-2"
+            >
+              <Button label={'REVEAL POSITION'} onClick={revealThumblerig} />
+            </motion.div>
+          ) : (
+            <>
+              {mainButtonState == MainButtonState.YourTurn && (
+                <Button
+                  startContent={
+                    <svg
+                      width="26"
+                      height="18"
+                      viewBox="0 0 26 18"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M1 7L10 16L25 1"
+                        stroke="#252525"
+                        strokeWidth="2"
+                      />
+                    </svg>
+                  }
+                  label={'YOUR TURN'}
+                  isReadonly
                 />
-              </div>
-
-              <div className="font-plex text-[16px]/[16px] uppercase text-left-accent">
-                Drag the ball under one the thimbles and confirm your selection
-              </div>
-              <Image src={ArrowSVG} alt="Arrow" />
-            </div>
-          )}
-          {gameState == GameState.CurrentPlayerGuessing && (
-            <div className="flex w-1/2 flex-row items-center justify-between gap-1 py-10 font-museo text-[24px]/[24px]">
-              <div className="font-plex text-[16px]/[16px] uppercase text-left-accent">
-                Select the thimble under which you think your opponent has
-                hidden the ball
-              </div>
-              <Image src={ArrowSVG} alt="Arrow" />
-            </div>
+              )}
+              {mainButtonState == MainButtonState.OpponentsTurn && (
+                <Button
+                  startContent={
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M12.5134 10.5851L1.476 0L0.00136988 1.41421L11.0387 11.9994L0 22.5858L1.47463 24L12.5134 13.4136L22.5242 23.0143L23.9989 21.6001L13.988 11.9994L23.9975 2.39996L22.5229 0.98575L12.5134 10.5851Z"
+                        fill="#252525"
+                      />
+                    </svg>
+                  }
+                  label={"OPPONENT'S TURN"}
+                  isReadonly
+                />
+              )}
+              {mainButtonState == MainButtonState.OpponentTimeOut && (
+                <Button label={'OPPONENT TIMED OUT'} isReadonly />
+              )}
+              {mainButtonState == MainButtonState.TransactionExecution && (
+                <Button
+                  startContent={
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M24 12C24 15.1826 22.7357 18.2348 20.4853 20.4853C18.2348 22.7357 15.1826 24 12 24C8.8174 24 5.76515 22.7357 3.51472 20.4853C1.26428 18.2348 0 15.1826 0 12C0 11.633 0.017 11.269 0.049 10.91L2.041 11.091C2.01367 11.3903 2 11.6933 2 12C2 13.9778 2.58649 15.9112 3.6853 17.5557C4.78412 19.2002 6.3459 20.4819 8.17317 21.2388C10.0004 21.9957 12.0111 22.1937 13.9509 21.8079C15.8907 21.422 17.6725 20.4696 19.0711 19.0711C20.4696 17.6725 21.422 15.8907 21.8079 13.9509C22.1937 12.0111 21.9957 10.0004 21.2388 8.17317C20.4819 6.3459 19.2002 4.78412 17.5557 3.6853C15.9112 2.58649 13.9778 2 12 2C11.6933 2 11.3903 2.01367 11.091 2.041L10.91 0.049C11.269 0.017 11.633 0 12 0C15.1815 0.00344108 18.2318 1.26883 20.4815 3.51852C22.7312 5.76821 23.9966 8.81846 24 12ZM5.663 4.263L4.395 2.717C3.78121 3.2216 3.2185 3.78531 2.715 4.4L4.262 5.665C4.68212 5.15305 5.15135 4.68348 5.663 4.263ZM9.142 2.415L8.571 0.5C7.80965 0.726352 7.0727 1.02783 6.371 1.4L7.31 3.166C7.89418 2.85539 8.50789 2.60381 9.142 2.415ZM3.164 7.315L1.4 6.375C1.02801 7.07678 0.726533 7.81372 0.5 8.575L2.417 9.146C2.60454 8.51172 2.85478 7.89769 3.164 7.313V7.315ZM11 6V10.277C10.7004 10.4513 10.4513 10.7004 10.277 11H7V13H10.277C10.4297 13.2652 10.6414 13.4917 10.8958 13.662C11.1501 13.8323 11.4402 13.9417 11.7436 13.9818C12.047 14.0219 12.3556 13.9917 12.6454 13.8934C12.9353 13.7951 13.1986 13.6314 13.415 13.415C13.6314 13.1986 13.7951 12.9353 13.8934 12.6454C13.9917 12.3556 14.0219 12.047 13.9818 11.7436C13.9417 11.4402 13.8323 11.1501 13.662 10.8958C13.4917 10.6414 13.2652 10.4297 13 10.277V6H11Z"
+                        fill="#252525"
+                      />
+                    </svg>
+                  }
+                  label={'TRANSACTION EXECUTION'}
+                  isReadonly
+                />
+              )}
+            </>
           )}
         </div>
-      </PvPGameView>
+        <GameWidget
+          author={thimblerigConfig.author}
+          isPvp
+          playersCount={matchQueue.getQueueLength()}
+          gameId="thimblerig"
+        >
+          {networkStore.address ? (
+            <>
+              {!competition ? (
+                <GameWrap>
+                  <UnsetCompetitionPopup gameId={thimblerigConfig.id} />
+                </GameWrap>
+              ) : (
+                <>
+                  {gameState == GameState.Won && (
+                    <Modal trigger={<></>} defaultOpen>
+                      <Win
+                        onBtnClick={restart}
+                        title={'You won! Congratulations!'}
+                        btnText={'Find new game'}
+                      />
+                    </Modal>
+                  )}
+                  {gameState == GameState.Lost && (
+                    <Modal trigger={<></>} defaultOpen>
+                      <Lost startGame={restart} />
+                    </Modal>
+                  )}
+                  {gameState === GameState.NotStarted && (
+                    <GameWrap>
+                      <Button
+                        label={`START FOR ${formatUnits(
+                          competition.startPrice
+                        )}`}
+                        onClick={startGame}
+                        className={'max-w-[40%]'}
+                        endContent={
+                          <Image
+                            src={znakesImg}
+                            alt={'Znakes token'}
+                            className={'h-[24px] w-[24px] pb-0.5'}
+                          />
+                        }
+                      />
+                    </GameWrap>
+                  )}
+                  {gameState === GameState.OpponentTimeout && (
+                    <GameWrap>
+                      <div className={'flex max-w-[60%] flex-col gap-6'}>
+                        <span>Opponent timeout :(</span>
+                        <Button
+                          label={'Restart game'}
+                          onClick={() => restart()}
+                        />
+                      </div>
+                    </GameWrap>
+                  )}
+                </>
+              )}
+            </>
+          ) : walletInstalled() ? (
+            <GameWrap>
+              <ConnectWallet connectWallet={networkStore.connectWallet} />
+            </GameWrap>
+          ) : (
+            <GameWrap>
+              <InstallWallet />
+            </GameWrap>
+          )}
+          {gameState !== GameState.NotStarted &&
+            gameState !== GameState.OpponentTimeout &&
+            networkStore.address && (
+              <GameWrap noBorder>
+                <div className="flex">
+                  {![
+                    GameState.WaitingForHiding,
+                    GameState.WaitingForGuessing,
+                  ].includes(gameState) &&
+                    Array.from({ length: 3 }, (_, i) => {
+                      const hidingAnimation =
+                        gameState == GameState.CurrentPlayerHiding &&
+                        thimbleOpened &&
+                        thimbleOpenedRef.current == i + 1;
+
+                      const correctBallAnimation =
+                        (gameState == GameState.Won ||
+                          gameState == GameState.Lost) &&
+                        revealedValue?.value == i + 1;
+                      const guessedBallAnimation =
+                        (gameState == GameState.Won ||
+                          gameState == GameState.Lost) &&
+                        finalAnimationStep == 1 &&
+                        revealedValue?.choice == i + 1;
+                      const isAnimated =
+                        hidingAnimation ||
+                        correctBallAnimation ||
+                        guessedBallAnimation;
+
+                      return (
+                        <div
+                          key={i}
+                          className={cn(
+                            'p-5',
+                            isAnimated && 'mx-[-20px] mt-[-55px]'
+                          )}
+                          onDrop={() => {
+                            gameState == GameState.CurrentPlayerHiding &&
+                              commitThumblerig(i + 1);
+                          }}
+                          onDragOver={(e) => {
+                            e.preventDefault();
+                            return false;
+                          }}
+                          onDragLeave={(e) => {}}
+                          onDragEnter={(e) => {
+                            if (gameState == GameState.CurrentPlayerHiding) {
+                              thimbleOpenedRef.current = (i + 1) as 1 | 2 | 3;
+                              setThimbleOpened(thimbleOpenedRef.current);
+                            }
+                          }}
+                          onPointerEnter={() => {
+                            if (
+                              gameState == GameState.CurrentPlayerGuessing &&
+                              thimbleGuessed != i + 1
+                            ) {
+                              console.log('Revealing', i);
+                              setThimbleGuessed((i + 1) as 1 | 2 | 3);
+                            }
+                          }}
+                          onPointerLeave={() => {
+                            if (
+                              gameState == GameState.CurrentPlayerGuessing &&
+                              !pendingChoosing &&
+                              thimbleGuessed == i + 1
+                            ) {
+                              setThimbleGuessed(undefined);
+                            }
+                          }}
+                          onClick={() =>
+                            gameState == GameState.CurrentPlayerGuessing &&
+                            chooseThumblerig(i + 1)
+                          }
+                        >
+                          {!isAnimated ? (
+                            <Image
+                              src={getThimbleImage(i)}
+                              alt={'Thimble'}
+                              className={
+                                (gameState == GameState.CurrentPlayerHiding &&
+                                  thimbleOpened &&
+                                  thimbleOpenedRef.current != i + 1) ||
+                                ((gameState ==
+                                  GameState.CurrentPlayerGuessing ||
+                                  gameState == GameState.WaitingForReveal) &&
+                                  thimbleGuessed != undefined &&
+                                  thimbleGuessed != i + 1) ||
+                                (gameState ==
+                                  GameState.CurrentPlayerRevealing &&
+                                  Number(commitmentStore.value) != i + 1)
+                                  ? 'pointer-events-none opacity-50'
+                                  : 'pointer-events-none'
+                              }
+                            />
+                          ) : (
+                            <AnimatedThimble
+                              animation={
+                                correctBallAnimation
+                                  ? ThimblerigBallInsideLifting
+                                  : guessedBallAnimation
+                                    ? ThimblerigGuessedBallInsideLifting
+                                    : ThimblerigNoBallInsideLifting
+                              }
+                              onAnimationEnded={function (): void {
+                                if (
+                                  gameState == GameState.Won ||
+                                  gameState == GameState.Lost
+                                ) {
+                                  finalAnimationStepRef.current = 1;
+                                  setFinalAnimationStep(
+                                    finalAnimationStepRef.current
+                                  );
+                                }
+                              }}
+                            />
+                          )}
+                        </div>
+                      );
+                    })}
+                  {[
+                    GameState.WaitingForHiding,
+                    GameState.WaitingForGuessing,
+                  ].includes(gameState) && (
+                    <Lottie
+                      options={{
+                        animationData: ThimblesMixing,
+                        rendererSettings: {
+                          className: `z-0 h-full`,
+                        },
+                      }}
+                      speed={0.6}
+                      // height={height}
+                      // isStopped={!visible && false}
+                    ></Lottie>
+                  )}
+                </div>
+                <div className="">
+                  {gameState == GameState.CurrentPlayerHiding && (
+                    <div className="flex w-1/2 flex-row items-center justify-between gap-1 py-10 font-museo text-[24px]/[24px]">
+                      <motion.div
+                        className="block min-h-[56px] min-w-[56px] cursor-grab"
+                        draggable={true}
+                        onDrag={() => {
+                          draggableBallControls.stop();
+                          setBallDragged(true);
+                        }}
+                        onDragEnd={() => {
+                          draggableBallControls.start('play');
+                          setBallDragged(false);
+                        }}
+                        whileInView={'play'}
+                        variants={{
+                          play: {
+                            scale: 1.2,
+                            transition: {
+                              repeat: Infinity,
+                              repeatType: 'reverse',
+                              duration: 0.4,
+                            },
+                          },
+                        }}
+                        animate={draggableBallControls}
+                      >
+                        <Image
+                          src={ballDragged ? BallDashedSVG : BallSVG}
+                          alt="Ball"
+                          className="pr-2"
+                        />
+                      </motion.div>
+
+                      <div className="font-plex text-[16px]/[16px] uppercase text-left-accent">
+                        Drag the ball under one the thimbles and confirm your
+                        selection
+                      </div>
+                      <Image src={ArrowSVG} alt="Arrow" />
+                    </div>
+                  )}
+                  {gameState == GameState.CurrentPlayerGuessing && (
+                    <div className="flex w-1/2 flex-row items-center justify-between gap-1 py-10 font-museo text-[24px]/[24px]">
+                      <div className="font-plex text-[16px]/[16px] uppercase text-left-accent">
+                        Select the thimble under which you think your opponent
+                        has hidden the ball
+                      </div>
+                      <Image src={ArrowSVG} alt="Arrow" />
+                    </div>
+                  )}
+                </div>
+              </GameWrap>
+            )}
+        </GameWidget>
+        <div className={'flex flex-col lg:hidden'}>
+          {mainButtonState == MainButtonState.YourTurn && (
+            <Button
+              startContent={
+                <svg
+                  width="26"
+                  height="18"
+                  viewBox="0 0 26 18"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M1 7L10 16L25 1" stroke="#252525" strokeWidth="2" />
+                </svg>
+              }
+              className="uppercase"
+              label={'YOUR TURN'}
+              isReadonly
+            />
+          )}
+          {mainButtonState == MainButtonState.OpponentsTurn && (
+            <Button
+              startContent={
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M12.5134 10.5851L1.476 0L0.00136988 1.41421L11.0387 11.9994L0 22.5858L1.47463 24L12.5134 13.4136L22.5242 23.0143L23.9989 21.6001L13.988 11.9994L23.9975 2.39996L22.5229 0.98575L12.5134 10.5851Z"
+                    fill="#252525"
+                  />
+                </svg>
+              }
+              className="uppercase"
+              label={"OPPONENT'S TURN"}
+              isReadonly
+            />
+          )}
+          {mainButtonState == MainButtonState.OpponentTimeOut && (
+            <Button
+              className="uppercase"
+              label={'OPPONENT TIMED OUT'}
+              isReadonly
+            />
+          )}
+          {mainButtonState == MainButtonState.TransactionExecution && (
+            <Button
+              startContent={
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M24 12C24 15.1826 22.7357 18.2348 20.4853 20.4853C18.2348 22.7357 15.1826 24 12 24C8.8174 24 5.76515 22.7357 3.51472 20.4853C1.26428 18.2348 0 15.1826 0 12C0 11.633 0.017 11.269 0.049 10.91L2.041 11.091C2.01367 11.3903 2 11.6933 2 12C2 13.9778 2.58649 15.9112 3.6853 17.5557C4.78412 19.2002 6.3459 20.4819 8.17317 21.2388C10.0004 21.9957 12.0111 22.1937 13.9509 21.8079C15.8907 21.422 17.6725 20.4696 19.0711 19.0711C20.4696 17.6725 21.422 15.8907 21.8079 13.9509C22.1937 12.0111 21.9957 10.0004 21.2388 8.17317C20.4819 6.3459 19.2002 4.78412 17.5557 3.6853C15.9112 2.58649 13.9778 2 12 2C11.6933 2 11.3903 2.01367 11.091 2.041L10.91 0.049C11.269 0.017 11.633 0 12 0C15.1815 0.00344108 18.2318 1.26883 20.4815 3.51852C22.7312 5.76821 23.9966 8.81846 24 12ZM5.663 4.263L4.395 2.717C3.78121 3.2216 3.2185 3.78531 2.715 4.4L4.262 5.665C4.68212 5.15305 5.15135 4.68348 5.663 4.263ZM9.142 2.415L8.571 0.5C7.80965 0.726352 7.0727 1.02783 6.371 1.4L7.31 3.166C7.89418 2.85539 8.50789 2.60381 9.142 2.415ZM3.164 7.315L1.4 6.375C1.02801 7.07678 0.726533 7.81372 0.5 8.575L2.417 9.146C2.60454 8.51172 2.85478 7.89769 3.164 7.313V7.315ZM11 6V10.277C10.7004 10.4513 10.4513 10.7004 10.277 11H7V13H10.277C10.4297 13.2652 10.6414 13.4917 10.8958 13.662C11.1501 13.8323 11.4402 13.9417 11.7436 13.9818C12.047 14.0219 12.3556 13.9917 12.6454 13.8934C12.9353 13.7951 13.1986 13.6314 13.415 13.415C13.6314 13.1986 13.7951 12.9353 13.8934 12.6454C13.9917 12.3556 14.0219 12.047 13.9818 11.7436C13.9417 11.4402 13.8323 11.1501 13.662 10.8958C13.4917 10.6414 13.2652 10.4297 13 10.277V6H11Z"
+                    fill="#252525"
+                  />
+                </svg>
+              }
+              className="uppercase"
+              label={'TRANSACTION EXECUTION'}
+              isReadonly
+            />
+          )}
+        </div>
+        <div
+          className={
+            'flex flex-row gap-4 font-plexsans text-[14px]/[14px] text-left-accent lg:hidden lg:text-[20px]/[20px]'
+          }
+        >
+          <span className={'uppercase'}>Players in queue: {2}</span>
+        </div>
+        <div className={'flex h-full w-full flex-col gap-4 lg:hidden'}>
+          <span className={'w-full text-headline-2 font-bold'}>Game</span>
+          <div
+            className={
+              'flex w-full gap-2 font-plexsans text-[16px]/[16px] uppercase text-left-accent lg:text-[20px]/[20px]'
+            }
+          >
+            <span>Game status:</span>
+            <span>{statuses[gameState]}</span>
+          </div>
+          <div
+            className={
+              'flex w-full items-center gap-2 font-plexsans text-[14px]/[14px] text-foreground lg:text-[20px]/[20px]'
+            }
+          >
+            <span>Your opponent:</span>
+            <span>{formatPubkey(matchQueue.gameInfo?.opponent)}</span>
+          </div>
+        </div>
+        <Competition
+          isPvp
+          startGame={restart}
+          isRestartBtn={
+            gameState === GameState.Lost || gameState === GameState.Won
+          }
+          competition={competition}
+        />
+      </motion.div>
     </GamePage>
   );
 }

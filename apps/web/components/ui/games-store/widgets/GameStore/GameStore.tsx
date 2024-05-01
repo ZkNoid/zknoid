@@ -31,8 +31,6 @@ import SnakeNoEvents from './assets/ZKNoid_Snake_Intro_03_05.json';
 import { Pagination } from '@/components/ui/games-store/shared/Pagination';
 import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
 import { Currency } from '@/constants/currency';
-import Link from 'next/link';
-import { api } from '@/trpc/react';
 import { GradientButton } from '@/components/ui/games-store/shared/GradientButton';
 
 export const GameStore = ({ games }: { games: IGame[] }) => {
@@ -419,25 +417,77 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
         </div>
       </div>
       <Competitions
-        competitions={[...Array(17)].fill({
-          game: defaultGames[0],
-          title: 'Arkanoid',
-          id: 0,
-          preReg: false,
-          preRegDate: {
-            start: new Date(2024, 2, 15),
-            end: new Date(2024, 2, 20),
+        competitions={[
+          {
+            game: {
+              id: defaultGames[0].id,
+              genre: defaultGames[0].genre,
+              rules: '',
+            },
+            title: 'Default-0',
+            id: 0,
+            preReg: false,
+            preRegDate: {
+              start: new Date(1970, 0, 1),
+              end: new Date(1970, 0, 1),
+            },
+            competitionDate: {
+              start: new Date(1970, 0, 1),
+              end: new Date(1970, 0, 1),
+            },
+            participationFee: 0n,
+            currency: Currency.MINA,
+            reward: 0n,
+            seed: 0,
+            registered: false,
           },
-          competitionDate: {
-            start: new Date(2024, 2, 15),
-            end: new Date(2024, 2, 20),
+          {
+            game: {
+              id: defaultGames[0].id,
+              genre: defaultGames[0].genre,
+              rules: '',
+            },
+            title: 'Default-1',
+            id: 1,
+            preReg: false,
+            preRegDate: {
+              start: new Date(1970, 0, 1),
+              end: new Date(1970, 0, 1),
+            },
+            competitionDate: {
+              start: new Date(1970, 0, 1),
+              end: new Date(1970, 0, 1),
+            },
+            participationFee: 0n,
+            currency: Currency.MINA,
+            reward: 0n,
+            seed: 0,
+            registered: false,
           },
-          participationFee: 5n * 10n ** 9n,
-          currency: Currency.MINA,
-          reward: 1000n * 10n ** 9n,
-          seed: 123,
-          registered: false,
-        })}
+          {
+            game: {
+              id: defaultGames[0].id,
+              genre: defaultGames[0].genre,
+              rules: '',
+            },
+            title: 'Default-2',
+            id: 2,
+            preReg: false,
+            preRegDate: {
+              start: new Date(1970, 0, 1),
+              end: new Date(1970, 0, 1),
+            },
+            competitionDate: {
+              start: new Date(1970, 0, 1),
+              end: new Date(1970, 0, 1),
+            },
+            participationFee: 0n,
+            currency: Currency.MINA,
+            reward: 0n,
+            seed: 0,
+            registered: false,
+          },
+        ]}
       />
     </div>
   );
