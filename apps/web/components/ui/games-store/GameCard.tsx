@@ -13,6 +13,7 @@ import heart_3_filled from '@/public/image/misc/heart-3-filled.svg';
 import { clsx } from 'clsx';
 import { api } from '@/trpc/react';
 import { useNetworkStore } from '@/lib/stores/network';
+import { getEnvContext } from '@/lib/envContext';
 
 const StarSVG = ({
   fill = 'white',
@@ -63,6 +64,8 @@ export const GameCard = ({
   const getRatingQuery = api.ratings.getGameRating.useQuery({
     gameId: game.id,
   });
+  
+  const progress = api.progress.setSolvedQuests.useMutation();
 
   useEffect(() => {
     if (getFavoritesQuery.data) {
@@ -125,6 +128,15 @@ export const GameCard = ({
               userAddress: networkStore.address,
               status: !isFavorite,
             });
+
+            progress.mutate({
+              userAddress: networkStore.address!,
+              section: 'UI_TESTS_WEB',
+              id: 1,
+              txHash: '',
+              envContext: getEnvContext(),
+            });
+      
             setIsFavorite(!isFavorite);
           }}
         />

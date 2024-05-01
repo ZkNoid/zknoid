@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { clsx } from 'clsx';
 import { api } from '@/trpc/react';
 import { useNetworkStore } from '@/lib/stores/network';
+import { getEnvContext } from '@/lib/envContext';
 
 export const RateGame = ({
   gameId,
@@ -14,6 +15,7 @@ export const RateGame = ({
   const [feedback, setFeedback] = useState<string>('');
   const feedbackMutation = api.ratings.setGameFeedback.useMutation();
   const network = useNetworkStore();
+  const progress = api.progress.setSolvedQuests.useMutation();
 
   const sendFeedback = () => {
     feedbackMutation.mutate({
@@ -21,6 +23,14 @@ export const RateGame = ({
       gameId,
       feedback,
       rating: stars,
+    });
+
+    progress.mutate({
+      userAddress: network.address!,
+      section: 'UI_TESTS_WEB',
+      id: 0,
+      txHash: '',
+      envContext: getEnvContext(),
     });
   };
   return (

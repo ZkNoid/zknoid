@@ -91,6 +91,8 @@ export default function ArkanoidPage({
   const networkStore = useNetworkStore();
   const gameStartedMutation = api.logging.logGameStarted.useMutation();
 
+  const progress = api.progress.setSolvedQuests.useMutation();
+
   let bridge = useMinaBridge();
 
   const startGame = async () => {
@@ -185,6 +187,16 @@ export default function ArkanoidPage({
 
       await tx.sign();
       await tx.send();
+
+      if (score > 90000) {
+        await progress.mutateAsync({
+          userAddress: networkStore.address!,
+          section: 'ARKANOID',
+          id: 0,
+          txHash: tx.transaction!.hash().toString(),
+          envContext: getEnvContext(),
+        });
+      }
     } catch (e) {
       console.log('Error while generating ZK proof');
       console.log(e);
