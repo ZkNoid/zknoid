@@ -10,12 +10,15 @@ const OpponentItem = ({
   option,
   winCoef,
   register,
+  isModalOpen,
+  setIsModalOpen,
 }: {
   option: IMatchamkingOption;
   winCoef: number;
   register: (id: number) => Promise<void>;
+  isModalOpen: boolean;
+  setIsModalOpen: (isOpen: boolean) => void;
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <div
       className={
@@ -26,7 +29,6 @@ const OpponentItem = ({
         setIsModalOpen(true);
       }}
     >
-      <MatchmakingModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
       <span
         className={
           'text-center text-[16px]/[16px] font-medium uppercase text-bg-dark group-hover:text-left-accent'
@@ -103,6 +105,8 @@ export const FastMatchmaking = ({
   winCoef: number;
   register: (id: number) => Promise<void>;
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <>
       <div className={'col-start-1 col-end-4 row-start-1 flex flex-row gap-1'}>
@@ -161,6 +165,8 @@ export const FastMatchmaking = ({
             option={option}
             winCoef={winCoef}
             register={register}
+            isModalOpen={isModalOpen}
+            setIsModalOpen={setIsModalOpen}
           />
         ))}
         <div
@@ -274,6 +280,7 @@ export const FastMatchmaking = ({
             <span>3</span>
             <span>minutes</span>
           </span>
+          <MatchmakingModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
         </div>
       </div>
     </>
