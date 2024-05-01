@@ -195,7 +195,6 @@ export default function NewArkanoidCompetitionPage() {
     await tx.send();
 
     if (funding >= 30) {
-      tx.transaction?.hash
       await progress.mutateAsync({
         userAddress: networkStore.address!,
         section: 'ARKANOID',

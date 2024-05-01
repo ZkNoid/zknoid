@@ -802,8 +802,6 @@ export class CheckersLogic extends MatchMaker {
       );
     });
 
-    Provable.log('AAAAAAAA');
-
     const winProposed = hasOpponentPieces.not();
 
     game.winner = Provable.if(
