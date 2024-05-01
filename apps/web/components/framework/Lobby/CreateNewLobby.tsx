@@ -247,7 +247,14 @@ export const CreateNewLobby = ({
                 return;
               }
 
-              let accessKey = 0;
+              const randomInt = () => {
+                let number = '';
+                for (let i = 0; i < 10; i++) {
+                  number += Math.ceil(Math.random() * 10);
+                }
+                return Number(number);
+              };
+              let accessKey = randomInt();
 
               await createLobby(
                 newLobbyName,
