@@ -1,5 +1,4 @@
 import { Modal } from '@/components/ui/games-store/shared/Modal';
-import { useState } from 'react';
 import { LoadSpinner } from '@/components/ui/games-store/shared/LoadSpinner';
 import Image from 'next/image';
 import znakesImg from '@/public/image/tokens/znakes.svg';
@@ -8,10 +7,13 @@ import { Button } from '@/components/ui/games-store/shared/Button';
 
 export const MatchmakingModal = ({
   isLongSearch,
+  isOpen,
+  setIsOpen,
 }: {
   isLongSearch?: boolean;
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
   return (
     <Modal trigger={<></>} isOpen={isOpen} setIsOpen={setIsOpen}>
       <div className={'flex flex-col items-center justify-center gap-4'}>
