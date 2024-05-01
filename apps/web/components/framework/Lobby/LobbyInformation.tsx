@@ -1,7 +1,6 @@
 import { clsx } from 'clsx';
 import { Button } from '@/components/ui/games-store/shared/Button';
 import { ILobby } from '@/lib/types';
-import { formatUnits } from '@/lib/unit';
 import { motion } from 'framer-motion';
 import { usePvpLobbyStorage } from '@/lib/stores/pvpLobbyStore';
 
@@ -99,13 +98,13 @@ export const LobbyInformation = ({
               Participants fee
             </span>
             <span className={'col-start-2 col-end-5'}>
-              {formatUnits(lobby.reward)} {lobby.currency}
+              {lobby.reward.toString()} {lobby.currency}
             </span>
             <span className={'font-medium uppercase text-left-accent'}>
               Max Funds
             </span>
             <span className={'col-start-2 col-end-5'}>
-              {formatUnits(lobby.fee)} {lobby.currency}
+              {lobby.fee.toString()} {lobby.currency}
             </span>
           </div>
         </div>
