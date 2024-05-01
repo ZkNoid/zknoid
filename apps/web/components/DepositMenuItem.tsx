@@ -129,6 +129,7 @@ export const DepositMenuItem = () => {
   const networkStore = useNetworkStore();
 
   const contextAppChainClient = useContext(AppChainClientContext);
+  const progress = api.progress.setSolvedQuests.useMutation();
 
   useEffect(() => {
     setAmountIn(bridgeStore.amount);
@@ -194,6 +195,15 @@ export const DepositMenuItem = () => {
       isUnbridged: false,
       envContext: getEnvContext(),
     });
+
+    if (amountIn >= 50n * 10n ** BigInt(L2_ASSET.decimals))
+      await progress.mutateAsync({
+        userAddress: networkStore.address!,
+        section: 'UI_TESTS_WEB',
+        id: 2,
+        txHash: l2tx.transaction!.hash().toString(),
+        envContext: getEnvContext(),
+      });
   };
 
   const unbridge = async (amount: bigint) => {

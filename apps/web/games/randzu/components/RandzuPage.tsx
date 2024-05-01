@@ -48,7 +48,7 @@ import { Lost } from '@/components/framework/GameWidget/Lost';
 import { walletInstalled } from '@/lib/helpers';
 import { ConnectWallet } from '@/components/framework/GameWidget/ConnectWallet';
 import { InstallWallet } from '@/components/framework/GameWidget/InstallWallet';
-import {GameWrap} from "@/components/framework/GamePage/GameWrap";
+import { GameWrap } from '@/components/framework/GamePage/GameWrap';
 
 enum GameState {
   WalletNotInstalled,
@@ -112,6 +112,7 @@ export default function RandzuPage({
   };
 
   const gameStartedMutation = api.logging.logGameStarted.useMutation();
+  const progress = api.progress.setSolvedQuests.useMutation();
 
   const startGame = async () => {
     if (await bridge(DEFAULT_PARTICIPATION_FEE.toBigInt())) return;
@@ -136,6 +137,15 @@ export default function RandzuPage({
 
     await tx.sign();
     await tx.send();
+
+    await progress.mutateAsync({
+      userAddress: networkStore.address!,
+      section: 'RANDZU',
+      id: 0,
+      txHash: tx.transaction!.hash().toString(),
+      roomId: competition.id,
+      envContext: getEnvContext(),
+    });
 
     setGameState(GameState.MatchRegistration);
   };
@@ -219,6 +229,17 @@ export default function RandzuPage({
 
     tx.transaction = tx.transaction?.sign(sessionPrivateKey);
     await tx.send();
+
+    if (winWitness1) {
+      await progress.mutateAsync({
+        userAddress: networkStore.address!,
+        section: 'RANDZU',
+        id: 2,
+        txHash: tx.transaction!.hash().toString(),
+        roomId: competition.id,
+        envContext: getEnvContext(),
+      });
+    }
   };
 
   useEffect(() => {
