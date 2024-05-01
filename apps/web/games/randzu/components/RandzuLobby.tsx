@@ -262,8 +262,8 @@ export default function RandzuLobby({
         />
         <div className={'col-start-4 col-end-6 row-start-1'}>
           {isCreationMode ? (
-            <span className={'text-headline-1 '}>Lobby creation</span>
-          ) : (
+            <span className={'text-headline-1'}>Lobby creation</span>
+          ) : currentLobby ? (
             <div className={'flex flex-row gap-1'}>
               <span className={'text-headline-1'}>Lobby Information</span>
               <Popover
@@ -313,7 +313,7 @@ export default function RandzuLobby({
                 </div>
               </Popover>
             </div>
-          )}
+          ) : undefined}
         </div>
         <AnimatePresence mode={'wait'} initial={false}>
           {isCreationMode ? (
