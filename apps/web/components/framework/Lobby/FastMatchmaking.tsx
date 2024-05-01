@@ -3,6 +3,8 @@ import znakesImg from '@/public/image/tokens/znakes.svg';
 import { Currency } from '@/constants/currency';
 import { Popover } from '@/components/ui/games-store/shared/Popover';
 import { IMatchamkingOption } from '@/lib/stores/lobbiesStore';
+import { MatchmakingModal } from '@/components/framework/Lobby/MatchmakingModal';
+import { useState } from 'react';
 
 const OpponentItem = ({
   option,
@@ -13,13 +15,18 @@ const OpponentItem = ({
   winCoef: number;
   register: (id: number) => Promise<void>;
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <div
       className={
         'group flex cursor-pointer flex-col justify-between rounded-[5px] border border-left-accent bg-left-accent p-2 hover:bg-[#464646]'
       }
-      onClick={() => register(option.id)}
+      onClick={() => {
+        register(option.id);
+        setIsModalOpen(true);
+      }}
     >
+      <MatchmakingModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
       <span
         className={
           'text-center text-[16px]/[16px] font-medium uppercase text-bg-dark group-hover:text-left-accent'
