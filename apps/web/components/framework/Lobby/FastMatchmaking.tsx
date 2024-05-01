@@ -16,20 +16,26 @@ const OpponentItem = ({
   return (
     <div
       className={
-        'flex cursor-pointer flex-col justify-between rounded-[5px] bg-left-accent p-2'
+        'group flex cursor-pointer flex-col justify-between rounded-[5px] border border-left-accent bg-left-accent p-2 hover:bg-[#464646]'
       }
       onClick={() => register(option.id)}
     >
       <span
         className={
-          'text-center text-[16px]/[16px] font-medium uppercase text-bg-dark'
+          'text-center text-[16px]/[16px] font-medium uppercase text-bg-dark group-hover:text-left-accent'
         }
       >
         Random opponent
       </span>
-      <div className={'flex flex-row gap-2 pb-2 text-left-accent'}>
+      <div
+        className={
+          'flex flex-row gap-2 pb-2 text-left-accent group-hover:text-bg-dark'
+        }
+      >
         <div
-          className={'flex w-full flex-col gap-1 rounded-[5px] bg-bg-dark p-2'}
+          className={
+            'flex w-full flex-col gap-1 rounded-[5px] bg-bg-dark p-2 group-hover:bg-left-accent'
+          }
         >
           <span
             className={'font-plexsans text-[16px]/[16px] font-medium uppercase'}
@@ -52,7 +58,9 @@ const OpponentItem = ({
           </span>
         </div>
         <div
-          className={'flex w-full flex-col gap-1 rounded-[5px] bg-bg-dark p-2'}
+          className={
+            'flex w-full flex-col gap-1 rounded-[5px] bg-bg-dark p-2 group-hover:bg-left-accent'
+          }
         >
           <span
             className={'font-plexsans text-[16px]/[16px] font-medium uppercase'}
@@ -150,7 +158,7 @@ export const FastMatchmaking = ({
         ))}
         <div
           className={
-            'flex flex-col gap-2 rounded-[5px] border border-foreground bg-[#252525] p-2'
+            'flex cursor-pointer flex-col gap-2 rounded-[5px] border border-foreground bg-[#252525] p-2 hover:bg-[#464646]'
           }
         >
           <div className={'flex flex-row items-center justify-center gap-1'}>
