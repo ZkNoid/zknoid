@@ -30,6 +30,7 @@ export interface Cart {
 
 export interface ICompetition {
   id: number;
+  creator?: PublicKey;
   seed: number;
   game: { id: string; genre: ZkNoidGameGenre; rules: string };
   title: string;
