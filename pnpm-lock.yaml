@@ -143,8 +143,8 @@ importers:
         specifier: link:../../packages/chain/node_modules/o1js
         version: 0.13.1
       o1jsprod:
-        specifier: npm:o1js@^0.18.0
-        version: /o1js@0.18.0
+        specifier: npm:o1js@^1.1.0
+        version: /o1js@1.1.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -182,8 +182,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/chain
       zknoidcontractsl1:
-        specifier: ^0.1.8
-        version: 0.1.8
+        specifier: ^0.1.9
+        version: 0.1.9
       zod:
         specifier: ^3.22.4
         version: 3.22.4
@@ -8391,9 +8391,9 @@ packages:
       - encoding
     dev: false
 
-  /o1js@0.18.0:
-    resolution: {integrity: sha512-A4XFfRLUHxB8ZUzctpxmYA4kBi3ZRwSgeK/KKuWxf2kDmaxjWOxbCzH/1wHelom4QKIgSIaJpXkAtR0jJv7tqw==}
-    engines: {node: '>=16.4.0'}
+  /o1js@1.1.0:
+    resolution: {integrity: sha512-rq+ndUFZBzC+Gk3VbXGNu97uFZJTLDmqglP1J8gGWP3Bdchjj+huCtPVvezfiw6+RyjPePaBVSbPWO11HMZiaQ==}
+    engines: {node: '>=18.14.0'}
     hasBin: true
     dependencies:
       blakejs: 1.2.1
@@ -10935,10 +10935,10 @@ packages:
     resolution: {integrity: sha512-qgk9HrPjFtBOcUDTkbno4yshO0/DA5DWuqXiUE0HTpuwl8h+xR/RKXyYLUP/Nt7GUqVl294cQTbwCKEpvSLIaw==}
     dev: false
 
-  /zknoidcontractsl1@0.1.8:
-    resolution: {integrity: sha512-vNcN4x0BqF5S+SEacWqe8NcfBTrky7GXrUr2B7GWUMTWxaTXP9POjz6fK4c0/e3kouYBHRcJtlVV+NPuz19xzA==}
+  /zknoidcontractsl1@0.1.9:
+    resolution: {integrity: sha512-TisEttdq2hcFJbxvs6z5OdYUYKSgal9WQTxdyyo3t7JyMmIIsgvOU4+RtcJfb6qA4yPbKb1wQzAdTMyWyNv/Wg==}
     dependencies:
-      o1js: 0.18.0
+      o1js: 1.1.0
     transitivePeerDependencies:
       - encoding
     dev: false
