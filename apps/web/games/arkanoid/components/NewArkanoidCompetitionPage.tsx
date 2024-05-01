@@ -10,7 +10,6 @@ import {
   Competition,
 } from 'zknoid-chain-dev';
 import { useNetworkStore } from '@/lib/stores/network';
-import { useMinaBalancesStore } from '@/lib/stores/minaBalances';
 import {
   useMinaBridge,
   useProtokitBalancesStore,
@@ -76,7 +75,6 @@ export default function NewArkanoidCompetitionPage() {
   const [bricks, setBricks] = useState<IBrick[]>([]);
 
   const networkStore = useNetworkStore();
-  const minaBalances = useMinaBalancesStore();
   const protokitBalances = useProtokitBalancesStore();
   const bridge = useMinaBridge();
 
@@ -195,6 +193,7 @@ export default function NewArkanoidCompetitionPage() {
     await tx.send();
 
     if (funding >= 30) {
+      tx.transaction?.hash;
       await progress.mutateAsync({
         userAddress: networkStore.address!,
         section: 'ARKANOID',
@@ -784,12 +783,12 @@ export default function NewArkanoidCompetitionPage() {
                 <Button
                   label={'Create competition'}
                   onClick={() => {
-                    console.log('Validation')
+                    console.log('Validation');
                     validateFields();
-                    console.log('Fields checked')
+                    console.log('Fields checked');
 
                     if (checkFieldsValidity()) {
-                      console.log('Creation request')
+                      console.log('Creation request');
 
                       createCompetition()
                         .then(() => setIsSuccessModalOpen(true))

@@ -50,7 +50,7 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
       ? +contractActiveGameId
       : contractActiveGameId;
 
-    console.log('Last lobby id: ', +lastLobbyId);
+    // console.log('Last lobby id: ', +lastLobbyId);
     for (let i = 0; i < +lastLobbyId; i++) {
       let curLobby = await query.activeLobby.get(UInt64.from(i));
 

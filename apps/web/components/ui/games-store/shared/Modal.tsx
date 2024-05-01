@@ -40,9 +40,11 @@ export const Modal = ({
               'fixed left-0 top-0 z-50 flex h-full w-full flex-col items-center justify-center backdrop-blur-md'
             }
             onClick={
-              setIsOpen
-                ? () => setIsOpen(false)
-                : () => setIsOpenUncontrolled(false)
+              isDismissible
+                ? setIsOpen
+                  ? () => setIsOpen(false)
+                  : () => setIsOpenUncontrolled(false)
+                : undefined
             }
           >
             <div

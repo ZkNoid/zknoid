@@ -5,9 +5,11 @@ import znakesImg from '@/public/image/tokens/znakes.svg';
 import { Popover } from '@/components/ui/games-store/shared/Popover';
 import { Checkbox } from '@/components/ui/games-store/shared/Checkbox';
 import { Button } from '@/components/ui/games-store/shared/Button';
-import { motion, useCycle } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Modal } from '@/components/ui/games-store/shared/Modal';
-import { usePvpLobbyStorage } from '@/lib/stores/pvpLobbyStore';
+import { Currency } from '@/constants/currency';
+import { useNetworkStore } from '@/lib/stores/network';
+import { useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
 
 export const CreateNewLobby = ({
   createLobby,
@@ -20,22 +22,45 @@ export const CreateNewLobby = ({
   ) => Promise<void>;
   setIsCreationMode: (val: boolean) => void;
 }) => {
-  const [newLobbyName, setNewLobbyName] = useState<string>();
-  const [participationFee, setParticipationFee] = useState<number>();
+  const [newLobbyName, setNewLobbyName] = useState<string>('');
+  const [isNewLobbyNameInvalid, setIsNewLobbyNameInvalid] =
+    useState<boolean>(false);
+  const [participationFee, setParticipationFee] = useState<number>(0);
   const [isParticipantFeeInvalid, setIsParticipantFeeInvalid] =
     useState<boolean>(false);
-  const [funds, setFunds] = useState();
-  const [isFundsInvalid, setIsFundsInvalid] = useState<boolean>(false);
   const [isPrivateGame, setIsPrivateGame] = useState<boolean>(false);
-  const [isSuccessModalOpen, toggleSuccessModalOpen] = useCycle(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false);
 
-  const pvpLobbyStore = usePvpLobbyStorage();
-  const createdLobbyID = 1; // TEMPORARY!!!
-  const createdLobbyKey = 'f4d23bf0-5a83-4468-a974-9eb95c32c3fa'; // TEMPORARY!!!
+  const networkStore = useNetworkStore();
+  const protokitBalances = useProtokitBalancesStore();
+
+  const balance = (
+    Number(protokitBalances.balances[networkStore.address!] ?? 0n) /
+    10 ** 9
+  ).toFixed(2);
+
+  const checkFieldsValidity = () => {
+    if (
+      newLobbyName.length === 0 ||
+      newLobbyName === '' ||
+      newLobbyName === undefined
+    ) {
+      setIsNewLobbyNameInvalid(true);
+      return false;
+    } else setIsNewLobbyNameInvalid(false);
+
+    if (participationFee > Number(balance) || participationFee === undefined) {
+      setIsParticipantFeeInvalid(true);
+      return false;
+    } else setIsParticipantFeeInvalid(false);
+
+    if (!isNewLobbyNameInvalid && !isParticipantFeeInvalid) return true;
+    else return false;
+  };
 
   return (
     <motion.div
-      className={'col-start-4 col-end-6 row-span-4 h-full w-full'}
+      className={'col-start-4 col-end-6 row-span-4 w-full'}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -46,37 +71,75 @@ export const CreateNewLobby = ({
           'flex h-full w-full flex-col rounded-[5px] border border-foreground bg-[#252525] p-2'
         }
       >
-        <div className={'flex flex-col gap-4'}>
-          <div className={'flex flex-row items-center justify-start gap-1'}>
-            <svg
-              width="36"
-              height="30"
-              viewBox="0 0 36 30"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+        <div className={'flex flex-col gap-4 pb-4'}>
+          <div className={'flex flex-row'}>
+            <div
+              className={'flex w-full flex-row items-start justify-start gap-1'}
             >
-              <path
-                d="M8.73816 5.70065C10.4425 5.70065 11.8279 7.13886 11.8279 8.84383C11.8279 10.601 10.4418 11.987 8.68468 11.987C6.9797 11.9335 5.59497 10.5482 5.59497 8.791C5.59497 7.08602 7.03319 5.70065 8.73816 5.70065ZM1.9189 14.3312L3.03751 15.4505C3.40995 15.8229 3.94348 15.8229 4.3694 15.5568L5.06209 14.9704C5.59497 15.29 6.1807 15.5568 6.8199 15.7166L6.92622 16.6754C6.97906 17.1541 7.3515 17.5279 7.83155 17.5279H9.4302C9.96244 17.5279 10.3349 17.1541 10.4412 16.6754L10.5475 15.7166C11.1339 15.5568 11.7737 15.3428 12.306 14.9704L13.105 15.6103C13.4252 15.8757 14.0103 15.8757 14.3299 15.5568L15.5026 14.384C15.8222 14.0644 15.8757 13.4794 15.5555 13.1056L14.9163 12.306C15.2359 11.7737 15.4492 11.2409 15.609 10.6551L16.6213 10.5482C17.1007 10.4947 17.4737 10.0688 17.4737 9.59L17.5266 7.99135C17.5266 7.51259 17.1528 7.08538 16.6741 7.03254L15.5555 6.87274C15.4492 6.33921 15.2359 5.86045 14.9163 5.38105L15.609 4.52791C15.9286 4.10199 15.9286 3.56975 15.5555 3.19667L14.4362 2.07806C14.1166 1.75846 13.5316 1.70498 13.1578 2.02458L12.3053 2.66314C11.8259 2.39637 11.2396 2.1309 10.7073 2.02458L10.6004 0.90597C10.5475 0.425922 10.121 0.0534818 9.64284 0.0534818L8.04418 0C7.56478 0 7.13822 0.373084 7.08538 0.852488L6.97906 1.91761C6.33921 2.07742 5.80697 2.29005 5.27408 2.60966L4.4216 1.91761C4.04851 1.65149 3.51691 1.65149 3.14319 2.02458L2.02458 3.14319C1.65214 3.46214 1.65214 4.04851 1.91826 4.42095L2.55682 5.21996C2.23722 5.75349 2.02458 6.28573 1.86478 6.87209L0.852488 6.97841C0.37244 7.08473 0 7.45782 0 7.93722V9.53588C0 10.0681 0.373084 10.4406 0.852488 10.494L1.81194 10.6545C1.9711 11.2402 2.18438 11.7731 2.50334 12.3053L1.86478 13.0515C1.54517 13.4239 1.59866 13.9575 1.91826 14.3299L1.9189 14.3312Z"
-                fill="#D2FF00"
-              />
-              <path
-                d="M24.0256 23.1743C21.9482 22.961 20.4031 21.0969 20.5622 19.0188C20.7761 16.9407 22.6409 15.3956 24.7183 15.556C26.8492 15.7693 28.3938 17.6341 28.1811 19.7115C28.0213 21.7895 26.1565 23.3341 24.0256 23.1743ZM32.923 17.6875C32.8166 17.0477 32.604 16.4085 32.3366 15.7693L33.403 14.6507C33.7226 14.2776 33.7226 13.7447 33.403 13.3716L31.9107 11.6145C31.6446 11.2407 31.0582 11.1344 30.6323 11.4005L29.3545 12.2537C28.821 11.8277 28.1811 11.5088 27.5426 11.2414L27.4891 9.69684C27.4891 9.21744 27.0625 8.79152 26.6366 8.73803L24.2918 8.57759C23.813 8.52411 23.3871 8.845 23.2795 9.32376L22.9599 10.7626C22.2143 10.9224 21.4695 11.1357 20.829 11.4553L19.7639 10.3895C19.3914 10.0699 18.805 10.0699 18.4848 10.3895L16.6741 11.8812C16.3004 12.148 16.1941 12.7337 16.5137 13.1596L17.2592 14.3317C16.8333 14.9709 16.5137 15.6108 16.2469 16.3028L14.8629 16.3557C14.3293 16.3557 13.9569 16.7294 13.904 17.2081L13.6914 19.4995C13.6914 20.0324 14.0104 20.4576 14.4363 20.5646L15.8223 20.8314C15.9286 21.5775 16.1413 22.2689 16.4609 22.9088L15.5027 23.9211C15.1825 24.2942 15.1825 24.8264 15.5027 25.1995L16.9409 26.9573C17.2599 27.3839 17.7934 27.4373 18.2722 27.1706L19.3379 26.4244C19.9771 26.9045 20.6705 27.2769 21.3631 27.5437L21.4166 28.8756C21.4166 29.3543 21.7891 29.7809 22.2678 29.7809L24.5585 29.9942C25.0914 30.047 25.5186 29.728 25.6249 29.248L25.8917 27.9696C26.6907 27.8098 27.4369 27.5437 28.1289 27.2234L29.1412 28.1822C29.5149 28.5025 30.0472 28.5025 30.419 28.1822L32.2309 26.6912C32.6046 26.4238 32.6581 25.838 32.3907 25.4128L31.5924 24.24C32.0176 23.6015 32.3372 22.9616 32.6046 22.2683L34.0422 22.2155C34.5216 22.2155 34.9482 21.843 35.0017 21.363L35.2143 19.0723C35.2143 18.5394 34.8953 18.1135 34.4153 18.0065L32.923 17.6875Z"
-                fill="#F9F8F4"
-              />
-            </svg>
-            <span className={'text-headline-3 uppercase text-left-accent'}>
-              Lobby Creation
-            </span>
+              <svg
+                width="36"
+                height="30"
+                viewBox="0 0 36 30"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M8.73816 5.70065C10.4425 5.70065 11.8279 7.13886 11.8279 8.84383C11.8279 10.601 10.4418 11.987 8.68468 11.987C6.9797 11.9335 5.59497 10.5482 5.59497 8.791C5.59497 7.08602 7.03319 5.70065 8.73816 5.70065ZM1.9189 14.3312L3.03751 15.4505C3.40995 15.8229 3.94348 15.8229 4.3694 15.5568L5.06209 14.9704C5.59497 15.29 6.1807 15.5568 6.8199 15.7166L6.92622 16.6754C6.97906 17.1541 7.3515 17.5279 7.83155 17.5279H9.4302C9.96244 17.5279 10.3349 17.1541 10.4412 16.6754L10.5475 15.7166C11.1339 15.5568 11.7737 15.3428 12.306 14.9704L13.105 15.6103C13.4252 15.8757 14.0103 15.8757 14.3299 15.5568L15.5026 14.384C15.8222 14.0644 15.8757 13.4794 15.5555 13.1056L14.9163 12.306C15.2359 11.7737 15.4492 11.2409 15.609 10.6551L16.6213 10.5482C17.1007 10.4947 17.4737 10.0688 17.4737 9.59L17.5266 7.99135C17.5266 7.51259 17.1528 7.08538 16.6741 7.03254L15.5555 6.87274C15.4492 6.33921 15.2359 5.86045 14.9163 5.38105L15.609 4.52791C15.9286 4.10199 15.9286 3.56975 15.5555 3.19667L14.4362 2.07806C14.1166 1.75846 13.5316 1.70498 13.1578 2.02458L12.3053 2.66314C11.8259 2.39637 11.2396 2.1309 10.7073 2.02458L10.6004 0.90597C10.5475 0.425922 10.121 0.0534818 9.64284 0.0534818L8.04418 0C7.56478 0 7.13822 0.373084 7.08538 0.852488L6.97906 1.91761C6.33921 2.07742 5.80697 2.29005 5.27408 2.60966L4.4216 1.91761C4.04851 1.65149 3.51691 1.65149 3.14319 2.02458L2.02458 3.14319C1.65214 3.46214 1.65214 4.04851 1.91826 4.42095L2.55682 5.21996C2.23722 5.75349 2.02458 6.28573 1.86478 6.87209L0.852488 6.97841C0.37244 7.08473 0 7.45782 0 7.93722V9.53588C0 10.0681 0.373084 10.4406 0.852488 10.494L1.81194 10.6545C1.9711 11.2402 2.18438 11.7731 2.50334 12.3053L1.86478 13.0515C1.54517 13.4239 1.59866 13.9575 1.91826 14.3299L1.9189 14.3312Z"
+                  fill="#D2FF00"
+                />
+                <path
+                  d="M24.0256 23.1743C21.9482 22.961 20.4031 21.0969 20.5622 19.0188C20.7761 16.9407 22.6409 15.3956 24.7183 15.556C26.8492 15.7693 28.3938 17.6341 28.1811 19.7115C28.0213 21.7895 26.1565 23.3341 24.0256 23.1743ZM32.923 17.6875C32.8166 17.0477 32.604 16.4085 32.3366 15.7693L33.403 14.6507C33.7226 14.2776 33.7226 13.7447 33.403 13.3716L31.9107 11.6145C31.6446 11.2407 31.0582 11.1344 30.6323 11.4005L29.3545 12.2537C28.821 11.8277 28.1811 11.5088 27.5426 11.2414L27.4891 9.69684C27.4891 9.21744 27.0625 8.79152 26.6366 8.73803L24.2918 8.57759C23.813 8.52411 23.3871 8.845 23.2795 9.32376L22.9599 10.7626C22.2143 10.9224 21.4695 11.1357 20.829 11.4553L19.7639 10.3895C19.3914 10.0699 18.805 10.0699 18.4848 10.3895L16.6741 11.8812C16.3004 12.148 16.1941 12.7337 16.5137 13.1596L17.2592 14.3317C16.8333 14.9709 16.5137 15.6108 16.2469 16.3028L14.8629 16.3557C14.3293 16.3557 13.9569 16.7294 13.904 17.2081L13.6914 19.4995C13.6914 20.0324 14.0104 20.4576 14.4363 20.5646L15.8223 20.8314C15.9286 21.5775 16.1413 22.2689 16.4609 22.9088L15.5027 23.9211C15.1825 24.2942 15.1825 24.8264 15.5027 25.1995L16.9409 26.9573C17.2599 27.3839 17.7934 27.4373 18.2722 27.1706L19.3379 26.4244C19.9771 26.9045 20.6705 27.2769 21.3631 27.5437L21.4166 28.8756C21.4166 29.3543 21.7891 29.7809 22.2678 29.7809L24.5585 29.9942C25.0914 30.047 25.5186 29.728 25.6249 29.248L25.8917 27.9696C26.6907 27.8098 27.4369 27.5437 28.1289 27.2234L29.1412 28.1822C29.5149 28.5025 30.0472 28.5025 30.419 28.1822L32.2309 26.6912C32.6046 26.4238 32.6581 25.838 32.3907 25.4128L31.5924 24.24C32.0176 23.6015 32.3372 22.9616 32.6046 22.2683L34.0422 22.2155C34.5216 22.2155 34.9482 21.843 35.0017 21.363L35.2143 19.0723C35.2143 18.5394 34.8953 18.1135 34.4153 18.0065L32.923 17.6875Z"
+                  fill="#F9F8F4"
+                />
+              </svg>
+              <span className={'text-headline-3 uppercase text-left-accent'}>
+                Lobby Creation
+              </span>
+            </div>
+            <div className={'flex w-[30%] items-center justify-end'}>
+              <svg
+                width="53"
+                height="64"
+                viewBox="0 0 53 64"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className={'h-[50px] w-[50px] cursor-pointer hover:opacity-80'}
+                onClick={() => setIsCreationMode(false)}
+              >
+                <rect
+                  x="13.5469"
+                  y="16.7344"
+                  width="40"
+                  height="4"
+                  transform="rotate(45 13.5469 16.7344)"
+                  fill="#D2FF00"
+                />
+                <rect
+                  x="41.8438"
+                  y="19.5625"
+                  width="40"
+                  height="4"
+                  transform="rotate(135 41.8438 19.5625)"
+                  fill="#D2FF00"
+                />
+              </svg>
+            </div>
           </div>
 
           <Input
             value={newLobbyName}
             setValue={setNewLobbyName}
+            type={'text'}
+            inputMode={'text'}
             title={'Enter The Name of Lobby'}
             placeholder={'Type name here...'}
-            isRequired
+            isRequired={true}
+            isInvalid={isNewLobbyNameInvalid}
+            invalidMessage={'Please fill out this field correctly'}
+            emptyFieldCheck={false}
+            isClearable={true}
           />
-          <div className={'flex max-w-[50%] flex-col gap-4'}>
+          <div className={'flex w-full flex-row gap-4'}>
             <Input
               title={'Participant fee'}
               placeholder={'Type participant fee here...'}
@@ -88,7 +151,7 @@ export const CreateNewLobby = ({
               isInvalid={isParticipantFeeInvalid}
               invalidMessage={'Please fill out this field correctly'}
               emptyFieldCheck={false}
-              isClearable={false}
+              isClearable={true}
               endContent={
                 <div
                   className={
@@ -99,30 +162,17 @@ export const CreateNewLobby = ({
                 </div>
               }
             />
-            <Input
-              title={'Funds'}
-              placeholder={'Type funds here...'}
-              type={'number'}
-              inputMode={'numeric'}
-              value={funds}
-              setValue={setFunds}
-              isRequired={true}
-              isInvalid={isFundsInvalid}
-              invalidMessage={'Please fill out this field correctly'}
-              emptyFieldCheck={false}
-              isClearable={false}
-              endContent={
-                <div
-                  className={
-                    'flex h-[28px] w-[28px] items-center justify-center rounded-full'
-                  }
-                >
-                  <Image src={znakesImg} alt={'Znakes Tokens'} />
-                </div>
+            <div
+              className={
+                'flex w-[60%] items-center justify-start gap-2 font-plexsans text-left-accent'
               }
-            />
+            >
+              <span>Balance:</span>
+              <span>{balance}</span>
+              <span>{Currency.ZNAKES}</span>
+            </div>
           </div>
-          <div className={'flex max-w-[50%] flex-row justify-between'}>
+          <div className={'flex max-w-[35%] flex-row justify-between'}>
             <div className={'flex flex-row gap-1'}>
               <span
                 className={
@@ -185,34 +235,33 @@ export const CreateNewLobby = ({
           </div>
         </div>
         <div className={'flex-grow'} />
+        <Button
+          label={'Create lobby'}
+          onClick={async () => {
+            if (checkFieldsValidity()) {
+              if (newLobbyName == undefined || participationFee == undefined) {
+                console.log(newLobbyName);
+                console.log(participationFee);
+                console.log('No lobby name or participation fee');
+                return;
+              }
+              await createLobby(newLobbyName, participationFee, isPrivateGame);
+              // pvpLobbyStore.setOwnedLobbyId(createdLobbyID);
+              // pvpLobbyStore.setOwnedLobbyKey(createdLobbyKey);
+              // pvpLobbyStore.setConnectedLobbyId(createdLobbyID);
+              // pvpLobbyStore.setConnectedLobbyKey(createdLobbyKey);
+              // pvpLobbyStore.setLastLobbyId(createdLobbyID);
+              setIsSuccessModalOpen(true);
+            }
+          }}
+        />
         <Modal
-          trigger={
-            <Button
-              label={'Create lobby'}
-              onClick={async () => {
-                if (
-                  newLobbyName == undefined ||
-                  participationFee == undefined
-                ) {
-                  console.log(newLobbyName);
-                  console.log(participationFee);
-                  console.log('No lobby name or participation fee');
-                  return;
-                }
-                await createLobby(
-                  newLobbyName,
-                  participationFee,
-                  isPrivateGame
-                );
-
-                pvpLobbyStore.setOwnedLobbyId(createdLobbyID);
-                pvpLobbyStore.setOwnedLobbyKey(createdLobbyKey);
-                pvpLobbyStore.setConnectedLobbyId(createdLobbyID);
-                pvpLobbyStore.setConnectedLobbyKey(createdLobbyKey);
-                pvpLobbyStore.setLastLobbyId(createdLobbyID);
-              }}
-            />
-          }
+          trigger={<></>}
+          isOpen={isSuccessModalOpen}
+          setIsOpen={() => {
+            setIsSuccessModalOpen(false);
+            setIsCreationMode(false);
+          }}
         >
           <div
             className={
@@ -265,7 +314,7 @@ export const CreateNewLobby = ({
             <Button
               label={'Close'}
               onClick={() => {
-                toggleSuccessModalOpen();
+                setIsSuccessModalOpen(false);
                 setIsCreationMode(false);
               }}
             />

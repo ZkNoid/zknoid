@@ -42,14 +42,16 @@ export default function Home() {
             tags: [],
             defaultPage: x.pageCompetitionsList
               ? 'competitions-list'
-              : 'global',
+              : x.lobby
+                ? 'lobby/undefined'
+                : 'global',
             active: true,
             isReleased: x.isReleased,
             releaseDate: x.releaseDate,
             popularity: x.popularity,
             author: x.author,
             rules: x.rules,
-            rating: 0
+            rating: 0,
           })) as IGame[]
         ).concat(announcedGames)
       );
