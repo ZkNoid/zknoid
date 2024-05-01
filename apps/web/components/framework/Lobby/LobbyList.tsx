@@ -97,6 +97,7 @@ export const LobbyList = ({ lobbys }: { lobbys: ILobby[] }) => {
             <LobbyItem
               key={index}
               id={item.id}
+              active={item.active}
               name={item.name}
               reward={item.reward}
               fee={item.fee}
