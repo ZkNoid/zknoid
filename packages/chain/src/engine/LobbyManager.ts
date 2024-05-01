@@ -5,7 +5,7 @@ import {
   state,
 } from '@proto-kit/module';
 import { State, StateMap, assert } from '@proto-kit/protocol';
-import { Bool, Provable, PublicKey, Struct, UInt64 } from 'o1js';
+import { Bool, CircuitString, Provable, PublicKey, Struct, UInt64 } from 'o1js';
 
 import { Balances, UInt64 as ProtoUInt64 } from '@proto-kit/library';
 import { inject } from 'tsyringe';
@@ -21,17 +21,42 @@ export class RoundIdxUser extends Struct({
 
 export class Lobby extends Struct({
   id: UInt64,
+  name: CircuitString,
   players: Provable.Array(PublicKey, PLAYER_AMOUNT),
+  ready: Provable.Array(Bool, PLAYER_AMOUNT),
+  readyAmount: UInt64,
   curAmount: UInt64,
   participationFee: ProtoUInt64,
+  privateLobby: Bool,
   started: Bool,
 }) {
-  static default(id: UInt64): Lobby {
+  static from(
+    name: CircuitString,
+    participationFee: ProtoUInt64,
+    privateLobby: Bool,
+  ): Lobby {
+    return new Lobby({
+      id: UInt64.zero,
+      name,
+      players: [...Array(PLAYER_AMOUNT)].map((n) => PublicKey.empty()),
+      ready: [...Array(PLAYER_AMOUNT)].map((n) => Bool(false)),
+      readyAmount: UInt64.zero,
+      curAmount: UInt64.zero,
+      participationFee,
+      privateLobby,
+      started: Bool(false),
+    });
+  }
+  static default(id: UInt64, privateLobby: Bool): Lobby {
     return new Lobby({
       id,
+      name: CircuitString.fromString('Default'),
       players: [...Array(PLAYER_AMOUNT)].map((n) => PublicKey.empty()),
+      ready: [...Array(PLAYER_AMOUNT)].map((n) => Bool(false)),
+      readyAmount: UInt64.zero,
       curAmount: UInt64.zero,
       participationFee: DEFAULT_PARTICIPATION_FEE,
+      privateLobby,
       started: Bool(false),
     });
   }
@@ -52,6 +77,78 @@ export class Lobby extends Struct({
     }
     this.curAmount = this.curAmount.add(1);
   }
+
+  removePlayer(player: PublicKey): void {
+    let removed = Bool(false);
+
+    for (let i = 0; i < PLAYER_AMOUNT - 1; i++) {
+      let curI = UInt64.from(i);
+
+      let found = this.players[i].equals(player);
+      removed = removed.or(found);
+
+      this.players[i] = Provable.if(
+        removed,
+        this.players[i + 1],
+        this.players[i],
+      );
+
+      this.ready[i] = Provable.if(removed, this.ready[i + 1], this.ready[i]);
+    }
+
+    let found = this.players[PLAYER_AMOUNT - 1].equals(player);
+    removed = removed.or(found);
+
+    // Last item
+    this.players[PLAYER_AMOUNT - 1] = Provable.if(
+      removed,
+      PublicKey.empty(),
+      this.players[PLAYER_AMOUNT - 1],
+    );
+
+    this.ready[PLAYER_AMOUNT - 1] = Provable.if(
+      removed,
+      Bool(false),
+      this.ready[PLAYER_AMOUNT - 1],
+    );
+
+    let subAmount = Provable.if(removed, UInt64.from(1), UInt64.zero);
+    this.curAmount = this.curAmount.sub(subAmount);
+    this.readyAmount = this.ready
+      .map((elem) => Provable.if(elem, UInt64.from(1), UInt64.zero))
+      .reduce((acc, val) => acc.add(val));
+  }
+
+  getIndex(player: PublicKey): UInt64 {
+    let result = UInt64.from(PLAYER_AMOUNT);
+    for (let i = 0; i < PLAYER_AMOUNT; i++) {
+      let curI = UInt64.from(i);
+      result = Provable.if(this.players[i].equals(player), curI, result);
+    }
+
+    return result;
+  }
+
+  setReady(index: UInt64): void {
+    for (let i = 0; i < PLAYER_AMOUNT; i++) {
+      let curI = UInt64.from(i);
+      let found = curI.equals(index);
+      this.ready[i] = Provable.if(found, this.ready[i].not(), this.ready[i]);
+
+      let addAmount = Provable.if(
+        found.and(this.ready[i]),
+        UInt64.from(1),
+        UInt64.zero,
+      );
+      let subAmount = Provable.if(
+        found.and(this.ready[i].not()),
+        UInt64.from(1),
+        UInt64.zero,
+      );
+
+      this.readyAmount = this.readyAmount.add(addAmount).sub(subAmount);
+    }
+  }
 }
 
 interface LobbyManagerConfig {}
@@ -64,6 +161,10 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   );
   @state() public activeLobby = StateMap.from<UInt64, Lobby>(UInt64, Lobby);
   @state() public lastLobbyId = State.from<UInt64>(UInt64);
+  @state() public currentLobby = StateMap.from<PublicKey, UInt64>(
+    PublicKey,
+    UInt64,
+  );
 
   // Session => user
   @state() public sessions = StateMap.from<PublicKey, PublicKey>(
@@ -93,8 +194,18 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   }
 
   @runtimeMethod()
-  public createLobby(): Lobby {
-    return this._addLobby(Lobby.default(UInt64.zero), Bool(true));
+  public createLobby(
+    name: CircuitString,
+    participationFee: ProtoUInt64,
+    privateLobby: Bool,
+    creatorSessionKey: PublicKey,
+  ): void {
+    let lobby = this._addLobby(
+      Lobby.from(name, participationFee, privateLobby),
+      Bool(true),
+    );
+
+    this.joinLobbyWithSessionKey(lobby.id, creatorSessionKey);
   }
 
   @runtimeMethod()
@@ -105,8 +216,11 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
 
   @runtimeMethod()
   public joinLobby(lobbyId: UInt64): void {
-    const lobby = this.activeLobby.get(lobbyId).orElse(Lobby.default(lobbyId));
+    const lobby = this.activeLobby
+      .get(lobbyId)
+      .orElse(Lobby.default(lobbyId, Bool(false)));
     this._joinLobby(lobby);
+    this.currentLobby.set(this.transaction.sender.value, lobbyId);
     this.activeLobby.set(lobbyId, lobby);
   }
 
@@ -139,8 +253,38 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
     );
   }
 
+  @runtimeMethod()
+  public leaveLobby(): void {
+    const sender = this.transaction.sender.value;
+    let currentLobbyId = this.currentLobby.get(sender).value;
+
+    let lobby = this.activeLobby.get(currentLobbyId).value;
+    lobby.removePlayer(sender);
+
+    this.activeLobby.set(currentLobbyId, lobby);
+    this.currentLobby.set(sender, UInt64.zero);
+  }
+
+  @runtimeMethod()
+  public ready(): void {
+    const sender = this.transaction.sender.value;
+    let currentLobby = this.currentLobby.get(sender).value;
+
+    let lobby = this.activeLobby.get(currentLobby).value;
+
+    let playerIndex = lobby.getIndex(sender);
+
+    lobby.setReady(playerIndex);
+
+    this.activeLobby.set(currentLobby, lobby);
+
+    const lobbyReady = lobby.readyAmount.equals(UInt64.from(PLAYER_AMOUNT));
+
+    this.initGame(lobby, lobbyReady);
+  }
+
   protected _addLobby(lobby: Lobby, shouldUpdate: Bool): Lobby {
-    const lobbyId = this.lastLobbyId.get().value;
+    const lobbyId = this.lastLobbyId.get().orElse(UInt64.from(1));
     lobby.id = lobbyId;
     this.activeLobby.set(lobbyId, lobby); // It will be overwriteen later, so dont care about this
     const addValue = Provable.if(shouldUpdate, UInt64.from(1), UInt64.from(0));
@@ -172,7 +316,7 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
 
     // Set active game for each user
 
-    lobby.started = Bool(true);
+    lobby.started = Provable.if(shouldInit, Bool(true), lobby.started);
 
     this.activeLobby.set(lobby.id, lobby);
 

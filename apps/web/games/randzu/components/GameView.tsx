@@ -26,11 +26,15 @@ export const GameView = (props: IGameViewProps) => {
   const isCurrentRedBall = props.gameInfo?.currentUserIndex == 0;
   const fieldRef = useRef<HTMLDivElement>(null);
 
-  const [fieldHeight, setFieldHeight] = useState(0);
-
+  const [fieldHeight, setFieldHeight] = useState<number | 'auto'>(0);
   useEffect(() => {
     const resizeField = () => {
-      fieldRef.current && setFieldHeight(fieldRef.current.offsetWidth);
+      if (window.innerWidth <= 1024) {
+        setFieldHeight('auto');
+      } else {
+        fieldRef.current && setFieldHeight(fieldRef.current.offsetWidth);
+      }
+      // fieldRef.current && setFieldHeight(fieldRef.current.offsetWidth);
     };
     resizeField();
     addEventListener('resize', resizeField);
@@ -42,8 +46,10 @@ export const GameView = (props: IGameViewProps) => {
   return (
     <div
       ref={fieldRef}
-      className={`mx-auto grid grid-cols-15 gap-0 rounded-[5px] bg-foreground/50 ${
-        fieldActive ? 'border-4 border-left-accent p-px' : 'p-1'
+      className={`mx-auto grid grid-cols-15 gap-0 rounded-[5px] bg-foreground/50 pr-1 lg:pr-1 ${
+        fieldActive
+          ? 'border-[3px] border-left-accent p-px lg:border-4'
+          : 'p-px lg:p-1'
       }`}
       style={{ height: fieldHeight }}
     >
@@ -54,7 +60,7 @@ export const GameView = (props: IGameViewProps) => {
             className={`
               bg-bg-dark ${
                 highlightCells ? 'hover:border-bg-dark/50' : ''
-              } m-px h-auto max-w-full border border-foreground/50 bg-center bg-no-repeat p-4
+              } m-px h-auto max-w-full border border-foreground/50 bg-[length:15px_15px] bg-center bg-no-repeat p-[10px] lg:bg-[length:auto_auto] lg:p-4
               ${
                 displayBall(i, j) &&
                 (isCurrentRedBall

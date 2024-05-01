@@ -3,11 +3,13 @@ import { type ClientAppChain } from 'zknoid-chain-dev';
 import { createStore } from 'zustand';
 import { ZkNoidGameFeature, ZkNoidGameGenre } from './platform/game_tags';
 import { buildClient } from './utils';
+import { ZkNoidGameType } from '@/lib/platform/game_types';
 
 export type ZkNoidGameConfig<
   RuntimeModules extends RuntimeModulesRecord = RuntimeModulesRecord,
 > = {
   id: string;
+  type: ZkNoidGameType;
   name: string;
   description: string;
   genre: ZkNoidGameGenre;
@@ -22,12 +24,14 @@ export type ZkNoidGameConfig<
   page: ({ params }: { params: { competitionId: string } }) => React.ReactNode;
   pageCompetitionsList?: () => React.ReactNode;
   pageNewCompetition?: () => React.ReactNode;
+  lobby?: ({ params }: { params: { lobbyId: string } }) => React.ReactNode;
 };
 
 export function createZkNoidGameConfig<
   RuntimeModules extends RuntimeModulesRecord,
 >(params: {
   id: string;
+  type: ZkNoidGameType;
   name: string;
   description: string;
   genre: ZkNoidGameGenre;
@@ -42,6 +46,7 @@ export function createZkNoidGameConfig<
   page: ({ params }: { params: { competitionId: string } }) => React.ReactNode;
   pageCompetitionsList?: () => React.ReactNode;
   pageNewCompetition?: () => React.ReactNode;
+  lobby?: ({ params }: { params: { lobbyId: string } }) => React.ReactNode;
 }): ZkNoidGameConfig<RuntimeModules> {
   return params;
 }
@@ -82,7 +87,12 @@ export function createConfig<
       const client = buildClient(modules);
 
       // @todo remove as any
-      return client as any as ClientAppChain<games[number]['runtimeModules'], any, any, any>;
+      return client as any as ClientAppChain<
+        games[number]['runtimeModules'],
+        any,
+        any,
+        any
+      >;
     },
   };
 }

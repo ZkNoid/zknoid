@@ -116,7 +116,7 @@ export const GameCard = ({
           src={isFavorite ? heartActive : heart}
           alt={'Favorite'}
           className={
-            'absolute right-6 top-6 hidden h-[36px] w-[36px] cursor-pointer lg:block'
+            'absolute right-6 top-6 z-20 hidden h-[36px] w-[36px] cursor-pointer lg:block'
           }
           onClick={() => {
             if (!networkStore.address) return;

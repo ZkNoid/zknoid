@@ -22,7 +22,7 @@ export const GameWidget = ({
   const getRatingQuery = api.ratings.getGameRating.useQuery({
     gameId,
   });
-  
+
   return (
     <motion.div
       variants={{
@@ -109,7 +109,7 @@ export const GameWidget = ({
         {isPvp ? (
           <div
             className={
-              'flex flex-row gap-4 font-plexsans text-[20px]/[20px] text-left-accent'
+              'hidden flex-row gap-4 font-plexsans text-[20px]/[20px] text-left-accent lg:flex'
             }
           >
             <span className={'uppercase'}>

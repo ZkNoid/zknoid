@@ -1,10 +1,5 @@
 import { clsx } from 'clsx';
-import {
-  HTMLInputTypeAttribute,
-  InputHTMLAttributes,
-  ReactNode,
-  useState,
-} from 'react';
+import { HTMLInputTypeAttribute, ReactNode, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 export const Input = ({
@@ -12,7 +7,7 @@ export const Input = ({
   setValue,
   placeholder,
   startContent,
-    endContent,
+  endContent,
   isClearable = true,
   type = 'text',
   inputMode = 'text',
@@ -119,8 +114,8 @@ export const Input = ({
           <div
             className={clsx('flex items-center justify-center', {
               'visible cursor-pointer opacity-60 transition-opacity ease-in-out hover:opacity-100':
-                value.length !== 0,
-              invisible: value.length === 0,
+                value && value.length !== 0,
+              invisible: !value || value.length === 0,
             })}
             onClick={() => setValue(type === 'number' ? 0 : '')}
           >
