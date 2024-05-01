@@ -16,7 +16,7 @@ import { CreateNewLobby } from '@/components/framework/Lobby/CreateNewLobby';
 import { AnimatePresence, motion } from 'framer-motion';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { ClientAppChain, ProtoUInt64 } from 'zknoid-chain-dev';
-import { Bool, CircuitString, PublicKey, UInt64 } from 'o1js';
+import { Field, Bool, CircuitString, PublicKey, UInt64 } from 'o1js';
 import { useNetworkStore } from '@/lib/stores/network';
 import {
   useObserveRandzuLobbiesStore,
@@ -103,7 +103,8 @@ export default function RandzuLobby({
   const createNewLobby = async (
     name: string,
     participationFee: number,
-    privateLobby: boolean
+    privateLobby: boolean,
+    accessKey: number
   ) => {
     const randzuLobbyManager = await client.runtime.resolve('RandzuLogic');
 
@@ -114,7 +115,8 @@ export default function RandzuLobby({
           CircuitString.fromString(name),
           ProtoUInt64.from(participationFee),
           Bool(privateLobby),
-          sessionPrivateKey.toPublicKey()
+          sessionPrivateKey.toPublicKey(),
+          Field.from(accessKey)
         );
       }
     );
