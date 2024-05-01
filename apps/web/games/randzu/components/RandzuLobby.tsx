@@ -10,7 +10,6 @@ import { LobbyInformation } from '@/components/framework/Lobby/LobbyInformation'
 import { CreateNewLobbyBtn } from '@/components/framework/Lobby/CreateNewLobbyBtn';
 import { usePvpLobbyStorage } from '@/lib/stores/pvpLobbyStore';
 import { ILobby } from '@/lib/types';
-import { Currency } from '@/constants/currency';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useContext, useEffect, useState } from 'react';
 import { CreateNewLobby } from '@/components/framework/Lobby/CreateNewLobby';
@@ -25,6 +24,8 @@ import {
 } from '../stores/lobbiesStore';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
+import { Modal } from '@/components/ui/games-store/shared/Modal';
+import { Button } from '@/components/ui/games-store/shared/Button';
 
 export default function RandzuLobby({
   params,
@@ -40,6 +41,8 @@ export default function RandzuLobby({
     undefined
   );
   const [isCreationMode, setIsCreationMode] = useState<boolean>(false);
+  const [isLobbyNotFoundModalOpen, setIsLobbyNotFoundModalOpen] =
+    useState<boolean>(false);
 
   const client = useContext(AppChainClientContext) as ClientAppChain<
     typeof randzuConfig.runtimeModules,
@@ -60,15 +63,17 @@ export default function RandzuLobby({
 
   useEffect(() => {
     const lobbyKey = searchParams.get('key');
-    if (
-      lobbyKey &&
-      lobbiesStore.lobbies.find(
-        (lobby) =>
-          lobby.accessKey === lobbyKey && lobby.id.toString() === params.lobbyId
-      )
-    ) {
-      pvpLobbyStorage.setConnectedLobbyKey(lobbyKey);
-      pvpLobbyStorage.setConnectedLobbyId(Number(params.lobbyId));
+    if (lobbyKey && params.lobbyId !== 'undefined') {
+      if (
+        lobbiesStore.lobbies.find(
+          (lobby) =>
+            lobby.accessKey === lobbyKey &&
+            lobby.id.toString() === params.lobbyId
+        )
+      ) {
+        pvpLobbyStorage.setConnectedLobbyKey(lobbyKey);
+        pvpLobbyStorage.setConnectedLobbyId(Number(params.lobbyId));
+      } else setIsLobbyNotFoundModalOpen(true);
     }
   }, [searchParams]);
 
@@ -80,20 +85,13 @@ export default function RandzuLobby({
     }
   }, [lobbiesStore.activeGameId]);
 
-  // useEffect(() => {
-  //   if (
-  //     currentLobby &&
-  //     params.lobbyId != pvpLobbyStorage.lastLobbyId?.toString()
-  //   )
-  //     pvpLobbyStorage.setLastLobbyId(currentLobby.id);
-  // }, [currentLobby, params.lobbyId]);
-
   useEffect(() => {
     if (params.lobbyId !== 'undefined') {
       const lobby = lobbiesStore.lobbies.find(
         (lobby) => lobby.id.toString() === params.lobbyId
       );
-      setCurrentLobby(lobby);
+      if (lobby) setCurrentLobby(lobby);
+      else setIsLobbyNotFoundModalOpen(true);
     } else {
       const lobby = lobbiesStore.lobbies.find(
         (lobby) => lobby.id === pvpLobbyStorage.lastLobbyId
@@ -195,6 +193,67 @@ export default function RandzuLobby({
       mobileImage={RandzuCoverMobileSVG}
       defaultPage={'Lobby list'}
     >
+      <Modal
+        trigger={<></>}
+        isDismissible={false}
+        isOpen={isLobbyNotFoundModalOpen}
+        setIsOpen={setIsLobbyNotFoundModalOpen}
+      >
+        <div
+          className={
+            'flex min-w-[400px] flex-col items-center justify-center gap-4'
+          }
+        >
+          <svg
+            width="161"
+            height="161"
+            viewBox="0 0 161 161"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M80.442 160.884C124.869 160.884 160.884 124.869 160.884 80.442C160.884 36.0151 124.869 0 80.442 0C36.0151 0 0 36.0151 0 80.442C0 124.869 36.0151 160.884 80.442 160.884Z"
+              fill="#212121"
+            />
+            <path
+              d="M80.442 149.22C118.427 149.22 149.22 118.427 149.22 80.442C149.22 42.457 118.427 11.6641 80.442 11.6641C42.457 11.6641 11.6641 42.457 11.6641 80.442C11.6641 118.427 42.457 149.22 80.442 149.22Z"
+              stroke="#D2FF00"
+              strokeWidth="8"
+              strokeMiterlimit="10"
+            />
+            <path
+              d="M52.8568 92.7354C56.0407 92.7354 58.6218 82.6978 58.6218 70.3157C58.6218 57.9337 56.0407 47.8961 52.8568 47.8961C49.6729 47.8961 47.0918 57.9337 47.0918 70.3157C47.0918 82.6978 49.6729 92.7354 52.8568 92.7354Z"
+              fill="#D2FF00"
+            />
+            <path
+              d="M103.461 92.7354C106.645 92.7354 109.226 82.6978 109.226 70.3157C109.226 57.9337 106.645 47.8961 103.461 47.8961C100.277 47.8961 97.6963 57.9337 97.6963 70.3157C97.6963 82.6978 100.277 92.7354 103.461 92.7354Z"
+              fill="#D2FF00"
+            />
+            <path
+              d="M135.489 76.4906H118.194V82.7178H135.489V76.4906Z"
+              fill="#D2FF00"
+            />
+            <path
+              d="M38.7647 76.4906H21.4697V82.7178H38.7647V76.4906Z"
+              fill="#D2FF00"
+            />
+            <path
+              d="M50.5391 116.29C54.8955 113.646 65.1452 108.224 79.293 108.034C93.6805 107.841 104.212 113.164 108.616 115.72"
+              stroke="#D2FF00"
+              strokeWidth="5"
+              strokeMiterlimit="10"
+            />
+          </svg>
+          <span className={'text-headline-1'}>Lobby not found</span>
+          <span>Lobby not exist or link is broken</span>
+          <Button
+            label={'To lobbies'}
+            onClick={() => {
+              router.push(`/games/${randzuConfig.id}/lobby/undefined`);
+            }}
+          />
+        </div>
+      </Modal>
       <LobbyWrap>
         <FastMatchmaking
           options={lobbiesStore.mathcmakingOptions}
@@ -202,7 +261,9 @@ export default function RandzuLobby({
           register={register}
         />
         <div className={'col-start-4 col-end-6 row-start-1'}>
-          {pvpLobbyStorage.lastLobbyId && (
+          {isCreationMode ? (
+            <span className={'text-headline-1 '}>Lobby creation</span>
+          ) : (
             <div className={'flex flex-row gap-1'}>
               <span className={'text-headline-1'}>Lobby Information</span>
               <Popover
@@ -272,7 +333,7 @@ export default function RandzuLobby({
                 selfReady={lobbiesStore.selfReady}
               />
               <motion.span
-                className={'text-headline-1'}
+                className={'col-start-4 col-end-6 row-span-1 text-headline-1'}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -289,7 +350,7 @@ export default function RandzuLobby({
             <>
               <motion.span
                 className={
-                  ' col-start-4 col-end-6 row-span-1 row-start-1 text-headline-1'
+                  'col-start-4 col-end-6 row-span-1 row-start-1 text-headline-1'
                 }
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}

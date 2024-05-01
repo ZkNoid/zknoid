@@ -75,7 +75,7 @@ export const defaultGames: IGame[] = [
       'Two players take turns placing pieces on the board attempting to create lines of 5 of their own color',
     genre: ZkNoidGameGenre.BoardGames,
     features: [ZkNoidGameFeature.Multiplayer],
-    defaultPage: 'global',
+    defaultPage: 'lobby/undefined',
     active: true,
     isReleased: true,
     releaseDate: new Date(2024, 0, 1),
