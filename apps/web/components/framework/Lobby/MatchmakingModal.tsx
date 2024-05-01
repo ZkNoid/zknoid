@@ -8,10 +8,16 @@ import { Button } from '@/components/ui/games-store/shared/Button';
 export const MatchmakingModal = ({
   isLongSearch,
   isOpen,
+  pay,
+  receive,
+  blockNumber,
   setIsOpen,
 }: {
   isLongSearch?: boolean;
   isOpen: boolean;
+  pay: number;
+  receive: number;
+  blockNumber: number;
   setIsOpen: (isOpen: boolean) => void;
 }) => {
   return (
@@ -40,7 +46,7 @@ export const MatchmakingModal = ({
             />
           </svg>
           <span>Matchmaking:</span>
-          <span>1/20</span>
+          <span>{blockNumber % 20}/20</span>
         </div>
         <LoadSpinner width={50} height={50} />
         <div className={'flex flex-row gap-8'}>
@@ -63,7 +69,7 @@ export const MatchmakingModal = ({
                   'font-plexsans text-[14px]/[14px] font-medium uppercase'
                 }
               >
-                Players in queue: 15
+                Players in queue: 0
               </span>
             </div>
             <div className={'flex flex-row gap-2'}>
@@ -102,7 +108,10 @@ export const MatchmakingModal = ({
                 alt={'Znakes token'}
                 className={'h-[20px] w-[20px]'}
               />
-              <span>1.00 {Currency.ZNAKES}</span>
+              <span>
+                {' '}
+                {pay} {Currency.ZNAKES}
+              </span>
             </div>
             <div className={'flex flex-row gap-2'}>
               <span
@@ -117,7 +126,10 @@ export const MatchmakingModal = ({
                 alt={'Znakes token'}
                 className={'h-[20px] w-[20px]'}
               />
-              <span>1.67 {Currency.ZNAKES}</span>
+              <span>
+                {' '}
+                {receive} {Currency.ZNAKES}
+              </span>
             </div>
           </div>
         </div>

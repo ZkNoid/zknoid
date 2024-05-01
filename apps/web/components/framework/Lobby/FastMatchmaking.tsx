@@ -12,20 +12,26 @@ const OpponentItem = ({
   register,
   isModalOpen,
   setIsModalOpen,
+  setPay,
+  setReceive,
 }: {
   option: IMatchamkingOption;
   winCoef: number;
   register: (id: number) => Promise<void>;
   isModalOpen: boolean;
   setIsModalOpen: (isOpen: boolean) => void;
+  setPay: (pay: number) => void;
+  setReceive: (receive: number) => void;
 }) => {
   return (
     <div
       className={
         'group flex cursor-pointer flex-col justify-between rounded-[5px] border border-left-accent bg-left-accent p-2 hover:bg-[#464646]'
       }
-      onClick={() => {
-        register(option.id);
+      onClick={async () => {
+        await register(option.id);
+        setPay(option.pay);
+        setReceive(option.pay * winCoef);
         setIsModalOpen(true);
       }}
     >
@@ -99,13 +105,17 @@ const OpponentItem = ({
 export const FastMatchmaking = ({
   options,
   winCoef,
+  blockNumber,
   register,
 }: {
   options: IMatchamkingOption[];
   winCoef: number;
+  blockNumber: number;
   register: (id: number) => Promise<void>;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pay, setPay] = useState(0);
+  const [receive, setReceive] = useState(0);
 
   return (
     <>
@@ -167,6 +177,8 @@ export const FastMatchmaking = ({
             register={register}
             isModalOpen={isModalOpen}
             setIsModalOpen={setIsModalOpen}
+            setPay={setPay}
+            setReceive={setReceive}
           />
         ))}
         <div
@@ -280,7 +292,13 @@ export const FastMatchmaking = ({
             <span>3</span>
             <span>minutes</span>
           </span>
-          <MatchmakingModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+          <MatchmakingModal
+            isOpen={isModalOpen}
+            setIsOpen={setIsModalOpen}
+            pay={pay}
+            receive={receive}
+            blockNumber={blockNumber}
+          />
         </div>
       </div>
     </>
