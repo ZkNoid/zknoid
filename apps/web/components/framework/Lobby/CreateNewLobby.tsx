@@ -18,7 +18,8 @@ export const CreateNewLobby = ({
   createLobby: (
     name: string,
     participationFee: number,
-    privateLobby: boolean
+    privateLobby: boolean,
+    accessKey: number
   ) => Promise<void>;
   setIsCreationMode: (val: boolean) => void;
 }) => {
@@ -245,7 +246,15 @@ export const CreateNewLobby = ({
                 console.log('No lobby name or participation fee');
                 return;
               }
-              await createLobby(newLobbyName, participationFee, isPrivateGame);
+
+              let accessKey = 0;
+
+              await createLobby(
+                newLobbyName,
+                participationFee,
+                isPrivateGame,
+                accessKey
+              );
               // pvpLobbyStore.setOwnedLobbyId(createdLobbyID);
               // pvpLobbyStore.setOwnedLobbyKey(createdLobbyKey);
               // pvpLobbyStore.setConnectedLobbyId(createdLobbyID);

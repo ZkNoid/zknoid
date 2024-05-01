@@ -5,7 +5,15 @@ import {
   state,
 } from '@proto-kit/module';
 import { State, StateMap, assert } from '@proto-kit/protocol';
-import { Bool, CircuitString, Provable, PublicKey, Struct, UInt64 } from 'o1js';
+import {
+  Bool,
+  CircuitString,
+  Field,
+  Provable,
+  PublicKey,
+  Struct,
+  UInt64,
+} from 'o1js';
 
 import { Balances, UInt64 as ProtoUInt64 } from '@proto-kit/library';
 import { inject } from 'tsyringe';
@@ -27,6 +35,7 @@ export class Lobby extends Struct({
   readyAmount: UInt64,
   curAmount: UInt64,
   participationFee: ProtoUInt64,
+  accessKey: Field,
   privateLobby: Bool,
   active: Bool,
   started: Bool,
@@ -35,6 +44,7 @@ export class Lobby extends Struct({
     name: CircuitString,
     participationFee: ProtoUInt64,
     privateLobby: Bool,
+    accessKey: Field,
   ): Lobby {
     return new Lobby({
       id: UInt64.zero,
@@ -44,6 +54,7 @@ export class Lobby extends Struct({
       readyAmount: UInt64.zero,
       curAmount: UInt64.zero,
       participationFee,
+      accessKey,
       privateLobby,
       active: Bool(true),
       started: Bool(false),
@@ -55,6 +66,7 @@ export class Lobby extends Struct({
       CircuitString.fromString(''),
       ProtoUInt64.from(0),
       Bool(false),
+      Field.from(0),
     );
     lobby.active = Bool(false);
     return lobby;
@@ -69,6 +81,7 @@ export class Lobby extends Struct({
       readyAmount: UInt64.zero,
       curAmount: UInt64.zero,
       participationFee: DEFAULT_PARTICIPATION_FEE,
+      accessKey: Field.from(0),
       privateLobby,
       active: Bool(true),
       started: Bool(false),
@@ -213,9 +226,10 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
     participationFee: ProtoUInt64,
     privateLobby: Bool,
     creatorSessionKey: PublicKey,
+    accessKey: Field,
   ): void {
     let lobby = this._addLobby(
-      Lobby.from(name, participationFee, privateLobby),
+      Lobby.from(name, participationFee, privateLobby, accessKey),
       Bool(true),
     );
 
