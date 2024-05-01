@@ -250,7 +250,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       section: 'THIMBLERIG',
       id: 2,
       txHash: tx.transaction!.hash().toString(),
-      roomId: competition.id,
+      roomId: competition.id.toString(),
       envContext: getEnvContext(),
     });
 
