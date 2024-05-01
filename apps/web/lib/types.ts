@@ -76,7 +76,7 @@ export interface ILobby {
   playersReady?: boolean[];
   privateLobby: boolean;
   currency: Currency;
-  accessKey: string; // TEMPORARY!!!
+  accessKey: number; // TEMPORARY!!!
 }
 
 const bricksInRow = 5;
