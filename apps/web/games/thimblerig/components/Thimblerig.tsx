@@ -219,7 +219,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       await progress.mutateAsync({
         userAddress: networkStore.address!,
         section: 'THIMBLERIG',
-        id: 2,
+        id: 0,
         txHash: tx.transaction!.hash().toString(),
         roomId: competition.id.toString(),
         envContext: getEnvContext(),
@@ -248,7 +248,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     await progress.mutateAsync({
       userAddress: networkStore.address!,
       section: 'THIMBLERIG',
-      id: 2,
+      id: 0,
       txHash: tx.transaction!.hash().toString(),
       roomId: competition.id.toString(),
       envContext: getEnvContext(),
