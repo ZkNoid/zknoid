@@ -65,19 +65,25 @@ export default function RandzuLobby({
 
   useEffect(() => {
     const lobbyKey = searchParams.get('key');
-    if (lobbyKey && params.lobbyId !== 'undefined') {
-      if (
-        lobbiesStore.lobbies.find(
-          (lobby) =>
-            lobby.accessKey === lobbyKey &&
-            lobby.id.toString() === params.lobbyId
-        )
-      ) {
-        pvpLobbyStorage.setConnectedLobbyKey(lobbyKey);
-        pvpLobbyStorage.setConnectedLobbyId(Number(params.lobbyId));
+    if (
+      lobbyKey &&
+      params.lobbyId !== 'undefined' &&
+      (lobbiesStore.currentLobby
+        ? parseInt(params.lobbyId) !== lobbiesStore.currentLobby.id
+        : true)
+    ) {
+      let lobby = lobbiesStore.lobbies.find(
+        (lobby) =>
+          lobby.id === parseInt(params.lobbyId) &&
+          lobby.accessKey === parseInt(lobbyKey)
+      );
+      if (lobby) {
+        joinLobby(lobby.id);
+        pvpLobbyStorage.setConnectedLobbyKey(lobby.accessKey.toString());
+        pvpLobbyStorage.setConnectedLobbyId(lobby.id);
       } else setIsLobbyNotFoundModalOpen(true);
     }
-  }, [searchParams]);
+  }, [lobbiesStore.lobbies, params.lobbyId, searchParams]);
 
   useEffect(() => {
     if (lobbiesStore.activeGameId) {
@@ -93,7 +99,7 @@ export default function RandzuLobby({
         (lobby) => lobby.id.toString() === params.lobbyId
       );
       if (lobby) setCurrentLobby(lobby);
-      else setIsLobbyNotFoundModalOpen(true);
+      // else setIsLobbyNotFoundModalOpen(true);
     } else {
       const lobby = lobbiesStore.lobbies.find(
         (lobby) => lobby.id === pvpLobbyStorage.lastLobbyId
