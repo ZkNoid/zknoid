@@ -35,6 +35,7 @@ import { announcedGames, defaultGames, IGame } from '@/app/constants/games';
 import Image from 'next/image';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
+import { PendingTransaction } from '@proto-kit/sequencer';
 
 const zkNoidConfig = import('@/games/config');
 
@@ -198,7 +199,7 @@ export default function NewArkanoidCompetitionPage() {
         userAddress: networkStore.address!,
         section: 'ARKANOID',
         id: 1,
-        txHash: tx.transaction!.hash().toString(),
+        txHash: JSON.stringify((tx.transaction! as PendingTransaction).toJSON()),
         envContext: getEnvContext(),
       });
     }
