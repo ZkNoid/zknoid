@@ -27,6 +27,10 @@ export class Gamehub<
   PublicOutput extends IScoreable,
   GameProof extends Proof<PublicInput, PublicOutput>,
 > extends RuntimeModule<unknown> {
+  @state() public competitionCreator = StateMap.from<UInt64, PublicKey>(
+    UInt64,
+    PublicKey,
+  );
   // CompetitionId -> competition
   @state() public competitions = StateMap.from<UInt64, Competition>(
     UInt64,
@@ -79,13 +83,10 @@ export class Gamehub<
    */
   @runtimeMethod()
   public createCompetition(competition: Competition): void {
-    this.competitions.set(
-      this.lastCompetitonId.get().orElse(UInt64.from(0)),
-      competition,
-    );
-    this.lastCompetitonId.set(
-      this.lastCompetitonId.get().orElse(UInt64.from(0)).add(1),
-    );
+    const competitionId = this.lastCompetitonId.get().orElse(UInt64.from(0));
+    this.competitionCreator.set(competitionId, this.transaction.sender.value);
+    this.competitions.set(competitionId, competition);
+    this.lastCompetitonId.set(competitionId.add(1));
 
     this.balances.transfer(
       ZNAKE_TOKEN_ID,
