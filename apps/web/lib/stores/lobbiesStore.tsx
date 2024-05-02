@@ -54,10 +54,15 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
     for (let i = 0; i < +lastLobbyId; i++) {
       let curLobby = await query.activeLobby.get(UInt64.from(i));
 
-      if (curLobby && curLobby.started.not().toBoolean()) {
+      if (
+        curLobby &&
+        curLobby.started.not().toBoolean() &&
+        curLobby.active.toBoolean()
+      ) {
         const players = +curLobby.curAmount;
         lobbies.push({
           id: i,
+          active: curLobby.active.toBoolean(),
           name: curLobby.name.toString(),
           reward: 0n,
           fee: curLobby.participationFee.toBigInt(),
@@ -69,7 +74,7 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
             .map((val: Bool) => val.toBoolean()),
           privateLobby: curLobby.privateLobby.toBoolean(),
           currency: Currency.ZNAKES,
-          accessKey: '',
+          accessKey: +curLobby.accessKey,
         });
       }
     }

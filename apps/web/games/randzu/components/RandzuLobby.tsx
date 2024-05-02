@@ -16,7 +16,7 @@ import { CreateNewLobby } from '@/components/framework/Lobby/CreateNewLobby';
 import { AnimatePresence, motion } from 'framer-motion';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { ClientAppChain, ProtoUInt64 } from 'zknoid-chain-dev';
-import { Bool, CircuitString, PublicKey, UInt64 } from 'o1js';
+import { Field, Bool, CircuitString, PublicKey, UInt64 } from 'o1js';
 import { useNetworkStore } from '@/lib/stores/network';
 import {
   useObserveRandzuLobbiesStore,
@@ -26,6 +26,7 @@ import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
 import { Modal } from '@/components/ui/games-store/shared/Modal';
 import { Button } from '@/components/ui/games-store/shared/Button';
+import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 
 export default function RandzuLobby({
   params,
@@ -33,6 +34,7 @@ export default function RandzuLobby({
   params: { lobbyId: string };
 }) {
   const router = useRouter();
+  const chainStore = useProtokitChainStore();
   const lobbiesStore = useRandzuLobbiesStore();
   const pvpLobbyStorage = usePvpLobbyStorage();
   const searchParams = useSearchParams();
@@ -63,19 +65,25 @@ export default function RandzuLobby({
 
   useEffect(() => {
     const lobbyKey = searchParams.get('key');
-    if (lobbyKey && params.lobbyId !== 'undefined') {
-      if (
-        lobbiesStore.lobbies.find(
-          (lobby) =>
-            lobby.accessKey === lobbyKey &&
-            lobby.id.toString() === params.lobbyId
-        )
-      ) {
-        pvpLobbyStorage.setConnectedLobbyKey(lobbyKey);
-        pvpLobbyStorage.setConnectedLobbyId(Number(params.lobbyId));
+    if (
+      lobbyKey &&
+      params.lobbyId !== 'undefined' &&
+      (lobbiesStore.currentLobby
+        ? parseInt(params.lobbyId) !== lobbiesStore.currentLobby.id
+        : true)
+    ) {
+      let lobby = lobbiesStore.lobbies.find(
+        (lobby) =>
+          lobby.id === parseInt(params.lobbyId) &&
+          lobby.accessKey === parseInt(lobbyKey)
+      );
+      if (lobby) {
+        joinLobby(lobby.id);
+        pvpLobbyStorage.setConnectedLobbyKey(lobby.accessKey.toString());
+        pvpLobbyStorage.setConnectedLobbyId(lobby.id);
       } else setIsLobbyNotFoundModalOpen(true);
     }
-  }, [searchParams]);
+  }, [lobbiesStore.lobbies, params.lobbyId, searchParams]);
 
   useEffect(() => {
     if (lobbiesStore.activeGameId) {
@@ -91,7 +99,7 @@ export default function RandzuLobby({
         (lobby) => lobby.id.toString() === params.lobbyId
       );
       if (lobby) setCurrentLobby(lobby);
-      else setIsLobbyNotFoundModalOpen(true);
+      // else setIsLobbyNotFoundModalOpen(true);
     } else {
       const lobby = lobbiesStore.lobbies.find(
         (lobby) => lobby.id === pvpLobbyStorage.lastLobbyId
@@ -103,7 +111,8 @@ export default function RandzuLobby({
   const createNewLobby = async (
     name: string,
     participationFee: number,
-    privateLobby: boolean
+    privateLobby: boolean,
+    accessKey: number
   ) => {
     const randzuLobbyManager = await client.runtime.resolve('RandzuLogic');
 
@@ -114,7 +123,8 @@ export default function RandzuLobby({
           CircuitString.fromString(name),
           ProtoUInt64.from(participationFee),
           Bool(privateLobby),
-          sessionPrivateKey.toPublicKey()
+          sessionPrivateKey.toPublicKey(),
+          Field.from(accessKey)
         );
       }
     );
@@ -258,6 +268,7 @@ export default function RandzuLobby({
         <FastMatchmaking
           options={lobbiesStore.mathcmakingOptions}
           winCoef={1.67}
+          blockNumber={chainStore.block ? +chainStore.block.height : 0}
           register={register}
         />
         <div className={'col-start-4 col-end-6 row-start-1'}>

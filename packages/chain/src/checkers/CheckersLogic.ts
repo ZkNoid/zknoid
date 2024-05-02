@@ -858,5 +858,7 @@ export class CheckersLogic extends MatchMaker {
       Provable.if(winProposed, game.player1, PublicKey.empty()),
       UInt64.from(0),
     );
+
+    this._onLobbyEnd(gameId, winProposed);
   }
 }

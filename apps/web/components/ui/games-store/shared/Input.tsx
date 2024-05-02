@@ -22,7 +22,7 @@ export const Input = ({
   onInvalid,
 }: {
   value: any;
-  setValue: (value: any) => void;
+  setValue?: (value: any) => void;
   placeholder?: string;
   startContent?: ReactNode;
   endContent?: ReactNode;
@@ -96,13 +96,14 @@ export const Input = ({
           )}
           value={value}
           onChange={(event) => {
-            setValue(
-              type === 'number'
-                ? parseInt(event.target.value)
+            setValue &&
+              setValue(
+                type === 'number'
                   ? parseInt(event.target.value)
-                  : value
-                : event.target.value
-            );
+                    ? parseInt(event.target.value)
+                    : value
+                  : event.target.value
+              );
           }}
           readOnly={isReadonly}
           required={isRequired}
@@ -117,7 +118,7 @@ export const Input = ({
                 value && value.length !== 0,
               invisible: !value || value.length === 0,
             })}
-            onClick={() => setValue(type === 'number' ? 0 : '')}
+            onClick={() => setValue && setValue(type === 'number' ? 0 : '')}
           >
             <svg
               aria-hidden="true"
