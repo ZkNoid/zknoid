@@ -221,7 +221,15 @@ export default function ArkanoidPage({
         });
       }
 
-      if (score > 90000) {
+      if (score > 90000 && competition?.creator) {
+        await progress.mutateAsync({
+          userAddress: networkStore.address!,
+          section: 'ARKANOID',
+          roomId: competition?.id.toString(),
+          id: 4,
+          txHash: tx.transaction!.hash().toString(),
+          envContext: getEnvContext(),
+        });
       }
     } catch (e) {
       console.log('Error while generating ZK proof');
