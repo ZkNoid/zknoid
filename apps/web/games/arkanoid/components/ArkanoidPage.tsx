@@ -132,10 +132,16 @@ export default function ArkanoidPage({
       return;
     }
 
+    let creator =
+      await client.query.runtime.ArkanoidGameHub.competitionCreator.get(
+        UInt64.from(competitionId)
+      );
+
     let competition = fromContractCompetition(
       competitionId,
       contractCompetition
     );
+    competition.creator = creator;
 
     let bricks = createBricksBySeed(Field.from(competition!.seed));
 
