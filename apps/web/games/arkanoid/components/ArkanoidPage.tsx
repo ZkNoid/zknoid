@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { GameView, ITick } from '@/games/arkanoid/components/GameView';
 import {
   Bricks,
@@ -71,13 +71,15 @@ export default function ArkanoidPage({
   const [isFullscreenLoading, setIsFullscreenLoading] =
     useState<boolean>(false);
 
+  const shouldUpdateLeaderboard = useRef(false);
+
   const client = useContext(AppChainClientContext);
 
   if (!client) {
     throw Error('Context app chain client is not set');
   }
 
-  useObserveArkanoidLeaderboard(params.competitionId);
+  useObserveArkanoidLeaderboard(params.competitionId, shouldUpdateLeaderboard);
 
   const leaderboardStore = useArkanoidLeaderboardStore();
   const switchStore = useSwitchWidgetStorage();
@@ -114,6 +116,14 @@ export default function ArkanoidPage({
     if (!networkStore.protokitClientStarted) return;
     getCompetition();
   }, [networkStore.protokitClientStarted]);
+
+  useEffect(() => {
+    if (gameState == GameState.Active) {
+      shouldUpdateLeaderboard.current = false;
+    } else {
+      shouldUpdateLeaderboard.current = true;
+    }
+  }, [gameState]);
 
   const getCompetition = async () => {
     let competitionId = +params.competitionId;

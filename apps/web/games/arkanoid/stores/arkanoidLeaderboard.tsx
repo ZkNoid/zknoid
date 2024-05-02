@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { PublicKey, UInt64 } from 'o1js';
-import { useContext, useEffect } from 'react';
+import { MutableRefObject, useContext, useEffect } from 'react';
 import { useProtokitChainStore } from '../../../lib/stores/protokitChain';
 import { useNetworkStore } from '../../../lib/stores/network';
 import { LeaderboardIndex } from 'zknoid-chain-dev';
@@ -39,7 +39,12 @@ export const useArkanoidLeaderboardStore = create<
       return this.leaderboard?.[competitionId] ?? [];
     },
     async loadLeaderboard(
-      client: ClientAppChain<typeof arkanoidConfig.runtimeModules, any, any, any>,
+      client: ClientAppChain<
+        typeof arkanoidConfig.runtimeModules,
+        any,
+        any,
+        any
+      >,
       competitionId: string
     ) {
       if (isNaN(+competitionId)) {
@@ -77,9 +82,13 @@ export const useArkanoidLeaderboardStore = create<
   }))
 );
 
-export const useObserveArkanoidLeaderboard = (competitionId: string) => {
+export const useObserveArkanoidLeaderboard = (
+  competitionId: string,
+  shouldUpdate: MutableRefObject<boolean>
+) => {
   const client = useContext<
-    ClientAppChain<typeof arkanoidConfig.runtimeModules, any, any, any> | undefined
+    | ClientAppChain<typeof arkanoidConfig.runtimeModules, any, any, any>
+    | undefined
   >(AppChainClientContext);
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
@@ -90,6 +99,8 @@ export const useObserveArkanoidLeaderboard = (competitionId: string) => {
       throw Error('Client is not set in context');
     }
     if (!network.protokitClientStarted) return;
+
+    if (!shouldUpdate.current) return;
 
     leaderboard.loadLeaderboard(client, competitionId);
   }, [chain.block?.height, network.protokitClientStarted]);
