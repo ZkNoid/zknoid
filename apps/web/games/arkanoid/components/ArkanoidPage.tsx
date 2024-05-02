@@ -192,6 +192,7 @@ export default function ArkanoidPage({
         await progress.mutateAsync({
           userAddress: networkStore.address!,
           section: 'ARKANOID',
+          roomId: competition?.id.toString(),
           id: 0,
           txHash: tx.transaction!.hash().toString(),
           envContext: getEnvContext(),
