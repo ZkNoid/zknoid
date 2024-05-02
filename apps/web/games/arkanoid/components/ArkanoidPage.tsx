@@ -40,6 +40,7 @@ import { getEnvContext } from '@/lib/envContext';
 import ArkanoidCoverSVG from '../assets/game-cover.svg';
 import ArkanoidMobileCoverSVG from '../assets/game-cover-mobile.svg';
 import { FullscreenWrap } from '@/components/framework/GameWidget/FullscreenWrap';
+import { Button } from '@/components/ui/games-store/shared/Button';
 
 enum GameState {
   NotStarted,
@@ -48,6 +49,7 @@ enum GameState {
   Lost,
   Replay,
   Proofing,
+  RateGame,
 }
 
 const chunkenize = (arr: any[], size: number) =>
@@ -66,7 +68,6 @@ export default function ArkanoidPage({
   const [ticksAmount, setTicksAmount] = useState<number>(0);
   const [competition, setCompetition] = useState<ICompetition>();
 
-  const [isRateGame, setIsRateGame] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [isFullscreenLoading, setIsFullscreenLoading] =
     useState<boolean>(false);
@@ -252,7 +253,13 @@ export default function ArkanoidPage({
                 <>
                   {gameState == GameState.Won && (
                     <Win
-                      onBtnClick={proof}
+                      onBtnClick={() => {
+                        proof()
+                          .then(() => setGameState(GameState.Proofing))
+                          .catch((error) => {
+                            console.log(error);
+                          });
+                      }}
                       title={'You won! Congratulations!'}
                       subTitle={
                         'If you want to see your name in leaderboard you have to send the poof! ;)'
@@ -260,8 +267,36 @@ export default function ArkanoidPage({
                       btnText={'Send proof'}
                     />
                   )}
+                  {gameState == GameState.Proofing && (
+                    <div
+                      className={
+                        'flex h-full w-full flex-col items-center justify-center px-[10%] py-[15%] text-headline-1 text-left-accent lg:p-0'
+                      }
+                    >
+                      <div
+                        className={
+                          'flex max-w-[60%] flex-col items-center justify-center gap-4'
+                        }
+                      >
+                        <span className={'text-center'}>
+                          Your Proof was sent - now you can see your name in
+                          Leaderboard :)
+                        </span>
+                        <Button
+                          label={'Close'}
+                          onClick={() => setGameState(GameState.RateGame)}
+                        />
+                      </div>
+                    </div>
+                  )}
                   {gameState == GameState.Lost && (
                     <Lost startGame={startGame} />
+                  )}
+                  {gameState == GameState.RateGame && (
+                    <RateGame
+                      gameId={arkanoidConfig.id}
+                      onClick={() => setGameState(GameState.NotStarted)}
+                    />
                   )}
                   {gameState === GameState.NotStarted && (
                     <div
