@@ -145,7 +145,7 @@ export default function ArkanoidPage({
     let creator =
       await client.query.runtime.ArkanoidGameHub.competitionCreator.get(
         UInt64.from(competitionId)
-      );
+      ) as PublicKey;
 
     let competition = fromContractCompetition(
       competitionId,
