@@ -66,6 +66,7 @@ export interface ICompetitionPVP {
 
 export interface ILobby {
   id: number;
+  active: boolean;
   name: string;
   reward: bigint;
   fee: bigint;
@@ -75,7 +76,7 @@ export interface ILobby {
   playersReady?: boolean[];
   privateLobby: boolean;
   currency: Currency;
-  accessKey: string; // TEMPORARY!!!
+  accessKey: number; // TEMPORARY!!!
 }
 
 const bricksInRow = 5;

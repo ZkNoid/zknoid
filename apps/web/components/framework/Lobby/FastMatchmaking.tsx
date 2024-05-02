@@ -3,33 +3,54 @@ import znakesImg from '@/public/image/tokens/znakes.svg';
 import { Currency } from '@/constants/currency';
 import { Popover } from '@/components/ui/games-store/shared/Popover';
 import { IMatchamkingOption } from '@/lib/stores/lobbiesStore';
+import { MatchmakingModal } from '@/components/framework/Lobby/MatchmakingModal';
+import { useState } from 'react';
 
 const OpponentItem = ({
   option,
   winCoef,
   register,
+  isModalOpen,
+  setIsModalOpen,
+  setPay,
+  setReceive,
 }: {
   option: IMatchamkingOption;
   winCoef: number;
   register: (id: number) => Promise<void>;
+  isModalOpen: boolean;
+  setIsModalOpen: (isOpen: boolean) => void;
+  setPay: (pay: number) => void;
+  setReceive: (receive: number) => void;
 }) => {
   return (
     <div
       className={
-        'flex cursor-pointer flex-col justify-between rounded-[5px] bg-left-accent p-2'
+        'group flex cursor-pointer flex-col justify-between rounded-[5px] border border-left-accent bg-left-accent p-2 hover:bg-[#464646]'
       }
-      onClick={() => register(option.id)}
+      onClick={async () => {
+        await register(option.id);
+        setPay(option.pay);
+        setReceive(option.pay * winCoef);
+        setIsModalOpen(true);
+      }}
     >
       <span
         className={
-          'text-center text-[16px]/[16px] font-medium uppercase text-bg-dark'
+          'text-center text-[16px]/[16px] font-medium uppercase text-bg-dark group-hover:text-left-accent'
         }
       >
         Random opponent
       </span>
-      <div className={'flex flex-row gap-2 pb-2 text-left-accent'}>
+      <div
+        className={
+          'flex flex-row gap-2 pb-2 text-left-accent group-hover:text-bg-dark'
+        }
+      >
         <div
-          className={'flex w-full flex-col gap-1 rounded-[5px] bg-bg-dark p-2'}
+          className={
+            'flex w-full flex-col gap-1 rounded-[5px] bg-bg-dark p-2 group-hover:bg-left-accent'
+          }
         >
           <span
             className={'font-plexsans text-[16px]/[16px] font-medium uppercase'}
@@ -52,7 +73,9 @@ const OpponentItem = ({
           </span>
         </div>
         <div
-          className={'flex w-full flex-col gap-1 rounded-[5px] bg-bg-dark p-2'}
+          className={
+            'flex w-full flex-col gap-1 rounded-[5px] bg-bg-dark p-2 group-hover:bg-left-accent'
+          }
         >
           <span
             className={'font-plexsans text-[16px]/[16px] font-medium uppercase'}
@@ -82,12 +105,18 @@ const OpponentItem = ({
 export const FastMatchmaking = ({
   options,
   winCoef,
+  blockNumber,
   register,
 }: {
   options: IMatchamkingOption[];
   winCoef: number;
+  blockNumber: number;
   register: (id: number) => Promise<void>;
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pay, setPay] = useState(0);
+  const [receive, setReceive] = useState(0);
+
   return (
     <>
       <div className={'col-start-1 col-end-4 row-start-1 flex flex-row gap-1'}>
@@ -146,11 +175,15 @@ export const FastMatchmaking = ({
             option={option}
             winCoef={winCoef}
             register={register}
+            isModalOpen={isModalOpen}
+            setIsModalOpen={setIsModalOpen}
+            setPay={setPay}
+            setReceive={setReceive}
           />
         ))}
         <div
           className={
-            'flex flex-col gap-2 rounded-[5px] border border-foreground bg-[#252525] p-2'
+            'flex cursor-pointer flex-col gap-2 rounded-[5px] border border-foreground bg-[#252525] p-2 hover:bg-[#464646]'
           }
         >
           <div className={'flex flex-row items-center justify-center gap-1'}>
@@ -259,6 +292,13 @@ export const FastMatchmaking = ({
             <span>3</span>
             <span>minutes</span>
           </span>
+          <MatchmakingModal
+            isOpen={isModalOpen}
+            setIsOpen={setIsModalOpen}
+            pay={pay}
+            receive={receive}
+            blockNumber={blockNumber}
+          />
         </div>
       </div>
     </>

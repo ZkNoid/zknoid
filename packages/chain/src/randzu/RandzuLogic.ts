@@ -290,5 +290,7 @@ export class RandzuLogic extends MatchMaker {
       Provable.if(winProposed, game.value.player1, PublicKey.empty()),
       UInt64.from(0),
     );
+
+    this._onLobbyEnd(gameId, winProposed);
   }
 }

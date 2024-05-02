@@ -1,7 +1,6 @@
 import { usePvpLobbyStorage } from '@/lib/stores/pvpLobbyStore';
 import { Currency } from '@/constants/currency';
 import { ILobby } from '@/lib/types';
-import { formatUnits } from '@/lib/unit';
 
 export const LobbyItem = ({
   id,
@@ -28,10 +27,10 @@ export const LobbyItem = ({
         <span>{name}</span>
       </span>
       <div className="max-w-fit rounded-2xl bg-left-accent p-2 text-center font-plexsans text-[14px]/[14px] font-medium uppercase text-bg-dark">
-        {formatUnits(reward)} {currency} Max reward
+        {reward.toString()} {currency} Max reward
       </div>
       <div className="max-w-fit rounded-2xl border border-foreground p-2 text-center font-plexsans text-[14px]/[14px] font-medium uppercase text-foreground">
-        {formatUnits(fee)} {Currency.ZNAKES} Participants fee
+        {fee.toString()} {Currency.ZNAKES} Participants fee
       </div>
       <div
         className={

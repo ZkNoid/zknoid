@@ -5,7 +5,15 @@ import {
   state,
 } from '@proto-kit/module';
 import { State, StateMap, assert } from '@proto-kit/protocol';
-import { Bool, CircuitString, Provable, PublicKey, Struct, UInt64 } from 'o1js';
+import {
+  Bool,
+  CircuitString,
+  Field,
+  Provable,
+  PublicKey,
+  Struct,
+  UInt64,
+} from 'o1js';
 
 import { Balances, UInt64 as ProtoUInt64 } from '@proto-kit/library';
 import { inject } from 'tsyringe';
@@ -27,13 +35,16 @@ export class Lobby extends Struct({
   readyAmount: UInt64,
   curAmount: UInt64,
   participationFee: ProtoUInt64,
+  accessKey: Field,
   privateLobby: Bool,
+  active: Bool,
   started: Bool,
 }) {
   static from(
     name: CircuitString,
     participationFee: ProtoUInt64,
     privateLobby: Bool,
+    accessKey: Field,
   ): Lobby {
     return new Lobby({
       id: UInt64.zero,
@@ -43,10 +54,24 @@ export class Lobby extends Struct({
       readyAmount: UInt64.zero,
       curAmount: UInt64.zero,
       participationFee,
+      accessKey,
       privateLobby,
+      active: Bool(true),
       started: Bool(false),
     });
   }
+
+  static inactive(): Lobby {
+    let lobby = Lobby.from(
+      CircuitString.fromString(''),
+      ProtoUInt64.from(0),
+      Bool(false),
+      Field.from(0),
+    );
+    lobby.active = Bool(false);
+    return lobby;
+  }
+
   static default(id: UInt64, privateLobby: Bool): Lobby {
     return new Lobby({
       id,
@@ -56,7 +81,9 @@ export class Lobby extends Struct({
       readyAmount: UInt64.zero,
       curAmount: UInt64.zero,
       participationFee: DEFAULT_PARTICIPATION_FEE,
+      accessKey: Field.from(0),
       privateLobby,
+      active: Bool(true),
       started: Bool(false),
     });
   }
@@ -199,9 +226,10 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
     participationFee: ProtoUInt64,
     privateLobby: Bool,
     creatorSessionKey: PublicKey,
+    accessKey: Field,
   ): void {
     let lobby = this._addLobby(
-      Lobby.from(name, participationFee, privateLobby),
+      Lobby.from(name, participationFee, privateLobby, accessKey),
       Bool(true),
     );
 
@@ -216,6 +244,10 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
 
   @runtimeMethod()
   public joinLobby(lobbyId: UInt64): void {
+    const currentLobby = this.currentLobby.get(
+      this.transaction.sender.value,
+    ).value;
+    assert(currentLobby.equals(UInt64.zero), 'You already in lobby');
     const lobby = this.activeLobby
       .get(lobbyId)
       .orElse(Lobby.default(lobbyId, Bool(false)));
@@ -392,4 +424,20 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   }
 
   public updateNextGameId(shouldUpdate: Bool): void {}
+
+  protected _onLobbyEnd(lobbyId: UInt64, shouldEnd: Bool): void {
+    let lobby = this.activeLobby.get(lobbyId).value;
+
+    for (let i = 0; i < PLAYER_AMOUNT; i++) {
+      this.currentLobby.set(
+        Provable.if(shouldEnd, lobby.players[i], PublicKey.empty()),
+        UInt64.zero,
+      );
+    }
+
+    this.activeLobby.set(
+      Provable.if(shouldEnd, lobbyId, UInt64.zero),
+      Lobby.inactive(),
+    );
+  }
 }
