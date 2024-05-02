@@ -28,7 +28,12 @@ export const useArkanoidCompetitionsStore = create<
     loading: false,
     competitions: [],
     async loadCompetitions(
-      client: ClientAppChain<typeof arkanoidConfig.runtimeModules, any, any, any>,
+      client: ClientAppChain<
+        typeof arkanoidConfig.runtimeModules,
+        any,
+        any,
+        any
+      >,
       player: PublicKey
     ) {
       set((state) => {
@@ -52,9 +57,15 @@ export const useArkanoidCompetitionsStore = create<
           );
         registered ??= Bool(false);
 
+        let creator =
+          await client.query.runtime.ArkanoidGameHub.competitionCreator.get(
+            UInt64.from(i)
+          );
+
         competitions.push({
           ...fromContractCompetition(i, curCompetition!),
           registered: registered.toBoolean(),
+          creator,
         });
       }
       set((state) => {
@@ -68,7 +79,8 @@ export const useArkanoidCompetitionsStore = create<
 
 export const useObserveArkanoidCompetitions = () => {
   const client = useContext<
-    ClientAppChain<typeof arkanoidConfig.runtimeModules, any, any, any> | undefined
+    | ClientAppChain<typeof arkanoidConfig.runtimeModules, any, any, any>
+    | undefined
   >(AppChainClientContext);
   console.log('Client', client);
   const chain = useProtokitChainStore();
