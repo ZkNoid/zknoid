@@ -11,6 +11,7 @@ import {
 import { RandomGenerator } from '../engine';
 import {
   BRICK_HALF_WIDTH,
+  COLLISION_FINDING_ITERATIONS,
   DEFAULT_BALL_LOCATION_X,
   DEFAULT_BALL_LOCATION_Y,
   DEFAULT_BALL_SPEED_X,
