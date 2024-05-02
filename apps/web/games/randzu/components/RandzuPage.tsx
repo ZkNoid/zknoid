@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { GameView } from './GameView';
 import { Int64, PublicKey, UInt32, UInt64 } from 'o1js';
 import { useNetworkStore } from '@/lib/stores/network';
@@ -21,10 +21,7 @@ import GamePage from '@/components/framework/GamePage';
 import { randzuConfig } from '../config';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
-import {
-  MainButtonState,
-  PvPGameView,
-} from '@/components/framework/GamePage/PvPGameView';
+import { MainButtonState } from '@/components/framework/GamePage/PvPGameView';
 import RandzuCoverSVG from '../assets/game-cover.svg';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
@@ -42,13 +39,13 @@ import { formatUnits } from '@/lib/unit';
 import znakesImg from '@/public/image/tokens/znakes.svg';
 import Image from 'next/image';
 import { UnsetCompetitionPopup } from '@/components/framework/GameWidget/UnsetCompetitionPopup';
-import { arkanoidConfig } from '@/games/arkanoid/config';
 import { Win } from '@/components/framework/GameWidget/Win';
 import { Lost } from '@/components/framework/GameWidget/Lost';
 import { walletInstalled } from '@/lib/helpers';
 import { ConnectWallet } from '@/components/framework/GameWidget/ConnectWallet';
 import { InstallWallet } from '@/components/framework/GameWidget/InstallWallet';
 import { GameWrap } from '@/components/framework/GamePage/GameWrap';
+import { RateGame } from '@/components/framework/GameWidget/RateGame';
 
 enum GameState {
   WalletNotInstalled,
@@ -76,6 +73,7 @@ export default function RandzuPage({
   params: { competitionId: string };
 }) {
   const [gameState, setGameState] = useState(GameState.NotStarted);
+  const [isRateGame, setIsRateGame] = useState<boolean>(true);
   const client = useContext(AppChainClientContext) as ClientAppChain<
     typeof randzuConfig.runtimeModules,
     any,
@@ -462,19 +460,27 @@ export default function RandzuPage({
             <>
               {!competition ? (
                 <GameWrap>
-                  <UnsetCompetitionPopup gameId={arkanoidConfig.id} />
+                  <UnsetCompetitionPopup gameId={randzuConfig.id} />
                 </GameWrap>
               ) : (
                 <>
-                  {gameState == GameState.Won && (
-                    <GameWrap>
-                      <Win
-                        onBtnClick={restart}
-                        title={'You won! Congratulations!'}
-                        btnText={'Find new game'}
-                      />
-                    </GameWrap>
-                  )}
+                  {gameState == GameState.Won &&
+                    (isRateGame ? (
+                      <GameWrap>
+                        <RateGame
+                          gameId={randzuConfig.id}
+                          onClick={() => setIsRateGame(false)}
+                        />
+                      </GameWrap>
+                    ) : (
+                      <GameWrap>
+                        <Win
+                          onBtnClick={restart}
+                          title={'You won! Congratulations!'}
+                          btnText={'Find new game'}
+                        />
+                      </GameWrap>
+                    ))}
                   {gameState == GameState.Lost && (
                     <GameWrap>
                       <Lost startGame={restart} />
@@ -500,11 +506,62 @@ export default function RandzuPage({
                   )}
                   {gameState === GameState.OpponentTimeout && (
                     <GameWrap>
-                      <div className={'flex max-w-[60%] flex-col gap-6'}>
-                        <span>Opponent timeout :(</span>
+                      <div
+                        className={
+                          'flex max-w-[60%] flex-col items-center justify-center gap-6'
+                        }
+                      >
+                        <svg
+                          width="161"
+                          height="161"
+                          viewBox="0 0 161 161"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M80.442 160.884C124.869 160.884 160.884 124.869 160.884 80.442C160.884 36.0151 124.869 0 80.442 0C36.0151 0 0 36.0151 0 80.442C0 124.869 36.0151 160.884 80.442 160.884Z"
+                            fill="#212121"
+                          />
+                          <path
+                            d="M80.442 149.22C118.427 149.22 149.22 118.427 149.22 80.442C149.22 42.457 118.427 11.6641 80.442 11.6641C42.457 11.6641 11.6641 42.457 11.6641 80.442C11.6641 118.427 42.457 149.22 80.442 149.22Z"
+                            stroke="#D2FF00"
+                            strokeWidth="8"
+                            strokeMiterlimit="10"
+                          />
+                          <path
+                            d="M52.8568 92.7354C56.0407 92.7354 58.6218 82.6978 58.6218 70.3157C58.6218 57.9337 56.0407 47.8961 52.8568 47.8961C49.6729 47.8961 47.0918 57.9337 47.0918 70.3157C47.0918 82.6978 49.6729 92.7354 52.8568 92.7354Z"
+                            fill="#D2FF00"
+                          />
+                          <path
+                            d="M103.461 92.7354C106.645 92.7354 109.226 82.6978 109.226 70.3157C109.226 57.9337 106.645 47.8961 103.461 47.8961C100.277 47.8961 97.6963 57.9337 97.6963 70.3157C97.6963 82.6978 100.277 92.7354 103.461 92.7354Z"
+                            fill="#D2FF00"
+                          />
+                          <path
+                            d="M135.489 76.4906H118.194V82.7178H135.489V76.4906Z"
+                            fill="#D2FF00"
+                          />
+                          <path
+                            d="M38.7647 76.4906H21.4697V82.7178H38.7647V76.4906Z"
+                            fill="#D2FF00"
+                          />
+                          <path
+                            d="M50.5391 116.29C54.8955 113.646 65.1452 108.224 79.293 108.034C93.6805 107.841 104.212 113.164 108.616 115.72"
+                            stroke="#D2FF00"
+                            strokeWidth="5"
+                            strokeMiterlimit="10"
+                          />
+                        </svg>
+                        <span>Opponent timeout</span>
                         <Button
-                          label={'Restart game'}
-                          onClick={() => restart()}
+                          label={'Prove Opponent timeout'}
+                          onClick={() =>
+                            proveOpponentTimeout()
+                              .then(restart)
+                              .catch((error) => {
+                                console.log(error);
+                              })
+                          }
+                          className={'px-4'}
                         />
                       </div>
                     </GameWrap>
@@ -634,7 +691,9 @@ export default function RandzuPage({
           isPvp
           startGame={restart}
           isRestartBtn={
-            gameState === GameState.Lost || gameState === GameState.Won
+            gameState === GameState.Lost ||
+            gameState === GameState.Won ||
+            gameState === GameState.OpponentTimeout
           }
           competition={
             competition && {
