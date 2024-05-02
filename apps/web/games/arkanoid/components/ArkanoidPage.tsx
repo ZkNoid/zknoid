@@ -198,6 +198,31 @@ export default function ArkanoidPage({
           envContext: getEnvContext(),
         });
       }
+
+      if (competition?.preReg) {
+        await progress.mutateAsync({
+          userAddress: competition?.creator?.toBase58() || '',
+          section: 'ARKANOID',
+          roomId: competition?.id.toString(),
+          id: 2,
+          txHash: tx.transaction!.hash().toString(),
+          envContext: getEnvContext(),
+        });
+      }
+
+      if (competition?.creator && competition.preReg) {
+        await progress.mutateAsync({
+          userAddress: networkStore.address!,
+          section: 'ARKANOID',
+          roomId: competition?.id.toString(),
+          id: 3,
+          txHash: tx.transaction!.hash().toString(),
+          envContext: getEnvContext(),
+        });
+      }
+
+      if (score > 90000) {
+      }
     } catch (e) {
       console.log('Error while generating ZK proof');
       console.log(e);
