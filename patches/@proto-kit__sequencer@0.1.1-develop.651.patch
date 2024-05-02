@@ -1,0 +1,13 @@
+diff --git a/dist/mempool/PendingTransaction.js b/dist/mempool/PendingTransaction.js
+index d8bb3de897f786033530c5b6ffb5b474b84cacf6..abbde00e9cb704d973c97ffda6a13f7e1cb49030 100644
+--- a/dist/mempool/PendingTransaction.js
++++ b/dist/mempool/PendingTransaction.js
+@@ -71,7 +71,7 @@ export class PendingTransaction extends UnsignedTransaction {
+     }
+     toJSON() {
+         return {
+-            hash: this.hash.toString(),
++            hash: this.hash().toString(),
+             methodId: this.methodId.toJSON(),
+             nonce: this.nonce.toString(),
+             sender: this.sender.toBase58(),
