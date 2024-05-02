@@ -11,6 +11,7 @@ import {
 import { RandomGenerator } from '../engine';
 import {
   BRICK_HALF_WIDTH,
+  COLLISION_FINDING_ITERATIONS,
   DEFAULT_BALL_LOCATION_X,
   DEFAULT_BALL_LOCATION_Y,
   DEFAULT_BALL_SPEED_X,
@@ -26,10 +27,11 @@ import {
   MAX_BRICK_HEALTH,
   NEAREST_BRICKS_NUM,
   PLATFORM_WIDTH,
+  PRECISION,
   SCORE_PER_TICKS,
   SEED_MULTIPLIER,
 } from './constants';
-import type { Tick } from './types';
+import { Collision, Tick } from './types';
 import { Ball, Brick, Bricks, IntPoint, Platform } from './types';
 import { gr, inRange } from './utility';
 
@@ -72,6 +74,8 @@ export class GameContext extends Struct({
   }
 
   processTick(tick: Tick): void {
+    let curTime = UInt64.zero;
+
     // 1) Update score
     this.score = Provable.if(
       this.alreadyWon,
@@ -95,9 +99,14 @@ export class GameContext extends Struct({
     const movedLeft = gr(prevPlatformPosition, this.platform.position);
 
     /// 3) Update ball position
-    const prevBallPos = new IntPoint({
+    let prevBallPos = new IntPoint({
       x: this.ball.position.x,
       y: this.ball.position.y,
+    });
+
+    let prevBallSpeed = new IntPoint({
+      x: this.ball.speed.x,
+      y: this.ball.speed.y,
     });
 
     this.ball.move();
@@ -114,12 +123,29 @@ export class GameContext extends Struct({
     /// Add come constrains just in case
 
     // If bumf - just return it and change speed
+    curTime = curTime.add(
+      Provable.if(
+        leftBump,
+        prevBallPos.x.mul(PRECISION).div(this.ball.speed.x),
+        Int64.zero,
+      ).magnitude,
+    );
     this.ball.position.x = Provable.if(
       leftBump,
       this.ball.position.x.neg(),
       this.ball.position.x,
     );
 
+    curTime = curTime.add(
+      Provable.if(
+        rightBump,
+        Int64.from(FIELD_PIXEL_WIDTH)
+          .sub(prevBallPos.x)
+          .mul(PRECISION)
+          .div(this.ball.speed.x),
+        Int64.zero,
+      ).magnitude,
+    );
     this.ball.position.x = Provable.if(
       rightBump,
       Int64.from(2 * FIELD_PIXEL_WIDTH).sub(this.ball.position.x),
@@ -181,10 +207,28 @@ export class GameContext extends Struct({
 
     this.winable = this.winable.and(isFail.not());
 
+    curTime = curTime.add(
+      Provable.if(
+        bottomBump,
+        Int64.from(FIELD_PIXEL_HEIGHT)
+          .sub(prevBallPos.y)
+          .mul(PRECISION)
+          .div(prevBallSpeed.y),
+        Int64.zero,
+      ).magnitude,
+    );
     this.ball.position.y = Provable.if(
       bottomBump,
       Int64.from(2 * FIELD_PIXEL_HEIGHT).sub(this.ball.position.y),
       this.ball.position.y,
+    );
+
+    curTime = curTime.add(
+      Provable.if(
+        bottomBump,
+        prevBallPos.y.mul(PRECISION).div(prevBallSpeed.y),
+        Int64.zero,
+      ).magnitude,
     );
     this.ball.position.y = Provable.if(
       topBump,
@@ -198,203 +242,233 @@ export class GameContext extends Struct({
       this.ball.speed.y,
     );
 
+    Provable.asProver(() => {
+      if (curTime.greaterThan(UInt64.from(PRECISION)).toBoolean()) {
+        console.log(`Problem with time`);
+        console.log('Current time: ', curTime.toString());
+        console.log(`Left bump ${leftBump.toString()}`);
+        console.log(`Right bump ${rightBump.toString()}`);
+        console.log(`Top bump ${topBump.toString()}`);
+        console.log(`Bottom bump ${bottomBump.toString()}`);
+      }
+    });
+
     // Update nearest bricks
     this.updateNearestBricks();
 
-    //6) Check bricks bump
-    for (let j = 0; j < NEAREST_BRICKS_NUM; j++) {
-      const currentBrick = this.nearestBricks[j];
-      const isAlive = currentBrick.value.greaterThan(UInt64.from(1)); // 1 just so UInt64.sub do not underflow
+    /*
+      1) Check collision for each nearest brick
+      2) Pick earliest collision
+      3) Update values according to this collision
+    */
 
-      const leftBorder = currentBrick.pos.x;
-      const rightBorder = currentBrick.pos.x.add(BRICK_HALF_WIDTH * 2);
-      const topBorder = currentBrick.pos.y.add(BRICK_HALF_WIDTH * 2);
-      const bottomBorder = currentBrick.pos.y;
+    for (let i = 0; i < COLLISION_FINDING_ITERATIONS; i++) {
+      let collisions: Collision[] = [];
 
-      /*
-            Collision
-                ball.pos.x \inc [leftBorder, rightBorder]
-                ball.pos.y \inc [bottomBorder, topBorder]
+      for (let j = 0; j < NEAREST_BRICKS_NUM; j++) {
+        collisions[j] = this.ball.checkBrickCollision(
+          prevBallPos,
+          this.nearestBricks[j],
+        );
+      }
 
-            */
+      let collision = pickNearestCollision(collisions);
 
-      const hasRightPass = inRange(
-        rightBorder,
-        prevBallPos.x,
-        this.ball.position.x,
-      );
-      const hasLeftPass = inRange(
-        leftBorder,
-        prevBallPos.x,
-        this.ball.position.x,
-      );
-      const hasTopPass = inRange(
-        topBorder,
-        prevBallPos.y,
-        this.ball.position.y,
-      );
-      const hasBottomPass = inRange(
-        bottomBorder,
-        prevBallPos.y,
-        this.ball.position.y,
-      );
-
-      /*
-                Detect where collision ocured
-                /////////////// horizontal part of a brick //////////////////////////
-                y = d
-                ay = bx + c;
-                c = ay1 - bx1
-                    a - ball.speed.x
-                    b - ball.speed.y
-                bx = ay - c
-                bx = ad - c;
-
-                x \incl [ brick.pos.x, brick.pos.x + 2 * BRICK_HALF_WIDTH ]
-                bx \incl [b(brics.pos.x, b(brick.pos.x + 2 * BRICK_HALF_WIDTH))]
-                ad - c \incl [b(brics.pos.x), b(brick.pos.x + 2 * BRICK_HALF_WIDTH))]
-                
-
-
-                /////////////// vertical part of a brick ////////////////////////////
-                x = d
-                ay = bx + c
-                c = ay1 - bx1
-                    a - ball.speed.x
-                    b - ball.speed.y
-                ay = bd + c
-
-                y \incl [ brick.pos.y, brick.pos.y + 2 * BRICK_HALF_WIDTH]
-                ay \incl [ a(brick.pos.y), a(brick.pos.y + 2 * BRICK_HALF_WIDTH)]
-                bd + c \incl [ a(brick.pos.y), a(brick.pos.y + 2 * BRICK_HALF_WIDTH)]
-            */
-
-      const moveRight = this.ball.speed.x.isPositive();
-      const moveTop = this.ball.speed.y.isPositive();
-
-      const leftEnd = b.mul(currentBrick.pos.x);
-      const rightEnd = b.mul(currentBrick.pos.x.add(2 * BRICK_HALF_WIDTH));
-
-      // Top horizontal
-      const d1 = topBorder;
-      const adc1 = a.mul(d1).sub(c);
-      const crossBrickTop = inRange(adc1, leftEnd, rightEnd);
-      let hasTopBump = crossBrickTop.and(hasTopPass);
-
-      // Bottom horisontal
-      const d2 = bottomBorder;
-      const adc2 = a.mul(d2).sub(c);
-      const crossBrickBottom = inRange(adc2, leftEnd, rightEnd);
-      let hasBottomBump = crossBrickBottom.and(hasBottomPass);
-
-      const topEnd = a.mul(currentBrick.pos.y.add(2 * BRICK_HALF_WIDTH));
-      const bottomEnd = a.mul(currentBrick.pos.y);
-
-      // Left vertical
-      const d3 = leftBorder;
-      const bdc1 = b.mul(d3).add(c);
-      const crossBrickLeft = inRange(bdc1, bottomEnd, topEnd);
-      let hasLeftBump = crossBrickLeft.and(hasLeftPass);
-
-      // Right vertical
-      const d4 = rightBorder;
-      const bdc2 = b.mul(d4).add(c);
-      const crossBrickRight = inRange(bdc2, bottomEnd, topEnd);
-      let hasRightBump = crossBrickRight.and(hasRightPass);
-
-      /// Exclude double collision
-      hasRightBump = Provable.if(
-        moveRight,
-        hasRightBump.and(hasTopBump.not()).and(hasBottomBump.not()),
-        hasRightBump,
-      );
-      hasLeftBump = Provable.if(
-        moveRight,
-        hasLeftBump,
-        hasLeftBump.and(hasTopBump.not()).and(hasBottomBump.not()),
-      );
-      hasTopBump = Provable.if(
-        moveTop,
-        hasTopBump.and(hasRightBump.not()).and(hasLeftBump.not()),
-        hasTopBump,
-      );
-      hasBottomBump = Provable.if(
-        moveTop,
-        hasBottomBump,
-        hasBottomBump.and(hasRightBump.not()).and(hasLeftBump.not()),
-      );
-
-      const collisionHappen = isAlive.and(
-        hasRightBump.or(hasLeftBump).or(hasTopBump).or(hasBottomBump),
-      );
-
-      // Reduce health if coliision happend and brick is not dead
-
-      const newBrickValue = Provable.if(
-        collisionHappen,
-        currentBrick.value.sub(1),
-        currentBrick.value,
-      );
-
-      this.updateBrick(currentBrick.pos, newBrickValue);
-
-      this.totalLeft = Provable.if(
-        collisionHappen,
-        this.totalLeft.sub(1),
-        this.totalLeft,
-      );
-
-      this.alreadyWon = Provable.if(
-        this.totalLeft.equals(UInt64.from(1)).and(this.winable),
-        Bool(true),
-        this.alreadyWon,
-      );
-
-      this.ball.speed.x = Provable.if(
-        collisionHappen.and(hasLeftBump.or(hasRightBump)),
-        this.ball.speed.x.neg(),
-        this.ball.speed.x,
-      );
-
-      /*
-                dx = x - leftBorder
-                newX = leftBorder - (x - leftBorder) = 2leftBorder - x
-
-                dx = rightBorder - x
-                nexX = rightBorder + (rightBorder - x) = 2 rightBorder - x
-            */
-
-      // Update position on bump
-      this.ball.position.x = Provable.if(
-        collisionHappen.and(hasLeftBump),
-        leftBorder.mul(2).sub(this.ball.position.x),
-        this.ball.position.x,
-      );
-
-      this.ball.position.x = Provable.if(
-        collisionHappen.and(hasRightBump),
-        rightBorder.mul(2).sub(this.ball.position.x),
-        this.ball.position.x,
-      );
-
-      this.ball.speed.y = Provable.if(
-        collisionHappen.and(hasBottomBump.or(hasTopBump)),
-        this.ball.speed.y.neg(),
-        this.ball.speed.y,
-      );
-
-      this.ball.position.y = Provable.if(
-        collisionHappen.and(hasTopBump),
-        topBorder.mul(2).sub(this.ball.position.y),
-        this.ball.position.y,
-      );
-
-      this.ball.position.y = Provable.if(
-        collisionHappen.and(hasBottomBump),
-        bottomBorder.mul(2).sub(this.ball.position.y),
-        this.ball.position.y,
-      );
+      [curTime, prevBallPos] = this.applyCollision(curTime, collision);
     }
+
+    //6) Check bricks bump
+    // for (let j = 0; j < NEAREST_BRICKS_NUM; j++) {
+    //   const currentBrick = this.nearestBricks[j];
+    //   const isAlive = currentBrick.value.greaterThan(UInt64.from(1)); // 1 just so UInt64.sub do not underflow
+
+    //   const leftBorder = currentBrick.pos.x;
+    //   const rightBorder = currentBrick.pos.x.add(BRICK_HALF_WIDTH * 2);
+    //   const topBorder = currentBrick.pos.y.add(BRICK_HALF_WIDTH * 2);
+    //   const bottomBorder = currentBrick.pos.y;
+
+    //   /*
+    //         Collision
+    //             ball.pos.x \inc [leftBorder, rightBorder]
+    //             ball.pos.y \inc [bottomBorder, topBorder]
+
+    //         */
+
+    //   const hasRightPass = inRange(
+    //     rightBorder,
+    //     prevBallPos.x,
+    //     this.ball.position.x,
+    //   );
+    //   const hasLeftPass = inRange(
+    //     leftBorder,
+    //     prevBallPos.x,
+    //     this.ball.position.x,
+    //   );
+    //   const hasTopPass = inRange(
+    //     topBorder,
+    //     prevBallPos.y,
+    //     this.ball.position.y,
+    //   );
+    //   const hasBottomPass = inRange(
+    //     bottomBorder,
+    //     prevBallPos.y,
+    //     this.ball.position.y,
+    //   );
+
+    //   /*
+    //             Detect where collision ocured
+    //             /////////////// horizontal part of a brick //////////////////////////
+    //             y = d
+    //             ay = bx + c;
+    //             c = ay1 - bx1
+    //                 a - ball.speed.x
+    //                 b - ball.speed.y
+    //             bx = ay - c
+    //             bx = ad - c;
+
+    //             x \incl [ brick.pos.x, brick.pos.x + 2 * BRICK_HALF_WIDTH ]
+    //             bx \incl [b(brics.pos.x, b(brick.pos.x + 2 * BRICK_HALF_WIDTH))]
+    //             ad - c \incl [b(brics.pos.x), b(brick.pos.x + 2 * BRICK_HALF_WIDTH))]
+
+    //             /////////////// vertical part of a brick ////////////////////////////
+    //             x = d
+    //             ay = bx + c
+    //             c = ay1 - bx1
+    //                 a - ball.speed.x
+    //                 b - ball.speed.y
+    //             ay = bd + c
+
+    //             y \incl [ brick.pos.y, brick.pos.y + 2 * BRICK_HALF_WIDTH]
+    //             ay \incl [ a(brick.pos.y), a(brick.pos.y + 2 * BRICK_HALF_WIDTH)]
+    //             bd + c \incl [ a(brick.pos.y), a(brick.pos.y + 2 * BRICK_HALF_WIDTH)]
+    //         */
+
+    //   const moveRight = this.ball.speed.x.isPositive();
+    //   const moveTop = this.ball.speed.y.isPositive();
+
+    //   const leftEnd = b.mul(currentBrick.pos.x);
+    //   const rightEnd = b.mul(currentBrick.pos.x.add(2 * BRICK_HALF_WIDTH));
+
+    //   // Top horizontal
+    //   const d1 = topBorder;
+    //   const adc1 = a.mul(d1).sub(c);
+    //   const crossBrickTop = inRange(adc1, leftEnd, rightEnd);
+    //   let hasTopBump = crossBrickTop.and(hasTopPass);
+
+    //   // Bottom horisontal
+    //   const d2 = bottomBorder;
+    //   const adc2 = a.mul(d2).sub(c);
+    //   const crossBrickBottom = inRange(adc2, leftEnd, rightEnd);
+    //   let hasBottomBump = crossBrickBottom.and(hasBottomPass);
+
+    //   const topEnd = a.mul(currentBrick.pos.y.add(2 * BRICK_HALF_WIDTH));
+    //   const bottomEnd = a.mul(currentBrick.pos.y);
+
+    //   // Left vertical
+    //   const d3 = leftBorder;
+    //   const bdc1 = b.mul(d3).add(c);
+    //   const crossBrickLeft = inRange(bdc1, bottomEnd, topEnd);
+    //   let hasLeftBump = crossBrickLeft.and(hasLeftPass);
+
+    //   // Right vertical
+    //   const d4 = rightBorder;
+    //   const bdc2 = b.mul(d4).add(c);
+    //   const crossBrickRight = inRange(bdc2, bottomEnd, topEnd);
+    //   let hasRightBump = crossBrickRight.and(hasRightPass);
+
+    //   /// Exclude double collision
+    //   hasRightBump = Provable.if(
+    //     moveRight,
+    //     hasRightBump.and(hasTopBump.not()).and(hasBottomBump.not()),
+    //     hasRightBump,
+    //   );
+    //   hasLeftBump = Provable.if(
+    //     moveRight,
+    //     hasLeftBump,
+    //     hasLeftBump.and(hasTopBump.not()).and(hasBottomBump.not()),
+    //   );
+    //   hasTopBump = Provable.if(
+    //     moveTop,
+    //     hasTopBump.and(hasRightBump.not()).and(hasLeftBump.not()),
+    //     hasTopBump,
+    //   );
+    //   hasBottomBump = Provable.if(
+    //     moveTop,
+    //     hasBottomBump,
+    //     hasBottomBump.and(hasRightBump.not()).and(hasLeftBump.not()),
+    //   );
+
+    //   const collisionHappen = isAlive.and(
+    //     hasRightBump.or(hasLeftBump).or(hasTopBump).or(hasBottomBump),
+    //   );
+
+    //   // Reduce health if coliision happend and brick is not dead
+
+    //   const newBrickValue = Provable.if(
+    //     collisionHappen,
+    //     currentBrick.value.sub(1),
+    //     currentBrick.value,
+    //   );
+
+    //   this.updateBrick(currentBrick.pos, newBrickValue);
+
+    //   this.totalLeft = Provable.if(
+    //     collisionHappen,
+    //     this.totalLeft.sub(1),
+    //     this.totalLeft,
+    //   );
+
+    //   this.alreadyWon = Provable.if(
+    //     this.totalLeft.equals(UInt64.from(1)).and(this.winable),
+    //     Bool(true),
+    //     this.alreadyWon,
+    //   );
+
+    //   this.ball.speed.x = Provable.if(
+    //     collisionHappen.and(hasLeftBump.or(hasRightBump)),
+    //     this.ball.speed.x.neg(),
+    //     this.ball.speed.x,
+    //   );
+
+    //   /*
+    //             dx = x - leftBorder
+    //             newX = leftBorder - (x - leftBorder) = 2leftBorder - x
+
+    //             dx = rightBorder - x
+    //             nexX = rightBorder + (rightBorder - x) = 2 rightBorder - x
+    //         */
+
+    //   // Update position on bump
+    //   this.ball.position.x = Provable.if(
+    //     collisionHappen.and(hasLeftBump),
+    //     leftBorder.mul(2).sub(this.ball.position.x),
+    //     this.ball.position.x,
+    //   );
+
+    //   this.ball.position.x = Provable.if(
+    //     collisionHappen.and(hasRightBump),
+    //     rightBorder.mul(2).sub(this.ball.position.x),
+    //     this.ball.position.x,
+    //   );
+
+    //   this.ball.speed.y = Provable.if(
+    //     collisionHappen.and(hasBottomBump.or(hasTopBump)),
+    //     this.ball.speed.y.neg(),
+    //     this.ball.speed.y,
+    //   );
+
+    //   this.ball.position.y = Provable.if(
+    //     collisionHappen.and(hasTopBump),
+    //     topBorder.mul(2).sub(this.ball.position.y),
+    //     this.ball.position.y,
+    //   );
+
+    //   this.ball.position.y = Provable.if(
+    //     collisionHappen.and(hasBottomBump),
+    //     bottomBorder.mul(2).sub(this.ball.position.y),
+    //     this.ball.position.y,
+    //   );
+    // }
 
     Provable.asProver(() => {
       if (this.debug.toBoolean()) {
@@ -480,14 +554,101 @@ export class GameContext extends Struct({
     return dist;
   }
 
-  updateBrick(pos: IntPoint, value: UInt64): void {
+  updateBrick(pos: IntPoint, value: UInt64, shouldUpdate: Bool): void {
     for (let i = 0; i < MAX_BRICKS; i++) {
       this.bricks.bricks[i].value = Provable.if(
-        pos.equals(this.bricks.bricks[i].pos),
+        pos.equals(this.bricks.bricks[i].pos).and(shouldUpdate),
         value,
         this.bricks.bricks[i].value,
       );
     }
+  }
+
+  // Returns new newTime and prevPosition
+  applyCollision(
+    currentTime: UInt64,
+    collision: Collision,
+  ): [UInt64, IntPoint] {
+    const collisionHappen = collision.time.lessThan(UInt64.from(PRECISION));
+
+    Provable.asProver(() => {
+      if (collisionHappen.toBoolean()) {
+        let modifier = collision.speedModifier;
+        console.log(
+          `Speed modifier: [${modifier.x.toString()}][${modifier.y.toString()}]`,
+        );
+
+        console.log(
+          `Speed before: [${this.ball.speed.x.toString()}][${this.ball.speed.y.toString()}]`,
+        );
+
+        let newSpeed = Provable.if<IntPoint>(
+          collisionHappen,
+          IntPoint,
+          this.ball.speed.mulByPoint(collision.speedModifier),
+          this.ball.speed,
+        );
+
+        console.log(
+          `Speed before: [${newSpeed.x.toString()}][${newSpeed.y.toString()}]`,
+        );
+      }
+    });
+
+    this.totalLeft = Provable.if(
+      collisionHappen,
+      this.totalLeft.sub(1),
+      this.totalLeft,
+    );
+
+    this.alreadyWon = Provable.if(
+      this.totalLeft.equals(UInt64.from(1)).and(this.winable),
+      Bool(true),
+      this.alreadyWon,
+    );
+
+    const newBrickValue = Provable.if(
+      collisionHappen,
+      collision.target.value.sub(1),
+      collision.target.value,
+    );
+
+    // Update brick health
+    this.updateBrick(collision.target.pos, newBrickValue, collisionHappen);
+
+    // Update ball speed
+    this.ball.speed = Provable.if<IntPoint>(
+      collisionHappen,
+      IntPoint,
+      this.ball.speed.mulByPoint(collision.speedModifier),
+      this.ball.speed,
+    );
+
+    // Update ball position
+    this.ball.position = Provable.if<IntPoint>(
+      collisionHappen,
+      IntPoint,
+      collision.position,
+      this.ball.position,
+    );
+
+    const moveTime = Provable.if(
+      collisionHappen,
+      Int64.from(PRECISION).sub(currentTime).sub(collision.time).magnitude,
+      UInt64.from(0),
+    );
+
+    Provable.asProver(() => {
+      if (collisionHappen.toBoolean()) {
+        console.log(`Current time: [${currentTime.toString()}]`);
+        console.log(`collision time: [${collision.time.toString()}]`);
+        console.log(`Move time: [${moveTime.toString()}]`);
+      }
+    });
+
+    this.ball.movePortion(moveTime);
+
+    return [collision.time, collision.position];
   }
 }
 export function createBricksBySeed(seed: Field): Bricks {
@@ -532,6 +693,21 @@ export function createBricksBySeed(seed: Field): Bricks {
 
   return new Bricks({ bricks });
 }
+
+const pickNearestCollision = (collisions: Collision[]): Collision => {
+  let result = collisions[0];
+  // collisions.length == NEAREST_BRICKS_NUM
+  for (let i = 1; i < NEAREST_BRICKS_NUM; i++) {
+    result = Provable.if<Collision>(
+      collisions[i].earlierThan(result),
+      Collision,
+      collisions[i],
+      result,
+    );
+  }
+
+  return result;
+};
 
 export function loadGameContext(bricks: Bricks, debug: Bool) {
   const score = UInt64.from(INITIAL_SCORE);

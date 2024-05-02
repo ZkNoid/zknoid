@@ -21,6 +21,7 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import { Int64, UInt64, Bool } from 'o1js';
 import { Ball, Cart, IBrick } from '@/lib/types';
+import { PLATFORM_WIDTH } from 'zknoid-chain-dev/dist/src/arkanoid/constants';
 
 export interface ITick {
   action: number;
@@ -509,7 +510,7 @@ export const GameView = (props: IGameViewProps) => {
     cart = {
       x: FIELD_WIDTH / 2,
       y: FIELD_HEIGHT,
-      w: 100,
+      w: PLATFORM_WIDTH,
       h: 10,
       dx: 0,
       ddx: 0,
