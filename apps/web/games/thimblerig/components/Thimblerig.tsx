@@ -223,7 +223,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
         txHash: tx.transaction!.hash().toString(),
         roomId: competition.id.toString(),
         envContext: getEnvContext(),
-      });  
+      });
     } catch {
       setThimbleGuessed(undefined);
       setPendingChoosing(false);
@@ -366,6 +366,17 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
             | 3,
         });
         setGameState(GameState.Won);
+        progress.mutate({
+          userAddress: networkStore.address!,
+          section: 'THIMBLERIG',
+          id: 1,
+          txHash: JSON.stringify({
+            value: Number(matchQueue.gameInfo.field.value.toBigInt()),
+            choice: Number(matchQueue.gameInfo.field.choice.toBigInt()),
+          }),
+          roomId: competition.id.toString(),
+          envContext: getEnvContext(),
+        });
       } else if (matchQueue.lastGameState == 'lost') {
         console.log(
           'Lost, value:',

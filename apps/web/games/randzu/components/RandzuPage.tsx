@@ -147,6 +147,15 @@ export default function RandzuPage({
       envContext: getEnvContext(),
     });
 
+    await progress.mutateAsync({
+      userAddress: networkStore.address!,
+      section: 'RANDZU',
+      id: 1,
+      txHash: tx.transaction!.hash().toString(),
+      roomId: competition.id,
+      envContext: getEnvContext(),
+    });
+
     setGameState(GameState.MatchRegistration);
   };
 
