@@ -3,10 +3,10 @@ import { Button } from '@/components/ui/games-store/shared/Button';
 import { ILobby } from '@/lib/types';
 import { motion } from 'framer-motion';
 import { usePvpLobbyStorage } from '@/lib/stores/pvpLobbyStore';
-import { useRandzuLobbiesStore } from '@/games/randzu/stores/lobbiesStore';
 import { Input } from '@/components/ui/games-store/shared/Input';
-import { randzuConfig } from '@/games/randzu/config';
 import { Popover } from '@/components/ui/games-store/shared/Popover';
+import { RuntimeModulesRecord } from '@proto-kit/module';
+import { ZkNoidGameConfig } from '@/lib/createConfig';
 
 enum PlayerStates {
   Waiting,
@@ -43,9 +43,10 @@ const PlayersListItem = ({
   );
 };
 
-export const LobbyInformation = ({
+export const LobbyInformation = <RuntimeModules extends RuntimeModulesRecord>({
   gameName,
   lobby,
+  config,
   joinLobby,
   leaveLobby,
   ready,
@@ -54,14 +55,13 @@ export const LobbyInformation = ({
 }: {
   gameName: string;
   lobby: ILobby;
+  config: ZkNoidGameConfig<RuntimeModules>;
   joinLobby: (lobbyId: number) => Promise<void>;
   leaveLobby: () => Promise<void>;
   ready: () => Promise<void>;
   currentLobbyId?: number;
   selfReady: boolean;
 }) => {
-  const lobbyStorage = useRandzuLobbiesStore();
-
   return (
     <motion.div
       className={'col-start-4 col-end-6 row-span-4 h-full w-full'}
@@ -112,11 +112,11 @@ export const LobbyInformation = ({
             </span>
           </div>
         </div>
-        {lobbyStorage.currentLobby?.id === lobby.id && (
+        {currentLobbyId === lobby.id && (
           <div className={'flex w-full max-w-[80%] flex-row gap-2 py-8'}>
             <div className={'w-full'}>
               <Input
-                value={`https://app.zknoid.io/games/${randzuConfig.id}/lobby/${lobby.id}?key=${lobby.accessKey}`}
+                value={`https://app.zknoid.io/games/${config.id}/lobby/${lobby.id}?key=${lobby.accessKey}`}
                 isReadonly={true}
                 title={'Copy invite link'}
               />
@@ -131,7 +131,7 @@ export const LobbyInformation = ({
                     }
                     onClick={() => {
                       navigator.clipboard.writeText(
-                        `https://app.zknoid.io/games/${randzuConfig.id}/lobby/${lobby.id}?key=${lobby.accessKey}`
+                        `https://app.zknoid.io/games/${config.id}/lobby/${lobby.id}?key=${lobby.accessKey}`
                       );
                     }}
                   >
