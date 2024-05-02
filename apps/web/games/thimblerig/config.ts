@@ -3,6 +3,7 @@ import { ZkNoidGameType } from '@/lib/platform/game_types';
 import { ThimblerigLogic } from 'zknoid-chain-dev';
 import Thimblerig from './components/Thimblerig';
 import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
+import ThimblerigLobby from './components/ThimblerigLobby';
 
 export const thimblerigConfig = createZkNoidGameConfig({
   id: 'thimblerig',
@@ -23,4 +24,5 @@ export const thimblerigConfig = createZkNoidGameConfig({
     ThimblerigLogic,
   },
   page: Thimblerig,
+  lobby: ThimblerigLobby,
 });

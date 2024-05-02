@@ -1,14 +1,14 @@
 import GamePage from '@/components/framework/GamePage';
-import { randzuConfig } from '@/games/randzu/config';
-import RandzuCoverSVG from '@/games/randzu/assets/game-cover.svg';
-import RandzuCoverMobileSVG from '@/games/randzu/assets/game-cover-mobile.svg';
 import { useContext, useEffect, useState } from 'react';
+import CheckersCoverSVG from '@/public/image/game-page/game-title-template.svg';
+import CheckersCoverMobileSVG from '@/public/image/game-page/game-title-mobile-template.svg';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { ClientAppChain, ProtoUInt64 } from 'zknoid-chain-dev';
 import { useNetworkStore } from '@/lib/stores/network';
 import LobbyPage from '@/components/framework/Lobby/LobbyPage';
+import { checkersConfig } from '../config';
 
-export default function RandzuLobby({
+export default function CheckersLobby({
   params,
 }: {
   params: { lobbyId: string };
@@ -17,7 +17,7 @@ export default function RandzuLobby({
   useState<boolean>(false);
 
   const client = useContext(AppChainClientContext) as ClientAppChain<
-    typeof randzuConfig.runtimeModules,
+    typeof checkersConfig.runtimeModules,
     any,
     any,
     any
@@ -29,17 +29,17 @@ export default function RandzuLobby({
 
   return (
     <GamePage
-      gameConfig={randzuConfig}
-      image={RandzuCoverSVG}
-      mobileImage={RandzuCoverMobileSVG}
+      gameConfig={checkersConfig}
+      image={CheckersCoverSVG}
+      mobileImage={CheckersCoverMobileSVG}
       defaultPage={'Lobby list'}
     >
       {networkStore.walletConnected && networkStore.address && (
         <LobbyPage
           lobbyId={params.lobbyId}
-          query={client.query.runtime.RandzuLogic}
-          contractName={'RandzuLogic'}
-          config={randzuConfig}
+          query={client.query.runtime.CheckersLogic}
+          contractName={'CheckersLogic'}
+          config={checkersConfig}
         />
       )}
     </GamePage>
