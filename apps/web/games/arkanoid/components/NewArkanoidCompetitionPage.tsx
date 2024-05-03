@@ -22,7 +22,7 @@ import { Textarea } from '@/components/ui/games-store/shared/Textarea';
 import { Button } from '@/components/ui/games-store/shared/Button';
 import { Checkbox } from '@/components/ui/games-store/shared/Checkbox';
 import { Popover } from '@/components/ui/games-store/shared/Popover';
-import { DatePicker } from '@/components/ui/games-store/shared/DatePicker';
+import { DatePicker } from '@/components/ui/games-store/shared/DatePicker/DatePicker';
 import { AnimatePresence, motion } from 'framer-motion';
 import znakesImg from '@/public/image/tokens/znakes.svg';
 import { clsx } from 'clsx';
