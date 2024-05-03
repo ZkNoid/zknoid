@@ -94,16 +94,15 @@ export const Input = ({
               'cursor-default': isReadonly,
             }
           )}
-          value={value}
+          value={value || ''}
           onChange={(event) => {
-            setValue &&
-              setValue(
-                type === 'number'
+            setValue?.(
+              type === 'number'
+                ? parseInt(event.target.value)
                   ? parseInt(event.target.value)
-                    ? parseInt(event.target.value)
-                    : value
-                  : event.target.value
-              );
+                  : 0
+                : event.target.value
+            );
           }}
           readOnly={isReadonly}
           required={isRequired}
