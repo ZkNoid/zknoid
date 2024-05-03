@@ -171,8 +171,8 @@ export default function NewArkanoidCompetitionPage() {
           // description,
           seed,
           preregistrationEnabled,
-          new Date(preregistrationFrom).getTime(), // preregStartTime
-          new Date(preregistrationTo).getTime(), // preregEndTime
+          new Date(preregistrationFrom).getTime() || 0, // preregStartTime
+          new Date(preregistrationTo).getTime() || 0, // preregEndTime
           new Date(competitionFrom).getTime(), // competitionStartTime
           new Date(competitionTo).getTime(), // competitionEndTime
           funding,
@@ -242,7 +242,9 @@ export default function NewArkanoidCompetitionPage() {
       : setIsDescriptionInvalid(false);
     !competitionFrom ||
     !competitionTo ||
-    preregistrationEnabled && new Date(competitionFrom).getTime() <= new Date(preregistrationTo).getTime()
+    (preregistrationEnabled &&
+      new Date(competitionFrom).getTime() <=
+        new Date(preregistrationTo).getTime())
       ? setIsCompetitionDateInvalid(true)
       : setIsCompetitionDateInvalid(false);
     !preregistrationFrom || !preregistrationTo
