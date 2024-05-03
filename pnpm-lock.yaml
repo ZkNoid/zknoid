@@ -12,7 +12,7 @@ patchedDependencies:
     hash: auie6ekje4wsljs5hlreuogu7y
     path: patches/@proto-kit__sdk@0.1.1-develop.651.patch
   '@proto-kit/sequencer@0.1.1-develop.651':
-    hash: di5nwuuhyuzosxrck56odyez7u
+    hash: njtnjj274bsocqsjgohfejtszy
     path: patches/@proto-kit__sequencer@0.1.1-develop.651.patch
 
 importers:
@@ -51,7 +51,7 @@ importers:
         version: 0.1.1-develop.651(patch_hash=auie6ekje4wsljs5hlreuogu7y)(@proto-kit/api@0.1.1-develop.651)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/library@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(@proto-kit/sequencer@0.1.1-develop.651)(o1js@packages+chain+node_modules+o1js)(reflect-metadata@0.2.2)(tsyringe@4.8.0)
       '@proto-kit/sequencer':
         specifier: 0.1.1-develop.651
-        version: 0.1.1-develop.651(patch_hash=di5nwuuhyuzosxrck56odyez7u)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@packages+chain+node_modules+o1js)(tsyringe@4.8.0)
+        version: 0.1.1-develop.651(patch_hash=njtnjj274bsocqsjgohfejtszy)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@packages+chain+node_modules+o1js)(tsyringe@4.8.0)
       '@radix-ui/react-label':
         specifier: ^2.0.2
         version: 2.0.2(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@18.2.0)(react@18.2.0)
@@ -268,7 +268,7 @@ importers:
         version: 0.1.1-develop.651(patch_hash=auie6ekje4wsljs5hlreuogu7y)(@proto-kit/api@0.1.1-develop.651)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/library@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(@proto-kit/sequencer@0.1.1-develop.651)(graphql@16.6.0)(o1js@0.13.1)(reflect-metadata@0.1.14)(tsyringe@4.8.0)
       '@proto-kit/sequencer':
         specifier: ^0.1.1-develop.651
-        version: 0.1.1-develop.651(patch_hash=di5nwuuhyuzosxrck56odyez7u)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@0.13.1)(tsyringe@4.8.0)
+        version: 0.1.1-develop.651(patch_hash=njtnjj274bsocqsjgohfejtszy)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@0.13.1)(tsyringe@4.8.0)
       concurrently:
         specifier: ^8.2.2
         version: 8.2.2
@@ -1934,7 +1934,7 @@ packages:
       '@proto-kit/common': 0.1.1-develop.651(o1js@0.13.1)(tsyringe@4.8.0)
       '@proto-kit/module': 0.1.1-develop.651(@proto-kit/common@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@0.13.1)(tsyringe@4.8.0)
       '@proto-kit/protocol': 0.1.1-develop.651(@proto-kit/common@0.1.1-develop.651)(o1js@0.13.1)(ts-pattern@4.3.0)(tsyringe@4.8.0)
-      '@proto-kit/sequencer': 0.1.1-develop.651(patch_hash=di5nwuuhyuzosxrck56odyez7u)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@0.13.1)(tsyringe@4.8.0)
+      '@proto-kit/sequencer': 0.1.1-develop.651(patch_hash=njtnjj274bsocqsjgohfejtszy)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@0.13.1)(tsyringe@4.8.0)
       '@types/humanize-duration': 3.27.3
       class-validator: 0.14.0
       graphql: 16.6.0
@@ -1966,7 +1966,7 @@ packages:
       '@proto-kit/common': 0.1.1-develop.651(o1js@packages+chain+node_modules+o1js)(tsyringe@4.8.0)
       '@proto-kit/module': 0.1.1-develop.651(@proto-kit/common@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@packages+chain+node_modules+o1js)(tsyringe@4.8.0)
       '@proto-kit/protocol': 0.1.1-develop.651(@proto-kit/common@0.1.1-develop.651)(o1js@packages+chain+node_modules+o1js)(ts-pattern@4.3.0)(tsyringe@4.8.0)
-      '@proto-kit/sequencer': 0.1.1-develop.651(patch_hash=di5nwuuhyuzosxrck56odyez7u)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@packages+chain+node_modules+o1js)(tsyringe@4.8.0)
+      '@proto-kit/sequencer': 0.1.1-develop.651(patch_hash=njtnjj274bsocqsjgohfejtszy)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@packages+chain+node_modules+o1js)(tsyringe@4.8.0)
       '@types/humanize-duration': 3.27.3
       class-validator: 0.14.0
       graphql: 16.6.0
@@ -2004,7 +2004,7 @@ packages:
       '@proto-kit/module': 0.1.1-develop.651(@proto-kit/common@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@0.13.1)(tsyringe@4.8.0)
       '@proto-kit/protocol': 0.1.1-develop.651(@proto-kit/common@0.1.1-develop.651)(o1js@0.13.1)(ts-pattern@4.3.0)(tsyringe@4.8.0)
       '@proto-kit/sdk': 0.1.1-develop.651(patch_hash=auie6ekje4wsljs5hlreuogu7y)(@proto-kit/api@0.1.1-develop.651)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/library@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(@proto-kit/sequencer@0.1.1-develop.651)(graphql@16.6.0)(o1js@0.13.1)(reflect-metadata@0.1.14)(tsyringe@4.8.0)
-      '@proto-kit/sequencer': 0.1.1-develop.651(patch_hash=di5nwuuhyuzosxrck56odyez7u)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@0.13.1)(tsyringe@4.8.0)
+      '@proto-kit/sequencer': 0.1.1-develop.651(patch_hash=njtnjj274bsocqsjgohfejtszy)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@0.13.1)(tsyringe@4.8.0)
       '@types/yargs': 17.0.31
       figlet: 1.7.0
       ink: 4.4.1(react@18.2.0)
@@ -2061,7 +2061,7 @@ packages:
       '@proto-kit/common': 0.1.1-develop.651(o1js@0.13.1)(tsyringe@4.8.0)
       '@proto-kit/module': 0.1.1-develop.651(@proto-kit/common@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@0.13.1)(tsyringe@4.8.0)
       '@proto-kit/protocol': 0.1.1-develop.651(@proto-kit/common@0.1.1-develop.651)(o1js@0.13.1)(ts-pattern@4.3.0)(tsyringe@4.8.0)
-      '@proto-kit/sequencer': 0.1.1-develop.651(patch_hash=di5nwuuhyuzosxrck56odyez7u)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@0.13.1)(tsyringe@4.8.0)
+      '@proto-kit/sequencer': 0.1.1-develop.651(patch_hash=njtnjj274bsocqsjgohfejtszy)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@0.13.1)(tsyringe@4.8.0)
       bigint-isqrt: 0.3.2
       lodash: 4.17.21
       loglevel: 1.9.1
@@ -2083,7 +2083,7 @@ packages:
       '@proto-kit/common': 0.1.1-develop.651(o1js@packages+chain+node_modules+o1js)(tsyringe@4.8.0)
       '@proto-kit/module': 0.1.1-develop.651(@proto-kit/common@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@packages+chain+node_modules+o1js)(tsyringe@4.8.0)
       '@proto-kit/protocol': 0.1.1-develop.651(@proto-kit/common@0.1.1-develop.651)(o1js@packages+chain+node_modules+o1js)(ts-pattern@4.3.0)(tsyringe@4.8.0)
-      '@proto-kit/sequencer': 0.1.1-develop.651(patch_hash=di5nwuuhyuzosxrck56odyez7u)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@packages+chain+node_modules+o1js)(tsyringe@4.8.0)
+      '@proto-kit/sequencer': 0.1.1-develop.651(patch_hash=njtnjj274bsocqsjgohfejtszy)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@packages+chain+node_modules+o1js)(tsyringe@4.8.0)
       bigint-isqrt: 0.3.2
       lodash: 4.17.21
       loglevel: 1.9.1
@@ -2180,7 +2180,7 @@ packages:
       '@proto-kit/library': 0.1.1-develop.651(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(@proto-kit/sequencer@0.1.1-develop.651)(o1js@0.13.1)(tsyringe@4.8.0)
       '@proto-kit/module': 0.1.1-develop.651(@proto-kit/common@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@0.13.1)(tsyringe@4.8.0)
       '@proto-kit/protocol': 0.1.1-develop.651(@proto-kit/common@0.1.1-develop.651)(o1js@0.13.1)(ts-pattern@4.3.0)(tsyringe@4.8.0)
-      '@proto-kit/sequencer': 0.1.1-develop.651(patch_hash=di5nwuuhyuzosxrck56odyez7u)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@0.13.1)(tsyringe@4.8.0)
+      '@proto-kit/sequencer': 0.1.1-develop.651(patch_hash=njtnjj274bsocqsjgohfejtszy)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@0.13.1)(tsyringe@4.8.0)
       '@urql/core': 4.2.2(graphql@16.6.0)
       comlink: 4.4.1
       lodash: 4.17.21
@@ -2211,7 +2211,7 @@ packages:
       '@proto-kit/library': 0.1.1-develop.651(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(@proto-kit/sequencer@0.1.1-develop.651)(o1js@packages+chain+node_modules+o1js)(tsyringe@4.8.0)
       '@proto-kit/module': 0.1.1-develop.651(@proto-kit/common@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@packages+chain+node_modules+o1js)(tsyringe@4.8.0)
       '@proto-kit/protocol': 0.1.1-develop.651(@proto-kit/common@0.1.1-develop.651)(o1js@packages+chain+node_modules+o1js)(ts-pattern@4.3.0)(tsyringe@4.8.0)
-      '@proto-kit/sequencer': 0.1.1-develop.651(patch_hash=di5nwuuhyuzosxrck56odyez7u)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@packages+chain+node_modules+o1js)(tsyringe@4.8.0)
+      '@proto-kit/sequencer': 0.1.1-develop.651(patch_hash=njtnjj274bsocqsjgohfejtszy)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@packages+chain+node_modules+o1js)(tsyringe@4.8.0)
       '@urql/core': 4.3.0
       comlink: 4.4.1
       lodash: 4.17.21
@@ -2224,7 +2224,7 @@ packages:
     dev: false
     patched: true
 
-  /@proto-kit/sequencer@0.1.1-develop.651(patch_hash=di5nwuuhyuzosxrck56odyez7u)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@0.13.1)(tsyringe@4.8.0):
+  /@proto-kit/sequencer@0.1.1-develop.651(patch_hash=njtnjj274bsocqsjgohfejtszy)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@0.13.1)(tsyringe@4.8.0):
     resolution: {integrity: sha512-q+T7EoDZ+tf3wPTtPrURrm2Ly7XYR8XFj1MX5MJvVXA8wqRZWTjeoe/DoVzVTEkkqekP0qwFLtalB+9/g/rSNw==}
     peerDependencies:
       '@proto-kit/common': '*'
@@ -2248,7 +2248,7 @@ packages:
     dev: false
     patched: true
 
-  /@proto-kit/sequencer@0.1.1-develop.651(patch_hash=di5nwuuhyuzosxrck56odyez7u)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@packages+chain+node_modules+o1js)(tsyringe@4.8.0):
+  /@proto-kit/sequencer@0.1.1-develop.651(patch_hash=njtnjj274bsocqsjgohfejtszy)(@proto-kit/common@0.1.1-develop.651)(@proto-kit/module@0.1.1-develop.651)(@proto-kit/protocol@0.1.1-develop.651)(o1js@packages+chain+node_modules+o1js)(tsyringe@4.8.0):
     resolution: {integrity: sha512-q+T7EoDZ+tf3wPTtPrURrm2Ly7XYR8XFj1MX5MJvVXA8wqRZWTjeoe/DoVzVTEkkqekP0qwFLtalB+9/g/rSNw==}
     peerDependencies:
       '@proto-kit/common': '*'

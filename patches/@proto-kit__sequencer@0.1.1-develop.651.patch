@@ -110,3 +110,71 @@ index 2b34494e8a87d6ca972ff8900f650c66920af4bc..1c6c1ffb74d37b1acd285bab6d32774e
 +        PrivateMempool])
  ], TransactionExecutionService);
  export { TransactionExecutionService };
+diff --git a/dist/storage/inmemory/InMemoryTransactionStorage.js b/dist/storage/inmemory/InMemoryTransactionStorage.js
+index 1ce6625eca0bb0924949c05a6b84ba1608805373..c7e7339d7b21a744d631d0385593fa6cb42e8e2b 100644
+--- a/dist/storage/inmemory/InMemoryTransactionStorage.js
++++ b/dist/storage/inmemory/InMemoryTransactionStorage.js
+@@ -11,8 +11,8 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
+     return function (target, key) { decorator(target, key, paramIndex); }
+ };
+ import { inject, injectable } from "tsyringe";
+-import { InMemoryBatchStorage } from "./InMemoryBatchStorage";
+ import { Field } from "o1js";
++import { InMemoryBatchStorage } from "./InMemoryBatchStorage";
+ let InMemoryTransactionStorage = class InMemoryTransactionStorage {
+     constructor(blockStorage, batchStorage) {
+         this.blockStorage = blockStorage;
+@@ -23,6 +23,7 @@ let InMemoryTransactionStorage = class InMemoryTransactionStorage {
+     async getPendingUserTransactions() {
+         const nextHeight = await this.blockStorage.getCurrentBlockHeight();
+         for (let height = this.latestScannedBlock + 1; height < nextHeight; height++) {
++            // eslint-disable-next-line no-await-in-loop
+             const block = await this.blockStorage.getBlockAt(height);
+             if (block !== undefined) {
+                 const hashes = block.transactions.map((tx) => tx.tx.hash().toString());
+@@ -39,9 +40,18 @@ let InMemoryTransactionStorage = class InMemoryTransactionStorage {
+         }
+         return notInQueue;
+     }
++    async removeUserTransaction(hash) {
++        const index = this.queue.findIndex((tx) => tx.hash().toString() === hash);
++        if (index > -1) {
++            this.queue = this.queue.splice(index, 1);
++            return true;
++        }
++        return false;
++    }
+     async findBatch(block) {
+         const tipHeight = await this.batchStorage.getCurrentBlockHeight();
+         for (let height = tipHeight - 1; height >= 0; height--) {
++            // eslint-disable-next-line no-await-in-loop
+             const batch = await this.batchStorage.getBlockAt(height);
+             if (batch === undefined) {
+                 return undefined;
+@@ -50,20 +60,23 @@ let InMemoryTransactionStorage = class InMemoryTransactionStorage {
+                 return height;
+             }
+         }
++        return undefined;
+     }
+     async findTransaction(hash) {
+         const tipHeight = await this.blockStorage.getCurrentBlockHeight();
+         const hashField = Field(hash);
+         for (let height = tipHeight - 1; height >= 0; height--) {
++            // eslint-disable-next-line no-await-in-loop
+             const block = await this.blockStorage.getBlockAt(height);
+             if (block === undefined) {
+                 return undefined;
+             }
+-            const tx = block.transactions.find((tx) => tx.tx.hash().equals(hashField).toBoolean());
+-            if (tx !== undefined) {
++            const txResult = block.transactions.find((tx) => tx.tx.hash().equals(hashField).toBoolean());
++            if (txResult !== undefined) {
++                // eslint-disable-next-line no-await-in-loop
+                 const batch = await this.findBatch(block.hash.toString());
+                 return {
+-                    transaction: tx.tx,
++                    transaction: txResult.tx,
+                     block: block.transactionsHash.toString(),
+                     batch,
+                 };
