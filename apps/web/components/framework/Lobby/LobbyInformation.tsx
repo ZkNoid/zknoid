@@ -88,9 +88,32 @@ export const LobbyInformation = <RuntimeModules extends RuntimeModulesRecord>({
         }
       >
         <div className={'flex flex-col gap-2'}>
-          <span className={'text-headline-3 uppercase text-left-accent'}>
-            {lobby.name}
-          </span>
+          <div className={'flex w-full flex-row justify-between'}>
+            <span className={'text-headline-3 uppercase text-left-accent'}>
+              {lobby.name}
+            </span>
+            {lobby.privateLobby && (
+              <div className={'flex flex-row items-center gap-2'}>
+                <svg
+                  width="22"
+                  height="19"
+                  viewBox="0 0 22 19"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M19.8 12.5V11C19.8 9.6 18.4 8.5 17 8.5C15.6 8.5 14.2 9.6 14.2 11V12.5C13.6 12.5 13 13.1 13 13.7V17.2C13 17.9 13.6 18.5 14.2 18.5H19.7C20.4 18.5 21 17.9 21 17.3V13.8C21 13.1 20.4 12.5 19.8 12.5ZM18.5 12.5H15.5V11C15.5 10.2 16.2 9.7 17 9.7C17.8 9.7 18.5 10.2 18.5 11V12.5ZM14 7.5C13.1 8.2 12.5 9.1 12.3 10.2C11.9 10.4 11.5 10.5 11 10.5C9.3 10.5 8 9.2 8 7.5C8 5.8 9.3 4.5 11 4.5C12.7 4.5 14 5.8 14 7.5ZM11 15C6 15 1.7 11.9 0 7.5C1.7 3.1 6 0 11 0C16 0 20.3 3.1 22 7.5C21.8 8 21.5 8.5 21.3 9C20.5 7.5 18.8 6.5 17 6.5C16.6 6.5 16.3 6.6 15.9 6.6C15.5 4.3 13.5 2.5 11 2.5C8.2 2.5 6 4.7 6 7.5C6 10.3 8.2 12.5 11 12.5H11.3C11.1 12.9 11 13.3 11 13.7V15Z"
+                    fill="#F9F8F4"
+                  />
+                </svg>
+                <span
+                  className={'font-plexsans text-[16px]/[16px] font-medium'}
+                >
+                  Private lobby
+                </span>
+              </div>
+            )}
+          </div>
           {/*{lobbyStorage.currentLobby?.id === lobby.id && (*/}
           {/*  <span className={'py-2 font-plexsans text-[16px]/[16px]'}>*/}
           {/*    Your lobby is create correctly! Now you can share it with you*/}
