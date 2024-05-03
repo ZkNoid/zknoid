@@ -95,6 +95,7 @@ export const useObserveArkanoidLeaderboard = (
   const leaderboard = useArkanoidLeaderboardStore();
 
   useEffect(() => {
+    console.log('Block id', chain.block?.height);
     if (!client) {
       throw Error('Client is not set in context');
     }

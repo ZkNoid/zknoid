@@ -43,6 +43,7 @@ import { FullscreenWrap } from '@/components/framework/GameWidget/FullscreenWrap
 import { Button } from '@/components/ui/games-store/shared/Button';
 import { Modal } from '@/components/ui/games-store/shared/Modal';
 import Link from 'next/link';
+import { type PendingTransaction } from '@proto-kit/sequencer';
 
 enum GameState {
   NotStarted,
@@ -149,7 +150,7 @@ export default function ArkanoidPage({
     let creator =
       await client.query.runtime.ArkanoidGameHub.competitionCreator.get(
         UInt64.from(competitionId)
-      );
+      ) as PublicKey;
 
     let competition = fromContractCompetition(
       competitionId,
@@ -215,7 +216,9 @@ export default function ArkanoidPage({
           section: 'ARKANOID',
           roomId: competition?.id.toString(),
           id: 0,
-          txHash: tx.transaction!.hash().toString(),
+          txHash: JSON.stringify(
+            (tx.transaction! as PendingTransaction).toJSON()
+          ),
           envContext: getEnvContext(),
         });
       }
@@ -226,7 +229,9 @@ export default function ArkanoidPage({
           section: 'ARKANOID',
           roomId: competition?.id.toString(),
           id: 2,
-          txHash: tx.transaction!.hash().toString(),
+          txHash: JSON.stringify(
+            (tx.transaction! as PendingTransaction).toJSON()
+          ),
           envContext: getEnvContext(),
         });
       }
@@ -237,7 +242,9 @@ export default function ArkanoidPage({
           section: 'ARKANOID',
           roomId: competition?.id.toString(),
           id: 3,
-          txHash: tx.transaction!.hash().toString(),
+          txHash: JSON.stringify(
+            (tx.transaction! as PendingTransaction).toJSON()
+          ),
           envContext: getEnvContext(),
         });
       }
@@ -248,7 +255,9 @@ export default function ArkanoidPage({
           section: 'ARKANOID',
           roomId: competition?.id.toString(),
           id: 4,
-          txHash: tx.transaction!.hash().toString(),
+          txHash: JSON.stringify(
+            (tx.transaction! as PendingTransaction).toJSON()
+          ),
           envContext: getEnvContext(),
         });
       }

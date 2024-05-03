@@ -6,13 +6,16 @@ import Link from 'next/link';
 import { ICompetition } from '@/lib/types';
 import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
 import { formatUnits } from '@/lib/unit';
+import { Button } from '@/components/ui/games-store/shared/Button';
 
 export const CompetitionBlock = ({
   competition,
   variant,
+  register,
 }: {
   competition: ICompetition;
   variant: 1 | 2 | 3;
+  register: (id: number) => Promise<void>;
 }) => {
   const switchStore = useSwitchWidgetStorage();
 
@@ -134,15 +137,19 @@ export const CompetitionBlock = ({
           </span>
         </div>
       </div>
-      <Link
-        className={
-          'w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
-        }
-        href={`/games/${competition.game.id}/${competition.id}`}
-        onClick={() => switchStore.setCompetitionId(competition.id)}
-      >
-        Play
-      </Link>
+      {competition.preReg && !competition.registered ? (
+        <Button label={'Register'} onClick={() => register(competition.id)} />
+      ) : (
+        <Link
+          className={
+            'w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-headline-2 font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
+          }
+          href={`/games/${competition.game.id}/${competition.id}`}
+          onClick={() => switchStore.setCompetitionId(competition.id)}
+        >
+          Play
+        </Link>
+      )}
     </div>
   );
 };
