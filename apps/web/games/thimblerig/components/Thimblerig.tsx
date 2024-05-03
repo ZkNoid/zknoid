@@ -59,6 +59,7 @@ import { ICompetitionPVP } from '@/lib/types';
 import { GameWrap } from '@/components/framework/GamePage/GameWrap';
 import { Modal } from '@/components/ui/games-store/shared/Modal';
 import { RateGame } from '@/components/framework/GameWidget/RateGame';
+import { type PendingTransaction } from '@proto-kit/sequencer';
 
 enum GameState {
   WalletNotInstalled,
@@ -222,7 +223,9 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
         userAddress: networkStore.address!,
         section: 'THIMBLERIG',
         id: 0,
-        txHash: tx.transaction!.hash().toString(),
+        txHash: JSON.stringify(
+          (tx.transaction! as PendingTransaction).toJSON()
+        ),
         roomId: competition.id.toString(),
         envContext: getEnvContext(),
       });
@@ -251,7 +254,9 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       userAddress: networkStore.address!,
       section: 'THIMBLERIG',
       id: 0,
-      txHash: tx.transaction!.hash().toString(),
+      txHash: JSON.stringify(
+        (tx.transaction! as PendingTransaction).toJSON()
+      ),
       roomId: competition.id.toString(),
       envContext: getEnvContext(),
     });
