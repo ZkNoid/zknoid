@@ -26,6 +26,7 @@ import {
 } from '@/lib/stores/lobbiesStore';
 import { ZkNoidGameConfig } from '@/lib/createConfig';
 import { RuntimeModulesRecord } from '@proto-kit/module';
+import { AlreadyInLobbyModal } from '@/components/framework/Lobby/AlreadyInLobbyModal';
 
 export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   lobbyId,
@@ -57,6 +58,8 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   );
   const [isCreationMode, setIsCreationMode] = useState<boolean>(false);
   const [isLobbyNotFoundModalOpen, setIsLobbyNotFoundModalOpen] =
+    useState<boolean>(false);
+  const [isAlreadyInLobbyModal, setIsAlreadyInLobbyModal] =
     useState<boolean>(false);
 
   const client = useContext(AppChainClientContext) as ClientAppChain<
@@ -150,6 +153,11 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   };
 
   const joinLobby = async (lobbyId: number) => {
+    if (lobbiesStore.currentLobby) {
+      setIsAlreadyInLobbyModal(true);
+      return;
+    }
+
     const lobbyManager = await client.runtime.resolve(params.contractName);
 
     const tx = await client.transaction(
@@ -192,6 +200,8 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
 
     await tx.sign();
     await tx.send();
+
+    if (isAlreadyInLobbyModal) setIsAlreadyInLobbyModal(false);
   };
 
   const register = async (id: number) => {
@@ -356,6 +366,11 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
           )}
         </AnimatePresence>
         <LobbyList lobbys={lobbiesStore.lobbies} />
+        <AlreadyInLobbyModal
+          isOpen={isAlreadyInLobbyModal}
+          setIsOpen={setIsAlreadyInLobbyModal}
+          leaveLobby={leaveLobby}
+        />
       </LobbyWrap>
     </>
   );
