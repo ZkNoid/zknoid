@@ -250,6 +250,9 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       }
     );
 
+    await tx.sign();
+    await tx.send();
+
     await progress.mutateAsync({
       userAddress: networkStore.address!,
       section: 'THIMBLERIG',
@@ -258,9 +261,6 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       roomId: competition.id.toString(),
       envContext: getEnvContext(),
     });
-
-    await tx.sign();
-    await tx.send();
   };
 
   const proveOpponentTimeout = async () => {
