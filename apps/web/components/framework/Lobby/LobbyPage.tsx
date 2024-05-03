@@ -128,6 +128,9 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
 
   useEffect(() => {
     setCurrentLobby(lobbiesStore.currentLobby);
+    if (lobbiesStore.currentLobby?.id) {
+      pvpLobbyStorage.setLastLobbyId(lobbiesStore.currentLobby.id);
+    }
   }, [lobbiesStore.currentLobby?.id]);
 
   const createNewLobby = async (
@@ -333,9 +336,10 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
                 ready={ready}
                 currentLobbyId={lobbiesStore.currentLobby?.id}
                 selfReady={lobbiesStore.selfReady}
-                backToJoinedLobby={() =>
-                  setCurrentLobby(lobbiesStore.currentLobby)
-                }
+                backToJoinedLobby={() => {
+                  setCurrentLobby(lobbiesStore.currentLobby);
+                  pvpLobbyStorage.setLastLobbyId(lobbiesStore.currentLobby!.id);
+                }}
               />
               <motion.span
                 className={
