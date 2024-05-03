@@ -24,7 +24,9 @@ export const AlreadyInLobbyModal = ({
         >
           You should leave current lobby first
         </span>
-        <span className={'max-w-[80%] font-plexsans text-[16px]/[16px]'}>
+        <span
+          className={'max-w-[80%] text-center font-plexsans text-[16px]/[16px]'}
+        >
           If you choose &quot;Leave lobby&quot; your automatically disconnect.
           Are you sure you want to disconnect from current lobby?
         </span>
