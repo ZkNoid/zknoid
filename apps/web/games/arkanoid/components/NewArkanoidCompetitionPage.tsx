@@ -49,13 +49,6 @@ interface IContractBrick {
   value: UInt64;
 }
 
-const getDate = (daysOffset: number) => {
-  let curr = new Date();
-  curr.setDate(curr.getDate() + 3);
-  let date = curr.toISOString().substring(0, 10);
-  return date;
-};
-
 export default function NewArkanoidCompetitionPage() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -65,11 +58,11 @@ export default function NewArkanoidCompetitionPage() {
     CanvasRenderingContext2D | null | undefined
   >(null);
   const [preregistrationEnabled, setPreregistrationEnabled] = useState(true);
-  const [preregistrationFrom, setPreregistrationFrom] = useState(getDate(0));
-  const [preregistrationTo, setPreregistrationTo] = useState(getDate(1));
+  const [preregistrationFrom, setPreregistrationFrom] = useState('');
+  const [preregistrationTo, setPreregistrationTo] = useState('');
 
-  const [competitionFrom, setCompetitionFrom] = useState(getDate(2));
-  const [competitionTo, setCompetitionTo] = useState(getDate(5));
+  const [competitionFrom, setCompetitionFrom] = useState('');
+  const [competitionTo, setCompetitionTo] = useState('');
   const [funding, setFunding] = useState(0);
   const [participationFee, setParticipationFee] = useState(0);
 
