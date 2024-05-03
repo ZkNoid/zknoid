@@ -6,10 +6,12 @@ import { getEnvContext } from '@/lib/envContext';
 
 export const RateGame = ({
   gameId,
-  setIsVisible,
+  onClick,
+  isModal = false,
 }: {
   gameId: string;
-  setIsVisible: (isVisible: boolean) => void;
+  onClick: () => void;
+  isModal?: boolean;
 }) => {
   const [stars, setStars] = useState<number>(0);
   const [feedback, setFeedback] = useState<string>('');
@@ -36,15 +38,16 @@ export const RateGame = ({
   return (
     <div className={'flex h-full w-full items-center justify-center px-[10%]'}>
       <div
-        className={
-          'relative max-w-[600px] rounded-2xl border border-left-accent bg-[#252525] p-4'
-        }
+        className={clsx(
+          'relative max-w-[600px] rounded-2xl border-left-accent p-4',
+          { 'border bg-[#252525]': !isModal }
+        )}
       >
         <div
           className={
             'absolute right-5 top-5 h-[40px] w-[40px] cursor-pointer hover:opacity-80'
           }
-          onClick={() => setIsVisible(false)}
+          onClick={onClick}
         >
           <div
             className={
@@ -93,7 +96,10 @@ export const RateGame = ({
           </div>
           <div className={'rounded-[5px] border p-2'}>
             <textarea
-              className={'w-full appearance-none bg-[#252525] outline-none'}
+              className={clsx('w-full appearance-none outline-none', {
+                'bg-[#252525]': !isModal,
+                'bg-bg-dark': isModal,
+              })}
               placeholder={'Enter you feedback here...'}
               onChange={(event) => setFeedback(event.target.value)}
             />
@@ -106,7 +112,10 @@ export const RateGame = ({
                 }
               )}
               disabled={feedback.length <= 0}
-              onClick={sendFeedback}
+              onClick={() => {
+                sendFeedback();
+                onClick();
+              }}
             >
               Send feedback
             </button>

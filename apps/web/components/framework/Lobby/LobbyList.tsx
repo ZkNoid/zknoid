@@ -3,11 +3,12 @@ import { useEffect, useRef, useState } from 'react';
 import { Popover } from '@/components/ui/games-store/shared/Popover';
 import { ILobby } from '@/lib/types';
 import { LobbyItem } from '@/components/framework/Lobby/LobbyItem';
+import { LOBBYS_SORT_METHODS, LobbysSortBy } from '@/constants/sortBy';
 
 export const LobbyList = ({ lobbys }: { lobbys: ILobby[] }) => {
   const PAGINATION_LIMIT = 6;
 
-  const [sortBy, setSortBy] = useState<string>('From high to low');
+  const [sortBy, setSortBy] = useState<LobbysSortBy>(LobbysSortBy.HighFunds);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const lobbyListRef = useRef<HTMLDivElement>(null);
@@ -31,6 +32,28 @@ export const LobbyList = ({ lobbys }: { lobbys: ILobby[] }) => {
       refObj?.removeEventListener('scroll', scrollHandler);
     };
   });
+
+  const sortByFilter = (a: ILobby, b: ILobby): number => {
+    switch (sortBy) {
+      case LobbysSortBy.HighFees:
+        return Number(a.fee - b.fee);
+
+      case LobbysSortBy.LowFees:
+        return Number(b.fee - a.fee);
+
+      case LobbysSortBy.HighFunds:
+        return Number(a.reward - b.reward);
+
+      case LobbysSortBy.LowFunds:
+        return Number(b.reward - a.reward);
+
+      case LobbysSortBy.MorePlayers:
+        return Number(a.players - b.players);
+
+      case LobbysSortBy.LessPlayers:
+        return Number(b.players - a.players);
+    }
+  };
 
   return (
     <div className={'col-start-1 col-end-4 row-start-3 flex h-full flex-col'}>
@@ -83,7 +106,7 @@ export const LobbyList = ({ lobbys }: { lobbys: ILobby[] }) => {
           </Popover>
         </div>
         <SortByFilter
-          sortMethods={['From high to low', 'From low to high']}
+          sortMethods={LOBBYS_SORT_METHODS}
           sortBy={sortBy}
           setSortBy={setSortBy}
         />
@@ -93,21 +116,23 @@ export const LobbyList = ({ lobbys }: { lobbys: ILobby[] }) => {
         ref={lobbyListRef}
       >
         {renderLobbys.length >= 1 ? (
-          renderLobbys.map((item, index) => (
-            <LobbyItem
-              key={index}
-              id={item.id}
-              active={item.active}
-              name={item.name}
-              reward={item.reward}
-              fee={item.fee}
-              maxPlayers={item.maxPlayers}
-              players={item.players}
-              currency={item.currency}
-              privateLobby={item.privateLobby}
-              accessKey={item.accessKey}
-            />
-          ))
+          renderLobbys
+            .toSorted((a, b) => sortByFilter(a, b))
+            .map((item, index) => (
+              <LobbyItem
+                key={index}
+                id={item.id}
+                active={item.active}
+                name={item.name}
+                reward={item.reward}
+                fee={item.fee}
+                maxPlayers={item.maxPlayers}
+                players={item.players}
+                currency={item.currency}
+                privateLobby={item.privateLobby}
+                accessKey={item.accessKey}
+              />
+            ))
         ) : (
           <div className="flex h-[200px] flex-col items-center justify-center border-t p-3 text-headline-2 uppercase last:border-b">
             Lobbys not found

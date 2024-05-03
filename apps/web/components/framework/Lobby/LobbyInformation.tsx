@@ -2,11 +2,15 @@ import { clsx } from 'clsx';
 import { Button } from '@/components/ui/games-store/shared/Button';
 import { ILobby } from '@/lib/types';
 import { motion } from 'framer-motion';
-import { usePvpLobbyStorage } from '@/lib/stores/pvpLobbyStore';
-import { useRandzuLobbiesStore } from '@/games/randzu/stores/lobbiesStore';
 import { Input } from '@/components/ui/games-store/shared/Input';
-import { randzuConfig } from '@/games/randzu/config';
 import { Popover } from '@/components/ui/games-store/shared/Popover';
+import { RuntimeModulesRecord } from '@proto-kit/module';
+import { ZkNoidGameConfig } from '@/lib/createConfig';
+import { useNetworkStore } from '@/lib/stores/network';
+import { useState } from 'react';
+import { Modal } from '@/components/ui/games-store/shared/Modal';
+import { formatUnits } from '@/lib/unit';
+import { walletInstalled } from '@/lib/helpers';
 
 enum PlayerStates {
   Waiting,
@@ -43,9 +47,10 @@ const PlayersListItem = ({
   );
 };
 
-export const LobbyInformation = ({
+export const LobbyInformation = <RuntimeModules extends RuntimeModulesRecord>({
   gameName,
   lobby,
+  config,
   joinLobby,
   leaveLobby,
   ready,
@@ -54,13 +59,16 @@ export const LobbyInformation = ({
 }: {
   gameName: string;
   lobby: ILobby;
+  config: ZkNoidGameConfig<RuntimeModules>;
   joinLobby: (lobbyId: number) => Promise<void>;
   leaveLobby: () => Promise<void>;
   ready: () => Promise<void>;
   currentLobbyId?: number;
   selfReady: boolean;
 }) => {
-  const lobbyStorage = useRandzuLobbiesStore();
+  const networkStore = useNetworkStore();
+  const [isConnectWalletModal, setIsConnectWalletModal] =
+    useState<boolean>(false);
 
   return (
     <motion.div
@@ -80,9 +88,32 @@ export const LobbyInformation = ({
         }
       >
         <div className={'flex flex-col gap-2'}>
-          <span className={'text-headline-3 uppercase text-left-accent'}>
-            {lobby.name}
-          </span>
+          <div className={'flex w-full flex-row justify-between'}>
+            <span className={'text-headline-3 uppercase text-left-accent'}>
+              {lobby.name}
+            </span>
+            {lobby.privateLobby && (
+              <div className={'flex flex-row items-center gap-2'}>
+                <svg
+                  width="22"
+                  height="19"
+                  viewBox="0 0 22 19"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M19.8 12.5V11C19.8 9.6 18.4 8.5 17 8.5C15.6 8.5 14.2 9.6 14.2 11V12.5C13.6 12.5 13 13.1 13 13.7V17.2C13 17.9 13.6 18.5 14.2 18.5H19.7C20.4 18.5 21 17.9 21 17.3V13.8C21 13.1 20.4 12.5 19.8 12.5ZM18.5 12.5H15.5V11C15.5 10.2 16.2 9.7 17 9.7C17.8 9.7 18.5 10.2 18.5 11V12.5ZM14 7.5C13.1 8.2 12.5 9.1 12.3 10.2C11.9 10.4 11.5 10.5 11 10.5C9.3 10.5 8 9.2 8 7.5C8 5.8 9.3 4.5 11 4.5C12.7 4.5 14 5.8 14 7.5ZM11 15C6 15 1.7 11.9 0 7.5C1.7 3.1 6 0 11 0C16 0 20.3 3.1 22 7.5C21.8 8 21.5 8.5 21.3 9C20.5 7.5 18.8 6.5 17 6.5C16.6 6.5 16.3 6.6 15.9 6.6C15.5 4.3 13.5 2.5 11 2.5C8.2 2.5 6 4.7 6 7.5C6 10.3 8.2 12.5 11 12.5H11.3C11.1 12.9 11 13.3 11 13.7V15Z"
+                    fill="#F9F8F4"
+                  />
+                </svg>
+                <span
+                  className={'font-plexsans text-[16px]/[16px] font-medium'}
+                >
+                  Private lobby
+                </span>
+              </div>
+            )}
+          </div>
           {/*{lobbyStorage.currentLobby?.id === lobby.id && (*/}
           {/*  <span className={'py-2 font-plexsans text-[16px]/[16px]'}>*/}
           {/*    Your lobby is create correctly! Now you can share it with you*/}
@@ -112,11 +143,11 @@ export const LobbyInformation = ({
             </span>
           </div>
         </div>
-        {lobbyStorage.currentLobby?.id === lobby.id && (
+        {currentLobbyId === lobby.id && (
           <div className={'flex w-full max-w-[80%] flex-row gap-2 py-8'}>
             <div className={'w-full'}>
               <Input
-                value={`https://app.zknoid.io/games/${randzuConfig.id}/lobby/${lobby.id}?key=${lobby.accessKey}`}
+                value={`https://app.zknoid.io/games/${config.id}/lobby/${lobby.id}?key=${lobby.accessKey}`}
                 isReadonly={true}
                 title={'Copy invite link'}
               />
@@ -131,7 +162,7 @@ export const LobbyInformation = ({
                     }
                     onClick={() => {
                       navigator.clipboard.writeText(
-                        `https://app.zknoid.io/games/${randzuConfig.id}/lobby/${lobby.id}?key=${lobby.accessKey}`
+                        `https://app.zknoid.io/games/${config.id}/lobby/${lobby.id}?key=${lobby.accessKey}`
                       );
                     }}
                   >
@@ -202,13 +233,83 @@ export const LobbyInformation = ({
           <Button
             label={'Connect to lobby'}
             onClick={() => {
-              joinLobby(lobby.id);
+              if (networkStore.address) joinLobby(lobby.id);
+              else setIsConnectWalletModal(true);
               // pvpLobbyStorage.setConnectedLobbyId(lobby.id);
               // pvpLobbyStorage.setConnectedLobbyKey(lobby.accessKey);
             }}
           />
         )}
       </div>
+      <Modal
+        trigger={<></>}
+        isDismissible={false}
+        isOpen={isConnectWalletModal}
+        setIsOpen={setIsConnectWalletModal}
+      >
+        <div className={'flex flex-col items-start justify-center gap-6'}>
+          <span
+            className={
+              'px-10 text-headline-2 font-medium uppercase text-middle-accent'
+            }
+          >
+            Connect wallet to play
+          </span>
+          <div className={'flex w-full flex-col gap-2'}>
+            <span className={'text-headline-2 font-medium text-foreground'}>
+              Game Information
+            </span>
+            <div
+              className={
+                'flex flex-row justify-between font-plexsans text-[16px]/[16px]'
+              }
+            >
+              <span className={'font-medium uppercase text-left-accent'}>
+                Game Name
+              </span>
+              <span className={'w-full max-w-[60%]'}>{gameName}</span>
+            </div>
+            <div
+              className={
+                'flex flex-row justify-between font-plexsans text-[16px]/[16px]'
+              }
+            >
+              <span className={'font-medium uppercase text-left-accent'}>
+                Participants fee
+              </span>
+              <span className={'w-full max-w-[60%]'}>
+                {formatUnits(lobby.fee)} {lobby.currency}
+              </span>
+            </div>
+            <div
+              className={
+                'flex flex-row justify-between font-plexsans text-[16px]/[16px]'
+              }
+            >
+              <span className={'font-medium uppercase text-left-accent'}>
+                Max Funds
+              </span>
+              <span className={'w-full max-w-[60%]'}>
+                {formatUnits(lobby.reward)} {lobby.currency}
+              </span>
+            </div>
+          </div>
+          {walletInstalled() ? (
+            <Button
+              label={'Connect wallet'}
+              onClick={networkStore.connectWallet}
+              color={'secondary'}
+            />
+          ) : (
+            <Button
+              label={'Install wallet'}
+              asLink
+              href={'https://www.aurowallet.com/'}
+              color={'secondary'}
+            />
+          )}
+        </div>
+      </Modal>
     </motion.div>
   );
 };

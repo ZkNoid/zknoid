@@ -40,6 +40,9 @@ import { getEnvContext } from '@/lib/envContext';
 import ArkanoidCoverSVG from '../assets/game-cover.svg';
 import ArkanoidMobileCoverSVG from '../assets/game-cover-mobile.svg';
 import { FullscreenWrap } from '@/components/framework/GameWidget/FullscreenWrap';
+import { Button } from '@/components/ui/games-store/shared/Button';
+import { Modal } from '@/components/ui/games-store/shared/Modal';
+import Link from 'next/link';
 
 enum GameState {
   NotStarted,
@@ -48,6 +51,7 @@ enum GameState {
   Lost,
   Replay,
   Proofing,
+  RateGame,
 }
 
 const chunkenize = (arr: any[], size: number) =>
@@ -66,10 +70,10 @@ export default function ArkanoidPage({
   const [ticksAmount, setTicksAmount] = useState<number>(0);
   const [competition, setCompetition] = useState<ICompetition>();
 
-  const [isRateGame, setIsRateGame] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [isFullscreenLoading, setIsFullscreenLoading] =
     useState<boolean>(false);
+  const [isPreRegModalOpen, setIsPreRegModalOpen] = useState<boolean>(false);
 
   const shouldUpdateLeaderboard = useRef(false);
 
@@ -151,6 +155,7 @@ export default function ArkanoidPage({
       competitionId,
       contractCompetition
     );
+    // @ts-ignore
     competition.creator = creator;
 
     let bricks = createBricksBySeed(Field.from(competition!.seed));
@@ -264,6 +269,28 @@ export default function ArkanoidPage({
   const isRestartButton =
     gameState === GameState.Lost || gameState === GameState.Won;
 
+  useEffect(() => {
+    if (
+      competition &&
+      competition.competitionDate.start.getTime() > Date.now()
+    ) {
+      setIsPreRegModalOpen(true);
+    }
+  }, [competition]);
+
+  const formatDate = (item: string | undefined) => {
+    // @ts-ignore
+    if (item.length < 2) return '0' + item;
+    else return item;
+  };
+  const formatMonth = (item: number | undefined) => {
+    // @ts-ignore
+    item += 1;
+    // @ts-ignore
+    if (item.toString().length < 2) return '0' + item;
+    else return item;
+  };
+
   return (
     <GamePage
       gameConfig={arkanoidConfig}
@@ -302,7 +329,13 @@ export default function ArkanoidPage({
                 <>
                   {gameState == GameState.Won && (
                     <Win
-                      onBtnClick={proof}
+                      onBtnClick={() => {
+                        proof()
+                          .then(() => setGameState(GameState.Proofing))
+                          .catch((error) => {
+                            console.log(error);
+                          });
+                      }}
                       title={'You won! Congratulations!'}
                       subTitle={
                         'If you want to see your name in leaderboard you have to send the poof! ;)'
@@ -310,8 +343,36 @@ export default function ArkanoidPage({
                       btnText={'Send proof'}
                     />
                   )}
+                  {gameState == GameState.Proofing && (
+                    <div
+                      className={
+                        'flex h-full w-full flex-col items-center justify-center px-[10%] py-[15%] text-headline-1 text-left-accent lg:p-0'
+                      }
+                    >
+                      <div
+                        className={
+                          'flex max-w-[60%] flex-col items-center justify-center gap-4'
+                        }
+                      >
+                        <span className={'text-center'}>
+                          Your Proof was sent - now you can see your name in
+                          Leaderboard :)
+                        </span>
+                        <Button
+                          label={'Close'}
+                          onClick={() => setGameState(GameState.RateGame)}
+                        />
+                      </div>
+                    </div>
+                  )}
                   {gameState == GameState.Lost && (
                     <Lost startGame={startGame} />
+                  )}
+                  {gameState == GameState.RateGame && (
+                    <RateGame
+                      gameId={arkanoidConfig.id}
+                      onClick={() => setGameState(GameState.NotStarted)}
+                    />
                   )}
                   {gameState === GameState.NotStarted && (
                     <div
@@ -378,6 +439,47 @@ export default function ArkanoidPage({
           competition={competition}
           isRestartBtn={isRestartButton}
         />
+        {isPreRegModalOpen && competition && (
+          <Modal trigger={<></>} isDismissible={false} defaultOpen>
+            <div
+              className={
+                'flex flex-col items-center justify-center gap-4 p-2 text-center lg:p-12'
+              }
+            >
+              <span className={'text-headline-2'}>
+                This competition is not active now
+              </span>
+              {competition.preReg ? (
+                <span className={'font-plexsans text-[14px]/[14px]'}>
+                  This competition in pre-registration mode, please wait until
+                  the competition is started
+                </span>
+              ) : (
+                <span className={'font-plexsans text-[14px]/[14px]'}>
+                  Please wait until the competition is started
+                </span>
+              )}
+              <span className={'my-2'}>
+                Competition starts:{' '}
+                {`${competition.competitionDate.start?.getFullYear().toString()}-${formatMonth(competition.competitionDate.start?.getMonth())}-${formatDate(competition.competitionDate.start?.getDate().toString())}`}
+              </span>
+              <Link
+                className={
+                  'group mt-4 flex w-full flex-row items-center justify-center gap-4 rounded-[5px] border border-bg-dark bg-middle-accent py-2 text-center text-headline-2 font-medium text-dark-buttons-text hover:border-middle-accent hover:bg-bg-dark hover:text-middle-accent'
+                }
+                href={`/games/${arkanoidConfig.id}/competitions-list`}
+              >
+                <span
+                  className={
+                    'text-[14px]/[14px] font-medium lg:text-buttons-menu'
+                  }
+                >
+                  To competitions list
+                </span>
+              </Link>
+            </div>
+          </Modal>
+        )}
       </FullscreenWrap>
       <DebugCheckbox debug={debug} setDebug={setDebug} />
     </GamePage>

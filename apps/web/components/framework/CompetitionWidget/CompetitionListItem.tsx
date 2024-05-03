@@ -49,7 +49,7 @@ export const CompetitionListItem = ({
               'flex w-full min-w-fit items-center justify-center rounded-2xl border border-left-accent bg-left-accent p-1 px-2 text-center text-dark-buttons-text'
             }
           >
-            {Number(competition.reward)} {competition.currency} REWARDS
+            {formatUnits(competition.reward)} {competition.currency} REWARDS
           </div>
           <div
             className={

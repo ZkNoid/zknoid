@@ -1,7 +1,18 @@
 'use client';
 
 import { useContext, useEffect, useState } from 'react';
-import { CAPTURE_TOP_LEFT, CAPTURE_TOP_RIGHT, GameView, MOVE_TOP_LEFT, MOVE_TOP_RIGHT, CHECKERS_FIELD_SIZE, MOVE_KING_BOTTOM_LEFT, MOVE_KING_BOTTOM_RIGHT, CAPTURE_KING_BOTTOM_LEFT, CAPTURE_KING_BOTTOM_RIGHT } from './GameView';
+import {
+  CAPTURE_TOP_LEFT,
+  CAPTURE_TOP_RIGHT,
+  GameView,
+  MOVE_TOP_LEFT,
+  MOVE_TOP_RIGHT,
+  CHECKERS_FIELD_SIZE,
+  MOVE_KING_BOTTOM_LEFT,
+  MOVE_KING_BOTTOM_RIGHT,
+  CAPTURE_KING_BOTTOM_LEFT,
+  CAPTURE_KING_BOTTOM_RIGHT,
+} from './GameView';
 import { Bool, Int64, PublicKey, UInt32, UInt64 } from 'o1js';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useMinaBridge } from '@/lib/stores/protokitBalances';
@@ -23,9 +34,7 @@ import GamePage from '@/components/framework/GamePage';
 import { checkersConfig } from '../config';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
-import {
-  MOVE_TIMEOUT_IN_BLOCKS,
-} from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
+import { MOVE_TIMEOUT_IN_BLOCKS } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
 import { formatUnits } from '@/lib/unit';
 import {
   MainButtonState,
@@ -156,7 +165,8 @@ export default function RandzuPage({
     await tx.sign();
     await tx.send();
   };
-  const isPlayer1 = matchQueue.gameInfo?.opponent == matchQueue.gameInfo?.player2;
+  const isPlayer1 =
+    matchQueue.gameInfo?.opponent == matchQueue.gameInfo?.player2;
 
   const onMoveChosen = async (moveId: number, x: number, y: number) => {
     if (!matchQueue.gameInfo?.isCurrentUserMove) return;
@@ -177,29 +187,46 @@ export default function RandzuPage({
     updatedField[x][y] = 0;
 
     if (moveId == MOVE_TOP_LEFT) {
-      updatedField[x - 1][y + (isPlayer1 ? 1 : -1)] = (isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 2 : y == 1)) ? currentUserId + 2 : currentUserId;
+      updatedField[x - 1][y + (isPlayer1 ? 1 : -1)] =
+        isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 2 : y == 1)
+          ? currentUserId + 2
+          : currentUserId;
     } else if (moveId == MOVE_KING_BOTTOM_LEFT) {
       updatedField[x - 1][y + (isPlayer1 ? -1 : 1)] = currentUserId + 2;
     } else if (moveId == MOVE_TOP_RIGHT) {
-      updatedField[x + 1][y + (isPlayer1 ? 1 : -1)] = (isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 2 : y == 1)) ? currentUserId + 2 : currentUserId;
+      updatedField[x + 1][y + (isPlayer1 ? 1 : -1)] =
+        isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 2 : y == 1)
+          ? currentUserId + 2
+          : currentUserId;
     } else if (moveId == MOVE_KING_BOTTOM_RIGHT) {
       updatedField[x + 1][y + (isPlayer1 ? -1 : 1)] = currentUserId + 2;
     } else if (moveId == CAPTURE_TOP_LEFT) {
       console.log(x, y);
       updatedField[x - 1][y + (isPlayer1 ? 1 : -1)] = 0;
-      updatedField[x - 2][y + (isPlayer1 ? 2 : -2)] = (isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 3 : y == 2)) ? currentUserId + 2 : currentUserId;
+      updatedField[x - 2][y + (isPlayer1 ? 2 : -2)] =
+        isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 3 : y == 2)
+          ? currentUserId + 2
+          : currentUserId;
     } else if (moveId == CAPTURE_KING_BOTTOM_LEFT) {
       console.log(x, y);
       updatedField[x - 1][y + (isPlayer1 ? -1 : 1)] = 0;
-      updatedField[x - 2][y + (isPlayer1 ? -2 : 2)] = (isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 3 : y == 2)) ? currentUserId + 2 : currentUserId;
+      updatedField[x - 2][y + (isPlayer1 ? -2 : 2)] =
+        isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 3 : y == 2)
+          ? currentUserId + 2
+          : currentUserId;
     } else if (moveId == CAPTURE_TOP_RIGHT) {
       updatedField[x + 1][y + (isPlayer1 ? 1 : -1)] = 0;
-      updatedField[x + 2][y + (isPlayer1 ? 2 : -2)] = (isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 3 : y == 2)) ? currentUserId + 2 : currentUserId;
+      updatedField[x + 2][y + (isPlayer1 ? 2 : -2)] =
+        isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 3 : y == 2)
+          ? currentUserId + 2
+          : currentUserId;
     } else if (moveId == CAPTURE_KING_BOTTOM_RIGHT) {
       updatedField[x + 1][y + (isPlayer1 ? -1 : 1)] = 0;
-      updatedField[x + 2][y + (isPlayer1 ? -2 : 2)] = (isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 3 : y == 2)) ? currentUserId + 2 : currentUserId;
+      updatedField[x + 2][y + (isPlayer1 ? -2 : 2)] =
+        isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 3 : y == 2)
+          ? currentUserId + 2
+          : currentUserId;
     }
-
 
     console.log('On move chosen', updatedField);
 
@@ -209,33 +236,38 @@ export default function RandzuPage({
 
     console.log('Proposed is king', isKing);
 
-    const tx = (moveId == MOVE_TOP_LEFT || moveId == MOVE_TOP_RIGHT || moveId == MOVE_KING_BOTTOM_LEFT || moveId == MOVE_KING_BOTTOM_RIGHT)  ? 
-    await client.transaction(sessionPrivateKey.toPublicKey(), () => {
-      randzuLogic.makeMoveChecker(
-        UInt64.from(matchQueue.gameInfo!.gameId),
-        updatedCheckersField,
-        UInt64.from(x),
-        UInt64.from(y),
-        UInt64.from(moveId),
-        Bool(isKing)
-      );
-    }) : await client.transaction(sessionPrivateKey.toPublicKey(), () => {
-      randzuLogic.makeMoveCapture(
-        UInt64.from(matchQueue.gameInfo!.gameId),
-        updatedCheckersField,
-        UInt64.from(x),
-        UInt64.from(y),
-        UInt64.from(moveId),
-        Bool(isKing)
-      );
-    });
+    const tx =
+      moveId == MOVE_TOP_LEFT ||
+      moveId == MOVE_TOP_RIGHT ||
+      moveId == MOVE_KING_BOTTOM_LEFT ||
+      moveId == MOVE_KING_BOTTOM_RIGHT
+        ? await client.transaction(sessionPrivateKey.toPublicKey(), () => {
+            randzuLogic.makeMoveChecker(
+              UInt64.from(matchQueue.gameInfo!.gameId),
+              updatedCheckersField,
+              UInt64.from(x),
+              UInt64.from(y),
+              UInt64.from(moveId),
+              Bool(isKing)
+            );
+          })
+        : await client.transaction(sessionPrivateKey.toPublicKey(), () => {
+            randzuLogic.makeMoveCapture(
+              UInt64.from(matchQueue.gameInfo!.gameId),
+              updatedCheckersField,
+              UInt64.from(x),
+              UInt64.from(y),
+              UInt64.from(moveId),
+              Bool(isKing)
+            );
+          });
 
     setLoading(true);
     setLoadingElement({
       x,
       y,
     });
-    console.log('Sending tx')
+    console.log('Sending tx');
     // await tx.sign()
     tx.transaction = tx.transaction?.sign(sessionPrivateKey);
     await tx.send();
@@ -353,7 +385,6 @@ export default function RandzuPage({
       gameConfig={checkersConfig}
       image={CheckersCoverSVG}
       mobileImage={CheckersCoverMobileSVG}
-
       defaultPage={'Game'}
     >
       <PvPGameView

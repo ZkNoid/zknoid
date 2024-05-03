@@ -58,6 +58,7 @@ import { motion, useAnimationControls } from 'framer-motion';
 import { ICompetitionPVP } from '@/lib/types';
 import { GameWrap } from '@/components/framework/GamePage/GameWrap';
 import { Modal } from '@/components/ui/games-store/shared/Modal';
+import { RateGame } from '@/components/framework/GameWidget/RateGame';
 
 enum GameState {
   WalletNotInstalled,
@@ -86,6 +87,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
   const networkStore = useNetworkStore();
   const [gameState, setGameState] = useState(GameState.NotStarted);
+  const [isRateGame, setIsRateGame] = useState<boolean>(true);
   const [revealedValue, setRevealedValue] = useState<
     undefined | { choice: 1 | 2 | 3; value: 1 | 2 | 3 }
   >(undefined);
@@ -656,12 +658,20 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
               ) : (
                 <>
                   {gameState == GameState.Won && (
-                    <Modal trigger={<></>} defaultOpen>
-                      <Win
-                        onBtnClick={restart}
-                        title={'You won! Congratulations!'}
-                        btnText={'Find new game'}
-                      />
+                    <Modal trigger={<></>} defaultOpen isDismissible={false}>
+                      {isRateGame ? (
+                        <RateGame
+                          gameId={thimblerigConfig.id}
+                          onClick={() => setIsRateGame(false)}
+                          isModal
+                        />
+                      ) : (
+                        <Win
+                          onBtnClick={restart}
+                          title={'You won! Congratulations!'}
+                          btnText={'Find new game'}
+                        />
+                      )}
                     </Modal>
                   )}
                   {gameState == GameState.Lost && (
