@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { clsx } from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { PublicKey, UInt64 } from 'o1js';
+import { useNetworkStore } from '@/lib/stores/network';
+import { formatPubkey } from '@/lib/utils';
 
 export const Leaderboard = ({
   leaderboard,
@@ -9,15 +11,19 @@ export const Leaderboard = ({
   leaderboard: { score: UInt64; player: PublicKey }[];
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(true);
+  const [isShowMyPlace, setIsShowMyPlace] = useState<boolean>(false);
+  const networkStore = useNetworkStore();
 
   const LeaderboardItem = ({
     index,
     address,
     score,
+    highlight,
   }: {
     index: number;
-    address: string;
+    address: PublicKey | 0;
     score: number;
+    highlight?: boolean;
   }) => {
     return (
       <div
@@ -28,7 +34,11 @@ export const Leaderboard = ({
         <div
           className={clsx(
             'flex h-full flex-row items-center justify-between font-plexsans text-header-menu',
-            { 'text-left-accent': index === 0 || index === 1 || index === 2 }
+            {
+              'text-left-accent':
+                index === 0 || index === 1 || (index === 2 && !highlight),
+              'text-right-accent': highlight,
+            }
           )}
         >
           <span className={'flex flex-row gap-4'}>
@@ -62,9 +72,15 @@ export const Leaderboard = ({
             ) : (
               <span>[{index + 1}]</span>
             )}
-            <span>{address}</span>
+            <span>{address === 0 ? 0 : formatPubkey(address)}</span>
           </span>
-          <span>{score}</span>
+          <span
+            className={clsx({
+              'text-left-accent': index === 0 || index === 1 || index === 2,
+            })}
+          >
+            {score}
+          </span>
         </div>
       </div>
     );
@@ -128,12 +144,14 @@ export const Leaderboard = ({
               </div>
               {leaderboard.length != 0 ? (
                 <>
-                  {leaderboard.sort(sortByHighScore).map((item, index) => (
+                  {leaderboard.toSorted(sortByHighScore).map((item, index) => (
                     <LeaderboardItem
                       key={index}
                       index={index}
-                      address={item.player.toBase58().slice(0, 16) + '...'}
+                      // address={item.player.toBase58().slice(0, 16) + '...'}
+                      address={item.player}
                       score={Number(item.score)}
+                      highlight={isShowMyPlace}
                     />
                   ))}
                 </>
@@ -143,24 +161,29 @@ export const Leaderboard = ({
                     <LeaderboardItem
                       key={index}
                       index={index}
-                      address={''}
+                      address={0}
                       score={0}
                     />
                   ))}
                 </>
               )}
               <div className={'flex-grow pt-4'} />
-              <button
-                className={
-                  'mb-5 w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-[20px]/[20px] font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
-                }
-              >
-                Show my place
-              </button>
+              {leaderboard.find(
+                (item) => item.player.toBase58() === networkStore.address
+              ) && (
+                <button
+                  className={
+                    'mb-5 w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-[20px]/[20px] font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
+                  }
+                  onClick={() => setIsShowMyPlace(!isShowMyPlace)}
+                >
+                  Highlight my place
+                </button>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
-        <div className="absolute left-0 top-0 -z-10 flex hidden h-auto w-full flex-col lg:block">
+        <div className="absolute left-0 top-0 -z-10 hidden h-auto w-full flex-col lg:block">
           <svg
             width="auto"
             height="auto"
