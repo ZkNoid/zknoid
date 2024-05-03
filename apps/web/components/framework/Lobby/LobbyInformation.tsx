@@ -11,6 +11,7 @@ import { useState } from 'react';
 import { Modal } from '@/components/ui/games-store/shared/Modal';
 import { formatUnits } from '@/lib/unit';
 import { walletInstalled } from '@/lib/helpers';
+import { useLobbiesStore } from '@/lib/stores/lobbiesStore';
 
 enum PlayerStates {
   Waiting,
@@ -56,6 +57,7 @@ export const LobbyInformation = <RuntimeModules extends RuntimeModulesRecord>({
   ready,
   currentLobbyId,
   selfReady,
+  backToJoinedLobby,
 }: {
   gameName: string;
   lobby: ILobby;
@@ -65,8 +67,10 @@ export const LobbyInformation = <RuntimeModules extends RuntimeModulesRecord>({
   ready: () => Promise<void>;
   currentLobbyId?: number;
   selfReady: boolean;
+  backToJoinedLobby: () => void;
 }) => {
   const networkStore = useNetworkStore();
+  const lobbiesStore = useLobbiesStore();
   const [isConnectWalletModal, setIsConnectWalletModal] =
     useState<boolean>(false);
 
@@ -82,6 +86,41 @@ export const LobbyInformation = <RuntimeModules extends RuntimeModulesRecord>({
         hidden: { opacity: 0 },
       }}
     >
+      {lobbiesStore.currentLobby &&
+        lobby.id !== lobbiesStore.currentLobby.id && (
+          <div
+            className={
+              'flex w-full cursor-pointer flex-row gap-2 py-2 hover:opacity-80'
+            }
+            onClick={backToJoinedLobby}
+          >
+            <svg
+              width="25"
+              height="25"
+              viewBox="0 0 25 25"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                x="0.5"
+                y="0.5"
+                width="24"
+                height="24"
+                rx="4.5"
+                fill="#D2FF00"
+                stroke="#D2FF00"
+              />
+              <path d="M16 21L8 12.5L16 4" stroke="#141414" strokeWidth="2" />
+            </svg>
+            <span
+              className={
+                'font-plexsans text-[16px]/[16px] font-medium uppercase text-left-accent'
+              }
+            >
+              Back to Joined Lobby
+            </span>
+          </div>
+        )}
       <div
         className={
           'flex h-full w-full flex-col rounded-[5px] border border-foreground bg-[#252525] p-2'
