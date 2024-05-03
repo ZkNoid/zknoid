@@ -4,7 +4,12 @@ import { type ModuleQuery } from '@proto-kit/sequencer';
 import { LobbyManager } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
 import { ILobby } from '../types';
 import { Currency } from '@/constants/currency';
-import { MatchMaker } from 'zknoid-chain-dev';
+import { ClientAppChain, MatchMaker } from 'zknoid-chain-dev';
+import { create } from 'zustand';
+import { useProtokitChainStore } from './protokitChain';
+import { useNetworkStore } from './network';
+import { useContext, useEffect } from 'react';
+import AppChainClientContext from '../contexts/AppChainClientContext';
 
 export interface IMatchamkingOption {
   id: number;
@@ -18,6 +23,7 @@ export interface LobbiesState {
   selfReady: boolean;
   activeGameId?: number;
   mathcmakingOptions: IMatchamkingOption[];
+  clearStore(): void;
   loadLobbies(
     query: ModuleQuery<LobbyManager>,
     address: PublicKey
@@ -32,6 +38,15 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
   selfReady: false,
   activeGameId: undefined,
   mathcmakingOptions: [],
+  clearStore() {
+    set((state) => {
+      state.lobbies = [];
+      state.currentLobby = undefined;
+      state.selfReady = false;
+      state.activeGameId = undefined;
+      state.mathcmakingOptions = [];
+    });
+  },
   async loadLobbies(query: ModuleQuery<LobbyManager>, address: PublicKey) {
     set((state) => {
       state.loading = true;
@@ -125,3 +140,43 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
     });
   },
 }));
+
+export const useLobbiesStore = create<LobbiesState, [['zustand/immer', never]]>(
+  lobbyInitializer
+);
+
+export const useObserveLobbiesStore = (query: ModuleQuery<MatchMaker>) => {
+  const chain = useProtokitChainStore();
+  const network = useNetworkStore();
+  const lobbiesStore = useLobbiesStore();
+  const client = useContext<ClientAppChain<any, any, any, any> | undefined>(
+    AppChainClientContext
+  );
+
+  useEffect(() => {
+    if (!network.walletConnected || !network.address) {
+      return;
+    }
+
+    if (!client) {
+      throw Error('Context app chain client is not set');
+    }
+
+    lobbiesStore.loadLobbies(query, PublicKey.fromBase58(network.address!));
+  }, [chain.block?.height, network.walletConnected, network.address]);
+
+  // Update once wallet connected
+  useEffect(() => {
+    if (!network.walletConnected || !network.address) {
+      return;
+    }
+
+    if (!client) {
+      throw Error('Context app chain client is not set');
+    }
+
+    lobbiesStore.clearStore();
+
+    lobbiesStore.loadMathcmakingOptions(query);
+  }, [network.walletConnected, network.address]);
+};
