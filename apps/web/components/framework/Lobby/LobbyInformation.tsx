@@ -2,11 +2,15 @@ import { clsx } from 'clsx';
 import { Button } from '@/components/ui/games-store/shared/Button';
 import { ILobby } from '@/lib/types';
 import { motion } from 'framer-motion';
-import { usePvpLobbyStorage } from '@/lib/stores/pvpLobbyStore';
 import { Input } from '@/components/ui/games-store/shared/Input';
 import { Popover } from '@/components/ui/games-store/shared/Popover';
 import { RuntimeModulesRecord } from '@proto-kit/module';
 import { ZkNoidGameConfig } from '@/lib/createConfig';
+import { useNetworkStore } from '@/lib/stores/network';
+import { useState } from 'react';
+import { Modal } from '@/components/ui/games-store/shared/Modal';
+import { formatUnits } from '@/lib/unit';
+import { walletInstalled } from '@/lib/helpers';
 
 enum PlayerStates {
   Waiting,
@@ -62,6 +66,10 @@ export const LobbyInformation = <RuntimeModules extends RuntimeModulesRecord>({
   currentLobbyId?: number;
   selfReady: boolean;
 }) => {
+  const networkStore = useNetworkStore();
+  const [isConnectWalletModal, setIsConnectWalletModal] =
+    useState<boolean>(false);
+
   return (
     <motion.div
       className={'col-start-4 col-end-6 row-span-4 h-full w-full'}
@@ -202,13 +210,83 @@ export const LobbyInformation = <RuntimeModules extends RuntimeModulesRecord>({
           <Button
             label={'Connect to lobby'}
             onClick={() => {
-              joinLobby(lobby.id);
+              if (networkStore.address) joinLobby(lobby.id);
+              else setIsConnectWalletModal(true);
               // pvpLobbyStorage.setConnectedLobbyId(lobby.id);
               // pvpLobbyStorage.setConnectedLobbyKey(lobby.accessKey);
             }}
           />
         )}
       </div>
+      <Modal
+        trigger={<></>}
+        isDismissible={false}
+        isOpen={isConnectWalletModal}
+        setIsOpen={setIsConnectWalletModal}
+      >
+        <div className={'flex flex-col items-start justify-center gap-6'}>
+          <span
+            className={
+              'px-10 text-headline-2 font-medium uppercase text-middle-accent'
+            }
+          >
+            Connect wallet to play
+          </span>
+          <div className={'flex w-full flex-col gap-2'}>
+            <span className={'text-headline-2 font-medium text-foreground'}>
+              Game Information
+            </span>
+            <div
+              className={
+                'flex flex-row justify-between font-plexsans text-[16px]/[16px]'
+              }
+            >
+              <span className={'font-medium uppercase text-left-accent'}>
+                Game Name
+              </span>
+              <span className={'w-full max-w-[60%]'}>{gameName}</span>
+            </div>
+            <div
+              className={
+                'flex flex-row justify-between font-plexsans text-[16px]/[16px]'
+              }
+            >
+              <span className={'font-medium uppercase text-left-accent'}>
+                Participants fee
+              </span>
+              <span className={'w-full max-w-[60%]'}>
+                {formatUnits(lobby.fee)} {lobby.currency}
+              </span>
+            </div>
+            <div
+              className={
+                'flex flex-row justify-between font-plexsans text-[16px]/[16px]'
+              }
+            >
+              <span className={'font-medium uppercase text-left-accent'}>
+                Max Funds
+              </span>
+              <span className={'w-full max-w-[60%]'}>
+                {formatUnits(lobby.reward)} {lobby.currency}
+              </span>
+            </div>
+          </div>
+          {walletInstalled() ? (
+            <Button
+              label={'Connect wallet'}
+              onClick={networkStore.connectWallet}
+              color={'secondary'}
+            />
+          ) : (
+            <Button
+              label={'Install wallet'}
+              asLink
+              href={'https://www.aurowallet.com/'}
+              color={'secondary'}
+            />
+          )}
+        </div>
+      </Modal>
     </motion.div>
   );
 };
