@@ -132,6 +132,7 @@ export default function ArkanoidCompetitionsListPage() {
         gameId={arkanoidConfig.id}
         competitionBlocks={competitionBlocks}
         competitionList={compStore.competitions}
+        register={register}
       />
     </GamePage>
   );
