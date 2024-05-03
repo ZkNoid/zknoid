@@ -366,11 +366,13 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
           )}
         </AnimatePresence>
         <LobbyList lobbys={lobbiesStore.lobbies} />
-        <AlreadyInLobbyModal
-          isOpen={alreadyInLobbyModalStore.isOpen}
-          setIsOpen={alreadyInLobbyModalStore.setIsOpen}
-          leaveLobby={leaveLobby}
-        />
+        {alreadyInLobbyModalStore.isOpen && (
+          <AlreadyInLobbyModal
+            isOpen={alreadyInLobbyModalStore.isOpen}
+            setIsOpen={alreadyInLobbyModalStore.setIsOpen}
+            leaveLobby={leaveLobby}
+          />
+        )}
       </LobbyWrap>
     </>
   );
