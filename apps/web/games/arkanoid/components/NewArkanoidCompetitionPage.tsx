@@ -242,7 +242,7 @@ export default function NewArkanoidCompetitionPage() {
       : setIsDescriptionInvalid(false);
     !competitionFrom ||
     !competitionTo ||
-    new Date(competitionFrom).getTime() <= new Date(preregistrationTo).getTime()
+    preregistrationEnabled && new Date(competitionFrom).getTime() <= new Date(preregistrationTo).getTime()
       ? setIsCompetitionDateInvalid(true)
       : setIsCompetitionDateInvalid(false);
     !preregistrationFrom || !preregistrationTo
