@@ -11,3 +11,102 @@ index d8bb3de897f786033530c5b6ffb5b474b84cacf6..abbde00e9cb704d973c97ffda6a13f7e
              methodId: this.methodId.toJSON(),
              nonce: this.nonce.toString(),
              sender: this.sender.toBase58(),
+diff --git a/dist/mempool/private/PrivateMempool.js b/dist/mempool/private/PrivateMempool.js
+index 1e51d8525f5fc5061dd4c37049ac7c150f864ab0..600b5bca1677db4777af8123942b0424dfa01d87 100644
+--- a/dist/mempool/private/PrivateMempool.js
++++ b/dist/mempool/private/PrivateMempool.js
+@@ -33,6 +33,9 @@ let PrivateMempool = class PrivateMempool extends SequencerModule {
+         }
+         throw new Error(`Valdiation of tx failed: ${error ?? "unknown error"}`);
+     }
++    async remove(hash) {
++        return await this.transactionStorage.removeUserTransaction(hash);
++      }
+     async getTxs() {
+         return await this.transactionStorage.getPendingUserTransactions();
+     }
+diff --git a/dist/protocol/production/unproven/TransactionExecutionService.js b/dist/protocol/production/unproven/TransactionExecutionService.js
+index 2b34494e8a87d6ca972ff8900f650c66920af4bc..1c6c1ffb74d37b1acd285bab6d32774e010b1a68 100644
+--- a/dist/protocol/production/unproven/TransactionExecutionService.js
++++ b/dist/protocol/production/unproven/TransactionExecutionService.js
+@@ -10,7 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
+ var __param = (this && this.__param) || function (paramIndex, decorator) {
+     return function (target, key) { decorator(target, key, paramIndex); }
+ };
+-/* eslint-disable max-lines */
+ import { container, inject, injectable, Lifecycle, scoped } from "tsyringe";
+ import { DefaultProvableHashList, NetworkState, Protocol, RuntimeMethodExecutionContext, RuntimeTransaction, BlockHashMerkleTree, StateServiceProvider, BlockHashTreeEntry, MinaActions, MinaActionsHashList, reduceStateTransitions, } from "@proto-kit/protocol";
+ import { Bool, Field, Poseidon } from "o1js";
+@@ -22,17 +21,19 @@ import { CachedMerkleTreeStore } from "../../../state/merkle/CachedMerkleTreeSto
+ import { UnprovenBlock, } from "../../../storage/model/UnprovenBlock";
+ import { UntypedStateTransition } from "../helpers/UntypedStateTransition";
+ import { RuntimeMethodExecution } from "./RuntimeMethodExecution";
++import { PrivateMempool } from "../../../mempool/private/PrivateMempool";
+ const errors = {
+     methodIdNotFound: (methodId) => new Error(`Can't find runtime method with id ${methodId}`),
+ };
+ let TransactionExecutionService = class TransactionExecutionService {
+     constructor(runtime, protocol, executionContext, 
+     // Coming in from the appchain scope (accessible by protocol & runtime)
+-    stateServiceProvider) {
++    stateServiceProvider, mempool) {
+         this.runtime = runtime;
+         this.protocol = protocol;
+         this.executionContext = executionContext;
+         this.stateServiceProvider = stateServiceProvider;
++        this.mempool = mempool;
+         this.transactionHooks = protocol.dependencyContainer.resolveAll("ProvableTransactionHook");
+         this.blockHooks =
+             protocol.dependencyContainer.resolveAll("ProvableBlockHook");
+@@ -127,7 +128,7 @@ let TransactionExecutionService = class TransactionExecutionService {
+             networkStateHash: lastMetadata.afterNetworkState.hash(),
+             incomingMessagesHash: lastBlock.toMessagesHash,
+         }), lastMetadata.afterNetworkState);
+-        for (const [index, tx] of transactions.entries()) {
++        for (const [, tx] of transactions.entries()) {
+             try {
+                 // Create execution trace
+                 // eslint-disable-next-line no-await-in-loop
+@@ -147,6 +148,8 @@ let TransactionExecutionService = class TransactionExecutionService {
+                 if (error instanceof Error) {
+                     log.error("Error in inclusion of tx, skipping", error);
+                 }
++                // eslint-disable-next-line no-await-in-loop
++                await this.mempool.remove(tx.hash().toString());
+             }
+         }
+         const previousBlockHash = lastMetadata.blockHash === 0n ? undefined : Field(lastMetadata.blockHash);
+@@ -252,12 +255,10 @@ let TransactionExecutionService = class TransactionExecutionService {
+         // Maybe replace with stateService.set() because its cached anyways?
+         stateService.writeStates(writes);
+     }
+-    // eslint-disable-next-line no-warning-comments
+     // TODO Here exists a edge-case, where the protocol hooks set
+     // some state that is then consumed by the runtime and used as a key.
+     // In this case, runtime would generate a wrong key here.
+     async extractAccessedKeys(method, args, runtimeContextInputs, blockContextInputs, parentStateService) {
+-        // eslint-disable-next-line no-warning-comments
+         // TODO unsafe to re-use params here?
+         const stateTransitions = await this.runtimeMethodExecution.simulateMultiRound(() => {
+             method(...args);
+@@ -274,7 +275,6 @@ let TransactionExecutionService = class TransactionExecutionService {
+             protocolKeys: this.allKeys(protocolTransitions),
+         };
+     }
+-    // eslint-disable-next-line max-statements
+     async createExecutionTrace(asyncStateService, tx, networkState) {
+         const cachedStateService = new CachedStateService(asyncStateService);
+         const { method, args, module } = this.decodeTransaction(tx);
+@@ -331,9 +331,11 @@ TransactionExecutionService = __decorate([
+     __param(0, inject("Runtime")),
+     __param(1, inject("Protocol")),
+     __param(3, inject("StateServiceProvider")),
++    __param(4, inject("Mempool")),
+     __metadata("design:paramtypes", [Runtime,
+         Protocol,
+         RuntimeMethodExecutionContext,
+-        StateServiceProvider])
++        StateServiceProvider,
++        PrivateMempool])
+ ], TransactionExecutionService);
+ export { TransactionExecutionService };
