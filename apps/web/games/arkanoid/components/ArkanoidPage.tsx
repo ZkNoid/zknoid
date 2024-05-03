@@ -148,9 +148,9 @@ export default function ArkanoidPage({
     }
 
     let creator =
-      await client.query.runtime.ArkanoidGameHub.competitionCreator.get(
+      (await client.query.runtime.ArkanoidGameHub.competitionCreator.get(
         UInt64.from(competitionId)
-      ) as PublicKey;
+      )) as PublicKey;
 
     let competition = fromContractCompetition(
       competitionId,
@@ -223,20 +223,18 @@ export default function ArkanoidPage({
         });
       }
 
-      if (competition?.preReg) {
-        await progress.mutateAsync({
-          userAddress: competition?.creator?.toBase58() || '',
-          section: 'ARKANOID',
-          roomId: competition?.id.toString(),
-          id: 2,
-          txHash: JSON.stringify(
-            (tx.transaction! as PendingTransaction).toJSON()
-          ),
-          envContext: getEnvContext(),
-        });
-      }
+      await progress.mutateAsync({
+        userAddress: competition?.creator?.toBase58() || '',
+        section: 'ARKANOID',
+        roomId: competition?.id.toString(),
+        id: 2,
+        txHash: JSON.stringify(
+          (tx.transaction! as PendingTransaction).toJSON()
+        ),
+        envContext: getEnvContext(),
+      });
 
-      if (competition?.creator && competition.preReg) {
+      if (competition?.creator) {
         await progress.mutateAsync({
           userAddress: networkStore.address!,
           section: 'ARKANOID',
@@ -470,7 +468,13 @@ export default function ArkanoidPage({
               )}
               <span className={'my-2'}>
                 Competition starts:{' '}
-                {`${competition.competitionDate.start?.getFullYear().toString()}-${formatMonth(competition.competitionDate.start?.getMonth())}-${formatDate(competition.competitionDate.start?.getDate().toString())}`}
+                {`${competition.competitionDate.start
+                  ?.getFullYear()
+                  .toString()}-${formatMonth(
+                  competition.competitionDate.start?.getMonth()
+                )}-${formatDate(
+                  competition.competitionDate.start?.getDate().toString()
+                )}`}
               </span>
               <Link
                 className={
