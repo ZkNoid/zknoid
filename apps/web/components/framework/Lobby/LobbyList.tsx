@@ -8,7 +8,7 @@ import { LOBBYS_SORT_METHODS, LobbysSortBy } from '@/constants/sortBy';
 export const LobbyList = ({ lobbys }: { lobbys: ILobby[] }) => {
   const PAGINATION_LIMIT = 6;
 
-  const [sortBy, setSortBy] = useState<LobbysSortBy>(LobbysSortBy.HighFunds);
+  const [sortBy, setSortBy] = useState<LobbysSortBy>(LobbysSortBy.MorePlayers);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const lobbyListRef = useRef<HTMLDivElement>(null);
@@ -48,10 +48,10 @@ export const LobbyList = ({ lobbys }: { lobbys: ILobby[] }) => {
         return Number(b.reward - a.reward);
 
       case LobbysSortBy.MorePlayers:
-        return Number(a.players - b.players);
+        return Number(b.players - a.players);
 
       case LobbysSortBy.LessPlayers:
-        return Number(b.players - a.players);
+        return Number(a.players - b.players);
     }
   };
 
