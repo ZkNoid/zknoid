@@ -23,7 +23,7 @@ export const ratingsRouter = createTRPCRouter({
             $group: {
               _id: null,
               sum: {
-                $sum: '$rating',
+                $avg: '$rating',
               },
             },
           },
