@@ -46,6 +46,7 @@ import { ConnectWallet } from '@/components/framework/GameWidget/ConnectWallet';
 import { InstallWallet } from '@/components/framework/GameWidget/InstallWallet';
 import { GameWrap } from '@/components/framework/GamePage/GameWrap';
 import { RateGame } from '@/components/framework/GameWidget/RateGame';
+import { type PendingTransaction } from '@proto-kit/sequencer';
 
 enum GameState {
   WalletNotInstalled,
@@ -140,7 +141,9 @@ export default function RandzuPage({
       userAddress: networkStore.address!,
       section: 'RANDZU',
       id: 0,
-      txHash: tx.transaction!.hash().toString(),
+      txHash: JSON.stringify(
+        (tx.transaction! as PendingTransaction).toJSON()
+      ),
       roomId: competition.id,
       envContext: getEnvContext(),
     });
@@ -149,7 +152,9 @@ export default function RandzuPage({
       userAddress: networkStore.address!,
       section: 'RANDZU',
       id: 1,
-      txHash: tx.transaction!.hash().toString(),
+      txHash: JSON.stringify(
+        (tx.transaction! as PendingTransaction).toJSON()
+      ),
       roomId: competition.id,
       envContext: getEnvContext(),
     });
@@ -242,7 +247,9 @@ export default function RandzuPage({
         userAddress: networkStore.address!,
         section: 'RANDZU',
         id: 2,
-        txHash: tx.transaction!.hash().toString(),
+        txHash: JSON.stringify(
+          (tx.transaction! as PendingTransaction).toJSON()
+        ),
         roomId: competition.id,
         envContext: getEnvContext(),
       });

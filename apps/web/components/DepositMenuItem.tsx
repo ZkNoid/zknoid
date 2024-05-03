@@ -26,6 +26,7 @@ import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import { DefaultRuntimeModules } from '@/lib/runtimeModules';
 import { buildClient } from '@/lib/utils';
+import { type PendingTransaction } from '@proto-kit/sequencer';
 
 const BridgeInput = ({
   assets,
@@ -201,7 +202,9 @@ export const DepositMenuItem = () => {
         userAddress: networkStore.address!,
         section: 'UI_TESTS_WEB',
         id: 2,
-        txHash: l2tx.transaction!.hash().toString(),
+        txHash: JSON.stringify(
+          (l2tx.transaction! as PendingTransaction).toJSON()
+        ),
         envContext: getEnvContext(),
       });
   };

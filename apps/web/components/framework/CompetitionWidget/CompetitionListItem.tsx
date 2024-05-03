@@ -8,14 +8,12 @@ import { Button } from '@/components/ui/games-store/shared/Button';
 
 export const CompetitionListItem = ({
   competition,
+  register,
 }: {
   competition: ICompetition;
+  register: (id: number) => Promise<void>;
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [isPreReg, setIsPreReg] = useState<boolean>(competition.preReg);
-  const [isRegistered, setIsRegistered] = useState<boolean>(
-    !!competition.registered
-  );
 
   const switchStore = useSwitchWidgetStorage();
 
@@ -60,12 +58,16 @@ export const CompetitionListItem = ({
             Participants fee
           </div>
         </div>
-        <Button
-          label={'Play'}
-          asLink
-          href={`/games/${competition.game.id}/${competition.id}`}
-          onClick={() => switchStore.setCompetitionId(competition.id)}
-        />
+        {competition.preReg && !competition.registered ? (
+          <Button label={'Register'} onClick={() => register(competition.id)} />
+        ) : (
+          <Button
+            label={'Play'}
+            asLink
+            href={`/games/${competition.game.id}/${competition.id}`}
+            onClick={() => switchStore.setCompetitionId(competition.id)}
+          />
+        )}
         <div className={'flex w-full flex-col items-end justify-center'}>
           <div
             className={
@@ -101,7 +103,7 @@ export const CompetitionListItem = ({
                   Preregiatration
                 </span>
                 <div className={'flex w-full items-center justify-center'}>
-                  <Checkbox isSelected={isPreReg} isReadonly />
+                  <Checkbox isSelected={competition.preReg} isReadonly />
                 </div>
               </div>
               <div className={'grid grid-cols-2'}>
@@ -111,7 +113,10 @@ export const CompetitionListItem = ({
                   Registered
                 </span>
                 <div className={'flex w-full items-center justify-center'}>
-                  <Checkbox isSelected={isRegistered} isReadonly />
+                  <Checkbox
+                    isSelected={competition.registered || false}
+                    isReadonly
+                  />
                 </div>
               </div>
             </div>

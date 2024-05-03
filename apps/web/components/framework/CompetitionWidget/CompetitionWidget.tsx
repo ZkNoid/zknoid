@@ -15,10 +15,12 @@ export const CompetitionWidget = ({
   competitionBlocks,
   competitionList,
   gameId,
+  register,
 }: {
   gameId: string;
   competitionBlocks: ICompetition[];
   competitionList: ICompetition[];
+  register: (id: number) => Promise<void>;
 }) => {
   const PAGINATION_LIMIT = 5;
 
@@ -110,6 +112,7 @@ export const CompetitionWidget = ({
               key={index}
               competition={item}
               variant={index == 0 ? 1 : index == 1 ? 2 : 3}
+              register={register}
             />
           ))}
         </div>
@@ -135,7 +138,11 @@ export const CompetitionWidget = ({
             {renderCompetitionsList
               .toSorted((a, b) => sortByFilter(a, b))
               .map((item, index) => (
-                <CompetitionListItem key={index} competition={item} />
+                <CompetitionListItem
+                  key={index}
+                  competition={item}
+                  register={register}
+                />
               ))}
           </div>
           <AnimatePresence initial={false} mode={'wait'}>
