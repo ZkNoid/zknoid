@@ -142,31 +142,32 @@ export const Leaderboard = ({
                 <span className={'uppercase'}>Nickname/address</span>
                 <span className={'uppercase'}>Score</span>
               </div>
-              {leaderboard.length != 0 ? (
-                <>
-                  {leaderboard.toSorted(sortByHighScore).map((item, index) => (
-                    <LeaderboardItem
-                      key={index}
-                      index={index}
-                      // address={item.player.toBase58().slice(0, 16) + '...'}
-                      address={item.player}
-                      score={Number(item.score)}
-                      highlight={isShowMyPlace}
-                    />
-                  ))}
-                </>
-              ) : (
-                <>
-                  {[...Array(9)].map((_, index) => (
-                    <LeaderboardItem
-                      key={index}
-                      index={index}
-                      address={0}
-                      score={0}
-                    />
-                  ))}
-                </>
-              )}
+
+              {/* {leaderboard.length != 0 ? (
+                <> */}
+              {leaderboard.toSorted(sortByHighScore).map((item, index) => (
+                <LeaderboardItem
+                  key={index}
+                  index={index}
+                  // address={item.player.toBase58().slice(0, 16) + '...'}
+                  address={item.player}
+                  score={Number(item.score)}
+                  highlight={isShowMyPlace}
+                />
+              ))}
+              {/* </>
+              ) : ( */}
+              {/* <> */}
+              {[...Array(10 - leaderboard.length)].map((_, index) => (
+                <LeaderboardItem
+                  key={index + leaderboard.length}
+                  index={index + leaderboard.length}
+                  address={0}
+                  score={0}
+                />
+              ))}
+              {/* </>
+              )} */}
               <div className={'flex-grow pt-4'} />
               {leaderboard.find(
                 (item) => item.player.toBase58() === networkStore.address

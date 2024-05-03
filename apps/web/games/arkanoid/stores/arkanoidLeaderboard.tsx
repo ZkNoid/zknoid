@@ -66,7 +66,10 @@ export const useArkanoidLeaderboardStore = create<
               index: UInt64.from(i),
             })
           );
-        if (leaderboardItem !== undefined) {
+        if (
+          leaderboardItem !== undefined &&
+          leaderboardItem!.player.equals(PublicKey.empty()).not().toBoolean()
+        ) {
           leaderboard.push({
             score: leaderboardItem!.score,
             player: leaderboardItem!.player,
