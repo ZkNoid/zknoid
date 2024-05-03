@@ -1,6 +1,9 @@
 import { motion } from 'framer-motion';
+import { clsx } from 'clsx';
+import { useLobbiesStore } from '@/lib/stores/lobbiesStore';
 
 export const CreateNewLobbyBtn = ({ onClick }: { onClick: () => void }) => {
+  const lobbiesStore = useLobbiesStore();
   return (
     <motion.div
       className={'col-start-4 col-end-6 row-span-1 h-full w-full'}
@@ -12,12 +15,16 @@ export const CreateNewLobbyBtn = ({ onClick }: { onClick: () => void }) => {
         visible: { opacity: 1 },
         hidden: { opacity: 0 },
       }}
-      onClick={onClick}
+      onClick={lobbiesStore.currentLobby ? undefined : onClick}
     >
       <div
-        className={
-          'flex h-full w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-[5px] border border-foreground bg-bg-dark p-2 hover:bg-[#464646]'
-        }
+        className={clsx(
+          'flex h-full w-full flex-col items-center justify-center gap-2 rounded-[5px] border border-foreground bg-bg-dark p-2',
+          {
+            'opacity-60': lobbiesStore.currentLobby,
+            'cursor-pointer hover:bg-[#464646]': !lobbiesStore.currentLobby,
+          }
+        )}
       >
         <span
           className={
