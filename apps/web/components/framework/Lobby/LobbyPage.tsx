@@ -118,7 +118,6 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
         (lobby) => lobby.id.toString() === params.lobbyId
       );
       if (lobby) setCurrentLobby(lobby);
-      // else setIsLobbyNotFoundModalOpen(true);
     } else {
       const lobby = lobbiesStore.lobbies.find(
         (lobby) => lobby.id === pvpLobbyStorage.lastLobbyId
@@ -126,6 +125,10 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
       setCurrentLobby(lobby);
     }
   }, [lobbiesStore.lobbies, params.lobbyId, pvpLobbyStorage.lastLobbyId]);
+
+  useEffect(() => {
+    setCurrentLobby(lobbiesStore.currentLobby);
+  }, [lobbiesStore.currentLobby?.id]);
 
   const createNewLobby = async (
     name: string,
@@ -330,9 +333,14 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
                 ready={ready}
                 currentLobbyId={lobbiesStore.currentLobby?.id}
                 selfReady={lobbiesStore.selfReady}
+                backToJoinedLobby={() =>
+                  setCurrentLobby(lobbiesStore.currentLobby)
+                }
               />
               <motion.span
-                className={'col-start-4 col-end-6 row-span-1 text-headline-1'}
+                className={
+                  'col-start-4 col-end-6 row-span-1 mt-6 text-headline-1'
+                }
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
