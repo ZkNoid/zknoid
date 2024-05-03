@@ -16,6 +16,15 @@ export enum CompetitionsSortBy {
   Nearest = 'From Latest to Nearest',
 }
 
+export enum LobbysSortBy {
+  LowFunds = 'From High to Low Funds',
+  HighFunds = 'From Low to High Funds',
+  LowFees = 'From High to Low Fees',
+  HighFees = 'From Low to High Fees',
+  LessPlayers = 'From Less to More Players',
+  MorePlayers = 'From More to Less Players',
+}
+
 export const GAME_STORE_SORT_METHODS = [
   GameStoreSortBy.RatingLow,
   GameStoreSortBy.RatingHigh,
@@ -32,4 +41,13 @@ export const COMPETITIONS_SORT_METHODS = [
   CompetitionsSortBy.HighFees,
   CompetitionsSortBy.Latest,
   CompetitionsSortBy.Nearest,
+];
+
+export const LOBBYS_SORT_METHODS = [
+  LobbysSortBy.LowFunds,
+  LobbysSortBy.HighFunds,
+  LobbysSortBy.LowFees,
+  LobbysSortBy.HighFees,
+  LobbysSortBy.LessPlayers,
+  LobbysSortBy.MorePlayers,
 ];
