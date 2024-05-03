@@ -1,9 +1,10 @@
 import { motion } from 'framer-motion';
-import { clsx } from 'clsx';
 import { useLobbiesStore } from '@/lib/stores/lobbiesStore';
+import { useAlreadyInLobbyModalStore } from '@/lib/stores/alreadyInLobbyModalStore';
 
 export const CreateNewLobbyBtn = ({ onClick }: { onClick: () => void }) => {
   const lobbiesStore = useLobbiesStore();
+  const alreadyInLobbyModalStore = useAlreadyInLobbyModalStore();
   return (
     <motion.div
       className={'col-start-4 col-end-6 row-span-1 h-full w-full'}
@@ -15,16 +16,16 @@ export const CreateNewLobbyBtn = ({ onClick }: { onClick: () => void }) => {
         visible: { opacity: 1 },
         hidden: { opacity: 0 },
       }}
-      onClick={lobbiesStore.currentLobby ? undefined : onClick}
+      onClick={() => {
+        lobbiesStore.currentLobby
+          ? alreadyInLobbyModalStore.setIsOpen(true)
+          : onClick();
+      }}
     >
       <div
-        className={clsx(
-          'flex h-full w-full flex-col items-center justify-center gap-2 rounded-[5px] border border-foreground bg-bg-dark p-2',
-          {
-            'opacity-60': lobbiesStore.currentLobby,
-            'cursor-pointer hover:bg-[#464646]': !lobbiesStore.currentLobby,
-          }
-        )}
+        className={
+          'flex h-full w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-[5px] border border-foreground bg-bg-dark p-2 hover:bg-[#464646]'
+        }
       >
         <span
           className={
