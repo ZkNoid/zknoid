@@ -199,7 +199,9 @@ export default function NewArkanoidCompetitionPage() {
         userAddress: networkStore.address!,
         section: 'ARKANOID',
         id: 1,
-        txHash: JSON.stringify((tx.transaction! as PendingTransaction).toJSON()),
+        txHash: JSON.stringify(
+          (tx.transaction! as PendingTransaction).toJSON()
+        ),
         envContext: getEnvContext(),
       });
     }
@@ -302,13 +304,17 @@ export default function NewArkanoidCompetitionPage() {
     });
   }, []);
 
+  // useEffect(() => {
+  //   let games: string[] = [];
+  //   allGames.map((item) => {
+  //     if (item.isReleased && item.active) games.push(item.name);
+  //   });
+  //   setGamesForPick(games);
+  // }, [allGames]);
+
   useEffect(() => {
-    let games: string[] = [];
-    allGames.map((item) => {
-      if (item.isReleased && item.active) games.push(item.name);
-    });
-    setGamesForPick(games);
-  }, [allGames]);
+    setGamesForPick([arkanoidConfig.name]);
+  }, []);
 
   return (
     <GamePage
