@@ -144,7 +144,6 @@ export class Gamehub<
 
     const betterScore = currentScore.lessThan(newScore);
 
-    // if (currentScore < newScore) {
     {
       // Everything that is done here, should be done only if <betterScore>
       // So all set should be with <betterScore> check
@@ -153,54 +152,33 @@ export class Gamehub<
         Provable.if(betterScore, newScore, currentScore),
       );
 
-      let looserIndex = UInt64.from(0);
-      let looserScore = UInt64.from(0);
+      let prevValue = new LeaderboardScore({
+        score: newScore,
+        player: this.transaction.sender.value,
+      });
+      let found = Bool(false);
 
       for (let i = 0; i < this.leaderboardSize; i++) {
         const leaderboardKey = new LeaderboardIndex({
           competitionId,
           index: UInt64.from(i),
         });
-        const gameRecord = this.leaderboard.get(leaderboardKey);
-
-        const result = gameRecord.orElse(
+        const gameRecord = this.leaderboard.get(leaderboardKey).orElse(
           new LeaderboardScore({
             score: UInt64.from(0),
             player: PublicKey.empty(),
           }),
         );
 
-        looserIndex = Provable.if(
-          result.score.lessThan(looserScore),
-          UInt64.from(i),
-          looserIndex,
+        found = found.or(gameRecord.score.lessThan(prevValue.score));
+
+        this.leaderboard.set(
+          leaderboardKey,
+          Provable.if(found, LeaderboardScore, prevValue, gameRecord),
         );
-        looserScore = Provable.if(
-          result.score.lessThan(looserScore),
-          UInt64.from(i),
-          looserScore,
-        );
+
+        prevValue = Provable.if(found, LeaderboardScore, gameRecord, prevValue);
       }
-
-      const looserKey = new LeaderboardIndex({
-        competitionId,
-        index: looserIndex,
-      });
-
-      const looserGameRecord = this.leaderboard.get(looserKey);
-
-      this.leaderboard.set(
-        looserKey,
-        Provable.if(
-          betterScore,
-          LeaderboardScore,
-          new LeaderboardScore({
-            score: newScore,
-            player: this.transaction.sender.value,
-          }),
-          looserGameRecord.value,
-        ),
-      );
     }
   }
 
