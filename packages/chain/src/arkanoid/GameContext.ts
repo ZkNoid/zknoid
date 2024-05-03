@@ -595,9 +595,15 @@ export class GameContext extends Struct({
       }
     });
 
+    const collisionSubValue = Provable.if(
+      collisionHappen,
+      UInt64.from(1),
+      UInt64.from(0),
+    );
+
     this.totalLeft = Provable.if(
       collisionHappen,
-      this.totalLeft.sub(1),
+      this.totalLeft.sub(collisionSubValue),
       this.totalLeft,
     );
 
@@ -609,7 +615,7 @@ export class GameContext extends Struct({
 
     const newBrickValue = Provable.if(
       collisionHappen,
-      collision.target.value.sub(1),
+      collision.target.value.sub(collisionSubValue),
       collision.target.value,
     );
 
