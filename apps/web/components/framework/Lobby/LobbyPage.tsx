@@ -27,6 +27,7 @@ import {
 import { ZkNoidGameConfig } from '@/lib/createConfig';
 import { RuntimeModulesRecord } from '@proto-kit/module';
 import { AlreadyInLobbyModal } from '@/components/framework/Lobby/AlreadyInLobbyModal';
+import { useAlreadyInLobbyModalStore } from '@/lib/stores/alreadyInLobbyModalStore';
 
 export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   lobbyId,
@@ -51,6 +52,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   const chainStore = useProtokitChainStore();
   const lobbiesStore = useLobbiesStore();
   const pvpLobbyStorage = usePvpLobbyStorage();
+  const alreadyInLobbyModalStore = useAlreadyInLobbyModalStore();
   const searchParams = useSearchParams();
   const networkStore = useNetworkStore();
   const [currentLobby, setCurrentLobby] = useState<ILobby | undefined>(
@@ -58,8 +60,6 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   );
   const [isCreationMode, setIsCreationMode] = useState<boolean>(false);
   const [isLobbyNotFoundModalOpen, setIsLobbyNotFoundModalOpen] =
-    useState<boolean>(false);
-  const [isAlreadyInLobbyModal, setIsAlreadyInLobbyModal] =
     useState<boolean>(false);
 
   const client = useContext(AppChainClientContext) as ClientAppChain<
@@ -154,7 +154,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
 
   const joinLobby = async (lobbyId: number) => {
     if (lobbiesStore.currentLobby) {
-      setIsAlreadyInLobbyModal(true);
+      alreadyInLobbyModalStore.setIsOpen(true);
       return;
     }
 
@@ -201,7 +201,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
     await tx.sign();
     await tx.send();
 
-    if (isAlreadyInLobbyModal) setIsAlreadyInLobbyModal(false);
+    if (alreadyInLobbyModalStore.isOpen) alreadyInLobbyModalStore.close();
   };
 
   const register = async (id: number) => {
@@ -367,8 +367,8 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
         </AnimatePresence>
         <LobbyList lobbys={lobbiesStore.lobbies} />
         <AlreadyInLobbyModal
-          isOpen={isAlreadyInLobbyModal}
-          setIsOpen={setIsAlreadyInLobbyModal}
+          isOpen={alreadyInLobbyModalStore.isOpen}
+          setIsOpen={alreadyInLobbyModalStore.setIsOpen}
           leaveLobby={leaveLobby}
         />
       </LobbyWrap>

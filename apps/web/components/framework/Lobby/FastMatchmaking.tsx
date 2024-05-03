@@ -2,9 +2,10 @@ import Image from 'next/image';
 import znakesImg from '@/public/image/tokens/znakes.svg';
 import { Currency } from '@/constants/currency';
 import { Popover } from '@/components/ui/games-store/shared/Popover';
-import { IMatchamkingOption } from '@/lib/stores/lobbiesStore';
+import { IMatchamkingOption, useLobbiesStore } from '@/lib/stores/lobbiesStore';
 import { MatchmakingModal } from '@/components/framework/Lobby/MatchmakingModal';
 import { useState } from 'react';
+import { useAlreadyInLobbyModalStore } from '@/lib/stores/alreadyInLobbyModalStore';
 
 const OpponentItem = ({
   option,
@@ -23,16 +24,21 @@ const OpponentItem = ({
   setPay: (pay: number) => void;
   setReceive: (receive: number) => void;
 }) => {
+  const lobbiesStore = useLobbiesStore();
+  const alreadyInLobbyModalStore = useAlreadyInLobbyModalStore();
   return (
     <div
       className={
         'group flex cursor-pointer flex-col justify-between rounded-[5px] border border-left-accent bg-left-accent p-2 hover:bg-[#464646]'
       }
       onClick={async () => {
-        await register(option.id);
-        setPay(option.pay);
-        setReceive(option.pay * winCoef);
-        setIsModalOpen(true);
+        if (lobbiesStore.currentLobby) alreadyInLobbyModalStore.setIsOpen(true);
+        else {
+          await register(option.id);
+          setPay(option.pay);
+          setReceive(option.pay * winCoef);
+          setIsModalOpen(true);
+        }
       }}
     >
       <span
