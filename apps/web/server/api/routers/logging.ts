@@ -111,9 +111,9 @@ export const loggingRouter = createTRPCRouter({
         ) {
           await telegramBot.sendMessage(
             process.env.MAIN_CHAT_ID,
-            `🚰 ${input.isUnbridged ? 'Unbridged' : 'Bridged'} ${formatUnits(input.amount)} tokens by ${
-              input.userAddress
-            }`
+            `🚰 ${input.isUnbridged ? 'Unbridged' : 'Bridged'} ${formatUnits(
+              input.amount
+            )} tokens by ${input.userAddress}`
           );
         }
       }
@@ -134,9 +134,9 @@ export const loggingRouter = createTRPCRouter({
     .input(
       z.object({
         envContext: EnvContext,
-        amount: z.bigint(),
         gameId: z.string(),
         userAddress: z.string(),
+        type: z.number(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -149,7 +149,7 @@ export const loggingRouter = createTRPCRouter({
         ) {
           await telegramBot.sendMessage(
             process.env.MAIN_CHAT_ID,
-            `🚰 Test balance connected: ${input.userAddress}`
+            `🎮 Matchmaking for game <b>${input.gameId}</b> started by ${input.userAddress} with type ${input.type}`
           );
         }
       }
@@ -157,7 +157,6 @@ export const loggingRouter = createTRPCRouter({
       await db.collection('logs').insertOne({
         event,
         hostname: input.envContext,
-        amount: input.amount,
         userAddress: input.userAddress,
       });
 
