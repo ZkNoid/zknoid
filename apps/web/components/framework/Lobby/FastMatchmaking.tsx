@@ -6,6 +6,9 @@ import { IMatchamkingOption, useLobbiesStore } from '@/lib/stores/lobbiesStore';
 import { MatchmakingModal } from '@/components/framework/Lobby/MatchmakingModal';
 import { useState } from 'react';
 import { useAlreadyInLobbyModalStore } from '@/lib/stores/alreadyInLobbyModalStore';
+import { api } from '@/trpc/react';
+import { getEnvContext } from '@/lib/envContext';
+import { useNetworkStore } from '@/lib/stores/network';
 
 const OpponentItem = ({
   option,
@@ -24,6 +27,8 @@ const OpponentItem = ({
   setPay: (pay: number) => void;
   setReceive: (receive: number) => void;
 }) => {
+  const networkStore = useNetworkStore();
+  const matchmakingMutation = api.logging.logMatchmakingEntered.useMutation();
   const lobbiesStore = useLobbiesStore();
   const alreadyInLobbyModalStore = useAlreadyInLobbyModalStore();
   return (
@@ -35,6 +40,13 @@ const OpponentItem = ({
         if (lobbiesStore.currentLobby) alreadyInLobbyModalStore.setIsOpen(true);
         else {
           await register(option.id);
+          matchmakingMutation.mutate({
+            gameId: 'arkanoid',
+            userAddress: networkStore.address ?? '',
+            type: option.id,
+            envContext: getEnvContext(),
+          });
+
           setPay(option.pay);
           setReceive(option.pay * winCoef);
           setIsModalOpen(true);
