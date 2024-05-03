@@ -132,7 +132,10 @@ export class Gamehub<
       this.competitions.get(competitionId).value.prereg;
     const userRegistration = this.registrations.get(gameKey).value;
 
-    assert(registrationNeeded.not().or(userRegistration));
+    assert(
+      registrationNeeded.not().or(userRegistration),
+      'Should register first',
+    );
 
     this.payCompetitionFee(competitionId, registrationNeeded.not());
 
@@ -212,7 +215,7 @@ export class Gamehub<
       player: this.transaction.sender.value,
     });
 
-    assert(this.gotReward.get(key).value);
+    assert(this.gotReward.get(key).value, 'Already got your reward');
     this.gotReward.set(key, Bool(true));
 
     let winner = this.leaderboard.get(
@@ -222,7 +225,10 @@ export class Gamehub<
       }),
     ).value;
 
-    assert(winner.player.equals(this.transaction.sender.value));
+    assert(
+      winner.player.equals(this.transaction.sender.value),
+      'You are not the winner',
+    );
 
     this.balances.mint(
       ZNAKE_TOKEN_ID,
