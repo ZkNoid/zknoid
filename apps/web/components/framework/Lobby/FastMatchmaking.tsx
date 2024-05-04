@@ -201,7 +201,7 @@ export const FastMatchmaking = ({
         ))}
         <div
           className={
-            'flex cursor-pointer flex-col gap-2 rounded-[5px] border border-foreground bg-[#252525] p-2 hover:bg-[#464646]'
+            'flex flex-col gap-2 rounded-[5px] border border-foreground bg-[#252525] p-2 opacity-50'
           }
         >
           <div className={'flex flex-row items-center justify-center gap-1'}>
