@@ -94,7 +94,7 @@ export const Input = ({
               'cursor-default': isReadonly,
             }
           )}
-          value={value || ''}
+          value={value}
           onChange={(event) => {
             setValue?.(
               type === 'number'
