@@ -183,7 +183,6 @@ export class GameContext extends Struct({
 
     const a = this.ball.speed.x;
     const b = this.ball.speed.y;
-
     const c = a.mul(this.ball.position.y).sub(b.mul(this.ball.position.x));
 
     const platformLeftEndExtended = Provable.if(
@@ -201,8 +200,23 @@ export class GameContext extends Struct({
     const platformLeft = b.mul(platformLeftEndExtended);
     const platformRight = b.mul(platformRightEndExtended);
 
+    const realPlatformCheck = inRange(adc0, platformLeft, platformRight);
+    const mirroredLeftPlatformCheck = inRange(
+      adc0,
+      platformLeft.neg(),
+      platformRight.neg(),
+    );
+    const mirroredRightPlatformCheck = inRange(
+      adc0,
+      Int64.from(2 * FIELD_WIDTH).sub(platformLeft),
+      Int64.from(2 * FIELD_WIDTH).sub(platformRight),
+    );
+
     const isFail = bottomBump.and(
-      inRange(adc0, platformLeft, platformRight).not(),
+      realPlatformCheck
+        .not()
+        .and(mirroredLeftPlatformCheck.not())
+        .and(mirroredRightPlatformCheck.not()),
     );
 
     this.winable = this.winable.and(isFail.not());
