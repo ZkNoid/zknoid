@@ -227,11 +227,8 @@ export const GameView = (props: IGameViewProps) => {
       ball.dy *= -1;
     }
 
-    if (
-      ball.x - ball.radius > cart.x &&
-      ball.x + ball.radius < cart.x + cart.w &&
-      ball.y > cart.y
-    ) {
+    // if (ball.x >= cart.x && ball.x <= cart.x + cart.w && ball.y >= cart.y) {
+    if (bottomBump) {
       ball.y = 2 * cart.y - ball.y;
       ball.dy *= -1;
       cart.hitMomentum = Math.round(cart.dx / 10);
@@ -239,9 +236,9 @@ export const GameView = (props: IGameViewProps) => {
       bottomBump = false;
     }
 
-    if (bottomBump) {
-      return onLost();
-    }
+    // if (bottomBump) {
+    //   return onLost();
+    // }
 
     ballTrace.push([ball.x, ball.y]);
 

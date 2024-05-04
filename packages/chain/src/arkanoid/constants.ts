@@ -20,8 +20,8 @@ export const FIELD_SIZE = FIELD_WIDTH * FIELD_HEIGHT;
 export const GAME_LENGTH = 100;
 export const CHUNK_LENGTH = 10;
 
-export const DEFAULT_BALL_LOCATION_X = 250;
-export const DEFAULT_BALL_LOCATION_Y = 250;
+export const DEFAULT_BALL_LOCATION_X = Math.floor(FIELD_WIDTH / 2);
+export const DEFAULT_BALL_LOCATION_Y = Math.floor(FIELD_HEIGHT / 2);
 
 export const DEFAULT_BALL_SPEED_X = 4 * 10;
 export const DEFAULT_BALL_SPEED_Y = -3 * 10;
