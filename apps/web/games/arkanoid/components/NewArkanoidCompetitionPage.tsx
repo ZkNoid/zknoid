@@ -247,7 +247,7 @@ export default function NewArkanoidCompetitionPage() {
         new Date(preregistrationTo).getTime())
       ? setIsCompetitionDateInvalid(true)
       : setIsCompetitionDateInvalid(false);
-    !preregistrationFrom || !preregistrationTo
+    preregistrationEnabled && (!preregistrationFrom || !preregistrationTo)
       ? setIsPreregDateInvalid(true)
       : setIsPreregDateInvalid(false);
     participationFee < 0
@@ -266,9 +266,9 @@ export default function NewArkanoidCompetitionPage() {
       isParticipantFeeInvalid ||
       isFundsInvalid ||
       isPolicyInvalid
-    )
+    ) {
       return false;
-    else if (!isPolicyAccepted) return false;
+    } else if (!isPolicyAccepted) return false;
     else return true;
   };
 
