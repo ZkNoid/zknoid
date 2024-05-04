@@ -139,7 +139,7 @@ index 1ce6625eca0bb0924949c05a6b84ba1608805373..c7e7339d7b21a744d631d0385593fa6c
 +    async removeUserTransaction(hash) {
 +        const index = this.queue.findIndex((tx) => tx.hash().toString() === hash);
 +        if (index > -1) {
-+            this.queue = this.queue.splice(index, 1);
++            this.queue.splice(index, 1);
 +            return true;
 +        }
 +        return false;
