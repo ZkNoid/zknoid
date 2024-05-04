@@ -60,10 +60,7 @@ export const CompetitionWidget = ({
     }
   };
 
-  const renderCompetitionsList = competitionList.slice(
-    0,
-    currentPage * PAGINATION_LIMIT
-  );
+  const renderCompetitionsList = competitionList;
 
   useEffect(() => {
     const refObj = competitionsListRef.current;

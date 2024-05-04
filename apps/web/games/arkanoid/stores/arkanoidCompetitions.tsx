@@ -47,6 +47,7 @@ export const useArkanoidCompetitionsStore = create<
           await client.query.runtime.ArkanoidGameHub.competitions.get(
             UInt64.from(i)
           );
+
         let registered =
           await client.query.runtime.ArkanoidGameHub.registrations.get(
             //@ts-ignore
