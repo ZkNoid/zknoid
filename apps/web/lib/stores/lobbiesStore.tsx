@@ -32,7 +32,7 @@ export interface LobbiesState {
 }
 
 export const lobbyInitializer = immer<LobbiesState>((set) => ({
-  loading: Boolean(false),
+  loading: Boolean(true),
   lobbies: [],
   currentLobby: undefined,
   selfReady: false,
