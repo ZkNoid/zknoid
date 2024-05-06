@@ -26,7 +26,8 @@ export interface LobbiesState {
   clearStore(): void;
   loadLobbies(
     query: ModuleQuery<LobbyManager>,
-    address: PublicKey
+    address: PublicKey,
+    rewardCoeff: number
   ): Promise<void>;
   loadMathcmakingOptions(query: ModuleQuery<MatchMaker>): Promise<void>;
 }
@@ -47,7 +48,11 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
       state.mathcmakingOptions = [];
     });
   },
-  async loadLobbies(query: ModuleQuery<LobbyManager>, address: PublicKey) {
+  async loadLobbies(
+    query: ModuleQuery<LobbyManager>,
+    address: PublicKey,
+    rewardCoeff: number
+  ) {
     set((state) => {
       state.loading = true;
     });
@@ -79,7 +84,10 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
           id: i,
           active: curLobby.active.toBoolean(),
           name: curLobby.name.toString(),
-          reward: 0n,
+          reward:
+            (BigInt(rewardCoeff * 1000) *
+              curLobby.participationFee.toBigInt()) /
+            1000n,
           fee: curLobby.participationFee.toBigInt(),
           maxPlayers: 2,
           players,
@@ -145,7 +153,10 @@ export const useLobbiesStore = create<LobbiesState, [['zustand/immer', never]]>(
   lobbyInitializer
 );
 
-export const useObserveLobbiesStore = (query: ModuleQuery<MatchMaker>) => {
+export const useObserveLobbiesStore = (
+  query: ModuleQuery<MatchMaker>,
+  rewardCoeff: number = 2
+) => {
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
   const lobbiesStore = useLobbiesStore();
@@ -162,7 +173,11 @@ export const useObserveLobbiesStore = (query: ModuleQuery<MatchMaker>) => {
       throw Error('Context app chain client is not set');
     }
 
-    lobbiesStore.loadLobbies(query, PublicKey.fromBase58(network.address!));
+    lobbiesStore.loadLobbies(
+      query,
+      PublicKey.fromBase58(network.address!),
+      rewardCoeff
+    );
   }, [chain.block?.height, network.walletConnected, network.address]);
 
   // Update once wallet connected

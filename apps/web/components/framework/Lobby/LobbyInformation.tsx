@@ -172,13 +172,13 @@ export const LobbyInformation = <RuntimeModules extends RuntimeModulesRecord>({
               Participants fee
             </span>
             <span className={'col-start-2 col-end-5'}>
-              {lobby.reward.toString()} {lobby.currency}
+              {formatUnits(lobby.fee)} {lobby.currency}
             </span>
             <span className={'font-medium uppercase text-left-accent'}>
               Max Funds
             </span>
             <span className={'col-start-2 col-end-5'}>
-              {lobby.fee.toString()} {lobby.currency}
+              {formatUnits(lobby.reward)} {lobby.currency}
             </span>
           </div>
         </div>
