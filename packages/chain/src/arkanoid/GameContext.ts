@@ -74,6 +74,10 @@ export class GameContext extends Struct({
   }
 
   processTick(tick: Tick): void {
+    const a = this.ball.speed.x;
+    const b = this.ball.speed.y;
+    const c = a.mul(this.ball.position.y).sub(b.mul(this.ball.position.x));
+
     let curTime = UInt64.zero;
 
     // 1) Update score
@@ -180,10 +184,6 @@ export class GameContext extends Struct({
     /// all space between old position and new position. It helps to solve problem, when platform
     /// collision happen in the begining of the tick, and in the end of the tick platform located
     /// somwhere else, so contract count is as loss.
-
-    const a = this.ball.speed.x;
-    const b = this.ball.speed.y;
-    const c = a.mul(this.ball.position.y).sub(b.mul(this.ball.position.x));
 
     const platformLeftEndExtended = Provable.if(
       movedLeft,
