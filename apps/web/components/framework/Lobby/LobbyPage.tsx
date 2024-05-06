@@ -85,6 +85,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   useObserveLobbiesStore(params.query, rewardCoeff);
 
   const searchedLobby = useRef(false);
+  const waitNewLobby = useRef(false);
 
   useEffect(() => {
     if (searchedLobby.current) {
@@ -147,9 +148,13 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   }, [lobbiesStore.lobbies, params.lobbyId, pvpLobbyStorage.lastLobbyId]);
 
   useEffect(() => {
-    setCurrentLobby(lobbiesStore.currentLobby);
-    if (!pvpLobbyStorage.lastLobbyId && lobbiesStore.currentLobby?.id) {
+    // setCurrentLobby(lobbiesStore.currentLobby);
+    if (
+      (waitNewLobby.current || !pvpLobbyStorage.lastLobbyId) &&
+      lobbiesStore.currentLobby?.id
+    ) {
       pvpLobbyStorage.setLastLobbyId(lobbiesStore.currentLobby.id);
+      waitNewLobby.current = false;
     }
   }, [lobbiesStore.currentLobby?.id]);
 
@@ -176,6 +181,8 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
 
     await tx.sign();
     await tx.send();
+
+    waitNewLobby.current = true;
   };
 
   const joinLobby = async (lobbyId: number) => {
