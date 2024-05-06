@@ -7,7 +7,7 @@ import { CreateNewLobbyBtn } from '@/components/framework/Lobby/CreateNewLobbyBt
 import { usePvpLobbyStorage } from '@/lib/stores/pvpLobbyStore';
 import { ILobby } from '@/lib/types';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { CreateNewLobby } from '@/components/framework/Lobby/CreateNewLobby';
 import { AnimatePresence, motion } from 'framer-motion';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
@@ -82,8 +82,19 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
 
   useObserveLobbiesStore(params.query);
 
+  const searchedLobby = useRef(false);
+
   useEffect(() => {
+    if (searchedLobby.current) {
+      return;
+    }
+
     const lobbyKey = searchParams.get('key');
+
+    if (lobbiesStore.loading) {
+      return;
+    }
+
     if (
       lobbyKey &&
       params.lobbyId !== 'undefined' &&
@@ -91,18 +102,25 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
         ? parseInt(params.lobbyId) !== lobbiesStore.currentLobby.id
         : true)
     ) {
-      let lobby = lobbiesStore.lobbies.find(
-        (lobby) =>
+      let lobby = lobbiesStore.lobbies.find((lobby) => {
+        return (
           lobby.id === parseInt(params.lobbyId) &&
-          lobby.accessKey === parseInt(lobbyKey)
-      );
+          (!lobby.privateLobby || lobby.accessKey === parseInt(lobbyKey))
+        );
+      });
       if (lobby) {
-        joinLobby(lobby.id);
-        pvpLobbyStorage.setConnectedLobbyKey(lobby.accessKey.toString());
-        pvpLobbyStorage.setConnectedLobbyId(lobby.id);
-      } else setIsLobbyNotFoundModalOpen(true);
+        searchedLobby.current = true;
+        setIsLobbyNotFoundModalOpen(false);
+        // joinLobby(lobby.id);
+        // pvpLobbyStorage.setConnectedLobbyKey(lobby.accessKey.toString());
+        // pvpLobbyStorage.setConnectedLobbyId(lobby.id);
+        pvpLobbyStorage.setLastLobbyId(lobby.id);
+      } else {
+        setIsLobbyNotFoundModalOpen(true);
+      }
     }
-  }, [lobbiesStore.lobbies, params.lobbyId, searchParams]);
+  }, [lobbiesStore.loading]);
+  // }, [lobbiesStore.lobbies, params.lobbyId, searchParams]);
 
   useEffect(() => {
     if (lobbiesStore.activeGameId) {
@@ -113,22 +131,22 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   }, [lobbiesStore.activeGameId]);
 
   useEffect(() => {
-    if (params.lobbyId !== 'undefined') {
-      const lobby = lobbiesStore.lobbies.find(
-        (lobby) => lobby.id.toString() === params.lobbyId
-      );
-      if (lobby) setCurrentLobby(lobby);
-    } else {
-      const lobby = lobbiesStore.lobbies.find(
-        (lobby) => lobby.id === pvpLobbyStorage.lastLobbyId
-      );
-      setCurrentLobby(lobby);
-    }
+    // if (params.lobbyId !== 'undefined') {
+    //   const lobby = lobbiesStore.lobbies.find(
+    //     (lobby) => lobby.id.toString() === params.lobbyId
+    //   );
+    //   if (lobby) setCurrentLobby(lobby);
+    // } else {
+    const lobby = lobbiesStore.lobbies.find(
+      (lobby) => lobby.id === pvpLobbyStorage.lastLobbyId
+    );
+    setCurrentLobby(lobby);
+    // }
   }, [lobbiesStore.lobbies, params.lobbyId, pvpLobbyStorage.lastLobbyId]);
 
   useEffect(() => {
     setCurrentLobby(lobbiesStore.currentLobby);
-    if (lobbiesStore.currentLobby?.id) {
+    if (!pvpLobbyStorage.lastLobbyId && lobbiesStore.currentLobby?.id) {
       pvpLobbyStorage.setLastLobbyId(lobbiesStore.currentLobby.id);
     }
   }, [lobbiesStore.currentLobby?.id]);
