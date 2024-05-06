@@ -34,12 +34,14 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   query,
   contractName,
   config, // params,
+  rewardCoeff,
 }: {
   // params: {
   lobbyId: string;
   query: ModuleQuery<MatchMaker>;
   contractName: string;
   config: ZkNoidGameConfig<RuntimeModules>;
+  rewardCoeff?: number;
   // };
 }) {
   const params = {
@@ -80,7 +82,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
     throw Error('Context app chain client is not set');
   }
 
-  useObserveLobbiesStore(params.query);
+  useObserveLobbiesStore(params.query, rewardCoeff);
 
   const searchedLobby = useRef(false);
 
@@ -164,7 +166,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
       () => {
         lobbyManager.createLobby(
           CircuitString.fromString(name),
-          ProtoUInt64.from(participationFee),
+          ProtoUInt64.from(participationFee).mul(10 ** 9),
           Bool(privateLobby),
           sessionPrivateKey.toPublicKey(),
           Field.from(accessKey)

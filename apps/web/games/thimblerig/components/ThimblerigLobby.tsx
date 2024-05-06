@@ -40,6 +40,7 @@ export default function ThimblerigLobby({
           query={client.query.runtime.ThimblerigLogic}
           contractName={'ThimblerigLogic'}
           config={thimblerigConfig}
+          rewardCoeff={1.67}
         />
       )}
     </GamePage>
