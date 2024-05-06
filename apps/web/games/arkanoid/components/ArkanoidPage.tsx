@@ -234,7 +234,7 @@ export default function ArkanoidPage({
         envContext: getEnvContext(),
       });
 
-      if (competition?.creator) {
+      if ((competition?.id || 0) > 2) {
         await progress.mutateAsync({
           userAddress: networkStore.address!,
           section: 'ARKANOID',
@@ -247,7 +247,7 @@ export default function ArkanoidPage({
         });
       }
 
-      if (score > 90000 && competition?.creator) {
+      if (score > 90000 && (competition?.id || 0) > 2) {
         await progress.mutateAsync({
           userAddress: networkStore.address!,
           section: 'ARKANOID',
