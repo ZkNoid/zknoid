@@ -219,8 +219,9 @@ export class Gamehub<
     let competition = this.competitions.get(competitionId).value;
     let fee = Provable.if(shouldPay, competition.participationFee, UInt64.zero);
 
-    this.balances.mint(
+    this.balances.transfer(
       ZNAKE_TOKEN_ID,
+      this.transaction.sender.value,
       PublicKey.empty(),
       ProtoUInt64.from(fee),
     );
