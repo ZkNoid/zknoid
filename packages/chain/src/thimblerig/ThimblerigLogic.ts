@@ -61,7 +61,7 @@ export class ThimblerigLogic extends MatchMaker {
   @state() public gamesNum = State.from<UInt64>(UInt64);
 
   public override initGame(lobby: Lobby, shouldUpdate: Bool): UInt64 {
-    const currentGameId = this.getNextGameId();
+    const currentGameId = lobby.id;
 
     // Setting active game if opponent found
     this.games.set(
@@ -87,15 +87,6 @@ export class ThimblerigLogic extends MatchMaker {
     );
 
     return super.initGame(lobby, shouldUpdate);
-  }
-
-  public override getNextGameId(): UInt64 {
-    return this.gamesNum.get().orElse(UInt64.from(1));
-  }
-  public override updateNextGameId(shouldUpdate: Bool): void {
-    let curGameId = this.getNextGameId();
-
-    this.gamesNum.set(Provable.if(shouldUpdate, curGameId.add(1), curGameId));
   }
 
   @runtimeMethod()

@@ -340,7 +340,7 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
    * @returns Id of the new game. Will be set for player and opponent
    */
   public initGame(lobby: Lobby, shouldInit: Bool): UInt64 {
-    let gameId = this.getNextGameId();
+    let gameId = lobby.id;
 
     lobby.players.forEach((player) => {
       this.forEachUserInInitGame(lobby, player, shouldInit);
@@ -352,8 +352,6 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
 
     this.activeLobby.set(lobby.id, lobby);
 
-    this.updateNextGameId(shouldInit);
-
     return gameId;
   }
 
@@ -362,8 +360,6 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
     player: PublicKey,
     shouldInit: Bool,
   ): void {
-    let gameId = this.getNextGameId();
-
     // Eat pendingBalances of users
     let curBalance = this.pendingBalances.get(player).value;
     this.pendingBalances.set(
@@ -377,7 +373,10 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
     );
 
     // Set active game
-    this.activeGameId.set(player, Provable.if(shouldInit, gameId, UInt64.zero));
+    this.activeGameId.set(
+      player,
+      Provable.if(shouldInit, lobby.id, UInt64.zero),
+    );
   }
 
   protected getFunds(
@@ -418,12 +417,6 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
     this.balances.mint(ZNAKE_TOKEN_ID, sender, pendingBalance);
     this.pendingBalances.set(sender, ProtoUInt64.from(0));
   }
-
-  public getNextGameId(): UInt64 {
-    return UInt64.zero;
-  }
-
-  public updateNextGameId(shouldUpdate: Bool): void {}
 
   protected _onLobbyEnd(lobbyId: UInt64, shouldEnd: Bool): void {
     let lobby = this.activeLobby.get(lobbyId).value;
