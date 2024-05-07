@@ -315,7 +315,7 @@ export default function ArkanoidPage({
             />
             <div className={'flex flex-col gap-4 lg:hidden'}>
               <span className={'w-full text-headline-2 font-bold'}>Rules</span>
-              <span className={'font-plexsans text-buttons-menu font-normal'}>
+              <span className={'font-plexsans text-buttons-menu font-normal whitespace-pre-line'}>
                 {competition ? competition.game.rules : <> - </>}
               </span>
             </div>
