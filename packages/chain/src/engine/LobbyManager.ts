@@ -426,11 +426,25 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
         Provable.if(shouldEnd, lobby.players[i], PublicKey.empty()),
         UInt64.zero,
       );
+
+      lobby.players[i] = Provable.if(
+        shouldEnd,
+        PublicKey.empty(),
+        lobby.players[i],
+      );
+      lobby.ready[i] = Provable.if(shouldEnd, Bool(false), lobby.ready[i]);
     }
 
-    this.activeLobby.set(
-      Provable.if(shouldEnd, lobbyId, UInt64.zero),
-      Lobby.inactive(),
+    lobby.readyAmount = Provable.if(
+      shouldEnd,
+      UInt64.from(0),
+      lobby.readyAmount,
     );
+
+    lobby.active = Provable.if(shouldEnd, Bool(true), lobby.active);
+    lobby.started = Provable.if(shouldEnd, Bool(false), lobby.started);
+    lobby.curAmount = Provable.if(shouldEnd, UInt64.from(0), lobby.curAmount);
+
+    this.activeLobby.set(Provable.if(shouldEnd, lobbyId, UInt64.zero), lobby);
   }
 }
