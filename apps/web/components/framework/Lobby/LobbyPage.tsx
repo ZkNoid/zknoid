@@ -132,6 +132,16 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
     if (lobbiesStore.activeGameId) {
       console.log(`Active gameId: `, lobbiesStore.activeGameId);
       console.log(`Move to game page`);
+
+      progress.mutate({
+        userAddress:
+          lobbiesStore.currentLobby!.playersAddresses?.[0]?.toBase58() || '',
+        section: 'THIMBLERIG',
+        id: 3,
+        txHash: '',
+        envContext: getEnvContext(),
+      });
+
       router.push(`/games/${params.config.id}/${lobbiesStore.activeGameId}`);
     }
   }, [lobbiesStore.activeGameId]);
@@ -220,22 +230,6 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
 
     await tx.sign();
     await tx.send();
-
-    if (
-      contractName == 'ThimblerigLogic' &&
-      typeof lobbiesStore.currentLobby != undefined
-    ) {
-      await progress.mutateAsync({
-        userAddress:
-          lobbiesStore.currentLobby!.playersAddresses?.[0]?.toBase58() || '',
-        section: 'THIMBLERIG',
-        id: 3,
-        txHash: JSON.stringify(
-          (tx.transaction! as PendingTransaction).toJSON()
-        ),
-        envContext: getEnvContext(),
-      });
-    }
   };
 
   const ready = async () => {
