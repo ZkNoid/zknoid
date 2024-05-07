@@ -387,14 +387,25 @@ export default function ArkanoidPage({
                         'flex min-h-[50vh] w-full items-center justify-center lg:h-full lg:min-h-min'
                       }
                     >
-                      <button
-                        className={
-                          'w-full max-w-[80%] rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-[20px]/[20px] font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent lg:max-w-[40%]'
-                        }
-                        onClick={startGame}
-                      >
-                        Start game
-                      </button>
+                      {workerClientStore.status == 'Initialized' ? (
+                        <button
+                          className={
+                            'w-full max-w-[80%] rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-[20px]/[20px] font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent lg:max-w-[40%]'
+                          }
+                          onClick={startGame}
+                        >
+                          Start game
+                        </button>
+                      ) : (
+                        <div
+                          className={
+                            'w-full max-w-[80%] rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-[20px]/[20px] font-medium text-dark-buttons-text lg:max-w-[40%]'
+                          }
+                        >
+                          {' '}
+                          Wait for initialization
+                        </div>
+                      )}
                     </div>
                   )}
                 </>
