@@ -14,7 +14,7 @@ import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { ClientAppChain, MatchMaker, ProtoUInt64 } from 'zknoid-chain-dev';
 import { Field, Bool, CircuitString, PublicKey, UInt64 } from 'o1js';
 import { useNetworkStore } from '@/lib/stores/network';
-import { type ModuleQuery } from '@proto-kit/sequencer';
+import { PendingTransaction, type ModuleQuery } from '@proto-kit/sequencer';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
 import { Modal } from '@/components/ui/games-store/shared/Modal';
@@ -28,6 +28,8 @@ import { ZkNoidGameConfig } from '@/lib/createConfig';
 import { RuntimeModulesRecord } from '@proto-kit/module';
 import { AlreadyInLobbyModal } from '@/components/framework/Lobby/AlreadyInLobbyModal';
 import { useAlreadyInLobbyModalStore } from '@/lib/stores/alreadyInLobbyModalStore';
+import { api } from '@/trpc/react';
+import { getEnvContext } from '@/lib/envContext';
 
 export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   lobbyId,
@@ -63,6 +65,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   const [isCreationMode, setIsCreationMode] = useState<boolean>(false);
   const [isLobbyNotFoundModalOpen, setIsLobbyNotFoundModalOpen] =
     useState<boolean>(false);
+  const progress = api.progress.setSolvedQuests.useMutation();
 
   const client = useContext(AppChainClientContext) as ClientAppChain<
     // typeof params.config.runtimeModules,
@@ -182,6 +185,18 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
     await tx.sign();
     await tx.send();
 
+    if (contractName == 'ThimblerigLogic') {
+      await progress.mutateAsync({
+        userAddress: networkStore.address!,
+        section: 'THIMBLERIG',
+        id: 2,
+        txHash: JSON.stringify(
+          (tx.transaction! as PendingTransaction).toJSON()
+        ),
+        envContext: getEnvContext(),
+      });
+    }
+
     waitNewLobby.current = true;
   };
 
@@ -205,6 +220,22 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
 
     await tx.sign();
     await tx.send();
+
+    if (
+      contractName == 'ThimblerigLogic' &&
+      typeof lobbiesStore.currentLobby != undefined
+    ) {
+      await progress.mutateAsync({
+        userAddress:
+          lobbiesStore.currentLobby!.playersAddresses?.[0]?.toBase58() || '',
+        section: 'THIMBLERIG',
+        id: 3,
+        txHash: JSON.stringify(
+          (tx.transaction! as PendingTransaction).toJSON()
+        ),
+        envContext: getEnvContext(),
+      });
+    }
   };
 
   const ready = async () => {
