@@ -66,6 +66,7 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
     }
 
     const contractActiveGameId = await query.activeGameId.get(address);
+    const currentLobbyId = await query.currentLobby.get(address);
     const activeGameId = contractActiveGameId
       ? +contractActiveGameId
       : contractActiveGameId;
@@ -76,7 +77,8 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
 
       if (
         curLobby &&
-        curLobby.started.not().toBoolean() &&
+        (curLobby.started.not().toBoolean() ||
+          curLobby.id.equals(currentLobbyId).toBoolean()) &&
         curLobby.active.toBoolean()
       ) {
         const players = +curLobby.curAmount;
@@ -102,7 +104,6 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
       }
     }
 
-    const currentLobbyId = await query.currentLobby.get(address);
     let curLobby: ILobby | undefined = undefined;
     let selfReady: boolean = false;
 
