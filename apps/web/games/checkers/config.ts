@@ -11,7 +11,7 @@ export const checkersConfig = createZkNoidGameConfig({
   name: 'Checkers game',
   description:
     'Two players take turns placing pieces on the board attempting to create lines of 5 of their own color',
-  image: '/image/games/randzu.svg',
+  image: '/image/games/checkers.svg',
   genre: ZkNoidGameGenre.BoardGames,
   features: [ZkNoidGameFeature.Multiplayer],
   isReleased: true,
