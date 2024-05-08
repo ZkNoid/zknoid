@@ -7,6 +7,7 @@ import { useNetworkStore } from '@/lib/stores/network';
 import { useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { DepositMenuItem } from '@/components/DepositMenuItem';
+import StoreDepositMenuItem from '@/components/StoreDepositMenuItem';
 
 export default function BalanceInfo() {
   const minaBalancesStore = useMinaBalancesStore();
@@ -47,7 +48,7 @@ export default function BalanceInfo() {
             <div className="block text-[12px] lg:hidden">
               {workerClient.status}
             </div>
-            <DepositMenuItem />
+            <StoreDepositMenuItem />
           </div>
         </div>
       )}
