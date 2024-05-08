@@ -1,6 +1,14 @@
 'use client';
 
-import { useContext, useEffect, useRef, useState } from 'react';
+import {
+  Dispatch,
+  MutableRefObject,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Field, Int64, PublicKey, UInt64 } from 'o1js';
 import {
   BRICK_HALF_WIDTH,
@@ -54,6 +62,20 @@ brickImages[0].src = '/sprite/brick/1.png';
 brickImages[1].src = '/sprite/brick/2.png';
 brickImages[2].src = '/sprite/brick/3.png';
 
+function useStateRef<T>(
+  initialValue: T
+): [T, Dispatch<SetStateAction<T>>, MutableRefObject<T>] {
+  const [value, setValue] = useState(initialValue);
+
+  const ref = useRef(value);
+
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  return [value, setValue, ref];
+}
+
 export default function NewArkanoidCompetitionPage() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -71,7 +93,7 @@ export default function NewArkanoidCompetitionPage() {
   const [funding, setFunding] = useState(0);
   const [participationFee, setParticipationFee] = useState(0);
 
-  const [bricks, setBricks] = useState<IBrick[]>([]);
+  const [bricks, setBricks, brickRef] = useStateRef<IBrick[]>([]);
 
   const networkStore = useNetworkStore();
   const protokitBalances = useProtokitBalancesStore();
@@ -89,9 +111,19 @@ export default function NewArkanoidCompetitionPage() {
     const ctx = canvas!.current?.getContext('2d');
     setContext(ctx);
 
-    if (canvas?.current) {
-      canvas.current.width = canvas.current.clientWidth;
-      canvas.current.height = canvas.current.clientHeight;
+    if (ctx) {
+      const handleResize = () => {
+        ctx.canvas.height = ctx.canvas.clientHeight;
+        ctx.canvas.width = ctx.canvas.clientWidth;
+
+        clearCanvas();
+        drawBricks();
+      };
+
+      handleResize();
+      window.addEventListener('resize', handleResize);
+
+      return () => window.removeEventListener('resize', handleResize);
     }
   }, [canvas]);
 
@@ -122,7 +154,10 @@ export default function NewArkanoidCompetitionPage() {
   };
 
   const drawBricks = () => {
-    for (let brick of bricks.filter((brick) => +brick.value.toString() > 1)) {
+    let ctx = canvas.current?.getContext('2d');
+    for (let brick of brickRef.current!.filter(
+      (brick) => +brick.value.toString() > 1
+    )) {
       const x = resizeToConvasSize(brick.pos[0]);
       const y = resizeToConvasSize(brick.pos[1]);
       const w = resizeToConvasSize(2 * BRICK_HALF_WIDTH);
@@ -861,7 +896,7 @@ export default function NewArkanoidCompetitionPage() {
             }
           >
             <canvas
-              className="m-5 aspect-square flex-grow border border-left-accent"
+              className="m-5 aspect-square w-full flex-grow border border-left-accent"
               ref={canvas}
             />
           </div>
