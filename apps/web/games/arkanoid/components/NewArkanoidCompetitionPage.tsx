@@ -32,7 +32,7 @@ import ArkanoidCoverSVG from '../assets/game-cover.svg';
 import ArkanoidCoverMobileSVG from '../assets/game-cover-mobile.svg';
 import { DropdownList } from '@/components/ui/games-store/shared/DropdownList';
 import { announcedGames, defaultGames, IGame } from '@/app/constants/games';
-import Image from 'next/image';
+import { default as ReactImage } from 'next/image';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import { PendingTransaction } from '@proto-kit/sequencer';
@@ -48,6 +48,11 @@ interface IContractBrick {
   pos: IntPoint;
   value: UInt64;
 }
+
+let brickImages: HTMLImageElement[] = [new Image(), new Image(), new Image()];
+brickImages[0].src = '/sprite/brick/1.png';
+brickImages[1].src = '/sprite/brick/2.png';
+brickImages[2].src = '/sprite/brick/3.png';
 
 export default function NewArkanoidCompetitionPage() {
   const [name, setName] = useState('');
@@ -113,29 +118,11 @@ export default function NewArkanoidCompetitionPage() {
 
   const drawBricks = () => {
     for (let brick of bricks.filter((brick) => +brick.value.toString() > 1)) {
-      ctx!.beginPath();
-      ctx!.rect(
-        resizeToConvasSize(brick.pos[0]),
-        resizeToConvasSize(brick.pos[1]),
-        resizeToConvasSize(BRICK_HALF_WIDTH * 2),
-        resizeToConvasSize(BRICK_HALF_WIDTH * 2)
-      );
-
-      // ctx!.strokeStyle = '#D2FF00';
-      // ctx!.stroke();
-      ctx!.closePath();
-
-      if (brick.value > 1) {
-        ctx!.fillStyle = '#D2FF00';
-        ctx!.font = '24px serif';
-        ctx!.fillText(
-          (brick.value - 1).toString(),
-          resizeToConvasSize(brick.pos[0]) +
-            resizeToConvasSize(BRICK_HALF_WIDTH / 2),
-          resizeToConvasSize(brick.pos[1]) +
-            resizeToConvasSize((3 * BRICK_HALF_WIDTH) / 2)
-        );
-      }
+      const x = resizeToConvasSize(brick.pos[0]);
+      const y = resizeToConvasSize(brick.pos[1]);
+      const w = resizeToConvasSize(2 * BRICK_HALF_WIDTH);
+      const h = resizeToConvasSize(2 * BRICK_HALF_WIDTH);
+      ctx!.drawImage(brickImages[brick.value - 1], x, y, w, h);
     }
   };
 
@@ -678,7 +665,7 @@ export default function NewArkanoidCompetitionPage() {
                           'flex h-[28px] w-[28px] items-center justify-center rounded-full'
                         }
                       >
-                        <Image src={znakesImg} alt={'Znakes Tokens'} />
+                        <ReactImage src={znakesImg} alt={'Znakes Tokens'} />
                       </div>
                     }
                   />
@@ -701,7 +688,7 @@ export default function NewArkanoidCompetitionPage() {
                           'flex h-[28px] w-[28px] items-center justify-center rounded-full'
                         }
                       >
-                        <Image src={znakesImg} alt={'Znakes Tokens'} />
+                        <ReactImage src={znakesImg} alt={'Znakes Tokens'} />
                       </div>
                     }
                   />
@@ -865,14 +852,14 @@ export default function NewArkanoidCompetitionPage() {
           </div>
           <div
             className={
-              'flex h-full w-full items-center justify-center rounded-[5px] border border-left-accent'
+              'flex h-full w-full items-center justify-center rounded-[5px]'
             }
           >
             <canvas
               width="300"
               height="300"
               style={{ width: 300, height: 300 }}
-              className="p-5"
+              className="border border-left-accent p-5"
               ref={canvas}
             />
           </div>
