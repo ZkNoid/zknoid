@@ -17,7 +17,7 @@ export const useWorkerClientStore = create<
 >(
   immer((set) => ({
     status: 'Not loaded',
-    async start() {      
+    async start() {
       set((state) => {
         state.status = 'Loading worker';
       });
@@ -36,7 +36,7 @@ export const useWorkerClientStore = create<
         state.status = 'Compiling contracts';
       });
 
-      await zkappWorkerClient.compileContracts();
+      // await zkappWorkerClient.compileContracts();
 
       set((state) => {
         state.status = 'Initializing zkapp';
@@ -60,7 +60,6 @@ export const useRegisterWorkerClient = () => {
   const workerClientStore = useWorkerClientStore();
 
   useEffect(() => {
-    if (workerClientStore.status == 'Not loaded')
-      workerClientStore.start();
+    if (workerClientStore.status == 'Not loaded') workerClientStore.start();
   }, []);
 };
