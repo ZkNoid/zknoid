@@ -123,6 +123,18 @@ export const GameView = (props: IGameViewProps) => {
     const ctx = canvas!.current?.getContext('2d');
     console.log('Setting canvas', ctx);
     setContext(ctx);
+
+    if (ctx) {
+      const handleResize = () => {
+        ctx.canvas.height = ctx.canvas.clientHeight + 10;
+        ctx.canvas.width = ctx.canvas.clientWidth;
+      };
+
+      handleResize();
+      window.addEventListener('resize', handleResize);
+
+      return () => window.removeEventListener('resize', handleResize);
+    }
   }, [canvas]);
 
   useEffect(() => {
@@ -151,7 +163,7 @@ export const GameView = (props: IGameViewProps) => {
 
     lastTime = time;
 
-    ctx!.clearRect(0, 0, FIELD_WIDTH, FIELD_HEIGHT + 10);
+    ctx!.clearRect(0, 0, canvas.current!.width, canvas.current!.height);
     moveCart(elapsed);
     moveBall(elapsed);
 
@@ -308,10 +320,10 @@ export const GameView = (props: IGameViewProps) => {
     // ctx!.fill();
     ctx?.drawImage(
       ballImage,
-      ball.x - ball.radius,
-      ball.y - ball.radius,
-      ball.radius * 2,
-      ball.radius * 2
+      resizeToConvasSize(ball.x - ball.radius),
+      resizeToConvasSize(ball.y - ball.radius),
+      resizeToConvasSize(ball.radius * 2),
+      resizeToConvasSize(ball.radius * 2)
     );
     ctx!.closePath();
   };
@@ -319,9 +331,9 @@ export const GameView = (props: IGameViewProps) => {
   const drawContractBall = () => {
     ctx!.beginPath();
     ctx!.arc(
-      contractBall.x,
-      contractBall.y,
-      contractBall.radius,
+      resizeToConvasSize(contractBall.x),
+      resizeToConvasSize(contractBall.y),
+      resizeToConvasSize(contractBall.radius),
       0,
       Math.PI * 2
     );
@@ -341,7 +353,13 @@ export const GameView = (props: IGameViewProps) => {
             : dValue == 1
               ? crack1Images[brickType]
               : crack2Images[brickType];
-        ctx!.drawImage(brickImage, brick.x, brick.y, brick.w, brick.h);
+        ctx!.drawImage(
+          brickImage,
+          resizeToConvasSize(brick.x),
+          resizeToConvasSize(brick.y),
+          resizeToConvasSize(brick.w),
+          resizeToConvasSize(brick.h)
+        );
       }
     });
   };
@@ -354,7 +372,12 @@ export const GameView = (props: IGameViewProps) => {
       .filter((brick: IContractBrickPorted) => brick.value > 1)
       .forEach((brick) => {
         ctx!.beginPath();
-        ctx!.rect(brick.x, brick.y, brick.w, brick.h);
+        ctx!.rect(
+          resizeToConvasSize(brick.x),
+          resizeToConvasSize(brick.y),
+          resizeToConvasSize(brick.w),
+          resizeToConvasSize(brick.h)
+        );
         ctx!.stroke();
         ctx!.closePath();
       });
@@ -367,7 +390,12 @@ export const GameView = (props: IGameViewProps) => {
 
     contractNearestBricks.forEach((brick) => {
       ctx!.beginPath();
-      ctx!.rect(brick.x, brick.y, brick.w, brick.h);
+      ctx!.rect(
+        resizeToConvasSize(brick.x),
+        resizeToConvasSize(brick.y),
+        resizeToConvasSize(brick.w),
+        resizeToConvasSize(brick.h)
+      );
       ctx!.stroke();
       ctx!.closePath();
     });
@@ -375,18 +403,30 @@ export const GameView = (props: IGameViewProps) => {
   };
 
   const drawCart = () => {
-    ctx!.beginPath();
-    ctx!.rect(cart.x, cart.y, cart.w, cart.h);
-    ctx?.drawImage(cartImage, cart.x, cart.y, cart.w, cart.h);
-    ctx!.fillStyle = 'red';
-    // ctx!.fill();
-    ctx!.closePath();
+    // ctx!.beginPath();
+    // ctx!.rect(cart.x, cart.y, cart.w, cart.h);
+    // ctx!.fillStyle = 'red';
+    // // ctx!.fill();
+    // ctx!.closePath();
+
+    ctx?.drawImage(
+      cartImage,
+      resizeToConvasSize(cart.x),
+      resizeToConvasSize(cart.y),
+      resizeToConvasSize(cart.w),
+      resizeToConvasSize(cart.h)
+    );
   };
 
   const drawContractCart = () => {
     ctx!.setLineDash([5, 5]);
     ctx!.beginPath();
-    ctx!.rect(contractCart.x, contractCart.y, contractCart.w, contractCart.h);
+    ctx!.rect(
+      resizeToConvasSize(contractCart.x),
+      resizeToConvasSize(contractCart.y),
+      resizeToConvasSize(contractCart.w),
+      resizeToConvasSize(contractCart.h)
+    );
     ctx!.strokeStyle = 'green';
     ctx!.stroke();
     ctx!.closePath();
@@ -402,10 +442,13 @@ export const GameView = (props: IGameViewProps) => {
     ctx!.beginPath();
     ctx!.strokeStyle = '#D2FF00';
     if (ballTrace.length > 0) {
-      ctx!.moveTo(ballTrace[0][0], ballTrace[0][1]);
+      ctx!.moveTo(
+        resizeToConvasSize(ballTrace[0][0]),
+        resizeToConvasSize(ballTrace[0][1])
+      );
     }
     for (const point of ballTrace.slice(1)) {
-      ctx!.lineTo(point[0], point[1]);
+      ctx!.lineTo(resizeToConvasSize(point[0]), resizeToConvasSize(point[1]));
     }
     ctx!.stroke();
     ctx!.closePath();
@@ -414,10 +457,13 @@ export const GameView = (props: IGameViewProps) => {
     ctx!.beginPath();
     ctx!.strokeStyle = '#4DC7D7';
     if (contractBallTrace.length > 0) {
-      ctx!.moveTo(contractBallTrace[0][0], contractBallTrace[0][1]);
+      ctx!.moveTo(
+        resizeToConvasSize(contractBallTrace[0][0]),
+        resizeToConvasSize(contractBallTrace[0][1])
+      );
     }
     for (const point of contractBallTrace) {
-      ctx!.lineTo(point[0], point[1]);
+      ctx!.lineTo(resizeToConvasSize(point[0]), resizeToConvasSize(point[1]));
     }
     ctx!.stroke();
     ctx!.closePath();
@@ -432,6 +478,10 @@ export const GameView = (props: IGameViewProps) => {
 
     ctx!.lineWidth = prevLineWidth;
     ctx!.setLineDash([]);
+  };
+
+  const resizeToConvasSize = (x: number) => {
+    return (x * (canvas.current?.width || FIELD_WIDTH)) / FIELD_WIDTH;
   };
 
   const keyDown = (e: KeyboardEvent) => {
@@ -751,10 +801,10 @@ export const GameView = (props: IGameViewProps) => {
   return (
     <canvas
       id="canvas"
-      width={`${FIELD_WIDTH}`}
-      height={`${FIELD_HEIGHT + 10}`}
+      // width={`${FIELD_WIDTH}`}
+      // height={`${FIELD_HEIGHT + 10}`}
       ref={canvas}
-      className={`rounded-[5px] lg:rounded-none ${
+      className={`aspect-square w-full rounded-[5px] lg:rounded-none ${
         winable ? 'border border-[#D2FF00]' : 'border border-red-500'
       }`}
     ></canvas>
