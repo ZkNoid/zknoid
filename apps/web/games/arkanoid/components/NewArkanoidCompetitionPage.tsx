@@ -88,6 +88,11 @@ export default function NewArkanoidCompetitionPage() {
   useEffect(() => {
     const ctx = canvas!.current?.getContext('2d');
     setContext(ctx);
+
+    if (canvas?.current) {
+      canvas.current.width = canvas.current.clientWidth;
+      canvas.current.height = canvas.current.clientHeight;
+    }
   }, [canvas]);
 
   useEffect(() => {
@@ -111,7 +116,7 @@ export default function NewArkanoidCompetitionPage() {
     if (!ctx) {
       return;
     }
-    ctx!.rect(0, 0, 300, 300);
+    ctx!.rect(0, 0, canvas.current!.width, canvas.current!.width);
     ctx!.fillStyle = '#212121';
     ctx!.fill();
   };
@@ -856,10 +861,7 @@ export default function NewArkanoidCompetitionPage() {
             }
           >
             <canvas
-              width="300"
-              height="300"
-              style={{ width: 300, height: 300 }}
-              className="border border-left-accent p-5"
+              className="m-5 aspect-square flex-grow border border-left-accent"
               ref={canvas}
             />
           </div>
