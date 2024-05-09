@@ -5,9 +5,11 @@ import { Button } from '@/components/ui/games-store/shared/Button';
 export const MatchmakingFailModal = ({
   isOpen,
   setIsOpen,
+  restart,
 }: {
   isOpen: boolean;
   setIsOpen: (value: boolean) => any;
+  restart: () => Promise<void>;
 }) => {
   // const [isOpen, setIsOpen] = useState<boolean>(true);
   return (
@@ -45,11 +47,13 @@ export const MatchmakingFailModal = ({
                 />
               </svg>
             }
+            onClick={restart}
           />
           <Button
             label={'Cancel'}
             color={'tertiary'}
             className={'max-w-[30%]'}
+            onClick={() => setIsOpen(false)}
           />
         </div>
       </div>
