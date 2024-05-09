@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "pnpm:devPreinstall": "./build_protokit.sh",
     "build": "turbo run build",
     "dev": "turbo run dev",
     "start-server": "turbo run start-server",
