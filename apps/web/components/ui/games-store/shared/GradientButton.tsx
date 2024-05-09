@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
+import { clsx } from 'clsx';
 
 export const GradientButton = ({
   title,
@@ -8,18 +9,21 @@ export const GradientButton = ({
   onClick,
   asLink,
   href,
+  className,
 }: {
   title: string;
   icon: ReactNode;
   onClick?: () => void;
   asLink?: boolean;
   href?: string;
+  className?: string;
 }) => {
   return (
     <motion.div
-      className={
-        'group relative flex flex-row justify-between rounded-[5px] border border-left-accent lg:mr-[11.2%]'
-      }
+      className={clsx(
+        'group relative flex flex-row justify-between rounded-[5px] border border-left-accent',
+        className
+      )}
       whileHover={'visible'}
     >
       {asLink ? (
