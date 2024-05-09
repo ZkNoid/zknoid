@@ -1,4 +1,4 @@
-import "reflect-metadata";
+import 'reflect-metadata';
 
 import { BRIDGE_CACHE } from '@/constants/bridge_cache';
 import { WebFileSystem, fetchCache } from '@/lib/cache';
@@ -68,29 +68,29 @@ const functions = {
   proveGameRecord: async (args: { seedJson: any; inputs: any; debug: any }) => {
     let seed = Field014.fromJSON(args.seedJson);
     let userInputs = (<string[]>JSON.parse(args.inputs)).map((elem) =>
-      GameInputs.fromJSON(elem),
+      GameInputs.fromJSON(elem)
     );
     console.log('[Worker] proof checking');
 
     console.log('Generating map proof');
-    let gameContext = checkMapGeneration(seed);
+    let gameContext = await checkMapGeneration(seed);
     const mapGenerationProof = await mockProof(gameContext, MapGenerationProof);
 
     console.log('Generating gameProcess proof');
-    let currentGameState = initGameProcess(gameContext);
+    let currentGameState = await initGameProcess(gameContext);
     let currentGameStateProof = await mockProof(
       currentGameState,
-      GameProcessProof,
+      GameProcessProof
     );
 
     for (let i = 0; i < userInputs.length; i++) {
-      currentGameState = processTicks(
+      currentGameState = await processTicks(
         currentGameStateProof,
-        userInputs[i] as GameInputs,
+        userInputs[i] as GameInputs
       );
       currentGameStateProof = await mockProof(
         currentGameState,
-        GameProcessProof,
+        GameProcessProof
       );
     }
 
@@ -98,7 +98,7 @@ const functions = {
 
     const gameProof = await mockProof(
       checkGameRecord(mapGenerationProof, currentGameStateProof),
-      GameRecordProof,
+      GameRecordProof
     );
 
     console.log('Proof generated', gameProof);
@@ -139,7 +139,7 @@ if (typeof window !== 'undefined') {
         data: returnData,
       };
       postMessage(message);
-    },
+    }
   );
 }
 
