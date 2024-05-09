@@ -4,11 +4,12 @@ import { Currency } from '@/constants/currency';
 import { Popover } from '@/components/ui/games-store/shared/Popover';
 import { IMatchamkingOption, useLobbiesStore } from '@/lib/stores/lobbiesStore';
 import { MatchmakingModal } from '@/components/framework/Lobby/MatchmakingModal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAlreadyInLobbyModalStore } from '@/lib/stores/alreadyInLobbyModalStore';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import { useNetworkStore } from '@/lib/stores/network';
+import { MatchmakingFailModal } from './MatchmakingFailModal';
 
 const OpponentItem = ({
   option,
@@ -31,6 +32,7 @@ const OpponentItem = ({
   const matchmakingMutation = api.logging.logMatchmakingEntered.useMutation();
   const lobbiesStore = useLobbiesStore();
   const alreadyInLobbyModalStore = useAlreadyInLobbyModalStore();
+
   return (
     <div
       className={
@@ -125,15 +127,37 @@ export const FastMatchmaking = ({
   winCoef,
   blockNumber,
   register,
+  leave,
 }: {
   options: IMatchamkingOption[];
   winCoef: number;
   blockNumber: number;
   register: (id: number) => Promise<void>;
+  leave: (id: number) => Promise<void>;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFailModalOpen, setIsFailModalOpen] = useState(false);
   const [pay, setPay] = useState(0);
   const [receive, setReceive] = useState(0);
+  const [matchmakingStartEpoche, setMatchmakingStartEpoche] =
+    useState<number>(0);
+  const [curType, setCurType] = useState<number>(0);
+
+  const registerAndRecord = async (id: number) => {
+    await register(id);
+    setMatchmakingStartEpoche(Math.floor(blockNumber / 20));
+  };
+
+  useEffect(() => {
+    if (isModalOpen && matchmakingStartEpoche > 0) {
+      const curEpoche = Math.floor(blockNumber / 20);
+      if (curEpoche > matchmakingStartEpoche) {
+        setIsModalOpen(false);
+        setIsFailModalOpen(true);
+        setMatchmakingStartEpoche(0);
+      }
+    }
+  }, [blockNumber]);
 
   return (
     <>
@@ -166,7 +190,10 @@ export const FastMatchmaking = ({
             key={option.id}
             option={option}
             winCoef={winCoef}
-            register={register}
+            register={async (id: number) => {
+              await registerAndRecord(id);
+              setCurType(id);
+            }}
             isModalOpen={isModalOpen}
             setIsModalOpen={setIsModalOpen}
             setPay={setPay}
@@ -196,7 +223,7 @@ export const FastMatchmaking = ({
                   xmlns="http://www.w3.org/2000/svg"
                   className={'pb-1 hover:opacity-80'}
                 >
-                  <g opacity="0.5">
+                  <g opacity="1">
                     <circle
                       cx="8"
                       cy="8"
@@ -284,14 +311,26 @@ export const FastMatchmaking = ({
             <span>3</span>
             <span>minutes</span>
           </span>
-          <MatchmakingModal
-            isOpen={isModalOpen}
-            setIsOpen={setIsModalOpen}
-            pay={pay}
-            receive={receive}
-            blockNumber={blockNumber}
-          />
         </div>
+        <MatchmakingModal
+          isOpen={isModalOpen}
+          setIsOpen={setIsModalOpen}
+          pay={pay}
+          receive={receive}
+          blockNumber={blockNumber}
+          leave={async () => {
+            await leave(curType);
+          }}
+        />
+        <MatchmakingFailModal
+          isOpen={isFailModalOpen}
+          setIsOpen={setIsFailModalOpen}
+          restart={async () => {
+            await registerAndRecord(curType);
+            setIsFailModalOpen(false);
+            setIsModalOpen(true);
+          }}
+        />
       </div>
     </>
   );
