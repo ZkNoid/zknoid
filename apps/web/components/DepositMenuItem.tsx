@@ -150,7 +150,7 @@ export const DepositMenuItem = () => {
 
   const bridge = async (amount: bigint) => {
     console.log('Bridging', amount);
-    const l1tx = await Mina.transaction(() => {
+    const l1tx = await Mina.transaction(async () => {
       const senderUpdate = AccountUpdate.create(
         PublicKey.fromBase58(networkStore.address!)
       );
