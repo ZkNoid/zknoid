@@ -1,4 +1,5 @@
 import { clsx } from 'clsx';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ReactNode } from 'react';
 
@@ -35,7 +36,7 @@ export const Button = ({
 }) => {
   if (asLink)
     return (
-      <div
+      <motion.div
         className={clsx(
           'flex w-full flex-row items-center justify-center gap-2 rounded-[5px] py-2 text-center text-[16px]/[16px] font-medium lg:text-[20px]/[20px]',
           {
@@ -90,6 +91,7 @@ export const Button = ({
           className
         )}
         onClick={!isReadonly ? onClick : undefined}
+        whileTap={{ scale: 0.9 }}
       >
         {(startContent || endContent) && (
           <div className={'flex flex-row items-center justify-end'}>
@@ -104,11 +106,11 @@ export const Button = ({
             {endContent}
           </div>
         )}
-      </div>
+      </motion.div>
     );
   else
     return (
-      <div
+      <motion.div
         className={clsx(
           'flex w-full flex-row items-center justify-center gap-2 rounded-[5px] py-2 text-center text-[16px]/[16px] font-medium lg:text-[20px]/[20px]',
           {
@@ -163,6 +165,7 @@ export const Button = ({
           className
         )}
         onClick={!isReadonly ? onClick : undefined}
+        whileTap={{ scale: 0.9 }}
       >
         {(startContent || endContent) && (
           <div className={'flex flex-row items-center justify-end'}>
@@ -175,6 +178,6 @@ export const Button = ({
             {endContent}
           </div>
         )}
-      </div>
+      </motion.div>
     );
 };
