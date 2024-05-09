@@ -7,6 +7,16 @@ appChain.configurePartial({
   ...appChain.config,
 
   Runtime: runtime.config,
+  Sequencer: {
+    LocalTaskWorkerModule: {
+      StateTransitionTask: {},
+      RuntimeProvingTask: {},
+      StateTransitionReductionTask: {},
+      BlockReductionTask: {},
+      BlockProvingTask: {},
+      BlockBuildingTask: {},
+    },
+  }
 });
 
 export default appChain as any;

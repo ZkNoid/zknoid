@@ -90,7 +90,7 @@ export class ThimblerigLogic extends MatchMaker {
   }
 
   @runtimeMethod()
-  public commitValue(gameId: UInt64, commitment: Field): void {
+  public async commitValue(gameId: UInt64, commitment: Field): Promise<void> {
     const sessionSender = this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
@@ -115,7 +115,7 @@ export class ThimblerigLogic extends MatchMaker {
   }
 
   @runtimeMethod()
-  public chooseThumble(gameId: UInt64, choice: UInt64): void {
+  public async chooseThumble(gameId: UInt64, choice: UInt64): Promise<void> {
     const sessionSender = this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
@@ -147,7 +147,7 @@ export class ThimblerigLogic extends MatchMaker {
   }
 
   @runtimeMethod()
-  public revealCommitment(gameId: UInt64, value: UInt64, salt: Field): void {
+  public async revealCommitment(gameId: UInt64, value: UInt64, salt: Field): Promise<void> {
     const sessionSender = this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
@@ -193,15 +193,17 @@ export class ThimblerigLogic extends MatchMaker {
       If hider lost he gets nothing, and winner gets all.
       In such case hider win expected value equals 0.
     */
-    const winnerPortion = Provable.if(
+    const winnerPortion = Provable.if<ProtoUInt64>(
       hiderWins,
-      UInt64.from(3),
-      UInt64.from(4),
+      ProtoUInt64,
+      ProtoUInt64.from(3),
+      ProtoUInt64.from(4),
     );
-    const looserPortion = Provable.if(
+    const looserPortion = Provable.if<ProtoUInt64>(
       hiderWins,
-      UInt64.from(1),
-      UInt64.from(0),
+      ProtoUInt64,
+      ProtoUInt64.from(1),
+      ProtoUInt64.from(0),
     );
 
     this.acquireFunds(
@@ -225,7 +227,7 @@ export class ThimblerigLogic extends MatchMaker {
   }
 
   @runtimeMethod()
-  public proveCommitNotRevealed(gameId: UInt64): void {
+  public async proveCommitNotRevealed(gameId: UInt64): Promise<void> {
     super.proveOpponentTimeout(gameId, false);
     const game = this.games.get(gameId);
     this.acquireFunds(

@@ -75,7 +75,7 @@ export class MatchMaker extends LobbyManager {
   @state() public lastDefaultLobby = State.from<UInt64>(UInt64);
 
   @runtimeMethod()
-  public addDefaultLobby(participationFee: ProtoUInt64): void {
+  public async addDefaultLobby(participationFee: ProtoUInt64): Promise<void> {
     let lobby = Lobby.default(UInt64.zero, Bool(false));
     lobby.participationFee = participationFee;
     const lastLobbyId = this.lastDefaultLobby.get().orElse(UInt64.from(1));
@@ -84,16 +84,16 @@ export class MatchMaker extends LobbyManager {
   }
 
   @runtimeMethod()
-  public register(sessionKey: PublicKey, timestamp: UInt64): void {
+  public async register(sessionKey: PublicKey, timestamp: UInt64): Promise<void> {
     this.registerWithType(sessionKey, UInt64.zero, timestamp);
   }
 
   @runtimeMethod()
-  public registerWithType(
+  public async registerWithType(
     sessionKey: PublicKey,
     type: UInt64,
     timestamp: UInt64,
-  ): void {
+  ): Promise<void> {
     const sender = this.transaction.sender.value;
     // If player in game – revert
 

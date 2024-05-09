@@ -221,13 +221,13 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   }
 
   @runtimeMethod()
-  public createLobby(
+  public async createLobby(
     name: CircuitString,
     participationFee: ProtoUInt64,
     privateLobby: Bool,
     creatorSessionKey: PublicKey,
     accessKey: Field,
-  ): void {
+  ): Promise<void> {
     let lobby = this._addLobby(
       Lobby.from(name, participationFee, privateLobby, accessKey),
       Bool(true),
@@ -237,13 +237,13 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   }
 
   @runtimeMethod()
-  public joinLobbyWithSessionKey(lobbyId: UInt64, sessionKey: PublicKey): void {
+  public async joinLobbyWithSessionKey(lobbyId: UInt64, sessionKey: PublicKey): Promise<void> {
     this.sessions.set(sessionKey, this.transaction.sender.value);
     this.joinLobby(lobbyId);
   }
 
   @runtimeMethod()
-  public joinLobby(lobbyId: UInt64): void {
+  public async joinLobby(lobbyId: UInt64): Promise<void> {
     const currentLobby = this.currentLobby.get(
       this.transaction.sender.value,
     ).value;
@@ -286,7 +286,7 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   }
 
   @runtimeMethod()
-  public leaveLobby(): void {
+  public async leaveLobby(): Promise<void> {
     const sender = this.transaction.sender.value;
     let currentLobbyId = this.currentLobby.get(sender).value;
 
@@ -298,7 +298,7 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   }
 
   @runtimeMethod()
-  public ready(): void {
+  public async ready(): Promise<void> {
     const sender = this.transaction.sender.value;
     let currentLobby = this.currentLobby.get(sender).value;
 
@@ -326,7 +326,7 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   }
 
   @runtimeMethod()
-  public startGame(lobbyId: UInt64): void {
+  public async startGame(lobbyId: UInt64): Promise<void> {
     let lobby = this.activeLobby.get(lobbyId).value;
 
     this.initGame(lobby, Bool(true));
@@ -407,7 +407,7 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   }
 
   @runtimeMethod()
-  public collectPendingBalance(): void {
+  public async collectPendingBalance(): Promise<void> {
     const sender = this.sessions.get(this.transaction.sender.value).value;
 
     const pendingBalance = ProtoUInt64.from(

@@ -6,6 +6,7 @@ import {
   SelfProof,
   Struct,
   Int64,
+  ZkProgram,
 } from 'o1js';
 import { runtimeMethod, runtimeModule } from '@proto-kit/module';
 import { Gamehub } from '../engine/GameHub';
@@ -25,14 +26,15 @@ export class GameProcessPublicOutput extends Struct({
   currentState: GameContext,
 }) {}
 
-export function checkMapGeneration(seed: Field): GameContext {
+export async function checkMapGeneration(seed: Field): Promise<GameContext> {
   const bricks = createBricksBySeed(seed);
   return loadGameContext(bricks, Bool(false));
 }
 
-export const MapGeneration = Experimental.ZkProgram({
+export const MapGeneration = ZkProgram({
   publicInput: Field,
   publicOutput: GameContext,
+  name: 'MapGeneration',
   methods: {
     checkMapGeneration: {
       privateInputs: [Bricks],
@@ -41,21 +43,21 @@ export const MapGeneration = Experimental.ZkProgram({
   },
 });
 
-export class MapGenerationProof extends Experimental.ZkProgram.Proof(
+export class MapGenerationProof extends ZkProgram.Proof(
   MapGeneration,
 ) {}
 
-export function initGameProcess(initial: GameContext): GameProcessPublicOutput {
+export async function initGameProcess(initial: GameContext): Promise<GameProcessPublicOutput> {
   return new GameProcessPublicOutput({
     initialState: initial,
     currentState: initial,
   });
 }
 
-export function processTicks(
+export async function processTicks(
   prevProof: SelfProof<void, GameProcessPublicOutput>,
   inputs: GameInputs,
-): GameProcessPublicOutput {
+): Promise<GameProcessPublicOutput> {
   prevProof.verify();
 
   const gameContext = prevProof.publicOutput.currentState;
@@ -69,8 +71,9 @@ export function processTicks(
   });
 }
 
-export const GameProcess = Experimental.ZkProgram({
+export const GameProcess = ZkProgram({
   publicOutput: GameProcessPublicOutput,
+  name: 'GameProcess',
   methods: {
     init: {
       privateInputs: [GameContext],
@@ -79,20 +82,19 @@ export const GameProcess = Experimental.ZkProgram({
 
     processTicks: {
       privateInputs: [SelfProof, GameInputs],
-
       method: processTicks,
     },
   },
 });
 
-export class GameProcessProof extends Experimental.ZkProgram.Proof(
+export class GameProcessProof extends ZkProgram.Proof(
   GameProcess,
 ) {}
 
-export function checkGameRecord(
+export async function checkGameRecord(
   mapGenerationProof: MapGenerationProof,
   gameProcessProof: GameProcessProof,
-): GameRecordPublicOutput {
+): Promise<GameRecordPublicOutput> {
   // Verify map generation
   mapGenerationProof.verify();
 
@@ -113,8 +115,9 @@ export function checkGameRecord(
   });
 }
 
-export const GameRecord = Experimental.ZkProgram({
+export const GameRecord = ZkProgram({
   publicOutput: GameRecordPublicOutput,
+  name: 'GameRecord',
   methods: {
     checkGameRecord: {
       privateInputs: [MapGenerationProof, GameProcessProof],
@@ -123,7 +126,7 @@ export const GameRecord = Experimental.ZkProgram({
   },
 });
 
-export class GameRecordProof extends Experimental.ZkProgram.Proof(GameRecord) {}
+export class GameRecordProof extends ZkProgram.Proof(GameRecord) {}
 
 @runtimeModule()
 export class ArkanoidGameHub extends Gamehub<
@@ -132,7 +135,7 @@ export class ArkanoidGameHub extends Gamehub<
   GameRecordProof
 > {
   @runtimeMethod()
-  public addGameResult(competitionId: UInt64, proof: GameRecordProof) {
+  public async addGameResult(competitionId: UInt64, proof: GameRecordProof) {
     super.addGameResult(competitionId, proof);
   }
 }

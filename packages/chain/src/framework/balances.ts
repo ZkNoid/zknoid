@@ -18,18 +18,18 @@ interface BalancesConfig {}
 @runtimeModule()
 export class Balances extends BaseBalances<BalancesConfig> {
   @runtimeMethod()
-  public addBalance(
+  public async addBalance(
     tokenId: TokenId,
     address: PublicKey,
     amount: Balance,
-  ): void {
+  ): Promise<void> {
     this.mint(tokenId, address, amount);
   }
   @runtimeMethod()
-  public burnBalance(
+  public async burnBalance(
     tokenId: TokenId,
     amount: Balance,
-  ): void {
+  ): Promise<void> {
     this.burn(tokenId, this.transaction.sender.value, amount);
   }
 }

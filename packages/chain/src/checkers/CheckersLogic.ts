@@ -121,19 +121,19 @@ export class CheckersLogic extends MatchMaker {
   }
 
   @runtimeMethod()
-  public proveOpponentTimeout(gameId: UInt64): void {
+  public async proveOpponentTimeout(gameId: UInt64): Promise<void> {
     super.proveOpponentTimeout(gameId, false);
   }
 
   @runtimeMethod()
-  public makeMoveChecker(
+  public async makeMoveChecker(
     gameId: UInt64,
     newField: CheckersField,
     x: UInt64,
     y: UInt64,
     moveType: UInt64,
     proposedIsKing: Bool,
-  ): void {
+  ): Promise<void> {
     const sessionSender = this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
@@ -388,14 +388,14 @@ export class CheckersLogic extends MatchMaker {
   }
 
   @runtimeMethod()
-  public makeMoveCapture(
+  public async makeMoveCapture(
     gameId: UInt64,
     newField: CheckersField,
     x: UInt64,
     y: UInt64,
     moveType: UInt64,
     proposedIsKing: Bool,
-  ): void {
+  ): Promise<void> {
     const sessionSender = this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
@@ -802,7 +802,7 @@ export class CheckersLogic extends MatchMaker {
     );
 
     const winnerShare = ProtoUInt64.from(
-      Provable.if(winProposed, UInt64.from(1), UInt64.from(0)),
+      Provable.if<ProtoUInt64>(winProposed, ProtoUInt64, ProtoUInt64.from(1), ProtoUInt64.from(0)),
     );
 
     this.acquireFunds(
