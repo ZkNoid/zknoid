@@ -71,14 +71,14 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
       ? +contractActiveGameId
       : contractActiveGameId;
 
-    // console.log('Last lobby id: ', +lastLobbyId);
     for (let i = 0; i < +lastLobbyId; i++) {
       let curLobby = await query.activeLobby.get(UInt64.from(i));
 
       if (
         curLobby &&
         (curLobby.started.not().toBoolean() ||
-          curLobby.id.equals(currentLobbyId).toBoolean()) &&
+          (activeGameId &&
+            curLobby.id.equals(UInt64.from(activeGameId)).toBoolean())) &&
         curLobby.active.toBoolean()
       ) {
         const players = +curLobby.curAmount;
@@ -107,8 +107,13 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
     let curLobby: ILobby | undefined = undefined;
     let selfReady: boolean = false;
 
-    if (currentLobbyId) {
-      curLobby = lobbies.find((lobby) => lobby.id == +currentLobbyId);
+    if (currentLobbyId || activeGameId) {
+      const lobbyId = currentLobbyId
+        ? +currentLobbyId
+          ? +currentLobbyId
+          : activeGameId
+        : activeGameId;
+      curLobby = lobbies.find((lobby) => lobby.id == lobbyId);
 
       if (curLobby) {
         for (let i = 0; i < curLobby.players; i++) {
@@ -123,8 +128,8 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
       // @ts-ignore
       state.lobbies = lobbies;
       state.loading = false;
-      state.activeGameId = activeGameId;
       state.currentLobby = curLobby;
+      state.activeGameId = activeGameId;
       state.selfReady = selfReady;
     });
   },

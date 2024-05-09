@@ -262,6 +262,20 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
     if (alreadyInLobbyModalStore.isOpen) alreadyInLobbyModalStore.close();
   };
 
+  const leaveMatchmaking = async (type: number) => {
+    const lobbyManager = await client.runtime.resolve(params.contractName);
+
+    const tx = await client.transaction(
+      PublicKey.fromBase58(networkStore.address!),
+      () => {
+        lobbyManager.leaveMatchmaking(UInt64.from(type));
+      }
+    );
+
+    await tx.sign();
+    await tx.send();
+  };
+
   const register = async (id: number) => {
     const lobbyManager = await client.runtime.resolve(params.contractName);
 
@@ -315,6 +329,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
           winCoef={1.67}
           blockNumber={chainStore.block ? +chainStore.block.height : 0}
           register={register}
+          leave={leaveMatchmaking}
         />
         <div className={'col-start-4 col-end-6 row-start-1'}>
           {isCreationMode ? (
