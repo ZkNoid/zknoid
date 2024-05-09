@@ -24,7 +24,7 @@ export class RandomGenerator extends Struct({
     this.source = Poseidon.hash([this.source]);
     this.curValue = this.source;
 
-    return Int64.from(this.curValue.rangeCheckHelper(64)).mod(maxValue);
+    return Int64.from(this.curValue).mod(maxValue);
   }
 
   // Get 4 number
@@ -39,7 +39,7 @@ export class RandomGenerator extends Struct({
     ];
 
     for (let i = 0; i < 4; i++) {
-      result[i] = Int64.fromField(this.curValue.rangeCheckHelper(64)).mod(
+      result[i] = Int64.fromField(this.curValue).mod(
         maxValues[i],
       );
 
