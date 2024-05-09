@@ -58,7 +58,6 @@
     "tailwindcss-animate": "^1.0.7",
     "terser-webpack-plugin": "^5.3.10",
     "truncate-middle": "^1.0.6",
-    "zknoid-chain": "^1.4.5",
     "zknoid-chain-dev": "workspace:*",
     "zod": "^3.22.4",
     "zustand": "^4.5.2"
