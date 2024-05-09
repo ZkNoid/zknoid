@@ -268,7 +268,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
       () => {
-        lobbyManager.leaveMathmaking(UInt64.from(type));
+        lobbyManager.leaveMatchmaking(UInt64.from(type));
       }
     );
 

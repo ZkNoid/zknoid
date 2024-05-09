@@ -143,8 +143,13 @@ export const FastMatchmaking = ({
     useState<number>(0);
   const [curType, setCurType] = useState<number>(0);
 
+  const registerAndRecord = async (id: number) => {
+    await register(id);
+    setMatchmakingStartEpoche(Math.floor(blockNumber / 20));
+  };
+
   useEffect(() => {
-    if (matchmakingStartEpoche > 0) {
+    if (isModalOpen && matchmakingStartEpoche > 0) {
       const curEpoche = Math.floor(blockNumber / 20);
       if (curEpoche > matchmakingStartEpoche) {
         setIsModalOpen(false);
@@ -212,9 +217,8 @@ export const FastMatchmaking = ({
             option={option}
             winCoef={winCoef}
             register={async (id: number) => {
-              await register(id);
+              await registerAndRecord(id);
               setCurType(id);
-              setMatchmakingStartEpoche(Math.floor(blockNumber / 20));
             }}
             isModalOpen={isModalOpen}
             setIsModalOpen={setIsModalOpen}
@@ -245,7 +249,7 @@ export const FastMatchmaking = ({
                   xmlns="http://www.w3.org/2000/svg"
                   className={'pb-1 hover:opacity-80'}
                 >
-                  <g opacity="0.5">
+                  <g opacity="1">
                     <circle
                       cx="8"
                       cy="8"
@@ -333,21 +337,26 @@ export const FastMatchmaking = ({
             <span>3</span>
             <span>minutes</span>
           </span>
-          <MatchmakingModal
-            isOpen={isModalOpen}
-            setIsOpen={setIsModalOpen}
-            pay={pay}
-            receive={receive}
-            blockNumber={blockNumber}
-            leave={async () => {
-              leave(curType);
-            }}
-          />
-          <MatchmakingFailModal
-            isOpen={isFailModalOpen}
-            setIsOpen={setIsFailModalOpen}
-          />
         </div>
+        <MatchmakingModal
+          isOpen={isModalOpen}
+          setIsOpen={setIsModalOpen}
+          pay={pay}
+          receive={receive}
+          blockNumber={blockNumber}
+          leave={async () => {
+            await leave(curType);
+          }}
+        />
+        <MatchmakingFailModal
+          isOpen={isFailModalOpen}
+          setIsOpen={setIsFailModalOpen}
+          restart={async () => {
+            await registerAndRecord(curType);
+            setIsFailModalOpen(false);
+            setIsModalOpen(true);
+          }}
+        />
       </div>
     </>
   );
