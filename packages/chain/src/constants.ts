@@ -1,3 +1,6 @@
-import { Field } from 'o1js';
+import { Field, TokenId } from 'o1js';
+import {
+  
+} from "@proto-kit/library";
 
-export const ZNAKE_TOKEN_ID = Field.from(777);
+export const ZNAKE_TOKEN_ID = TokenId.fromValue(777n);
