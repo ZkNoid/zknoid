@@ -6,7 +6,7 @@ services:
     environment:
       TZ: Europe/Moscow
 
-    command: sh -c "pnpm start-server"
+    command: sh -c "PERSISTENT=true pnpm start-server"
     ports:
       - "38080:8080"
     restart: unless-stopped

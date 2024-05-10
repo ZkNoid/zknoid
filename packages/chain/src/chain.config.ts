@@ -3,7 +3,7 @@ import runtime from './runtime';
 import { PrivateKey } from 'o1js';
 import { IntegrationTestDBConfig, createPrismaAppchain } from './utils';
 
-const PERSISTENT = true;
+const PERSISTENT = process.env.PERSISTENT;
 let appChain;
 
 if (!PERSISTENT) {
