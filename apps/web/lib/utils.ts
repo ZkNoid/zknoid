@@ -1,8 +1,8 @@
 import { type RuntimeModulesRecord } from '@proto-kit/module';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { GameRecordProof } from 'zknoid-chain';
-import {  client } from 'zknoid-chain-dev';
+import { GameRecordProof } from 'zknoid-chain-dev';
+import { client } from 'zknoid-chain-dev';
 // import { ModulesConfig } from '@proto-kit/common';
 import { dummyProofBase64 } from '@/app/constants/dummyProofBase64';
 import { PublicKey } from 'o1js';
@@ -11,7 +11,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-const dummy = GameRecordProof.fromJSON({
+const dummy = await GameRecordProof.fromJSON({
   publicInput: [],
   publicOutput: [''],
   maxProofsVerified: 2,
@@ -64,5 +64,5 @@ export function buildClient<
   return client;
 }
 
-
-export const formatPubkey = (pubkey: PublicKey | undefined) => pubkey ? pubkey.toBase58().slice(0, 16) + '...' : 'None';
+export const formatPubkey = (pubkey: PublicKey | undefined) =>
+  pubkey ? pubkey.toBase58().slice(0, 16) + '...' : 'None';

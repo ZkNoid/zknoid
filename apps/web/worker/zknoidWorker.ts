@@ -1,4 +1,4 @@
-import "reflect-metadata";
+import 'reflect-metadata';
 
 import { BRIDGE_CACHE } from '@/constants/bridge_cache';
 import { WebFileSystem, fetchCache } from '@/lib/cache';
@@ -17,6 +17,7 @@ import {
   processTicks,
   GameRecordProof,
   client,
+  Tick,
 } from 'zknoid-chain-dev';
 // import { DummyBridge } from 'zknoidcontractsl1';
 
@@ -67,38 +68,38 @@ const functions = {
   },
   proveGameRecord: async (args: { seedJson: any; inputs: any; debug: any }) => {
     let seed = Field014.fromJSON(args.seedJson);
-    let userInputs = (<string[]>JSON.parse(args.inputs)).map((elem) =>
-      GameInputs.fromJSON(elem),
-    );
+    let userInputs = (<any[]>JSON.parse(args.inputs)).map((elem) => {
+      return GameInputs.fromJSON(elem);
+    });
     console.log('[Worker] proof checking');
 
     console.log('Generating map proof');
-    let gameContext = checkMapGeneration(seed);
+    let gameContext = await checkMapGeneration(seed);
     const mapGenerationProof = await mockProof(gameContext, MapGenerationProof);
 
     console.log('Generating gameProcess proof');
-    let currentGameState = initGameProcess(gameContext);
+    let currentGameState = await initGameProcess(gameContext);
     let currentGameStateProof = await mockProof(
       currentGameState,
-      GameProcessProof,
+      GameProcessProof
     );
 
     for (let i = 0; i < userInputs.length; i++) {
-      currentGameState = processTicks(
+      currentGameState = await processTicks(
         currentGameStateProof,
-        userInputs[i] as GameInputs,
+        userInputs[i] as GameInputs
       );
       currentGameStateProof = await mockProof(
         currentGameState,
-        GameProcessProof,
+        GameProcessProof
       );
     }
 
     console.log('Generating game proof');
 
     const gameProof = await mockProof(
-      checkGameRecord(mapGenerationProof, currentGameStateProof),
-      GameRecordProof,
+      await checkGameRecord(mapGenerationProof, currentGameStateProof),
+      GameRecordProof
     );
 
     console.log('Proof generated', gameProof);
@@ -139,7 +140,7 @@ if (typeof window !== 'undefined') {
         data: returnData,
       };
       postMessage(message);
-    },
+    }
   );
 }
 

@@ -3,8 +3,14 @@
 import { ManualBlockTrigger } from '@proto-kit/sequencer';
 import appChain from '../src/chain.config';
 import { exit } from 'process';
+import { container } from 'tsyringe';
 
-await appChain.start();
+
+
+await appChain.start(container.createChildContainer());
+
+
+// await appChain.start();
 const trigger = appChain.sequencer.resolveOrFail(
   'BlockTrigger',
   ManualBlockTrigger,

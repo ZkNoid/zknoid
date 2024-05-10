@@ -144,7 +144,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
-      () => {
+      async () => {
         thimblerigLogic.register(
           sessionPublicKey,
           UInt64.from(Math.round(Date.now() / 1000))
@@ -161,7 +161,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   const collectPending = async () => {
     const randzuLogic = client.runtime.resolve('ThimblerigLogic');
 
-    const tx = await client.transaction(sessionPrivateKey.toPublicKey(), () => {
+    const tx = await client.transaction(sessionPrivateKey.toPublicKey(), async () => {
       randzuLogic.collectPendingBalance();
     });
 
@@ -188,7 +188,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     const commitment = Poseidon.hash([...UInt64.from(id).toFields(), salt]);
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
-      () => {
+      async () => {
         thimblerigLogic.commitValue(
           UInt64.from(matchQueue.activeGameId),
           commitment
@@ -210,7 +210,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
       const tx = await client.transaction(
         PublicKey.fromBase58(networkStore.address!),
-        () => {
+        async () => {
           thimblerigLogic.chooseThumble(
             UInt64.from(matchQueue.activeGameId),
             UInt64.from(choice)
@@ -242,7 +242,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
-      () => {
+      async () => {
         thimblerigLogic.revealCommitment(
           UInt64.from(matchQueue.activeGameId),
           commitment.value,
@@ -269,7 +269,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
-      () => {
+      async () => {
         thibmerigLogic.proveCommitNotRevealed(
           UInt64.from(matchQueue.gameInfo!.gameId)
         );

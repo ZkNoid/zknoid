@@ -9,7 +9,7 @@ const setDefaultGames = async () => {
   const defaultCompetitions = getDefaultCompetitions();
   for (let i = 0; i < defaultCompetitions.length; i++) {
     const competition = defaultCompetitions[i];
-    const tx = await client.transaction(alice, () => {
+    const tx = await client.transaction(alice, async () => {
       gameHub.createCompetition(competition);
     });
 
@@ -43,7 +43,7 @@ const setDefaultMatchmaking = async () => {
     const matchmaking = client.runtime.resolve(game as any);
 
     for (const option of matchmakingOptions) {
-      const tx = await client.transaction(alice, () => {
+      const tx = await client.transaction(alice, async () => {
         matchmaking.addDefaultLobby(UInt64.from(option.participationFee));
       });
 

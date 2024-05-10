@@ -6,7 +6,7 @@ import type {
   WorkerFunctions,
 } from './zknoidWorker';
 import { Bricks, GameInputs, checkGameRecord } from 'zknoid-chain-dev';
-import { GameRecordProof } from 'zknoid-chain';
+import { GameRecordProof } from 'zknoid-chain-dev';
 
 export default class ZknoidWorkerClient {
   loadContracts() {

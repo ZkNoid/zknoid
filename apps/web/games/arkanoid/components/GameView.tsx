@@ -579,10 +579,10 @@ export const GameView = (props: IGameViewProps) => {
     console.log('Level bricks', props.level.bricks);
 
     for (let i = 0; i < props.level.bricks.length; i++) {
-      const brickValue = props.level.bricks[i].value * 1;
+      const brickValue = Number(props.level.bricks[i].value.toBigInt());
       bricks[i] = {
-        x: props.level.bricks[i].pos.x * 1,
-        y: props.level.bricks[i].pos.y * 1,
+        x: (props.level.bricks[i].pos.x as any) * 1,
+        y: (props.level.bricks[i].pos.y as any) * 1,
         value: brickValue,
         ...commonBrick,
       };
@@ -598,10 +598,11 @@ export const GameView = (props: IGameViewProps) => {
         (elem) =>
           //@ts-ignore
           new Brick({
-            pos: {
+            //@ts-ignore
+            pos: new IntPoint({
               x: Int64.from(0),
               y: Int64.from(0),
-            },
+            }),
             value: UInt64.from(1),
           })
       ),
@@ -610,18 +611,19 @@ export const GameView = (props: IGameViewProps) => {
     for (let i = 0; i < Math.min(props.level.bricks.length, MAX_BRICKS); i++) {
       //@ts-ignore
       contractBricks.bricks[i] = new Brick({
-        pos: {
+        //@ts-ignore
+        pos: new IntPoint({
           x: Int64.from(bricks[i].x),
           y: Int64.from(bricks[i].y),
-        },
+        }),
         value: UInt64.from(bricks[i].value),
       });
     }
 
     gameContext = loadGameContext(contractBricks, new Bool(false));
     contractBall = {
-      x: gameContext.ball.position.x * 1,
-      y: gameContext.ball.position.y * 1,
+      x: (gameContext.ball.position.x as any) * 1,
+      y: (gameContext.ball.position.y as any) * 1,
       dx: 0,
       dy: 0,
       radius: 3,
@@ -629,7 +631,7 @@ export const GameView = (props: IGameViewProps) => {
 
     contractCart = {
       ...cart,
-      x: gameContext.platform.position * 1,
+      x: (gameContext.platform.position as any) * 1,
     };
 
     if (
@@ -727,11 +729,14 @@ export const GameView = (props: IGameViewProps) => {
     let prevPos: [number, number] =
       contractBallTrace.length > 0
         ? contractBallTrace[contractBallTrace.length - 1]
-        : [gameContext.ball.position.x * 1, gameContext.ball.position.y * 1];
+        : [
+            (gameContext.ball.position.x as any) * 1,
+            (gameContext.ball.position.y as any) * 1,
+          ];
 
     let prevSpeed: [number, number] = [
-      gameContext.ball.speed.x * 1,
-      gameContext.ball.speed.y * 1,
+      (gameContext.ball.speed.x as any) * 1,
+      (gameContext.ball.speed.y as any) * 1,
     ];
 
     gameContext.processTick(
@@ -742,20 +747,20 @@ export const GameView = (props: IGameViewProps) => {
       })
     );
     let [x, y] = [
-      gameContext.ball.position.x * 1,
-      gameContext.ball.position.y * 1,
+      (gameContext.ball.position.x as any) * 1,
+      (gameContext.ball.position.y as any) * 1,
     ];
 
     contractBall.x = x;
     contractBall.y = y;
-    contractBall.dx = gameContext.ball.speed.x * 1;
-    contractBall.dy = gameContext.ball.speed.y * 1;
+    contractBall.dx = (gameContext.ball.speed.x as any) * 1;
+    contractBall.dy = (gameContext.ball.speed.y as any) * 1;
     contractBallTrace = [];
 
     if (debugModeRef.current) {
       let newSpeed: [number, number] = [
-        gameContext.ball.speed.x * 1,
-        gameContext.ball.speed.y * 1,
+        (gameContext.ball.speed.x as any) * 1,
+        (gameContext.ball.speed.y as any) * 1,
       ];
 
       // Should add additional point to points, because collision point is ommited
@@ -770,8 +775,8 @@ export const GameView = (props: IGameViewProps) => {
     }
 
     const contractBrickToBrick = (brick: IContractBrick) => {
-      let x = brick.pos.x * 1;
-      let y = brick.pos.y * 1;
+      let x = (brick.pos.x as any) * 1;
+      let y = (brick.pos.y as any) * 1;
       return {
         x,
         y,
@@ -788,11 +793,11 @@ export const GameView = (props: IGameViewProps) => {
 
     contractCart = {
       ...cart,
-      x: gameContext.platform.position * 1,
+      x: (gameContext.platform.position as any) * 1,
     };
 
     props.setTicksAmount(ticksCache.length);
-    props.setScore(gameContext.score * 1);
+    props.setScore((gameContext.score as any) * 1);
     if (!gameContext.winable.toBoolean()) {
       setWinable(false);
       onLost();

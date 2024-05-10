@@ -181,7 +181,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
-      () => {
+      async () => {
         lobbyManager.createLobby(
           CircuitString.fromString(name),
           ProtoUInt64.from(participationFee).mul(10 ** 9),
@@ -220,7 +220,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
-      () => {
+      async () => {
         lobbyManager.joinLobbyWithSessionKey(
           UInt64.from(lobbyId),
           sessionPrivateKey.toPublicKey()
@@ -237,7 +237,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
-      () => {
+      async () => {
         lobbyManager.ready();
       }
     );
@@ -251,7 +251,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
-      () => {
+      async () => {
         lobbyManager.leaveLobby();
       }
     );
@@ -267,7 +267,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
-      () => {
+      async () => {
         lobbyManager.leaveMatchmaking(UInt64.from(type));
       }
     );
@@ -281,7 +281,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
-      () => {
+      async () => {
         lobbyManager.registerWithType(
           sessionPrivateKey.toPublicKey(),
           UInt64.from(id),

@@ -151,7 +151,7 @@ export const DepositMenuItem = () => {
 
   const bridge = async (amount: bigint) => {
     console.log('Bridging', amount);
-    const l1tx = await Mina.transaction(() => {
+    const l1tx = await Mina.transaction(async () => {
       const senderUpdate = AccountUpdate.create(
         PublicKey.fromBase58(networkStore.address!)
       );
@@ -180,7 +180,7 @@ export const DepositMenuItem = () => {
     );
     const sender = PublicKey.fromBase58(networkStore.address!);
 
-    const l2tx = await contextAppChainClient!.transaction(sender, () => {
+    const l2tx = await contextAppChainClient!.transaction(sender, async () => {
       balances.addBalance(
         ZNAKE_TOKEN_ID,
         sender,
@@ -217,7 +217,7 @@ export const DepositMenuItem = () => {
     );
     const sender = PublicKey.fromBase58(networkStore.address!);
 
-    const l2tx = await contextAppChainClient!.transaction(sender, () => {
+    const l2tx = await contextAppChainClient!.transaction(sender, async () => {
       balances.burnBalance(
         ZNAKE_TOKEN_ID,
         ProtokitLibrary.UInt64.from(1000000000n)
