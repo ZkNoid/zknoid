@@ -31,6 +31,7 @@ class BalancesKey1 extends Struct({
   address: PublicKey,
 }) {
   public static from(tokenId: TokenId, address: PublicKey) {
+    //@ts-ignore
     return new BalancesKey({ tokenId, address });
   }
 }
@@ -62,7 +63,10 @@ export const useProtokitBalancesStore = create<
         state.loading = true;
       });
 
-      const key = BalancesKey.from(TokenId.from(777), PrivateKey.random().toPublicKey());
+      const key = BalancesKey.from(
+        TokenId.from(777),
+        PrivateKey.random().toPublicKey()
+      );
 
       const point1 = { x: Field(10), y: Field(4) };
       const point2 = { x: Field(1), y: Field(2) };
@@ -71,10 +75,13 @@ export const useProtokitBalancesStore = create<
 
       console.log(`pointSum Fields: ${Point.toFields(pointSum)}`);
 
-
-      console.log('Bug', TokenId.toFields(key.tokenId), PublicKey.toFields(key.address));
+      console.log(
+        'Bug',
+        TokenId.toFields(key.tokenId),
+        PublicKey.toFields(key.address)
+      );
       console.log('Bug1', BalancesKey1.toFields(key));
-      console.log('Bug2', BalancesKey.toFields(key));
+      // console.log('Bug2', BalancesKey.toFields(key));
 
       const balance = await client.query.runtime.Balances.balances.get(
         // @ts-ignore

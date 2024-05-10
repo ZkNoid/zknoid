@@ -177,6 +177,7 @@ export default function ArkanoidPage({
     let chunks = chunkenize(
       lastTicks.map(
         (elem) =>
+          //@ts-ignore
           new Tick({
             action: Int64.from(elem.action),
             momentum: Int64.from(elem.momentum),
@@ -185,6 +186,7 @@ export default function ArkanoidPage({
       CHUNK_LENGTH
     );
 
+    //@ts-ignore
     let userInputs = chunks.map((chunk) => new GameInputs({ ticks: chunk }));
 
     try {
@@ -313,7 +315,11 @@ export default function ArkanoidPage({
             />
             <div className={'flex flex-col gap-4 lg:hidden'}>
               <span className={'w-full text-headline-2 font-bold'}>Rules</span>
-              <span className={'font-plexsans text-buttons-menu font-normal whitespace-pre-line'}>
+              <span
+                className={
+                  'whitespace-pre-line font-plexsans text-buttons-menu font-normal'
+                }
+              >
                 {competition ? competition.game.rules : <> - </>}
               </span>
             </div>
