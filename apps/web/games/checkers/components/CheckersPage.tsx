@@ -175,7 +175,7 @@ export default function RandzuPage({
     const currentUserId = matchQueue.gameInfo.currentUserIndex + 1;
 
     const updatedField = (matchQueue.gameInfo.field as CheckersField).value.map(
-      (x: UInt32[]) => x.map((x) => x.toBigint())
+      (x: UInt32[]) => x.map((x) => Number(x.toBigint()))
     );
 
     const isKing = updatedField[x][y] > 2n;
