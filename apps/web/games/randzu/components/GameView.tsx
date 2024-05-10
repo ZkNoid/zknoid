@@ -18,7 +18,7 @@ export const GameView = (props: IGameViewProps) => {
   const displayBall = (i: number, j: number) =>
     props.gameInfo?.isCurrentUserMove &&
     !props.loading &&
-    props.gameInfo?.field?.value?.[j]?.[i] == 0;
+    +props.gameInfo?.field?.value?.[j]?.[i] == 0;
   const isLoadingBall = (i: number, j: number) =>
     props.loadingElement &&
     props.loadingElement.x == i &&
@@ -68,12 +68,12 @@ export const GameView = (props: IGameViewProps) => {
                   : "hover:bg-[url('/ball_blue.png')]")
               }
               ${
-                props.gameInfo?.field?.value?.[j]?.[i] == 1
+                props.gameInfo && +props.gameInfo.field.value[j][i] == 1
                   ? "bg-[url('/ball_green.png')]"
                   : ''
               }
               ${
-                props.gameInfo?.field?.value?.[j]?.[i] == 2
+                props.gameInfo && +props.gameInfo.field.value[j][i] == 2
                   ? "bg-[url('/ball_blue.png')]"
                   : ''
               }
