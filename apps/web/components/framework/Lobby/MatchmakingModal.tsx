@@ -12,6 +12,7 @@ export const MatchmakingModal = ({
   receive,
   blockNumber,
   setIsOpen,
+  leave,
 }: {
   isLongSearch?: boolean;
   isOpen: boolean;
@@ -19,6 +20,7 @@ export const MatchmakingModal = ({
   receive: number;
   blockNumber: number;
   setIsOpen: (isOpen: boolean) => void;
+  leave: () => Promise<void>;
 }) => {
   return (
     <Modal trigger={<></>} isOpen={isOpen} setIsOpen={setIsOpen}>
@@ -149,6 +151,10 @@ export const MatchmakingModal = ({
             label={'Cancel'}
             color={'tertiary'}
             className={'max-w-[20%]'}
+            onClick={async () => {
+              await leave();
+              setIsOpen(false);
+            }}
           />
         </div>
       </div>

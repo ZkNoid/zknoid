@@ -1,14 +1,15 @@
 import { ReactNode, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { PopoverDefaultTriggerSVG } from '@/components/ui/games-store/shared/misc/svg';
 
 export const Popover = ({
   children,
-  trigger,
+  trigger = PopoverDefaultTriggerSVG(),
   isOpen,
   setIsOpen,
 }: {
   children: ReactNode;
-  trigger: ReactNode;
+  trigger?: ReactNode;
   isOpen?: boolean;
   setIsOpen?: (isOpen: boolean) => void;
 }) => {
@@ -34,7 +35,7 @@ export const Popover = ({
             exit={{ opacity: 0 }}
             transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
             className={
-              'absolute top-[110%] z-10 rounded-[5px] border border-white bg-bg-dark p-2'
+              'absolute left-0 top-[110%] z-10 rounded-[5px] border border-white bg-bg-dark p-2'
             }
           >
             {children}
