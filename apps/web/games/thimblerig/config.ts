@@ -19,7 +19,7 @@ export const thimblerigConfig = createZkNoidGameConfig({
   popularity: 0,
   author: 'ZkNoid Team',
   rules:
-    'A luck game where one player hides ball behind one of three thimbles and second player guesses under which one',
+    '1. Two players participate in each round of the game. One player hides a ball under one of three thimbles, and the other player attempts to guess the location of the ball.\n\n2. The hiding player places ball under one of three thimbles trying to confuse the guessing player.\n\n3. The guessing player selects one of the thimbles, trying to guess which thimble conceals the ball.\n\n4.The hiding player then reveals whether the ball is under the chosen',
   runtimeModules: {
     ThimblerigLogic,
   },
