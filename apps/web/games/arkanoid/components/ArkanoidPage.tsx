@@ -154,7 +154,7 @@ export default function ArkanoidPage({
 
     let competition = fromContractCompetition(
       competitionId,
-      contractCompetition
+      contractCompetition as any
     );
     // @ts-ignore
     competition.creator = creator;
@@ -177,7 +177,6 @@ export default function ArkanoidPage({
     let chunks = chunkenize(
       lastTicks.map(
         (elem) =>
-          // @ts-expect-error
           new Tick({
             action: Int64.from(elem.action),
             momentum: Int64.from(elem.momentum),
@@ -186,7 +185,6 @@ export default function ArkanoidPage({
       CHUNK_LENGTH
     );
 
-    // @ts-expect-error
     let userInputs = chunks.map((chunk) => new GameInputs({ ticks: chunk }));
 
     try {
@@ -202,7 +200,7 @@ export default function ArkanoidPage({
 
       const tx = await client!.transaction(
         PublicKey.fromBase58(networkStore.address!),
-        () => {
+        async () => {
           gameHub.addGameResult(UInt64.from(competition!.id), proof!);
         }
       );

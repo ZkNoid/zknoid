@@ -118,7 +118,7 @@ export default function RandzuPage({
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
-      () => {
+      async () => {
         randzuLogic.register(
           sessionPublicKey,
           UInt64.from(Math.round(Date.now() / 1000))
@@ -135,7 +135,7 @@ export default function RandzuPage({
   const collectPending = async () => {
     const randzuLogic = client.runtime.resolve('CheckersLogic');
 
-    const tx = await client.transaction(sessionPrivateKey.toPublicKey(), () => {
+    const tx = await client.transaction(sessionPrivateKey.toPublicKey(), async () => {
       randzuLogic.collectPendingBalance();
     });
 
@@ -155,7 +155,7 @@ export default function RandzuPage({
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
-      () => {
+      async () => {
         randzuLogic.proveOpponentTimeout(
           UInt64.from(matchQueue.gameInfo!.gameId)
         );
@@ -241,7 +241,7 @@ export default function RandzuPage({
       moveId == MOVE_TOP_RIGHT ||
       moveId == MOVE_KING_BOTTOM_LEFT ||
       moveId == MOVE_KING_BOTTOM_RIGHT
-        ? await client.transaction(sessionPrivateKey.toPublicKey(), () => {
+        ? await client.transaction(sessionPrivateKey.toPublicKey(), async () => {
             randzuLogic.makeMoveChecker(
               UInt64.from(matchQueue.gameInfo!.gameId),
               updatedCheckersField,
@@ -251,7 +251,7 @@ export default function RandzuPage({
               Bool(isKing)
             );
           })
-        : await client.transaction(sessionPrivateKey.toPublicKey(), () => {
+        : await client.transaction(sessionPrivateKey.toPublicKey(), async () => {
             randzuLogic.makeMoveCapture(
               UInt64.from(matchQueue.gameInfo!.gameId),
               updatedCheckersField,

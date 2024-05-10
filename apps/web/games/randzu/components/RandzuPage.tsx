@@ -126,7 +126,7 @@ export default function RandzuPage({
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
-      () => {
+      async () => {
         randzuLogic.register(
           sessionPublicKey,
           UInt64.from(Math.round(Date.now() / 1000))
@@ -165,7 +165,7 @@ export default function RandzuPage({
   const collectPending = async () => {
     const randzuLogic = client.runtime.resolve('RandzuLogic');
 
-    const tx = await client.transaction(sessionPrivateKey.toPublicKey(), () => {
+    const tx = await client.transaction(sessionPrivateKey.toPublicKey(), async () => {
       randzuLogic.collectPendingBalance();
     });
 
@@ -185,7 +185,7 @@ export default function RandzuPage({
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
-      () => {
+      async () => {
         randzuLogic.proveOpponentTimeout(
           UInt64.from(matchQueue.gameInfo!.gameId)
         );
@@ -216,7 +216,7 @@ export default function RandzuPage({
 
     const winWitness1 = updatedRandzuField.checkWin(currentUserId);
 
-    const tx = await client.transaction(sessionPrivateKey.toPublicKey(), () => {
+    const tx = await client.transaction(sessionPrivateKey.toPublicKey(), async () => {
       randzuLogic.makeMove(
         UInt64.from(matchQueue.gameInfo!.gameId),
         updatedRandzuField,

@@ -177,7 +177,7 @@ export default function NewArkanoidCompetitionPage() {
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
-      () => {
+      async () => {
         /*
         Competition({
           name: CircuitString,
