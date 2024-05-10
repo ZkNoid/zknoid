@@ -13,7 +13,7 @@ import {
   CAPTURE_KING_BOTTOM_LEFT,
   CAPTURE_KING_BOTTOM_RIGHT,
 } from './GameView';
-import { Bool, Int64, PublicKey, UInt32, UInt64 } from 'o1js';
+import { Bool, PublicKey, UInt32, UInt64 } from 'o1js';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useMinaBridge } from '@/lib/stores/protokitBalances';
 import {
@@ -27,21 +27,18 @@ import {
   CheckersField,
   ClientAppChain,
   PENDING_BLOCKS_NUM_CONST,
-  RandzuField,
-  WinWitness,
 } from 'zknoid-chain-dev';
 import GamePage from '@/components/framework/GamePage';
 import { checkersConfig } from '../config';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import { MOVE_TIMEOUT_IN_BLOCKS } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
-import { formatUnits } from '@/lib/unit';
 import {
   MainButtonState,
   PvPGameView,
 } from '@/components/framework/GamePage/PvPGameView';
-import CheckersCoverSVG from '@/public/image/game-page/game-title-template.svg';
-import CheckersCoverMobileSVG from '@/public/image/game-page/game-title-mobile-template.svg';
+import CheckersCoverSVG from '../assets/game-cover.svg';
+import CheckersCoverMobileSVG from '../assets/game-cover-mobile.svg';
 
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';

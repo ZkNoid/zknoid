@@ -170,6 +170,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             title={'Show me the all existing competitions'}
             asLink
             href={'/games/arkanoid/competitions-list'}
+            className={'lg:mr-[11.2%]'}
             icon={
               <svg
                 width="32"
@@ -214,6 +215,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
               title={'Create your own competition!'}
               asLink
               href={'/games/arkanoid/new-competition'}
+              className={'lg:mr-[11.2%]'}
               icon={
                 <svg
                   width="32"

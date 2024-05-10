@@ -159,11 +159,22 @@ export const GameView = (props: IGameViewProps) => {
 
     if (lastTime === undefined) lastTime = time;
 
-    const elapsed = time - lastTime;
+    let elapsed = time - lastTime;
 
     lastTime = time;
 
     ctx!.clearRect(0, 0, canvas.current!.width, canvas.current!.height);
+
+    let overhead = Date.now() - lastUpdateTime - tickPeriod;
+    if (overhead >= 0) {
+      pushTick(Math.round(cart.x - prevCartPos), cart.hitMomentum);
+      prevCartPos = cart.x;
+      // ticksCache.push(1);
+      // setTicks([...ticksCache, 1]);
+      elapsed = overhead;
+      lastUpdateTime = Date.now() - overhead;
+    }
+
     moveCart(elapsed);
     moveBall(elapsed);
 
@@ -178,14 +189,6 @@ export const GameView = (props: IGameViewProps) => {
       // drawContractNearestBricks();
       drawContractCart();
       drawBallsTraces();
-    }
-
-    if (Date.now() - lastUpdateTime > tickPeriod) {
-      pushTick(Math.round(cart.x - prevCartPos), cart.hitMomentum);
-      prevCartPos = cart.x;
-      // ticksCache.push(1);
-      // setTicks([...ticksCache, 1]);
-      lastUpdateTime = Date.now();
     }
 
     requestAnimationFrame(gameLoop);

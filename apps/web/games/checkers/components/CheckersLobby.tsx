@@ -1,9 +1,9 @@
 import GamePage from '@/components/framework/GamePage';
-import { useContext, useEffect, useState } from 'react';
-import CheckersCoverSVG from '@/public/image/game-page/game-title-template.svg';
-import CheckersCoverMobileSVG from '@/public/image/game-page/game-title-mobile-template.svg';
+import { useContext, useState } from 'react';
+import CheckersCoverSVG from '../assets/game-cover.svg';
+import CheckersCoverMobileSVG from '../assets/game-cover-mobile.svg';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
-import { ClientAppChain, ProtoUInt64 } from 'zknoid-chain-dev';
+import { ClientAppChain } from 'zknoid-chain-dev';
 import { useNetworkStore } from '@/lib/stores/network';
 import LobbyPage from '@/components/framework/Lobby/LobbyPage';
 import { checkersConfig } from '../config';

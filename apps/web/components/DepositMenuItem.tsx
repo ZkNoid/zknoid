@@ -14,7 +14,7 @@ import Image from 'next/image';
 import { L1_ASSETS, L2_ASSET, ZkNoidAsset } from '@/constants/assets';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useMinaBalancesStore } from '@/lib/stores/minaBalances';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useAnimationControls } from 'framer-motion';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import 'reflect-metadata';
 import { AccountUpdate, Mina, PublicKey } from 'o1js';
@@ -27,6 +27,7 @@ import { getEnvContext } from '@/lib/envContext';
 import { DefaultRuntimeModules } from '@/lib/runtimeModules';
 import { buildClient } from '@/lib/utils';
 import { type PendingTransaction } from '@proto-kit/sequencer';
+import { Button } from '@/components/ui/games-store/shared/Button';
 
 const BridgeInput = ({
   assets,
@@ -82,21 +83,21 @@ const BridgeInput = ({
               <div className="h-[26px] w-[26px] rounded-3xl bg-bg-dark"></div>
             )}
             {currentAsset.ticker}
-            <svg
-              width="22"
-              height="12"
-              viewBox="0 0 22 12"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M21 1.00098L11 11.001L1 1.00098"
-                stroke="#252525"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
+            {/*<svg*/}
+            {/*  width="22"*/}
+            {/*  height="12"*/}
+            {/*  viewBox="0 0 22 12"*/}
+            {/*  fill="none"*/}
+            {/*  xmlns="http://www.w3.org/2000/svg"*/}
+            {/*>*/}
+            {/*  <path*/}
+            {/*    d="M21 1.00098L11 11.001L1 1.00098"*/}
+            {/*    stroke="#252525"*/}
+            {/*    stroke-width="2"*/}
+            {/*    stroke-linecap="round"*/}
+            {/*    stroke-linejoin="round"*/}
+            {/*  />*/}
+            {/*</svg>*/}
           </div>
         </div>
       </div>
@@ -289,12 +290,16 @@ export const DepositMenuItem = () => {
                   }
                   isPay={true}
                 />
-                <Image
-                  src={ChangeSvg}
-                  alt="Change"
-                  className="mb-[5px] mt-[-20px]"
-                  onClick={() => setIsUnbridge(!isUnbridge)}
-                ></Image>
+                <motion.div
+                  className="mb-[5px] mt-[-20px] hover:opacity-80"
+                  whileTap={{ scale: 0.8 }}
+                >
+                  <Image
+                    src={ChangeSvg}
+                    alt="Change"
+                    onClick={() => setIsUnbridge(!isUnbridge)}
+                  />
+                </motion.div>
                 <BridgeInput
                   assets={!isUnbridge ? [L2_ASSET] : [L1_ASSETS.Mina]}
                   currentAsset={!isUnbridge ? assetOut : assetIn}
@@ -313,14 +318,12 @@ export const DepositMenuItem = () => {
                   isPay={false}
                 />
               </div>
-              <div
-                className="w-full cursor-pointer rounded-xl bg-left-accent px-7 py-3 text-center text-[24px] text-black"
+              <Button
+                label={isUnbridge ? 'Unbridge' : 'Bridge'}
                 onClick={() =>
                   isUnbridge ? unbridge(amountIn) : bridge(amountIn)
                 }
-              >
-                Bridge
-              </div>
+              />
             </div>
           </motion.div>
         )}
