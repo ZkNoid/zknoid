@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM node:18-buster
+FROM node:18.20-bookworm
 
 ENV PNPM_HOME="/pnpm"
 
