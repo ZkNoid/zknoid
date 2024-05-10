@@ -5,6 +5,8 @@ services:
 
     environment:
       TZ: Europe/Moscow
+      POSTGRES_URL: postgres
+      REDIS_URL: redis
 
     command: sh -c "PERSISTENT=true pnpm start-server"
     ports:
@@ -16,27 +18,23 @@ services:
 
   postgres:
     image: postgres:14-alpine
-    environment:
-      POSTGRES_PASSWORD: password
-      POSTGRES_USER: admin
-      POSTGRES_DB: protokit
-      POSTGRES_URL: localhost
-      REDIS_URL: localhost
-      REDIS_CI: true
-      DATABASE_URL: "postgresql://admin:password@localhost:5432/protokit?schema=public"
-
+    container_name: protokit-db
     ports:
       - 5432:5432
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=protokit
+
   redis:
     image: redis:6.2-alpine
+    container_name: protokit-redis
+    restart: unless-stopped
     ports:
-      - 6379:6379
-    environment:
-      POSTGRES_PASSWORD: password
-      POSTGRES_USER: admin
-      POSTGRES_DB: protokit
-      POSTGRES_URL: localhost
-      REDIS_URL: localhost
-      REDIS_CI: true
-      DATABASE_URL: "postgresql://admin:password@localhost:5432/protokit?schema=public"
-
+      - '6379:6379'
+    command: redis-server /redis.conf --requirepass password
+    volumes:
+      - ./redis:/data
+      - ./redis.conf:/redis.conf
