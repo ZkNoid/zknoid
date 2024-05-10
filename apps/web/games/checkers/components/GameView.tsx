@@ -67,7 +67,7 @@ export const GameView = (props: IGameViewProps) => {
   const getPossibleMoves = (x: number, y: number) => {
     const moves = [];
 
-    const fieldValue = props.gameInfo?.field.value[x][y];
+    const fieldValue = props.gameInfo!.field.value[x][y];
     if (
       Bool.or(
         fieldValue.equals(UInt32.from(props.gameInfo?.currentUserIndex! + 1)),
