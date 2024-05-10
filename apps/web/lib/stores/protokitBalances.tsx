@@ -1,7 +1,9 @@
+'use client';
+
 import 'reflect-metadata';
 
 import { type ClientAppChain } from '@proto-kit/sdk';
-import { PublicKey } from 'o1js';
+import { Bool, Field, PrivateKey, PublicKey, Struct } from 'o1js';
 import { useCallback, useContext, useEffect } from 'react';
 import { create } from 'zustand';
 
@@ -14,9 +16,25 @@ import AppChainClientContext from '../contexts/AppChainClientContext';
 import { DefaultRuntimeModules } from '../runtimeModules';
 import { Balances, ProtoUInt64, ZNAKE_TOKEN_ID } from 'zknoid-chain-dev';
 
-import { BalancesKey } from '@proto-kit/library';
+import { BalancesKey, TokenId } from '@proto-kit/library';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '../envContext';
+
+class Point extends Struct({ x: Field, y: Field }) {
+  static add(a: Point, b: Point) {
+    return { x: a.x.add(b.x), y: a.y.add(b.y) };
+  }
+}
+
+class BalancesKey1 extends Struct({
+  tokenId: TokenId,
+  address: PublicKey,
+}) {
+  public static from(tokenId: TokenId, address: PublicKey) {
+    //@ts-ignore
+    return new BalancesKey({ tokenId, address });
+  }
+}
 
 export interface BalancesState {
   loading: boolean;
@@ -44,6 +62,26 @@ export const useProtokitBalancesStore = create<
       set((state) => {
         state.loading = true;
       });
+
+      const key = BalancesKey.from(
+        TokenId.from(777),
+        PrivateKey.random().toPublicKey()
+      );
+
+      const point1 = { x: Field(10), y: Field(4) };
+      const point2 = { x: Field(1), y: Field(2) };
+
+      const pointSum = Point.add(point1, point2);
+
+      console.log(`pointSum Fields: ${Point.toFields(pointSum)}`);
+
+      console.log(
+        'Bug',
+        TokenId.toFields(key.tokenId),
+        PublicKey.toFields(key.address)
+      );
+      console.log('Bug1', BalancesKey1.toFields(key));
+      // console.log('Bug2', BalancesKey.toFields(key));
 
       const balance = await client.query.runtime.Balances.balances.get(
         // @ts-ignore
@@ -151,7 +189,7 @@ export const useTestBalanceGetter = () => {
 
     console.log(balances);
 
-    const l2tx = await contextAppChainClient.transaction(sender, () => {
+    const l2tx = await contextAppChainClient.transaction(sender, async () => {
       balances.addBalance(
         ZNAKE_TOKEN_ID,
         sender,

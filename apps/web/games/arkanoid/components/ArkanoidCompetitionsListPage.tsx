@@ -39,7 +39,7 @@ export default function ArkanoidCompetitionsListPage() {
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
-      () => {
+      async () => {
         gameHub.register(UInt64.from(competitionId));
       }
     );
@@ -53,7 +53,7 @@ export default function ArkanoidCompetitionsListPage() {
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
-      () => {
+      async () => {
         gameHub.getReward(UInt64.from(competitionId));
       }
     );

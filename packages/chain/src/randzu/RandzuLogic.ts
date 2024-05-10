@@ -50,7 +50,7 @@ export class RandzuField extends Struct({
     RANDZU_FIELD_SIZE,
   ),
 }) {
-  static from(value: number[][]) {
+  static from(value: number[][] | bigint[][]) {
     return new RandzuField({
       value: value.map((row) => row.map((x) => UInt32.from(x))),
     });
@@ -149,16 +149,16 @@ export class RandzuLogic extends MatchMaker {
   }
 
   @runtimeMethod()
-  public proveOpponentTimeout(gameId: UInt64): void {
+  public async proveOpponentTimeout(gameId: UInt64): Promise<void> {
     super.proveOpponentTimeout(gameId, true);
   }
 
   @runtimeMethod()
-  public makeMove(
+  public async makeMove(
     gameId: UInt64,
     newField: RandzuField,
     winWitness: WinWitness,
-  ): void {
+  ): Promise<void> {
     const sessionSender = this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
@@ -251,7 +251,12 @@ export class RandzuLogic extends MatchMaker {
     );
 
     const winnerShare = ProtoUInt64.from(
-      Provable.if(winProposed, UInt64.from(1), UInt64.from(0)),
+      Provable.if<ProtoUInt64>(
+        winProposed,
+        ProtoUInt64,
+        ProtoUInt64.from(1),
+        ProtoUInt64.from(0),
+      ),
     );
 
     this.acquireFunds(

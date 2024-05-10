@@ -44,22 +44,23 @@ export const GameView = (props: IGameViewProps) => {
 
   useEffect(() => {
     if (!props.gameInfo?.field) return;
-    
+
     for (let i = 0; i < CHECKERS_FIELD_SIZE; i++) {
       for (let j = 0; j < CHECKERS_FIELD_SIZE; j++) {
         const moves = getPossibleMoves(i, j);
         if (
-          moves.includes(CAPTURE_TOP_LEFT) || moves.includes(CAPTURE_TOP_RIGHT) || 
-          moves.includes(CAPTURE_KING_BOTTOM_LEFT) || moves.includes(CAPTURE_KING_BOTTOM_RIGHT)
+          moves.includes(CAPTURE_TOP_LEFT) ||
+          moves.includes(CAPTURE_TOP_RIGHT) ||
+          moves.includes(CAPTURE_KING_BOTTOM_LEFT) ||
+          moves.includes(CAPTURE_KING_BOTTOM_RIGHT)
         ) {
-            setCanEat(true);
-            return;
-          }
+          setCanEat(true);
+          return;
+        }
       }
     }
     setCanEat(false);
-
-  }, [props.gameInfo?.field])
+  }, [props.gameInfo?.field]);
 
   const isCurrentRedBall = props.gameInfo?.currentUserIndex == 0;
   const isPlayer1 = props.gameInfo?.opponent == props.gameInfo?.player2;
@@ -67,7 +68,11 @@ export const GameView = (props: IGameViewProps) => {
   const getPossibleMoves = (x: number, y: number) => {
     const moves = [];
 
-    const fieldValue = props.gameInfo?.field.value[x][y];
+    if (!props.gameInfo) {
+      return [];
+    }
+
+    const fieldValue = props.gameInfo!.field.value[x][y];
     if (
       Bool.or(
         fieldValue.equals(UInt32.from(props.gameInfo?.currentUserIndex! + 1)),
@@ -86,9 +91,10 @@ export const GameView = (props: IGameViewProps) => {
       (isPlayer1 ? y <= CHECKERS_FIELD_SIZE - 3 : y >= 2) &&
       (props.gameInfo?.field.value[x - 1][y + (isPlayer1 ? 1 : -1)]
         .equals(UInt32.from(2 - props.gameInfo?.currentUserIndex))
-        .toBoolean() || props.gameInfo?.field.value[x - 1][y + (isPlayer1 ? 1 : -1)]
-        .equals(UInt32.from(4 - props.gameInfo?.currentUserIndex))
-        .toBoolean()) &&
+        .toBoolean() ||
+        props.gameInfo?.field.value[x - 1][y + (isPlayer1 ? 1 : -1)]
+          .equals(UInt32.from(4 - props.gameInfo?.currentUserIndex))
+          .toBoolean()) &&
       props.gameInfo?.field.value[x - 2][y + (isPlayer1 ? 2 : -2)]
         .equals(UInt32.from(0))
         .toBoolean()
@@ -99,15 +105,14 @@ export const GameView = (props: IGameViewProps) => {
     if (
       x >= 2 &&
       (!isPlayer1 ? y <= CHECKERS_FIELD_SIZE - 3 : y >= 2) &&
-      props.gameInfo?.field.value[x][y] ==
+      +props.gameInfo.field.value[x][y] ==
         props.gameInfo?.currentUserIndex! + 3 &&
       (props.gameInfo?.field.value[x - 1][y + (isPlayer1 ? -1 : 1)]
         .equals(UInt32.from(2 - props.gameInfo?.currentUserIndex))
         .toBoolean() ||
         props.gameInfo?.field.value[x - 1][y + (isPlayer1 ? -1 : 1)]
-        .equals(UInt32.from(4 - props.gameInfo?.currentUserIndex))
-        .toBoolean()
-      ) &&
+          .equals(UInt32.from(4 - props.gameInfo?.currentUserIndex))
+          .toBoolean()) &&
       props.gameInfo?.field.value[x - 2][y + (isPlayer1 ? -2 : 2)]
         .equals(UInt32.from(0))
         .toBoolean()
@@ -122,9 +127,8 @@ export const GameView = (props: IGameViewProps) => {
         .equals(UInt32.from(2 - props.gameInfo?.currentUserIndex))
         .toBoolean() ||
         props.gameInfo?.field.value[x + 1][y + (isPlayer1 ? 1 : -1)]
-        .equals(UInt32.from(4 - props.gameInfo?.currentUserIndex))
-        .toBoolean()
-      ) &&
+          .equals(UInt32.from(4 - props.gameInfo?.currentUserIndex))
+          .toBoolean()) &&
       props.gameInfo?.field.value[x + 2][y + (isPlayer1 ? 2 : -2)]
         .equals(UInt32.from(0))
         .toBoolean()
@@ -135,14 +139,14 @@ export const GameView = (props: IGameViewProps) => {
     if (
       x <= CHECKERS_FIELD_SIZE - 3 &&
       (!isPlayer1 ? y <= CHECKERS_FIELD_SIZE - 3 : y >= 2) &&
-      props.gameInfo?.field.value[x][y] ==
+      +props.gameInfo.field.value[x][y] ==
         props.gameInfo?.currentUserIndex! + 3 &&
       (props.gameInfo?.field.value[x + 1][y + (isPlayer1 ? -1 : 1)]
         .equals(UInt32.from(2 - props.gameInfo?.currentUserIndex))
-        .toBoolean() || 
-      props.gameInfo?.field.value[x + 1][y + (isPlayer1 ? -1 : 1)]
-        .equals(UInt32.from(4 - props.gameInfo?.currentUserIndex))
-        .toBoolean()) &&
+        .toBoolean() ||
+        props.gameInfo?.field.value[x + 1][y + (isPlayer1 ? -1 : 1)]
+          .equals(UInt32.from(4 - props.gameInfo?.currentUserIndex))
+          .toBoolean()) &&
       props.gameInfo?.field.value[x + 2][y + (isPlayer1 ? -2 : 2)]
         .equals(UInt32.from(0))
         .toBoolean()
@@ -150,8 +154,12 @@ export const GameView = (props: IGameViewProps) => {
       moves.push(CAPTURE_KING_BOTTOM_RIGHT);
     }
 
-    const canMove = !moves.includes(CAPTURE_TOP_LEFT) && !moves.includes(CAPTURE_TOP_RIGHT) 
-      && !moves.includes(CAPTURE_KING_BOTTOM_LEFT) && !moves.includes(CAPTURE_KING_BOTTOM_RIGHT) && !canEat;
+    const canMove =
+      !moves.includes(CAPTURE_TOP_LEFT) &&
+      !moves.includes(CAPTURE_TOP_RIGHT) &&
+      !moves.includes(CAPTURE_KING_BOTTOM_LEFT) &&
+      !moves.includes(CAPTURE_KING_BOTTOM_RIGHT) &&
+      !canEat;
 
     if (
       canMove &&
@@ -168,7 +176,7 @@ export const GameView = (props: IGameViewProps) => {
       canMove &&
       x >= 1 &&
       (!isPlayer1 ? y < CHECKERS_FIELD_SIZE - 1 : y > 0) &&
-      props.gameInfo?.field.value[x][y] ==
+      +props.gameInfo.field.value[x][y] ==
         props.gameInfo?.currentUserIndex! + 3 &&
       props.gameInfo?.field.value[x - 1][y + (isPlayer1 ? -1 : 1)]
         .equals(UInt32.from(0))
@@ -190,7 +198,7 @@ export const GameView = (props: IGameViewProps) => {
       canMove &&
       x < CHECKERS_FIELD_SIZE - 1 &&
       (!isPlayer1 ? y < CHECKERS_FIELD_SIZE - 1 : y > 0) &&
-      props.gameInfo?.field.value[x][y] ==
+      +props.gameInfo.field.value[x][y] ==
         props.gameInfo?.currentUserIndex! + 3 &&
       props.gameInfo?.field.value[x + 1][y + (isPlayer1 ? -1 : 1)]
         .equals(UInt32.from(0))
@@ -327,22 +335,22 @@ export const GameView = (props: IGameViewProps) => {
                   : ' hover:bg-bg-dark/50'
               }
               ${
-                props.gameInfo?.field?.value?.[j]?.[i] == 1
+                props.gameInfo && +props.gameInfo.field.value[j][i] == 1
                   ? "bg-[url('/ball_green.svg')]"
                   : ''
               }
               ${
-                props.gameInfo?.field?.value?.[j]?.[i] == 2
+                props.gameInfo && +props.gameInfo.field.value[j][i] == 2
                   ? "bg-[url('/ball_blue.svg')]"
                   : ''
               }
               ${
-                props.gameInfo?.field?.value?.[j]?.[i] == 3
+                props.gameInfo && +props.gameInfo.field.value[j][i] == 3
                   ? "bg-[url('/ball_green_adv.svg')]"
                   : ''
               }
               ${
-                props.gameInfo?.field?.value?.[j]?.[i] == 4
+                props.gameInfo && +props.gameInfo.field.value[j][i] == 4
                   ? "bg-[url('/ball_blue_adv.svg')]"
                   : ''
               }

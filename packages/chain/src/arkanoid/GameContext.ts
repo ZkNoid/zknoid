@@ -6,7 +6,6 @@ import {
   Int64,
   Bool,
   Poseidon,
-  Experimental,
 } from 'o1js';
 import { RandomGenerator } from '../engine';
 import {

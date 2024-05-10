@@ -70,7 +70,7 @@ export class Gamehub<
   }
 
   @runtimeMethod()
-  public updateSeed(seed: UInt64): void {
+  public async updateSeed(seed: UInt64): Promise<void> {
     const lastSeedIndex = this.lastSeed.get().orElse(UInt64.from(0));
     this.seeds.set(lastSeedIndex, seed);
     this.lastSeed.set(lastSeedIndex.add(1));
@@ -82,7 +82,7 @@ export class Gamehub<
    * @param competition - Competition to create
    */
   @runtimeMethod()
-  public createCompetition(competition: Competition): void {
+  public async createCompetition(competition: Competition): Promise<void> {
     const competitionId = this.lastCompetitonId.get().orElse(UInt64.from(0));
     this.competitionCreator.set(competitionId, this.transaction.sender.value);
     this.competitions.set(competitionId, competition);
@@ -97,7 +97,7 @@ export class Gamehub<
   }
 
   @runtimeMethod()
-  public register(competitionId: UInt64): void {
+  public async register(competitionId: UInt64): Promise<void> {
     this.registrations.set(
       new GameRecordKey({
         competitionId,
@@ -116,10 +116,10 @@ export class Gamehub<
    * @param newScore - Score to be added
    */
   @runtimeMethod()
-  public addGameResult(
+  public async addGameResult(
     competitionId: UInt64,
     gameRecordProof: GameProof,
-  ): void {
+  ): Promise<void> {
     gameRecordProof.verify();
 
     const gameKey = new GameRecordKey({
@@ -185,7 +185,7 @@ export class Gamehub<
   /// #TODO change to multiple receivers
   /// #TODO add timestamp check, when timestamp will be on protokit
   @runtimeMethod()
-  public getReward(competitionId: UInt64): void {
+  public async getReward(competitionId: UInt64): Promise<void> {
     let competition = this.competitions.get(competitionId).value;
 
     let key = new GameRecordKey({
@@ -217,7 +217,7 @@ export class Gamehub<
 
   private payCompetitionFee(competitionId: UInt64, shouldPay: Bool): void {
     let competition = this.competitions.get(competitionId).value;
-    let fee = Provable.if(shouldPay, competition.participationFee, UInt64.zero);
+    let fee = Provable.if<ProtoUInt64>(shouldPay, ProtoUInt64, competition.participationFee, ProtoUInt64.zero);
 
     this.balances.transfer(
       ZNAKE_TOKEN_ID,

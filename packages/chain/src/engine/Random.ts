@@ -1,4 +1,4 @@
-import { Field, Int64, Poseidon, Struct } from 'o1js';
+import { Field, Gadgets, Int64, Poseidon, Struct } from 'o1js';
 
 const shift64divisor = `0b` + `1${'0'.repeat(64)}`;
 
@@ -24,7 +24,7 @@ export class RandomGenerator extends Struct({
     this.source = Poseidon.hash([this.source]);
     this.curValue = this.source;
 
-    return Int64.from(this.curValue.rangeCheckHelper(64)).mod(maxValue);
+    return Int64.from(this.curValue).mod(maxValue);
   }
 
   // Get 4 number
@@ -39,9 +39,12 @@ export class RandomGenerator extends Struct({
     ];
 
     for (let i = 0; i < 4; i++) {
-      result[i] = Int64.fromField(this.curValue.rangeCheckHelper(64)).mod(
-        maxValues[i],
+      let val = Gadgets.and(
+        this.curValue,
+        Field.from(shift64divisor).sub(1),
+        254,
       );
+      result[i] = Int64.fromField(val).mod(maxValues[i]);
 
       this.curValue = this.curValue.div(shift64divisor); // Check if its ok
     }

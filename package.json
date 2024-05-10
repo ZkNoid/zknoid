@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "pnpm:devPreinstall": "./build_protokit.sh",
     "build": "turbo run build",
     "dev": "turbo run dev",
     "start-server": "turbo run start-server",
@@ -16,9 +17,6 @@
   "name": "starter-kit",
   "pnpm": {
     "patchedDependencies": {
-      "@proto-kit/sdk@0.1.1-develop.651": "patches/@proto-kit__sdk@0.1.1-develop.651.patch",
-      "@proto-kit/api@0.1.1-develop.651": "patches/@proto-kit__api@0.1.1-develop.651.patch",
-      "@proto-kit/sequencer@0.1.1-develop.651": "patches/@proto-kit__sequencer@0.1.1-develop.651.patch"
     }
   }
 }
