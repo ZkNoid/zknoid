@@ -17,6 +17,7 @@ import {
   processTicks,
   GameRecordProof,
   client,
+  Tick,
 } from 'zknoid-chain-dev';
 // import { DummyBridge } from 'zknoidcontractsl1';
 
@@ -67,9 +68,9 @@ const functions = {
   },
   proveGameRecord: async (args: { seedJson: any; inputs: any; debug: any }) => {
     let seed = Field014.fromJSON(args.seedJson);
-    let userInputs = (<string[]>JSON.parse(args.inputs)).map((elem) =>
-      GameInputs.fromJSON(elem)
-    );
+    let userInputs = (<any[]>JSON.parse(args.inputs)).map((elem) => {
+      return GameInputs.fromJSON(elem);
+    });
     console.log('[Worker] proof checking');
 
     console.log('Generating map proof');
@@ -97,7 +98,7 @@ const functions = {
     console.log('Generating game proof');
 
     const gameProof = await mockProof(
-      checkGameRecord(mapGenerationProof, currentGameStateProof),
+      await checkGameRecord(mapGenerationProof, currentGameStateProof),
       GameRecordProof
     );
 

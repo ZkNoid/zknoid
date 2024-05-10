@@ -84,7 +84,10 @@ export class MatchMaker extends LobbyManager {
   }
 
   @runtimeMethod()
-  public async register(sessionKey: PublicKey, timestamp: UInt64): Promise<void> {
+  public async register(
+    sessionKey: PublicKey,
+    timestamp: UInt64,
+  ): Promise<void> {
     this.registerWithType(sessionKey, UInt64.zero, timestamp);
   }
 
@@ -133,7 +136,7 @@ export class MatchMaker extends LobbyManager {
   }
 
   @runtimeMethod()
-  public leaveMatchmaking(type: UInt64) {
+  public async leaveMatchmaking(type: UInt64) {
     const sender = this.transaction.sender.value;
     const roundId = this.network.block.height.div(PENDING_BLOCKS_NUM);
     const pendingLobbyIndex = new PendingLobbyIndex({
