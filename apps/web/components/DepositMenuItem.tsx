@@ -179,7 +179,7 @@ export const DepositMenuItem = () => {
     );
     const sender = PublicKey.fromBase58(networkStore.address!);
 
-    const l2tx = await contextAppChainClient!.transaction(sender, () => {
+    const l2tx = await contextAppChainClient!.transaction(sender, async () => {
       balances.addBalance(
         ZNAKE_TOKEN_ID,
         sender,
@@ -216,7 +216,7 @@ export const DepositMenuItem = () => {
     );
     const sender = PublicKey.fromBase58(networkStore.address!);
 
-    const l2tx = await contextAppChainClient!.transaction(sender, () => {
+    const l2tx = await contextAppChainClient!.transaction(sender, async () => {
       balances.burnBalance(
         ZNAKE_TOKEN_ID,
         ProtokitLibrary.UInt64.from(1000000000n)

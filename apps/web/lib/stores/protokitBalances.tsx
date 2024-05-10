@@ -182,7 +182,7 @@ export const useTestBalanceGetter = () => {
 
     console.log(balances);
 
-    const l2tx = await contextAppChainClient.transaction(sender, () => {
+    const l2tx = await contextAppChainClient.transaction(sender, async () => {
       balances.addBalance(
         ZNAKE_TOKEN_ID,
         sender,

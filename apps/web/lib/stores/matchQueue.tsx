@@ -78,7 +78,6 @@ export const matchQueueInitializer =
       const activeGameId = await query.activeGameId.get(address);
       console.log('Active game idd', activeGameId);
       const inQueue = await query.queueRegisteredRoundUsers.get(
-        // @ts-expect-error
         new RoundIdxUser({
           roundId: UInt64.from(blockHeight).div(PENDING_BLOCKS_NUM),
           userAddress: address,
