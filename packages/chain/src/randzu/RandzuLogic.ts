@@ -50,7 +50,7 @@ export class RandzuField extends Struct({
     RANDZU_FIELD_SIZE,
   ),
 }) {
-  static from(value: number[][]) {
+  static from(value: number[][] | bigint[][]) {
     return new RandzuField({
       value: value.map((row) => row.map((x) => UInt32.from(x))),
     });
@@ -251,7 +251,12 @@ export class RandzuLogic extends MatchMaker {
     );
 
     const winnerShare = ProtoUInt64.from(
-      Provable.if<ProtoUInt64>(winProposed, ProtoUInt64, ProtoUInt64.from(1), ProtoUInt64.from(0)),
+      Provable.if<ProtoUInt64>(
+        winProposed,
+        ProtoUInt64,
+        ProtoUInt64.from(1),
+        ProtoUInt64.from(0),
+      ),
     );
 
     this.acquireFunds(
