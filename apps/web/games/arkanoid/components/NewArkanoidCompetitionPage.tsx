@@ -132,7 +132,7 @@ export default function NewArkanoidCompetitionPage() {
     setBricks(
       contractBricks.map((brick: IContractBrick) => {
         return {
-          pos: [brick.pos.x ^ 1, brick.pos.y ^ 1],
+          pos: [brick.pos.x as any ^ 1, brick.pos.y as any ^ 1],
           value: +brick.value.toString(),
         } as IBrick;
       })
