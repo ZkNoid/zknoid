@@ -10,3 +10,33 @@ services:
     ports:
       - "38080:8080"
     restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: admin
+      POSTGRES_DB: protokit
+      POSTGRES_URL: localhost
+      REDIS_URL: localhost
+      REDIS_CI: true
+      DATABASE_URL: "postgresql://admin:password@localhost:5432/protokit?schema=public"
+
+    ports:
+      - 5432:5432
+  redis:
+    image: redis:6.2-alpine
+    ports:
+      - 6379:6379
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: admin
+      POSTGRES_DB: protokit
+      POSTGRES_URL: localhost
+      REDIS_URL: localhost
+      REDIS_CI: true
+      DATABASE_URL: "postgresql://admin:password@localhost:5432/protokit?schema=public"
+

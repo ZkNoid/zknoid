@@ -46,7 +46,7 @@
     "lucide-react": "^0.292.0",
     "luxon": "^3.4.4",
     "mongodb": "^6.5.0",
-    "next": "^14.2.0",
+    "next": "^v14.3.0-canary.54",
     "node-telegram-bot-api": "^0.65.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

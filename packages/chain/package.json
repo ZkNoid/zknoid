@@ -60,6 +60,7 @@
         "@proto-kit/sequencer": "link:../../protokit-framework/framework/packages/sequencer",
         "@proto-kit/api": "link:../../protokit-framework/framework/packages/api",
         "@proto-kit/cli": "link:../../protokit-framework/framework/packages/cli",
+        "@proto-kit/persistance": "link:../../protokit-framework/framework/packages/persistance",
         "o1js": "link:../../protokit-framework/framework/node_modules/o1js",
         "concurrently": "^8.2.2",
         "tsyringe": "link:../../protokit-framework/framework/node_modules/tsyringe"
