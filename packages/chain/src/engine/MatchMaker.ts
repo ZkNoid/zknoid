@@ -132,6 +132,40 @@ export class MatchMaker extends LobbyManager {
     const gameId = this.initGame(lobby, lobbyReady);
   }
 
+  @runtimeMethod()
+  public leaveMatchmaking(type: UInt64) {
+    const sender = this.transaction.sender.value;
+    const roundId = this.network.block.height.div(PENDING_BLOCKS_NUM);
+    const pendingLobbyIndex = new PendingLobbyIndex({
+      roundId,
+      type,
+    });
+
+    const lobbyOption = this.pendingLobby.get(pendingLobbyIndex);
+    assert(lobbyOption.isSome, 'No such pending lobby');
+    const lobby = lobbyOption.value;
+
+    assert(
+      this.queueRegisteredRoundUsers.get(
+        new RoundIdxUser({
+          roundId: lobby.id,
+          userAddress: sender,
+        }),
+      ).value,
+      'User is not registered for this matchmaking',
+    );
+
+    lobby.removePlayer(sender);
+    this.queueRegisteredRoundUsers.set(
+      new RoundIdxUser({
+        roundId: lobby.id,
+        userAddress: sender,
+      }),
+      Bool(false),
+    );
+    this.pendingLobby.set(pendingLobbyIndex, lobby);
+  }
+
   private joinPendingLobby(lobbyIndex: PendingLobbyIndex): Lobby {
     const sender = this.transaction.sender.value;
     const lobby = this.pendingLobby

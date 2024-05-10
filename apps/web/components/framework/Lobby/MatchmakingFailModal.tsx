@@ -2,8 +2,16 @@ import { Modal } from '@/components/ui/games-store/shared/Modal';
 import { useState } from 'react';
 import { Button } from '@/components/ui/games-store/shared/Button';
 
-export const MatchmakingFailModal = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(true);
+export const MatchmakingFailModal = ({
+  isOpen,
+  setIsOpen,
+  restart,
+}: {
+  isOpen: boolean;
+  setIsOpen: (value: boolean) => any;
+  restart: () => Promise<void>;
+}) => {
+  // const [isOpen, setIsOpen] = useState<boolean>(true);
   return (
     <Modal trigger={<></>} isOpen={isOpen} setIsOpen={setIsOpen}>
       <div className={'flex flex-col items-center justify-center gap-8 px-4'}>
@@ -39,11 +47,13 @@ export const MatchmakingFailModal = () => {
                 />
               </svg>
             }
+            onClick={restart}
           />
           <Button
             label={'Cancel'}
             color={'tertiary'}
             className={'max-w-[30%]'}
+            onClick={() => setIsOpen(false)}
           />
         </div>
       </div>

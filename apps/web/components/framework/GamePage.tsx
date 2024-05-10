@@ -123,8 +123,6 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
     );
   };
 
-  console.log(page)
-
   const WidgetsSwitch = (props: {
     competitionsSupported: boolean;
     lobbysSupported: boolean;
@@ -270,7 +268,7 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
       <div className={'flex flex-col px-5'}>
         <div
           className={
-            'mb-12 w-full rounded-[10px] border border-left-accent lg:rounded-2xl lg:border-2'
+            'mb-12 w-full rounded-[10px] border border-left-accent lg:rounded-[20px] lg:border-2'
           }
         >
           <Image
