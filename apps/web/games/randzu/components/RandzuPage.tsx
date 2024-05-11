@@ -49,6 +49,7 @@ import { RateGame } from '@/components/framework/GameWidget/RateGame';
 import { type PendingTransaction } from '@proto-kit/sequencer';
 import { toast } from '@/components/ui/games-store/shared/Toast';
 import { useToasterStore } from '@/lib/stores/toasterStore';
+import { useRateGameStore } from '@/lib/stores/rateGameStore';
 
 enum GameState {
   WalletNotInstalled,
@@ -96,6 +97,7 @@ export default function RandzuPage({
   const networkStore = useNetworkStore();
   const matchQueue = useRandzuMatchQueueStore();
   const toasterStore = useToasterStore();
+  const rateGameStore = useRateGameStore();
   const sessionPublicKey = useStore(useSessionKeyStore, (state) =>
     state.getSessionKey()
   ).toPublicKey();
@@ -489,7 +491,8 @@ export default function RandzuPage({
               ) : (
                 <>
                   {gameState == GameState.Won &&
-                    (isRateGame ? (
+                    (isRateGame &&
+                    !rateGameStore.ratedGamesIds.includes(randzuConfig.id) ? (
                       <GameWrap>
                         <RateGame
                           gameId={randzuConfig.id}
