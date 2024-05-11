@@ -44,6 +44,10 @@ import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import { getRandomEmoji } from '@/lib/emoji';
 import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
+import { toast } from '@/components/ui/games-store/shared/Toast';
+import { formatUnits } from '@/lib/unit';
+import { Currency } from '@/constants/currency';
+import { useToasterStore } from '@/lib/stores/toasterStore';
 
 enum GameState {
   WalletNotInstalled,
@@ -83,6 +87,7 @@ export default function RandzuPage({
 
   const networkStore = useNetworkStore();
   const matchQueue = useCheckersMatchQueueStore();
+  const toasterStore = useToasterStore();
   const sessionPublicKey = useStore(useSessionKeyStore, (state) =>
     state.getSessionKey()
   ).toPublicKey();
@@ -376,6 +381,15 @@ export default function RandzuPage({
     [GameState.Won]: `${getRandomEmoji('happy')}You won! Congratulations!`,
     [GameState.Lost]: `${getRandomEmoji('sad')} You've lost...`,
   } as Record<GameState, string>;
+
+  useEffect(() => {
+    if (gameState == GameState.Won)
+      toast.success(
+        toasterStore,
+        `You are won! Winnings: ${formatUnits(matchQueue.pendingBalance)} ${Currency.ZNAKES}`,
+        true
+      );
+  }, [gameState]);
 
   return (
     <GamePage

@@ -19,6 +19,7 @@ import { clsx } from 'clsx';
 import Link from 'next/link';
 import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
 import { MobileNavbar } from '@/components/ui/games-store/MobileNavbar';
+import { ToastContainer } from '@/components/ui/games-store/shared/Toast';
 
 export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
   children,
@@ -304,6 +305,8 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
         </div>
       </div>
       <Footer />
+
+      <ToastContainer />
     </>
   );
 }

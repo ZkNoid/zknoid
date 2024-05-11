@@ -3,6 +3,8 @@ import { clsx } from 'clsx';
 import { api } from '@/trpc/react';
 import { useNetworkStore } from '@/lib/stores/network';
 import { getEnvContext } from '@/lib/envContext';
+import { useToasterStore } from '@/lib/stores/toasterStore';
+import { toast } from '@/components/ui/games-store/shared/Toast';
 
 export const RateGame = ({
   gameId,
@@ -18,6 +20,7 @@ export const RateGame = ({
   const feedbackMutation = api.ratings.setGameFeedback.useMutation();
   const network = useNetworkStore();
   const progress = api.progress.setSolvedQuests.useMutation();
+  const toasterStore = useToasterStore();
 
   const sendFeedback = () => {
     feedbackMutation.mutate({
@@ -115,6 +118,7 @@ export const RateGame = ({
               onClick={() => {
                 sendFeedback();
                 onClick();
+                toast.success(toasterStore, 'Feedback successfully sent', true);
               }}
             >
               Send feedback

@@ -47,6 +47,8 @@ import { InstallWallet } from '@/components/framework/GameWidget/InstallWallet';
 import { GameWrap } from '@/components/framework/GamePage/GameWrap';
 import { RateGame } from '@/components/framework/GameWidget/RateGame';
 import { type PendingTransaction } from '@proto-kit/sequencer';
+import { toast } from '@/components/ui/games-store/shared/Toast';
+import { useToasterStore } from '@/lib/stores/toasterStore';
 
 enum GameState {
   WalletNotInstalled,
@@ -93,6 +95,7 @@ export default function RandzuPage({
 
   const networkStore = useNetworkStore();
   const matchQueue = useRandzuMatchQueueStore();
+  const toasterStore = useToasterStore();
   const sessionPublicKey = useStore(useSessionKeyStore, (state) =>
     state.getSessionKey()
   ).toPublicKey();
@@ -141,9 +144,7 @@ export default function RandzuPage({
       userAddress: networkStore.address!,
       section: 'RANDZU',
       id: 0,
-      txHash: JSON.stringify(
-        (tx.transaction! as PendingTransaction).toJSON()
-      ),
+      txHash: JSON.stringify((tx.transaction! as PendingTransaction).toJSON()),
       roomId: competition.id,
       envContext: getEnvContext(),
     });
@@ -152,9 +153,7 @@ export default function RandzuPage({
       userAddress: networkStore.address!,
       section: 'RANDZU',
       id: 1,
-      txHash: JSON.stringify(
-        (tx.transaction! as PendingTransaction).toJSON()
-      ),
+      txHash: JSON.stringify((tx.transaction! as PendingTransaction).toJSON()),
       roomId: competition.id,
       envContext: getEnvContext(),
     });
@@ -366,6 +365,15 @@ export default function RandzuPage({
   const getRatingQuery = api.ratings.getGameRating.useQuery({
     gameId: 'randzu',
   });
+
+  useEffect(() => {
+    if (gameState == GameState.Won)
+      toast.success(
+        toasterStore,
+        `You are won! Winnings: ${formatUnits(matchQueue.pendingBalance)} ${Currency.ZNAKES}`,
+        true
+      );
+  }, [gameState]);
 
   return (
     <GamePage

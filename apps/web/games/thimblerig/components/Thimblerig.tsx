@@ -1,7 +1,7 @@
 import GamePage from '@/components/framework/GamePage';
 import { thimblerigConfig } from '../config';
 import { useNetworkStore } from '@/lib/stores/network';
-import { ReactNode, useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import {
   type ClientAppChain,
@@ -58,9 +58,9 @@ import { GameWrap } from '@/components/framework/GamePage/GameWrap';
 import { Modal } from '@/components/ui/games-store/shared/Modal';
 import { RateGame } from '@/components/framework/GameWidget/RateGame';
 import { type PendingTransaction } from '@proto-kit/sequencer';
-import {
-  SadSmileSVG,
-} from '@/components/ui/games-store/shared/misc/svg';
+import { SadSmileSVG } from '@/components/ui/games-store/shared/misc/svg';
+import { toast } from '@/components/ui/games-store/shared/Toast';
+import { useToasterStore } from '@/lib/stores/toasterStore';
 
 enum GameState {
   WalletNotInstalled,
@@ -88,6 +88,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   >;
 
   const networkStore = useNetworkStore();
+  const toasterStore = useToasterStore();
   const [gameState, setGameState] = useState(GameState.NotStarted);
   const [isRateGame, setIsRateGame] = useState<boolean>(false);
   const [revealedValue, setRevealedValue] = useState<
@@ -533,6 +534,15 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
         setIsRateGame(true);
       }, 10000);
     }
+  }, [gameState]);
+
+  useEffect(() => {
+    if (gameState == GameState.Won)
+      toast.success(
+        toasterStore,
+        `You are won! Winnings: ${formatUnits(matchQueue.pendingBalance)} ${Currency.ZNAKES}`,
+        true
+      );
   }, [gameState]);
 
   return (

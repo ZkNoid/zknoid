@@ -13,6 +13,7 @@ import { MobileNavbar } from '@/components/ui/games-store/MobileNavbar';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { buildClient } from '@/lib/utils';
 import { DefaultRuntimeModules } from '@/lib/runtimeModules';
+// import { ToastContainer } from '@/components/ui/games-store/shared/Toast';
 
 const zkNoidConfig = import('@/games/config');
 
@@ -69,6 +70,8 @@ export default function Home() {
         <Section2 games={games} />
       </main>
       <Footer />
+
+      {/*<ToastContainer />*/}
     </div>
   );
 }
