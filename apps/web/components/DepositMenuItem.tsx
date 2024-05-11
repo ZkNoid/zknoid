@@ -28,6 +28,8 @@ import { DefaultRuntimeModules } from '@/lib/runtimeModules';
 import { buildClient } from '@/lib/utils';
 import { type PendingTransaction } from '@proto-kit/sequencer';
 import { Button } from '@/components/ui/games-store/shared/Button';
+import { toast } from '@/components/ui/games-store/shared/Toast';
+import { useToasterStore } from '@/lib/stores/toasterStore';
 
 const BridgeInput = ({
   assets,
@@ -127,6 +129,7 @@ export const DepositMenuItem = () => {
 
   const minaBalancesStore = useMinaBalancesStore();
   const protokitBalancesStore = useProtokitBalancesStore();
+  const toasterStore = useToasterStore();
 
   const networkStore = useNetworkStore();
 
@@ -321,7 +324,23 @@ export const DepositMenuItem = () => {
               <Button
                 label={isUnbridge ? 'Unbridge' : 'Bridge'}
                 onClick={() =>
-                  isUnbridge ? unbridge(amountIn) : bridge(amountIn)
+                  isUnbridge
+                    ? unbridge(amountIn)
+                        .then(() =>
+                          toast.success(toasterStore, 'Unbridge success', true)
+                        )
+                        .catch((error) => {
+                          console.log(error);
+                          toast.error(toasterStore, 'Unbridge error', true);
+                        })
+                    : bridge(amountIn)
+                        .then(() =>
+                          toast.success(toasterStore, 'Bridge success', true)
+                        )
+                        .catch((error) => {
+                          console.log(error);
+                          toast.error(toasterStore, 'Bridge error', true);
+                        })
                 }
               />
             </div>
