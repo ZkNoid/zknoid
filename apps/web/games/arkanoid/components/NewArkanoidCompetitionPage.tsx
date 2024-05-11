@@ -62,6 +62,12 @@ brickImages[0].src = '/sprite/brick/1.png';
 brickImages[1].src = '/sprite/brick/2.png';
 brickImages[2].src = '/sprite/brick/3.png';
 
+// Return true if string is valid date. False otherwise
+const dateCheck = (s: string): boolean => {
+  const time = new Date(s).getTime();
+  return !isNaN(time) && time >= 0;
+};
+
 function useStateRef<T>(
   initialValue: T
 ): [T, Dispatch<SetStateAction<T>>, MutableRefObject<T>] {
@@ -132,7 +138,7 @@ export default function NewArkanoidCompetitionPage() {
     setBricks(
       contractBricks.map((brick: IContractBrick) => {
         return {
-          pos: [brick.pos.x as any ^ 1, brick.pos.y as any ^ 1],
+          pos: [(brick.pos.x as any) ^ 1, (brick.pos.y as any) ^ 1],
           value: +brick.value.toString(),
         } as IBrick;
       })
@@ -200,8 +206,8 @@ export default function NewArkanoidCompetitionPage() {
           preregistrationEnabled,
           new Date(preregistrationFrom).getTime() || 0, // preregStartTime
           new Date(preregistrationTo).getTime() || 0, // preregEndTime
-          new Date(competitionFrom).getTime(), // competitionStartTime
-          new Date(competitionTo).getTime(), // competitionEndTime
+          preregistrationEnabled ? new Date(competitionFrom).getTime() : 0, // competitionStartTime
+          preregistrationEnabled ? new Date(competitionTo).getTime() : 0, // competitionEndTime
           funding,
           participationFee
         );
@@ -268,13 +274,19 @@ export default function NewArkanoidCompetitionPage() {
       ? setIsDescriptionInvalid(true)
       : setIsDescriptionInvalid(false);
     !competitionFrom ||
+    !dateCheck(competitionFrom) ||
     !competitionTo ||
+    !dateCheck(competitionTo) ||
     (preregistrationEnabled &&
       new Date(competitionFrom).getTime() <=
         new Date(preregistrationTo).getTime())
       ? setIsCompetitionDateInvalid(true)
       : setIsCompetitionDateInvalid(false);
-    preregistrationEnabled && (!preregistrationFrom || !preregistrationTo)
+    preregistrationEnabled &&
+    (!preregistrationFrom ||
+      !preregistrationTo ||
+      !dateCheck(preregistrationFrom) ||
+      !dateCheck(preregistrationTo))
       ? setIsPreregDateInvalid(true)
       : setIsPreregDateInvalid(false);
     participationFee < 0
