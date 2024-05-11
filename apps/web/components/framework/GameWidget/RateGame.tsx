@@ -5,6 +5,7 @@ import { useNetworkStore } from '@/lib/stores/network';
 import { getEnvContext } from '@/lib/envContext';
 import { useToasterStore } from '@/lib/stores/toasterStore';
 import { toast } from '@/components/ui/games-store/shared/Toast';
+import { useRateGameStore } from '@/lib/stores/rateGameStore';
 
 export const RateGame = ({
   gameId,
@@ -21,6 +22,7 @@ export const RateGame = ({
   const network = useNetworkStore();
   const progress = api.progress.setSolvedQuests.useMutation();
   const toasterStore = useToasterStore();
+  const rateGameStore = useRateGameStore();
 
   const sendFeedback = () => {
     feedbackMutation.mutate({
@@ -37,6 +39,8 @@ export const RateGame = ({
       txHash: '',
       envContext: getEnvContext(),
     });
+
+    rateGameStore.addRatedGame(gameId);
   };
   return (
     <div className={'flex h-full w-full items-center justify-center px-[10%]'}>

@@ -61,6 +61,7 @@ import { type PendingTransaction } from '@proto-kit/sequencer';
 import { SadSmileSVG } from '@/components/ui/games-store/shared/misc/svg';
 import { toast } from '@/components/ui/games-store/shared/Toast';
 import { useToasterStore } from '@/lib/stores/toasterStore';
+import { useRateGameStore } from '@/lib/stores/rateGameStore';
 
 enum GameState {
   WalletNotInstalled,
@@ -89,6 +90,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
   const networkStore = useNetworkStore();
   const toasterStore = useToasterStore();
+  const rateGameStore = useRateGameStore();
   const [gameState, setGameState] = useState(GameState.NotStarted);
   const [isRateGame, setIsRateGame] = useState<boolean>(false);
   const [revealedValue, setRevealedValue] = useState<
@@ -665,15 +667,18 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                 </GameWrap>
               ) : (
                 <>
-                  {isRateGame && (
-                    <Modal trigger={<></>} defaultOpen isDismissible={false}>
-                      <RateGame
-                        gameId={thimblerigConfig.id}
-                        onClick={() => setIsRateGame(false)}
-                        isModal={true}
-                      />
-                    </Modal>
-                  )}
+                  {isRateGame &&
+                    !rateGameStore.ratedGamesIds.includes(
+                      thimblerigConfig.id
+                    ) && (
+                      <Modal trigger={<></>} defaultOpen isDismissible={false}>
+                        <RateGame
+                          gameId={thimblerigConfig.id}
+                          onClick={() => setIsRateGame(false)}
+                          isModal={true}
+                        />
+                      </Modal>
+                    )}
                   {gameState === GameState.NotStarted && (
                     <GameWrap>
                       <Button
