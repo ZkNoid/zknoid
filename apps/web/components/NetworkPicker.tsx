@@ -55,6 +55,8 @@ export default function NetworkPicker() {
 
       const listener = (accounts: string[]) => {
         const [account] = accounts;
+        if (networkStore.minaNetwork?.chainId)
+          networkStore.setNetwork(networkStore.minaNetwork?.chainId);
         networkStore.onWalletConnected(account);
       };
 
