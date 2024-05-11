@@ -2,15 +2,18 @@ import {
   Balance,
   Balances,
   TokenId,
-  VanillaProtocolModules
-} from "@proto-kit/library";
-import { Runtime, runtimeMethod, runtimeModule } from "@proto-kit/module";
-import { Protocol } from "@proto-kit/protocol";
+  VanillaProtocolModules,
+} from '@proto-kit/library';
+import { Runtime, runtimeMethod, runtimeModule } from '@proto-kit/module';
+import { Protocol } from '@proto-kit/protocol';
 import {
-  AppChain, AppChainTransaction, BlockStorageNetworkStateModule,
+  AppChain,
+  AppChainTransaction,
+  BlockStorageNetworkStateModule,
   InMemorySigner,
-  InMemoryTransactionSender, StateServiceQueryModule
-} from "@proto-kit/sdk";
+  InMemoryTransactionSender,
+  StateServiceQueryModule,
+} from '@proto-kit/sdk';
 import {
   BlockProducerModule,
   LocalTaskQueue,
@@ -20,45 +23,57 @@ import {
   PrivateMempool,
   Sequencer,
   UnprovenProducerModule,
-  VanillaTaskWorkerModules
-} from "@proto-kit/sequencer";
+  VanillaTaskWorkerModules,
+} from '@proto-kit/sequencer';
 
 import {
   PrismaDatabaseConfig,
   PrismaRedisDatabase,
-  RedisConnectionConfig
-} from "@proto-kit/persistance";
+  RedisConnectionConfig,
+} from '@proto-kit/persistance';
 
+import { PrivateKey, PublicKey } from 'o1js';
+import {
+  BlockStorageResolver,
+  GraphqlSequencerModule,
+  GraphqlServer,
+  MempoolResolver,
+  MerkleWitnessResolver,
+  NodeStatusResolver,
+  QueryGraphqlModule,
+  UnprovenBlockResolver,
+} from '@proto-kit/api';
 
-import { PrivateKey, PublicKey } from "o1js";
-
-const prismaUrl = process.env["POSTGRES_URL"];
-const redisUrl = process.env["REDIS_URL"];
+const prismaUrl = process.env['POSTGRES_URL'];
+const redisUrl = process.env['REDIS_URL'];
 // We don't use the password for CI runs
-const redisCI = process.env["REDIS_CI"];
+const redisCI = process.env['REDIS_CI'];
 
 const prismaConfig = {
-  host: prismaUrl ?? "localhost",
-  password: "password",
-  username: "admin",
+  host: prismaUrl ?? 'localhost',
+  password: 'password',
+  username: 'admin',
   port: 5432,
   db: {
-    name: "protokit",
+    name: 'protokit',
   },
 };
 
 const redisConfig = {
-  host: redisUrl ?? "localhost",
+  host: redisUrl ?? 'localhost',
   port: 6379,
-  password: redisCI ? undefined : "password",
+  password: redisCI ? undefined : 'password',
 };
 
 export const IntegrationTestDBConfig = {
   prismaConfig,
-  redisConfig
-}
+  redisConfig,
+};
 
-export function createPrismaAppchain(prismaConnection: PrismaDatabaseConfig["connection"], redisConnection: RedisConnectionConfig) {
+export function createPrismaAppchain(
+  prismaConnection: PrismaDatabaseConfig['connection'],
+  redisConnection: RedisConnectionConfig,
+) {
   const appChain = AppChain.from({
     Protocol: Protocol.from({
       modules: VanillaProtocolModules.mandatoryModules({}),
@@ -71,10 +86,21 @@ export function createPrismaAppchain(prismaConnection: PrismaDatabaseConfig["con
     Sequencer: Sequencer.from({
       modules: {
         Database: PrismaRedisDatabase,
+        GraphqlServer,
+        Graphql: GraphqlSequencerModule.from({
+          modules: {
+            MempoolResolver,
+            QueryGraphqlModule,
+            BlockStorageResolver,
+            NodeStatusResolver,
+            UnprovenBlockResolver,
+            MerkleWitnessResolver,
+          },
+        }),
 
         Mempool: PrivateMempool,
         LocalTaskWorkerModule: LocalTaskWorkerModule.from(
-          VanillaTaskWorkerModules.withoutSettlement()
+          VanillaTaskWorkerModules.withoutSettlement(),
         ),
         BaseLayer: NoopBaseLayer,
         BlockProducerModule,
@@ -100,15 +126,14 @@ export function createPrismaAppchain(prismaConnection: PrismaDatabaseConfig["con
       LastStateRoot: {},
     },
     Runtime: {
-      Balances: {
-      }
+      Balances: {},
     },
     Sequencer: {
       Database: {
         prisma: {
-          connection: prismaConnection
+          connection: prismaConnection,
         },
-        redis: redisConnection
+        redis: redisConnection,
       },
       BlockTrigger: {},
       Mempool: {},
@@ -126,6 +151,20 @@ export function createPrismaAppchain(prismaConnection: PrismaDatabaseConfig["con
       TaskQueue: {
         simulatedDuration: 0,
       },
+      GraphqlServer: {
+        port: 8080,
+        host: "0.0.0.0",
+        graphiql: true,
+      },
+
+      Graphql: {
+        QueryGraphqlModule: {},
+        MempoolResolver: {},
+        BlockStorageResolver: {},
+        NodeStatusResolver: {},
+        MerkleWitnessResolver: {},
+        UnprovenBlockResolver: {},
+      },
     },
     Signer: {
       signer: PrivateKey.random(),
@@ -141,19 +180,23 @@ export function createPrismaAppchain(prismaConnection: PrismaDatabaseConfig["con
 @runtimeModule()
 export class MintableBalances extends Balances {
   @runtimeMethod()
-  public async mintDefaultToken(address: PublicKey, amount: Balance){
-    this.mint(TokenId.from(0), address, amount)
+  public async mintDefaultToken(address: PublicKey, amount: Balance) {
+    this.mint(TokenId.from(0), address, amount);
   }
 }
 
-export async function prepareBlock(appChain: ReturnType<typeof createPrismaAppchain>, sender: PublicKey, nonce: number): Promise<AppChainTransaction> {
-  const balances = appChain.runtime.resolve("Balances");
+export async function prepareBlock(
+  appChain: ReturnType<typeof createPrismaAppchain>,
+  sender: PublicKey,
+  nonce: number,
+): Promise<AppChainTransaction> {
+  const balances = appChain.runtime.resolve('Balances');
   const tx = await appChain.transaction(
     sender,
     async () => {
       balances.mintDefaultToken(sender, Balance.from(100));
     },
-    { nonce }
+    { nonce },
   );
   await tx.sign();
   await tx.send();
