@@ -99,10 +99,13 @@ export const RateGame = ({
           </div>
           <div className={'rounded-[5px] border p-2'}>
             <textarea
-              className={clsx('w-full appearance-none outline-none', {
-                'bg-[#252525]': !isModal,
-                'bg-bg-dark': isModal,
-              })}
+              className={clsx(
+                'min-h-[200px] w-full appearance-none font-plexsans text-[14px]/[14px] outline-none',
+                {
+                  'bg-[#252525]': !isModal,
+                  'bg-bg-dark': isModal,
+                }
+              )}
               placeholder={'Enter you feedback here...'}
               onChange={(event) => setFeedback(event.target.value)}
             />
