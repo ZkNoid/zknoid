@@ -26,7 +26,7 @@ mkdir -p "$DIRECTORY"
 mkdir -p "$DEP_DIRECTORY"
 
 git clone https://github.com/proto-kit/framework "$DIRECTORY"
-cd "$DIRECTORY" && git checkout "feature/o1js-upgrade-1" && npm i && npm run build && echo "$PATCH_CONTENT" > "packages/common/dist/test/equalProvable.js" && cd ../
+cd "$DIRECTORY" && git checkout "feature/o1js-upgrade-1" && git merge origin/fix/mempool-transaction-drop -m "Merge" && npm i && npm run build && echo "$PATCH_CONTENT" > "packages/common/dist/test/equalProvable.js" && cd ../
 mv "$DIRECTORY" "$DEP_DIRECTORY"
 
 
