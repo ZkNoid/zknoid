@@ -23,7 +23,15 @@ export const MatchmakingModal = ({
   leave: () => Promise<void>;
 }) => {
   return (
-    <Modal trigger={<></>} isOpen={isOpen} setIsOpen={setIsOpen}>
+    <Modal
+      trigger={<></>}
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      // onClose={async () => {
+      //   await leave();
+      // }}
+      isDismissible={false}
+    >
       <div className={'flex flex-col items-center justify-center gap-4'}>
         <span
           className={'text-headline-2 font-medium uppercase text-left-accent'}
