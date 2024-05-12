@@ -14,6 +14,8 @@ import { clsx } from 'clsx';
 import { api } from '@/trpc/react';
 import { useNetworkStore } from '@/lib/stores/network';
 import { getEnvContext } from '@/lib/envContext';
+// import { toast } from '@/components/ui/games-store/shared/Toast';
+// import { useToasterStore } from '@/lib/stores/toasterStore';
 
 const StarSVG = ({
   fill = 'white',
@@ -52,6 +54,7 @@ export const GameCard = ({
 }) => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const networkStore = useNetworkStore();
+  // const toasterStore = useToasterStore();
 
   const setFavoriteMutation = api.favorites.setFavoriteGameStatus.useMutation({
     onSuccess: async () => {},
@@ -64,7 +67,7 @@ export const GameCard = ({
   const getRatingQuery = api.ratings.getGameRating.useQuery({
     gameId: game.id,
   });
-  
+
   const progress = api.progress.setSolvedQuests.useMutation();
 
   useEffect(() => {
@@ -136,8 +139,13 @@ export const GameCard = ({
               txHash: '',
               envContext: getEnvContext(),
             });
-      
+
             setIsFavorite(!isFavorite);
+            // toast.success(
+            //   toasterStore,
+            //   'Successfully added to favorites!',
+            //   true
+            // );
           }}
         />
       )}

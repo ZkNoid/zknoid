@@ -12,6 +12,8 @@ import { Modal } from '@/components/ui/games-store/shared/Modal';
 import { formatUnits } from '@/lib/unit';
 import { walletInstalled } from '@/lib/helpers';
 import { useLobbiesStore } from '@/lib/stores/lobbiesStore';
+import { toast } from '@/components/ui/games-store/shared/Toast';
+import { useToasterStore } from '@/lib/stores/toasterStore';
 
 enum PlayerStates {
   Waiting,
@@ -71,6 +73,7 @@ export const LobbyInformation = <RuntimeModules extends RuntimeModulesRecord>({
 }) => {
   const networkStore = useNetworkStore();
   const lobbiesStore = useLobbiesStore();
+  const toasterStore = useToasterStore();
   const [isConnectWalletModal, setIsConnectWalletModal] =
     useState<boolean>(false);
 
@@ -264,7 +267,23 @@ export const LobbyInformation = <RuntimeModules extends RuntimeModulesRecord>({
             />
             <Button
               label={'Leave lobby'}
-              onClick={leaveLobby}
+              onClick={() =>
+                leaveLobby()
+                  .then(() =>
+                    toast.success(
+                      toasterStore,
+                      `Leaved lobby #${lobby.id} '${lobby.name}'`,
+                      true
+                    )
+                  )
+                  .catch((error) => {
+                    console.log(error);
+                    toast.error(
+                      toasterStore,
+                      `Error while leave lobby #${lobby.id} '${lobby.name}'`
+                    );
+                  })
+              }
               color={'tertiary'}
             />
           </div>
@@ -272,7 +291,22 @@ export const LobbyInformation = <RuntimeModules extends RuntimeModulesRecord>({
           <Button
             label={'Connect to lobby'}
             onClick={() => {
-              if (networkStore.address) joinLobby(lobby.id);
+              if (networkStore.address)
+                joinLobby(lobby.id)
+                  .then(() =>
+                    toast.success(
+                      toasterStore,
+                      `Joined lobby #${lobby.id} '${lobby.name}'`,
+                      true
+                    )
+                  )
+                  .catch((error) => {
+                    console.log(error);
+                    toast.error(
+                      toasterStore,
+                      `Error while join lobby #${lobby.id} '${lobby.name}'`
+                    );
+                  });
               else setIsConnectWalletModal(true);
               // pvpLobbyStorage.setConnectedLobbyId(lobby.id);
               // pvpLobbyStorage.setConnectedLobbyKey(lobby.accessKey);

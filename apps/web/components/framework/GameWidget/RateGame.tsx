@@ -3,6 +3,9 @@ import { clsx } from 'clsx';
 import { api } from '@/trpc/react';
 import { useNetworkStore } from '@/lib/stores/network';
 import { getEnvContext } from '@/lib/envContext';
+import { useToasterStore } from '@/lib/stores/toasterStore';
+import { toast } from '@/components/ui/games-store/shared/Toast';
+import { useRateGameStore } from '@/lib/stores/rateGameStore';
 
 export const RateGame = ({
   gameId,
@@ -18,6 +21,8 @@ export const RateGame = ({
   const feedbackMutation = api.ratings.setGameFeedback.useMutation();
   const network = useNetworkStore();
   const progress = api.progress.setSolvedQuests.useMutation();
+  const toasterStore = useToasterStore();
+  const rateGameStore = useRateGameStore();
 
   const sendFeedback = () => {
     feedbackMutation.mutate({
@@ -34,6 +39,8 @@ export const RateGame = ({
       txHash: '',
       envContext: getEnvContext(),
     });
+
+    rateGameStore.addRatedGame(gameId);
   };
   return (
     <div className={'flex h-full w-full items-center justify-center px-[10%]'}>
@@ -96,10 +103,13 @@ export const RateGame = ({
           </div>
           <div className={'rounded-[5px] border p-2'}>
             <textarea
-              className={clsx('w-full appearance-none outline-none', {
-                'bg-[#252525]': !isModal,
-                'bg-bg-dark': isModal,
-              })}
+              className={clsx(
+                'min-h-[200px] w-full appearance-none font-plexsans text-[14px]/[14px] outline-none',
+                {
+                  'bg-[#252525]': !isModal,
+                  'bg-bg-dark': isModal,
+                }
+              )}
               placeholder={'Enter you feedback here...'}
               onChange={(event) => setFeedback(event.target.value)}
             />
@@ -115,6 +125,7 @@ export const RateGame = ({
               onClick={() => {
                 sendFeedback();
                 onClick();
+                toast.success(toasterStore, 'Feedback successfully sent', true);
               }}
             >
               Send feedback

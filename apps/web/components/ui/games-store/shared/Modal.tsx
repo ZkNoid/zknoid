@@ -8,6 +8,7 @@ export const Modal = ({
   setIsOpen,
   isDismissible = true,
   defaultOpen = false,
+  onClose,
 }: {
   children: ReactNode;
   trigger: ReactNode;
@@ -15,6 +16,7 @@ export const Modal = ({
   setIsOpen?: (isOpen: boolean) => void;
   isDismissible?: boolean;
   defaultOpen?: boolean;
+  onClose?: () => void;
 }) => {
   const [isOpenUncontrolled, setIsOpenUncontrolled] =
     useState<boolean>(defaultOpen);
@@ -42,8 +44,14 @@ export const Modal = ({
             onClick={
               isDismissible
                 ? setIsOpen
-                  ? () => setIsOpen(false)
-                  : () => setIsOpenUncontrolled(false)
+                  ? () => {
+                      setIsOpen(false);
+                      onClose && onClose();
+                    }
+                  : () => {
+                      setIsOpenUncontrolled(false);
+                      onClose && onClose();
+                    }
                 : undefined
             }
           >
@@ -57,12 +65,18 @@ export const Modal = ({
               {isDismissible && (
                 <div
                   className={
-                    'absolute -right-12 -top-3 z-50 cursor-pointer hover:opacity-80'
+                    'absolute right-0 top-0 z-50 cursor-pointer hover:opacity-80'
                   }
                   onClick={
                     setIsOpen
-                      ? () => setIsOpen(false)
-                      : () => setIsOpenUncontrolled(false)
+                      ? () => {
+                          setIsOpen(false);
+                          onClose && onClose();
+                        }
+                      : () => {
+                          setIsOpenUncontrolled(false);
+                          onClose && onClose();
+                        }
                   }
                 >
                   <svg
