@@ -1,36 +1,46 @@
 import { clsx } from 'clsx';
 import { motion } from 'framer-motion';
+import { Field, useField } from 'formik';
 
 export const Checkbox = ({
-  isSelected,
-  setIsSelected,
-  isInvalid,
-  isReadonly,
+  name,
+  readOnly,
+  value,
 }: {
-  isSelected: boolean;
-  setIsSelected?: (selected: boolean) => void;
-  isInvalid?: boolean;
-  isReadonly?: boolean;
+  name: string;
+  readOnly?: boolean;
+  value?: boolean;
 }) => {
+  const [field, meta] = useField(name);
+
   return (
     <motion.div
-      className={clsx('rounded-[5px] border p-1', {
-        'hover:border-[#FF00009C]': isInvalid && !isSelected,
-        'border-[#FF0000]': isInvalid,
-        'cursor-pointer hover:opacity-80': !isReadonly,
+      className={clsx('relative rounded-[5px] border p-1', {
+        'hover:border-[#FF00009C]': meta.error && meta.touched,
+        'cursor-pointer hover:opacity-80': !readOnly,
       })}
-      onClick={
-        !isReadonly && setIsSelected
-          ? () => setIsSelected(!isSelected)
-          : undefined
-      }
+      variants={{
+        default: { borderColor: '#F9F8F4', backgroundColor: '#212121' },
+        active: { borderColor: '#D2FF00', backgroundColor: '#D2FF00' },
+        error: { borderColor: '#FF0000' },
+      }}
       animate={
-        isSelected
-          ? { borderColor: '#D2FF00', backgroundColor: '#D2FF00' }
-          : { borderColor: '#F9F8F4', backgroundColor: '#212121' }
+        meta.error && meta.touched
+          ? 'error'
+          : field.value
+            ? 'active'
+            : 'default'
       }
       transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
     >
+      <Field
+        {...field}
+        name={name}
+        type={'checkbox'}
+        readOnly={readOnly}
+        value={value}
+        className={'absolute left-0 top-0 h-full w-full opacity-0'}
+      />
       <motion.svg
         aria-hidden="true"
         role="presentation"
@@ -46,8 +56,8 @@ export const Checkbox = ({
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth="2"
-          animate={isSelected ? { pathLength: 1 } : { pathLength: 0 }}
-        ></motion.polyline>
+          animate={field.value ? { pathLength: 1 } : { pathLength: 0 }}
+        />
       </motion.svg>
     </motion.div>
   );

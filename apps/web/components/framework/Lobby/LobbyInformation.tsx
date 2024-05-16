@@ -2,7 +2,6 @@ import { clsx } from 'clsx';
 import { Button } from '@/components/ui/games-store/shared/Button';
 import { ILobby } from '@/lib/types';
 import { motion } from 'framer-motion';
-import { Input } from '@/components/ui/games-store/shared/Input';
 import { Popover } from '@/components/ui/games-store/shared/Popover';
 import { RuntimeModulesRecord } from '@proto-kit/module';
 import { ZkNoidGameConfig } from '@/lib/createConfig';
@@ -188,11 +187,18 @@ export const LobbyInformation = <RuntimeModules extends RuntimeModulesRecord>({
         {currentLobbyId === lobby.id && (
           <div className={'flex w-full max-w-[80%] flex-row gap-2 py-8'}>
             <div className={'w-full'}>
-              <Input
-                value={`https://app.zknoid.io/games/${config.id}/lobby/${lobby.id}?key=${lobby.accessKey}`}
-                isReadonly={true}
-                title={'Copy invite link'}
-              />
+              <div
+                className={
+                  'rounded-[5px] border p-2 text-main text-left-accent hover:border-left-accent'
+                }
+              >
+                {`https://app.zknoid.io/games/${config.id}/lobby/${lobby.id}?key=${lobby.accessKey}`}
+              </div>
+              {/*<Input*/}
+              {/*  value={`https://app.zknoid.io/games/${config.id}/lobby/${lobby.id}?key=${lobby.accessKey}`}*/}
+              {/*  isReadonly={true}*/}
+              {/*  title={'Copy invite link'}*/}
+              {/*/>*/}
             </div>
             <div className={'flex flex-col justify-end'}>
               <div />

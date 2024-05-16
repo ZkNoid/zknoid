@@ -103,7 +103,11 @@ export const CompetitionListItem = ({
                   Preregiatration
                 </span>
                 <div className={'flex w-full items-center justify-center'}>
-                  <Checkbox isSelected={competition.preReg} isReadonly />
+                  <Checkbox
+                    name={'preReg'}
+                    value={competition.preReg}
+                    readOnly
+                  />
                 </div>
               </div>
               <div className={'grid grid-cols-2'}>
@@ -114,8 +118,9 @@ export const CompetitionListItem = ({
                 </span>
                 <div className={'flex w-full items-center justify-center'}>
                   <Checkbox
-                    isSelected={competition.registered || false}
-                    isReadonly
+                    name={'registered'}
+                    value={competition.registered || false}
+                    readOnly
                   />
                 </div>
               </div>

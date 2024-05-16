@@ -36,6 +36,7 @@ export const DateItem = ({
 
   return (
     <button
+      type={'button'}
       className={clsx(
         'cursor-pointer rounded-[5px] border border-bg-dark p-4 text-center font-plexsans text-main font-medium hover:opacity-80',
         {
@@ -118,40 +119,36 @@ export const DateItem = ({
             if (date === activeDate) setActiveDate(undefined);
             else {
               setPickedDate(date);
-              const formatDate = (item: string | undefined) => {
-                // @ts-ignore
-                if (item.length < 2) return '0' + item;
-                else return item;
-              };
-              const formatMonth = (item: number | undefined) => {
-                // @ts-ignore
-                item += 1;
-                // @ts-ignore
-                if (item.toString().length < 2) return '0' + item;
-                else return item;
-              };
               if (activeDate < date) {
                 setDateFrom(
-                  `${activeDate?.getFullYear().toString()}-${formatMonth(
-                    activeDate?.getMonth()
-                  )}-${formatDate(activeDate?.getDate().toString())}`
+                  activeDate.toLocaleDateString('en-US', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                  })
                 );
                 setDateTo(
-                  `${date?.getFullYear().toString()}-${formatMonth(
-                    date?.getMonth()
-                  )}-${formatDate(date?.getDate().toString())}`
+                  date.toLocaleDateString('en-US', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                  })
                 );
               }
               if (activeDate > date) {
                 setDateFrom(
-                  `${date?.getFullYear().toString()}-${formatMonth(
-                    date?.getMonth()
-                  )}-${formatDate(date?.getDate().toString())}`
+                  date.toLocaleDateString('en-US', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                  })
                 );
                 setDateTo(
-                  `${activeDate?.getFullYear().toString()}-${formatMonth(
-                    activeDate?.getMonth()
-                  )}-${formatDate(activeDate?.getDate().toString())}`
+                  activeDate.toLocaleDateString('en-US', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                  })
                 );
               }
             }
