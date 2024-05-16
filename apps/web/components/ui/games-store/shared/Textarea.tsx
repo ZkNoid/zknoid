@@ -1,79 +1,64 @@
-import { ReactNode, useState } from 'react';
 import { clsx } from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Field, useField } from 'formik';
 
 export const Textarea = ({
-  value,
-  setValue,
-  startContent,
-  placeholder,
-  className,
-  isInvalid = false,
-  invalidMessage = 'Error',
-  isRequired,
   title,
-  titleColor = 'left-accent',
-  emptyFieldCheck = true,
+  name,
+  placeholder,
+  onChange,
+  isBordered = true,
+  required,
 }: {
-  value: string;
-  setValue: (value: string) => void;
-  startContent?: ReactNode;
-  placeholder?: string;
-  className?: string;
   title?: string;
-  titleColor?: 'left-accent' | 'foreground';
-  isInvalid?: boolean;
-  invalidMessage?: string;
-  isRequired?: boolean;
-  emptyFieldCheck?: boolean;
+  name: string;
+  placeholder?: string;
+  onChange?: () => void;
+  isBordered?: boolean;
+  required?: boolean;
 }) => {
-  const [isTouched, setIsTouched] = useState<boolean>(false);
-
-  if (emptyFieldCheck && !isInvalid)
-    if (isRequired && isTouched)
-      if (!value) {
-        isInvalid = true;
-        invalidMessage = 'Please fill out this field';
-      }
-
+  const [field, meta, helpers] = useField(name);
   return (
-    <div className={`flex flex-col gap-2 ${className}`}>
+    <div className={'flex h-full w-full flex-col gap-2'}>
       {title && (
         <span
-          className={clsx('font-plexsans text-main font-medium uppercase', {
-            'text-left-accent': titleColor === 'left-accent',
-            'text-foreground': titleColor === 'foreground',
-          })}
+          className={
+            'font-plexsans text-main font-medium uppercase text-left-accent'
+          }
         >
           {title}
-          {isRequired && '*'}
+          {required && '*'}
         </span>
       )}
       <div
-        className={clsx(
-          `group flex h-full flex-row gap-2 rounded-[5px] border bg-bg-dark p-2`,
-          {
-            'hover:border-left-accent': !isInvalid,
-            'border-[#FF0000] hover:border-[#FF00009C]': isInvalid,
-          }
-        )}
+        className={clsx('group h-full w-full rounded-[5px]', {
+          'hover:border-left-accent': !meta.error,
+          'border-[#FF0000] hover:border-[#FF00009C]':
+            meta.error && meta.touched,
+          border: isBordered,
+        })}
       >
-        {startContent}
-        <textarea
-          className={
-            'w-full appearance-none bg-bg-dark placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80'
-          }
+        <Field
+          {...field}
+          name={name}
+          as={'textarea'}
           placeholder={placeholder}
-          value={value}
-          onChange={(event) => {
-            setValue(event.target.value);
-          }}
-          required={isRequired}
-          onClick={isTouched ? undefined : () => setIsTouched(true)}
+          required={required}
+          className={
+            'h-full w-full cursor-pointer appearance-none rounded-[5px] bg-bg-dark p-2 placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80'
+          }
+          onChange={
+            onChange
+              ? (e: any) => {
+                  helpers.setValue(e.target.value);
+                  onChange();
+                }
+              : (e: any) => helpers.setValue(e.target.value)
+          }
         />
       </div>
       <AnimatePresence>
-        {isInvalid && (
+        {meta.error && meta.touched && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -102,7 +87,7 @@ export const Textarea = ({
               />
             </svg>
             <span className={'font-plexsans text-[14px]/[14px] text-[#FF0000]'}>
-              {invalidMessage}
+              {meta.error}
             </span>
           </motion.div>
         )}

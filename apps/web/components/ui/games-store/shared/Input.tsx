@@ -1,123 +1,84 @@
 import { clsx } from 'clsx';
-import { HTMLInputTypeAttribute, ReactNode, useState } from 'react';
+import { HTMLInputTypeAttribute, ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Field, useField } from 'formik';
 
 export const Input = ({
-  value,
-  setValue,
+  title,
+  name,
+  type,
   placeholder,
   startContent,
   endContent,
-  isClearable = true,
-  type = 'text',
-  inputMode = 'text',
+  onChange,
   isBordered = true,
-  isReadonly = false,
-  isInvalid = false,
-  invalidMessage = 'Error',
-  isRequired,
-  title,
-  titleColor = 'left-accent',
-  emptyFieldCheck = true,
-  onInvalid,
+  required,
+  isClearable = true,
 }: {
-  value: any;
-  setValue?: (value: any) => void;
+  title?: string;
+  name: string;
+  type: HTMLInputTypeAttribute;
   placeholder?: string;
   startContent?: ReactNode;
   endContent?: ReactNode;
-  isClearable?: boolean;
-  type?: HTMLInputTypeAttribute;
-  inputMode?:
-    | 'email'
-    | 'search'
-    | 'tel'
-    | 'text'
-    | 'url'
-    | 'none'
-    | 'numeric'
-    | 'decimal'
-    | undefined;
+  onChange?: () => void;
   isBordered?: boolean;
-  isReadonly?: boolean;
-  isInvalid?: boolean;
-  invalidMessage?: string;
-  isRequired?: boolean;
-  title?: string;
-  titleColor?: 'left-accent' | 'foreground';
-  emptyFieldCheck?: boolean;
-  onInvalid?: () => void;
+  required?: boolean;
+  isClearable?: boolean;
 }) => {
-  const [isTouched, setIsTouched] = useState<boolean>(false);
-
-  if (emptyFieldCheck && !isInvalid)
-    if (isRequired && isTouched)
-      if (!value) {
-        isInvalid = true;
-        invalidMessage = 'Please fill out this field';
-      }
-
+  const [field, meta, helpers] = useField(name);
   return (
     <div className={'flex flex-col gap-2'}>
       {title && (
         <span
-          className={clsx('font-plexsans text-main font-medium uppercase', {
-            'text-left-accent': titleColor === 'left-accent',
-            'text-foreground': titleColor === 'foreground',
-          })}
+          className={
+            'font-plexsans text-main font-medium uppercase text-left-accent'
+          }
         >
           {title}
-          {isRequired && '*'}
+          {required && '*'}
         </span>
       )}
-
       <div
         className={clsx(
-          'group flex flex-row gap-2 rounded-[5px] bg-bg-dark p-2',
+          'group flex flex-row items-center justify-center rounded-[5px]',
           {
+            'hover:border-left-accent': !meta.error,
+            'border-[#FF0000] hover:border-[#FF00009C]':
+              meta.error && meta.touched,
+            'pl-2': startContent,
+            'pr-2': endContent,
             border: isBordered,
-            'hover:border-left-accent': isBordered && !isReadonly && !isInvalid,
-            'border-[#FF0000] hover:border-[#FF00009C]': isInvalid,
           }
         )}
       >
         {startContent}
-        <input
+        <Field
+          {...field}
+          name={name}
           type={type}
-          inputMode={inputMode}
           placeholder={placeholder}
-          className={clsx(
-            'w-full appearance-none bg-bg-dark placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none',
-            {
-              'group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80':
-                !isReadonly,
-              'cursor-default': isReadonly,
-            }
-          )}
-          value={value}
-          onChange={(event) => {
-            setValue?.(
-              type === 'number'
-                ? parseInt(event.target.value)
-                  ? parseInt(event.target.value)
-                  : 0
-                : event.target.value
-            );
-          }}
-          readOnly={isReadonly}
-          required={isRequired}
-          aria-invalid={isInvalid}
-          onClick={isTouched ? undefined : () => setIsTouched(true)}
-          onInvalid={onInvalid}
+          required={required}
+          className={
+            'w-full cursor-pointer appearance-none rounded-[5px] bg-bg-dark p-2 placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80'
+          }
+          onChange={
+            onChange
+              ? (e: any) => {
+                  helpers.setValue(e.target.value);
+                  onChange();
+                }
+              : (e: any) => helpers.setValue(e.target.value)
+          }
         />
-        {isClearable && !isReadonly && (
+        {isClearable && (
           <div
-            className={clsx('flex items-center justify-center', {
+            className={clsx('flex items-center justify-center pr-2', {
               'visible cursor-pointer opacity-60 transition-opacity ease-in-out hover:opacity-100':
-                value && value.length !== 0,
-              invisible: !value || value.length === 0,
+                field.value && field.value.length !== 0,
+              invisible: !field.value || field.value.length === 0,
             })}
-            onClick={() => setValue && setValue(type === 'number' ? 0 : '')}
+            onClick={() => helpers.setValue('')}
           >
             <svg
               aria-hidden="true"
@@ -130,15 +91,17 @@ export const Input = ({
               <path
                 d="M12 2a10 10 0 1010 10A10.016 10.016 0 0012 2zm3.36 12.3a.754.754 0 010 1.06.748.748 0 01-1.06 0l-2.3-2.3-2.3 2.3a.748.748 0 01-1.06 0 .754.754 0 010-1.06l2.3-2.3-2.3-2.3A.75.75 0 019.7 8.64l2.3 2.3 2.3-2.3a.75.75 0 011.06 1.06l-2.3 2.3z"
                 fill="#F9F8F4"
-                className={clsx({ 'group-hover:fill-left-accent': !isInvalid })}
-              ></path>
+                className={clsx({
+                  'group-hover:fill-left-accent': !meta.error,
+                })}
+              />
             </svg>
           </div>
         )}
         {endContent}
       </div>
       <AnimatePresence>
-        {isInvalid && (
+        {meta.error && meta.touched && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -167,7 +130,7 @@ export const Input = ({
               />
             </svg>
             <span className={'font-plexsans text-[14px]/[14px] text-[#FF0000]'}>
-              {invalidMessage}
+              {meta.error}
             </span>
           </motion.div>
         )}

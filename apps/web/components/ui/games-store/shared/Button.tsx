@@ -15,6 +15,8 @@ export const Button = ({
   startContent,
   endContent,
   color = 'primary',
+  type = 'button',
+  disabled,
 }: {
   label: string;
   onClick?: () => void;
@@ -33,6 +35,8 @@ export const Button = ({
     | 'foreground'
     | 'dark'
     | 'semidark';
+  type?: 'reset' | 'submit' | 'button';
+  disabled?: boolean;
 }) => {
   if (asLink)
     return (
@@ -110,32 +114,35 @@ export const Button = ({
     );
   else
     return (
-      <motion.div
+      <motion.button
+        disabled={disabled}
+        type={type}
         className={clsx(
           'flex w-full flex-row items-center justify-center gap-2 rounded-[5px] py-2 text-center text-[16px]/[16px] font-medium lg:text-[20px]/[20px]',
           {
-            'hover:opacity-80': !isFilled && !isReadonly,
-            'cursor-default': isReadonly,
-            'cursor-pointer': !isReadonly,
+            'opacity-50': disabled,
+            'hover:opacity-80': !isFilled && !isReadonly && !disabled,
+            'cursor-default': isReadonly || disabled,
+            'cursor-pointer': !isReadonly && !disabled,
 
             'bg-left-accent text-dark-buttons-text':
               color == 'primary' && isFilled,
             'hover:bg-bg-dark hover:text-left-accent':
-              color == 'primary' && isFilled && !isReadonly,
+              color == 'primary' && isFilled && !isReadonly && !disabled,
             'text-left-accent': color == 'primary' && !isFilled,
             'border border-left-accent': color == 'primary' && isBordered,
 
             'bg-middle-accent text-dark-buttons-text':
               color == 'secondary' && isFilled,
             'hover:bg-bg-dark hover:text-middle-accent':
-              color == 'secondary' && isFilled && !isReadonly,
+              color == 'secondary' && isFilled && !isReadonly && !disabled,
             'text-middle-accent': color == 'secondary' && !isFilled,
             'border border-middle-accent': color == 'secondary' && isBordered,
 
             'bg-right-accent text-dark-buttons-text':
               color == 'tertiary' && isFilled,
             'hover:bg-bg-dark hover:text-right-accent':
-              color == 'tertiary' && isFilled && !isReadonly,
+              color == 'tertiary' && isFilled && !isReadonly && !disabled,
             'text-right-accent': color == 'tertiary' && !isFilled,
             'border border-right-accent': color == 'tertiary' && isBordered,
 
@@ -146,7 +153,8 @@ export const Button = ({
                 color == 'dark' ||
                 color == 'semidark') &&
               isFilled &&
-              !isReadonly,
+              !isReadonly &&
+              !disabled,
             'text-foreground-accent':
               (color == 'foreground' ||
                 color == 'dark' ||
@@ -164,20 +172,20 @@ export const Button = ({
           },
           className
         )}
-        onClick={!isReadonly ? onClick : undefined}
-        whileTap={{ scale: 0.9 }}
+        onClick={!isReadonly && !disabled ? onClick : undefined}
+        whileTap={disabled ? undefined : { scale: 0.9 }}
       >
         {(startContent || endContent) && (
           <div className={'flex flex-row items-center justify-end'}>
             {startContent}
           </div>
         )}
-        <button className={'min-w-[40%]'}>{label}</button>
+        <div className={'min-w-[40%]'}>{label}</div>
         {(startContent || endContent) && (
           <div className={'flex flex-row items-center justify-end'}>
             {endContent}
           </div>
         )}
-      </motion.div>
+      </motion.button>
     );
 };

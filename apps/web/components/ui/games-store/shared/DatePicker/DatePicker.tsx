@@ -40,9 +40,13 @@ export const DatePicker = ({
 
   return (
     <div className={'relative flex flex-col'}>
-      <div className={'cursor-pointer'} onClick={() => setIsOpen(true)}>
+      <button
+        type={'button'}
+        className={'cursor-pointer'}
+        onClick={() => setIsOpen(true)}
+      >
         {trigger}
-      </div>
+      </button>
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -185,13 +189,18 @@ export const DatePicker = ({
               </div>
               <div className={'flex w-full flex-row justify-between'}>
                 <Button
+                  type={'button'}
                   label={'Cancel'}
                   onClick={() => setIsOpen(false)}
                   isFilled={false}
                   isBordered={false}
                 />
                 <div className={'w-full'} />
-                <Button label={'Done'} onClick={() => setIsOpen(false)} />
+                <Button
+                  type={'button'}
+                  label={'Done'}
+                  onClick={() => setIsOpen(false)}
+                />
               </div>
             </div>
           </motion.div>

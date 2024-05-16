@@ -38,12 +38,13 @@ import { Currency } from '@/constants/currency';
 import { Modal } from '@/components/ui/games-store/shared/Modal';
 import ArkanoidCoverSVG from '../assets/game-cover.svg';
 import ArkanoidCoverMobileSVG from '../assets/game-cover-mobile.svg';
-import { DropdownList } from '@/components/ui/games-store/shared/DropdownList';
-import { announcedGames, defaultGames, IGame } from '@/app/constants/games';
+import { DropdownListField } from '@/components/ui/games-store/shared/DropdownList';
 import { default as ReactImage } from 'next/image';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import { PendingTransaction } from '@proto-kit/sequencer';
+import { Form, Formik } from 'formik';
+import * as Yup from 'yup';
 
 const zkNoidConfig = import('@/games/config');
 
@@ -83,21 +84,11 @@ function useStateRef<T>(
 }
 
 export default function NewArkanoidCompetitionPage() {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
   const [seed, setSeed] = useState(0);
   const canvas = useRef<HTMLCanvasElement>(null);
   const [ctx, setContext] = useState<
     CanvasRenderingContext2D | null | undefined
   >(null);
-  const [preregistrationEnabled, setPreregistrationEnabled] = useState(true);
-  const [preregistrationFrom, setPreregistrationFrom] = useState('');
-  const [preregistrationTo, setPreregistrationTo] = useState('');
-
-  const [competitionFrom, setCompetitionFrom] = useState('');
-  const [competitionTo, setCompetitionTo] = useState('');
-  const [funding, setFunding] = useState(0);
-  const [participationFee, setParticipationFee] = useState(0);
 
   const [bricks, setBricks, brickRef] = useStateRef<IBrick[]>([]);
 
@@ -176,9 +167,9 @@ export default function NewArkanoidCompetitionPage() {
     return (x * (canvas.current?.width || FIELD_WIDTH)) / FIELD_WIDTH;
   };
 
-  const createCompetition = async () => {
+  const createCompetition = async (values: typeof initialValues) => {
     const gameHub = client.runtime.resolve('ArkanoidGameHub');
-    if (await bridge(BigInt(funding) * 10n ** 9n))
+    if (await bridge(BigInt(values.funding) * 10n ** 9n))
       throw Error('Not enough funds');
 
     const tx = await client.transaction(
@@ -200,16 +191,20 @@ export default function NewArkanoidCompetitionPage() {
         */
 
         let competition = Competition.from(
-          name,
+          values.name,
           // description,
-          seed,
-          preregistrationEnabled,
-          new Date(preregistrationFrom).getTime() || 0, // preregStartTime
-          new Date(preregistrationTo).getTime() || 0, // preregEndTime
-          preregistrationEnabled ? new Date(competitionFrom).getTime() : 0, // competitionStartTime
-          preregistrationEnabled ? new Date(competitionTo).getTime() : 0, // competitionEndTime
-          funding,
-          participationFee
+          values.seed,
+          values.preregistrationEnabled,
+          new Date(values.preregistrationFrom).getTime() || 0, // preregStartTime
+          new Date(values.preregistrationTo).getTime() || 0, // preregEndTime
+          values.preregistrationEnabled
+            ? new Date(values.competitionFrom).getTime()
+            : 0, // competitionStartTime
+          values.preregistrationEnabled
+            ? new Date(values.competitionTo).getTime()
+            : 0, // competitionEndTime
+          values.funding,
+          values.participationFee
         );
 
         gameHub.createCompetition(competition);
@@ -219,7 +214,7 @@ export default function NewArkanoidCompetitionPage() {
     await tx.sign();
     await tx.send();
 
-    if (funding >= 30) {
+    if (values.funding >= 30) {
       tx.transaction?.hash;
       await progress.mutateAsync({
         userAddress: networkStore.address!,
@@ -233,122 +228,114 @@ export default function NewArkanoidCompetitionPage() {
     }
   };
 
-  const [game, setGame] = useState<string>(defaultGames[0].name);
-  // const [image, setImage] = useState<string>('Default 1');
-
-  const [allGames, setAllGames] = useState<IGame[]>(defaultGames);
-  const [gamesForPick, setGamesForPick] = useState<string[]>([game]);
-
-  const [isPolicyAccepted, setIsPolicyAccepted] = useState<boolean>(false);
-
-  const [isSeedPopoverOpen, setIsSeedPopoverOpen] = useState<boolean>(false);
+  // const [isSeedPopoverOpen, setIsSeedPopoverOpen] = useState<boolean>(false);
   const [isRandomSeed, setIsRandomSeed] = useState<boolean>(false);
-
-  const [isNameInvalid, setIsNameInvalid] = useState<boolean>(false);
-  // const [isGameInvalid, setIsGameInvalid] = useState<boolean>(false)
-  const [isDescriptionInvalid, setIsDescriptionInvalid] =
-    useState<boolean>(false);
-  const [isCompetitionDateInvalid, setIsCompetitionDateInvalid] =
-    useState<boolean>(false);
-  const [isPreregDateInvalid, setIsPreregDateInvalid] =
-    useState<boolean>(false);
-  const [isParticipantFeeInvalid, setIsParticipantFeeInvalid] =
-    useState<boolean>(false);
-  const [isFundsInvalid, setIsFundsInvalid] = useState<boolean>(false);
-  const [isPolicyInvalid, setIsPolicyInvalid] = useState<boolean>(false);
-
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (!isRandomSeed && seed.toString().length > 13)
-      setIsSeedPopoverOpen(true);
-  }, [seed]);
+  // useEffect(() => {
+  //   if (!isRandomSeed && seed.toString().length > 13)
+  //     setIsSeedPopoverOpen(true);
+  // }, [seed]);
 
   const getRandomSeed = () => {
     return Math.floor(Math.random() * Math.pow(2, 252));
   };
 
-  const validateFields = () => {
-    !name ? setIsNameInvalid(true) : setIsNameInvalid(false);
-    !description
-      ? setIsDescriptionInvalid(true)
-      : setIsDescriptionInvalid(false);
-    !competitionFrom ||
-    !dateCheck(competitionFrom) ||
-    !competitionTo ||
-    !dateCheck(competitionTo) ||
-    (preregistrationEnabled &&
-      new Date(competitionFrom).getTime() <=
-        new Date(preregistrationTo).getTime())
-      ? setIsCompetitionDateInvalid(true)
-      : setIsCompetitionDateInvalid(false);
-    preregistrationEnabled &&
-    (!preregistrationFrom ||
-      !preregistrationTo ||
-      !dateCheck(preregistrationFrom) ||
-      !dateCheck(preregistrationTo))
-      ? setIsPreregDateInvalid(true)
-      : setIsPreregDateInvalid(false);
-    participationFee < 0
-      ? setIsParticipantFeeInvalid(true)
-      : setIsParticipantFeeInvalid(false);
-    funding < 0 ? setIsFundsInvalid(true) : setIsFundsInvalid(false);
-    !isPolicyAccepted ? setIsPolicyInvalid(true) : setIsPolicyInvalid(false);
+  const initialValues = {
+    name: '',
+    description: '',
+    game: arkanoidConfig.name,
+    seed: seed,
+    preregistrationEnabled: true,
+    preregistrationFrom: '',
+    preregistrationTo: '',
+    competitionFrom: '',
+    competitionTo: '',
+    funding: 0,
+    participationFee: 0,
+    policy: false,
   };
 
-  const checkFieldsValidity = () => {
-    if (
-      isNameInvalid ||
-      isDescriptionInvalid ||
-      isCompetitionDateInvalid ||
-      isPreregDateInvalid ||
-      isParticipantFeeInvalid ||
-      isFundsInvalid ||
-      isPolicyInvalid
-    ) {
-      return false;
-    } else if (!isPolicyAccepted) return false;
-    else return true;
-  };
+  const validateSchema = Yup.object().shape({
+    name: Yup.string().required('This field required'),
 
-  useEffect(() => {
-    zkNoidConfig.then((zkNoidGames) => {
-      setAllGames(
-        (
-          zkNoidGames.zkNoidConfig.games.map((x) => ({
-            id: x.id,
-            logo: x.image,
-            rating: 0,
-            name: x.name,
-            description: x.description,
-            genre: x.genre,
-            features: x.features,
-            tags: [],
-            defaultPage: x.pageCompetitionsList
-              ? 'competitions-list'
-              : 'global',
-            active: true,
-            isReleased: x.isReleased,
-            releaseDate: x.releaseDate,
-            popularity: x.popularity,
-            author: x.author,
-          })) as IGame[]
-        ).concat(announcedGames)
-      );
-    });
-  }, []);
+    description: Yup.string().required('This field required'),
 
-  // useEffect(() => {
-  //   let games: string[] = [];
-  //   allGames.map((item) => {
-  //     if (item.isReleased && item.active) games.push(item.name);
-  //   });
-  //   setGamesForPick(games);
-  // }, [allGames]);
+    game: Yup.string()
+      .required('This field required')
+      .oneOf([arkanoidConfig.name]),
 
-  useEffect(() => {
-    setGamesForPick([arkanoidConfig.name]);
-  }, []);
+    seed: Yup.number()
+      .typeError('Invalid seed')
+      .required('This field required')
+      .min(0),
+
+    preregistrationEnabled: Yup.boolean(),
+
+    preregistrationFrom: Yup.date()
+      .typeError('Invalid Date')
+      .when('preregistrationEnabled', {
+        is: true,
+        then: (schema) => schema.required('This field required'),
+        otherwise: (schema) => schema.optional(),
+      })
+      .max(
+        Yup.ref('preregistrationTo'),
+        `Preregistration start can't be later than preregistration end`
+      ),
+
+    preregistrationTo: Yup.date()
+      .typeError('Invalid Date')
+      .when('preregistrationEnabled', {
+        is: true,
+        then: (schema) => schema.required('This field required'),
+        otherwise: (schema) => schema.optional(),
+      })
+      .min(
+        Yup.ref('preregistrationFrom'),
+        `Preregistration end can't be earlier than preregistration start`
+      )
+      .max(
+        Yup.ref('competitionFrom'),
+        `Preregistration end can't be later than preregistration start`
+      ),
+
+    competitionFrom: Yup.date()
+      .typeError('Invalid Date')
+      .required('This field required')
+      .max(
+        Yup.ref('competitionTo'),
+        `Competition start can't be later than competition end`
+      )
+      .when('preregistrationEnabled', {
+        is: true,
+        then: (schema) =>
+          schema.min(
+            Yup.ref('preregistrationTo'),
+            `Competition start can't be earlier than competition end`
+          ),
+      }),
+
+    competitionTo: Yup.date()
+      .typeError('Invalid Date')
+      .required('This field required')
+      .min(
+        Yup.ref('competitionFrom'),
+        `Competition end can't be earlier than competition start`
+      ),
+
+    funding: Yup.number()
+      .typeError('Invalid funding')
+      .required('This field required')
+      .min(0),
+
+    participationFee: Yup.number()
+      .typeError('Invalid participationFee')
+      .required('This field required')
+      .min(0),
+
+    policy: Yup.boolean().isTrue('Please indicate that you understood that'),
+  });
 
   return (
     <GamePage
@@ -361,532 +348,494 @@ export default function NewArkanoidCompetitionPage() {
         <div className={'w-full text-left text-headline-1'}>
           Create competition
         </div>
-        <div className={'grid grid-cols-3 gap-5'}>
-          <div className={'flex w-full flex-col gap-4'}>
-            <div className={'text-[20px]/[20px] font-bold'}>
-              Description information
-            </div>
-            <div className={'w-full'}>
-              <Input
-                title={'Enter the name of the competition'}
-                value={name}
-                setValue={setName}
-                placeholder={'Type competition name here...'}
-                isRequired={true}
-                isInvalid={isNameInvalid}
-                invalidMessage={'Please fill out this field correctly'}
-                emptyFieldCheck={false}
-              />
-            </div>
-            <div className={'w-full'}>
-              <DropdownList
-                title={'Select the game'}
-                titleColor={'left-accent'}
-                items={gamesForPick}
-                selectedItem={game}
-                setSelectedItem={setGame}
-                isRequired
-              />
-            </div>
-            <div className={'h-full w-full'}>
-              <Textarea
-                title={'Enter the description of the competition'}
-                value={description}
-                setValue={setDescription}
-                placeholder={'Type description here...'}
-                isRequired={true}
-                className={'h-full w-full'}
-                isInvalid={isDescriptionInvalid}
-                invalidMessage={'Please fill out this field correctly'}
-                emptyFieldCheck={false}
-              />
-            </div>
-            {/*<div className={'flex w-full flex-col gap-2'}>*/}
-            {/*  <span*/}
-            {/*    className={*/}
-            {/*      'font-plexsans text-main font-medium uppercase text-left-accent'*/}
-            {/*    }*/}
-            {/*  >*/}
-            {/*    Choose or upload cover for competition*/}
-            {/*  </span>*/}
-            {/*  <div className={'flex flex-row gap-4'}>*/}
-            {/*    <Button label={'Upload image'} />*/}
-            {/*    <DropdownList*/}
-            {/*      label={'Select image'}*/}
-            {/*      items={[*/}
-            {/*        'Default 1',*/}
-            {/*        'Default 2',*/}
-            {/*        'Default 3',*/}
-            {/*        'Default 4',*/}
-            {/*        'Default 5',*/}
-            {/*      ]}*/}
-            {/*      selectedItem={image}*/}
-            {/*      setSelectedItem={setImage}*/}
-            {/*    />*/}
-            {/*  </div>*/}
-            {/*</div>*/}
-          </div>
-          <div className={'flex w-full flex-col gap-4'}>
-            <div className={'text-[20px]/[20px] font-bold'}>
-              Competition parameters
-            </div>
-            <div className={'flex w-full flex-col gap-2'}>
-              <div className={'flex flex-row justify-between'}>
-                <div className={'flex min-w-[40%] flex-col gap-2'}>
-                  <span
-                    className={
-                      'font-plexsans text-main font-medium uppercase text-left-accent'
-                    }
-                  >
-                    Map seed Generation
-                  </span>
-                  <Button
-                    label={'Randomize'}
-                    onClick={() => {
-                      if (!isRandomSeed) setIsRandomSeed(true);
-                      setSeed(getRandomSeed());
-                    }}
-                  />
+
+        <Formik
+          initialValues={initialValues}
+          onSubmit={(values) => createCompetition(values)}
+          validationSchema={validateSchema}
+        >
+          {({ values, errors, touched, getFieldHelpers }) => (
+            <Form>
+              <div className={'grid grid-cols-3 gap-5'}>
+                <div className={'flex w-full flex-col gap-4'}>
+                  <div className={'text-[20px]/[20px] font-bold'}>
+                    Description information
+                  </div>
+                  <div className={'w-full'}>
+                    <Input
+                      title={'Enter the name of the competition'}
+                      name={'name'}
+                      type={'text'}
+                      placeholder={'Type competition name here...'}
+                      required
+                    />
+                  </div>
+                  <div className={'w-full'}>
+                    <DropdownListField
+                      name={'game'}
+                      title={'Select the game'}
+                      items={[arkanoidConfig.name]}
+                      required
+                    />
+                  </div>
+                  <div className={'h-full w-full'}>
+                    <Textarea
+                      title={'Enter the description of the competition'}
+                      name={'description'}
+                      placeholder={'Type description here...'}
+                      required
+                    />
+                  </div>
                 </div>
-                <div className={'flex w-[260px] flex-col gap-2'}>
-                  <span
-                    className={
-                      'font-plexsans text-main font-medium uppercase text-left-accent'
-                    }
-                  >
-                    Map seed*
-                  </span>
-                  {seed.toString().length > 13 ? (
-                    <Popover
-                      isOpen={isSeedPopoverOpen}
-                      setIsOpen={setIsSeedPopoverOpen}
-                      trigger={
-                        <div
+                <div className={'flex w-full flex-col gap-4'}>
+                  <div className={'text-[20px]/[20px] font-bold'}>
+                    Competition parameters
+                  </div>
+                  <div className={'flex w-full flex-col gap-2'}>
+                    <div className={'flex flex-row justify-between'}>
+                      <div className={'flex min-w-[40%] flex-col gap-2'}>
+                        <span
                           className={
-                            'group flex h-full w-full flex-row gap-2 rounded-[5px] border bg-bg-dark p-2 hover:border-left-accent'
+                            'font-plexsans text-main font-medium uppercase text-left-accent'
                           }
                         >
-                          <div
-                            className={
-                              'w-full appearance-none bg-bg-dark placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80'
-                            }
-                          >
-                            {seed}
-                          </div>
-                        </div>
-                      }
-                    >
-                      <div
-                        className={
-                          'flex max-h-[200px] min-w-[500px] flex-col gap-4'
-                        }
-                      >
-                        <Input
-                          type={'number'}
-                          value={seed}
-                          setValue={setSeed}
-                          placeholder={'777'}
-                          isBordered={false}
-                          inputMode={'numeric'}
+                          Map seed Generation
+                        </span>
+                        <Button
+                          label={'Randomize'}
+                          onClick={() => {
+                            if (!isRandomSeed) setIsRandomSeed(true);
+                            const randomSeed = getRandomSeed();
+                            getFieldHelpers('seed').setValue(randomSeed);
+                            setSeed(randomSeed);
+                          }}
                         />
                       </div>
-                    </Popover>
-                  ) : (
-                    <Input
-                      type={'number'}
-                      value={seed}
-                      setValue={setSeed}
-                      placeholder={'777'}
-                      inputMode={'numeric'}
-                    />
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className={'flex w-full flex-row justify-between gap-2'}>
-              <div className={'flex flex-row gap-4'}>
-                <span
-                  className={
-                    'font-plexsans text-main font-medium uppercase text-left-accent'
-                  }
-                >
-                  Preregiatration
-                </span>
-                <Popover>
-                  <div
-                    className={
-                      'flex min-w-[250px] flex-col items-center justify-center gap-2 font-plexsans'
-                    }
-                  >
-                    <span className={'w-full self-start text-[14px]/[14px]'}>
-                      Preregistration
-                    </span>
-                    <div
-                      className={
-                        'w-full text-[12px]/[12px] font-light opacity-70'
-                      }
-                    >
-                      Preregistration allows to enable dates when users need to
-                      pre-register and pay the competition fee
+                      <div className={'flex w-[260px] flex-col gap-2'}>
+                        <span
+                          className={
+                            'font-plexsans text-main font-medium uppercase text-left-accent'
+                          }
+                        >
+                          Map seed*
+                        </span>
+                        <Input
+                          name={'seed'}
+                          type={'number'}
+                          placeholder={'Type seed here...'}
+                          onChange={() => setSeed(values.seed)}
+                          isClearable={false}
+                        />
+                        {/*{seed.toString().length > 13 ? (*/}
+                        {/*  <Popover*/}
+                        {/*    isOpen={isSeedPopoverOpen}*/}
+                        {/*    setIsOpen={setIsSeedPopoverOpen}*/}
+                        {/*    trigger={*/}
+                        {/*      <div*/}
+                        {/*        className={*/}
+                        {/*          'group flex h-full w-full flex-row gap-2 rounded-[5px] border bg-bg-dark p-2 hover:border-left-accent'*/}
+                        {/*        }*/}
+                        {/*      >*/}
+                        {/*        <div*/}
+                        {/*          className={*/}
+                        {/*            'w-full appearance-none bg-bg-dark placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80'*/}
+                        {/*          }*/}
+                        {/*        >*/}
+                        {/*          {seed}*/}
+                        {/*        </div>*/}
+                        {/*      </div>*/}
+                        {/*    }*/}
+                        {/*  >*/}
+                        {/*    <div*/}
+                        {/*      className={*/}
+                        {/*        'flex max-h-[200px] min-w-[500px] flex-col gap-4'*/}
+                        {/*      }*/}
+                        {/*    >*/}
+                        {/*      <Input*/}
+                        {/*        name={'seed'}*/}
+                        {/*        type={'number'}*/}
+                        {/*        placeholder={'Type seed here...'}*/}
+                        {/*        onChange={() => setSeed(values.seed)}*/}
+                        {/*        isBordered={false}*/}
+                        {/*      />*/}
+                        {/*    </div>*/}
+                        {/*  </Popover>*/}
+                        {/*) : (*/}
+                        {/*  <Input*/}
+                        {/*    name={'seed'}*/}
+                        {/*    type={'number'}*/}
+                        {/*    placeholder={'Type seed here...'}*/}
+                        {/*    onChange={() => setSeed(values.seed)}*/}
+                        {/*  />*/}
+                        {/*)}*/}
+                      </div>
                     </div>
                   </div>
-                </Popover>
-              </div>
-              <Checkbox
-                isSelected={preregistrationEnabled}
-                setIsSelected={setPreregistrationEnabled}
-              />
-            </div>
-            <AnimatePresence initial={false} mode={'wait'}>
-              {preregistrationEnabled && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ type: 'spring', duration: 0.8, bounce: 0 }}
-                  className={'flex w-full flex-col gap-2'}
-                >
-                  <span
-                    className={
-                      'font-plexsans text-main font-medium uppercase text-left-accent'
-                    }
-                  >
-                    Preregiatration dates*
-                  </span>
-                  <div className={'flex flex-row justify-between gap-8'}>
-                    <div className={'justify-cener flex flex-col items-center'}>
-                      <div className={'flex-grow'} />
-                      <DatePicker
-                        setDateTo={setPreregistrationTo}
-                        setDateFrom={setPreregistrationFrom}
-                        trigger={
+                  <div className={'flex w-full flex-row justify-between gap-2'}>
+                    <div className={'flex flex-row gap-4'}>
+                      <span
+                        className={
+                          'font-plexsans text-main font-medium uppercase text-left-accent'
+                        }
+                      >
+                        Preregiatration
+                      </span>
+                      <Popover>
+                        <div
+                          className={
+                            'flex min-w-[250px] flex-col items-center justify-center gap-2 font-plexsans'
+                          }
+                        >
+                          <span
+                            className={'w-full self-start text-[14px]/[14px]'}
+                          >
+                            Preregistration
+                          </span>
                           <div
                             className={
-                              'group rounded-[5px] border p-2 hover:border-left-accent'
+                              'w-full text-[12px]/[12px] font-light opacity-70'
                             }
                           >
+                            Preregistration allows to enable dates when users
+                            need to pre-register and pay the competition fee
+                          </div>
+                        </div>
+                      </Popover>
+                    </div>
+                    <Checkbox name={'preregistrationEnabled'} />
+                  </div>
+                  {values.preregistrationEnabled && (
+                    <div className={'flex w-full flex-col gap-2'}>
+                      <span
+                        className={
+                          'font-plexsans text-main font-medium uppercase text-left-accent'
+                        }
+                      >
+                        Preregiatration dates*
+                      </span>
+                      <div className={'flex flex-row justify-between gap-8'}>
+                        <div
+                          className={'justify-cener flex flex-col items-center'}
+                        >
+                          <div className={'flex-grow'} />
+                          <DatePicker
+                            setDateTo={
+                              getFieldHelpers('preregistrationTo').setValue
+                            }
+                            setDateFrom={
+                              getFieldHelpers('preregistrationFrom').setValue
+                            }
+                            trigger={
+                              <div
+                                className={
+                                  'group rounded-[5px] border p-2 hover:border-left-accent'
+                                }
+                              >
+                                <svg
+                                  width="29"
+                                  height="29"
+                                  viewBox="0 0 18 20"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M16 18H2V7H16M13 0V2H5V0H3V2H2C0.89 2 0 2.89 0 4V18C0 18.5304 0.210714 19.0391 0.585786 19.4142C0.960859 19.7893 1.46957 20 2 20H16C16.5304 20 17.0391 19.7893 17.4142 19.4142C17.7893 19.0391 18 18.5304 18 18V4C18 3.46957 17.7893 2.96086 17.4142 2.58579C17.0391 2.21071 16.5304 2 16 2H15V0M14 11H9V16H14V11Z"
+                                    fill="#F9F8F4"
+                                    className={'group-active:fill-left-accent'}
+                                  />
+                                </svg>
+                              </div>
+                            }
+                          />
+                          {((errors.preregistrationFrom &&
+                            touched.competitionFrom) ||
+                            (errors.preregistrationTo &&
+                              touched.preregistrationTo)) && (
+                            <div className={'flex-grow'} />
+                          )}
+                        </div>
+                        <div className={'flex flex-col'}>
+                          <span>From</span>
+                          <Input
+                            name={'preregistrationFrom'}
+                            type={'text'}
+                            placeholder={'MM/DD/YYYY'}
+                          />
+                        </div>
+                        <div className={'flex flex-col'}>
+                          <span>To</span>
+                          <Input
+                            name={'preregistrationTo'}
+                            type={'text'}
+                            placeholder={'MM/DD/YYYY'}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div className={'flex w-full flex-col gap-2'}>
+                    <span
+                      className={
+                        'font-plexsans text-main font-medium uppercase text-left-accent'
+                      }
+                    >
+                      Competitions date*
+                    </span>
+                    <div className={'flex flex-row justify-between gap-8'}>
+                      <div
+                        className={'flex flex-col items-center justify-center'}
+                      >
+                        <div className={'flex-grow'} />
+                        <DatePicker
+                          setDateFrom={
+                            getFieldHelpers('competitionFrom').setValue
+                          }
+                          setDateTo={getFieldHelpers('competitionTo').setValue}
+                          trigger={
+                            <div
+                              className={
+                                'group rounded-[5px] border p-2 hover:border-left-accent'
+                              }
+                            >
+                              <svg
+                                width="29"
+                                height="29"
+                                viewBox="0 0 18 20"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M16 18H2V7H16M13 0V2H5V0H3V2H2C0.89 2 0 2.89 0 4V18C0 18.5304 0.210714 19.0391 0.585786 19.4142C0.960859 19.7893 1.46957 20 2 20H16C16.5304 20 17.0391 19.7893 17.4142 19.4142C17.7893 19.0391 18 18.5304 18 18V4C18 3.46957 17.7893 2.96086 17.4142 2.58579C17.0391 2.21071 16.5304 2 16 2H15V0M14 11H9V16H14V11Z"
+                                  fill="#F9F8F4"
+                                  className={'group-active:fill-left-accent'}
+                                />
+                              </svg>
+                            </div>
+                          }
+                        />
+
+                        {((errors.competitionTo && touched.competitionTo) ||
+                          (errors.competitionFrom &&
+                            touched.competitionFrom)) && (
+                          <div className={'flex-grow'} />
+                        )}
+                      </div>
+                      <div className={'flex flex-col'}>
+                        <span>From</span>
+                        <Input
+                          name={'competitionFrom'}
+                          type={'text'}
+                          placeholder={'MM/DD/YYYY'}
+                        />
+                      </div>
+                      <div className={'flex flex-col'}>
+                        <span>To</span>
+                        <Input
+                          name={'competitionTo'}
+                          type={'text'}
+                          placeholder={'MM/DD/YYYY'}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className={'flex w-full flex-col gap-1'}>
+                    <div className={'flex w-full flex-row gap-4'}>
+                      <div className={'w-full'}>
+                        <Input
+                          name={'participationFee'}
+                          type={'text'}
+                          title={'Participant fee'}
+                          placeholder={'Type participant fee here...'}
+                          endContent={
+                            <div
+                              className={
+                                'flex h-[28px] w-[28px] items-center justify-center rounded-full'
+                              }
+                            >
+                              <ReactImage
+                                src={znakesImg}
+                                alt={'Znakes Tokens'}
+                              />
+                            </div>
+                          }
+                        />
+                      </div>
+                      <div className={'w-full'}>
+                        <Input
+                          name={'funding'}
+                          type={'text'}
+                          title={'Funds'}
+                          placeholder={'Type funds here...'}
+                          endContent={
+                            <div
+                              className={
+                                'flex h-[28px] w-[28px] items-center justify-center rounded-full'
+                              }
+                            >
+                              <ReactImage
+                                src={znakesImg}
+                                alt={'Znakes Tokens'}
+                              />
+                            </div>
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className={'flex w-full flex-col gap-2'}>
+                      <div
+                        className={'flex gap-2 font-plexsans text-left-accent'}
+                      >
+                        <span>Balance:</span>
+                        <span>
+                          {(
+                            Number(
+                              protokitBalances.balances[
+                                networkStore.address!
+                              ] ?? 0n
+                            ) /
+                            10 ** 9
+                          ).toFixed(2)}
+                        </span>
+                        <span>{Currency.ZNAKES}</span>
+                      </div>
+                      <div
+                        className={'flex flex-row items-center justify-between'}
+                      >
+                        <span
+                          className={clsx(
+                            'font-plexsans text-[12px]/[12px] font-normal',
+                            {
+                              'underline decoration-[#FF0000] underline-offset-4':
+                                errors.policy && touched.policy,
+                            }
+                          )}
+                        >
+                          I understand that this amount will be deducted from my
+                          account for hosting the competition.
+                        </span>
+                        <Checkbox name={'policy'} />
+                      </div>
+                      <AnimatePresence>
+                        {errors.policy && touched.policy && (
+                          <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{
+                              type: 'spring',
+                              duration: 0.8,
+                              bounce: 0,
+                            }}
+                            className={'flex w-full flex-row gap-2'}
+                          >
                             <svg
-                              width="29"
-                              height="29"
-                              viewBox="0 0 18 20"
+                              width="18"
+                              height="18"
+                              viewBox="0 0 14 14"
                               fill="none"
                               xmlns="http://www.w3.org/2000/svg"
                             >
+                              <circle
+                                cx="7"
+                                cy="7"
+                                r="6"
+                                fill="#FF0000"
+                                stroke="#FF0000"
+                                strokeWidth="0.500035"
+                              />
                               <path
-                                d="M16 18H2V7H16M13 0V2H5V0H3V2H2C0.89 2 0 2.89 0 4V18C0 18.5304 0.210714 19.0391 0.585786 19.4142C0.960859 19.7893 1.46957 20 2 20H16C16.5304 20 17.0391 19.7893 17.4142 19.4142C17.7893 19.0391 18 18.5304 18 18V4C18 3.46957 17.7893 2.96086 17.4142 2.58579C17.0391 2.21071 16.5304 2 16 2H15V0M14 11H9V16H14V11Z"
+                                d="M6.71858 8.69036L6.29858 5.10236V2.71436H7.71458V5.10236L7.31858 8.69036H6.71858ZM7.01858 11.2344C6.71458 11.2344 6.49058 11.1624 6.34658 11.0184C6.21058 10.8664 6.14258 10.6744 6.14258 10.4424V10.2384C6.14258 10.0064 6.21058 9.81836 6.34658 9.67436C6.49058 9.52236 6.71458 9.44636 7.01858 9.44636C7.32258 9.44636 7.54258 9.52236 7.67858 9.67436C7.82258 9.81836 7.89458 10.0064 7.89458 10.2384V10.4424C7.89458 10.6744 7.82258 10.8664 7.67858 11.0184C7.54258 11.1624 7.32258 11.2344 7.01858 11.2344Z"
                                 fill="#F9F8F4"
-                                className={'group-active:fill-left-accent'}
                               />
                             </svg>
-                          </div>
-                        }
-                      />
-                      {isPreregDateInvalid && <div className={'flex-grow'} />}
-                    </div>
-                    <div className={'flex flex-col'}>
-                      <span>From</span>
-                      <Input
-                        value={preregistrationFrom}
-                        setValue={setPreregistrationFrom}
-                        placeholder={'00.00.0000'}
-                        isInvalid={isPreregDateInvalid}
-                        invalidMessage={'Please fill out this field correctly'}
-                        emptyFieldCheck={false}
-                      />
-                    </div>
-                    <div className={'flex flex-col'}>
-                      <span>To</span>
-                      <Input
-                        value={preregistrationTo}
-                        setValue={setPreregistrationTo}
-                        placeholder={'00.00.0000'}
-                        isInvalid={isPreregDateInvalid}
-                        invalidMessage={'Please fill out this field correctly'}
-                        emptyFieldCheck={false}
-                      />
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-            <div className={'flex w-full flex-col gap-2'}>
-              <span
-                className={
-                  'font-plexsans text-main font-medium uppercase text-left-accent'
-                }
-              >
-                Competitions date*
-              </span>
-              <div className={'flex flex-row justify-between gap-8'}>
-                <div className={'flex flex-col items-center justify-center'}>
-                  <div className={'flex-grow'} />
-                  <DatePicker
-                    setDateFrom={setCompetitionFrom}
-                    setDateTo={setCompetitionTo}
-                    trigger={
-                      <div
-                        className={
-                          'group rounded-[5px] border p-2 hover:border-left-accent'
-                        }
+                            <span
+                              className={
+                                'font-plexsans text-[14px]/[14px] text-[#FF0000]'
+                              }
+                            >
+                              {errors.policy}
+                            </span>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                      <Button label={'Create competition'} type={'submit'} />
+                      <Modal
+                        trigger={<></>}
+                        isOpen={isSuccessModalOpen}
+                        setIsOpen={setIsSuccessModalOpen}
                       >
-                        <svg
-                          width="29"
-                          height="29"
-                          viewBox="0 0 18 20"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
+                        <div
+                          className={
+                            'flex flex-col items-center justify-center gap-8 px-4 py-6'
+                          }
                         >
-                          <path
-                            d="M16 18H2V7H16M13 0V2H5V0H3V2H2C0.89 2 0 2.89 0 4V18C0 18.5304 0.210714 19.0391 0.585786 19.4142C0.960859 19.7893 1.46957 20 2 20H16C16.5304 20 17.0391 19.7893 17.4142 19.4142C17.7893 19.0391 18 18.5304 18 18V4C18 3.46957 17.7893 2.96086 17.4142 2.58579C17.0391 2.21071 16.5304 2 16 2H15V0M14 11H9V16H14V11Z"
-                            fill="#F9F8F4"
-                            className={'group-active:fill-left-accent'}
+                          <svg
+                            width="161"
+                            height="161"
+                            viewBox="0 0 161 161"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M80.442 160.884C124.869 160.884 160.884 124.869 160.884 80.442C160.884 36.0151 124.869 0 80.442 0C36.0151 0 0 36.0151 0 80.442C0 124.869 36.0151 160.884 80.442 160.884Z"
+                              fill="#212121"
+                            />
+                            <path
+                              d="M80.442 149.22C118.427 149.22 149.22 118.427 149.22 80.442C149.22 42.457 118.427 11.6641 80.442 11.6641C42.457 11.6641 11.6641 42.457 11.6641 80.442C11.6641 118.427 42.457 149.22 80.442 149.22Z"
+                              stroke="#D2FF00"
+                              strokeWidth="8"
+                              strokeMiterlimit="10"
+                            />
+                            <path
+                              d="M52.8568 92.7354C56.0407 92.7354 58.6218 82.6978 58.6218 70.3157C58.6218 57.9337 56.0407 47.8961 52.8568 47.8961C49.6729 47.8961 47.0918 57.9337 47.0918 70.3157C47.0918 82.6978 49.6729 92.7354 52.8568 92.7354Z"
+                              fill="#D2FF00"
+                            />
+                            <path
+                              d="M103.461 92.7354C106.645 92.7354 109.226 82.6978 109.226 70.3157C109.226 57.9337 106.645 47.8961 103.461 47.8961C100.277 47.8961 97.6963 57.9337 97.6963 70.3157C97.6963 82.6978 100.277 92.7354 103.461 92.7354Z"
+                              fill="#D2FF00"
+                            />
+                            <path
+                              d="M135.489 76.4906H118.194V82.7178H135.489V76.4906Z"
+                              fill="#D2FF00"
+                            />
+                            <path
+                              d="M38.7647 76.4906H21.4697V82.7178H38.7647V76.4906Z"
+                              fill="#D2FF00"
+                            />
+                            <path
+                              d="M108.616 109.029C104.26 111.673 94.0101 117.095 79.8623 117.285C65.4748 117.478 54.9435 112.155 50.5391 109.598"
+                              stroke="#D2FF00"
+                              strokeWidth="5"
+                              strokeMiterlimit="10"
+                            />
+                          </svg>
+                          <span className={'text-headline-1'}>
+                            Successfully created!
+                          </span>
+                          <Button
+                            asLink={true}
+                            href={`/games/${arkanoidConfig.id}/competitions-list`}
+                            label={'To competitions page'}
                           />
-                        </svg>
-                      </div>
-                    }
-                  />
-                  {isCompetitionDateInvalid && <div className={'flex-grow'} />}
-                </div>
-                <div className={'flex flex-col'}>
-                  <span>From</span>
-                  <Input
-                    value={competitionFrom}
-                    setValue={setCompetitionFrom}
-                    placeholder={'00.00.0000'}
-                    isInvalid={isCompetitionDateInvalid}
-                    invalidMessage={'Please fill out this field correctly'}
-                    emptyFieldCheck={false}
-                  />
-                </div>
-                <div className={'flex flex-col'}>
-                  <span>To</span>
-                  <Input
-                    value={competitionTo}
-                    setValue={setCompetitionTo}
-                    placeholder={'00.00.0000'}
-                    isInvalid={isCompetitionDateInvalid}
-                    invalidMessage={'Please fill out this field correctly'}
-                    emptyFieldCheck={false}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className={'flex w-full flex-col gap-1'}>
-              <div className={'flex w-full flex-row gap-4'}>
-                <div className={'w-full'}>
-                  <Input
-                    title={'Participant fee'}
-                    type={'number'}
-                    inputMode={'numeric'}
-                    value={participationFee}
-                    setValue={setParticipationFee}
-                    isRequired={true}
-                    isInvalid={isParticipantFeeInvalid}
-                    invalidMessage={'Please fill out this field correctly'}
-                    emptyFieldCheck={false}
-                    isClearable={false}
-                    endContent={
-                      <div
-                        className={
-                          'flex h-[28px] w-[28px] items-center justify-center rounded-full'
-                        }
-                      >
-                        <ReactImage src={znakesImg} alt={'Znakes Tokens'} />
-                      </div>
-                    }
-                  />
-                </div>
-                <div className={'w-full'}>
-                  <Input
-                    title={'Funds'}
-                    type={'number'}
-                    inputMode={'numeric'}
-                    value={funding}
-                    setValue={setFunding}
-                    isRequired={true}
-                    isInvalid={isFundsInvalid}
-                    invalidMessage={'Please fill out this field correctly'}
-                    emptyFieldCheck={false}
-                    isClearable={false}
-                    endContent={
-                      <div
-                        className={
-                          'flex h-[28px] w-[28px] items-center justify-center rounded-full'
-                        }
-                      >
-                        <ReactImage src={znakesImg} alt={'Znakes Tokens'} />
-                      </div>
-                    }
-                  />
-                </div>
-              </div>
-              <div className={'flex w-full flex-col gap-2'}>
-                <div className={'flex gap-2 font-plexsans text-left-accent'}>
-                  <span>Balance:</span>
-                  <span>
-                    {(
-                      Number(
-                        protokitBalances.balances[networkStore.address!] ?? 0n
-                      ) /
-                      10 ** 9
-                    ).toFixed(2)}
-                  </span>
-                  <span>{Currency.ZNAKES}</span>
-                </div>
-                <div className={'flex flex-row items-center justify-between'}>
-                  <span
-                    className={clsx(
-                      'font-plexsans text-[12px]/[12px] font-normal',
-                      {
-                        'underline decoration-[#FF0000] underline-offset-4':
-                          isPolicyInvalid,
-                      }
-                    )}
-                  >
-                    I understand that this amount will be deducted from my
-                    account for hosting the competition.
-                  </span>
-                  <Checkbox
-                    isSelected={isPolicyAccepted}
-                    setIsSelected={setIsPolicyAccepted}
-                    isInvalid={isPolicyInvalid}
-                  />
-                </div>
-                <AnimatePresence>
-                  {isPolicyInvalid && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{
-                        type: 'spring',
-                        duration: 0.8,
-                        bounce: 0,
-                      }}
-                      className={'flex w-full flex-row gap-2'}
-                    >
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 14 14"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <circle
-                          cx="7"
-                          cy="7"
-                          r="6"
-                          fill="#FF0000"
-                          stroke="#FF0000"
-                          strokeWidth="0.500035"
-                        />
-                        <path
-                          d="M6.71858 8.69036L6.29858 5.10236V2.71436H7.71458V5.10236L7.31858 8.69036H6.71858ZM7.01858 11.2344C6.71458 11.2344 6.49058 11.1624 6.34658 11.0184C6.21058 10.8664 6.14258 10.6744 6.14258 10.4424V10.2384C6.14258 10.0064 6.21058 9.81836 6.34658 9.67436C6.49058 9.52236 6.71458 9.44636 7.01858 9.44636C7.32258 9.44636 7.54258 9.52236 7.67858 9.67436C7.82258 9.81836 7.89458 10.0064 7.89458 10.2384V10.4424C7.89458 10.6744 7.82258 10.8664 7.67858 11.0184C7.54258 11.1624 7.32258 11.2344 7.01858 11.2344Z"
-                          fill="#F9F8F4"
-                        />
-                      </svg>
-                      <span
-                        className={
-                          'font-plexsans text-[14px]/[14px] text-[#FF0000]'
-                        }
-                      >
-                        Please indicate that you understood that
-                      </span>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-                <Button
-                  label={'Create competition'}
-                  onClick={() => {
-                    console.log('Validation');
-                    validateFields();
-                    console.log('Fields checked');
-
-                    if (checkFieldsValidity()) {
-                      console.log('Creation request');
-
-                      createCompetition()
-                        .then(() => setIsSuccessModalOpen(true))
-                        .catch((e) => {
-                          console.log('Creation error', e);
-                        });
-                    }
-                  }}
-                />
-                <Modal
-                  trigger={<></>}
-                  isOpen={isSuccessModalOpen}
-                  setIsOpen={setIsSuccessModalOpen}
-                >
-                  <div
-                    className={
-                      'flex flex-col items-center justify-center gap-8 px-4 py-6'
-                    }
-                  >
-                    <svg
-                      width="161"
-                      height="161"
-                      viewBox="0 0 161 161"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M80.442 160.884C124.869 160.884 160.884 124.869 160.884 80.442C160.884 36.0151 124.869 0 80.442 0C36.0151 0 0 36.0151 0 80.442C0 124.869 36.0151 160.884 80.442 160.884Z"
-                        fill="#212121"
-                      />
-                      <path
-                        d="M80.442 149.22C118.427 149.22 149.22 118.427 149.22 80.442C149.22 42.457 118.427 11.6641 80.442 11.6641C42.457 11.6641 11.6641 42.457 11.6641 80.442C11.6641 118.427 42.457 149.22 80.442 149.22Z"
-                        stroke="#D2FF00"
-                        strokeWidth="8"
-                        strokeMiterlimit="10"
-                      />
-                      <path
-                        d="M52.8568 92.7354C56.0407 92.7354 58.6218 82.6978 58.6218 70.3157C58.6218 57.9337 56.0407 47.8961 52.8568 47.8961C49.6729 47.8961 47.0918 57.9337 47.0918 70.3157C47.0918 82.6978 49.6729 92.7354 52.8568 92.7354Z"
-                        fill="#D2FF00"
-                      />
-                      <path
-                        d="M103.461 92.7354C106.645 92.7354 109.226 82.6978 109.226 70.3157C109.226 57.9337 106.645 47.8961 103.461 47.8961C100.277 47.8961 97.6963 57.9337 97.6963 70.3157C97.6963 82.6978 100.277 92.7354 103.461 92.7354Z"
-                        fill="#D2FF00"
-                      />
-                      <path
-                        d="M135.489 76.4906H118.194V82.7178H135.489V76.4906Z"
-                        fill="#D2FF00"
-                      />
-                      <path
-                        d="M38.7647 76.4906H21.4697V82.7178H38.7647V76.4906Z"
-                        fill="#D2FF00"
-                      />
-                      <path
-                        d="M108.616 109.029C104.26 111.673 94.0101 117.095 79.8623 117.285C65.4748 117.478 54.9435 112.155 50.5391 109.598"
-                        stroke="#D2FF00"
-                        strokeWidth="5"
-                        strokeMiterlimit="10"
-                      />
-                    </svg>
-                    <span className={'text-headline-1'}>
-                      Successfully created!
-                    </span>
-                    <Button
-                      asLink={true}
-                      href={`/games/${arkanoidConfig.id}/competitions-list`}
-                      label={'To competitions page'}
-                    />
+                        </div>
+                      </Modal>
+                    </div>
                   </div>
-                </Modal>
+                </div>
+                <div
+                  className={
+                    'flex h-full w-full items-center justify-center rounded-[5px]'
+                  }
+                >
+                  <canvas
+                    className="m-5 aspect-square w-full flex-grow border border-left-accent"
+                    ref={canvas}
+                  />
+                </div>
               </div>
-            </div>
-          </div>
-          <div
-            className={
-              'flex h-full w-full items-center justify-center rounded-[5px]'
-            }
-          >
-            <canvas
-              className="m-5 aspect-square w-full flex-grow border border-left-accent"
-              ref={canvas}
-            />
-          </div>
-        </div>
+            </Form>
+          )}
+        </Formik>
       </div>
     </GamePage>
   );
