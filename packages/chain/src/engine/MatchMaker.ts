@@ -88,7 +88,7 @@ export class MatchMaker extends LobbyManager {
     sessionKey: PublicKey,
     timestamp: UInt64,
   ): Promise<void> {
-    this.registerWithType(sessionKey, UInt64.zero, timestamp);
+    await this.registerWithType(sessionKey, UInt64.from(1), timestamp);
   }
 
   @runtimeMethod()
@@ -235,12 +235,9 @@ export class MatchMaker extends LobbyManager {
 
   // Gets default lobby with id
   private getDefaultLobby(type: UInt64, id: UInt64): Lobby {
-    assert(
-      type.lessThanOrEqual(this.lastDefaultLobby.get().value),
-      'No such lobby',
-    );
-
-    const customDefaultLobby = this.defaultLobbies.get(type).value;
+    const customDefaultLobbyOption = this.defaultLobbies.get(type);
+    assert(customDefaultLobbyOption.isSome, 'No such lobby');
+    const customDefaultLobby = customDefaultLobbyOption.value;
     customDefaultLobby.id = id;
 
     return Provable.if<Lobby>(
