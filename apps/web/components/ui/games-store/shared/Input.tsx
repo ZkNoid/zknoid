@@ -60,7 +60,7 @@ export const Input = ({
           placeholder={placeholder}
           required={required}
           className={
-            'w-full cursor-pointer appearance-none rounded-[5px] bg-bg-dark p-2 placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80'
+            'w-full cursor-pointer appearance-none rounded-[5px] bg-bg-dark p-2 font-plexsans text-main placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80'
           }
           onChange={
             onChange
