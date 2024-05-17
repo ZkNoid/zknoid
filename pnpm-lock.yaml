@@ -25,22 +25,22 @@ importers:
         version: 14.2.3
       '@proto-kit/common':
         specifier: file:../../protokit-framework/framework/packages/common
-        version: file:protokit-framework/framework/packages/common(o1js@1.1.0)(tsyringe@4.8.0)
+        version: file:protokit-framework/framework/packages/common(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
       '@proto-kit/library':
         specifier: file:../../protokit-framework/framework/packages/library
-        version: file:protokit-framework/framework/packages/library(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(@proto-kit/sequencer@0.1.1-develop.267+b252853)(o1js@1.1.0)(tsyringe@4.8.0)
+        version: file:protokit-framework/framework/packages/library(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(@proto-kit/sequencer@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
       '@proto-kit/module':
         specifier: file:../../protokit-framework/framework/packages/module
-        version: file:protokit-framework/framework/packages/module(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@1.1.0)(tsyringe@4.8.0)
+        version: file:protokit-framework/framework/packages/module(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
       '@proto-kit/protocol':
         specifier: file:../../protokit-framework/framework/packages/protocol
-        version: file:protokit-framework/framework/packages/protocol(@proto-kit/common@0.1.1-develop.267+b252853)(o1js@1.1.0)(ts-pattern@4.3.0)(tsyringe@4.8.0)
+        version: file:protokit-framework/framework/packages/protocol(@proto-kit/common@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(ts-pattern@4.3.0)(tsyringe@4.8.0)
       '@proto-kit/sdk':
         specifier: file:../../protokit-framework/framework/packages/sdk
-        version: file:protokit-framework/framework/packages/sdk(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/library@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(@proto-kit/sequencer@0.1.1-develop.267+b252853)(o1js@1.1.0)(reflect-metadata@0.2.2)(tsyringe@4.8.0)
+        version: file:protokit-framework/framework/packages/sdk(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/library@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(@proto-kit/sequencer@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(reflect-metadata@0.2.2)(tsyringe@4.8.0)
       '@proto-kit/sequencer':
         specifier: file:../../protokit-framework/framework/packages/sequencer
-        version: file:protokit-framework/framework/packages/sequencer(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@1.1.0)(tsyringe@4.8.0)
+        version: file:protokit-framework/framework/packages/sequencer(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
       '@radix-ui/react-label':
         specifier: ^2.0.2
         version: 2.0.2(@types/react-dom@18.3.0)(@types/react@18.3.1)(react-dom@18.3.1)(react@18.3.1)
@@ -136,7 +136,7 @@ importers:
         version: 0.65.1(request@2.88.2)
       o1js:
         specifier: link:../../protokit-framework/framework/node_modules/o1js
-        version: 1.1.0
+        version: link:../../protokit-framework/framework/node_modules/o1js
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -3716,10 +3716,6 @@ packages:
       safe-buffer: 5.2.1
     dev: false
 
-  /blakejs@1.2.1:
-    resolution: {integrity: sha512-QXUSXI3QVc/gJME0dBpXrag1kbzOqCjCX8/b54ntNyW6sjtoqxqRk3LTmXzaJoh71zMsDCjM+47jS7XiwN/+fQ==}
-    dev: false
-
   /bluebird@3.7.2:
     resolution: {integrity: sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==}
     dev: false
@@ -3871,11 +3867,6 @@ packages:
     engines: {node: '>=10.16.0'}
     dependencies:
       streamsearch: 1.1.0
-    dev: false
-
-  /cachedir@2.4.0:
-    resolution: {integrity: sha512-9EtFOZR8g22CL7BWjJ9BUx1+A/djkofnyW3aOXZORNW2kxoUpx2h+uN2cOqwPmFhnpVmxg+KW2OjOSgChTEvsQ==}
-    engines: {node: '>=6'}
     dev: false
 
   /call-bind@1.0.7:
@@ -6067,15 +6058,6 @@ packages:
   /isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
 
-  /isomorphic-fetch@3.0.0:
-    resolution: {integrity: sha512-qvUtwJ3j6qwsF3jLxkZ72qCgjMysPzDfeV240JHiGZsANBYd+EEuu35v7dfrJ9Up0Ak07D7GGSkGhCHTqg/5wA==}
-    dependencies:
-      node-fetch: 2.7.0
-      whatwg-fetch: 3.6.20
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
   /isstream@0.1.2:
     resolution: {integrity: sha512-Yljz7ffyPbrLpLngrMtZ7NduUgVvi6wG9RJ9IUcyCd59YQ911PBJphODUcbOVbqYfxe1wuYf/LJ8PauMRwsM/g==}
     dev: false
@@ -6587,10 +6569,6 @@ packages:
   /jju@1.4.0:
     resolution: {integrity: sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==}
     dev: true
-
-  /js-sha256@0.9.0:
-    resolution: {integrity: sha512-sga3MHh9sgQN2+pJ9VYZ+1LPwXOxuBJBA5nrR5/ofPfuiJBE2hnjsaN8se8JznOmGLN2p49Pe5U/ttafcs/apA==}
-    dev: false
 
   /js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -7207,21 +7185,6 @@ packages:
       nodemon: 2.0.22
       through2: 4.0.2
     dev: true
-
-  /o1js@1.1.0:
-    resolution: {integrity: sha512-rq+ndUFZBzC+Gk3VbXGNu97uFZJTLDmqglP1J8gGWP3Bdchjj+huCtPVvezfiw6+RyjPePaBVSbPWO11HMZiaQ==}
-    engines: {node: '>=18.14.0'}
-    hasBin: true
-    dependencies:
-      blakejs: 1.2.1
-      cachedir: 2.4.0
-      isomorphic-fetch: 3.0.0
-      js-sha256: 0.9.0
-      reflect-metadata: 0.1.14
-      tslib: 2.6.2
-    transitivePeerDependencies:
-      - encoding
-    dev: false
 
   /oauth-sign@0.9.0:
     resolution: {integrity: sha512-fexhUFFPTGV8ybAtSIGbV6gOkSv8UtRbDBnAyLQw4QPKkgNlsH2ByPGtMUqdWkos6YCRmAqViwgZrJc/mRDzZQ==}
@@ -9248,10 +9211,6 @@ packages:
       - uglify-js
     dev: false
 
-  /whatwg-fetch@3.6.20:
-    resolution: {integrity: sha512-EqhiFU6daOA8kpjOWTL0olhVOF3i7OrFzSYiGsEMB8GcXS+RrzauAERX65xMeNWVqxA6HXH2m69Z9LaKKdisfg==}
-    dev: false
-
   /whatwg-url@13.0.0:
     resolution: {integrity: sha512-9WWbymnqj57+XEuqADHrCJ2eSXzn8WXIW/YSGaZtb2WKAInQ6CHfaUUcTyyver0p8BDg5StLQq8h1vtZuwmOig==}
     engines: {node: '>=16'}
@@ -9435,7 +9394,7 @@ packages:
       use-sync-external-store: 1.2.0(react@18.3.1)
     dev: false
 
-  file:protokit-framework/framework/packages/common(o1js@1.1.0)(tsyringe@4.8.0):
+  file:protokit-framework/framework/packages/common(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0):
     resolution: {directory: protokit-framework/framework/packages/common, type: directory}
     id: file:protokit-framework/framework/packages/common
     name: '@proto-kit/common'
@@ -9445,13 +9404,13 @@ packages:
     dependencies:
       lodash: 4.17.21
       loglevel: 1.9.1
-      o1js: 1.1.0
+      o1js: link:protokit-framework/framework/node_modules/o1js
       reflect-metadata: 0.1.14
       tsyringe: 4.8.0
       typescript-memoize: 1.1.1
     dev: false
 
-  file:protokit-framework/framework/packages/library(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(@proto-kit/sequencer@0.1.1-develop.267+b252853)(o1js@1.1.0)(tsyringe@4.8.0):
+  file:protokit-framework/framework/packages/library(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(@proto-kit/sequencer@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0):
     resolution: {directory: protokit-framework/framework/packages/library, type: directory}
     id: file:protokit-framework/framework/packages/library
     name: '@proto-kit/library'
@@ -9463,19 +9422,19 @@ packages:
       o1js: 1.1.0
       tsyringe: ^4.7.0
     dependencies:
-      '@proto-kit/common': file:protokit-framework/framework/packages/common(o1js@1.1.0)(tsyringe@4.8.0)
-      '@proto-kit/module': file:protokit-framework/framework/packages/module(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@1.1.0)(tsyringe@4.8.0)
-      '@proto-kit/protocol': file:protokit-framework/framework/packages/protocol(@proto-kit/common@0.1.1-develop.267+b252853)(o1js@1.1.0)(ts-pattern@4.3.0)(tsyringe@4.8.0)
-      '@proto-kit/sequencer': file:protokit-framework/framework/packages/sequencer(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@1.1.0)(tsyringe@4.8.0)
+      '@proto-kit/common': file:protokit-framework/framework/packages/common(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
+      '@proto-kit/module': file:protokit-framework/framework/packages/module(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
+      '@proto-kit/protocol': file:protokit-framework/framework/packages/protocol(@proto-kit/common@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(ts-pattern@4.3.0)(tsyringe@4.8.0)
+      '@proto-kit/sequencer': file:protokit-framework/framework/packages/sequencer(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
       bigint-isqrt: 0.3.2
       lodash: 4.17.21
       loglevel: 1.9.1
-      o1js: 1.1.0
+      o1js: link:protokit-framework/framework/node_modules/o1js
       reflect-metadata: 0.1.14
       tsyringe: 4.8.0
     dev: false
 
-  file:protokit-framework/framework/packages/module(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@1.1.0)(tsyringe@4.8.0):
+  file:protokit-framework/framework/packages/module(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0):
     resolution: {directory: protokit-framework/framework/packages/module, type: directory}
     id: file:protokit-framework/framework/packages/module
     name: '@proto-kit/module'
@@ -9485,16 +9444,16 @@ packages:
       o1js: 1.1.0
       tsyringe: ^4.7.0
     dependencies:
-      '@proto-kit/common': file:protokit-framework/framework/packages/common(o1js@1.1.0)(tsyringe@4.8.0)
-      '@proto-kit/protocol': file:protokit-framework/framework/packages/protocol(@proto-kit/common@0.1.1-develop.267+b252853)(o1js@1.1.0)(ts-pattern@4.3.0)(tsyringe@4.8.0)
+      '@proto-kit/common': file:protokit-framework/framework/packages/common(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
+      '@proto-kit/protocol': file:protokit-framework/framework/packages/protocol(@proto-kit/common@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(ts-pattern@4.3.0)(tsyringe@4.8.0)
       lodash: 4.17.21
       loglevel: 1.9.1
-      o1js: 1.1.0
+      o1js: link:protokit-framework/framework/node_modules/o1js
       reflect-metadata: 0.1.14
       tsyringe: 4.8.0
     dev: false
 
-  file:protokit-framework/framework/packages/protocol(@proto-kit/common@0.1.1-develop.267+b252853)(o1js@1.1.0)(ts-pattern@4.3.0)(tsyringe@4.8.0):
+  file:protokit-framework/framework/packages/protocol(@proto-kit/common@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(ts-pattern@4.3.0)(tsyringe@4.8.0):
     resolution: {directory: protokit-framework/framework/packages/protocol, type: directory}
     id: file:protokit-framework/framework/packages/protocol
     name: '@proto-kit/protocol'
@@ -9504,17 +9463,17 @@ packages:
       ts-pattern: ^4.3.0
       tsyringe: ^4.7.0
     dependencies:
-      '@proto-kit/common': file:protokit-framework/framework/packages/common(o1js@1.1.0)(tsyringe@4.8.0)
+      '@proto-kit/common': file:protokit-framework/framework/packages/common(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
       lodash: 4.17.21
       loglevel: 1.9.1
-      o1js: 1.1.0
+      o1js: link:protokit-framework/framework/node_modules/o1js
       reflect-metadata: 0.1.14
       ts-mixer: 6.0.4
       ts-pattern: 4.3.0
       tsyringe: 4.8.0
     dev: false
 
-  file:protokit-framework/framework/packages/sdk(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/library@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(@proto-kit/sequencer@0.1.1-develop.267+b252853)(o1js@1.1.0)(reflect-metadata@0.2.2)(tsyringe@4.8.0):
+  file:protokit-framework/framework/packages/sdk(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/library@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(@proto-kit/sequencer@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(reflect-metadata@0.2.2)(tsyringe@4.8.0):
     resolution: {directory: protokit-framework/framework/packages/sdk, type: directory}
     id: file:protokit-framework/framework/packages/sdk
     name: '@proto-kit/sdk'
@@ -9528,23 +9487,23 @@ packages:
       reflect-metadata: ^0.1.13
       tsyringe: ^4.7.0
     dependencies:
-      '@proto-kit/common': file:protokit-framework/framework/packages/common(o1js@1.1.0)(tsyringe@4.8.0)
-      '@proto-kit/library': file:protokit-framework/framework/packages/library(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(@proto-kit/sequencer@0.1.1-develop.267+b252853)(o1js@1.1.0)(tsyringe@4.8.0)
-      '@proto-kit/module': file:protokit-framework/framework/packages/module(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@1.1.0)(tsyringe@4.8.0)
-      '@proto-kit/protocol': file:protokit-framework/framework/packages/protocol(@proto-kit/common@0.1.1-develop.267+b252853)(o1js@1.1.0)(ts-pattern@4.3.0)(tsyringe@4.8.0)
-      '@proto-kit/sequencer': file:protokit-framework/framework/packages/sequencer(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@1.1.0)(tsyringe@4.8.0)
+      '@proto-kit/common': file:protokit-framework/framework/packages/common(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
+      '@proto-kit/library': file:protokit-framework/framework/packages/library(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(@proto-kit/sequencer@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
+      '@proto-kit/module': file:protokit-framework/framework/packages/module(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
+      '@proto-kit/protocol': file:protokit-framework/framework/packages/protocol(@proto-kit/common@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(ts-pattern@4.3.0)(tsyringe@4.8.0)
+      '@proto-kit/sequencer': file:protokit-framework/framework/packages/sequencer(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
       '@urql/core': 4.3.0
       comlink: 4.4.1
       lodash: 4.17.21
       loglevel: 1.9.1
-      o1js: 1.1.0
+      o1js: link:protokit-framework/framework/node_modules/o1js
       reflect-metadata: 0.2.2
       tsyringe: 4.8.0
     transitivePeerDependencies:
       - graphql
     dev: false
 
-  file:protokit-framework/framework/packages/sequencer(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@1.1.0)(tsyringe@4.8.0):
+  file:protokit-framework/framework/packages/sequencer(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0):
     resolution: {directory: protokit-framework/framework/packages/sequencer, type: directory}
     id: file:protokit-framework/framework/packages/sequencer
     name: '@proto-kit/sequencer'
@@ -9555,13 +9514,13 @@ packages:
       o1js: 1.1.0
       tsyringe: ^4.7.0
     dependencies:
-      '@proto-kit/common': file:protokit-framework/framework/packages/common(o1js@1.1.0)(tsyringe@4.8.0)
-      '@proto-kit/module': file:protokit-framework/framework/packages/module(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@1.1.0)(tsyringe@4.8.0)
-      '@proto-kit/protocol': file:protokit-framework/framework/packages/protocol(@proto-kit/common@0.1.1-develop.267+b252853)(o1js@1.1.0)(ts-pattern@4.3.0)(tsyringe@4.8.0)
+      '@proto-kit/common': file:protokit-framework/framework/packages/common(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
+      '@proto-kit/module': file:protokit-framework/framework/packages/module(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
+      '@proto-kit/protocol': file:protokit-framework/framework/packages/protocol(@proto-kit/common@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(ts-pattern@4.3.0)(tsyringe@4.8.0)
       bullmq: 3.15.8
       compute-gcd: 1.2.1
       lodash: 4.17.21
-      o1js: 1.1.0
+      o1js: link:protokit-framework/framework/node_modules/o1js
       reflect-metadata: 0.1.14
       ts-pattern: 4.3.0
       tsyringe: 4.8.0
