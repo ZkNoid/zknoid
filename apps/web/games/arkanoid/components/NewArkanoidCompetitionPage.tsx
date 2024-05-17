@@ -259,7 +259,7 @@ export default function NewArkanoidCompetitionPage() {
   const validateSchema = Yup.object().shape({
     name: Yup.string().required('This field required'),
 
-    description: Yup.string().required('This field required'),
+    description: Yup.string().optional(),
 
     game: Yup.string()
       .required('This field required')
@@ -385,7 +385,6 @@ export default function NewArkanoidCompetitionPage() {
                       title={'Enter the description of the competition'}
                       name={'description'}
                       placeholder={'Type description here...'}
-                      required
                     />
                   </div>
                 </div>
