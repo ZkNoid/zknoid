@@ -331,8 +331,11 @@ export default function NewArkanoidCompetitionPage() {
 
     participationFee: Yup.number()
       .typeError('Invalid participationFee')
-      .required('This field required')
-      .min(0),
+      .when('preregistrationEnabled', {
+        is: true,
+        then: (schema) => schema.required('This field required').min(0),
+        otherwise: (schema) => schema.optional(),
+      }),
 
     policy: Yup.boolean().isTrue('Please indicate that you understood that'),
   });
@@ -641,26 +644,29 @@ export default function NewArkanoidCompetitionPage() {
                   </div>
                   <div className={'flex w-full flex-col gap-1'}>
                     <div className={'flex w-full flex-row gap-4'}>
-                      <div className={'w-full'}>
-                        <Input
-                          name={'participationFee'}
-                          type={'text'}
-                          title={'Participant fee'}
-                          placeholder={'Type participant fee here...'}
-                          endContent={
-                            <div
-                              className={
-                                'flex h-[28px] w-[28px] items-center justify-center rounded-full'
-                              }
-                            >
-                              <ReactImage
-                                src={znakesImg}
-                                alt={'Znakes Tokens'}
-                              />
-                            </div>
-                          }
-                        />
-                      </div>
+                      {values.preregistrationEnabled && (
+                        <div className={'w-full'}>
+                          <Input
+                            name={'participationFee'}
+                            type={'text'}
+                            title={'Participant fee'}
+                            placeholder={'Type participant fee here...'}
+                            endContent={
+                              <div
+                                className={
+                                  'flex h-[28px] w-[28px] items-center justify-center rounded-full'
+                                }
+                              >
+                                <ReactImage
+                                  src={znakesImg}
+                                  alt={'Znakes Tokens'}
+                                />
+                              </div>
+                            }
+                            required={values.preregistrationEnabled}
+                          />
+                        </div>
+                      )}
                       <div className={'w-full'}>
                         <Input
                           name={'funding'}
@@ -679,6 +685,7 @@ export default function NewArkanoidCompetitionPage() {
                               />
                             </div>
                           }
+                          required
                         />
                       </div>
                     </div>
