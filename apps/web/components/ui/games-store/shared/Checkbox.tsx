@@ -4,21 +4,21 @@ import { Field, useField } from 'formik';
 
 export const Checkbox = ({
   name,
-  readOnly,
   value,
 }: {
   name: string;
-  readOnly?: boolean;
   value?: boolean;
 }) => {
   const [field, meta] = useField(name);
 
   return (
     <motion.div
-      className={clsx('relative rounded-[5px] border p-1', {
-        'hover:border-[#FF00009C]': meta.error && meta.touched,
-        'cursor-pointer hover:opacity-80': !readOnly,
-      })}
+      className={clsx(
+        'relative cursor-pointer rounded-[5px] border p-1 hover:opacity-80',
+        {
+          'hover:border-[#FF00009C]': meta.error && meta.touched,
+        }
+      )}
       variants={{
         default: { borderColor: '#F9F8F4', backgroundColor: '#212121' },
         active: { borderColor: '#D2FF00', backgroundColor: '#D2FF00' },
@@ -37,7 +37,6 @@ export const Checkbox = ({
         {...field}
         name={name}
         type={'checkbox'}
-        readOnly={readOnly}
         value={value}
         className={'absolute left-0 top-0 h-full w-full opacity-0'}
       />
