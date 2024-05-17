@@ -41,9 +41,11 @@ const ReadOnlyCheckbox = ({ active }: { active: boolean }) => {
 export const CompetitionListItem = ({
   competition,
   register,
+  index,
 }: {
   competition: ICompetition;
   register: (id: number) => Promise<void>;
+  index: number;
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -65,7 +67,7 @@ export const CompetitionListItem = ({
           <div
             className={'flex cursor-pointer flex-row gap-4 hover:opacity-80'}
           >
-            <span>[{competition.id}]</span>
+            <span>[{index}]</span>
             <span>{competition.title}</span>
           </div>
         </div>
