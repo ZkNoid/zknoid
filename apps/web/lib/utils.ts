@@ -65,4 +65,6 @@ export function buildClient<
 }
 
 export const formatPubkey = (pubkey: PublicKey | undefined) =>
-  pubkey ? pubkey.toBase58().slice(0, 16) + '...' : 'None';
+  pubkey
+    ? pubkey.toBase58().slice(0, 5) + '...' + pubkey.toBase58().slice(-5)
+    : 'None';
