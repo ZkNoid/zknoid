@@ -45,7 +45,7 @@ export const CreateNewLobby = ({
 
   const initialValues = {
     name: '',
-    participantFee: 0,
+    participationFee: 0,
     isPrivateGame: false,
   };
 
@@ -71,18 +71,23 @@ export const CreateNewLobby = ({
         initialValues={initialValues}
         validationSchema={validateSchema}
         onSubmit={async (values) => {
+          let accessKey = randomInt();
           await createLobby(
             values.name,
-            values.participantFee,
+            values.participationFee,
             values.isPrivateGame,
-            randomInt()
+            accessKey
           );
 
           setIsSuccessModalOpen(true);
         }}
       >
-        {(values) => (
+        {({ values, errors }) => (
           <Form>
+            <div>
+              <span>{errors.participationFee}</span>
+              <span>{values.participationFee}</span>
+            </div>
             <div
               className={
                 'flex h-full w-full flex-col rounded-[5px] border border-foreground bg-[#252525] p-2'
@@ -171,7 +176,7 @@ export const CreateNewLobby = ({
                 {/*/>*/}
                 <div className={'flex w-full flex-row gap-4'}>
                   <Input
-                    name={'participantFee'}
+                    name={'participationFee'}
                     type={'number'}
                     title={'Participant fee'}
                     placeholder={'Type participant fee here...'}
@@ -257,6 +262,7 @@ export const CreateNewLobby = ({
                 </div>
               </div>
               <div className={'flex-grow'} />
+              <button type={'submit'}>submit</button>
               <Button
                 label={'Create lobby'}
                 type={'submit'}
