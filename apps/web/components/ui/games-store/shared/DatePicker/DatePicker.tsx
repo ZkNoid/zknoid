@@ -2,6 +2,7 @@ import { ReactNode, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '@/components/ui/games-store/shared/Button';
 import { DateItem } from '@/components/ui/games-store/shared/DatePicker/DateItem';
+import { clsx } from 'clsx';
 
 export const DatePicker = ({
   trigger,
@@ -67,15 +68,25 @@ export const DatePicker = ({
             >
               <div className={'flex w-full flex-row justify-between'}>
                 <div
-                  className={
-                    'flex w-full max-w-[30%] cursor-pointer  items-center justify-start hover:opacity-80'
+                  className={clsx(
+                    'flex w-full max-w-[30%] cursor-pointer  items-center justify-start',
+                    {
+                      'cursor-not-allowed opacity-50':
+                        currentDate.getMonth() == new Date().getMonth(),
+                      'hover:opacity-80':
+                        currentDate.getMonth() != new Date().getMonth(),
+                    }
+                  )}
+                  onClick={
+                    currentDate.getMonth() != new Date().getMonth()
+                      ? () => {
+                          clearDates();
+                          setCurrentMonth(
+                            currentDate.setMonth(currentDate.getMonth() - 1)
+                          );
+                        }
+                      : undefined
                   }
-                  onClick={() => {
-                    clearDates();
-                    setCurrentMonth(
-                      currentDate.setMonth(currentDate.getMonth() - 1)
-                    );
-                  }}
                 >
                   <svg
                     width="9"

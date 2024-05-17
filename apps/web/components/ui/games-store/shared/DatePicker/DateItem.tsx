@@ -38,8 +38,11 @@ export const DateItem = ({
     <button
       type={'button'}
       className={clsx(
-        'cursor-pointer rounded-[5px] border border-bg-dark p-4 text-center font-plexsans text-main font-medium hover:opacity-80',
+        'cursor-pointer rounded-[5px] border border-bg-dark p-4 text-center font-plexsans text-main font-medium',
         {
+          'cursor-not-allowed text-[#424242] opacity-50':
+            date.getTime() < Date.now(),
+          'hover:opacity-80': date.getTime() >= Date.now(),
           'border-left-accent text-left-accent':
             dateTime === activeDateTime || dateTime === pickedDateTime,
           'opacity:80 border-left-accent text-left-accent':
@@ -107,57 +110,65 @@ export const DateItem = ({
           'col-start-7 col-end-7': dateDay == 6,
         }
       )}
-      onMouseOver={() => {
-        if (!pickedDate) if (activeDate) setPossibleDate(date);
-      }}
-      onClick={() => {
-        if (!pickedDate) {
-          if (!activeDate) {
-            setActiveDate(date);
-          }
-          if (activeDate) {
-            if (date === activeDate) setActiveDate(undefined);
-            else {
-              setPickedDate(date);
-              if (activeDate < date) {
-                setDateFrom(
-                  activeDate.toLocaleDateString('en-US', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                  })
-                );
-                setDateTo(
-                  date.toLocaleDateString('en-US', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                  })
-                );
-              }
-              if (activeDate > date) {
-                setDateFrom(
-                  date.toLocaleDateString('en-US', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                  })
-                );
-                setDateTo(
-                  activeDate.toLocaleDateString('en-US', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                  })
-                );
+      onMouseOver={
+        date.getTime() >= Date.now()
+          ? () => {
+              if (!pickedDate) if (activeDate) setPossibleDate(date);
+            }
+          : undefined
+      }
+      onClick={
+        date.getTime() >= Date.now()
+          ? () => {
+              if (!pickedDate) {
+                if (!activeDate) {
+                  setActiveDate(date);
+                }
+                if (activeDate) {
+                  if (date === activeDate) setActiveDate(undefined);
+                  else {
+                    setPickedDate(date);
+                    if (activeDate < date) {
+                      setDateFrom(
+                        activeDate.toLocaleDateString('en-US', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                        })
+                      );
+                      setDateTo(
+                        date.toLocaleDateString('en-US', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                        })
+                      );
+                    }
+                    if (activeDate > date) {
+                      setDateFrom(
+                        date.toLocaleDateString('en-US', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                        })
+                      );
+                      setDateTo(
+                        activeDate.toLocaleDateString('en-US', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                        })
+                      );
+                    }
+                  }
+                }
+              } else {
+                setPickedDate(undefined);
+                setActiveDate(date);
               }
             }
-          }
-        } else {
-          setPickedDate(undefined);
-          setActiveDate(date);
-        }
-      }}
+          : undefined
+      }
     >
       {date.getDate()}
     </button>
