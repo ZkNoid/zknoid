@@ -139,6 +139,7 @@ export const CompetitionWidget = ({
                   key={index}
                   competition={item}
                   register={register}
+                  index={index + 1}
                 />
               ))}
           </div>
