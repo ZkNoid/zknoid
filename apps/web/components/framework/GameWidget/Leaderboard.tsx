@@ -169,18 +169,18 @@ export const Leaderboard = ({
               {/* </>
               )} */}
               <div className={'flex-grow pt-4'} />
-              {leaderboard.find(
-                (item) => item.player.toBase58() === networkStore.address
-              ) && (
-                <button
-                  className={
-                    'mb-5 w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-[20px]/[20px] font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'
-                  }
-                  onClick={() => setIsShowMyPlace(!isShowMyPlace)}
-                >
-                  Highlight my place
-                </button>
-              )}
+              {/*{leaderboard.find(*/}
+              {/*  (item) => item.player.toBase58() === networkStore.address*/}
+              {/*) && (*/}
+              {/*  <button*/}
+              {/*    className={*/}
+              {/*      'mb-5 w-full rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-[20px]/[20px] font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent'*/}
+              {/*    }*/}
+              {/*    onClick={() => setIsShowMyPlace(!isShowMyPlace)}*/}
+              {/*  >*/}
+              {/*    Highlight my place*/}
+              {/*  </button>*/}
+              {/*)}*/}
             </motion.div>
           )}
         </AnimatePresence>
