@@ -351,7 +351,9 @@ export default function NewArkanoidCompetitionPage() {
 
         <Formik
           initialValues={initialValues}
-          onSubmit={(values) => createCompetition(values)}
+          onSubmit={(values) =>
+            createCompetition(values).then(() => setIsSuccessModalOpen(true))
+          }
           validationSchema={validateSchema}
         >
           {({ values, errors, touched, getFieldHelpers }) => (

@@ -3,8 +3,40 @@ import { useState } from 'react';
 import { ICompetition } from '@/lib/types';
 import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
 import { formatUnits } from '@/lib/unit';
-import { Checkbox } from '@/components/ui/games-store/shared/Checkbox';
 import { Button } from '@/components/ui/games-store/shared/Button';
+
+const ReadOnlyCheckbox = ({ active }: { active: boolean }) => {
+  return (
+    <motion.div
+      className={'relative rounded-[5px] border p-1'}
+      variants={{
+        default: { borderColor: '#F9F8F4', backgroundColor: '#212121' },
+        active: { borderColor: '#D2FF00', backgroundColor: '#D2FF00' },
+      }}
+      animate={active ? 'active' : 'default'}
+      transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
+    >
+      <motion.svg
+        aria-hidden="true"
+        role="presentation"
+        viewBox="0 0 17 18"
+        className={'h-3.5 w-3.5'}
+      >
+        <motion.polyline
+          fill="none"
+          points="1 9 7 14 15 4"
+          stroke="#252525"
+          strokeDasharray="22"
+          strokeDashoffset="44"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          animate={active ? { pathLength: 1 } : { pathLength: 0 }}
+        />
+      </motion.svg>
+    </motion.div>
+  );
+};
 
 export const CompetitionListItem = ({
   competition,
@@ -103,11 +135,7 @@ export const CompetitionListItem = ({
                   Preregiatration
                 </span>
                 <div className={'flex w-full items-center justify-center'}>
-                  <Checkbox
-                    name={'preReg'}
-                    value={competition.preReg}
-                    readOnly
-                  />
+                  <ReadOnlyCheckbox active={competition.preReg || false} />
                 </div>
               </div>
               <div className={'grid grid-cols-2'}>
@@ -117,14 +145,11 @@ export const CompetitionListItem = ({
                   Registered
                 </span>
                 <div className={'flex w-full items-center justify-center'}>
-                  <Checkbox
-                    name={'registered'}
-                    value={competition.registered || false}
-                    readOnly
-                  />
+                  <ReadOnlyCheckbox active={competition.registered || false} />
                 </div>
               </div>
             </div>
+
             <div className={'col-start-2 col-end-4 flex flex-row gap-10'}>
               <div className={'flex w-full flex-col gap-2'}>
                 <span
