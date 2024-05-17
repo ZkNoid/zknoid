@@ -204,7 +204,7 @@ export default function NewArkanoidCompetitionPage() {
             ? new Date(values.competitionTo).getTime()
             : 0, // competitionEndTime
           values.funding,
-          values.participationFee
+          values.participationFee || 0
         );
 
         gameHub.createCompetition(competition);
