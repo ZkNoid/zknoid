@@ -29,7 +29,7 @@ export const GradientButton = ({
       {asLink ? (
         <Link
           className={
-            'm-auto mt-1 w-full p-4 uppercase text-left-accent group-hover:text-dark-buttons-text lg:pt-5 xl:mt-0.5'
+            'my-auto w-full p-4 uppercase text-left-accent group-hover:text-dark-buttons-text lg:pt-5'
           }
           href={href ? href : '#'}
           onClick={onClick ? onClick : undefined}
