@@ -34,14 +34,12 @@ export default function RandzuLobby({
       mobileImage={RandzuCoverMobileSVG}
       defaultPage={'Lobby list'}
     >
-      {networkStore.walletConnected && networkStore.address && (
-        <LobbyPage
-          lobbyId={params.lobbyId}
-          query={client.query.runtime.RandzuLogic}
-          contractName={'RandzuLogic'}
-          config={randzuConfig}
-        />
-      )}
+      <LobbyPage
+        lobbyId={params.lobbyId}
+        query={client.query.runtime.RandzuLogic}
+        contractName={'RandzuLogic'}
+        config={randzuConfig}
+      />
     </GamePage>
   );
 }

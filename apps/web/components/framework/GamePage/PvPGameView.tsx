@@ -99,7 +99,7 @@ export const PvPGameView = (props: PvPGameViewProps) => {
           {props.mainButtonState == MainButtonState.WalletNotConnected && (
             <div
               className="flex cursor-pointer items-center justify-center rounded bg-left-accent py-2 font-plexsans text-[20px]/[20px] font-medium text-black"
-              onClick={() => networkStore.connectWallet()}
+              onClick={() => networkStore.connectWallet(false)}
             >
               Connect wallet
             </div>
