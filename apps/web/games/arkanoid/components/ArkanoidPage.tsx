@@ -416,7 +416,7 @@ export default function ArkanoidPage({
               )}
             </>
           ) : walletInstalled() ? (
-            <ConnectWallet connectWallet={networkStore.connectWallet} />
+            <ConnectWallet connectWallet={() => networkStore.connectWallet(false)} />
           ) : (
             <InstallWallet />
           )}

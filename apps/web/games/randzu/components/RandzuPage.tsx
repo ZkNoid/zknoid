@@ -598,7 +598,7 @@ export default function RandzuPage({
             </>
           ) : walletInstalled() ? (
             <GameWrap>
-              <ConnectWallet connectWallet={networkStore.connectWallet} />
+              <ConnectWallet connectWallet={() => networkStore.connectWallet(false)} />
             </GameWrap>
           ) : (
             <GameWrap>
