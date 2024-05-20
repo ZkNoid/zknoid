@@ -725,7 +725,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
             </>
           ) : walletInstalled() ? (
             <GameWrap>
-              <ConnectWallet connectWallet={networkStore.connectWallet} />
+              <ConnectWallet connectWallet={() => networkStore.connectWallet(false)} />
             </GameWrap>
           ) : (
             <GameWrap>

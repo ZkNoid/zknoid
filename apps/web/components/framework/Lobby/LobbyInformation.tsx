@@ -376,7 +376,7 @@ export const LobbyInformation = <RuntimeModules extends RuntimeModulesRecord>({
           {walletInstalled() ? (
             <Button
               label={'Connect wallet'}
-              onClick={networkStore.connectWallet}
+              onClick={() => networkStore.connectWallet(false)}
               color={'secondary'}
             />
           ) : (
