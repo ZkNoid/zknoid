@@ -34,14 +34,12 @@ export default function CheckersLobby({
       mobileImage={CheckersCoverMobileSVG}
       defaultPage={'Lobby list'}
     >
-      {networkStore.walletConnected && networkStore.address && (
-        <LobbyPage
-          lobbyId={params.lobbyId}
-          query={client.query.runtime.CheckersLogic}
-          contractName={'CheckersLogic'}
-          config={checkersConfig}
-        />
-      )}
+      <LobbyPage
+        lobbyId={params.lobbyId}
+        query={client.query.runtime.CheckersLogic}
+        contractName={'CheckersLogic'}
+        config={checkersConfig}
+      />
     </GamePage>
   );
 }

@@ -36,7 +36,7 @@ export default function DesktopNavbar({
     if (!walletInstalled()) return;
 
     if (autoconnect) {
-      networkStore.connectWallet();
+      networkStore.connectWallet(true);
     }
   }, []);
   const logWalletConnectedMutation =
@@ -85,7 +85,7 @@ export default function DesktopNavbar({
               text="Connect wallet"
               isMiddle={true}
               onClick={() => {
-                networkStore.connectWallet();
+                networkStore.connectWallet(false);
               }}
             />
           ) : (

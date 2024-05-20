@@ -34,15 +34,13 @@ export default function ThimblerigLobby({
       mobileImage={ThimblerigCoverMobileSVG}
       defaultPage={'Lobby list'}
     >
-      {networkStore.walletConnected && networkStore.address && (
-        <LobbyPage
-          lobbyId={params.lobbyId}
-          query={client.query.runtime.ThimblerigLogic}
-          contractName={'ThimblerigLogic'}
-          config={thimblerigConfig}
-          rewardCoeff={1.67}
-        />
-      )}
+      <LobbyPage
+        lobbyId={params.lobbyId}
+        query={client.query.runtime.ThimblerigLogic}
+        contractName={'ThimblerigLogic'}
+        config={thimblerigConfig}
+        rewardCoeff={1.67}
+      />
     </GamePage>
   );
 }

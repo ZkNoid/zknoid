@@ -13,7 +13,7 @@ export interface NetworkState {
   protokitClientStarted: boolean;
   onWalletConnected: (address: string | undefined) => Promise<void>;
   onProtokitClientStarted: () => void;
-  connectWallet: () => Promise<void>;
+  connectWallet: (soft: boolean) => Promise<void>;
   walletInstalled: () => boolean;
 
   pendingL2Transactions: PendingTransaction[];
@@ -45,6 +45,9 @@ export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
     },
     address: undefined,
     async onWalletConnected(address: string | undefined) {
+      if (address) localStorage.minaAdderess = address;
+      else localStorage.minaAdderess = '';
+      
       const network = await (window as any).mina.requestNetwork();
       this.setNetwork(network.chainId);
       set((state) => {
@@ -52,9 +55,16 @@ export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
         state.walletConnected = true;
       });
     },
-    async connectWallet() {
-      const accounts = await (window as any).mina.requestAccounts();
-      this.onWalletConnected(accounts[0]);
+    async connectWallet(soft: boolean) {
+      if (soft) {
+        if (localStorage.minaAdderess) {
+          this.onWalletConnected(localStorage.minaAdderess);
+          return this.onWalletConnected(localStorage.minaAdderess);
+        }
+      } else {
+        const accounts = await (window as any).mina.requestAccounts();
+        this.onWalletConnected(accounts[0]);
+      }
     },
     walletInstalled() {
       return typeof mina !== 'undefined';

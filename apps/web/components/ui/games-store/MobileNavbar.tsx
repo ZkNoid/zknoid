@@ -53,7 +53,7 @@ export const MobileNavbar = ({ autoconnect }: { autoconnect: boolean }) => {
     if (!walletInstalled()) return;
 
     if (autoconnect) {
-      networkStore.connectWallet();
+      networkStore.connectWallet(true);
     }
   }, []);
   return (
@@ -172,7 +172,7 @@ export const MobileNavbar = ({ autoconnect }: { autoconnect: boolean }) => {
                       text="Connect wallet"
                       isMiddle={true}
                       onClick={() => {
-                        networkStore.connectWallet();
+                        networkStore.connectWallet(false);
                       }}
                     />
                   ) : (
@@ -182,7 +182,7 @@ export const MobileNavbar = ({ autoconnect }: { autoconnect: boolean }) => {
                         text="Install wallet"
                         isMiddle={true}
                         onClick={() => {
-                          networkStore.connectWallet();
+                          networkStore.connectWallet(false);
                         }}
                       />
                     </Link>
