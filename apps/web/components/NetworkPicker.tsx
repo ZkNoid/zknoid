@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { NETWORKS } from '@/app/constants/networks';
+import { NETWORKS, Network } from '@/app/constants/networks';
 import { walletInstalled } from '@/lib/helpers';
 import { useNetworkStore } from '@/lib/stores/network';
 
@@ -14,12 +14,19 @@ export default function NetworkPicker() {
   const networkStore = useNetworkStore();
   useRegisterWorkerClient();
 
-  const switchNetwork = async (chainId: string) => {
-    await (window as any).mina.switchChain({
-      chainId,
-    });
+  const switchNetwork = async (network: Network) => {
+    console.log('Switching to', network);
+    if (network.chainId == 'zeko') {
+      (window.mina as any).addChain({
+        url: 'https://devnet.zeko.io/graphql',
+        name: 'Zeko',
+      });
+    }
 
-    networkStore.setNetwork(chainId);
+    await (window as any).mina.switchChain({
+      chainId: network.chainId,
+    });
+    networkStore.setNetwork(network);
     setExpanded(false);
   };
 
@@ -34,7 +41,8 @@ export default function NetworkPicker() {
         chainId: string;
         name: string;
       }) => {
-        networkStore.setNetwork(chainId);
+        const minaNetwork = NETWORKS.find((x) => chainId != 'unknown' ? x.chainId == chainId : x.name == name);
+        networkStore.setNetwork(minaNetwork);
       };
 
       (window.mina as any).on('chainChanged', listener);
@@ -47,12 +55,12 @@ export default function NetworkPicker() {
 
   useEffect(() => {
     if (!walletInstalled()) return;
-    
+
     (async () => {
       const listener = (accounts: string[]) => {
         const [account] = accounts;
         if (networkStore.minaNetwork?.chainId)
-          networkStore.setNetwork(networkStore.minaNetwork?.chainId);
+          networkStore.setNetwork(networkStore.minaNetwork);
         networkStore.onWalletConnected(account);
       };
 
@@ -87,7 +95,7 @@ export default function NetworkPicker() {
               <div
                 key={network.chainId}
                 className="flex h-full w-full cursor-pointer flex-row items-center gap-2 py-3 pl-2 text-header-menu text-middle-accent transition duration-75 ease-in last:rounded-b hover:bg-middle-accent/20"
-                onClick={() => switchNetwork(network.chainId)}
+                onClick={() => switchNetwork(network)}
               >
                 <div
                   className={
