@@ -47,12 +47,8 @@ export default function NetworkPicker() {
 
   useEffect(() => {
     if (!walletInstalled()) return;
-
+    
     (async () => {
-      const [account] = await (window as any).mina.requestAccounts();
-
-      networkStore.onWalletConnected(account);
-
       const listener = (accounts: string[]) => {
         const [account] = accounts;
         if (networkStore.minaNetwork?.chainId)
