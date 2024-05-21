@@ -1,12 +1,5 @@
 import type { Field } from 'o1js';
-import {
-  UInt64,
-  Struct,
-  Provable,
-  Int64,
-  Bool,
-  Poseidon,
-} from 'o1js';
+import { UInt64, Struct, Provable, Int64, Bool, Poseidon } from 'o1js';
 import { RandomGenerator } from '../engine';
 import {
   BRICK_HALF_WIDTH,
@@ -698,7 +691,7 @@ export function createBricksBySeed(seed: Field): Bricks {
       const [xDeviation, yDeviation, health] = generator.getNumbers([
         columnWidth - 2 * BRICK_HALF_WIDTH,
         rowHeight - 2 * BRICK_HALF_WIDTH,
-        MAX_BRICK_HEALTH,
+        MAX_BRICK_HEALTH + 1,
         1,
       ]);
 
