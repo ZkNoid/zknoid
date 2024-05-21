@@ -7,7 +7,7 @@ import { NETWORKS, Network } from '@/app/constants/networks';
 
 export interface NetworkState {
   minaNetwork: Network | undefined;
-  setNetwork: (chainId: string) => Promise<void>;
+  setNetwork: (network: Network | undefined) => Promise<void>;
   address: string | undefined;
   walletConnected: boolean;
   protokitClientStarted: boolean;
@@ -31,14 +31,14 @@ export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
         protokitClientStarted: true,
       });
     },
-    async setNetwork(chainId: string) {
+    async setNetwork(network: Network | undefined) {
       const O1js = await import('o1js');
 
       set((state) => {
-        const minaNetwork = NETWORKS.find((x) => x.chainId == chainId);
-        state.minaNetwork = minaNetwork;
-        if (minaNetwork) {
-          const Network = O1js.Mina.Network(minaNetwork?.graphql);
+        console.log('Target network', network);
+        state.minaNetwork = network;
+        if (network) {
+          const Network = O1js.Mina.Network(network?.graphql);
           O1js.Mina.setActiveInstance(Network);
         }
       });
@@ -49,7 +49,10 @@ export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
       else localStorage.minaAdderess = '';
 
       const network = await (window as any).mina.requestNetwork();
-      this.setNetwork(network.chainId);
+
+      const minaNetwork = NETWORKS.find((x) => network.chainId != 'unknown' ? x.chainId == network.chainId : x.name == network.name);
+
+      this.setNetwork(minaNetwork);
       set((state) => {
         state.address = address;
         state.walletConnected = true;
