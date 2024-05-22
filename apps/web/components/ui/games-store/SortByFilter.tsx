@@ -17,7 +17,7 @@ export function SortByFilter<T extends string>({
     <div className={`relative ${className}`} onClick={() => setIsOpen(!isOpen)}>
       <motion.span
         className={
-          'group flex h-full min-w-[300px] cursor-pointer flex-row items-center justify-between gap-2 rounded-[5px] border border-bg-dark px-4 py-1 hover:border-b hover:border-left-accent hover:text-left-accent'
+          'group flex h-full min-w-[300px] cursor-pointer flex-row items-center justify-between gap-2 rounded-[5px] border px-4 py-1'
         }
         variants={{
           open: {
@@ -30,9 +30,15 @@ export function SortByFilter<T extends string>({
             transitionTimingFunction: 'ease-out',
             msTransitionTimingFunction: 'ease-out',
           },
-          closed: {},
+          closed: { borderColor: '#212121', borderBottomColor: '#212121' },
         }}
         animate={isOpen ? 'open' : 'closed'}
+        whileHover={{
+          borderBottomWidth: '1px',
+          borderColor: '#D2FF00',
+          borderBottomColor: '#D2FF00',
+          color: '#D2FF00',
+        }}
       >
         <span className={'font-plexsans text-main'}>Sort By: {sortBy}</span>
         <motion.svg
