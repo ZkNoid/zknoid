@@ -1,4 +1,3 @@
-import { clsx } from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 
@@ -15,16 +14,25 @@ export function SortByFilter<T extends string>({
 }) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   return (
-    <div className={`relative ${className}`}>
-      <span
-        className={clsx(
-          'group flex h-full min-w-[300px] cursor-pointer flex-row items-center justify-between gap-2 rounded-[5px] border border-bg-dark px-4 py-1 hover:border-b hover:border-left-accent hover:text-left-accent',
-          {
-            'rounded-b-none border-white border-b-bg-dark duration-75 ease-out':
-              isOpen,
-          }
-        )}
-        onClick={() => setIsOpen(!isOpen)}
+    <div className={`relative ${className}`} onClick={() => setIsOpen(!isOpen)}>
+      <motion.span
+        className={
+          'group flex h-full min-w-[300px] cursor-pointer flex-row items-center justify-between gap-2 rounded-[5px] border border-bg-dark px-4 py-1 hover:border-b hover:border-left-accent hover:text-left-accent'
+        }
+        variants={{
+          open: {
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 0,
+            borderColor: 'white',
+            borderBottomColor: '#212121',
+            transitionDuration: '75ms',
+            animationDuration: '75ms',
+            transitionTimingFunction: 'ease-out',
+            msTransitionTimingFunction: 'ease-out',
+          },
+          closed: {},
+        }}
+        animate={isOpen ? 'open' : 'closed'}
       >
         <span className={'font-plexsans text-main'}>Sort By: {sortBy}</span>
         <motion.svg
@@ -38,7 +46,6 @@ export function SortByFilter<T extends string>({
             closed: { rotate: 0 },
           }}
           transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
-          animate={isOpen ? 'open' : 'closed'}
         >
           <path
             d="M15 1.5L8 8.5L1 1.5"
@@ -49,8 +56,8 @@ export function SortByFilter<T extends string>({
             className={'stroke-white group-hover:stroke-left-accent'}
           />
         </motion.svg>
-      </span>
-      <AnimatePresence initial={false} mode={'wait'}>
+      </motion.span>
+      <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
             className={
