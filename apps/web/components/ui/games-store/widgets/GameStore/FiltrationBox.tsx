@@ -75,7 +75,7 @@ export function FiltrationBox<T extends string>({
         </svg>
         <div
           className={
-            'absolute mx-auto flex h-[20px] w-[20px] flex-col items-center justify-center max-[2000px]:right-0 max-[2000px]:top-0 min-[2000px]:right-0.5 min-[2000px]:top-1'
+            'absolute mx-auto flex h-[20px] w-[20px] flex-col items-center justify-center max-[2000px]:right-0 max-[2000px]:top-0 min-[2000px]:right-0.5 min-[2000px]:top-1 pointer-events-none'
           }
         >
           <motion.div
