@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect } from 'react';
 
-import { walletInstalled } from '@/lib/helpers';
+import { formatAddress, walletInstalled } from '@/lib/helpers';
 import { useNetworkStore } from '@/lib/stores/network';
 
 import { useRegisterWorkerClient } from '@/lib/stores/workerClient';
@@ -14,6 +14,7 @@ import { useRegisterWorkerClient } from '@/lib/stores/workerClient';
 import { HeaderCard } from './HeaderCard';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
+import AccountCard from './header/AccountCard';
 
 const BalanceInfo = dynamic(
   () => import('@/components/ui/games-store/BalanceInfo'),
@@ -72,10 +73,8 @@ export default function DesktopNavbar({
         <div className="flex gap-5">
           {networkStore.walletConnected && networkStore.address ? (
             <>
-              <HeaderCard
-                svg={'account'}
-                isMiddle={true}
-                text={networkStore.address!.substring(0, 10) + '..'}
+              <AccountCard
+                text={formatAddress(networkStore.address)}
               />
               <NetworkPicker />
             </>

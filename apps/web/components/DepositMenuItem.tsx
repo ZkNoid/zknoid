@@ -30,6 +30,7 @@ import { type PendingTransaction } from '@proto-kit/sequencer';
 import { Button } from '@/components/ui/games-store/shared/Button';
 import { toast } from '@/components/ui/games-store/shared/Toast';
 import { useToasterStore } from '@/lib/stores/toasterStore';
+import TopUpCard from './ui/games-store/header/TopUpCard';
 
 const BridgeInput = ({
   assets,
@@ -245,20 +246,18 @@ export const DepositMenuItem = () => {
   const rate = 1;
   return (
     <>
-      <HeaderCard
-        svg={'top-up'}
+      <TopUpCard
         text="Top up"
         onClick={() => bridgeStore.setOpen(10n * 10n ** 9n)}
       />
-      {contextAppChainClient &&
+      {/* {contextAppChainClient &&
         network.address &&
         balancesStore.balances[network.address] < 100 * 10 ** 9 && (
-          <HeaderCard
-            svg={'top-up'}
+          <TopUpCard
             text="Get test balance"
             onClick={() => testBalanceGetter()}
           />
-        )}
+        )} */}
       <AnimatePresence>
         {bridgeStore.open && (
           <motion.div

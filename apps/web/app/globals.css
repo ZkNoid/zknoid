@@ -43,7 +43,19 @@ img {
     mask-image: url(/image/section1/banner-mask.svg);
     mask-repeat: no-repeat;
     mask-size: 100%;
+
+    background-image: url(/image/section1/banner-mask.svg);
+    background-repeat: no-repeat;
+    background-size: 100%;
+
+
   }
+}
+
+.masked-event-card {
+  mask-image: url(/image/section2/event-box.svg);
+  mask-repeat: no-repeat;
+  mask-size: 100%;
 }
 
 @layer base {

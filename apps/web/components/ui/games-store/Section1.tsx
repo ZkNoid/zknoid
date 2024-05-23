@@ -22,7 +22,15 @@ export const Section1 = () => {
           viewBox="0 0 1502 481"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="hidden h-full w-full lg:block"
+          className=" h-full w-full"
+        ></svg>
+        <svg
+          width="1502"
+          height="481"
+          viewBox="0 0 1502 481"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="absolute pointer-events-none bottom-0 top-0 h-full w-full z-40"
         >
           <path
             d="M1 51V430C1 457.614 23.3858 480 51 480H650.474C663.726 480 676.436 474.739 685.812 465.373L723.596 427.627C732.971 418.261 745.681 413 758.933 413H1451C1478.61 413 1501 390.614 1501 363V51C1501 23.3858 1478.61 1 1451 1H51C23.3858 1 1 23.3858 1 51Z"
@@ -34,15 +42,12 @@ export const Section1 = () => {
         <div className="absolute left-0 top-0 hidden h-full w-full lg:block">
           <div className="h-full w-full overflow-hidden" ref={emblaRef}>
             <div className="flex h-full w-full">
-              <div
-                key={0}
-                className='min-w-0 flex-[0_0_100%] bg-[url("/image/grid.svg")]'
-              >
+              <div key={0} className="min-w-0 flex-[0_0_100%]">
                 <div className="flex h-full w-full items-center justify-center">
                   <Image
                     src={defaultSlide}
                     alt="Slide"
-                    className="mb-16 h-[80%] w-[90%] object-contain"
+                    className="w-full"
                   />
                 </div>
               </div>
