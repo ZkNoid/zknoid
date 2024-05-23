@@ -10,8 +10,10 @@
       ],
       "outputs": [
         ".next/**",
+        ".next/**",
         "!.next/cache/**",
-        "dist"
+        "dist",
+        "protokit-framework"
       ]
     },
     "lint": {},
