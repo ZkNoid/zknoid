@@ -207,12 +207,7 @@ export default function ArkanoidPage({
         }
       );
 
-      try {
-        await tx.sign();
-      } catch {
-        await window.mina?.requestAccounts();
-        await tx.sign();
-      }
+      await tx.sign();
       await tx.send();
 
       if (score > 90000) {
