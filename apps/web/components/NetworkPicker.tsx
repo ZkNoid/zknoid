@@ -8,6 +8,7 @@ import { useRegisterWorkerClient } from '@/lib/stores/workerClient';
 
 import { HeaderCard } from './ui/games-store/HeaderCard';
 import { AnimatePresence, motion } from 'framer-motion';
+import NetworkPickerCard from './ui/games-store/header/NetworkPickerCard';
 
 export default function NetworkPicker() {
   const [expanded, setExpanded] = useState(false);
@@ -74,12 +75,10 @@ export default function NetworkPicker() {
 
   return (
     <div className="relative">
-      <HeaderCard
-        svg={'mina'}
+      <NetworkPickerCard
         text={networkStore.minaNetwork?.name || 'Unsupported network'}
         onClick={() => setExpanded(!expanded)}
         toggle={true}
-        isMiddle={true}
         expanded={expanded}
       />
       <AnimatePresence initial={false} mode={'wait'}>

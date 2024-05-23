@@ -41,7 +41,7 @@ import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import { getRandomEmoji } from '@/lib/emoji';
 import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
-import { cn, formatPubkey } from '@/lib/utils';
+import { cn } from '@/lib/helpers';
 import AnimatedThimble from './AnimatedThimble';
 import { Button } from '@/components/ui/games-store/shared/Button';
 import { GameWidget } from '@/components/framework/GameWidget/GameWidget';
@@ -62,6 +62,7 @@ import { SadSmileSVG } from '@/components/ui/games-store/shared/misc/svg';
 import { toast } from '@/components/ui/games-store/shared/Toast';
 import { useToasterStore } from '@/lib/stores/toasterStore';
 import { useRateGameStore } from '@/lib/stores/rateGameStore';
+import { formatPubkey } from '@/lib/utils';
 
 enum GameState {
   WalletNotInstalled,

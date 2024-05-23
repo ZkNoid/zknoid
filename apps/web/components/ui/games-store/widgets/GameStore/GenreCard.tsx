@@ -1,3 +1,4 @@
+import { GameStoreSortBy } from '@/constants/sortBy';
 import { ZkNoidGameGenre } from '@/lib/platform/game_tags';
 import { useState, useRef } from 'react';
 
@@ -5,18 +6,20 @@ import Lottie from 'react-lottie';
 
 export const GenreCard = ({
   animation,
+  sortBy,
+  setSortBy,
   genre,
   genresSelected,
   setGenresSelected,
   className,
-  height = 500,
 }: {
   animation: object;
-  genre: ZkNoidGameGenre;
+  genre?: ZkNoidGameGenre;
+  sortBy?: GameStoreSortBy;
   genresSelected: ZkNoidGameGenre[];
-  setGenresSelected: (genres: ZkNoidGameGenre[]) => void;
+  setGenresSelected?: (genres: ZkNoidGameGenre[]) => void;
+  setSortBy: (sortBy: GameStoreSortBy) => void;
   className?: string;
-  height?: number;
 }) => {
   const [visible, setVisible] = useState(false);
   const nodeRef = useRef(null);
@@ -26,17 +29,22 @@ export const GenreCard = ({
       onMouseEnter={() => setVisible(true)}
       onMouseLeave={() => setVisible(false)}
       ref={nodeRef}
-      className="relative flex h-full w-full flex-col items-center justify-center p-5"
+      className="relative flex h-full w-full flex-col items-center justify-center gap-1 p-5"
       onClick={() => {
-        setGenresSelected(
-          genresSelected.includes(genre)
-            ? genresSelected.filter((x) => x != genre)
-            : [...genresSelected, genre]
-        );
+        if (genre) {
+          setGenresSelected!(
+            genresSelected.includes(genre!)
+              ? genresSelected.filter((x) => x != genre!)
+              : [...genresSelected, genre!]
+          );
+          setSortBy(GameStoreSortBy.RatingLow);
+        } else {
+          setSortBy!(sortBy!);
+        }
       }}
     >
       <div className="z-1 absolute bottom-0 left-0 -z-10 h-[60%] w-full rounded bg-[#252525]"></div>
-      <div className="bottom-5 left-0 flex h-full w-full flex-col items-end justify-end lg:absolute">
+      <div className="bottom-5 left-0 flex h-[15.595vw] w-full flex-col items-end justify-end">
         <Lottie
           options={{
             animationData: animation,
@@ -50,9 +58,7 @@ export const GenreCard = ({
         ></Lottie>
       </div>
 
-      <div className="absolute bottom-5 z-0 text-main lg:text-headline-3">
-        {genre}
-      </div>
+      <div className="z-0 text-main lg:text-headline-3">{genre || sortBy}</div>
     </div>
   );
 };

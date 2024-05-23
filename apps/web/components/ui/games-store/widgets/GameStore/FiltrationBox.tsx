@@ -59,17 +59,18 @@ export function FiltrationBox<T extends string>({
           xmlns="http://www.w3.org/2000/svg"
           className={'cursor-pointer'}
           onClick={() => setIsExpanded(!isExpanded)}
+          vectorEffect={'non-scaling-stroke'}
         >
           <path
             d="M1 17.5234V111.731V174.523C1 182.808 7.71573 189.523 16 189.523H335C343.284 189.523 350 182.808 350 174.523V58.1101C350 54.1286 348.417 50.3105 345.6 47.4969L304.963 6.91027C302.151 4.10124 298.338 2.52344 294.363 2.52344H16C7.71573 2.52344 1 9.23917 1 17.5234Z"
             stroke="#D2FF00"
-            strokeWidth="2"
+            strokeWidth="0.160rem"
           />
           <path
             d="M348 2.52344H312.912C311.118 2.52344 310.231 4.7018 311.515 5.95459L346.603 40.2072C347.87 41.4438 350 40.5463 350 38.7761V4.52344C350 3.41887 349.105 2.52344 348 2.52344Z"
             fill={isExpanded ? '#D2FF00' : ''}
             stroke="#D2FF00"
-            strokeWidth="2"
+            strokeWidth="0.160rem"
           />
         </svg>
         <div
@@ -100,7 +101,7 @@ export function FiltrationBox<T extends string>({
             }
           />
         </div>
-        <div className="flex w-full flex-grow rounded-b-2xl border-x-2 border-b-2 border-left-accent"></div>
+        <div className="flex w-full flex-grow rounded-b-2xl border-x-[2px] border-b-2 border-left-accent"></div>
       </div>
     </div>
   );
