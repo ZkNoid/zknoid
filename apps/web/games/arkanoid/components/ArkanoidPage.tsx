@@ -91,7 +91,7 @@ export default function ArkanoidPage({
   const workerClientStore = useWorkerClientStore();
 
   let [gameId, setGameId] = useState(0);
-  let [debug, setDebug] = useState(true);
+  let [debug, setDebug] = useState(false);
 
   let [level, setLevel] = useState<Bricks>(Bricks.empty);
 
@@ -207,7 +207,12 @@ export default function ArkanoidPage({
         }
       );
 
-      await tx.sign();
+      try {
+        await tx.sign();
+      } catch {
+        await window.mina?.requestAccounts();
+        await tx.sign();
+      }
       await tx.send();
 
       if (score > 90000) {
