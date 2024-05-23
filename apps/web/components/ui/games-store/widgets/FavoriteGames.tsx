@@ -114,8 +114,6 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
                 <GameCard
                   game={game}
                   key={game.id}
-                  fullImageW={game.id === 'arkanoid' || game.id === 'checkers'}
-                  fullImageH={game.id === 'arkanoid' || game.id === 'checkers'}
                   color={
                     game.genre === ZkNoidGameGenre.BoardGames
                       ? 1
