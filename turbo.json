@@ -13,7 +13,11 @@
         ".next/**",
         "!.next/cache/**",
         "dist",
-        "protokit-framework/**"
+        "protokit-framework/**",
+        "protokit-framework/framework/**",
+        "../protokit-framework/**",
+        "../../protokit-framework/**",
+        "../../protokit-framework/framework/**"
       ]
     },
     "lint": {},
