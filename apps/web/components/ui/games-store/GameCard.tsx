@@ -173,7 +173,7 @@ export const GameCard = ({
                 width={300}
                 height={300}
                 className={cn(
-                  'm-px h-full max-h-[70%] w-full bg-[#252525] object-contain object-center',
+                  'm-px h-full max-h-[70%] w-full bg-[#252525] object-contain object-center rounded-[5px]',
                   game.logoMode == LogoMode.FULL_WIDTH
                     ? 'max-h-full max-w-full'
                     : game.logoMode == LogoMode.BOTTOM_RIGHT
