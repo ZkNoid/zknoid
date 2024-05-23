@@ -30,7 +30,7 @@ export const GAME_EVENTS: ZkNoidEvent[] = [
     description: 'Play chess, find bugs, report bugs and grab reward!',
     eventStarts: new Date('2024-06-30').getTime(),
     eventEnds: new Date('2024-11-30').getTime(),
-    link: '/arkanoid/0',
+    link: '/games/arkanoid/0',
     image: '/image/events/banner/checkers_banner.svg'
   },
   {
