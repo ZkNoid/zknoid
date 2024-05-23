@@ -38,7 +38,7 @@ git clone https://github.com/proto-kit/framework "$DIRECTORY"
 cd "$DIRECTORY" && git checkout 8a8619e6cf2d24dc3cc2540654fd944b6c3966cb && git merge b881184d613f17928c8bbc94664634feff388c64 -m "Merge" && git remote add protokit-zknoid https://github.com/ZkNoid/proto-kit && git fetch protokit-zknoid shim-connection-fix-1-1-0 && git merge protokit-zknoid/shim-connection-fix-1-1-0 -m "Merge" && npm i && npm run build && echo "$PATCH_CONTENT" > "packages/common/dist/test/equalProvable.js" && cd ../
 
 mv "$DIRECTORY" "$DEP_DIRECTORY"
-mv "$DIRECTORY" "$DEP_DIRECTORY/apps/web/"
+mv "$DEP_DIRECTORY" "apps/web/"
 
 
 
