@@ -14,6 +14,7 @@ import { clsx } from 'clsx';
 import { api } from '@/trpc/react';
 import { useNetworkStore } from '@/lib/stores/network';
 import { getEnvContext } from '@/lib/envContext';
+import { cn } from '@/lib/helpers';
 // import { toast } from '@/components/ui/games-store/shared/Toast';
 // import { useToasterStore } from '@/lib/stores/toasterStore';
 
@@ -31,7 +32,7 @@ const StarSVG = ({
       viewBox="0 0 19 18"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={clsx('h-[25px] w-[25px]', className && className)}
+      className={cn('h-[25px] w-[25px]', className)}
     >
       <path
         d="M9.5 0.523438L11.6329 7.08778H18.535L12.9511 11.1448L15.084 17.7091L9.5 13.6521L3.91604 17.7091L6.04892 11.1448L0.464963 7.08778H7.36712L9.5 0.523438Z"
@@ -90,7 +91,7 @@ export const GameCard = ({
         ? 'bg-left-accent'
         : color === 3
           ? 'bg-right-accent'
-          : 'bg-gradient-to-r from-left-accent to-right-accent';
+          : 'hidden';
 
   const heart = color === 1 ? heart_2 : color === 2 ? heart_1 : heart_3;
   const heartActive =
@@ -169,20 +170,38 @@ export const GameCard = ({
               'z-10 m-px flex h-full w-full items-center justify-center rounded-[5px] bg-[#252525] max-[2000px]:h-[298px] min-[2000px]:h-[398px]'
             }
           >
-            <Image
-              src={game.logo}
-              alt="Game logo"
-              width={300}
-              height={300}
-              className={clsx(
-                'm-px h-full max-h-[70%] w-full bg-[#252525] object-contain object-center',
-                {
-                  'max-w-full': fullImageW,
-                  'max-h-full': fullImageH,
-                  'max-[2000px]:w-[298px] min-[2000px]:w-[398px]': !fullImageW,
-                }
-              )}
-            />
+            {game.isReleased ? (
+              <Image
+                src={game.logo}
+                alt="Game logo"
+                width={300}
+                height={300}
+                className={clsx(
+                  'm-px h-full max-h-[70%] w-full bg-[#252525] object-contain object-center',
+                  {
+                    'max-w-full': fullImageW,
+                    'max-h-full': fullImageH,
+                    'max-[2000px]:w-[298px] min-[2000px]:w-[398px]':
+                      !fullImageW,
+                  }
+                )}
+              />
+            ) : (
+              <div
+                className={cn(
+                  'flex items-center justify-center text-[1.5vw]',
+                  color === 1
+                    ? 'text-middle-accent'
+                    : color === 2
+                      ? 'text-left-accent'
+                      : color === 3
+                        ? 'text-right-accent'
+                        : ''
+                )}
+              >
+                Coming soon
+              </div>
+            )}
           </div>
         </div>
         <div className={'flex flex-row justify-between'}>
@@ -194,16 +213,17 @@ export const GameCard = ({
               }
             >
               <StarSVG
-                fill={
+                fill={''}
+                className={cn(
+                  'mb-1.5',
                   color === 1
-                    ? '#97FF00'
+                    ? 'fill-middle-accent'
                     : color === 2
-                      ? '#D2FF00'
+                      ? 'fill-left-accent'
                       : color === 3
-                        ? '#56EBFF'
-                        : '#D2FF00'
-                }
-                className={'mb-1.5'}
+                        ? 'fill-right-accent'
+                        : ''
+                )}
               />
               {(getRatingQuery.data?.rating || 0).toFixed(1)}
             </span>
@@ -221,9 +241,10 @@ export const GameCard = ({
           {[...game.features, game.genre].map((value, i) => (
             <span
               key={i}
-              className={clsx(
+              className={cn(
                 'rounded p-1 text-[12px]/[18px] text-dark-buttons-text lg:text-filtration-buttons',
-                fillColor
+                fillColor,
+                !game.isReleased && 'hidden'
               )}
             >
               {value}

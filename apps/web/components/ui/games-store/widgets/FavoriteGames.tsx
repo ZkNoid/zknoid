@@ -117,13 +117,11 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
                   fullImageW={game.id === 'arkanoid'}
                   fullImageH={game.id === 'arkanoid'}
                   color={
-                    game.isReleased
-                      ? game.genre === ZkNoidGameGenre.BoardGames
-                        ? 1
-                        : game.genre === ZkNoidGameGenre.Arcade
-                          ? 2
-                          : 3
-                      : 4
+                    game.genre === ZkNoidGameGenre.BoardGames
+                      ? 1
+                      : game.genre === ZkNoidGameGenre.Arcade
+                        ? 2
+                        : 3
                   }
                 />
               ))}
