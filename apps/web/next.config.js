@@ -50,6 +50,9 @@ const nextConfig = {
   eslint: {
     dirs: ['app', 'components', 'constants', 'containers', 'games', 'lib'],
   },
+  experimental: {
+    reactCompiler: true,
+  },    
 };
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
