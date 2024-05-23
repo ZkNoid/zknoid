@@ -197,7 +197,12 @@ export const useTestBalanceGetter = () => {
       );
     });
 
-    await l2tx.sign();
+    try {
+      await l2tx.sign();
+    } catch {
+      await window.mina?.requestAccounts();
+      await l2tx.sign();
+    }
     await l2tx.send();
 
     await logTestBalanceRecevied.mutateAsync({

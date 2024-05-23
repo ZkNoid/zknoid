@@ -10,6 +10,7 @@ import centralBlockImg from '@/public/image/central-block.svg';
 import webImg from '@/public/image/misc/web.svg';
 import supportImg from '@/public/image/misc/support.svg';
 import { clsx } from 'clsx';
+import { cn } from '@/lib/helpers';
 
 enum Pages {
   GameStore = 'Game Store',
@@ -30,7 +31,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
       <div className="absolute flex h-full w-full items-center justify-around">
         <div
           className={clsx(
-            'flex gap-2 text-headline-3 text-left-accent hover:opacity-80',
+            'flex gap-[0.938vw] text-left-accent hover:opacity-80 text-[1.5vw]',
             { 'underline underline-offset-[10px]': page === Pages.Support }
           )}
           onClick={() => setPage(Pages.Support)}
@@ -40,7 +41,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
         </div>
         <Link
           href={'https://zknoid.io'}
-          className="flex gap-2 text-headline-3 text-left-accent hover:opacity-80"
+          className="flex gap-[0.938vw] text-left-accent hover:opacity-80 text-[1.5vw]"
         >
           <Image src={webImg} alt="Web" />
           About us
@@ -83,39 +84,44 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
   }) => {
     return (
       <button
-        className={clsx(
-          'group relative -mt-2 flex h-full w-full flex-col items-start justify-center rounded-t-[10px] border-x border-t border-left-accent py-2 pl-2 first:pb-4 lg:-mt-0 lg:w-[380px] lg:items-center lg:rounded-none lg:border-none lg:py-0 lg:pl-0 lg:first:w-[300px] lg:first:pb-0',
-          className
-        )}
+        className={cn(`relative`, className)}
         data-iscurrentpage={page === switchPage}
         onClick={() => setPage(switchPage)}
       >
-        <div className={'flex items-center justify-center gap-2'}>
+        <div className={'absolute left-0 top-0 -z-20 hidden h-full w-full lg:block'}>
+          <svg
+            width="307"
+            height="191"
+            viewBox="0 0 307 191"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio='none'
+            className='w-full'
+          >
+            <path
+              d="M1 31.5859V111.086V159.086C1 175.654 14.4315 189.086 31 189.086H276C292.569 189.086 306 175.654 306 159.086V63.5123C306 55.5559 302.839 47.9252 297.213 42.2991L265.287 10.3727C259.661 4.74664 252.03 1.58594 244.074 1.58594H31C14.4315 1.58594 1 15.0174 1 31.5859Z"
+              fill="#252525"
+              stroke="#D2FF00"
+              stroke-width="2"
+            />
+          </svg>
+        </div>
+        <div
+          className={
+            'flex h-[3.188vw] w-full items-center pl-[1.875vw] gap-2 '
+          }
+        >
           {startContent}
           <span
-            className={clsx(
-              'text-[20px]/[20px] group-hover:opacity-80 lg:text-headline-3',
-              { 'text-left-accent': page === switchPage }
+            className={cn(
+              'text-[20px]/[20px] group-hover:opacity-80',
+              page === switchPage && 'text-left-accent',
+              'text-[1.5vw]',
+              'overflow-ellipsis whitespace-nowrap'
             )}
           >
             {switchPage}
           </span>
-        </div>
-        <div className={'absolute left-0 top-0 -z-20 hidden h-full lg:block'}>
-          <svg
-            width="380"
-            height="190"
-            viewBox="0 0 380 190"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M1 31V110.5V158.5C1 175.069 14.4315 188.5 31 188.5H348.5C365.069 188.5 378.5 175.069 378.5 158.5V62.9264C378.5 54.9699 375.339 47.3393 369.713 41.7132L337.787 9.7868C332.161 4.16071 324.53 1 316.574 1H31C14.4315 1 1 14.4315 1 31Z"
-              fill="#212121"
-              stroke="#D2FF00"
-              strokeWidth="2"
-            />
-          </svg>
         </div>
       </button>
     );
@@ -123,13 +129,10 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
 
   const WidgetsSwitch = () => {
     return (
-      <div
-        className={
-          'flex flex-col lg:mt-[40px] lg:flex-row min-[1600px]:mt-[50px] min-[1800px]:mt-[70px] min-[2000px]:mt-[110px]'
-        }
-      >
+      <div className={'lmt-[40px] mt-[110px] flex flex-col lg:flex-row'}>
         <SwitchBtn
           switchPage={Pages.GameStore}
+          className="w-[19.063vw]"
           startContent={
             <svg
               width="40"
@@ -151,7 +154,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
         />
         <SwitchBtn
           switchPage={Pages.FavoriteGames}
-          className={'hidden pr-[50px] lg:flex'}
+          className={'hidden w-[19.063vw] pr-[3.125vw] lg:flex ml-[-3.125vw]'}
           startContent={
             <svg
               width="32"
@@ -159,7 +162,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
               viewBox="0 0 24 23"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              className={'h-[26px] w-[35px] lg:h-[32px] lg:w-[29px]'}
+              className={'h-[24px] w-[35px] lg:h-auto lg:w-auto'}
             >
               <path
                 d="M12.12 18.66L12 18.78L11.868 18.66C6.168 13.488 2.4 10.068 2.4 6.6C2.4 4.2 4.2 2.4 6.6 2.4C8.448 2.4 10.248 3.6 10.884 5.232H13.116C13.752 3.6 15.552 2.4 17.4 2.4C19.8 2.4 21.6 4.2 21.6 6.6C21.6 10.068 17.832 13.488 12.12 18.66ZM17.4 0C15.312 0 13.308 0.972 12 2.496C10.692 0.972 8.688 0 6.6 0C2.904 0 0 2.892 0 6.6C0 11.124 4.08 14.832 10.26 20.436L12 22.02L13.74 20.436C19.92 14.832 24 11.124 24 6.6C24 2.892 21.096 0 17.4 0Z"
@@ -221,7 +224,8 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
             <path
               d="M1451 2341H51C23.3858 2341 1 2318.37 1 2290.75V107V51C1 23.3857 23.3858 1 51 1H650.474C663.726 1 676.436 6.26099 685.812 15.627L723.596 53.373C732.971 62.739 745.681 68 758.933 68H1451C1478.61 68 1501 90.3857 1501 118V182V2291C1501 2318.61 1478.61 2341 1451 2341Z"
               stroke="#D2FF00"
-              strokeWidth="2"
+              strokeWidth="0.160rem"
+              vectorEffect='non-scaling-stroke'
             />
           </svg>
           <div className="flex-grow border-x-[0.160rem] border-left-accent" />
@@ -230,11 +234,13 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             className="w-full"
+            preserveAspectRatio='none'
           >
             <path
               d="M1451 2341H51C23.3858 2341 1 2318.37 1 2290.75V107V51C1 23.3857 23.3858 1 51 1H650.474C663.726 1 676.436 6.26099 685.812 15.627L723.596 53.373C732.971 62.739 745.681 68 758.933 68H1451C1478.61 68 1501 90.3857 1501 118V182V2291C1501 2318.61 1478.61 2341 1451 2341Z"
               stroke="#D2FF00"
-              strokeWidth="2"
+              strokeWidth="0.160rem"
+              vectorEffect='non-scaling-stroke'
             />
           </svg>
         </div>

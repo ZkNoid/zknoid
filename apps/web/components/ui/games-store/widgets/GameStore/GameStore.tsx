@@ -147,7 +147,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
         {filteredEvents.length > 0 && (
           <div
             className={
-              'grid min-h-[600px] grid-cols-1 gap-5 lg:min-h-[352px] lg:grid-cols-2'
+              'grid grid-cols-1 gap-5 lg:grid-cols-2'
             }
           >
             {filteredEvents.map((event) => (
@@ -156,135 +156,55 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                 headText={event.name}
                 description={event.description}
                 event={event}
+                image={event.image}
               />
             ))}
           </div>
         )}
-
-        <div
-          className={
-            'flex grid-cols-2 flex-col gap-5 text-[11px]/[11px] lg:grid lg:text-main'
-          }
-        >
-          <GradientButton
-            title={'Show me the all existing competitions'}
-            asLink
-            href={'/games/arkanoid/competitions-list'}
-            className={'lg:mr-[11.2%]'}
-            icon={
-              <svg
-                width="32"
-                height="32"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className={'h-[24px] w-[24px] lg:h-auto lg:w-auto'}
-              >
-                <g clipPath="url(#clip0_2952_1406)">
-                  <path
-                    d="M7 0H4C2.93913 0 1.92172 0.421427 1.17157 1.17157C0.421427 1.92172 0 2.93913 0 4L0 7C0 8.06087 0.421427 9.07828 1.17157 9.82843C1.92172 10.5786 2.93913 11 4 11H7C8.06087 11 9.07828 10.5786 9.82843 9.82843C10.5786 9.07828 11 8.06087 11 7V4C11 2.93913 10.5786 1.92172 9.82843 1.17157C9.07828 0.421427 8.06087 0 7 0V0ZM9 7C9 7.53043 8.78929 8.03914 8.41421 8.41421C8.03914 8.78929 7.53043 9 7 9H4C3.46957 9 2.96086 8.78929 2.58579 8.41421C2.21071 8.03914 2 7.53043 2 7V4C2 3.46957 2.21071 2.96086 2.58579 2.58579C2.96086 2.21071 3.46957 2 4 2H7C7.53043 2 8.03914 2.21071 8.41421 2.58579C8.78929 2.96086 9 3.46957 9 4V7Z"
-                    fill="#212121"
-                    className={'group-hover:fill-left-accent'}
-                  />
-                  <path
-                    d="M20 0H17C15.9391 0 14.9217 0.421428 14.1716 1.17157C13.4214 1.92172 13 2.93914 13 4V7C13 8.06087 13.4214 9.07829 14.1716 9.82843C14.9217 10.5786 15.9391 11 17 11H20C21.0609 11 22.0783 10.5786 22.8284 9.82843C23.5786 9.07829 24 8.06087 24 7V4C24 2.93914 23.5786 1.92172 22.8284 1.17157C22.0783 0.421428 21.0609 0 20 0V0ZM22 7C22 7.53044 21.7893 8.03915 21.4142 8.41422C21.0391 8.78929 20.5304 9.00001 20 9.00001H17C16.4696 9.00001 15.9609 8.78929 15.5858 8.41422C15.2107 8.03915 15 7.53044 15 7V4C15 3.46957 15.2107 2.96086 15.5858 2.58579C15.9609 2.21072 16.4696 2 17 2H20C20.5304 2 21.0391 2.21072 21.4142 2.58579C21.7893 2.96086 22 3.46957 22 4V7Z"
-                    fill="#212121"
-                    className={'group-hover:fill-left-accent'}
-                  />
-                  <path
-                    d="M7 13H4C2.93913 13 1.92172 13.4214 1.17157 14.1716C0.421427 14.9217 0 15.9391 0 17L0 20C0 21.0609 0.421427 22.0783 1.17157 22.8284C1.92172 23.5786 2.93913 24 4 24H7C8.06087 24 9.07828 23.5786 9.82843 22.8284C10.5786 22.0783 11 21.0609 11 20V17C11 15.9391 10.5786 14.9217 9.82843 14.1716C9.07828 13.4214 8.06087 13 7 13ZM9 20C9 20.5304 8.78929 21.0392 8.41421 21.4142C8.03914 21.7893 7.53043 22 7 22H4C3.46957 22 2.96086 21.7893 2.58579 21.4142C2.21071 21.0392 2 20.5304 2 20V17C2 16.4696 2.21071 15.9609 2.58579 15.5858C2.96086 15.2107 3.46957 15 4 15H7C7.53043 15 8.03914 15.2107 8.41421 15.5858C8.78929 15.9609 9 16.4696 9 17V20Z"
-                    fill="#212121"
-                    className={'group-hover:fill-left-accent'}
-                  />
-                  <path
-                    d="M20 13H17C15.9391 13 14.9217 13.4214 14.1716 14.1716C13.4214 14.9217 13 15.9391 13 17V20C13 21.0609 13.4214 22.0783 14.1716 22.8284C14.9217 23.5786 15.9391 24 17 24H20C21.0609 24 22.0783 23.5786 22.8284 22.8284C23.5786 22.0783 24 21.0609 24 20V17C24 15.9391 23.5786 14.9217 22.8284 14.1716C22.0783 13.4214 21.0609 13 20 13ZM22 20C22 20.5304 21.7893 21.0392 21.4142 21.4142C21.0391 21.7893 20.5304 22 20 22H17C16.4696 22 15.9609 21.7893 15.5858 21.4142C15.2107 21.0392 15 20.5304 15 20V17C15 16.4696 15.2107 15.9609 15.5858 15.5858C15.9609 15.2107 16.4696 15 17 15H20C20.5304 15 21.0391 15.2107 21.4142 15.5858C21.7893 15.9609 22 16.4696 22 17V20Z"
-                    fill="#212121"
-                    className={'group-hover:fill-left-accent'}
-                  />
-                </g>
-                <defs>
-                  <clipPath id="clip0_2952_1406">
-                    <rect width="24" height="24" fill="white" />
-                  </clipPath>
-                </defs>
-              </svg>
-            }
-          />
-          {filteredEvents.length === 2 && (
-            <GradientButton
-              title={'Create your own competition!'}
-              asLink
-              href={'/games/arkanoid/new-competition'}
-              className={'lg:mr-[11.2%]'}
-              icon={
-                <svg
-                  width="32"
-                  height="32"
-                  viewBox="0 0 25 26"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className={'h-[24px] w-[24px] lg:h-auto lg:w-auto'}
-                >
-                  <path
-                    d="M10.9822 4.79724H9.69879C9.38351 4.79818 9.07587 4.89429 8.81615 5.07303C8.55643 5.25177 8.35675 5.50476 8.24324 5.79892L7.57024 7.53617L5.25387 8.85088L3.40703 8.56915C3.09953 8.52742 2.78655 8.57803 2.50786 8.71459C2.22918 8.85114 1.99739 9.06747 1.84192 9.33606L1.21589 10.4316C1.05547 10.7045 0.981555 11.0196 1.00391 11.3354C1.02626 11.6511 1.14383 11.9527 1.3411 12.2002L2.51492 13.6558V16.2852L1.3724 17.7407C1.17513 17.9883 1.05756 18.2898 1.03521 18.6056C1.01286 18.9213 1.08677 19.2364 1.24719 19.5093L1.87323 20.6048C2.0287 20.8734 2.26049 21.0897 2.53915 21.2263C2.81784 21.3629 3.13084 21.4135 3.43834 21.3718L5.28518 21.0901L7.57024 22.4047L8.24324 24.142C8.35675 24.4361 8.55643 24.6892 8.81615 24.868C9.07587 25.0466 9.38351 25.1428 9.69879 25.1437H11.0135C11.3288 25.1428 11.6364 25.0466 11.8961 24.868C12.1559 24.6892 12.3555 24.4361 12.469 24.142L13.142 22.4047L15.4271 21.0901L17.2739 21.3718C17.5814 21.4135 17.8944 21.3629 18.1731 21.2263C18.4518 21.0897 18.6837 20.8734 18.8391 20.6048L19.4651 19.5093C19.6256 19.2364 19.6994 18.9213 19.6771 18.6056C19.6547 18.2898 19.5372 17.9883 19.3399 17.7407L18.1661 16.2852V14.5898M7.21026 14.9705C7.21026 15.5896 7.39385 16.1947 7.73781 16.7095C8.08176 17.2243 8.57062 17.6255 9.1426 17.8624C9.71457 18.0993 10.344 18.1613 10.9512 18.0405C11.5584 17.9197 12.1161 17.6216 12.5539 17.1839C12.9917 16.7461 13.2898 16.1883 13.4106 15.5811C13.5313 14.9739 13.4694 14.3445 13.2324 13.7726C12.9955 13.2006 12.5943 12.7117 12.0795 12.3678C11.5648 12.0238 10.9596 11.8402 10.3405 11.8402C9.5103 11.8402 8.71411 12.17 8.12708 12.7571C7.54005 13.3441 7.21026 14.1403 7.21026 14.9705Z"
-                    stroke="#212121"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className={'group-hover:stroke-left-accent'}
-                  />
-                  <path
-                    d="M13.4302 6.61253C12.8566 6.51275 12.8566 5.68937 13.4302 5.58958C15.5081 5.22808 17.1608 3.64535 17.6118 1.585L17.6463 1.42706C17.7706 0.86019 18.5776 0.856661 18.7067 1.42243L18.7487 1.60648C19.2165 3.65712 20.8695 5.22647 22.9418 5.58698C23.5183 5.68728 23.5183 6.51484 22.9418 6.61514C20.8695 6.97565 19.2165 8.545 18.7487 10.5956L18.7067 10.7797C18.5776 11.3455 17.7706 11.3419 17.6463 10.7751L17.6118 10.6171C17.1608 8.55677 15.5081 6.97404 13.4302 6.61253Z"
-                    stroke="#212121"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className={'group-hover:stroke-left-accent'}
-                  />
-                </svg>
-              }
-            />
-          )}
-        </div>
       </div>
 
-      <div className={'my-20'}>
-        <div className="text-headline-2 font-bold lg:text-headline-1">
-          Popular genres
-        </div>
+      <div className={'mb-20'}>
         <div className="grid grid-cols-1 lg:grid-cols-4 lg:gap-5">
           <GenreCard
             animation={GamepadIllustration}
             genre={ZkNoidGameGenre.Arcade}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
+            setSortBy={setSortBy}
           />
           <GenreCard
             animation={ChessIllustration}
             genre={ZkNoidGameGenre.BoardGames}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
+            setSortBy={setSortBy}
           />
           <GenreCard
             animation={CubesIllustration}
             genre={ZkNoidGameGenre.Lucky}
             genresSelected={genresSelected}
             setGenresSelected={setGenresSelected}
-            height={450}
+            setSortBy={setSortBy}
           />
-          <div
+          <GenreCard
+            animation={EyesIllustration}
+            sortBy={GameStoreSortBy.ComingSoon}
+            genresSelected={[]}
+            setSortBy={setSortBy}
+          />
+          {/* <div
             className="relative flex h-full w-full flex-col items-center justify-center p-5"
             onClick={() => {
               setSortBy(GameStoreSortBy.ComingSoon);
             }}
           >
             <div className="z-1 absolute bottom-0 left-0 -z-10 h-[60%] w-full rounded bg-[#252525]"></div>
-            <div className="h-full w-full">
+            <div className="h-[15.595vw] w-full">
               <Lottie
                 options={{
                   animationData: EyesIllustration,
                   rendererSettings: {
-                    className: `z-0 h-full mt-[40px] lg:mt-[80px]`,
+                    className: `z-0 mt-[0px]`,
                   },
                 }}
                 height={animationHeights[3]}
@@ -293,7 +213,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             </div>
 
             <div className="z-0 text-main lg:text-headline-3">Coming Soon</div>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="flex gap-5">
@@ -385,13 +305,11 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                     fullImageW={game.id === 'arkanoid'}
                     fullImageH={game.id === 'arkanoid'}
                     color={
-                      game.isReleased
-                        ? game.genre === ZkNoidGameGenre.BoardGames
+                        game.genre === ZkNoidGameGenre.BoardGames
                           ? 1
                           : game.genre === ZkNoidGameGenre.Arcade
                             ? 2
                             : 3
-                        : 4
                     }
                   />
                 ))}
@@ -418,7 +336,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
           </AnimatePresence>
         </div>
       </div>
-      <Competitions
+      {/* <Competitions
         competitions={[
           {
             game: {
@@ -490,7 +408,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
             registered: false,
           },
         ]}
-      />
+      /> */}
     </div>
   );
 };

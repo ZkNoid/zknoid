@@ -32,22 +32,7 @@ export const announcedGames: IGame[] = [
     popularity: 0,
     author: 'ZkNoid Team',
   },
-  // {
-  //   id: 'poker',
-  //   logo: '/image/games/soon.svg',
-  //   rating: 0,
-  //   name: 'Poker game',
-  //   description:
-  //     'A card game, the purpose is to collect a winning combination or force all rivals to stop participating in the game',
-  //   genre: ZkNoidGameGenre.Lucky,
-  //   features: [ZkNoidGameFeature.Multiplayer],
-  //   defaultPage: 'global',
-  //   active: false,
-  //   isReleased: false,
-  //   releaseDate: new Date(2024, 4, 21),
-  //   popularity: 0,
-  //   author: 'ZkNoid Team',
-  // },
+ 
 ];
 
 export const defaultGames: IGame[] = [

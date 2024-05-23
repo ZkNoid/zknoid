@@ -7,9 +7,6 @@ import { client } from 'zknoid-chain-dev';
 import { dummyProofBase64 } from '@/app/constants/dummyProofBase64';
 import { PublicKey } from 'o1js';
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
 
 const dummy = await GameRecordProof.fromJSON({
   publicInput: [],
