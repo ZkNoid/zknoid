@@ -22,8 +22,8 @@ import { clsx } from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { GAME_STORE_SORT_METHODS, GameStoreSortBy } from '@/constants/sortBy';
 import { Competitions } from '@/components/ui/games-store/widgets/GameStore/Competitions';
-import ChessIllustration from './assets/Chess_Illustration_01_02.json';
-import CubesIllustration from './assets/Cubes_Illustration_01_02.json';
+import ChessIllustration from './assets/Chess_Illustration.json';
+import CubesIllustration from './assets/Cubes_Illustration.json';
 import EyesIllustration from './assets/Eyes_Illustration_01_01.json';
 import GamepadIllustration from './assets/Gamepad_Illustration_01_01.json';
 import Lottie from 'react-lottie';
@@ -302,8 +302,6 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                   <GameCard
                     game={game}
                     key={game.id}
-                    fullImageW={game.id === 'arkanoid'}
-                    fullImageH={game.id === 'arkanoid'}
                     color={
                         game.genre === ZkNoidGameGenre.BoardGames
                           ? 1

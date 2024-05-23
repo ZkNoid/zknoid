@@ -45,7 +45,6 @@ export const EventCard = ({
           />
         </div>
       )}
-
       <Image
         src={eventBoxBorderImg}
         alt=""

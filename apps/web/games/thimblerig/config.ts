@@ -4,6 +4,7 @@ import { ThimblerigLogic } from 'zknoid-chain-dev';
 import Thimblerig from './components/Thimblerig';
 import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
 import ThimblerigLobby from './components/ThimblerigLobby';
+import { LogoMode } from '@/app/constants/games';
 
 export const thimblerigConfig = createZkNoidGameConfig({
   id: 'thimblerig',
@@ -12,6 +13,7 @@ export const thimblerigConfig = createZkNoidGameConfig({
   description:
     'One player hides a ball behind a thimbler and second player needs to guess which thimbler it was',
   image: '/image/games/thimblerig.svg',
+  logoMode: LogoMode.CENTER,
   genre: ZkNoidGameGenre.Lucky,
   features: [ZkNoidGameFeature.P2P],
   isReleased: true,
