@@ -302,8 +302,6 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                   <GameCard
                     game={game}
                     key={game.id}
-                    fullImageW={game.id === 'arkanoid'}
-                    fullImageH={game.id === 'arkanoid'}
                     color={
                         game.genre === ZkNoidGameGenre.BoardGames
                           ? 1
