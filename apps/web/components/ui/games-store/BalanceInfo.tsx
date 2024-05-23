@@ -6,7 +6,7 @@ import { usePollMinaBlockHeight } from '@/lib/stores/minaChain';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
-import { DepositMenuItem } from '@/components/DepositMenuItem';
+// import { DepositMenuItem } from '@/components/DepositMenuItem';
 import StoreDepositMenuItem from '@/components/StoreDepositMenuItem';
 import CoinImg from './assets/coin.svg';
 import MinaCoinImg from './assets/mina.png';
