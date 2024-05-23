@@ -277,14 +277,14 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
             alt={'Game'}
             width={1500}
             height={30}
-            className={'hidden w-full object-contain object-center lg:block'}
+            className={'hidden w-full object-contain object-center lg:block rounded-[10px]'}
           />
           <Image
             src={mobileImage}
             alt={'Game'}
             width={1500}
             height={30}
-            className={'block w-full object-contain object-center lg:hidden'}
+            className={'block w-full object-contain object-center rounded-[10px] lg:hidden'}
           />
         </div>
         <WidgetsSwitch
