@@ -159,7 +159,7 @@ export default function NewArkanoidCompetitionPage() {
       const y = resizeToConvasSize(brick.pos[1]);
       const w = resizeToConvasSize(2 * BRICK_HALF_WIDTH);
       const h = resizeToConvasSize(2 * BRICK_HALF_WIDTH);
-      ctx!.drawImage(brickImages[brick.value - 1], x, y, w, h);
+      ctx!.drawImage(brickImages[brick.value - 2], x, y, w, h);
     }
   };
 
