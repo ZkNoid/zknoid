@@ -9,7 +9,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Field, Int64, PublicKey, UInt64 } from 'o1js';
+import {CircuitString, Field, Int64, PublicKey, UInt64} from 'o1js';
 import {
   BRICK_HALF_WIDTH,
   IntPoint,
@@ -45,6 +45,7 @@ import { getEnvContext } from '@/lib/envContext';
 import { PendingTransaction } from '@proto-kit/sequencer';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
+import { snakeNames } from '@/constants/snakeNames';
 
 const zkNoidConfig = import('@/games/config');
 
@@ -84,7 +85,7 @@ function useStateRef<T>(
 }
 
 export default function NewArkanoidCompetitionPage() {
-  const [seed, setSeed] = useState(0);
+  const [seed, setSeed] = useState<string>(snakeNames[0]);
   const canvas = useRef<HTMLCanvasElement>(null);
   const [ctx, setContext] = useState<
     CanvasRenderingContext2D | null | undefined
@@ -125,7 +126,9 @@ export default function NewArkanoidCompetitionPage() {
   }, [canvas]);
 
   useEffect(() => {
-    let contractBricks = createBricksBySeed(Field.from(seed)).bricks;
+    let contractBricks = createBricksBySeed(
+      CircuitString.fromString(seed).hash()
+    ).bricks;
     setBricks(
       contractBricks.map((brick: IContractBrick) => {
         return {
@@ -228,17 +231,25 @@ export default function NewArkanoidCompetitionPage() {
     }
   };
 
-  // const [isSeedPopoverOpen, setIsSeedPopoverOpen] = useState<boolean>(false);
   const [isRandomSeed, setIsRandomSeed] = useState<boolean>(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false);
 
-  // useEffect(() => {
-  //   if (!isRandomSeed && seed.toString().length > 13)
-  //     setIsSeedPopoverOpen(true);
-  // }, [seed]);
+  const getRandomElement = (arr: string[]) => {
+    return arr[Math.floor(Math.random() * arr.length)];
+  };
 
-  const getRandomSeed = () => {
-    return Math.floor(Math.random() * Math.pow(2, 252));
+  const getRandomPart = (word: string) => {
+    const start = Math.floor(Math.random() * word.length);
+    const end = Math.floor(Math.random() * (word.length - start)) + start + 1;
+    return word.slice(start, end);
+  };
+
+  const generateNewWord = () => {
+    const word1 = getRandomElement(snakeNames).replace(' ', '');
+    const word2 = getRandomElement(snakeNames).replace(' ', '');
+    const part1 = getRandomPart(word1);
+    const part2 = getRandomPart(word2);
+    return part1 + part2;
   };
 
   const initialValues = {
@@ -265,10 +276,9 @@ export default function NewArkanoidCompetitionPage() {
       .required('This field required')
       .oneOf([arkanoidConfig.name]),
 
-    seed: Yup.number()
+    seed: Yup.string()
       .typeError('Invalid seed')
-      .required('This field required')
-      .min(0),
+      .required('This field required'),
 
     preregistrationEnabled: Yup.boolean(),
 
@@ -409,7 +419,7 @@ export default function NewArkanoidCompetitionPage() {
                           label={'Randomize'}
                           onClick={() => {
                             if (!isRandomSeed) setIsRandomSeed(true);
-                            const randomSeed = getRandomSeed();
+                            const randomSeed = generateNewWord();
                             getFieldHelpers('seed').setValue(randomSeed);
                             setSeed(randomSeed);
                           }}
@@ -425,53 +435,11 @@ export default function NewArkanoidCompetitionPage() {
                         </span>
                         <Input
                           name={'seed'}
-                          type={'number'}
+                          type={'text'}
                           placeholder={'Type seed here...'}
                           onChange={() => setSeed(values.seed)}
                           isClearable={false}
                         />
-                        {/*{seed.toString().length > 13 ? (*/}
-                        {/*  <Popover*/}
-                        {/*    isOpen={isSeedPopoverOpen}*/}
-                        {/*    setIsOpen={setIsSeedPopoverOpen}*/}
-                        {/*    trigger={*/}
-                        {/*      <div*/}
-                        {/*        className={*/}
-                        {/*          'group flex h-full w-full flex-row gap-2 rounded-[5px] border bg-bg-dark p-2 hover:border-left-accent'*/}
-                        {/*        }*/}
-                        {/*      >*/}
-                        {/*        <div*/}
-                        {/*          className={*/}
-                        {/*            'w-full appearance-none bg-bg-dark placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80'*/}
-                        {/*          }*/}
-                        {/*        >*/}
-                        {/*          {seed}*/}
-                        {/*        </div>*/}
-                        {/*      </div>*/}
-                        {/*    }*/}
-                        {/*  >*/}
-                        {/*    <div*/}
-                        {/*      className={*/}
-                        {/*        'flex max-h-[200px] min-w-[500px] flex-col gap-4'*/}
-                        {/*      }*/}
-                        {/*    >*/}
-                        {/*      <Input*/}
-                        {/*        name={'seed'}*/}
-                        {/*        type={'number'}*/}
-                        {/*        placeholder={'Type seed here...'}*/}
-                        {/*        onChange={() => setSeed(values.seed)}*/}
-                        {/*        isBordered={false}*/}
-                        {/*      />*/}
-                        {/*    </div>*/}
-                        {/*  </Popover>*/}
-                        {/*) : (*/}
-                        {/*  <Input*/}
-                        {/*    name={'seed'}*/}
-                        {/*    type={'number'}*/}
-                        {/*    placeholder={'Type seed here...'}*/}
-                        {/*    onChange={() => setSeed(values.seed)}*/}
-                        {/*  />*/}
-                        {/*)}*/}
                       </div>
                     </div>
                   </div>
