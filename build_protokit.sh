@@ -17,6 +17,7 @@ export function equalProvable(received, expected) {
 
 if [ -d "$DEP_DIRECTORY" ]; then
   echo "$DEP_DIRECTORY does exist."
+  pwd
   ls "$DEP_DIRECTORY"
   ls "$DEP_DIRECTORY/framework"
   ls "$DEP_DIRECTORY/framework/packages"
