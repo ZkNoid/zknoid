@@ -9,6 +9,7 @@ import eventBoxBorderImg from '@/public/image/section2/event-box-border.svg';
 
 import checkersBanner from './assets/chess_banner.svg';
 import { ReactNode } from 'react';
+import Link from 'next/link';
 
 export const EventCard = ({
   headText,
@@ -29,7 +30,10 @@ export const EventCard = ({
   )}`;
 
   return (
-    <div className="relative flex flex-col border-left-accent">
+    <Link
+      href={event.link}
+      className="relative flex cursor-pointer flex-col border-left-accent"
+    >
       {image && (
         <div className="masked-event-card absolute hidden h-full w-full 2xl:block">
           <Image
@@ -47,8 +51,6 @@ export const EventCard = ({
         alt=""
         className="z-10 hidden w-full lg:block"
       />
-
-
       <div className={'group absolute bottom-[0.1vw] right-[0.0vw] z-10'}>
         <svg
           width="68"
@@ -91,6 +93,6 @@ export const EventCard = ({
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
