@@ -50,7 +50,9 @@ export const CreateNewLobby = ({
   };
 
   const validateSchema = Yup.object().shape({
-    name: Yup.string().required('This field required'),
+    name: Yup.string()
+      .matches(/^(?![\d+_@.-]+$)[a-zA-Z0-9+_@.-]*$/, 'Invalid name')
+      .required('This field required'),
     participationFee: Yup.number()
       .typeError('Invalid participationFee')
       .required('This field required')

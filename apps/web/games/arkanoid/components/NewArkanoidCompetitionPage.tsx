@@ -264,15 +264,20 @@ export default function NewArkanoidCompetitionPage() {
   };
 
   const validateSchema = Yup.object().shape({
-    name: Yup.string().required('This field required'),
+    name: Yup.string()
+      .matches(/^(?![\d+_@.-]+$)[a-zA-Z0-9+_@.-]*$/, 'Invalid name')
+      .required('This field required'),
 
-    description: Yup.string().optional(),
+    description: Yup.string()
+      .matches(/^(?![\d+_@.-]+$)[a-zA-Z0-9+_@.-]*$/, 'Invalid description')
+      .optional(),
 
     game: Yup.string()
       .required('This field required')
       .oneOf([arkanoidConfig.name]),
 
     seed: Yup.string()
+      .matches(/^(?![\d+_@.-]+$)[a-zA-Z0-9+_@.-]*$/, 'Invalid seed')
       .typeError('Invalid seed')
       .required('This field required'),
 
