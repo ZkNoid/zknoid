@@ -3,18 +3,25 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '@/components/ui/games-store/shared/Button';
 import { DateItem } from '@/components/ui/games-store/shared/DatePicker/DateItem';
 import { clsx } from 'clsx';
+import { cn } from '@/lib/helpers';
 
 export const DatePicker = ({
   trigger,
   setDateFrom,
   setDateTo,
+  isOpen,
+  setIsOpen,
+  openSide = 'bottom',
 }: {
   trigger: ReactNode;
   setDateFrom: (date: string) => void;
   setDateTo: (date: string) => void;
+  isOpen?: boolean;
+  setIsOpen?: (isOpen: boolean) => void;
+  openSide?: 'top' | 'bottom';
 }) => {
   const [currentDate, _setCurrentDate] = useState<Date>(new Date());
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpenUncontrolled, setIsOpenUncontrolled] = useState<boolean>(false);
 
   const [activeDate, setActiveDate] = useState<Date | undefined>(undefined);
   const [possibleDate, setPossibleDate] = useState<Date | undefined>(undefined);
@@ -44,32 +51,37 @@ export const DatePicker = ({
       <button
         type={'button'}
         className={'cursor-pointer'}
-        onClick={() => setIsOpen(true)}
+        onClick={() =>
+          setIsOpen ? setIsOpen(true) : setIsOpenUncontrolled(true)
+        }
       >
         {trigger}
       </button>
       <AnimatePresence>
-        {isOpen && (
+        {(isOpen ? isOpen : isOpenUncontrolled) && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
-            className={
-              'fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center backdrop-blur-sm'
+            className={cn('absolute left-0 z-20', {
+              'top-[110%]': openSide === 'bottom',
+              'bottom-full': openSide === 'top',
+            })}
+            onClick={() =>
+              setIsOpen ? setIsOpen(false) : setIsOpenUncontrolled(false)
             }
-            onClick={() => setIsOpen(false)}
           >
             <div
               className={
-                'flex flex-col gap-8 rounded-[5px] border border-left-accent bg-bg-dark p-12'
+                'flex flex-col gap-8 rounded-[10px] border border-left-accent bg-bg-dark px-20 py-12'
               }
               onClick={(e) => e.stopPropagation()}
             >
               <div className={'flex w-full flex-row justify-between'}>
                 <div
                   className={clsx(
-                    'flex w-full max-w-[30%] cursor-pointer  items-center justify-start',
+                    'flex w-full max-w-[30%] cursor-pointer items-center justify-end',
                     {
                       'cursor-not-allowed opacity-50':
                         currentDate.getMonth() == new Date().getMonth(),
@@ -106,7 +118,7 @@ export const DatePicker = ({
                 </div>
                 <div
                   className={
-                    'w-full text-center text-[18px]/[18px] font-medium'
+                    'w-full px-4 text-center text-[18px]/[18px] font-medium'
                   }
                 >
                   {currentDate
@@ -118,7 +130,7 @@ export const DatePicker = ({
                 </div>
                 <div
                   className={
-                    'flex w-full max-w-[30%] cursor-pointer items-center justify-end hover:opacity-80'
+                    'flex w-full max-w-[30%] cursor-pointer items-center justify-start hover:opacity-80'
                   }
                   onClick={() => {
                     clearDates();
@@ -202,7 +214,9 @@ export const DatePicker = ({
                 <Button
                   type={'button'}
                   label={'Cancel'}
-                  onClick={() => setIsOpen(false)}
+                  onClick={() =>
+                    setIsOpen ? setIsOpen(false) : setIsOpenUncontrolled(false)
+                  }
                   isFilled={false}
                   isBordered={false}
                 />
@@ -210,7 +224,9 @@ export const DatePicker = ({
                 <Button
                   type={'button'}
                   label={'Done'}
-                  onClick={() => setIsOpen(false)}
+                  onClick={() =>
+                    setIsOpen ? setIsOpen(false) : setIsOpenUncontrolled(false)
+                  }
                 />
               </div>
             </div>
