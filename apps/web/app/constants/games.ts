@@ -1,8 +1,15 @@
 import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
 
+
+export enum LogoMode {
+  CENTER = 0,
+  FULL_WIDTH = 1,
+  BOTTOM_RIGHT = 2
+}
 export interface IGame {
   id: string;
   logo: string;
+  logoMode: number;
   name: string;
   description: string;
   genre: ZkNoidGameGenre;
@@ -20,6 +27,7 @@ export const announcedGames: IGame[] = [
   {
     id: 'znake',
     logo: '/image/games/soon.svg',
+    logoMode: LogoMode.CENTER,
     rating: 0,
     name: 'Znake game',
     description: 'Collect all the points and try not to bite your tail',
@@ -39,6 +47,7 @@ export const defaultGames: IGame[] = [
   {
     id: 'arkanoid',
     logo: '/image/games/arkanoid.svg',
+    logoMode: LogoMode.FULL_WIDTH,
     name: 'Arkanoid game',
     description:
       'Old but gold game. Beat all the bricks and protect the ball from falling',
@@ -55,6 +64,7 @@ export const defaultGames: IGame[] = [
   {
     id: 'randzu',
     logo: '/image/games/randzu.svg',
+    logoMode: LogoMode.CENTER,
     name: 'Randzu game',
     description:
       'Two players take turns placing pieces on the board attempting to create lines of 5 of their own color',
