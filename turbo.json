@@ -13,11 +13,19 @@
         ".next/**",
         "!.next/cache/**",
         "dist",
-        "protokit-framework/**",
-        "protokit-framework/framework/**",
-        "../protokit-framework/**",
-        "../../protokit-framework/**",
-        "../../protokit-framework/framework/**"
+        "protokit-framework/**"
+      ]
+    },
+    "build^web": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        ".next/**",
+        ".next/**",
+        "!.next/cache/**",
+        "dist",
+        "../../protokit-framework/**"
       ]
     },
     "lint": {},
