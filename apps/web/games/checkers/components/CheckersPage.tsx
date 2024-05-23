@@ -235,6 +235,7 @@ export default function RandzuPage({
     const randzuLogic = client.runtime.resolve('CheckersLogic');
     const updatedCheckersField = CheckersField.from(updatedField);
 
+    
     console.log('Proposed is king', isKing);
 
     const tx =
