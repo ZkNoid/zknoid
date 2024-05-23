@@ -233,9 +233,9 @@ export default function RandzuPage({
     console.log('On move chosen', updatedField);
 
     const randzuLogic = client.runtime.resolve('CheckersLogic');
-
     const updatedCheckersField = CheckersField.from(updatedField);
 
+    
     console.log('Proposed is king', isKing);
 
     const tx =

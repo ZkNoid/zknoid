@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { IGame } from '@/app/constants/games';
+import { IGame, LogoMode } from '@/app/constants/games';
 import { useEffect, useState } from 'react';
 import heart_1 from '@/public/image/misc/heart-1.svg';
 import heart_2 from '@/public/image/misc/heart-2.svg';
@@ -44,13 +44,9 @@ const StarSVG = ({
 
 export const GameCard = ({
   game,
-  fullImageW,
-  fullImageH,
   color,
 }: {
   game: IGame;
-  fullImageW?: boolean;
-  fullImageH?: boolean;
   color: 1 | 2 | 3 | 4;
 }) => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
@@ -176,14 +172,13 @@ export const GameCard = ({
                 alt="Game logo"
                 width={300}
                 height={300}
-                className={clsx(
-                  'm-px h-full max-h-[70%] w-full bg-[#252525] object-contain object-center',
-                  {
-                    'max-w-full': fullImageW,
-                    'max-h-full': fullImageH,
-                    'max-[2000px]:w-[298px] min-[2000px]:w-[398px]':
-                      !fullImageW,
-                  }
+                className={cn(
+                  'm-px h-full max-h-[70%] w-full bg-[#252525] object-contain object-center rounded-[5px]',
+                  game.logoMode == LogoMode.FULL_WIDTH
+                    ? 'max-h-full max-w-full'
+                    : game.logoMode == LogoMode.BOTTOM_RIGHT
+                      ? 'max-h-full max-w-full object-right-bottom'
+                      : 'max-[2000px]:w-[298px] min-[2000px]:w-[398px]'
                 )}
               />
             ) : (
