@@ -29,7 +29,7 @@ export const GenreCard = ({
       onMouseEnter={() => setVisible(true)}
       onMouseLeave={() => setVisible(false)}
       ref={nodeRef}
-      className="relative flex h-full w-full flex-col items-center justify-center gap-1 p-5"
+      className="relative flex h-full w-full flex-col items-center justify-center gap-1 p-5 cursor-pointer"
       onClick={() => {
         if (genre) {
           setGenresSelected!(
