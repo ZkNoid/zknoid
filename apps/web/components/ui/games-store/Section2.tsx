@@ -129,7 +129,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
 
   const WidgetsSwitch = () => {
     return (
-      <div className={'flex flex-col lg:flex-row pt-10'}>
+      <div className={'flex flex-col lg:flex-row mt-auto'}>
         <SwitchBtn
           switchPage={Pages.GameStore}
           className="w-[19.063vw]"
@@ -154,7 +154,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
         />
         <SwitchBtn
           switchPage={Pages.FavoriteGames}
-          className={'w-[19.063vw]'}
+          className={'w-[19.063vw] ml-[-3.125vw]'}
           startContent={
             <svg
               width="32"
@@ -202,7 +202,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
 
   return (
     <>
-      <div className={'flex w-full flex-col justify-between lg:flex-row relative'}>
+      <div className={'flex w-full flex-col justify-between lg:flex-row'}>
         <MobileCentralBlock />
         <WidgetsSwitch />
         <CentralBlock />
