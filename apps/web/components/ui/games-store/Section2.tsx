@@ -22,7 +22,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
   const [page, setPage] = useState<Pages>(Pages.GameStore);
 
   const CentralBlock = () => (
-    <div className="relative hidden w-[50%] self-end text-[24px] lg:flex">
+    <div className="relative hidden w-[50%] self-end text-[24px] lg:flex ml-auto">
       <Image
         alt="central block"
         src={centralBlockImg}
@@ -129,7 +129,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
 
   const WidgetsSwitch = () => {
     return (
-      <div className={'lmt-[40px] mt-[110px] flex flex-col lg:flex-row'}>
+      <div className={'flex flex-col lg:flex-row pt-10'}>
         <SwitchBtn
           switchPage={Pages.GameStore}
           className="w-[19.063vw]"
@@ -154,7 +154,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
         />
         <SwitchBtn
           switchPage={Pages.FavoriteGames}
-          className={'hidden w-[19.063vw] pr-[3.125vw] lg:flex ml-[-3.125vw]'}
+          className={'w-[19.063vw]'}
           startContent={
             <svg
               width="32"
@@ -202,7 +202,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
 
   return (
     <>
-      <div className={'flex w-full flex-col justify-between lg:flex-row'}>
+      <div className={'flex w-full flex-col justify-between lg:flex-row relative'}>
         <MobileCentralBlock />
         <WidgetsSwitch />
         <CentralBlock />
