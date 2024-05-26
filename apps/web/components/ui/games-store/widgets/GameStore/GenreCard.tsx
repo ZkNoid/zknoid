@@ -29,7 +29,7 @@ export const GenreCard = ({
       onMouseEnter={() => setVisible(true)}
       onMouseLeave={() => setVisible(false)}
       ref={nodeRef}
-      className="relative flex h-full w-full flex-col items-center justify-center gap-1 p-5 cursor-pointer"
+      className="relative flex h-full w-full flex-col items-center justify-center gap-1 lg:p-5 cursor-pointer"
       onClick={() => {
         if (genre) {
           setGenresSelected!(
@@ -44,7 +44,7 @@ export const GenreCard = ({
       }}
     >
       <div className="z-1 absolute bottom-0 left-0 -z-10 h-[60%] w-full rounded bg-[#252525]"></div>
-      <div className="bottom-5 left-0 flex h-[15.595vw] w-full flex-col items-end justify-end">
+      <div className="bottom-5 left-0 flex lg:h-[15.595vw] w-full flex-col items-end justify-end">
         <Lottie
           options={{
             animationData: animation,
