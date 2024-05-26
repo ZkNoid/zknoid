@@ -143,7 +143,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
       >
         <SwitchBtn
           switchPage={Pages.GameStore}
-          className="pb-4 lg:w-[19.063vw]"
+          className="pb-4 lg:pb-0 lg:w-[19.063vw]"
           startContent={(selected) => (
             <svg
               width="40"
