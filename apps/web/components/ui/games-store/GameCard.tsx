@@ -111,8 +111,9 @@ export const GameCard = ({
   return (
     <div
       className={cn(
-        'group relative flex flex-col rounded-xl outline-[#e5e7eb]',
-        hoverColor
+        'group relative flex flex-col rounded-xl outline-[#e5e7eb] ',
+        hoverColor,
+        'lg:outline-[1px] outline-[0px]'
       )}
     >
       {game.isReleased && (
