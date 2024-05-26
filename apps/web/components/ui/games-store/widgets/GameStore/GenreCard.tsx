@@ -32,11 +32,12 @@ export const GenreCard = ({
       className="relative flex h-full w-full flex-col items-center justify-center gap-1 lg:p-5 cursor-pointer"
       onClick={() => {
         if (genre) {
-          setGenresSelected!(
-            genresSelected.includes(genre!)
-              ? genresSelected.filter((x) => x != genre!)
-              : [...genresSelected, genre!]
-          );
+          if (genresSelected.includes(genre!)) {
+            setGenresSelected?.([]);
+          } else {
+            setGenresSelected?.([genre]);
+          }
+          
           setSortBy(GameStoreSortBy.RatingLow);
         } else {
           setSortBy!(sortBy!);
