@@ -84,7 +84,12 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
   }) => {
     return (
       <button
-        className={cn(`relative`, 'border-left-accent rounded-t-[10px] border-x border-t py-2', className)}
+        className={cn(
+          `relative`,
+          'rounded-t-[10px] border-x border-t border-left-accent py-2',
+          'lg:border-none lg:rounded-none',
+          className
+        )}
         onClick={() => setPage(switchPage)}
       >
         <div
@@ -111,7 +116,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
         </div>
         <div
           className={
-            'flex lg:h-[3.188vw] w-full items-center gap-[3.125vw] lg:gap-[0.838vw] pl-[3.125vw] lg:pl-[1.775vw]'
+            'flex w-full items-center gap-[3.125vw] pl-[3.125vw] lg:h-[3.188vw] lg:gap-[0.838vw] lg:pl-[1.775vw]'
           }
         >
           {startContent?.(page === switchPage)}
@@ -138,7 +143,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
       >
         <SwitchBtn
           switchPage={Pages.GameStore}
-          className="lg:w-[19.063vw] pb-4"
+          className="pb-4 lg:w-[19.063vw]"
           startContent={(selected) => (
             <svg
               width="40"
@@ -161,7 +166,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
         />
         <SwitchBtn
           switchPage={Pages.FavoriteGames}
-          className={'lg:ml-[-3.125vw] lg:w-[19.063vw] hidden lg:flex'}
+          className={'hidden lg:ml-[-3.125vw] lg:flex lg:w-[19.063vw]'}
           startContent={(selected) => (
             <svg
               width="32"
@@ -184,7 +189,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
         />
         <SwitchBtn
           switchPage={Pages.Support}
-          className={'flex lg:hidden -mt-2'}
+          className={'-mt-2 flex lg:hidden'}
           startContent={(selected) => (
             <svg
               width="40"
