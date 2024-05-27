@@ -36,7 +36,7 @@ export default function ThimblerigLobby({
     >
       <LobbyPage
         lobbyId={params.lobbyId}
-        query={client.query.runtime.ThimblerigLogic}
+        query={networkStore.protokitClientStarted ? client.query.runtime.ThimblerigLogic: undefined}
         contractName={'ThimblerigLogic'}
         config={thimblerigConfig}
         rewardCoeff={1.67}

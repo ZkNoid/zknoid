@@ -160,7 +160,7 @@ export const useLobbiesStore = create<LobbiesState, [['zustand/immer', never]]>(
 );
 
 export const useObserveLobbiesStore = (
-  query: ModuleQuery<MatchMaker>,
+  query: ModuleQuery<MatchMaker> | undefined,
   rewardCoeff: number = 2
 ) => {
   const chain = useProtokitChainStore();
@@ -171,7 +171,7 @@ export const useObserveLobbiesStore = (
   );
 
   useEffect(() => {
-    if (!network.walletConnected || !network.address) {
+    if (!network.protokitClientStarted) {
       return;
     }
 
@@ -180,15 +180,15 @@ export const useObserveLobbiesStore = (
     }
 
     lobbiesStore.loadLobbies(
-      query,
-      PublicKey.fromBase58(network.address!),
+      query!,
+      network.address ? PublicKey.fromBase58(network.address) : PublicKey.empty(),
       rewardCoeff
     );
   }, [chain.block?.height, network.walletConnected, network.address]);
 
   // Update once wallet connected
   useEffect(() => {
-    if (!network.walletConnected || !network.address) {
+    if (!network.protokitClientStarted) {
       return;
     }
 
@@ -198,6 +198,6 @@ export const useObserveLobbiesStore = (
 
     lobbiesStore.clearStore();
 
-    lobbiesStore.loadMathcmakingOptions(query);
+    lobbiesStore.loadMathcmakingOptions(query!);
   }, [network.walletConnected, network.address]);
 };
