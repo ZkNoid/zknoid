@@ -163,8 +163,9 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
         )}
       </div>
 
-      <div className={'mb-20'}>
-        <div className="grid grid-cols-1 lg:grid-cols-4 lg:gap-5">
+      <div className={'mt-20 mb-20 lg:mb-0'}>
+      <div className="pb-3 text-headline-2 lg:text-headline-1">Popular genres</div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 lg:gap-5">
           <GenreCard
             animation={GamepadIllustration}
             genre={ZkNoidGameGenre.Arcade}
