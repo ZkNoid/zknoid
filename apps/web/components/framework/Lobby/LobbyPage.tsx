@@ -40,7 +40,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
 }: {
   // params: {
   lobbyId: string;
-  query: ModuleQuery<MatchMaker>;
+  query: ModuleQuery<MatchMaker> | undefined;
   contractName: string;
   config: ZkNoidGameConfig<RuntimeModules>;
   rewardCoeff?: number;
