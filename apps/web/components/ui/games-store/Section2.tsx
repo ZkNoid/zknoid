@@ -87,7 +87,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
         className={cn(
           `relative`,
           'rounded-t-[10px] border-x border-t border-left-accent py-2',
-          'lg:border-none lg:rounded-none',
+          'lg:rounded-none lg:border-none',
           className
         )}
         onClick={() => setPage(switchPage)}
@@ -110,7 +110,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
               d="M1 31.5859V111.086V159.086C1 175.654 14.4315 189.086 31 189.086H276C292.569 189.086 306 175.654 306 159.086V63.5123C306 55.5559 302.839 47.9252 297.213 42.2991L265.287 10.3727C259.661 4.74664 252.03 1.58594 244.074 1.58594H31C14.4315 1.58594 1 15.0174 1 31.5859Z"
               fill="#252525"
               stroke="#D2FF00"
-              stroke-width="2"
+              strokeWidth="2"
             />
           </svg>
         </div>
@@ -143,7 +143,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
       >
         <SwitchBtn
           switchPage={Pages.GameStore}
-          className="pb-4 lg:pb-0 lg:w-[19.063vw]"
+          className="pb-4 lg:w-[19.063vw] lg:pb-0"
           startContent={(selected) => (
             <svg
               width="40"

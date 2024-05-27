@@ -10,7 +10,6 @@ import heart_3 from '@/public/image/misc/heart-3.svg';
 import heart_1_filled from '@/public/image/misc/heart-1-filled.svg';
 import heart_2_filled from '@/public/image/misc/heart-2-filled.svg';
 import heart_3_filled from '@/public/image/misc/heart-3-filled.svg';
-import { clsx } from 'clsx';
 import { api } from '@/trpc/react';
 import { useNetworkStore } from '@/lib/stores/network';
 import { getEnvContext } from '@/lib/envContext';
@@ -113,7 +112,7 @@ export const GameCard = ({
       className={cn(
         'group relative flex flex-col rounded-xl outline-[#e5e7eb] ',
         hoverColor,
-        'lg:outline-[1px] outline-[0px]'
+        'outline-[0px] lg:outline-[1px]'
       )}
     >
       {game.isReleased && (
