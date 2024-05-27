@@ -166,7 +166,7 @@ export const Section2 = ({ games }: { games: IGame[] }) => {
         />
         <SwitchBtn
           switchPage={Pages.FavoriteGames}
-          className={'hidden lg:ml-[-3.125vw] lg:flex lg:w-[19.063vw]'}
+          className={'hidden lg:ml-[-3.125vw] lg:block lg:pb-0 lg:w-[19.063vw]'}
           startContent={(selected) => (
             <svg
               width="32"
