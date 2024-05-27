@@ -97,23 +97,25 @@ export const GameCard = ({
         ? heart_1_filled
         : heart_3_filled;
 
-  const hoverColor =
+  const hoverColor = cn(
+    'hover:outline group-hover:outline outline-[1px]',
     color === 1
-      ? 'hover:bg-middle-accent group-hover:bg-middle-accent'
+      ? 'hover:outline-middle-accent group-hover:outline-middle-accent'
       : color === 2
-        ? 'hover:bg-left-accent group-hover:bg-left-accent'
+        ? 'hover:outline-left-accent group-hover:outline-left-accent'
         : color === 3
-          ? 'hover:bg-right-accent group-hover:bg-right-accent'
-          : 'hover:bg-gradient-to-br from-left-accent to-right-accent group-hover:bg-gradient-to-br from-left-accent to-right-accent';
+          ? 'hover:outline-right-accent group-hover:outline-right-accent'
+          : 'hover:bg-gradient-to-br from-left-accent to-right-accent group-hover:bg-gradient-to-br from-left-accent to-right-accent'
+  );
 
   return (
-    <div className={'group relative flex flex-col rounded-xl'}>
-      <div
-        className={clsx(
-          'absolute left-0 top-0 -z-10 h-full w-full rounded-xl bg-bg-dark',
-          hoverColor
-        )}
-      />
+    <div
+      className={cn(
+        'group relative flex flex-col rounded-xl outline-[#e5e7eb] ',
+        hoverColor,
+        'lg:outline-[1px] outline-[0px]'
+      )}
+    >
       {game.isReleased && (
         <Image
           src={isFavorite ? heartActive : heart}
@@ -148,22 +150,18 @@ export const GameCard = ({
       )}
       <Link
         href={game.active ? `/games/${game.id}/${game.defaultPage}` : '#'}
-        className="m-px flex h-full flex-col gap-5 rounded-xl bg-[#252525] p-4"
+        className="m-px flex h-full flex-col gap-5 rounded-xl bg-[#252525] lg:p-4"
       >
         <div
-          className={
-            'relative m-px flex items-center justify-center rounded-[5px] max-[2000px]:h-[300px] min-[2000px]:h-[400px]'
-          }
+          className={cn(
+            'relative m-px flex items-center justify-center rounded-[5px] max-[2000px]:h-[300px] min-[2000px]:h-[400px]',
+            'outline outline-[#e5e7eb]',
+            hoverColor
+          )}
         >
           <div
-            className={clsx(
-              'absolute left-0 top-0 h-full w-full rounded-[5px] bg-foreground',
-              hoverColor
-            )}
-          />
-          <div
             className={
-              'z-10 m-px flex h-full w-full items-center justify-center rounded-[5px] bg-[#252525] max-[2000px]:h-[298px] min-[2000px]:h-[398px]'
+              'z-10 m-px flex h-[48.125vw] w-full items-center justify-center rounded-[5px] bg-[#252525] max-[2000px]:h-[298px] min-[2000px]:h-[398px]'
             }
           >
             {game.isReleased ? (
@@ -173,7 +171,7 @@ export const GameCard = ({
                 width={300}
                 height={300}
                 className={cn(
-                  'm-px h-full max-h-[70%] w-full bg-[#252525] object-contain object-center rounded-[5px]',
+                  'm-px h-full max-h-[70%] w-full rounded-[5px] bg-[#252525] object-contain object-center',
                   game.logoMode == LogoMode.FULL_WIDTH
                     ? 'max-h-full max-w-full'
                     : game.logoMode == LogoMode.BOTTOM_RIGHT
@@ -184,7 +182,7 @@ export const GameCard = ({
             ) : (
               <div
                 className={cn(
-                  'flex items-center justify-center text-[1.5vw]',
+                  'flex items-center justify-center text-[6.25vw] lg:text-[1.5vw]',
                   color === 1
                     ? 'text-middle-accent'
                     : color === 2
