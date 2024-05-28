@@ -1,4 +1,4 @@
-import { Modal } from '@/components/ui/games-store/shared/Modal';
+import Modal from '@/components/ui/games-store/shared/modal/BaseModal';
 import { LoadSpinner } from '@/components/ui/games-store/shared/LoadSpinner';
 import Image from 'next/image';
 import znakesImg from '@/public/image/tokens/znakes.svg';
@@ -24,12 +24,8 @@ export const MatchmakingModal = ({
 }) => {
   return (
     <Modal
-      trigger={<></>}
       isOpen={isOpen}
       setIsOpen={setIsOpen}
-      // onClose={async () => {
-      //   await leave();
-      // }}
       isDismissible={false}
     >
       <div className={'flex flex-col items-center justify-center gap-4'}>

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { IToast } from '@/components/ui/games-store/shared/Toast';
+import { immer } from 'zustand/middleware/immer';
 
 export interface ToasterStore {
   toasts: IToast[];
@@ -11,10 +12,9 @@ export interface ToasterStore {
 
 export const useToasterStore = create<
   ToasterStore,
-  [['zustand/persist', never]]
+  [['zustand/immer', never]]
 >(
-  persist(
-    (set, get) => ({
+  immer((set) => ({
       toasts: [],
       addToast: (toast) => {
         set((state) => ({
@@ -30,8 +30,5 @@ export const useToasterStore = create<
         set({ toasts: [] });
       },
     }),
-    {
-      name: 'toasterStore',
-    }
   )
 );

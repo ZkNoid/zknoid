@@ -41,9 +41,10 @@ import ArkanoidCoverSVG from '../assets/game-cover.svg';
 import ArkanoidMobileCoverSVG from '../assets/game-cover-mobile.svg';
 import { FullscreenWrap } from '@/components/framework/GameWidget/FullscreenWrap';
 import { Button } from '@/components/ui/games-store/shared/Button';
-import { Modal } from '@/components/ui/games-store/shared/Modal';
+import Modal from '@/components/ui/games-store/shared/modal/BaseModal';
 import Link from 'next/link';
 import { type PendingTransaction } from '@proto-kit/sequencer';
+import StatefulModal from '@/components/ui/games-store/shared/modal/StatefulModal';
 
 enum GameState {
   NotStarted,
@@ -416,7 +417,9 @@ export default function ArkanoidPage({
               )}
             </>
           ) : walletInstalled() ? (
-            <ConnectWallet connectWallet={() => networkStore.connectWallet(false)} />
+            <ConnectWallet
+              connectWallet={() => networkStore.connectWallet(false)}
+            />
           ) : (
             <InstallWallet />
           )}
@@ -462,7 +465,7 @@ export default function ArkanoidPage({
           isRestartBtn={isRestartButton}
         />
         {isPreRegModalOpen && competition && (
-          <Modal trigger={<></>} isDismissible={false} defaultOpen>
+          <StatefulModal isDismissible={false} isOpen={true}>
             <div
               className={
                 'flex flex-col items-center justify-center gap-4 p-2 text-center lg:p-12'
@@ -506,7 +509,7 @@ export default function ArkanoidPage({
                 </span>
               </Link>
             </div>
-          </Modal>
+          </StatefulModal>
         )}
       </FullscreenWrap>
       <DebugCheckbox debug={debug} setDebug={setDebug} />

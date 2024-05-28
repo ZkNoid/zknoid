@@ -17,7 +17,7 @@ import { useNetworkStore } from '@/lib/stores/network';
 import { PendingTransaction, type ModuleQuery } from '@proto-kit/sequencer';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
-import { Modal } from '@/components/ui/games-store/shared/Modal';
+import Modal from '@/components/ui/games-store/shared/modal/BaseModal';
 import { Button } from '@/components/ui/games-store/shared/Button';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import {
@@ -297,7 +297,6 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   return (
     <>
       <Modal
-        trigger={<></>}
         isDismissible={false}
         isOpen={isLobbyNotFoundModalOpen}
         setIsOpen={setIsLobbyNotFoundModalOpen}
