@@ -210,7 +210,7 @@ export const LobbyInformation = <RuntimeModules extends RuntimeModulesRecord>({
         lobby.id !== lobbiesStore.currentLobby.id && (
           <div
             className={
-              'flex w-full cursor-pointer flex-row gap-2 py-2 hover:opacity-80'
+              'flex w-full cursor-pointer flex-row items-center gap-2 py-2 hover:opacity-80'
             }
             onClick={backToJoinedLobby}
           >
