@@ -6,7 +6,7 @@ import { RuntimeModulesRecord } from '@proto-kit/module';
 import { ZkNoidGameConfig } from '@/lib/createConfig';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useState } from 'react';
-import { Modal } from '@/components/ui/games-store/shared/Modal';
+import Modal from '@/components/ui/games-store/shared/modal/BaseModal';
 import { formatUnits } from '@/lib/unit';
 import { cn, walletInstalled } from '@/lib/helpers';
 import { useLobbiesStore } from '@/lib/stores/lobbiesStore';
@@ -499,7 +499,6 @@ export const LobbyInformation = <RuntimeModules extends RuntimeModulesRecord>({
         )}
       </div>
       <Modal
-        trigger={<></>}
         isDismissible={false}
         isOpen={isConnectWalletModal}
         setIsOpen={setIsConnectWalletModal}
@@ -507,7 +506,7 @@ export const LobbyInformation = <RuntimeModules extends RuntimeModulesRecord>({
         <div className={'flex flex-col items-start justify-center gap-6'}>
           <span
             className={
-              'px-10 text-headline-2 font-medium uppercase text-middle-accent'
+              'px-10 text-headline-2 font-medium uppercase text-right-accent'
             }
           >
             Connect wallet to play
