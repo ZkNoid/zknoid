@@ -4,22 +4,12 @@ import { ReactNode, useState } from 'react';
 export default function BridgeModal({
   children,
   isOpen,
-  setIsOpen,
-  isDismissible = true,
-  cross = true,
-  defaultOpen = false,
   onClose,
 }: {
   children: ReactNode;
   isOpen?: boolean;
-  setIsOpen?: (isOpen: boolean) => void;
-  isDismissible?: boolean;
-  cross?: boolean;
-  defaultOpen?: boolean;
   onClose?: () => void;
 }) {
-  const [isOpenInternal, setIsOpenInternal] = useState<boolean>(defaultOpen);
-
   return (
     <AnimatePresence>
         {isOpen && (
@@ -31,7 +21,7 @@ export default function BridgeModal({
             exit={{ opacity: 0 }}
           >
             <div
-              className="flex w-96 flex-col items-center gap-5 rounded-xl border border-left-accent bg-bg-dark p-7 text-xs"
+              className="flex w-96 flex-col items-center gap-5 rounded-xl border border-right-accent bg-right-accent p-7 text-xs"
               onClick={(e) => e.stopPropagation()}
             >
               {children}
@@ -39,7 +29,5 @@ export default function BridgeModal({
           </motion.div>
         )}
       </AnimatePresence>
-
-    
   );
 }
