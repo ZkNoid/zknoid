@@ -50,7 +50,9 @@ export const CreateNewLobby = ({
   };
 
   const validateSchema = Yup.object().shape({
-    name: Yup.string().required('This field required'),
+    name: Yup.string()
+      .matches(/^(?![\d+_@.-]+$)[a-zA-Z0-9+_@.-]*$/, 'Invalid name')
+      .required('This field required'),
     participationFee: Yup.number()
       .typeError('Invalid participationFee')
       .required('This field required')
@@ -82,12 +84,8 @@ export const CreateNewLobby = ({
           setIsSuccessModalOpen(true);
         }}
       >
-        {({ values, errors }) => (
+        {() => (
           <Form>
-            <div>
-              <span>{errors.participationFee}</span>
-              <span>{values.participationFee}</span>
-            </div>
             <div
               className={
                 'flex h-full w-full flex-col rounded-[5px] border border-foreground bg-[#252525] p-2'
@@ -161,19 +159,6 @@ export const CreateNewLobby = ({
                   placeholder={'Type name here...'}
                   required
                 />
-                {/*<Input*/}
-                {/*  value={newLobbyName}*/}
-                {/*  setValue={setNewLobbyName}*/}
-                {/*  type={'text'}*/}
-                {/*  inputMode={'text'}*/}
-                {/*  title={'Enter The Name of Lobby'}*/}
-                {/*  placeholder={'Type name here...'}*/}
-                {/*  isRequired={true}*/}
-                {/*  isInvalid={isNewLobbyNameInvalid}*/}
-                {/*  invalidMessage={'Please fill out this field correctly'}*/}
-                {/*  emptyFieldCheck={false}*/}
-                {/*  isClearable={true}*/}
-                {/*/>*/}
                 <div className={'flex w-full flex-row gap-4'}>
                   <Input
                     name={'participationFee'}
@@ -190,28 +175,6 @@ export const CreateNewLobby = ({
                       </div>
                     }
                   />
-                  {/*<Input*/}
-                  {/*  title={'Participant fee'}*/}
-                  {/*  placeholder={'Type participant fee here...'}*/}
-                  {/*  type={'number'}*/}
-                  {/*  inputMode={'numeric'}*/}
-                  {/*  value={participationFee}*/}
-                  {/*  setValue={setParticipationFee}*/}
-                  {/*  isRequired={true}*/}
-                  {/*  isInvalid={isParticipantFeeInvalid}*/}
-                  {/*  invalidMessage={'Please fill out this field correctly'}*/}
-                  {/*  emptyFieldCheck={false}*/}
-                  {/*  isClearable={true}*/}
-                  {/*  endContent={*/}
-                  {/*    <div*/}
-                  {/*      className={*/}
-                  {/*        'flex h-[28px] w-[28px] items-center justify-center rounded-full'*/}
-                  {/*      }*/}
-                  {/*    >*/}
-                  {/*      <Image src={znakesImg} alt={'Znakes Tokens'} />*/}
-                  {/*    </div>*/}
-                  {/*  }*/}
-                  {/*/>*/}
                   <div
                     className={
                       'flex w-[60%] items-center justify-start gap-2 font-plexsans text-left-accent'
@@ -255,53 +218,10 @@ export const CreateNewLobby = ({
                     </Popover>
                   </div>
                   <Checkbox name={'isPrivateGame'} />
-                  {/*<Checkbox*/}
-                  {/*  isSelected={isPrivateGame}*/}
-                  {/*  setIsSelected={setIsPrivateGame}*/}
-                  {/*/>*/}
                 </div>
               </div>
               <div className={'flex-grow'} />
-              <button type={'submit'}>submit</button>
-              <Button
-                label={'Create lobby'}
-                type={'submit'}
-                // onClick={async () => {
-                //   if (checkFieldsValidity()) {
-                //     if (
-                //       newLobbyName == undefined ||
-                //       participationFee == undefined
-                //     ) {
-                //       console.log(newLobbyName);
-                //       console.log(participationFee);
-                //       console.log('No lobby name or participation fee');
-                //       return;
-                //     }
-                //
-                //     const randomInt = () => {
-                //       let number = '';
-                //       for (let i = 0; i < 10; i++) {
-                //         number += Math.ceil(Math.random() * 10);
-                //       }
-                //       return Number(number);
-                //     };
-                //     let accessKey = randomInt();
-                //
-                //     await createLobby(
-                //       newLobbyName,
-                //       participationFee,
-                //       isPrivateGame,
-                //       accessKey
-                //     );
-                //     // pvpLobbyStore.setOwnedLobbyId(createdLobbyID);
-                //     // pvpLobbyStore.setOwnedLobbyKey(createdLobbyKey);
-                //     // pvpLobbyStore.setConnectedLobbyId(createdLobbyID);
-                //     // pvpLobbyStore.setConnectedLobbyKey(createdLobbyKey);
-                //     // pvpLobbyStore.setLastLobbyId(createdLobbyID);
-                //     setIsSuccessModalOpen(true);
-                //   }
-                // }}
-              />
+              <Button label={'Create lobby'} type={'submit'} />
               <Modal
                 isOpen={isSuccessModalOpen}
                 setIsOpen={() => {

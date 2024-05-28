@@ -14,6 +14,7 @@ export const Input = ({
   isBordered = true,
   required,
   isClearable = true,
+  readOnly,
 }: {
   title?: string;
   name: string;
@@ -25,6 +26,7 @@ export const Input = ({
   isBordered?: boolean;
   required?: boolean;
   isClearable?: boolean;
+  readOnly?: boolean;
 }) => {
   const [field, meta, helpers] = useField(name);
   return (
@@ -51,6 +53,7 @@ export const Input = ({
             border: isBordered,
           }
         )}
+        data-error={meta.touched && !!meta.error}
       >
         {startContent}
         <Field
@@ -59,6 +62,7 @@ export const Input = ({
           type={type}
           placeholder={placeholder}
           required={required}
+          readOnly={readOnly}
           className={
             'w-full cursor-pointer appearance-none rounded-[5px] bg-bg-dark p-2 font-plexsans text-main placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80'
           }

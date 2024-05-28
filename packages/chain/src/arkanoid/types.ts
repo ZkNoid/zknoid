@@ -38,7 +38,7 @@ export class Competition extends Struct({
   static from(
     name: string,
     // description: string,
-    seed: number,
+    seed: string,
     prereg: boolean,
     preregStartTime: number,
     preregEndTime: number,
@@ -50,7 +50,7 @@ export class Competition extends Struct({
     return new Competition({
       name: CircuitString.fromString(name),
       // description: CircuitString.fromString(description),
-      seed: Field.from(seed),
+      seed: CircuitString.fromString(seed).hash(),
       prereg: new Bool(prereg),
       preregStartTime: ProtoUInt64.from(preregStartTime),
       preregEndTime: ProtoUInt64.from(preregEndTime),
