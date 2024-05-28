@@ -9,7 +9,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Field, Int64, PublicKey, UInt64 } from 'o1js';
+import { CircuitString, PublicKey, UInt64 } from 'o1js';
 import {
   BRICK_HALF_WIDTH,
   IntPoint,
@@ -45,8 +45,7 @@ import { getEnvContext } from '@/lib/envContext';
 import { PendingTransaction } from '@proto-kit/sequencer';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
-
-const zkNoidConfig = import('@/games/config');
+import { snakeNames } from '@/constants/snakeNames';
 
 interface IBrick {
   pos: [number, number];
@@ -63,12 +62,6 @@ brickImages[0].src = '/sprite/brick/1.png';
 brickImages[1].src = '/sprite/brick/2.png';
 brickImages[2].src = '/sprite/brick/3.png';
 
-// Return true if string is valid date. False otherwise
-const dateCheck = (s: string): boolean => {
-  const time = new Date(s).getTime();
-  return !isNaN(time) && time >= 0;
-};
-
 function useStateRef<T>(
   initialValue: T
 ): [T, Dispatch<SetStateAction<T>>, MutableRefObject<T>] {
@@ -84,7 +77,7 @@ function useStateRef<T>(
 }
 
 export default function NewArkanoidCompetitionPage() {
-  const [seed, setSeed] = useState(0);
+  const [seed, setSeed] = useState<string>(snakeNames[0]);
   const canvas = useRef<HTMLCanvasElement>(null);
   const [ctx, setContext] = useState<
     CanvasRenderingContext2D | null | undefined
@@ -125,7 +118,9 @@ export default function NewArkanoidCompetitionPage() {
   }, [canvas]);
 
   useEffect(() => {
-    let contractBricks = createBricksBySeed(Field.from(seed)).bricks;
+    let contractBricks = createBricksBySeed(
+      CircuitString.fromString(seed).hash()
+    ).bricks;
     setBricks(
       contractBricks.map((brick: IContractBrick) => {
         return {
@@ -159,7 +154,7 @@ export default function NewArkanoidCompetitionPage() {
       const y = resizeToConvasSize(brick.pos[1]);
       const w = resizeToConvasSize(2 * BRICK_HALF_WIDTH);
       const h = resizeToConvasSize(2 * BRICK_HALF_WIDTH);
-      ctx!.drawImage(brickImages[brick.value - 1], x, y, w, h);
+      ctx!.drawImage(brickImages[brick.value - 2], x, y, w, h);
     }
   };
 
@@ -228,17 +223,29 @@ export default function NewArkanoidCompetitionPage() {
     }
   };
 
-  // const [isSeedPopoverOpen, setIsSeedPopoverOpen] = useState<boolean>(false);
   const [isRandomSeed, setIsRandomSeed] = useState<boolean>(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false);
+  const [isPreregistrationPickerOpen, setIsPreregistrationPickerOpen] =
+    useState<boolean>(false);
+  const [isCompetitionPickerOpen, setIsCompetitionPickerOpen] =
+    useState<boolean>(false);
 
-  // useEffect(() => {
-  //   if (!isRandomSeed && seed.toString().length > 13)
-  //     setIsSeedPopoverOpen(true);
-  // }, [seed]);
+  const getRandomElement = (arr: string[]) => {
+    return arr[Math.floor(Math.random() * arr.length)];
+  };
 
-  const getRandomSeed = () => {
-    return Math.floor(Math.random() * Math.pow(2, 252));
+  const getRandomPart = (word: string) => {
+    const start = Math.floor(Math.random() * word.length);
+    const end = Math.floor(Math.random() * (word.length - start)) + start + 1;
+    return word.slice(start, end);
+  };
+
+  const generateNewWord = () => {
+    const word1 = getRandomElement(snakeNames).replace(' ', '');
+    const word2 = getRandomElement(snakeNames).replace(' ', '');
+    const part1 = getRandomPart(word1);
+    const part2 = getRandomPart(word2);
+    return part1 + part2;
   };
 
   const initialValues = {
@@ -257,18 +264,22 @@ export default function NewArkanoidCompetitionPage() {
   };
 
   const validateSchema = Yup.object().shape({
-    name: Yup.string().required('This field required'),
+    name: Yup.string()
+      .matches(/^(?![\d+_@.-]+$)[a-zA-Z0-9+_@.-]*$/, 'Invalid name')
+      .required('This field required'),
 
-    description: Yup.string().optional(),
+    description: Yup.string()
+      .matches(/^(?![\d+_@.-]+$)[a-zA-Z0-9+_@.-]*$/, 'Invalid description')
+      .optional(),
 
     game: Yup.string()
       .required('This field required')
       .oneOf([arkanoidConfig.name]),
 
-    seed: Yup.number()
+    seed: Yup.string()
+      .matches(/^(?![\d+_@.-]+$)[a-zA-Z0-9+_@.-]*$/, 'Invalid seed')
       .typeError('Invalid seed')
-      .required('This field required')
-      .min(0),
+      .required('This field required'),
 
     preregistrationEnabled: Yup.boolean(),
 
@@ -409,7 +420,7 @@ export default function NewArkanoidCompetitionPage() {
                           label={'Randomize'}
                           onClick={() => {
                             if (!isRandomSeed) setIsRandomSeed(true);
-                            const randomSeed = getRandomSeed();
+                            const randomSeed = generateNewWord();
                             getFieldHelpers('seed').setValue(randomSeed);
                             setSeed(randomSeed);
                           }}
@@ -425,53 +436,11 @@ export default function NewArkanoidCompetitionPage() {
                         </span>
                         <Input
                           name={'seed'}
-                          type={'number'}
+                          type={'text'}
                           placeholder={'Type seed here...'}
                           onChange={() => setSeed(values.seed)}
                           isClearable={false}
                         />
-                        {/*{seed.toString().length > 13 ? (*/}
-                        {/*  <Popover*/}
-                        {/*    isOpen={isSeedPopoverOpen}*/}
-                        {/*    setIsOpen={setIsSeedPopoverOpen}*/}
-                        {/*    trigger={*/}
-                        {/*      <div*/}
-                        {/*        className={*/}
-                        {/*          'group flex h-full w-full flex-row gap-2 rounded-[5px] border bg-bg-dark p-2 hover:border-left-accent'*/}
-                        {/*        }*/}
-                        {/*      >*/}
-                        {/*        <div*/}
-                        {/*          className={*/}
-                        {/*            'w-full appearance-none bg-bg-dark placeholder:font-plexsans placeholder:text-main placeholder:opacity-50 focus:border-none focus:outline-none group-hover:focus:text-left-accent group-hover:focus:placeholder:text-left-accent/80'*/}
-                        {/*          }*/}
-                        {/*        >*/}
-                        {/*          {seed}*/}
-                        {/*        </div>*/}
-                        {/*      </div>*/}
-                        {/*    }*/}
-                        {/*  >*/}
-                        {/*    <div*/}
-                        {/*      className={*/}
-                        {/*        'flex max-h-[200px] min-w-[500px] flex-col gap-4'*/}
-                        {/*      }*/}
-                        {/*    >*/}
-                        {/*      <Input*/}
-                        {/*        name={'seed'}*/}
-                        {/*        type={'number'}*/}
-                        {/*        placeholder={'Type seed here...'}*/}
-                        {/*        onChange={() => setSeed(values.seed)}*/}
-                        {/*        isBordered={false}*/}
-                        {/*      />*/}
-                        {/*    </div>*/}
-                        {/*  </Popover>*/}
-                        {/*) : (*/}
-                        {/*  <Input*/}
-                        {/*    name={'seed'}*/}
-                        {/*    type={'number'}*/}
-                        {/*    placeholder={'Type seed here...'}*/}
-                        {/*    onChange={() => setSeed(values.seed)}*/}
-                        {/*  />*/}
-                        {/*)}*/}
                       </div>
                     </div>
                   </div>
@@ -517,63 +486,84 @@ export default function NewArkanoidCompetitionPage() {
                       >
                         Preregiatration dates*
                       </span>
-                      <div className={'flex flex-row justify-between gap-8'}>
-                        <div
-                          className={'justify-cener flex flex-col items-center'}
-                        >
-                          <div className={'flex-grow'} />
-                          <DatePicker
-                            setDateTo={
-                              getFieldHelpers('preregistrationTo').setValue
-                            }
-                            setDateFrom={
-                              getFieldHelpers('preregistrationFrom').setValue
-                            }
-                            trigger={
-                              <div
-                                className={
-                                  'group rounded-[5px] border p-2 hover:border-left-accent'
+                      <div className={'flex w-full flex-col'}>
+                        <DatePicker
+                          isOpen={isPreregistrationPickerOpen}
+                          setIsOpen={
+                            !isCompetitionPickerOpen
+                              ? setIsPreregistrationPickerOpen
+                              : (value) => {
+                                  setIsCompetitionPickerOpen(false);
+                                  setIsPreregistrationPickerOpen(value);
                                 }
-                              >
-                                <svg
-                                  width="29"
-                                  height="29"
-                                  viewBox="0 0 18 20"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    d="M16 18H2V7H16M13 0V2H5V0H3V2H2C0.89 2 0 2.89 0 4V18C0 18.5304 0.210714 19.0391 0.585786 19.4142C0.960859 19.7893 1.46957 20 2 20H16C16.5304 20 17.0391 19.7893 17.4142 19.4142C17.7893 19.0391 18 18.5304 18 18V4C18 3.46957 17.7893 2.96086 17.4142 2.58579C17.0391 2.21071 16.5304 2 16 2H15V0M14 11H9V16H14V11Z"
-                                    fill="#F9F8F4"
-                                    className={'group-active:fill-left-accent'}
-                                  />
-                                </svg>
+                          }
+                          setDateTo={
+                            getFieldHelpers('preregistrationTo').setValue
+                          }
+                          setDateFrom={
+                            getFieldHelpers('preregistrationFrom').setValue
+                          }
+                          trigger={
+                            <div
+                              className={
+                                'flex w-full flex-row justify-between gap-8'
+                              }
+                            >
+                              <div className={'flex w-full flex-col'}>
+                                <span className={'text-start'}>From</span>
+                                <Input
+                                  name={'preregistrationFrom'}
+                                  type={'text'}
+                                  placeholder={'MM/DD/YYYY'}
+                                  readOnly={true}
+                                  endContent={
+                                    <svg
+                                      width="18"
+                                      height="20"
+                                      viewBox="0 0 18 20"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <path
+                                        d="M16 18H2V7H16M13 0V2H5V0H3V2H2C0.89 2 0 2.89 0 4V18C0 18.5304 0.210714 19.0391 0.585786 19.4142C0.960859 19.7893 1.46957 20 2 20H16C16.5304 20 17.0391 19.7893 17.4142 19.4142C17.7893 19.0391 18 18.5304 18 18V4C18 3.46957 17.7893 2.96086 17.4142 2.58579C17.0391 2.21071 16.5304 2 16 2H15V0M14 11H9V16H14V11Z"
+                                        fill="#F9F8F4"
+                                        className={
+                                          'group-hover:fill-[#D2FF00] group-data-[error=true]:fill-[#FF0000] group-data-[error=true]:group-hover:fill-[#FF00009C]'
+                                        }
+                                      />
+                                    </svg>
+                                  }
+                                />
                               </div>
-                            }
-                          />
-                          {((errors.preregistrationFrom &&
-                            touched.competitionFrom) ||
-                            (errors.preregistrationTo &&
-                              touched.preregistrationTo)) && (
-                            <div className={'flex-grow'} />
-                          )}
-                        </div>
-                        <div className={'flex flex-col'}>
-                          <span>From</span>
-                          <Input
-                            name={'preregistrationFrom'}
-                            type={'text'}
-                            placeholder={'MM/DD/YYYY'}
-                          />
-                        </div>
-                        <div className={'flex flex-col'}>
-                          <span>To</span>
-                          <Input
-                            name={'preregistrationTo'}
-                            type={'text'}
-                            placeholder={'MM/DD/YYYY'}
-                          />
-                        </div>
+                              <div className={'flex w-full flex-col'}>
+                                <span className={'text-start'}>To</span>
+                                <Input
+                                  name={'preregistrationTo'}
+                                  type={'text'}
+                                  placeholder={'MM/DD/YYYY'}
+                                  readOnly={true}
+                                  endContent={
+                                    <svg
+                                      width="18"
+                                      height="20"
+                                      viewBox="0 0 18 20"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <path
+                                        d="M16 18H2V7H16M13 0V2H5V0H3V2H2C0.89 2 0 2.89 0 4V18C0 18.5304 0.210714 19.0391 0.585786 19.4142C0.960859 19.7893 1.46957 20 2 20H16C16.5304 20 17.0391 19.7893 17.4142 19.4142C17.7893 19.0391 18 18.5304 18 18V4C18 3.46957 17.7893 2.96086 17.4142 2.58579C17.0391 2.21071 16.5304 2 16 2H15V0M14 11H9V16H14V11Z"
+                                        fill="#F9F8F4"
+                                        className={
+                                          'group-hover:fill-[#D2FF00] group-data-[error=true]:fill-[#FF0000] group-data-[error=true]:group-hover:fill-[#FF00009C]'
+                                        }
+                                      />
+                                    </svg>
+                                  }
+                                />
+                              </div>
+                            </div>
+                          }
+                        />
                       </div>
                     </div>
                   )}
@@ -585,61 +575,82 @@ export default function NewArkanoidCompetitionPage() {
                     >
                       Competitions date*
                     </span>
-                    <div className={'flex flex-row justify-between gap-8'}>
-                      <div
-                        className={'flex flex-col items-center justify-center'}
-                      >
-                        <div className={'flex-grow'} />
-                        <DatePicker
-                          setDateFrom={
-                            getFieldHelpers('competitionFrom').setValue
-                          }
-                          setDateTo={getFieldHelpers('competitionTo').setValue}
-                          trigger={
-                            <div
-                              className={
-                                'group rounded-[5px] border p-2 hover:border-left-accent'
+                    <div className={'flex w-full flex-col'}>
+                      <DatePicker
+                        isOpen={isCompetitionPickerOpen}
+                        setIsOpen={
+                          !isPreregistrationPickerOpen
+                            ? setIsCompetitionPickerOpen
+                            : (value) => {
+                                setIsPreregistrationPickerOpen(false);
+                                setIsCompetitionPickerOpen(value);
                               }
-                            >
-                              <svg
-                                width="29"
-                                height="29"
-                                viewBox="0 0 18 20"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M16 18H2V7H16M13 0V2H5V0H3V2H2C0.89 2 0 2.89 0 4V18C0 18.5304 0.210714 19.0391 0.585786 19.4142C0.960859 19.7893 1.46957 20 2 20H16C16.5304 20 17.0391 19.7893 17.4142 19.4142C17.7893 19.0391 18 18.5304 18 18V4C18 3.46957 17.7893 2.96086 17.4142 2.58579C17.0391 2.21071 16.5304 2 16 2H15V0M14 11H9V16H14V11Z"
-                                  fill="#F9F8F4"
-                                  className={'group-active:fill-left-accent'}
-                                />
-                              </svg>
+                        }
+                        setDateTo={getFieldHelpers('competitionTo').setValue}
+                        setDateFrom={
+                          getFieldHelpers('competitionFrom').setValue
+                        }
+                        trigger={
+                          <div
+                            className={
+                              'flex w-full flex-row justify-between gap-8'
+                            }
+                          >
+                            <div className={'flex w-full flex-col'}>
+                              <span className={'text-start'}>From</span>
+                              <Input
+                                name={'competitionFrom'}
+                                type={'text'}
+                                placeholder={'MM/DD/YYYY'}
+                                readOnly={true}
+                                endContent={
+                                  <svg
+                                    width="18"
+                                    height="20"
+                                    viewBox="0 0 18 20"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      d="M16 18H2V7H16M13 0V2H5V0H3V2H2C0.89 2 0 2.89 0 4V18C0 18.5304 0.210714 19.0391 0.585786 19.4142C0.960859 19.7893 1.46957 20 2 20H16C16.5304 20 17.0391 19.7893 17.4142 19.4142C17.7893 19.0391 18 18.5304 18 18V4C18 3.46957 17.7893 2.96086 17.4142 2.58579C17.0391 2.21071 16.5304 2 16 2H15V0M14 11H9V16H14V11Z"
+                                      fill="#F9F8F4"
+                                      className={
+                                        'group-hover:fill-[#D2FF00] group-data-[error=true]:fill-[#FF0000] group-data-[error=true]:group-hover:fill-[#FF00009C]'
+                                      }
+                                    />
+                                  </svg>
+                                }
+                              />
                             </div>
-                          }
-                        />
-
-                        {((errors.competitionTo && touched.competitionTo) ||
-                          (errors.competitionFrom &&
-                            touched.competitionFrom)) && (
-                          <div className={'flex-grow'} />
-                        )}
-                      </div>
-                      <div className={'flex flex-col'}>
-                        <span>From</span>
-                        <Input
-                          name={'competitionFrom'}
-                          type={'text'}
-                          placeholder={'MM/DD/YYYY'}
-                        />
-                      </div>
-                      <div className={'flex flex-col'}>
-                        <span>To</span>
-                        <Input
-                          name={'competitionTo'}
-                          type={'text'}
-                          placeholder={'MM/DD/YYYY'}
-                        />
-                      </div>
+                            <div className={'flex w-full flex-col'}>
+                              <span className={'text-start'}>To</span>
+                              <Input
+                                name={'competitionTo'}
+                                type={'text'}
+                                placeholder={'MM/DD/YYYY'}
+                                readOnly={true}
+                                endContent={
+                                  <svg
+                                    width="18"
+                                    height="20"
+                                    viewBox="0 0 18 20"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      d="M16 18H2V7H16M13 0V2H5V0H3V2H2C0.89 2 0 2.89 0 4V18C0 18.5304 0.210714 19.0391 0.585786 19.4142C0.960859 19.7893 1.46957 20 2 20H16C16.5304 20 17.0391 19.7893 17.4142 19.4142C17.7893 19.0391 18 18.5304 18 18V4C18 3.46957 17.7893 2.96086 17.4142 2.58579C17.0391 2.21071 16.5304 2 16 2H15V0M14 11H9V16H14V11Z"
+                                      fill="#F9F8F4"
+                                      className={
+                                        'group-hover:fill-[#D2FF00] group-data-[error=true]:fill-[#FF0000] group-data-[error=true]:group-hover:fill-[#FF00009C]'
+                                      }
+                                    />
+                                  </svg>
+                                }
+                              />
+                            </div>
+                          </div>
+                        }
+                      />
                     </div>
                   </div>
                   <div className={'flex w-full flex-col gap-1'}>
