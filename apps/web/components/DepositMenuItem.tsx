@@ -53,8 +53,8 @@ const BridgeInput = ({
   return (
     <div className="w-full flex-col font-plexsans">
       <div className="flex w-full flex-row gap-1">
-        <div className="flex flex-row rounded border border-left-accent">
-          <div className="flex min-w-0 flex-col p-1 text-[14px] text-left-accent">
+        <div className="flex flex-row rounded bg-bg-dark">
+          <div className="flex min-w-0 flex-col bg-bg-dark p-1 text-[14px]">
             {isPay ? 'You pay' : 'You receive'}
             <input
               type="number"
@@ -72,7 +72,7 @@ const BridgeInput = ({
               placeholder="0.00"
             />
           </div>
-          <div className="m-2 flex items-center justify-center gap-1 rounded bg-left-accent p-1 px-2 text-[24px] font-medium text-bg-dark">
+          <div className="m-2 flex items-center justify-center gap-1 rounded bg-right-accent p-1 px-2 text-[24px] font-medium text-bg-dark">
             {currentAsset.icon ? (
               <div className="h-[26px] w-[26px]">
                 <Image
@@ -105,14 +105,12 @@ const BridgeInput = ({
           </div>
         </div>
       </div>
-      <div className="flex flex-row justify-between ">
+      <div className="flex flex-row justify-between text-bg-dark">
         <div>
           Balance: {(Number(balance) / 10 ** 9).toFixed(2)}{' '}
           {currentAsset.ticker}
         </div>
-        <div className="m-1 rounded border border-left-accent px-1 text-left-accent">
-          MAX
-        </div>
+        <div className="m-1 rounded border border-bg-dark px-1">MAX</div>
       </div>
     </div>
   );
@@ -283,79 +281,77 @@ export const DepositMenuItem = () => {
         isOpen={bridgeStore.open}
         onClose={() => bridgeStore.close()}
       >
-        <div className="text-[32px]">
-                {!isUnbridge ? 'Bridge' : 'Unbridge'}
-              </div>
-              <div className="flex flex-col items-center gap-1">
-                <BridgeInput
-                  assets={!isUnbridge ? [L1_ASSETS.Mina] : [L2_ASSET]}
-                  currentAsset={!isUnbridge ? assetIn : assetOut}
-                  setCurrentAsset={setAssetIn}
-                  amount={amountIn}
-                  setAmount={(amount) => {
-                    setAmountIn(amount || 0n);
-                    setAmountOut(amount * BigInt(rate) || 0n);
-                  }}
-                  balance={
-                    !isUnbridge
-                      ? minaBalancesStore.balances[networkStore.address!] ?? 0n
-                      : protokitBalancesStore.balances[networkStore.address!] ??
-                        0n
-                  }
-                  isPay={true}
-                />
-                <motion.div
-                  className="mb-[5px] mt-[-20px] hover:opacity-80"
-                  whileTap={{ scale: 0.8 }}
-                >
-                  <Image
-                    src={ChangeSvg}
-                    alt="Change"
-                    onClick={() => setIsUnbridge(!isUnbridge)}
-                  />
-                </motion.div>
-                <BridgeInput
-                  assets={!isUnbridge ? [L2_ASSET] : [L1_ASSETS.Mina]}
-                  currentAsset={!isUnbridge ? assetOut : assetIn}
-                  setCurrentAsset={setAssetOut}
-                  amount={amountOut}
-                  setAmount={(amount) => {
-                    setAmountIn(amount / BigInt(rate) || 0n);
-                    setAmountOut(amount || 0n);
-                  }}
-                  balance={
-                    !isUnbridge
-                      ? protokitBalancesStore.balances[networkStore.address!] ??
-                        0n
-                      : minaBalancesStore.balances[networkStore.address!] ?? 0n
-                  }
-                  isPay={false}
-                />
-              </div>
-              <Button
-                label={isUnbridge ? 'Unbridge' : 'Bridge'}
-                onClick={() =>
-                  isUnbridge
-                    ? unbridge(amountIn)
-                        .then(() =>
-                          toast.success(toasterStore, 'Unbridge success', true)
-                        )
-                        .catch((error) => {
-                          console.log(error);
-                          toast.error(toasterStore, 'Unbridge error', true);
-                        })
-                    : bridge(amountIn)
-                        .then(() =>
-                          toast.success(toasterStore, 'Bridge success', true)
-                        )
-                        .catch((error) => {
-                          console.log(error);
-                          toast.error(toasterStore, 'Bridge error', true);
-                        })
-                }
-              />
+        <div className="text-[32px] text-bg-dark">
+          {!isUnbridge ? 'Bridge' : 'Unbridge'}
+        </div>
+        <div className="flex flex-col items-center gap-1">
+          <BridgeInput
+            assets={!isUnbridge ? [L1_ASSETS.Mina] : [L2_ASSET]}
+            currentAsset={!isUnbridge ? assetIn : assetOut}
+            setCurrentAsset={setAssetIn}
+            amount={amountIn}
+            setAmount={(amount) => {
+              setAmountIn(amount || 0n);
+              setAmountOut(amount * BigInt(rate) || 0n);
+            }}
+            balance={
+              !isUnbridge
+                ? minaBalancesStore.balances[networkStore.address!] ?? 0n
+                : protokitBalancesStore.balances[networkStore.address!] ?? 0n
+            }
+            isPay={true}
+          />
+          <motion.div
+            className="mb-[5px] mt-[-20px] hover:opacity-80"
+            whileTap={{ scale: 0.8 }}
+          >
+            <Image
+              src={ChangeSvg}
+              alt="Change"
+              onClick={() => setIsUnbridge(!isUnbridge)}
+            />
+          </motion.div>
+          <BridgeInput
+            assets={!isUnbridge ? [L2_ASSET] : [L1_ASSETS.Mina]}
+            currentAsset={!isUnbridge ? assetOut : assetIn}
+            setCurrentAsset={setAssetOut}
+            amount={amountOut}
+            setAmount={(amount) => {
+              setAmountIn(amount / BigInt(rate) || 0n);
+              setAmountOut(amount || 0n);
+            }}
+            balance={
+              !isUnbridge
+                ? protokitBalancesStore.balances[networkStore.address!] ?? 0n
+                : minaBalancesStore.balances[networkStore.address!] ?? 0n
+            }
+            isPay={false}
+          />
+        </div>
+        <Button
+          label={isUnbridge ? 'Unbridge' : 'Bridge'}
+          color='dark'
+          onClick={() =>
+            isUnbridge
+              ? unbridge(amountIn)
+                  .then(() =>
+                    toast.success(toasterStore, 'Unbridge success', true)
+                  )
+                  .catch((error) => {
+                    console.log(error);
+                    toast.error(toasterStore, 'Unbridge error', true);
+                  })
+              : bridge(amountIn)
+                  .then(() =>
+                    toast.success(toasterStore, 'Bridge success', true)
+                  )
+                  .catch((error) => {
+                    console.log(error);
+                    toast.error(toasterStore, 'Bridge error', true);
+                  })
+          }
+        />
       </BridgeModal>
-      
     </>
   );
 };
