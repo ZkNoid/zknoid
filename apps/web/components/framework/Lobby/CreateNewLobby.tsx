@@ -6,7 +6,7 @@ import { Popover } from '@/components/ui/games-store/shared/Popover';
 import { Checkbox } from '@/components/ui/games-store/shared/Checkbox';
 import { Button } from '@/components/ui/games-store/shared/Button';
 import { motion } from 'framer-motion';
-import { Modal } from '@/components/ui/games-store/shared/Modal';
+import Modal from '@/components/ui/games-store/shared/modal/BaseModal';
 import { Currency } from '@/constants/currency';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
@@ -303,7 +303,6 @@ export const CreateNewLobby = ({
                 // }}
               />
               <Modal
-                trigger={<></>}
                 isOpen={isSuccessModalOpen}
                 setIsOpen={() => {
                   setIsSuccessModalOpen(false);

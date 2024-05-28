@@ -1,4 +1,4 @@
-import { Modal } from '@/components/ui/games-store/shared/Modal';
+import Modal from '@/components/ui/games-store/shared/modal/BaseModal';
 import { useState } from 'react';
 import { Button } from '@/components/ui/games-store/shared/Button';
 
@@ -13,7 +13,7 @@ export const MatchmakingFailModal = ({
 }) => {
   // const [isOpen, setIsOpen] = useState<boolean>(true);
   return (
-    <Modal trigger={<></>} isOpen={isOpen} setIsOpen={setIsOpen}>
+    <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
       <div className={'flex flex-col items-center justify-center gap-8 px-4'}>
         <span
           className={'text-headline-2 font-medium uppercase text-left-accent'}

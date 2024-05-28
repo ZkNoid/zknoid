@@ -7,7 +7,8 @@ import Image from 'next/image';
 import defaultAvatar from '../assets/avatars/defaultAvatar.svg';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
-import { Modal } from '@/components/ui/games-store/shared/Modal';
+import Modal from '@/components/ui/games-store/shared/modal/BaseModal';
+import StatefulModal from '@/components/ui/games-store/shared/modal/StatefulModal';
 
 export const PokerPage = () => {
   const ChatMessage = ({
@@ -142,7 +143,7 @@ export const PokerPage = () => {
       mobileImage={'/image/game-page/game-title-mobile-template.svg'}
       defaultPage={'Game'}
     >
-      <Modal trigger={<></>} defaultOpen>
+      <StatefulModal isOpen={true}>
         <div className={'flex flex-col items-center justify-center gap-2'}>
           <svg
             width="161"
@@ -196,7 +197,7 @@ export const PokerPage = () => {
             </span>
           </div>
         </div>
-      </Modal>
+      </StatefulModal>
       <div className={'flex flex-col gap-4'}>
         <div className={'flex flex-row items-center justify-between'}>
           <div
