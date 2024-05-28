@@ -475,6 +475,7 @@ export const LobbyInformation = <RuntimeModules extends RuntimeModulesRecord>({
           <Button
             label={'Connect to lobby'}
             onClick={() => {
+              if (lobby.maxPlayers === lobby.playersAddresses?.length) return;
               if (networkStore.address)
                 joinLobby(lobby.id)
                   .then(() =>
@@ -492,9 +493,8 @@ export const LobbyInformation = <RuntimeModules extends RuntimeModulesRecord>({
                     );
                   });
               else setIsConnectWalletModal(true);
-              // pvpLobbyStorage.setConnectedLobbyId(lobby.id);
-              // pvpLobbyStorage.setConnectedLobbyKey(lobby.accessKey);
             }}
+            disabled={lobby.maxPlayers === lobby.playersAddresses?.length}
           />
         )}
       </div>
