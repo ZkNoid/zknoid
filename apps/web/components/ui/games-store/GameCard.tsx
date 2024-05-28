@@ -120,7 +120,7 @@ export const GameCard = ({
           src={isFavorite ? heartActive : heart}
           alt={'Favorite'}
           className={
-            'absolute right-6 top-6 z-20 hidden h-[36px] w-[36px] cursor-pointer lg:block'
+            'absolute right-6 top-6 z-[5] hidden h-[36px] w-[36px] cursor-pointer lg:block'
           }
           onClick={() => {
             if (!networkStore.address) return;
@@ -160,7 +160,7 @@ export const GameCard = ({
         >
           <div
             className={
-              'z-10 m-px flex h-[48.125vw] w-full items-center justify-center rounded-[5px] bg-[#252525] max-[2000px]:h-[298px] min-[2000px]:h-[398px]'
+              'z-1 m-px flex h-[48.125vw] w-full items-center justify-center rounded-[5px] bg-[#252525] max-[2000px]:h-[298px] min-[2000px]:h-[398px]'
             }
           >
             {game.isReleased ? (
