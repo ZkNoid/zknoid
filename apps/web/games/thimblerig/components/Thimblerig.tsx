@@ -55,7 +55,7 @@ import { Currency } from '@/constants/currency';
 import { motion, useAnimationControls } from 'framer-motion';
 import { ICompetitionPVP } from '@/lib/types';
 import { GameWrap } from '@/components/framework/GamePage/GameWrap';
-import { Modal } from '@/components/ui/games-store/shared/Modal';
+import Modal from '@/components/ui/games-store/shared/modal/BaseModal';
 import { RateGame } from '@/components/framework/GameWidget/RateGame';
 import { type PendingTransaction } from '@proto-kit/sequencer';
 import { SadSmileSVG } from '@/components/ui/games-store/shared/misc/svg';
@@ -63,6 +63,7 @@ import { toast } from '@/components/ui/games-store/shared/Toast';
 import { useToasterStore } from '@/lib/stores/toasterStore';
 import { useRateGameStore } from '@/lib/stores/rateGameStore';
 import { formatPubkey } from '@/lib/utils';
+import StatefulModal from '@/components/ui/games-store/shared/modal/StatefulModal';
 
 enum GameState {
   WalletNotInstalled,
@@ -165,9 +166,12 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   const collectPending = async () => {
     const randzuLogic = client.runtime.resolve('ThimblerigLogic');
 
-    const tx = await client.transaction(sessionPrivateKey.toPublicKey(), async () => {
-      randzuLogic.collectPendingBalance();
-    });
+    const tx = await client.transaction(
+      sessionPrivateKey.toPublicKey(),
+      async () => {
+        randzuLogic.collectPendingBalance();
+      }
+    );
 
     console.log('Collect tx', tx);
 
@@ -672,13 +676,13 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                     !rateGameStore.ratedGamesIds.includes(
                       thimblerigConfig.id
                     ) && (
-                      <Modal trigger={<></>} defaultOpen isDismissible={false}>
+                      <StatefulModal isOpen={true} isDismissible={false}>
                         <RateGame
                           gameId={thimblerigConfig.id}
                           onClick={() => setIsRateGame(false)}
                           isModal={true}
                         />
-                      </Modal>
+                      </StatefulModal>
                     )}
                   {gameState === GameState.NotStarted && (
                     <GameWrap>
@@ -726,7 +730,9 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
             </>
           ) : walletInstalled() ? (
             <GameWrap>
-              <ConnectWallet connectWallet={() => networkStore.connectWallet(false)} />
+              <ConnectWallet
+                connectWallet={() => networkStore.connectWallet(false)}
+              />
             </GameWrap>
           ) : (
             <GameWrap>

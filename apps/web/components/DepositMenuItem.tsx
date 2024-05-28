@@ -31,6 +31,7 @@ import { Button } from '@/components/ui/games-store/shared/Button';
 import { toast } from '@/components/ui/games-store/shared/Toast';
 import { useToasterStore } from '@/lib/stores/toasterStore';
 import TopUpCard from './ui/games-store/header/TopUpCard';
+import BridgeModal from './ui/games-store/shared/modal/BridgeModal';
 
 const BridgeInput = ({
   assets,
@@ -278,20 +279,11 @@ export const DepositMenuItem = () => {
             onClick={() => testBalanceGetter()}
           />
         )} */}
-      <AnimatePresence>
-        {bridgeStore.open && (
-          <motion.div
-            className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center backdrop-blur-sm"
-            onClick={() => bridgeStore.close()}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <div
-              className="flex w-96 flex-col items-center gap-5 rounded-xl border border-left-accent bg-bg-dark p-7 text-xs"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="text-[32px]">
+      <BridgeModal
+        isOpen={bridgeStore.open}
+        onClose={() => bridgeStore.close()}
+      >
+        <div className="text-[32px]">
                 {!isUnbridge ? 'Bridge' : 'Unbridge'}
               </div>
               <div className="flex flex-col items-center gap-1">
@@ -362,10 +354,8 @@ export const DepositMenuItem = () => {
                         })
                 }
               />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </BridgeModal>
+      
     </>
   );
 };

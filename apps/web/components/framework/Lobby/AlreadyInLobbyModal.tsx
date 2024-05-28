@@ -1,4 +1,4 @@
-import { Modal } from '@/components/ui/games-store/shared/Modal';
+import Modal from '@/components/ui/games-store/shared/modal/BaseModal';
 import { Button } from '@/components/ui/games-store/shared/Button';
 
 export const AlreadyInLobbyModal = ({
@@ -11,7 +11,7 @@ export const AlreadyInLobbyModal = ({
   leaveLobby: () => Promise<void>;
 }) => {
   return (
-    <Modal trigger={<></>} isOpen={isOpen} setIsOpen={setIsOpen}>
+    <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
       <div
         className={
           'flex max-w-[650px] flex-col items-center justify-center gap-4'

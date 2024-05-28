@@ -35,7 +35,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import znakesImg from '@/public/image/tokens/znakes.svg';
 import { clsx } from 'clsx';
 import { Currency } from '@/constants/currency';
-import { Modal } from '@/components/ui/games-store/shared/Modal';
+import Modal from '@/components/ui/games-store/shared/modal/BaseModal';
 import ArkanoidCoverSVG from '../assets/game-cover.svg';
 import ArkanoidCoverMobileSVG from '../assets/game-cover-mobile.svg';
 import { DropdownListField } from '@/components/ui/games-store/shared/DropdownList';
@@ -768,7 +768,6 @@ export default function NewArkanoidCompetitionPage() {
                       </AnimatePresence>
                       <Button label={'Create competition'} type={'submit'} />
                       <Modal
-                        trigger={<></>}
                         isOpen={isSuccessModalOpen}
                         setIsOpen={setIsSuccessModalOpen}
                       >
