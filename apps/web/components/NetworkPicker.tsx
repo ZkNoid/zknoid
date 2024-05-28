@@ -17,18 +17,26 @@ export default function NetworkPicker() {
 
   const switchNetwork = async (network: Network) => {
     console.log('Switching to', network);
-    if (network.chainId == 'zeko') {
-      (window.mina as any).addChain({
-        url: 'https://devnet.zeko.io/graphql',
-        name: 'Zeko',
-      });
-    }
+    try {
+      if (network.chainId == 'zeko') {
+        (window.mina as any).addChain({
+          url: 'https://devnet.zeko.io/graphql',
+          name: 'Zeko',
+        });
+      }
 
-    await (window as any).mina.switchChain({
-      chainId: network.chainId,
-    });
-    networkStore.setNetwork(network);
-    setExpanded(false);
+      await (window as any).mina.switchChain({
+        chainId: network.chainId,
+      });
+      networkStore.setNetwork(network);
+      setExpanded(false);
+    } catch (e: any) {
+      if (e?.code == 1001) {
+        await (window as any).mina.requestAccounts();
+        await switchNetwork(network)
+      }
+      throw e;
+    }
   };
 
   useEffect(() => {
@@ -42,7 +50,9 @@ export default function NetworkPicker() {
         chainId: string;
         name: string;
       }) => {
-        const minaNetwork = NETWORKS.find((x) => chainId != 'unknown' ? x.chainId == chainId : x.name == name);
+        const minaNetwork = NETWORKS.find((x) =>
+          chainId != 'unknown' ? x.chainId == chainId : x.name == name
+        );
         networkStore.setNetwork(minaNetwork);
       };
 
