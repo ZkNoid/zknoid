@@ -36,7 +36,7 @@ export default function RandzuLobby({
     >
       <LobbyPage
         lobbyId={params.lobbyId}
-        query={client.query.runtime.RandzuLogic}
+        query={networkStore.protokitClientStarted ? client.query.runtime.RandzuLogic: undefined}
         contractName={'RandzuLogic'}
         config={randzuConfig}
       />
