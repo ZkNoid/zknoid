@@ -155,29 +155,37 @@ export const DepositMenuItem = () => {
 
   const bridge = async (amount: bigint) => {
     console.log('Bridging', amount);
-    const l1tx = await Mina.transaction(async () => {
-      const senderUpdate = AccountUpdate.create(
-        PublicKey.fromBase58(networkStore.address!)
-      );
-      senderUpdate.requireSignature();
-      console.log(BRIDGE_ADDR);
-      console.log(amountIn);
-      senderUpdate.send({
-        to: PublicKey.fromBase58(BRIDGE_ADDR),
-        amount: Number(amount),
+    try {
+      const l1tx = await Mina.transaction(async () => {
+        const senderUpdate = AccountUpdate.create(
+          PublicKey.fromBase58(networkStore.address!)
+        );
+        senderUpdate.requireSignature();
+        console.log(BRIDGE_ADDR);
+        console.log(amountIn);
+        senderUpdate.send({
+          to: PublicKey.fromBase58(BRIDGE_ADDR),
+          amount: Number(amount),
+        });
       });
-    });
 
-    await l1tx.prove();
+      await l1tx.prove();
 
-    const transactionJSON = l1tx.toJSON();
+      const transactionJSON = l1tx.toJSON();
 
-    const data = await (window as any).mina.sendPayment({
-      transaction: transactionJSON,
-      memo: `zknoid.io game bridging #${process.env.BRIDGE_ID ?? 100}`,
-      to: BRIDGE_ADDR,
-      amount: formatUnits(amountIn, assetIn.decimals),
-    });
+      const data = await (window as any).mina.sendPayment({
+        transaction: transactionJSON,
+        memo: `zknoid.io game bridging #${process.env.BRIDGE_ID ?? 100}`,
+        to: BRIDGE_ADDR,
+        amount: formatUnits(amountIn, assetIn.decimals),
+      });
+    } catch (e: any) {
+      if (e?.code == 1001) {
+        await window.mina?.requestAccounts();
+        await bridge(amount);
+        return;
+      }
+    }
 
     const balances = (contextAppChainClient!.runtime as any).resolve(
       'Balances'
@@ -216,20 +224,32 @@ export const DepositMenuItem = () => {
 
   const unbridge = async (amount: bigint) => {
     console.log('Burning', amount);
-    const balances = (contextAppChainClient!.runtime as any).resolve(
-      'Balances'
-    );
-    const sender = PublicKey.fromBase58(networkStore.address!);
 
-    const l2tx = await contextAppChainClient!.transaction(sender, async () => {
-      balances.burnBalance(
-        ZNAKE_TOKEN_ID,
-        ProtokitLibrary.UInt64.from(1000000000n)
+    try {
+      const balances = (contextAppChainClient!.runtime as any).resolve(
+        'Balances'
       );
-    });
+      const sender = PublicKey.fromBase58(networkStore.address!);
 
-    await l2tx.sign();
-    await l2tx.send();
+      const l2tx = await contextAppChainClient!.transaction(
+        sender,
+        async () => {
+          balances.burnBalance(
+            ZNAKE_TOKEN_ID,
+            ProtokitLibrary.UInt64.from(1000000000n)
+          );
+        }
+      );
+
+      await l2tx.sign();
+      await l2tx.send();
+    } catch (e: any) {
+      if (e?.code == 1001) {
+        await window.mina?.requestAccounts();
+        await unbridge(amount);
+        return;
+      }
+    }
 
     await logBridged.mutateAsync({
       userAddress: network.address ?? '',
