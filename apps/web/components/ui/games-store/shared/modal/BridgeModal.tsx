@@ -14,7 +14,7 @@ export default function BridgeModal({
     <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center backdrop-blur-sm"
+            className="fixed left-0 top-0 flex h-full w-full items-center justify-center backdrop-blur-sm"
             onClick={() => onClose?.()}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

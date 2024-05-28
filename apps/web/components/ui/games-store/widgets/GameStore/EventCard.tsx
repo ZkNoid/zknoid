@@ -48,9 +48,9 @@ export const EventCard = ({
       <Image
         src={eventBoxBorderImg}
         alt=""
-        className="z-10 w-full lg:block"
+        className="z-[5] w-full lg:block"
       />
-      <div className={'group absolute bottom-[0.1vw] right-[0.0vw] z-10'}>
+      <div className={'group absolute bottom-[0.1vw] right-[0.0vw] z-[5]'}>
         <svg
           width="68"
           height="69"
