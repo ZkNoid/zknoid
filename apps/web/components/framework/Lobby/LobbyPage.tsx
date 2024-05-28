@@ -213,7 +213,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   const joinLobby = async (lobbyId: number) => {
     if (lobbiesStore.currentLobby) {
       alreadyInLobbyModalStore.setIsOpen(true);
-      return;
+      throw new Error('Already in lobby');
     }
 
     const lobbyManager = await client.runtime.resolve(params.contractName);
