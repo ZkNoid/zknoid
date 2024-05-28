@@ -777,10 +777,11 @@ export default function NewArkanoidCompetitionPage() {
                           </motion.div>
                         )}
                       </AnimatePresence>
-                      <Button label={'Create competition'} type={'submit'} />
+                      <Button label={'Create competition'} type={'submit'}/>
                       <Modal
                         isOpen={isSuccessModalOpen}
                         setIsOpen={setIsSuccessModalOpen}
+                        border='border-left-accent'
                       >
                         <div
                           className={

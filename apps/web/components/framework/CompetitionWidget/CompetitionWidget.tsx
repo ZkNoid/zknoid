@@ -99,9 +99,9 @@ export const CompetitionWidget = ({
 
   return (
     <>
-      <div className={'mb-4 flex flex-col gap-8'}>
+      <div className={'mb-4 flex flex-col gap-4'}>
         <div className={'w-full text-left text-headline-1'}>
-          The most interesting competitions
+          The most interesting competitionssss
         </div>
         <div className={'flex flex-row gap-4'}>
           {competitionBlocks.map((item, index) => (
