@@ -213,7 +213,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   const joinLobby = async (lobbyId: number) => {
     if (lobbiesStore.currentLobby) {
       alreadyInLobbyModalStore.setIsOpen(true);
-      return;
+      throw new Error('Already in lobby');
     }
 
     const lobbyManager = await client.runtime.resolve(params.contractName);
@@ -332,7 +332,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
         />
         <div className={'col-start-4 col-end-6 row-start-1'}>
           {isCreationMode ? (
-            <span className={'text-headline-1'}>Lobby creation</span>
+            <span className={'mt-2 text-headline-1'}>Lobby creation</span>
           ) : currentLobby ? (
             <div className={'flex flex-row gap-1'}>
               <span className={'text-headline-1'}>Lobby Information</span>

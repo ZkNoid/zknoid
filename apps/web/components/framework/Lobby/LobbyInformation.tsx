@@ -18,6 +18,7 @@ enum PlayerStates {
   Waiting,
   Ready,
   Connecting,
+  EmptySlot,
 }
 
 const PlayersListItem = ({
@@ -38,12 +39,15 @@ const PlayersListItem = ({
     >
       <span className={'col-start-1 col-end-1'}>[{index}]</span>
       <span className={'col-start-2 col-end-3'}>
-        {account.slice(0, 5) + '...' + account.slice(-5)}
+        {state !== PlayerStates.EmptySlot
+          ? account.slice(0, 5) + '...' + account.slice(-5)
+          : account}
       </span>
       <span className={'col-start-4 col-end-6'}>
         {state === PlayerStates.Waiting && 'Waiting opponent'}
         {state === PlayerStates.Ready && 'Ready to play'}
         {state === PlayerStates.Connecting && 'Connecting...'}
+        {state === PlayerStates.EmptySlot && 'Waiting for player...'}
       </span>
     </div>
   );
@@ -206,7 +210,7 @@ export const LobbyInformation = <RuntimeModules extends RuntimeModulesRecord>({
         lobby.id !== lobbiesStore.currentLobby.id && (
           <div
             className={
-              'flex w-full cursor-pointer flex-row gap-2 py-2 hover:opacity-80'
+              'flex w-full cursor-pointer flex-row items-center gap-2 py-2 hover:opacity-80'
             }
             onClick={backToJoinedLobby}
           >
@@ -406,21 +410,36 @@ export const LobbyInformation = <RuntimeModules extends RuntimeModulesRecord>({
             <span className={'col-start-4 col-end-6'}>Status</span>
           </div>
           <div className={'flex flex-col'}>
-            {lobby.playersAddresses &&
-              lobby.playersAddresses.map((player, index) => {
-                return (
+            <>
+              {lobby.playersAddresses?.map((player, index) => (
+                <PlayersListItem
+                  key={player.toBase58()}
+                  account={player.toBase58()}
+                  state={
+                    lobby.playersReady![index]
+                      ? PlayerStates.Ready
+                      : PlayerStates.Waiting
+                  }
+                  index={index + 1}
+                />
+              ))}
+              {lobby.playersAddresses !== undefined &&
+                lobby.playersAddresses?.length < lobby.maxPlayers &&
+                [
+                  ...Array(lobby.maxPlayers - lobby.playersAddresses?.length),
+                ].map((_, index) => (
                   <PlayersListItem
-                    key={player.toBase58()}
-                    account={player.toBase58()}
-                    state={
-                      lobby.playersReady![index]
-                        ? PlayerStates.Ready
-                        : PlayerStates.Waiting
+                    key={index}
+                    account={'Empty slot'}
+                    state={PlayerStates.EmptySlot}
+                    index={
+                      lobby.playersAddresses
+                        ? index + 1 + lobby.playersAddresses.length
+                        : index + 1
                     }
-                    index={index}
                   />
-                );
-              })}
+                ))}
+            </>
           </div>
         </div>
         <div className={'flex-grow'} />
@@ -456,6 +475,7 @@ export const LobbyInformation = <RuntimeModules extends RuntimeModulesRecord>({
           <Button
             label={'Connect to lobby'}
             onClick={() => {
+              if (lobby.maxPlayers === lobby.playersAddresses?.length) return;
               if (networkStore.address)
                 joinLobby(lobby.id)
                   .then(() =>
@@ -473,9 +493,8 @@ export const LobbyInformation = <RuntimeModules extends RuntimeModulesRecord>({
                     );
                   });
               else setIsConnectWalletModal(true);
-              // pvpLobbyStorage.setConnectedLobbyId(lobby.id);
-              // pvpLobbyStorage.setConnectedLobbyKey(lobby.accessKey);
             }}
+            disabled={lobby.maxPlayers === lobby.playersAddresses?.length}
           />
         )}
       </div>
