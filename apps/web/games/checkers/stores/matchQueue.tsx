@@ -38,11 +38,11 @@ export const useObserveCheckersMatchQueue = () => {
 
     matchQueue.loadMatchQueue(
       client.query.runtime.CheckersLogic,
-      parseInt(chain.block?.height ?? '0')
+      chain.block?.height ?? 0
     );
     matchQueue.loadActiveGame(
       client.query.runtime.CheckersLogic,
-      parseInt(chain.block?.height ?? '0'),
+      chain.block?.height ?? 0,
       PublicKey.fromBase58(network.address!)
     );
   }, [chain.block?.height, network.walletConnected, network.address]);

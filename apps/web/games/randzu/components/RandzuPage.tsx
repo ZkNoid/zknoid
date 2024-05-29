@@ -323,7 +323,7 @@ export default function RandzuPage({
     [GameState.NotStarted]: 'NOT STARTED',
     [GameState.MatchRegistration]: 'MATCH REGISTRATION',
     [GameState.Matchmaking]: `MATCHMAKING ${
-      parseInt(protokitChain.block?.height ?? '0') % PENDING_BLOCKS_NUM_CONST
+      (protokitChain.block?.height ?? 0) % PENDING_BLOCKS_NUM_CONST
     }  / ${PENDING_BLOCKS_NUM_CONST} 🔍`,
     [GameState.CurrentPlayerTurn]: `YOUR TURN`,
     [GameState.OpponentTurn]: `OPPONENT TURN`,

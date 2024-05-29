@@ -83,10 +83,6 @@ export const useChainStore = create<ChainState, [['zustand/immer', never]]>(
       const { data } = (await response.json()) as BlockQueryResponse;
       const height = data.bestChain[0].protocolState.consensusState.blockHeight;
 
-      if (height) {
-        return;
-      }
-
       set((state) => {
         state.loading = false;
         state.block = {
@@ -100,21 +96,14 @@ export const useChainStore = create<ChainState, [['zustand/immer', never]]>(
 
 export const tickInterval = 5000;
 export const usePollMinaBlockHeight = () => {
-  const [tick, setTick] = useState(0);
   const chain = useChainStore();
   const network = useNetworkStore();
 
   useEffect(() => {
-    chain.loadBlock(network.minaNetwork?.chainId!);
-  }, [tick]);
-
-  useEffect(() => {
     const intervalId = setInterval(
-      () => setTick((tick) => tick + 1),
+      () => chain.loadBlock(network.minaNetwork?.chainId!),
       tickInterval
     );
-
-    setTick((tick) => tick + 1);
 
     return () => clearInterval(intervalId);
   }, []);

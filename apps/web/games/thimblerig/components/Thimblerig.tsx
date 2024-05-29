@@ -305,7 +305,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       matchQueue.gameInfo &&
       matchQueue.activeGameId &&
       !matchQueue.gameInfo?.isCurrentUserMove &&
-      BigInt(protokitChain?.block?.height || '0') -
+      BigInt(protokitChain?.block?.height || 0) -
         matchQueue.gameInfo?.lastMoveBlockHeight >
         MOVE_TIMEOUT_IN_BLOCKS
     ) {
@@ -430,7 +430,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     [GameState.OpponentTimeout]: 'OPPONENT TIMEOUT',
     [GameState.MatchRegistration]: 'MATCH REGISTRATION',
     [GameState.Matchmaking]: `MATCHMAKING ${
-      parseInt(protokitChain.block?.height ?? '0') % PENDING_BLOCKS_NUM_CONST
+      (protokitChain.block?.height || 0) % PENDING_BLOCKS_NUM_CONST
     }  / ${PENDING_BLOCKS_NUM_CONST} 🔍`,
     [GameState.CurrentPlayerHiding]: `HIDING BALL`,
     [GameState.WaitingForHiding]: `OPPONENT HIDING BALL`,
