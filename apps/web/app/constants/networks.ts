@@ -6,9 +6,9 @@ export interface Network {
 
 export const NETWORKS: Network[] = [
   {
-      "chainId": "zeko",
-      "name": "Zeko",
-      "graphql": "https://devnet.zeko.io/graphql"
+    chainId: 'zeko',
+    name: 'Zeko',
+    graphql: 'https://devnet.zeko.io/graphql',
   },
   {
     chainId: 'berkeley',

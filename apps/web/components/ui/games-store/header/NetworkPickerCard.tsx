@@ -1,35 +1,33 @@
 import Image from 'next/image';
-import { clsx } from 'clsx';
 import { motion } from 'framer-motion';
-import { cn } from '@/lib/helpers';
 
 export default function NetworkPickerCard({
   text,
+  image,
   toggle,
   expanded,
   onClick,
-  className,
 }: {
   text: string;
+  image: any;
   toggle?: boolean;
   expanded?: boolean;
   onClick?: () => void;
-  className?: string;
 }) {
   return (
     <div
-      className={cn(
-        'group flex cursor-pointer items-center justify-center gap-[10px] rounded border ',
-        'border-bg-dark p-1 px-2 text-header-menu text-bg-dark transition duration-75 ease-in',
-        'hover:border-left-accent hover:bg-bg-dark hover:text-left-accent lg:justify-normal',
-        expanded
-          ? 'rounded-b-none border-left-accent bg-bg-dark text-left-accent hover:bg-right-accent/20'
-          : 'bg-left-accent',
-        className
-      )}
+      className={
+        'group relative z-10 flex cursor-pointer items-center justify-center gap-[10px] rounded border border-left-accent bg-left-accent px-2 py-1 text-header-menu text-bg-dark hover:bg-bg-dark hover:text-left-accent'
+      }
       onClick={() => onClick?.()}
     >
-      <Image src={'/image/cards/mina.png'} alt="" width={24} height={24} />
+      <Image
+        src={image}
+        alt=""
+        width={26}
+        height={26}
+        className={'rounded-[5px]'}
+      />
       {text}
       {toggle && (
         <motion.svg
@@ -51,10 +49,7 @@ export default function NetworkPickerCard({
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className={clsx({
-              'group-hover:stroke-left-accent': !expanded,
-              'stroke-left-accent': expanded,
-            })}
+            className={'stroke-bg-dark group-hover:stroke-left-accent'}
           />
         </motion.svg>
       )}
