@@ -326,7 +326,6 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
         <FastMatchmaking
           options={lobbiesStore.mathcmakingOptions}
           winCoef={1.67}
-          blockNumber={chainStore.block ? +chainStore.block.height : 0}
           register={register}
           leave={leaveMatchmaking}
         />

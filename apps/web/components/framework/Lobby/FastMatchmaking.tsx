@@ -10,6 +10,7 @@ import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import { useNetworkStore } from '@/lib/stores/network';
 import { MatchmakingFailModal } from './MatchmakingFailModal';
+import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 
 const OpponentItem = ({
   option,
@@ -125,13 +126,11 @@ const OpponentItem = ({
 export const FastMatchmaking = ({
   options,
   winCoef,
-  blockNumber,
   register,
   leave,
 }: {
   options: IMatchamkingOption[];
   winCoef: number;
-  blockNumber: number;
   register: (id: number) => Promise<void>;
   leave: (id: number) => Promise<void>;
 }) => {
@@ -142,22 +141,26 @@ export const FastMatchmaking = ({
   const [matchmakingStartEpoche, setMatchmakingStartEpoche] =
     useState<number>(0);
   const [curType, setCurType] = useState<number>(0);
+  const chainStore = useProtokitChainStore();
 
   const registerAndRecord = async (id: number) => {
+    if (!chainStore.block?.height) return;
     await register(id);
-    setMatchmakingStartEpoche(Math.floor(blockNumber / 20));
+    setMatchmakingStartEpoche(Math.floor(chainStore.block?.height / 20));
   };
 
   useEffect(() => {
+    if (!chainStore.block?.height) return;
+
     if (isModalOpen && matchmakingStartEpoche > 0) {
-      const curEpoche = Math.floor(blockNumber / 20);
+      const curEpoche = Math.floor(chainStore.block?.height / 20);
       if (curEpoche > matchmakingStartEpoche) {
         setIsModalOpen(false);
         setIsFailModalOpen(true);
         setMatchmakingStartEpoche(0);
       }
     }
-  }, [blockNumber]);
+  }, [chainStore.block?.height]);
 
   return (
     <>
@@ -317,7 +320,7 @@ export const FastMatchmaking = ({
           setIsOpen={setIsModalOpen}
           pay={pay}
           receive={receive}
-          blockNumber={blockNumber}
+          blockNumber={chainStore.block?.height || 0}
           leave={async () => {
             await leave(curType);
           }}

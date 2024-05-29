@@ -22,18 +22,18 @@ export const useObserveThimblerigMatchQueue = () => {
   >(AppChainClientContext);
 
   useEffect(() => {
-    if (!network.walletConnected || !network.address) {
+    if (!network.walletConnected || !network.address || !chain.block?.height) {
       return;
     }
 
     if (!client) {
       throw Error('Context app chain client is not set');
     }
-
-    matchQueue.loadMatchQueue(client.query.runtime.ThimblerigLogic, parseInt(chain.block?.height ?? '0'));
+    
+    matchQueue.loadMatchQueue(client.query.runtime.ThimblerigLogic, chain.block?.height);
     matchQueue.loadActiveGame(
       client.query.runtime.ThimblerigLogic,
-      parseInt(chain.block?.height ?? '0'),
+      chain.block?.height,
       PublicKey.fromBase58(network.address!)
     );
   }, [chain.block?.height, network.walletConnected, network.address]);

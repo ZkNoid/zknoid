@@ -68,6 +68,8 @@ export const useMinaBalancesStore = create<
       const { data } = (await response.json()) as BalanceQueryResponse;
       const balance = BigInt(data.account?.balance.total ?? '0');
 
+      console.log('Balance fetching', data);
+
       set((state) => {
         state.loading = false;
         state.balances[address] = balance ?? 0n;

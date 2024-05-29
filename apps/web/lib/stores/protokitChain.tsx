@@ -25,7 +25,7 @@ export interface ComputedBlockJSON {
 export interface ChainState {
   loading: boolean;
   block?: {
-    height: string;
+    height: number;
   } & ComputedBlockJSON;
   loadBlock: () => Promise<void>;
 }
@@ -100,7 +100,7 @@ export const useProtokitChainStore = create<
         state.loading = false;
         state.block = data.network.unproven
           ? {
-              height: data.network.unproven.block.height,
+              height: parseInt(data.network.unproven.block.height),
               ...data.block,
             }
           : undefined;
@@ -111,20 +111,12 @@ export const useProtokitChainStore = create<
 
 export const tickInterval = 5000;
 export const usePollProtokitBlockHeight = () => {
-  const [tick, setTick] = useState(0);
   const chain = useProtokitChainStore();
 
   useEffect(() => {
-    chain.loadBlock();
-  }, [tick]);
-
-  useEffect(() => {
-    const intervalId = setInterval(
-      () => setTick((tick) => tick + 1),
-      tickInterval
-    );
-
-    setTick((tick) => tick + 1);
+    const intervalId = setInterval(() => {
+      chain.loadBlock();
+    }, tickInterval);
 
     return () => clearInterval(intervalId);
   }, []);
