@@ -284,7 +284,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
     if (!networkStore.walletConnected)
       await networkStore.connectWallet(false);
     if (!networkStore.address)
-      return;
+      throw Error('Not connected');
 
     const lobbyManager = await client.runtime.resolve(params.contractName);
 
