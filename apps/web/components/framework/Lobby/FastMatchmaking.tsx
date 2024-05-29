@@ -42,7 +42,12 @@ const OpponentItem = ({
       onClick={async () => {
         if (lobbiesStore.currentLobby) alreadyInLobbyModalStore.setIsOpen(true);
         else {
-          await register(option.id);
+          try {
+            await register(option.id);
+          } catch (e) {
+            console.log('Registration error', e);
+            return;
+          }
           matchmakingMutation.mutate({
             gameId: 'arkanoid',
             userAddress: networkStore.address ?? '',
