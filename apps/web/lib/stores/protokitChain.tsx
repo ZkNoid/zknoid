@@ -117,6 +117,7 @@ export const usePollProtokitBlockHeight = () => {
     const intervalId = setInterval(() => {
       chain.loadBlock();
     }, tickInterval);
+    chain.loadBlock();
 
     return () => clearInterval(intervalId);
   }, []);
