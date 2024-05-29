@@ -45,17 +45,22 @@ export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
     },
     address: undefined,
     async onWalletConnected(address: string | undefined) {
-      if (address) localStorage.minaAdderess = address;
-      else localStorage.minaAdderess = '';
+      if (address) {
+        localStorage.minaAdderess = address;
+        const network = await (window as any).mina.requestNetwork();
+        const minaNetwork = NETWORKS.find((x) =>
+          network.chainId != 'unknown'
+            ? x.chainId == network.chainId
+            : x.name == network.name
+        );
 
-      const network = await (window as any).mina.requestNetwork();
-
-      const minaNetwork = NETWORKS.find((x) => network.chainId != 'unknown' ? x.chainId == network.chainId : x.name == network.name);
-
-      this.setNetwork(minaNetwork);
+        this.setNetwork(minaNetwork);
+      } else {
+        localStorage.minaAdderess = '';
+      }
       set((state) => {
         state.address = address;
-        state.walletConnected = true;
+        state.walletConnected = !!address;
       });
     },
     async connectWallet(soft: boolean) {

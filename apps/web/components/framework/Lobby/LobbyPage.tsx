@@ -263,6 +263,10 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   };
 
   const leaveMatchmaking = async (type: number) => {
+    if (!networkStore.address) {
+      return
+    }
+    
     const lobbyManager = await client.runtime.resolve(params.contractName);
 
     const tx = await client.transaction(
@@ -277,6 +281,11 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   };
 
   const register = async (id: number) => {
+    if (!networkStore.walletConnected)
+      await networkStore.connectWallet(false);
+    if (!networkStore.address)
+      return;
+
     const lobbyManager = await client.runtime.resolve(params.contractName);
 
     const tx = await client.transaction(
