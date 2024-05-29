@@ -104,7 +104,8 @@ export const usePollMinaBlockHeight = () => {
       () => chain.loadBlock(network.minaNetwork?.chainId!),
       tickInterval
     );
-
+    chain.loadBlock(network.minaNetwork?.chainId!);
+    
     return () => clearInterval(intervalId);
   }, []);
 };
