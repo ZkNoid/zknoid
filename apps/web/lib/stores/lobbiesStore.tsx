@@ -192,6 +192,11 @@ export const useObserveLobbiesStore = (
       return;
     }
 
+    if (!network.walletInstalled()) {
+      return;
+    }
+
+
     if (!client) {
       throw Error('Context app chain client is not set');
     }
@@ -199,5 +204,5 @@ export const useObserveLobbiesStore = (
     lobbiesStore.clearStore();
 
     lobbiesStore.loadMathcmakingOptions(query!);
-  }, [network.walletConnected, network.address]);
+  }, [network.walletConnected, network.protokitClientStarted, network.address]);
 };

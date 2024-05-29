@@ -84,7 +84,7 @@ export const useObserveMinaBalance = () => {
   const network = useNetworkStore();
 
   useEffect(() => {
-    if (!network.walletConnected || !network.minaNetwork?.chainId) return;
+    if (!network.walletConnected || !network.address || !network.minaNetwork?.chainId) return;
 
     balances.loadBalance(network.minaNetwork?.chainId!, network.address!);
   }, [
