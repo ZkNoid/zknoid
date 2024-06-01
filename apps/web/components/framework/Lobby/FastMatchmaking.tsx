@@ -4,13 +4,15 @@ import { Currency } from '@/constants/currency';
 import { Popover } from '@/components/ui/games-store/shared/Popover';
 import { IMatchamkingOption, useLobbiesStore } from '@/lib/stores/lobbiesStore';
 import { MatchmakingModal } from '@/components/framework/Lobby/MatchmakingModal';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useAlreadyInLobbyModalStore } from '@/lib/stores/alreadyInLobbyModalStore';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import { useNetworkStore } from '@/lib/stores/network';
 import { MatchmakingFailModal } from './MatchmakingFailModal';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
+import { useMinaBridge, useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
+import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 
 const OpponentItem = ({
   option,
@@ -57,7 +59,6 @@ const OpponentItem = ({
 
           setPay(option.pay);
           setReceive(option.pay * winCoef);
-          setIsModalOpen(true);
         }
       }}
     >
@@ -147,15 +148,24 @@ export const FastMatchmaking = ({
     useState<number>(0);
   const [curType, setCurType] = useState<number>(0);
   const chainStore = useProtokitChainStore();
+  const lobbiesStore = useLobbiesStore();
+
+  
 
   const registerAndRecord = async (id: number) => {
     if (!chainStore.block?.height) return;
     await register(id);
     setMatchmakingStartEpoche(Math.floor(chainStore.block?.height / 20));
   };
+  let bridge = useMinaBridge();
 
   useEffect(() => {
     if (!chainStore.block?.height) return;
+
+    for (let mmOption of lobbiesStore.matchmakingOptions) {
+      if(mmOption.isPending)
+        setIsModalOpen(true);
+    }
 
     if (isModalOpen && matchmakingStartEpoche > 0) {
       const curEpoche = Math.floor(chainStore.block?.height / 20);
@@ -166,6 +176,8 @@ export const FastMatchmaking = ({
       }
     }
   }, [chainStore.block?.height]);
+
+  const protokitBalanceStore = useProtokitBalancesStore();
 
   return (
     <>
@@ -199,6 +211,9 @@ export const FastMatchmaking = ({
             option={option}
             winCoef={winCoef}
             register={async (id: number) => {
+              if (await bridge(BigInt(option.pay) * 10n ** 9n))
+                throw Error('Not enough funds');
+
               await registerAndRecord(id);
               setCurType(id);
             }}
@@ -336,7 +351,6 @@ export const FastMatchmaking = ({
           restart={async () => {
             await registerAndRecord(curType);
             setIsFailModalOpen(false);
-            setIsModalOpen(true);
           }}
         />
       </div>

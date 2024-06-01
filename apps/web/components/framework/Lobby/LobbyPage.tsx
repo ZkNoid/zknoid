@@ -264,9 +264,9 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
 
   const leaveMatchmaking = async (type: number) => {
     if (!networkStore.address) {
-      return
+      return;
     }
-    
+
     const lobbyManager = await client.runtime.resolve(params.contractName);
 
     const tx = await client.transaction(
@@ -281,10 +281,8 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   };
 
   const register = async (id: number) => {
-    if (!networkStore.walletConnected)
-      await networkStore.connectWallet(false);
-    if (!networkStore.address)
-      throw Error('Not connected');
+    if (!networkStore.walletConnected) await networkStore.connectWallet(false);
+    if (!networkStore.address) throw Error('Not connected');
 
     const lobbyManager = await client.runtime.resolve(params.contractName);
 
@@ -333,7 +331,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
       </Modal>
       <LobbyWrap>
         <FastMatchmaking
-          options={lobbiesStore.mathcmakingOptions}
+          options={lobbiesStore.matchmakingOptions}
           winCoef={1.67}
           register={register}
           leave={leaveMatchmaking}
@@ -425,7 +423,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
             </>
           )}
         </AnimatePresence>
-        <LobbyList lobbys={lobbiesStore.lobbies} />
+        <LobbyList lobbies={lobbiesStore.lobbies} />
         {alreadyInLobbyModalStore.isOpen && (
           <AlreadyInLobbyModal
             isOpen={alreadyInLobbyModalStore.isOpen}
