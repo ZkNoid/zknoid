@@ -121,7 +121,7 @@ const SwitchBtn = ({
 
 const WidgetsSwitch = (props: {
   competitionsSupported: boolean;
-  lobbysSupported: boolean;
+  lobbiesSupported: boolean;
   defaultPage: string;
   gameId: string;
   gameName: string;
@@ -171,7 +171,7 @@ const WidgetsSwitch = (props: {
             )}
           />
         )}
-      {props.lobbysSupported && (
+      {props.lobbiesSupported && (
         <SwitchBtn
           gameId={props.gameId}
           defaultPage={props.defaultPage}
@@ -277,7 +277,7 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
         </div>
         <WidgetsSwitch
           competitionsSupported={!!gameConfig.pageCompetitionsList}
-          lobbysSupported={!!gameConfig.lobby}
+          lobbiesSupported={!!gameConfig.lobby}
           defaultPage={defaultPage}
           gameId={gameConfig.id}
           gameName={gameConfig.name}

@@ -3,17 +3,22 @@ import { useEffect, useRef, useState } from 'react';
 import { Popover } from '@/components/ui/games-store/shared/Popover';
 import { ILobby } from '@/lib/types';
 import { LobbyItem } from '@/components/framework/Lobby/LobbyItem';
-import { LOBBYS_SORT_METHODS, LobbysSortBy } from '@/constants/sortBy';
+import { LOBBYS_SORT_METHODS, LobbiesSortBy } from '@/constants/sortBy';
 
-export const LobbyList = ({ lobbys }: { lobbys: ILobby[] }) => {
+export const LobbyList = ({ lobbies }: { lobbies: ILobby[] }) => {
   const PAGINATION_LIMIT = 6;
 
-  const [sortBy, setSortBy] = useState<LobbysSortBy>(LobbysSortBy.MorePlayers);
+  const [sortBy, setSortBy] = useState<LobbiesSortBy>(
+    LobbiesSortBy.MorePlayers
+  );
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const lobbyListRef = useRef<HTMLDivElement>(null);
-  const filteredLobbys = lobbys.filter((lobby) => !lobby.privateLobby);
-  const renderLobbys = filteredLobbys.slice(0, currentPage * PAGINATION_LIMIT);
+  const filteredLobbies = lobbies.filter((lobby) => !lobby.privateLobby);
+  const renderLobbies = filteredLobbies.slice(
+    0,
+    currentPage * PAGINATION_LIMIT
+  );
 
   useEffect(() => {
     const refObj = lobbyListRef.current;
@@ -22,7 +27,7 @@ export const LobbyList = ({ lobbys }: { lobbys: ILobby[] }) => {
       if (
         // @ts-ignore
         refObj?.scrollHeight - refObj?.scrollTop === refObj?.clientHeight &&
-        renderLobbys.length < filteredLobbys.length
+        renderLobbies.length < filteredLobbies.length
       ) {
         setCurrentPage((prevState) => prevState + 1);
       }
@@ -35,22 +40,22 @@ export const LobbyList = ({ lobbys }: { lobbys: ILobby[] }) => {
 
   const sortByFilter = (a: ILobby, b: ILobby): number => {
     switch (sortBy) {
-      case LobbysSortBy.HighFees:
+      case LobbiesSortBy.HighFees:
         return Number(a.fee - b.fee);
 
-      case LobbysSortBy.LowFees:
+      case LobbiesSortBy.LowFees:
         return Number(b.fee - a.fee);
 
-      case LobbysSortBy.HighFunds:
+      case LobbiesSortBy.HighFunds:
         return Number(a.reward - b.reward);
 
-      case LobbysSortBy.LowFunds:
+      case LobbiesSortBy.LowFunds:
         return Number(b.reward - a.reward);
 
-      case LobbysSortBy.MorePlayers:
+      case LobbiesSortBy.MorePlayers:
         return Number(b.players - a.players);
 
-      case LobbysSortBy.LessPlayers:
+      case LobbiesSortBy.LessPlayers:
         return Number(a.players - b.players);
     }
   };
@@ -89,8 +94,8 @@ export const LobbyList = ({ lobbys }: { lobbys: ILobby[] }) => {
         className={'flex max-h-[500px] w-full flex-col gap-0 overflow-y-scroll'}
         ref={lobbyListRef}
       >
-        {renderLobbys.length >= 1 ? (
-          renderLobbys
+        {renderLobbies.length >= 1 ? (
+          renderLobbies
             .toSorted((a, b) => sortByFilter(a, b))
             .map((item, index) => (
               <LobbyItem
@@ -109,7 +114,7 @@ export const LobbyList = ({ lobbys }: { lobbys: ILobby[] }) => {
             ))
         ) : (
           <div className="flex h-[200px] flex-col items-center justify-center border-t p-3 text-headline-2 uppercase last:border-b">
-            Lobbys not found
+            Lobbies not found
           </div>
         )}
       </div>

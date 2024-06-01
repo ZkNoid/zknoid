@@ -10,10 +10,12 @@ import { useProtokitChainStore } from './protokitChain';
 import { useNetworkStore } from './network';
 import { useContext, useEffect } from 'react';
 import AppChainClientContext from '../contexts/AppChainClientContext';
+import { PendingLobbyIndex } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
 
 export interface IMatchamkingOption {
   id: number;
   pay: number;
+  isPending: boolean;
 }
 
 export interface LobbiesState {
@@ -22,14 +24,19 @@ export interface LobbiesState {
   currentLobby?: ILobby;
   selfReady: boolean;
   activeGameId?: number;
-  mathcmakingOptions: IMatchamkingOption[];
+  matchmakingOptions: IMatchamkingOption[];
   clearStore(): void;
+  loadPendingmatchmakingStatus(
+    query: ModuleQuery<LobbyManager>,
+    address: PublicKey,
+    blochHeight: number
+  ): Promise<void>;
   loadLobbies(
     query: ModuleQuery<LobbyManager>,
     address: PublicKey,
     rewardCoeff: number
   ): Promise<void>;
-  loadMathcmakingOptions(query: ModuleQuery<MatchMaker>): Promise<void>;
+  loadmatchmakingOptions(query: ModuleQuery<MatchMaker>): Promise<void>;
 }
 
 export const lobbyInitializer = immer<LobbiesState>((set) => ({
@@ -38,18 +45,48 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
   currentLobby: undefined,
   selfReady: false,
   activeGameId: undefined,
-  mathcmakingOptions: [],
+  matchmakingOptions: [],
   clearStore() {
     set((state) => {
       state.lobbies = [];
       state.currentLobby = undefined;
       state.selfReady = false;
       state.activeGameId = undefined;
-      state.mathcmakingOptions = [];
+      state.matchmakingOptions = [];
+    });
+  },
+  async loadPendingmatchmakingStatus(
+    query: ModuleQuery<MatchMaker>,
+    address: PublicKey,
+    blockHeight: number
+  ) {
+    const PENDING_BLOCKS_NUM = 20;
+
+    const matchmakingOptions: IMatchamkingOption[] = [];
+
+    for (let i = 0; i < this.matchmakingOptions.length; i++) {
+      const pendingLobbyIndex = new PendingLobbyIndex({
+        roundId: UInt64.from(blockHeight).div(PENDING_BLOCKS_NUM),
+        type: UInt64.from(i),
+      });
+
+      const pendingLobbyInfo = await query.pendingLobby.get(pendingLobbyIndex);
+
+      matchmakingOptions.push({
+        id: this.matchmakingOptions[i].id,
+        pay: this.matchmakingOptions[i].pay,
+        isPending: !!pendingLobbyInfo,
+      });
+    }
+    
+    console.log('New matchmaking options', matchmakingOptions);
+
+    set((state) => {
+      state.matchmakingOptions = matchmakingOptions;
     });
   },
   async loadLobbies(
-    query: ModuleQuery<LobbyManager>,
+    query: ModuleQuery<MatchMaker>,
     address: PublicKey,
     rewardCoeff: number
   ) {
@@ -134,23 +171,25 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
     });
   },
 
-  async loadMathcmakingOptions(query: ModuleQuery<MatchMaker>) {
+  async loadmatchmakingOptions(query: ModuleQuery<MatchMaker>) {
+    console.log('Options loading');
     let lastDefaultLobbyId = await query.lastDefaultLobby.get();
-    let mathcmakingOptions: IMatchamkingOption[] = [];
+    let matchmakingOptions: IMatchamkingOption[] = [];
 
     if (lastDefaultLobbyId) {
       for (let i = 1; i < +lastDefaultLobbyId; i++) {
         let curDefaultLobby = await query.defaultLobbies.get(UInt64.from(i));
 
-        mathcmakingOptions.push({
+        matchmakingOptions.push({
           id: i,
           pay: +curDefaultLobby!.participationFee,
+          isPending: false,
         });
       }
     }
 
     set((state) => {
-      state.mathcmakingOptions = mathcmakingOptions;
+      state.matchmakingOptions = matchmakingOptions;
     });
   },
 }));
@@ -179,11 +218,23 @@ export const useObserveLobbiesStore = (
       throw Error('Context app chain client is not set');
     }
 
-    lobbiesStore.loadLobbies(
-      query!,
-      network.address ? PublicKey.fromBase58(network.address) : PublicKey.empty(),
-      rewardCoeff
-    );
+    if (network.address) {
+      lobbiesStore.loadLobbies(
+        query!,
+        PublicKey.fromBase58(network.address),
+        rewardCoeff
+      );
+      console.log('bcl', chain.block?.height);
+      if (chain.block?.height) {
+        console.log('Loading..');
+
+        lobbiesStore.loadPendingmatchmakingStatus(
+          query!,
+          PublicKey.fromBase58(network.address),
+          chain.block?.height
+        );
+      }
+    }
   }, [chain.block?.height, network.walletConnected, network.address]);
 
   // Update once wallet connected
@@ -192,17 +243,12 @@ export const useObserveLobbiesStore = (
       return;
     }
 
-    if (!network.walletInstalled()) {
-      return;
-    }
-
-
     if (!client) {
       throw Error('Context app chain client is not set');
     }
 
     lobbiesStore.clearStore();
 
-    lobbiesStore.loadMathcmakingOptions(query!);
-  }, [network.walletConnected, network.protokitClientStarted, network.address]);
+    lobbiesStore.loadmatchmakingOptions(query!);
+  }, [network.walletConnected, network.address]);
 };

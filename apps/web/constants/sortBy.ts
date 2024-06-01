@@ -16,7 +16,7 @@ export enum CompetitionsSortBy {
   Nearest = 'From Latest to Nearest',
 }
 
-export enum LobbysSortBy {
+export enum LobbiesSortBy {
   LowFunds = 'From High to Low Funds',
   HighFunds = 'From Low to High Funds',
   LowFees = 'From High to Low Fees',
@@ -44,10 +44,10 @@ export const COMPETITIONS_SORT_METHODS = [
 ];
 
 export const LOBBYS_SORT_METHODS = [
-  LobbysSortBy.LowFunds,
-  LobbysSortBy.HighFunds,
-  LobbysSortBy.LowFees,
-  LobbysSortBy.HighFees,
-  LobbysSortBy.LessPlayers,
-  LobbysSortBy.MorePlayers,
+  LobbiesSortBy.LowFunds,
+  LobbiesSortBy.HighFunds,
+  LobbiesSortBy.LowFees,
+  LobbiesSortBy.HighFees,
+  LobbiesSortBy.LessPlayers,
+  LobbiesSortBy.MorePlayers,
 ];
