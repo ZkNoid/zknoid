@@ -69,13 +69,14 @@ export const MobileNavbar = ({ autoconnect }: { autoconnect: boolean }) => {
       <div className={'flex w-full items-center justify-between px-2'}>
         <Link
           href={'/'}
-          className={'cursor-pointer ease-in-out hover:opacity-80'}
+          className={'z-20 cursor-pointer ease-in-out hover:opacity-80'}
         >
           <Image
             src={'/image/zknoid-logo.svg'}
             alt={'ZkNoid logo'}
             width={219}
             height={47}
+            className={'h-[15vw] w-[35vw]'}
           />
         </Link>
         <motion.button
@@ -91,10 +92,11 @@ export const MobileNavbar = ({ autoconnect }: { autoconnect: boolean }) => {
               show: {
                 rotate: 45,
                 y: 9,
+                backgroundColor: '#D2FF00',
               },
             }}
             className="block h-[3px] w-[30px] bg-[#fff]"
-          ></motion.span>
+          />
           <motion.span
             variants={{
               hide: {
@@ -107,7 +109,7 @@ export const MobileNavbar = ({ autoconnect }: { autoconnect: boolean }) => {
               },
             }}
             className="block h-[3px] w-[30px] bg-[#fff]"
-          ></motion.span>
+          />
           <motion.span
             variants={{
               hide: {
@@ -116,10 +118,11 @@ export const MobileNavbar = ({ autoconnect }: { autoconnect: boolean }) => {
               show: {
                 rotate: -45,
                 y: -9,
+                backgroundColor: '#D2FF00',
               },
             }}
             className="block h-[3px] w-[30px] bg-[#fff]"
-          ></motion.span>
+          />
         </motion.button>
         <AnimatePresence>
           {isOpen && (
@@ -148,15 +151,15 @@ export const MobileNavbar = ({ autoconnect }: { autoconnect: boolean }) => {
               animate={'open'}
               exit={'closed'}
               className={
-                'container fixed inset-y-0 mx-auto flex flex-row justify-end md:mr-0'
+                'fixed left-0 top-0 flex h-screen w-full flex-row justify-end bg-bg-dark'
               }
             >
               <div
                 className={
-                  'z-50 flex h-screen w-full flex-col gap-4 bg-bg-dark px-4 pb-4 pt-[80px] text-xl'
+                  'z-50 flex h-full w-full flex-col bg-bg-dark px-4 pb-4 pt-[90px] text-xl'
                 }
               >
-                <div className="flex flex-col gap-2">
+                <div className="flex h-full w-full flex-col gap-2">
                   {networkStore.walletConnected && networkStore.address ? (
                     <>
                       <HeaderCard
@@ -187,6 +190,12 @@ export const MobileNavbar = ({ autoconnect }: { autoconnect: boolean }) => {
                       />
                     </Link>
                   )}
+                </div>
+                <div
+                  className={
+                    'flex h-full w-full flex-col items-center justify-end gap-2'
+                  }
+                >
                   {networkStore.walletConnected && <BalanceInfo />}
                   <div className="mt-6 flex justify-center gap-3">
                     {SOCIALS.map((x) => (
