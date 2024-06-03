@@ -17,11 +17,10 @@ import {
 import { FiltrationBox } from '@/components/ui/games-store/widgets/GameStore/FiltrationBox';
 import { GameCard } from '@/components/ui/games-store/GameCard';
 import { useEffect, useState } from 'react';
-import { defaultGames, IGame } from '@/app/constants/games';
+import { IGame } from '@/app/constants/games';
 import { clsx } from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { GAME_STORE_SORT_METHODS, GameStoreSortBy } from '@/constants/sortBy';
-import { Competitions } from '@/components/ui/games-store/widgets/GameStore/Competitions';
 import ChessIllustration from './assets/Chess_Illustration.json';
 import CubesIllustration from './assets/Cubes_Illustration.json';
 import EyesIllustration from './assets/Eyes_Illustration_01_01.json';
@@ -30,8 +29,6 @@ import Lottie from 'react-lottie';
 import SnakeNoEvents from './assets/ZKNoid_Snake_Intro_03_05.json';
 import { Pagination } from '@/components/ui/games-store/shared/Pagination';
 import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
-import { Currency } from '@/constants/currency';
-import { GradientButton } from '@/components/ui/games-store/shared/GradientButton';
 
 export const GameStore = ({ games }: { games: IGame[] }) => {
   const PAGINATION_LIMIT = 9;
@@ -53,10 +50,6 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
   const [sortBy, setSortBy] = useState<GameStoreSortBy>(
     GameStoreSortBy.RatingLow
   );
-
-  const [animationHeights, setAnimationHeights] = useState<
-    [500, 450, 450, 500] | [300, 250, 250, 250]
-  >([500, 450, 450, 500]);
 
   const filteredEvents = GAME_EVENTS.filter(
     (x) =>
@@ -145,11 +138,7 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
           </div>
         )}
         {filteredEvents.length > 0 && (
-          <div
-            className={
-              'grid grid-cols-1 gap-5 lg:grid-cols-2'
-            }
-          >
+          <div className={'grid grid-cols-1 gap-5 lg:grid-cols-2'}>
             {filteredEvents.map((event) => (
               <EventCard
                 key={event.name}
@@ -163,9 +152,11 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
         )}
       </div>
 
-      <div className={'mt-20 mb-20 lg:mb-0'}>
-      <div className="pb-3 text-headline-2 lg:text-headline-1">Popular genres</div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 lg:gap-5">
+      <div className={'mb-0 mt-20'}>
+        <div className="pb-3 text-headline-2 lg:text-headline-1">
+          Popular genres
+        </div>
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-5">
           <GenreCard
             animation={GamepadIllustration}
             genre={ZkNoidGameGenre.Arcade}
@@ -304,11 +295,11 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
                     game={game}
                     key={game.id}
                     color={
-                        game.genre === ZkNoidGameGenre.BoardGames
-                          ? 1
-                          : game.genre === ZkNoidGameGenre.Arcade
-                            ? 2
-                            : 3
+                      game.genre === ZkNoidGameGenre.BoardGames
+                        ? 1
+                        : game.genre === ZkNoidGameGenre.Arcade
+                          ? 2
+                          : 3
                     }
                   />
                 ))}

@@ -63,12 +63,12 @@ export const HeaderCard = ({
 }) => (
   <div
     className={clsx(
-      'group flex justify-center lg:justify-normal cursor-pointer items-center gap-[10px] rounded border border-bg-dark p-1 px-2 text-header-menu text-bg-dark transition duration-75 ease-in hover:border-left-accent hover:bg-bg-dark hover:text-left-accent',
+      'group flex cursor-pointer items-center justify-center gap-[10px] rounded border border-bg-dark p-1 px-2 text-header-menu text-bg-dark transition duration-75 ease-in hover:border-left-accent hover:bg-bg-dark hover:text-left-accent lg:justify-normal',
       {
         'rounded-b-none border-middle-accent text-middle-accent hover:bg-middle-accent/20':
           expanded,
         'hover:border-middle-accent hover:text-middle-accent': isMiddle,
-        'bg-middle-accent': !expanded && isMiddle,
+        'bg-right-accent lg:bg-middle-accent': !expanded && isMiddle,
         'bg-left-accent': !expanded && !isMiddle,
       },
       className && className
