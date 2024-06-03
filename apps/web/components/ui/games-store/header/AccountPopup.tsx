@@ -42,7 +42,7 @@ const BalanceInfo = () => {
   return (
     <>
       {networkStore.walletConnected && (
-        <div className="flex flex-row items-center gap-[1.25vw] text-base">
+        <div className="flex flex-row items-start gap-[1.25vw] text-base">
           <div className="flex h-full w-full flex-col-reverse items-start gap-[14px] lg:w-auto lg:flex-col lg:gap-[0.313vw]">
             <div className="flex items-center gap-[10px]">
               <Image alt="" src={CoinImg} width={26} height={26} />
