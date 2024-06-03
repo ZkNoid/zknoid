@@ -19,30 +19,43 @@ export default function TopUpCard({
   expanded,
   onClick,
   className,
+  color,
 }: {
   text: string;
   expanded?: boolean;
   onClick?: () => void;
   className?: string;
+  color?: 'dark';
 }) {
   return (
     <div
       className={cn(
         'group flex w-full cursor-pointer items-center justify-center lg:w-auto',
-        'gap-[10px] rounded border border-bg-dark p-1 px-2 text-header-menu',
-        'text-bg-dark transition duration-75 ease-in hover:border-middle-accent lg:text-foreground',
-        'hover:bg-bg-dark hover:text-middle-accent lg:justify-normal',
+        'gap-[10px] rounded p-1 px-2 text-header-menu',
+        ' transition duration-75 ease-in',
+        ' lg:justify-normal',
         expanded
           ? 'rounded-b-none border-middle-accent bg-bg-dark text-middle-accent hover:bg-right-accent/20'
-          : 'bg-left-accent lg:bg-middle-accent',
+          : expanded && !color
+            ? 'bg-left-accent lg:bg-middle-accent'
+            : undefined,
+        {
+          'bg-bg-dark text-foreground hover:opacity-80': color === 'dark',
+          'border border-bg-dark text-bg-dark hover:border-middle-accent hover:bg-bg-dark hover:text-middle-accent lg:text-foreground':
+            !color,
+        },
         className
       )}
       onClick={() => onClick?.()}
     >
       <TopUpSVG
         className={cn(
-          'h-[24px] w-[24px] fill-bg-dark group-hover:fill-middle-accent lg:fill-white',
-          expanded && 'fill-bg-dark lg:fill-middle-accent'
+          'h-[24px] w-[24px]',
+          expanded && 'fill-bg-dark lg:fill-middle-accent',
+          {
+            'fill-foreground group-hover:fill-foreground': color === 'dark',
+            'fill-bg-dark group-hover:fill-middle-accent lg:fill-white': !color,
+          }
         )}
       />
       {text}

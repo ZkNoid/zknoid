@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import Image from 'next/image';
 
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { formatAddress, walletInstalled } from '@/lib/helpers';
 import { useNetworkStore } from '@/lib/stores/network';
@@ -15,6 +15,8 @@ import { HeaderCard } from './HeaderCard';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import AccountCard from './header/AccountCard';
+import AccountPopup from '@/components/ui/games-store/header/AccountPopup';
+import {AnimatePresence} from "framer-motion";
 
 const BalanceInfo = dynamic(
   () => import('@/components/ui/games-store/BalanceInfo'),
@@ -33,6 +35,8 @@ export default function DesktopNavbar({
   autoconnect: boolean;
 }) {
   const networkStore = useNetworkStore();
+  const [isAccountOpen, setIsAccountOpen] = useState<boolean>(false);
+
   useEffect(() => {
     if (!walletInstalled()) return;
 
@@ -70,13 +74,19 @@ export default function DesktopNavbar({
           <BalanceInfo />
         )}
 
-        <div className="flex gap-5">
+        <div className="relative flex gap-5">
           {networkStore.walletConnected && networkStore.address ? (
             <>
               <AccountCard
                 text={formatAddress(networkStore.address)}
+                onClick={() => setIsAccountOpen(true)}
               />
               <NetworkPicker />
+              <AnimatePresence>
+                {isAccountOpen && (
+                  <AccountPopup setIsAccountOpen={setIsAccountOpen} />
+                )}
+              </AnimatePresence>
             </>
           ) : walletInstalled() ? (
             <HeaderCard

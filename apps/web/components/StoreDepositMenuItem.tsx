@@ -4,14 +4,17 @@ import { buildClient } from '@/lib/utils';
 import { DefaultRuntimeModules } from '@/lib/runtimeModules';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 
-export default function StoreDepositMenuItem() {
+export default function StoreDepositMenuItem({ color }: { color?: 'dark' }) {
   const contextAppChainClient = useContext(AppChainClientContext);
 
-  const defaultClient = useMemo(() => contextAppChainClient || buildClient(DefaultRuntimeModules), []);
+  const defaultClient = useMemo(
+    () => contextAppChainClient || buildClient(DefaultRuntimeModules),
+    []
+  );
 
   return (
     <AppChainClientContext.Provider value={defaultClient}>
-      <DepositMenuItem />
+      <DepositMenuItem color={color} />
     </AppChainClientContext.Provider>
   );
 }
