@@ -16,7 +16,7 @@ import {
 } from '@/lib/platform/game_tags';
 import { FiltrationBox } from '@/components/ui/games-store/widgets/GameStore/FiltrationBox';
 import { GameCard } from '@/components/ui/games-store/GameCard';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { IGame } from '@/app/constants/games';
 import { clsx } from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -93,20 +93,6 @@ export const GameStore = ({ games }: { games: IGame[] }) => {
     (currentPage - 1) * PAGINATION_LIMIT,
     currentPage * PAGINATION_LIMIT
   );
-
-  useEffect(() => {
-    const updateAnimationHeights = () => {
-      const innerWidth = window.innerWidth;
-      setAnimationHeights(
-        innerWidth <= 1024 ? [300, 250, 250, 250] : [500, 450, 450, 500]
-      );
-    };
-
-    window.addEventListener('resize', updateAnimationHeights);
-    updateAnimationHeights();
-
-    return () => window.removeEventListener('resize', updateAnimationHeights);
-  }, []);
 
   return (
     <div className="top-0 mb-[100px] flex h-full w-full flex-col gap-5 p-4 lg:p-10">
