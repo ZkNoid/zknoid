@@ -36,7 +36,7 @@ export default function TopUpCard({
         ' lg:justify-normal',
         expanded
           ? 'rounded-b-none border-middle-accent bg-bg-dark text-middle-accent hover:bg-right-accent/20'
-          : expanded && !color
+          : !expanded && !color
             ? 'bg-left-accent lg:bg-middle-accent'
             : undefined,
         {
