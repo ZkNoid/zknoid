@@ -31,7 +31,7 @@ export default function TopUpCard({
     <div
       className={cn(
         'group flex w-full cursor-pointer items-center justify-center lg:w-auto',
-        'gap-[10px] rounded p-1 px-2 text-header-menu',
+        'gap-[10px] rounded px-2 py-3 text-header-menu lg:py-1',
         ' transition duration-75 ease-in',
         ' lg:justify-normal',
         expanded

@@ -15,6 +15,7 @@ import {
   useScroll,
 } from 'framer-motion';
 import { SOCIALS } from '@/constants/socials';
+import MobileAccount from '@/components/ui/games-store/header/MobileAccount';
 
 const BalanceInfo = dynamic(
   () => import('@/components/ui/games-store/BalanceInfo'),
@@ -156,17 +157,13 @@ export const MobileNavbar = ({ autoconnect }: { autoconnect: boolean }) => {
             >
               <div
                 className={
-                  'z-50 flex h-full w-full flex-col bg-bg-dark px-4 pb-4 pt-[90px] text-xl'
+                  'z-50 flex h-full w-full flex-col bg-bg-dark px-4 pb-4 pt-[90px]'
                 }
               >
                 <div className="flex h-full w-full flex-col gap-2">
                   {networkStore.walletConnected && networkStore.address ? (
                     <>
-                      <HeaderCard
-                        svg={'account'}
-                        isMiddle={true}
-                        text={networkStore.address!.substring(0, 10) + '..'}
-                      />
+                      <MobileAccount />
                       <NetworkPicker />
                     </>
                   ) : walletInstalled() ? (

@@ -1,74 +1,11 @@
-import { cn } from '@/lib/helpers';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
 import { useNetworkStore } from '@/lib/stores/network';
-import dynamic from 'next/dynamic';
-import {
-  useMinaBalancesStore,
-  useObserveMinaBalance,
-} from '@/lib/stores/minaBalances';
-import { usePollMinaBlockHeight } from '@/lib/stores/minaChain';
-import { useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
-import Image from 'next/image';
-import CoinImg from '@/components/ui/games-store/assets/coin.svg';
-import MinaCoinImg from '@/components/ui/games-store/assets/mina.png';
+import { useState } from 'react';
 import * as Yup from 'yup';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Field, Form, Formik } from 'formik';
+import { cn } from '@/lib/helpers';
 
-const BalanceInfo = () => {
-  const minaBalancesStore = useMinaBalancesStore();
-  const networkStore = useNetworkStore();
-  usePollMinaBlockHeight();
-  useObserveMinaBalance();
-  const protokitBalancesStore = useProtokitBalancesStore();
-
-  const deposit = (
-    Number(protokitBalancesStore.balances[networkStore.address!] ?? 0n) /
-    10 ** 9
-  ).toFixed(2);
-
-  const minaDeposit = (
-    Number(minaBalancesStore.balances[networkStore.address!] ?? 0n) /
-    10 ** 9
-  ).toFixed(2);
-
-  const StoreDepositMenuItem = dynamic(
-    () => import('@/components/StoreDepositMenuItem'),
-    {
-      ssr: false,
-    }
-  );
-
-  return (
-    <>
-      {networkStore.walletConnected && (
-        <div className="flex flex-row items-start gap-[1.25vw] text-base">
-          <div className="flex h-full w-full flex-col-reverse items-start gap-[14px] lg:w-auto lg:flex-col lg:gap-[0.313vw]">
-            <div className="flex items-center gap-[10px]">
-              <Image alt="" src={CoinImg} width={26} height={26} />
-              <div className="w-full text-start text-bg-dark lg:w-auto">
-                Deposit: {deposit}
-              </div>
-            </div>
-            <div className="flex items-center gap-[10px]">
-              <Image alt="" src={MinaCoinImg} width={26} height={26} />
-              <div className="w-full text-end text-bg-dark lg:w-auto">
-                Wallet balance {minaDeposit}
-              </div>
-            </div>
-          </div>
-          <StoreDepositMenuItem color={'dark'} />
-        </div>
-      )}
-    </>
-  );
-};
-
-export default function AccountPopup({
-  setIsAccountOpen,
-}: {
-  setIsAccountOpen: (isOpen: boolean) => void;
-}) {
+export default function MobileAccount() {
   const networkStore = useNetworkStore();
   const [linkCopied, setLinkCopied] = useState<boolean>(false);
 
@@ -101,20 +38,14 @@ export default function AccountPopup({
       .catch((err) => {
         console.log('Error while disconnect', err);
       });
-    setIsAccountOpen(false);
   };
 
   return (
-    <motion.div
-      className={
-        'absolute -right-2 top-0 z-20 flex w-[110%] flex-col rounded-[10px] bg-right-accent p-10'
-      }
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
+    <div className={'flex w-full flex-col rounded-[5px] bg-right-accent p-3'}>
       <div className={'flex w-full flex-row justify-between'}>
-        <div className={'flex w-full flex-row items-center gap-2'}>
+        <div
+          className={'flex w-full flex-row items-center justify-start gap-2'}
+        >
           <svg
             width="26"
             height="27"
@@ -148,22 +79,6 @@ export default function AccountPopup({
             Account
           </span>
         </div>
-        <svg
-          width="24"
-          height="25"
-          viewBox="0 0 24 25"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className={'cursor-pointer hover:opacity-80'}
-          onClick={() => setIsAccountOpen(false)}
-        >
-          <path
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="M14.181 12.5912L24.0003 2.76778L21.8193 0.585938L12 10.4093L2.18093 0.586143L0 2.76799L9.8191 12.5912L0.00998605 22.4044L2.19092 24.5862L12 14.773L21.8093 24.5864L23.9903 22.4046L14.181 12.5912Z"
-            fill="#252525"
-          />
-        </svg>
       </div>
       <div className={'mt-8 flex w-full flex-col gap-4'}>
         <Formik
@@ -276,7 +191,7 @@ export default function AccountPopup({
         >
           <div
             className={cn(
-              'rounded-[5px] border border-bg-dark px-2 py-1 text-bg-dark',
+              'rounded-[5px] border border-bg-dark px-2 py-1 font-plexsans text-main font-normal text-bg-dark',
               {
                 'opacity-60': linkCopied,
                 'group-hover:opacity-80': !linkCopied,
@@ -336,11 +251,10 @@ export default function AccountPopup({
             )}
           </AnimatePresence>
         </div>
-        <BalanceInfo />
-        <div className={'flex w-full flex-row gap-1.5'}>
+        <div className={'flex w-full flex-col gap-3'}>
           <button
             className={
-              'flex w-full cursor-pointer flex-col items-center justify-center gap-2.5 rounded-[5px] bg-bg-dark p-1 hover:opacity-80'
+              'flex w-full cursor-pointer flex-row items-center justify-center gap-2.5 rounded-[5px] bg-bg-dark px-2 py-3 hover:opacity-80'
             }
           >
             <svg
@@ -369,7 +283,7 @@ export default function AccountPopup({
           </button>
           <button
             className={
-              'flex w-full cursor-pointer flex-col items-center justify-center gap-2.5 rounded-[5px] bg-bg-dark p-1 hover:opacity-80'
+              'flex w-full cursor-pointer flex-row items-center justify-center gap-2.5 rounded-[5px] bg-bg-dark px-2 py-3 hover:opacity-80'
             }
             onClick={disconnectWallet}
           >
@@ -395,6 +309,6 @@ export default function AccountPopup({
           </button>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
