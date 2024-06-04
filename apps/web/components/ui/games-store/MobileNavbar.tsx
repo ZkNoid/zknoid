@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { walletInstalled } from '@/lib/helpers';
+import { cn, walletInstalled } from '@/lib/helpers';
 import { useNetworkStore } from '@/lib/stores/network';
 import { HeaderCard } from './HeaderCard';
 import {
@@ -16,6 +16,7 @@ import {
 } from 'framer-motion';
 import { SOCIALS } from '@/constants/socials';
 import MobileAccount from '@/components/ui/games-store/header/MobileAccount';
+import { useBridgeStore } from '@/lib/stores/protokitBalances';
 
 const BalanceInfo = dynamic(
   () => import('@/components/ui/games-store/BalanceInfo'),
@@ -32,6 +33,7 @@ export const MobileNavbar = ({ autoconnect }: { autoconnect: boolean }) => {
   const [hidden, setHidden] = useState(false);
   const [isOpen, toggleOpen] = useCycle(false, true);
   const networkStore = useNetworkStore();
+  const bridgeStore = useBridgeStore();
 
   const { scrollY } = useScroll();
 
@@ -151,13 +153,14 @@ export const MobileNavbar = ({ autoconnect }: { autoconnect: boolean }) => {
               initial={'closed'}
               animate={'open'}
               exit={'closed'}
-              className={
-                'fixed left-0 top-0 flex h-screen w-full flex-row justify-end bg-bg-dark'
-              }
+              className={cn(
+                'fixed left-0 top-0 flex h-screen w-full flex-row justify-end bg-bg-dark lg:z-0',
+                { 'z-[51]': bridgeStore.open }
+              )}
             >
               <div
                 className={
-                  'z-50 flex h-full w-full flex-col bg-bg-dark px-4 pb-4 pt-[90px]'
+                  'flex h-full w-full flex-col bg-bg-dark px-4 pb-4 pt-[90px]'
                 }
               >
                 <div className="flex h-full w-full flex-col gap-2">
