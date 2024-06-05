@@ -163,7 +163,11 @@ export const MobileNavbar = ({ autoconnect }: { autoconnect: boolean }) => {
                   'flex h-full w-full flex-col bg-bg-dark px-4 pb-4 pt-[90px]'
                 }
               >
-                <div className="flex h-full w-full flex-col gap-2">
+                <div
+                  className={cn('flex w-full flex-col gap-2', {
+                    'h-full': networkStore.walletConnected,
+                  })}
+                >
                   {networkStore.walletConnected && networkStore.address ? (
                     <>
                       <MobileAccount />
@@ -177,6 +181,7 @@ export const MobileNavbar = ({ autoconnect }: { autoconnect: boolean }) => {
                       onClick={() => {
                         networkStore.connectWallet(false);
                       }}
+                      className={'py-3'}
                     />
                   ) : (
                     <Link href="https://www.aurowallet.com/">
@@ -192,15 +197,37 @@ export const MobileNavbar = ({ autoconnect }: { autoconnect: boolean }) => {
                   )}
                 </div>
                 <div
-                  className={
-                    'flex h-full w-full flex-col items-center justify-end gap-2'
-                  }
+                  className={cn(
+                    'flex h-full w-full flex-col items-center gap-2',
+                    {
+                      'justify-end': networkStore.walletConnected,
+                      'justify-start': !networkStore.walletConnected,
+                    }
+                  )}
                 >
                   {networkStore.walletConnected && <BalanceInfo />}
-                  <div className="mt-6 flex justify-center gap-3">
+                  <div
+                    className={cn('mt-6 flex gap-3', {
+                      'justify-center': networkStore.walletConnected,
+                      'w-full justify-between gap-3':
+                        !networkStore.walletConnected,
+                    })}
+                  >
                     {SOCIALS.map((x) => (
-                      <Link href={x.link} key={x.id}>
-                        <Image alt={x.name} src={x.image} />
+                      <Link
+                        href={x.link}
+                        key={x.id}
+                        className={cn({
+                          'h-[30px] w-[30px]': !networkStore.walletConnected,
+                        })}
+                      >
+                        <Image
+                          alt={x.name}
+                          src={x.image}
+                          className={cn({
+                            'w-full': !networkStore.walletConnected,
+                          })}
+                        />
                       </Link>
                     ))}
                   </div>
