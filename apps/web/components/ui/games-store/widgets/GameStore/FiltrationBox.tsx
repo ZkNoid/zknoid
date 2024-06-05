@@ -27,7 +27,7 @@ export function FiltrationBox<T extends string>({
             animate={{ height: 'auto' }}
             exit={{ height: 0 }}
             transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
-            className={'z-10 flex flex-col gap-4 overflow-hidden'}
+            className={'z-[1] flex flex-col gap-4 overflow-hidden'}
           >
             {items.map((item) => (
               <div
@@ -75,7 +75,7 @@ export function FiltrationBox<T extends string>({
         </svg>
         <div
           className={
-            'absolute mx-auto flex h-[20px] w-[20px] flex-col items-center justify-center max-[2000px]:right-0 max-[2000px]:top-0 min-[2000px]:right-0.5 min-[2000px]:top-1 pointer-events-none'
+            'pointer-events-none absolute mx-auto flex h-[20px] w-[20px] flex-col items-center justify-center max-[2000px]:right-0 max-[2000px]:top-0 min-[2000px]:right-0.5 min-[2000px]:top-1'
           }
         >
           <motion.div

@@ -22,7 +22,6 @@ import { formatUnits } from '@/lib/unit';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import { type PendingTransaction } from '@proto-kit/sequencer';
-import { Button } from '@/components/ui/games-store/shared/Button';
 import { toast } from '@/components/ui/games-store/shared/Toast';
 import { useToasterStore } from '@/lib/stores/toasterStore';
 import TopUpCard from './ui/games-store/header/TopUpCard';
@@ -414,9 +413,10 @@ export const DepositMenuItem = () => {
             isPay={false}
           />
         </div>
-        <Button
-          label={isUnbridge ? 'Unbridge' : 'Bridge'}
-          color="dark"
+        <button
+          className={
+            'w-full rounded-[5px] border border-bg-dark bg-bg-dark py-2 text-center text-[16px]/[16px] font-medium text-foreground hover:bg-right-accent hover:text-bg-dark lg:text-[20px]/[20px]'
+          }
           onClick={() =>
             isUnbridge
               ? unbridge(amountIn)
@@ -436,7 +436,32 @@ export const DepositMenuItem = () => {
                     toast.error(toasterStore, 'Bridge error', true);
                   })
           }
-        />
+        >
+          {isUnbridge ? 'Unbridge' : 'Bridge'}
+        </button>
+        {/*<Button*/}
+        {/*  label={isUnbridge ? 'Unbridge' : 'Bridge'}*/}
+        {/*  color="dark"*/}
+        {/*  onClick={() =>*/}
+        {/*    isUnbridge*/}
+        {/*      ? unbridge(amountIn)*/}
+        {/*          .then(() =>*/}
+        {/*            toast.success(toasterStore, 'Unbridge success', true)*/}
+        {/*          )*/}
+        {/*          .catch((error) => {*/}
+        {/*            console.log(error);*/}
+        {/*            toast.error(toasterStore, 'Unbridge error', true);*/}
+        {/*          })*/}
+        {/*      : bridge(amountIn)*/}
+        {/*          .then(() =>*/}
+        {/*            toast.success(toasterStore, 'Bridge success', true)*/}
+        {/*          )*/}
+        {/*          .catch((error) => {*/}
+        {/*            console.log(error);*/}
+        {/*            toast.error(toasterStore, 'Bridge error', true);*/}
+        {/*          })*/}
+        {/*  }*/}
+        {/*/>*/}
       </BridgeModal>
     </>
   );
