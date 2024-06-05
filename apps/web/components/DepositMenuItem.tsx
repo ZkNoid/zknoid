@@ -279,8 +279,42 @@ export const DepositMenuItem = () => {
       >
         <div className={'flex w-full flex-row justify-between'}>
           <div />
-          <div className="hidden text-[32px] text-bg-dark lg:block">
-            {!isUnbridge ? 'Bridge' : 'Unbridge'}
+          <div className={'hidden w-full flex-row lg:flex'}>
+            <div className="font-museo text-headline-1 text-bg-dark">
+              {!isUnbridge ? 'Bridge' : 'Unbridge'}
+            </div>
+            <Popover
+              trigger={
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={'hover:opacity-80'}
+                >
+                  <g opacity="0.5">
+                    <circle
+                      cx="8"
+                      cy="8"
+                      r="7"
+                      fill="#252525"
+                      stroke="#252525"
+                      strokeWidth="0.500035"
+                    />
+                    <path
+                      d="M7.24558 9.95291V7.68144C8.03215 7.64451 8.64606 7.45983 9.08731 7.12742C9.53815 6.79501 9.76357 6.33795 9.76357 5.75623V5.56233C9.76357 5.09141 9.61009 4.71745 9.30313 4.44044C8.99618 4.1542 8.58371 4.01108 8.06572 4.01108C7.50937 4.01108 7.06333 4.16343 6.7276 4.46814C6.40146 4.77285 6.18083 5.16066 6.06572 5.63158L5.00098 5.24377C5.08731 4.94829 5.21201 4.66667 5.37508 4.39889C5.54774 4.12188 5.75877 3.88181 6.00817 3.67867C6.26716 3.4663 6.56932 3.30009 6.91465 3.18006C7.25997 3.06002 7.65805 3 8.10889 3C9.00098 3 9.70601 3.23546 10.224 3.70637C10.742 4.17729 11.001 4.8144 11.001 5.61773C11.001 6.06094 10.9194 6.44875 10.7564 6.78116C10.6029 7.10434 10.4015 7.38135 10.1521 7.61219C9.90266 7.84303 9.61968 8.0277 9.30313 8.1662C8.98659 8.30471 8.67004 8.40166 8.35349 8.45706V9.95291H7.24558ZM7.80673 13C7.49978 13 7.27436 12.9261 7.13047 12.7784C6.99618 12.6307 6.92903 12.4367 6.92903 12.1967V12.0166C6.92903 11.7765 6.99618 11.5826 7.13047 11.4349C7.27436 11.2872 7.49978 11.2133 7.80673 11.2133C8.11369 11.2133 8.33431 11.2872 8.4686 11.4349C8.61249 11.5826 8.68443 11.7765 8.68443 12.0166V12.1967C8.68443 12.4367 8.61249 12.6307 8.4686 12.7784C8.33431 12.9261 8.11369 13 7.80673 13Z"
+                      fill="#F9F8F4"
+                    />
+                  </g>
+                </svg>
+              }
+            >
+              <div className={'min-w-[200px]'}>
+                Bridge your Mina tokens to the platform balance. You can use the
+                bridged tokens in games or unbridge them back to Mina network
+              </div>
+            </Popover>
           </div>
           <svg
             width="22"
@@ -331,7 +365,8 @@ export const DepositMenuItem = () => {
             }
           >
             <div className={'min-w-[100px]'}>
-              Here you can bridge MINA to $znakes
+              Bridge your Mina tokens to the platform balance. You can use the
+              bridged tokens in games or unbridge them back to Mina network
             </div>
           </Popover>
         </div>
