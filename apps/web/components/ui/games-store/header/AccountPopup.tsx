@@ -2,22 +2,26 @@ import { cn } from '@/lib/helpers';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import { useNetworkStore } from '@/lib/stores/network';
-import dynamic from 'next/dynamic';
 import {
   useMinaBalancesStore,
   useObserveMinaBalance,
 } from '@/lib/stores/minaBalances';
 import { usePollMinaBlockHeight } from '@/lib/stores/minaChain';
-import { useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
+import {
+  useBridgeStore,
+  useProtokitBalancesStore,
+} from '@/lib/stores/protokitBalances';
 import Image from 'next/image';
 import CoinImg from '@/components/ui/games-store/assets/coin.svg';
 import MinaCoinImg from '@/components/ui/games-store/assets/mina.png';
 import * as Yup from 'yup';
 import { Field, Form, Formik } from 'formik';
+import TopUpCard from '@/components/ui/games-store/header/TopUpCard';
 
 const BalanceInfo = () => {
   const minaBalancesStore = useMinaBalancesStore();
   const networkStore = useNetworkStore();
+  const bridgeStore = useBridgeStore();
   usePollMinaBlockHeight();
   useObserveMinaBalance();
   const protokitBalancesStore = useProtokitBalancesStore();
@@ -31,13 +35,6 @@ const BalanceInfo = () => {
     Number(minaBalancesStore.balances[networkStore.address!] ?? 0n) /
     10 ** 9
   ).toFixed(2);
-
-  const StoreDepositMenuItem = dynamic(
-    () => import('@/components/StoreDepositMenuItem'),
-    {
-      ssr: false,
-    }
-  );
 
   return (
     <>
@@ -57,7 +54,11 @@ const BalanceInfo = () => {
               </div>
             </div>
           </div>
-          <StoreDepositMenuItem color={'dark'} />
+          <TopUpCard
+            text="Top up"
+            onClick={() => bridgeStore.setOpen(10n * 10n ** 9n)}
+            color={'dark'}
+          />
         </div>
       )}
     </>

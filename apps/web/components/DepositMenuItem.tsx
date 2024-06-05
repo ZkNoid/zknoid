@@ -111,7 +111,7 @@ const BridgeInput = ({
     </div>
   );
 };
-export const DepositMenuItem = ({ color }: { color?: 'dark' }) => {
+export const DepositMenuItem = () => {
   const bridgeStore = useBridgeStore();
 
   const [assetIn, setAssetIn] = useState(L1_ASSETS.Mina);
@@ -264,7 +264,6 @@ export const DepositMenuItem = ({ color }: { color?: 'dark' }) => {
       <TopUpCard
         text="Top up"
         onClick={() => bridgeStore.setOpen(10n * 10n ** 9n)}
-        color={color}
       />
       {/* {contextAppChainClient &&
         network.address &&
