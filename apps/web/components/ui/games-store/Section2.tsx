@@ -177,7 +177,9 @@ const WidgetsSwitch = ({
         switchPage={Pages.FavoriteGames}
         page={page}
         setPage={setPage}
-        className={'-mt-2 lg:ml-[-3.125vw] lg:block lg:w-[19.063vw] lg:pb-0'}
+        className={
+          '-mt-2 lg:ml-[-3.125vw] lg:mt-0 lg:block lg:w-[19.063vw] lg:pb-0'
+        }
         startContent={(selected) => (
           <svg
             width="32"
