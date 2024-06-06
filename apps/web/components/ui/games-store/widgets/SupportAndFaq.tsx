@@ -21,16 +21,14 @@ export const SupportAndFaq = () => {
         <span className={'pb-4 text-[20px]/[20px] lg:text-headline-2'}>
           Contacts
         </span>
-        <div
-          className={
-            'grid grid-cols-1 grid-rows-3 gap-4 lg:grid-flow-col lg:grid-cols-2'
-          }
-        >
+        <div className={'flex w-full flex-col gap-4 lg:w-auto lg:flex-row'}>
           {CONTACTS.map((item) => (
             <Link
               key={item.id}
               href={item.link}
-              className={'group flex flex-row items-start justify-start gap-4'}
+              className={
+                'group flex flex-row items-center justify-center gap-4 rounded-[10px] bg-[#252525] p-7'
+              }
             >
               <Image
                 src={item.image}
