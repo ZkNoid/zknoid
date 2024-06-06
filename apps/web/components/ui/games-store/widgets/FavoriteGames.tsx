@@ -67,8 +67,8 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
   );
 
   return (
-    <div className="top-0 flex h-full w-full flex-col gap-5 p-10 pb-[100px]">
-      <div className={'flex max-w-[40%] flex-col gap-5'}>
+    <div className="top-0 flex h-full w-full flex-col gap-5 p-4 pb-[100px] lg:p-10">
+      <div className={'flex w-full flex-col gap-5 lg:max-w-[40%]'}>
         <div className="pb-3 text-headline-1">Favorite Games</div>
         <div className="font-plexsans text-main">
           If you have any questions or notice any issues with the operation of
@@ -79,8 +79,8 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
       </div>
 
       <div className="flex min-h-[40vh] flex-col justify-between gap-6">
-        <div className={'flex w-full flex-row justify-between'}>
-          <div className="flex flex-row gap-3">
+        <div className={'flex w-full flex-row justify-end lg:justify-between'}>
+          <div className="hidden flex-row gap-3 lg:flex">
             {ALL_GAME_TAGS.map((x) => (
               <div
                 key={x.name}
@@ -107,7 +107,7 @@ export const FavoriteGames = ({ games }: { games: IGame[] }) => {
           />
         </div>
         <div>
-          <div className="grid grid-cols-4 gap-5 max-[1600px]:grid-cols-3 max-[1400px]:grid-cols-2">
+          <div className="flex grid-cols-4 flex-col gap-5 max-[1600px]:grid-cols-3 max-[1400px]:grid-cols-2 lg:grid">
             {renderGames
               .sort((a, b) => sortByFliter(a, b))
               .map((game) => (
