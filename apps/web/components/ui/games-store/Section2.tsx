@@ -89,7 +89,7 @@ const SwitchBtn = ({
     <button
       className={cn(
         `relative`,
-        'rounded-t-[10px] border-x border-t border-left-accent py-2 first:-mr-[2.5rem] first:pr-10',
+        'rounded-t-[10px] border-x border-t border-left-accent py-2 lg:first:-mr-[2.5rem] lg:first:pr-10',
         'lg:rounded-none lg:border-none',
         className
       )}
