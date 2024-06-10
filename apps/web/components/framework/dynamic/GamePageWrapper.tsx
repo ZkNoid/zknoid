@@ -28,10 +28,10 @@ export default function Page({
       logGameOpenedMutation.mutate({
         userAddress: networkStore.address,
         gameId,
-        envContext: getEnvContext()
+        envContext: getEnvContext(),
       });
     }
-  }, [networkStore.address])
+  }, [networkStore.address]);
 
   return (
     <AppChainClientContext.Provider value={client}>

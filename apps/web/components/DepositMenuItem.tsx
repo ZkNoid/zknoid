@@ -1,7 +1,6 @@
 import { useContext, useState } from 'react';
 
 import {
-  useBridgeStore,
   useProtokitBalancesStore,
   useTestBalanceGetter,
 } from '@/lib/stores/protokitBalances';
@@ -27,6 +26,7 @@ import { useToasterStore } from '@/lib/stores/toasterStore';
 import TopUpCard from './ui/games-store/header/TopUpCard';
 import BridgeModal from './ui/games-store/shared/modal/BridgeModal';
 import { Popover } from '@/components/ui/games-store/shared/Popover';
+import { useBridgeStore } from '@/lib/stores/bridgeStore';
 
 const BridgeInput = ({
   assets,

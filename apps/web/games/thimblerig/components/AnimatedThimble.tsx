@@ -1,7 +1,13 @@
 import { useState } from 'react';
 import Lottie from 'react-lottie';
 
-export default function AnimatedThimble({ animation, onAnimationEnded }: { animation: any, onAnimationEnded: () => void }) {
+export default function AnimatedThimble({
+  animation,
+  onAnimationEnded,
+}: {
+  animation: any;
+  onAnimationEnded: () => void;
+}) {
   const [animationEnded, setAnimationEnded] = useState(false);
   return (
     <Lottie

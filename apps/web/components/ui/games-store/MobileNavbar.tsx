@@ -16,7 +16,7 @@ import {
 } from 'framer-motion';
 import { SOCIALS } from '@/constants/socials';
 import MobileAccount from '@/components/ui/games-store/header/MobileAccount';
-import { useBridgeStore } from '@/lib/stores/protokitBalances';
+import { useBridgeStore } from '@/lib/stores/bridgeStore';
 
 const BalanceInfo = dynamic(
   () => import('@/components/ui/games-store/BalanceInfo'),

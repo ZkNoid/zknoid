@@ -166,9 +166,12 @@ export default function RandzuPage({
   const collectPending = async () => {
     const randzuLogic = client.runtime.resolve('RandzuLogic');
 
-    const tx = await client.transaction(sessionPrivateKey.toPublicKey(), async () => {
-      randzuLogic.collectPendingBalance();
-    });
+    const tx = await client.transaction(
+      sessionPrivateKey.toPublicKey(),
+      async () => {
+        randzuLogic.collectPendingBalance();
+      }
+    );
 
     console.log('Collect tx', tx);
 
@@ -217,22 +220,25 @@ export default function RandzuPage({
 
     const winWitness1 = updatedRandzuField.checkWin(currentUserId);
 
-    const tx = await client.transaction(sessionPrivateKey.toPublicKey(), async () => {
-      randzuLogic.makeMove(
-        UInt64.from(matchQueue.gameInfo!.gameId),
-        updatedRandzuField,
-        winWitness1 ??
-          new WinWitness(
-            // @ts-ignore
-            {
-              x: UInt32.from(0),
-              y: UInt32.from(0),
-              directionX: Int64.from(0),
-              directionY: Int64.from(0),
-            }
-          )
-      );
-    });
+    const tx = await client.transaction(
+      sessionPrivateKey.toPublicKey(),
+      async () => {
+        randzuLogic.makeMove(
+          UInt64.from(matchQueue.gameInfo!.gameId),
+          updatedRandzuField,
+          winWitness1 ??
+            new WinWitness(
+              // @ts-ignore
+              {
+                x: UInt32.from(0),
+                y: UInt32.from(0),
+                directionX: Int64.from(0),
+                directionY: Int64.from(0),
+              }
+            )
+        );
+      }
+    );
 
     setLoading(true);
     setLoadingElement({
@@ -598,7 +604,9 @@ export default function RandzuPage({
             </>
           ) : walletInstalled() ? (
             <GameWrap>
-              <ConnectWallet connectWallet={() => networkStore.connectWallet(false)} />
+              <ConnectWallet
+                connectWallet={() => networkStore.connectWallet(false)}
+              />
             </GameWrap>
           ) : (
             <GameWrap>

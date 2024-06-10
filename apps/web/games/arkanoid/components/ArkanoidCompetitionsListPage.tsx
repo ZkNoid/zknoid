@@ -15,13 +15,6 @@ import { ICompetition } from '@/lib/types';
 import ArkanoidCoverSVG from '../assets/game-cover.svg';
 import ArkanoidCoverMobileSVG from '../assets/game-cover-mobile.svg';
 
-// const timeStampToStringDate = (timeStamp: number): string => {
-//   var date = new Date(timeStamp);
-//   return (
-//     date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()
-//   );
-// };
-
 export default function ArkanoidCompetitionsListPage() {
   const networkStore = useNetworkStore();
   const compStore = useArkanoidCompetitionsStore();

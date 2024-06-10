@@ -1,5 +1,4 @@
 import Modal from '@/components/ui/games-store/shared/modal/BaseModal';
-import { useState } from 'react';
 import { Button } from '@/components/ui/games-store/shared/Button';
 
 export const MatchmakingFailModal = ({
@@ -11,7 +10,6 @@ export const MatchmakingFailModal = ({
   setIsOpen: (value: boolean) => any;
   restart: () => Promise<void>;
 }) => {
-  // const [isOpen, setIsOpen] = useState<boolean>(true);
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
       <div className={'flex flex-col items-center justify-center gap-8 px-4'}>

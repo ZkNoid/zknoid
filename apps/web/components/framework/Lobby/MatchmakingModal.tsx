@@ -23,11 +23,7 @@ export const MatchmakingModal = ({
   leave: () => Promise<void>;
 }) => {
   return (
-    <Modal
-      isOpen={isOpen}
-      setIsOpen={setIsOpen}
-      isDismissible={false}
-    >
+    <Modal isOpen={isOpen} setIsOpen={setIsOpen} isDismissible={false}>
       <div className={'flex flex-col items-center justify-center gap-4'}>
         <span
           className={'text-headline-2 font-medium uppercase text-left-accent'}

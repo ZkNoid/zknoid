@@ -21,8 +21,7 @@ export const arkanoidConfig = createZkNoidGameConfig({
   releaseDate: new Date(2023, 11, 1),
   popularity: 60,
   author: 'ZkNoid Team',
-  rules:
-    `In Ankanoid, your objective is to break all the bricks on the screen using a bouncing ball and a platform. 
+  rules: `In Ankanoid, your objective is to break all the bricks on the screen using a bouncing ball and a platform. 
     
     You can control the game by using the left and right arrow keys on your keyboard to move the platform. 
     You need to bounce the ball and prevent it from falling off the bottom of the screen.

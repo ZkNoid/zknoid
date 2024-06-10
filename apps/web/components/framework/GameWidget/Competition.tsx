@@ -132,7 +132,11 @@ export const Competition = ({
       <div className={'flex w-full flex-col gap-10'}>
         <div className={'hidden flex-col gap-4 lg:flex'}>
           <span className={'w-full text-headline-2 font-bold'}>Rules</span>
-          <span className={'font-plexsans text-buttons-menu font-normal whitespace-pre-line'}>
+          <span
+            className={
+              'whitespace-pre-line font-plexsans text-buttons-menu font-normal'
+            }
+          >
             {competition ? competition.game.rules : <> - </>}
           </span>
         </div>

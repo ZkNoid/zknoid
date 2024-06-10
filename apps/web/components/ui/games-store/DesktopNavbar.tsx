@@ -2,21 +2,16 @@
 
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-
 import { formatAddress, walletInstalled } from '@/lib/helpers';
 import { useNetworkStore } from '@/lib/stores/network';
-
-import { useRegisterWorkerClient } from '@/lib/stores/workerClient';
-
 import { HeaderCard } from './HeaderCard';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import AccountCard from './header/AccountCard';
 import AccountPopup from '@/components/ui/games-store/header/AccountPopup';
-import {AnimatePresence} from "framer-motion";
+import { AnimatePresence } from 'framer-motion';
 
 const BalanceInfo = dynamic(
   () => import('@/components/ui/games-store/BalanceInfo'),

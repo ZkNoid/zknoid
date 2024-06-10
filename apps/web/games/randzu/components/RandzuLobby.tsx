@@ -2,7 +2,7 @@ import GamePage from '@/components/framework/GamePage';
 import { randzuConfig } from '@/games/randzu/config';
 import RandzuCoverSVG from '@/games/randzu/assets/game-cover.svg';
 import RandzuCoverMobileSVG from '@/games/randzu/assets/game-cover-mobile.svg';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { ClientAppChain, ProtoUInt64 } from 'zknoid-chain-dev';
 import { useNetworkStore } from '@/lib/stores/network';
@@ -36,7 +36,11 @@ export default function RandzuLobby({
     >
       <LobbyPage
         lobbyId={params.lobbyId}
-        query={networkStore.protokitClientStarted ? client.query.runtime.RandzuLogic: undefined}
+        query={
+          networkStore.protokitClientStarted
+            ? client.query.runtime.RandzuLogic
+            : undefined
+        }
         contractName={'RandzuLogic'}
         config={randzuConfig}
       />

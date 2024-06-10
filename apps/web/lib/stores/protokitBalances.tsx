@@ -19,6 +19,7 @@ import { Balances, ProtoUInt64, ZNAKE_TOKEN_ID } from 'zknoid-chain-dev';
 import { BalancesKey, TokenId } from '@proto-kit/library';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '../envContext';
+import { useBridgeStore } from '@/lib/stores/bridgeStore';
 
 class Point extends Struct({ x: Field, y: Field }) {
   static add(a: Point, b: Point) {
@@ -121,34 +122,6 @@ export const useObserveProtokitBalance = ({
     network.address,
   ]);
 };
-
-export interface BridgeStoreState {
-  open: boolean;
-  amount: bigint;
-  setOpen: (amount: bigint) => void;
-  close: () => void;
-}
-
-export const useBridgeStore = create<
-  BridgeStoreState,
-  [['zustand/immer', never]]
->(
-  immer((set) => ({
-    open: false,
-    amount: 0n,
-    setOpen(amount) {
-      set({
-        open: true,
-        amount,
-      });
-    },
-    close() {
-      set({
-        open: false,
-      });
-    },
-  }))
-);
 
 export const useMinaBridge = () => {
   const balancesStore = useProtokitBalancesStore();
