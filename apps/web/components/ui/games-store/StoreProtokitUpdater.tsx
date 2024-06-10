@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { DefaultRuntimeModules } from '@/lib/runtimeModules';
 import { useObserveMinaBalance } from '@/lib/stores/minaBalances';
@@ -24,7 +24,14 @@ export default function StoreProtokitUpdater() {
 
   // Order is important
   // @todo remove any
-  useObserveProtokitBalance({ client: client as any as ClientAppChain<typeof DefaultRuntimeModules, any, any, any> });
+  useObserveProtokitBalance({
+    client: client as any as ClientAppChain<
+      typeof DefaultRuntimeModules,
+      any,
+      any,
+      any
+    >,
+  });
 
   return <></>;
 }

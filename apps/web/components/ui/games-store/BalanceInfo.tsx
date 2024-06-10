@@ -5,7 +5,6 @@ import {
 import { usePollMinaBlockHeight } from '@/lib/stores/minaChain';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
-import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import StoreDepositMenuItem from '@/components/StoreDepositMenuItem';
 import CoinImg from './assets/coin.svg';
 import MinaCoinImg from './assets/mina.png';
@@ -17,7 +16,6 @@ export default function BalanceInfo() {
   usePollMinaBlockHeight();
   useObserveMinaBalance();
   const protokitBalancesStore = useProtokitBalancesStore();
-  const workerClient = useWorkerClientStore();
 
   const deposit = (
     Number(protokitBalancesStore.balances[networkStore.address!] ?? 0n) /

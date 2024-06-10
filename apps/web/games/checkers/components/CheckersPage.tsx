@@ -137,9 +137,12 @@ export default function RandzuPage({
   const collectPending = async () => {
     const randzuLogic = client.runtime.resolve('CheckersLogic');
 
-    const tx = await client.transaction(sessionPrivateKey.toPublicKey(), async () => {
-      randzuLogic.collectPendingBalance();
-    });
+    const tx = await client.transaction(
+      sessionPrivateKey.toPublicKey(),
+      async () => {
+        randzuLogic.collectPendingBalance();
+      }
+    );
 
     console.log('Collect tx', tx);
 
@@ -235,7 +238,6 @@ export default function RandzuPage({
     const randzuLogic = client.runtime.resolve('CheckersLogic');
     const updatedCheckersField = CheckersField.from(updatedField);
 
-    
     console.log('Proposed is king', isKing);
 
     const tx =
@@ -243,26 +245,32 @@ export default function RandzuPage({
       moveId == MOVE_TOP_RIGHT ||
       moveId == MOVE_KING_BOTTOM_LEFT ||
       moveId == MOVE_KING_BOTTOM_RIGHT
-        ? await client.transaction(sessionPrivateKey.toPublicKey(), async () => {
-            randzuLogic.makeMoveChecker(
-              UInt64.from(matchQueue.gameInfo!.gameId),
-              updatedCheckersField,
-              UInt64.from(x),
-              UInt64.from(y),
-              UInt64.from(moveId),
-              Bool(isKing)
-            );
-          })
-        : await client.transaction(sessionPrivateKey.toPublicKey(), async () => {
-            randzuLogic.makeMoveCapture(
-              UInt64.from(matchQueue.gameInfo!.gameId),
-              updatedCheckersField,
-              UInt64.from(x),
-              UInt64.from(y),
-              UInt64.from(moveId),
-              Bool(isKing)
-            );
-          });
+        ? await client.transaction(
+            sessionPrivateKey.toPublicKey(),
+            async () => {
+              randzuLogic.makeMoveChecker(
+                UInt64.from(matchQueue.gameInfo!.gameId),
+                updatedCheckersField,
+                UInt64.from(x),
+                UInt64.from(y),
+                UInt64.from(moveId),
+                Bool(isKing)
+              );
+            }
+          )
+        : await client.transaction(
+            sessionPrivateKey.toPublicKey(),
+            async () => {
+              randzuLogic.makeMoveCapture(
+                UInt64.from(matchQueue.gameInfo!.gameId),
+                updatedCheckersField,
+                UInt64.from(x),
+                UInt64.from(y),
+                UInt64.from(moveId),
+                Bool(isKing)
+              );
+            }
+          );
 
     setLoading(true);
     setLoadingElement({

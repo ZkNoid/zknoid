@@ -6,7 +6,10 @@ import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { thimblerigConfig } from '../config';
 import { type ClientAppChain } from '@proto-kit/sdk';
 import { create } from 'zustand';
-import { MatchQueueState, matchQueueInitializer } from '@/lib/stores/matchQueue';
+import {
+  MatchQueueState,
+  matchQueueInitializer,
+} from '@/lib/stores/matchQueue';
 
 export const useThimblerigMatchQueueStore = create<
   MatchQueueState,
@@ -18,7 +21,8 @@ export const useObserveThimblerigMatchQueue = () => {
   const network = useNetworkStore();
   const matchQueue = useThimblerigMatchQueueStore();
   const client = useContext<
-    ClientAppChain<typeof thimblerigConfig.runtimeModules, any, any, any> | undefined
+    | ClientAppChain<typeof thimblerigConfig.runtimeModules, any, any, any>
+    | undefined
   >(AppChainClientContext);
 
   useEffect(() => {
@@ -29,8 +33,11 @@ export const useObserveThimblerigMatchQueue = () => {
     if (!client) {
       throw Error('Context app chain client is not set');
     }
-    
-    matchQueue.loadMatchQueue(client.query.runtime.ThimblerigLogic, chain.block?.height);
+
+    matchQueue.loadMatchQueue(
+      client.query.runtime.ThimblerigLogic,
+      chain.block?.height
+    );
     matchQueue.loadActiveGame(
       client.query.runtime.ThimblerigLogic,
       chain.block?.height,
@@ -38,4 +45,3 @@ export const useObserveThimblerigMatchQueue = () => {
     );
   }, [chain.block?.height, network.walletConnected, network.address]);
 };
-

@@ -1,4 +1,3 @@
-import { AnimatePresence, motion } from 'framer-motion';
 import { ReactNode, useState } from 'react';
 import BaseModal from './BaseModal';
 
@@ -7,7 +6,7 @@ export default function StatefulModal({
   isOpen = false,
   isDismissible = true,
   cross = true,
-  border
+  border,
 }: {
   children: ReactNode;
   isOpen: boolean;
@@ -16,9 +15,15 @@ export default function StatefulModal({
   border?: string;
 }) {
   const [isOpenInternal, setIsOpenInternal] = useState<boolean>(isOpen);
-  
+
   return (
-    <BaseModal isOpen={isOpenInternal} setIsOpen={setIsOpenInternal} border={border} isDismissible={isDismissible} cross={cross}>
+    <BaseModal
+      isOpen={isOpenInternal}
+      setIsOpen={setIsOpenInternal}
+      border={border}
+      isDismissible={isDismissible}
+      cross={cross}
+    >
       {children}
     </BaseModal>
   );

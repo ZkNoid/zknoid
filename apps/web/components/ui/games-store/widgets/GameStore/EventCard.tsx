@@ -4,11 +4,7 @@ import {
   ZkNoidEventType,
 } from '@/lib/platform/game_events';
 import Image from 'next/image';
-import eventBoxImg from '@/public/image/section2/event-box.svg';
 import eventBoxBorderImg from '@/public/image/section2/event-box-border.svg';
-
-import checkersBanner from './assets/chess_banner.svg';
-import { ReactNode } from 'react';
 import Link from 'next/link';
 
 export const EventCard = ({
@@ -45,18 +41,14 @@ export const EventCard = ({
           />
         </div>
       )}
-      <Image
-        src={eventBoxBorderImg}
-        alt=""
-        className="z-[5] w-full lg:block"
-      />
+      <Image src={eventBoxBorderImg} alt="" className="z-[5] w-full lg:block" />
       <div className={'group absolute bottom-[0.1vw] right-[0.0vw] z-[5]'}>
         <svg
           width="68"
           height="69"
           viewBox="0 0 68 69"
           fill="none"
-          className="w-[7vw] h-[7vw] lg:w-[4.25vw] lg:h-[4.25vw]"
+          className="h-[7vw] w-[7vw] lg:h-[4.25vw] lg:w-[4.25vw]"
           xmlns="http://www.w3.org/2000/svg"
         >
           <rect
@@ -71,7 +63,7 @@ export const EventCard = ({
           <path
             d="M23.7998 15.3193L43.6331 35.1527L23.7998 54.986"
             stroke="#D2FF00"
-            stroke-width="5.66667"
+            strokeWidth="5.66667"
           />
         </svg>
       </div>
@@ -82,7 +74,7 @@ export const EventCard = ({
         <div className="max-w-full font-plexsans text-[14px]/[18px] lg:max-w-[462px] lg:text-main">
           {description}
         </div>
-        <div className="mt-auto max-w-full pb-0 text-[4vw] lg:text-[20px]/[20px] font-medium lg:max-w-[462px] lg:text-big-uppercase">
+        <div className="mt-auto max-w-full pb-0 text-[4vw] font-medium lg:max-w-[462px] lg:text-[20px]/[20px] lg:text-big-uppercase">
           {eventCounter.type == ZkNoidEventType.UPCOMING_EVENTS && (
             <>START IN {time}</>
           )}

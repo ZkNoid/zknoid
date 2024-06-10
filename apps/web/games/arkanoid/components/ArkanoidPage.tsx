@@ -41,7 +41,6 @@ import ArkanoidCoverSVG from '../assets/game-cover.svg';
 import ArkanoidMobileCoverSVG from '../assets/game-cover-mobile.svg';
 import { FullscreenWrap } from '@/components/framework/GameWidget/FullscreenWrap';
 import { Button } from '@/components/ui/games-store/shared/Button';
-import Modal from '@/components/ui/games-store/shared/modal/BaseModal';
 import Link from 'next/link';
 import { type PendingTransaction } from '@proto-kit/sequencer';
 import StatefulModal from '@/components/ui/games-store/shared/modal/StatefulModal';

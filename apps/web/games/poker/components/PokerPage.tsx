@@ -7,7 +7,6 @@ import Image from 'next/image';
 import defaultAvatar from '../assets/avatars/defaultAvatar.svg';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
-import Modal from '@/components/ui/games-store/shared/modal/BaseModal';
 import StatefulModal from '@/components/ui/games-store/shared/modal/StatefulModal';
 
 export const PokerPage = () => {

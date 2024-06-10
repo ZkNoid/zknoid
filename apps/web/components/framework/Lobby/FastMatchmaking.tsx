@@ -4,15 +4,14 @@ import { Currency } from '@/constants/currency';
 import { Popover } from '@/components/ui/games-store/shared/Popover';
 import { IMatchamkingOption, useLobbiesStore } from '@/lib/stores/lobbiesStore';
 import { MatchmakingModal } from '@/components/framework/Lobby/MatchmakingModal';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAlreadyInLobbyModalStore } from '@/lib/stores/alreadyInLobbyModalStore';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import { useNetworkStore } from '@/lib/stores/network';
 import { MatchmakingFailModal } from './MatchmakingFailModal';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
-import { useMinaBridge, useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import { useMinaBridge } from '@/lib/stores/protokitBalances';
 
 const OpponentItem = ({
   option,
@@ -150,8 +149,6 @@ export const FastMatchmaking = ({
   const chainStore = useProtokitChainStore();
   const lobbiesStore = useLobbiesStore();
 
-  
-
   const registerAndRecord = async (id: number) => {
     if (!chainStore.block?.height) return;
     await register(id);
@@ -163,8 +160,7 @@ export const FastMatchmaking = ({
     if (!chainStore.block?.height) return;
 
     for (let mmOption of lobbiesStore.matchmakingOptions) {
-      if(mmOption.isPending)
-        setIsModalOpen(true);
+      if (mmOption.isPending) setIsModalOpen(true);
     }
 
     if (isModalOpen && matchmakingStartEpoche > 0) {
@@ -176,8 +172,6 @@ export const FastMatchmaking = ({
       }
     }
   }, [chainStore.block?.height]);
-
-  const protokitBalanceStore = useProtokitBalancesStore();
 
   return (
     <>

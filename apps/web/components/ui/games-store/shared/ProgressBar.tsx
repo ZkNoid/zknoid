@@ -26,7 +26,6 @@ export const ProgressBar = ({
   setMaxValue: (value: number) => void;
 }) => {
   const [dragging, setDragging] = useState<boolean>(false);
-  // let percent = value / (max - min);
 
   const constraintsRef = useRef<HTMLDivElement | null>(null);
   const handleRef = useRef<HTMLDivElement | null>(null);
@@ -120,7 +119,6 @@ export const ProgressBar = ({
             'max-w-[100px] rounded-[5px] border bg-bg-dark p-1 placeholder:font-plexsans placeholder:text-main hover:placeholder:text-left-accent/80 focus:outline-none'
           }
           value={minValue}
-          // animate={{ y: dragging && percent < 0.4 ? 20 : 0 }}
           onChange={(event) => {
             if (
               Number(event.target.value) <= max &&
@@ -139,7 +137,6 @@ export const ProgressBar = ({
           className={
             'max-w-[100px] rounded-[5px] border bg-bg-dark p-1 placeholder:font-plexsans placeholder:text-main hover:placeholder:text-left-accent/80 focus:outline-none'
           }
-          // animate={{ y: dragging && percent > 0.6 ? 20 : 0 }}
           onChange={(event) => {
             if (
               Number(event.target.value) <= max &&

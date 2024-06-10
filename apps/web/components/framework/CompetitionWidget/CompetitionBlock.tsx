@@ -22,7 +22,7 @@ export const CompetitionBlock = ({
   return (
     <div
       className={
-        'relative flex w-full flex-col justify-between gap-4 overflow-hidden rounded-[5px] border p-3 h-[25vw] xl:h-[18.75vw]'
+        'relative flex h-[25vw] w-full flex-col justify-between gap-4 overflow-hidden rounded-[5px] border p-3 xl:h-[18.75vw]'
       }
     >
       {variant == 1 ? (

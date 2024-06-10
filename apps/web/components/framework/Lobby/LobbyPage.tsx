@@ -19,7 +19,6 @@ import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
 import Modal from '@/components/ui/games-store/shared/modal/BaseModal';
 import { Button } from '@/components/ui/games-store/shared/Button';
-import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import {
   useLobbiesStore,
   useObserveLobbiesStore,
@@ -35,16 +34,14 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   lobbyId,
   query,
   contractName,
-  config, // params,
+  config,
   rewardCoeff,
 }: {
-  // params: {
   lobbyId: string;
   query: ModuleQuery<MatchMaker> | undefined;
   contractName: string;
   config: ZkNoidGameConfig<RuntimeModules>;
   rewardCoeff?: number;
-  // };
 }) {
   const params = {
     lobbyId,
@@ -53,7 +50,6 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
     config,
   };
   const router = useRouter();
-  const chainStore = useProtokitChainStore();
   const lobbiesStore = useLobbiesStore();
   const pvpLobbyStorage = usePvpLobbyStorage();
   const alreadyInLobbyModalStore = useAlreadyInLobbyModalStore();
@@ -117,16 +113,12 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
       if (lobby) {
         searchedLobby.current = true;
         setIsLobbyNotFoundModalOpen(false);
-        // joinLobby(lobby.id);
-        // pvpLobbyStorage.setConnectedLobbyKey(lobby.accessKey.toString());
-        // pvpLobbyStorage.setConnectedLobbyId(lobby.id);
         pvpLobbyStorage.setLastLobbyId(lobby.id);
       } else {
         setIsLobbyNotFoundModalOpen(true);
       }
     }
   }, [lobbiesStore.loading]);
-  // }, [lobbiesStore.lobbies, params.lobbyId, searchParams]);
 
   useEffect(() => {
     if (lobbiesStore.activeGameId) {
@@ -147,21 +139,13 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   }, [lobbiesStore.activeGameId]);
 
   useEffect(() => {
-    // if (params.lobbyId !== 'undefined') {
-    //   const lobby = lobbiesStore.lobbies.find(
-    //     (lobby) => lobby.id.toString() === params.lobbyId
-    //   );
-    //   if (lobby) setCurrentLobby(lobby);
-    // } else {
     const lobby = lobbiesStore.lobbies.find(
       (lobby) => lobby.id === pvpLobbyStorage.lastLobbyId
     );
     setCurrentLobby(lobby);
-    // }
   }, [lobbiesStore.lobbies, params.lobbyId, pvpLobbyStorage.lastLobbyId]);
 
   useEffect(() => {
-    // setCurrentLobby(lobbiesStore.currentLobby);
     if (
       (waitNewLobby.current || !pvpLobbyStorage.lastLobbyId) &&
       lobbiesStore.currentLobby?.id

@@ -1,5 +1,4 @@
 import { createZkNoidGameConfig } from '@/lib/createConfig';
-// import {Poker} from 'zknoid-chain-dev';
 import { PokerPage } from './components/PokerPage';
 import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
 import { ZkNoidGameType } from '@/lib/platform/game_types';

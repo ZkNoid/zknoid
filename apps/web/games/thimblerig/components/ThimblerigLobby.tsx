@@ -1,5 +1,5 @@
 import GamePage from '@/components/framework/GamePage';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import ThimblerigCoverSVG from '@/games/thimblerig/assets/game-cover.svg';
 import ThimblerigCoverMobileSVG from '@/games/thimblerig/assets/game-cover.svg';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
@@ -36,7 +36,11 @@ export default function ThimblerigLobby({
     >
       <LobbyPage
         lobbyId={params.lobbyId}
-        query={networkStore.protokitClientStarted ? client.query.runtime.ThimblerigLogic: undefined}
+        query={
+          networkStore.protokitClientStarted
+            ? client.query.runtime.ThimblerigLogic
+            : undefined
+        }
         contractName={'ThimblerigLogic'}
         config={thimblerigConfig}
         rewardCoeff={1.67}

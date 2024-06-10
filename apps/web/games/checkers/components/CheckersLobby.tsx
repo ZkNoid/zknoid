@@ -4,7 +4,6 @@ import CheckersCoverSVG from '../assets/game-cover.svg';
 import CheckersCoverMobileSVG from '../assets/game-cover-mobile.svg';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { ClientAppChain } from 'zknoid-chain-dev';
-import { useNetworkStore } from '@/lib/stores/network';
 import LobbyPage from '@/components/framework/Lobby/LobbyPage';
 import { checkersConfig } from '../config';
 
@@ -13,7 +12,6 @@ export default function CheckersLobby({
 }: {
   params: { lobbyId: string };
 }) {
-  const networkStore = useNetworkStore();
   useState<boolean>(false);
 
   const client = useContext(AppChainClientContext) as ClientAppChain<

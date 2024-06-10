@@ -34,9 +34,9 @@ export const DatePicker = ({
     return new Date(year, month, 0).getDate();
   };
 
-  const getLastDayOfMonth = (year: number, month: number) => {
-    return new Date(year, month + 1, 0).getDate();
-  };
+  // const getLastDayOfMonth = (year: number, month: number) => {
+  //   return new Date(year, month + 1, 0).getDate();
+  // };
 
   const clearDates = () => {
     setDateTo('');
