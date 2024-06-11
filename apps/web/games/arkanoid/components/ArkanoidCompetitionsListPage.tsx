@@ -10,7 +10,7 @@ import {
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import GamePage from '@/components/framework/GamePage';
 import { arkanoidConfig } from '../config';
-import { CompetitionWidget } from '@/components/framework/CompetitionWidget/CompetitionWidget';
+import CompetitionWidget from '@/components/framework/CompetitionWidget';
 import { ICompetition } from '@/lib/types';
 import ArkanoidCoverSVG from '../assets/game-cover.svg';
 import ArkanoidCoverMobileSVG from '../assets/game-cover-mobile.svg';

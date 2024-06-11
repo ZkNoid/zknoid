@@ -3,7 +3,6 @@
 import { type RuntimeModulesRecord } from '@proto-kit/module';
 import { type ClientAppChain } from '@proto-kit/sdk';
 import { ReactNode, useContext, useEffect, useState } from 'react';
-
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { ZkNoidGameConfig } from '@/lib/createConfig';
 import { useObserveMinaBalance } from '@/lib/stores/minaBalances';
@@ -11,16 +10,14 @@ import { usePollMinaBlockHeight } from '@/lib/stores/minaChain';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useObserveProtokitBalance } from '@/lib/stores/protokitBalances';
 import { usePollProtokitBlockHeight } from '@/lib/stores/protokitChain';
-
-import DesktopNavbar from '../ui/games-store/DesktopNavbar';
-import { Footer } from '@/components/Footer';
 import Image from 'next/image';
 import { clsx } from 'clsx';
 import Link from 'next/link';
 import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
-import { MobileNavbar } from '@/components/ui/games-store/MobileNavbar';
-import { ToastContainer } from '@/components/ui/games-store/shared/Toast';
+import ToastContainer from '@/components/shared/Toast/ui/ToastContainer';
 import { cn } from '@/lib/helpers';
+import Header from '@/components/widgets/Header';
+import Footer from '@/components/widgets/Footer';
 
 const Updater = () => {
   usePollMinaBlockHeight();
@@ -248,8 +245,8 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
 }) {
   return (
     <>
-      <DesktopNavbar autoconnect={true} />
-      <MobileNavbar autoconnect={true} />
+      <Header />
+
       <div className={'flex flex-col px-5'}>
         <div
           className={

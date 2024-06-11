@@ -25,20 +25,20 @@ import {
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { arkanoidConfig } from '../config';
 import GamePage from '@/components/framework/GamePage';
-import { Input } from '@/components/ui/games-store/shared/Input';
-import { Textarea } from '@/components/ui/games-store/shared/Textarea';
-import { Button } from '@/components/ui/games-store/shared/Button';
-import { Checkbox } from '@/components/ui/games-store/shared/Checkbox';
-import { Popover } from '@/components/ui/games-store/shared/Popover';
-import { DatePicker } from '@/components/ui/games-store/shared/DatePicker/DatePicker';
+import Input from '@/components/shared/Input';
+import Textarea from '@/components/shared/Textarea';
+import Button from '@/components/shared/Button';
+import Checkbox from '@/components/shared/Checkbox';
+import Popover from '@/components/shared/Popover';
+import DatePicker from '@/components/shared/DatePicker';
 import { AnimatePresence, motion } from 'framer-motion';
 import znakesImg from '@/public/image/tokens/znakes.svg';
 import { clsx } from 'clsx';
 import { Currency } from '@/constants/currency';
-import Modal from '@/components/ui/games-store/shared/modal/BaseModal';
+import BaseModal from '@/components/shared/Modal/BaseModal';
 import ArkanoidCoverSVG from '../assets/game-cover.svg';
 import ArkanoidCoverMobileSVG from '../assets/game-cover-mobile.svg';
-import { DropdownListField } from '@/components/ui/games-store/shared/DropdownList';
+import { DropdownListField } from '@/components/shared/DropdownList';
 import { default as ReactImage } from 'next/image';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
@@ -777,11 +777,11 @@ export default function NewArkanoidCompetitionPage() {
                           </motion.div>
                         )}
                       </AnimatePresence>
-                      <Button label={'Create competition'} type={'submit'}/>
-                      <Modal
+                      <Button label={'Create competition'} type={'submit'} />
+                      <BaseModal
                         isOpen={isSuccessModalOpen}
                         setIsOpen={setIsSuccessModalOpen}
-                        border='border-left-accent'
+                        border="border-left-accent"
                       >
                         <div
                           className={
@@ -837,7 +837,7 @@ export default function NewArkanoidCompetitionPage() {
                             label={'To competitions page'}
                           />
                         </div>
-                      </Modal>
+                      </BaseModal>
                     </div>
                   </div>
                 </div>

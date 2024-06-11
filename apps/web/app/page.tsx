@@ -1,24 +1,18 @@
 'use client';
 
 import 'reflect-metadata';
-
 import dynamic from 'next/dynamic';
-import { useEffect, useMemo, useState } from 'react';
-import { Footer } from '@/components/Footer';
-import DesktopNavbar from '@/components/ui/games-store/DesktopNavbar';
-import { Section1 } from '@/components/ui/games-store/Section1';
-import { Section2 } from '@/components/ui/games-store/Section2';
+import { useEffect, useState } from 'react';
+import Footer from '@/components/widgets/Footer/Footer';
+import MainSection from '@/components/pages/MainSection';
 import { IGame, announcedGames, defaultGames } from './constants/games';
-import { MobileNavbar } from '@/components/ui/games-store/MobileNavbar';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
-import { buildClient } from '@/lib/utils';
-import { DefaultRuntimeModules } from '@/lib/runtimeModules';
+import Header from '@/components/widgets/Header';
 // import { ToastContainer } from '@/components/ui/games-store/shared/Toast';
 
 const zkNoidConfig = import('@/games/config');
 
 const StoreProtokitUpdater = dynamic(
-  () => import('@/components/ui/games-store/StoreProtokitUpdater'),
+  () => import('@/components/pages/lib/StoreProtokitUpdater'),
   {
     ssr: false,
   }
@@ -63,13 +57,13 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
       <StoreProtokitUpdater />
-      <DesktopNavbar autoconnect={true} />
-      <MobileNavbar autoconnect={true} />
+
+      <Header />
 
       <main className="flex flex-col px-5">
-        <Section1 />
-        <Section2 games={games} />
+        <MainSection games={games} />
       </main>
+
       <Footer />
 
       {/*<ToastContainer />*/}
