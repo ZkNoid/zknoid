@@ -149,7 +149,7 @@ export const GameCard = ({
       )}
       <Link
         href={game.active ? `/games/${game.id}/${game.defaultPage}` : '#'}
-        className="m-px flex h-full flex-col gap-5 rounded-xl bg-[#252525] p-2 lg:p-4"
+        className="m-px flex h-full flex-col rounded-xl bg-[#252525] p-2 lg:gap-5 lg:p-4"
       >
         <div
           className={cn(
@@ -196,7 +196,7 @@ export const GameCard = ({
             )}
           </div>
         </div>
-        <div className={'flex flex-row justify-between'}>
+        <div className={'flex flex-row justify-between pb-2 pt-6 lg:py-0'}>
           <div className="text-headline-2 lg:text-headline-1">{game.name}</div>
           {game.isReleased && (
             <span
@@ -227,7 +227,7 @@ export const GameCard = ({
         <div className={'flex-grow max-[2000px]:hidden'} />
         <div
           className={
-            'mt-auto flex w-full flex-row items-center justify-start gap-2'
+            'mt-auto flex w-full flex-row items-center justify-start gap-2 pb-5 pt-2 lg:py-0'
           }
         >
           {[...game.features, game.genre].map((value, i) => (
