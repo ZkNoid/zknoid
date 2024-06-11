@@ -1,7 +1,6 @@
 'use client';
 
 import { useMemo } from 'react';
-
 import { zkNoidConfig } from '@/games/config';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 

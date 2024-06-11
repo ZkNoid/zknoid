@@ -1,14 +1,14 @@
-import { LobbyWrap } from '@/components/framework/Lobby/LobbyWrap';
-import { FastMatchmaking } from '@/components/framework/Lobby/FastMatchmaking';
-import { LobbyList } from '@/components/framework/Lobby/LobbyList';
-import { Popover } from '@/components/ui/games-store/shared/Popover';
-import { LobbyInformation } from '@/components/framework/Lobby/LobbyInformation';
-import { CreateNewLobbyBtn } from '@/components/framework/Lobby/CreateNewLobbyBtn';
+import { LobbyWrap } from '@/components/framework/Lobby/ui/LobbyWrap';
+import { FastMatchmaking } from '@/components/framework/Lobby/ui/FastMatchmaking';
+import LobbyList from '@/components/framework/Lobby/LobbyList';
+import Popover from '@/components/shared/Popover';
+import { LobbyInformation } from '@/components/framework/Lobby/ui/LobbyInformation';
+import { CreateNewLobbyBtn } from '@/components/framework/Lobby/ui/CreateNewLobbyBtn';
 import { usePvpLobbyStorage } from '@/lib/stores/pvpLobbyStore';
 import { ILobby } from '@/lib/types';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { CreateNewLobby } from '@/components/framework/Lobby/CreateNewLobby';
+import { CreateNewLobby } from '@/components/framework/Lobby/ui/CreateNewLobby';
 import { AnimatePresence, motion } from 'framer-motion';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { ClientAppChain, MatchMaker, ProtoUInt64 } from 'zknoid-chain-dev';
@@ -17,15 +17,15 @@ import { useNetworkStore } from '@/lib/stores/network';
 import { PendingTransaction, type ModuleQuery } from '@proto-kit/sequencer';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
-import Modal from '@/components/ui/games-store/shared/modal/BaseModal';
-import { Button } from '@/components/ui/games-store/shared/Button';
+import BaseModal from '@/components/shared/Modal/BaseModal';
+import Button from '@/components/shared/Button';
 import {
   useLobbiesStore,
   useObserveLobbiesStore,
 } from '@/lib/stores/lobbiesStore';
 import { ZkNoidGameConfig } from '@/lib/createConfig';
 import { RuntimeModulesRecord } from '@proto-kit/module';
-import { AlreadyInLobbyModal } from '@/components/framework/Lobby/AlreadyInLobbyModal';
+import { AlreadyInLobbyModal } from '@/components/framework/Lobby/ui/modals/AlreadyInLobbyModal';
 import { useAlreadyInLobbyModalStore } from '@/lib/stores/alreadyInLobbyModalStore';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
@@ -287,7 +287,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
 
   return (
     <>
-      <Modal
+      <BaseModal
         isDismissible={false}
         isOpen={isLobbyNotFoundModalOpen}
         setIsOpen={setIsLobbyNotFoundModalOpen}
@@ -312,7 +312,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
             href={`/games/${params.config.id}/lobby/undefined`}
           />
         </div>
-      </Modal>
+      </BaseModal>
       <LobbyWrap>
         <FastMatchmaking
           options={lobbiesStore.matchmakingOptions}

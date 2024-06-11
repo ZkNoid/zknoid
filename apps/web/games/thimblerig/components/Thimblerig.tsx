@@ -21,19 +21,15 @@ import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import { useMinaBridge } from '@/lib/stores/protokitBalances';
 import ThimbleSVG from '../assets/thimble.svg';
 import ThimbleOpenedCorrectSVG from '../assets/thimble_opened_correct.svg';
-
 import BallSVG from '../assets/ball.svg';
 import BallDashedSVG from '../assets/ball-dashed.svg';
-
 import ArrowSVG from '../assets/arrow.svg';
 import ThimblesMixing from '../assets/thimbles_mixing.json';
 import ThimblerigBallInsideLifting from '../assets/thimblerig_ball_lifting.json';
 import ThimblerigGuessedBallInsideLifting from '../assets/thimblerig_dashed_ball_lifting.json';
 import ThimblerigNoBallInsideLifting from '../assets/thimblerig_noball_lifting.json';
-
 import ThimblerigCoverSVG from '../assets/game-cover.svg';
 import ThimblerigCoverMobileSVG from '@/public/image/game-page/game-title-mobile-template.svg';
-
 import Image from 'next/image';
 import Lottie from 'react-lottie';
 import { MainButtonState } from '@/components/framework/GamePage/PvPGameView';
@@ -43,27 +39,26 @@ import { getRandomEmoji } from '@/lib/emoji';
 import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
 import { cn } from '@/lib/helpers';
 import AnimatedThimble from './AnimatedThimble';
-import { Button } from '@/components/ui/games-store/shared/Button';
-import { GameWidget } from '@/components/framework/GameWidget/GameWidget';
-import { UnsetCompetitionPopup } from '@/components/framework/GameWidget/UnsetCompetitionPopup';
+import Button from '@/components/shared/Button';
+import GameWidget from '@/components/framework/GameWidget';
+import { UnsetCompetitionPopup } from '@/components/framework/GameWidget/ui/popups/UnsetCompetitionPopup';
 import { formatUnits } from '@/lib/unit';
 import znakesImg from '@/public/image/tokens/znakes.svg';
-import { ConnectWallet } from '@/components/framework/GameWidget/ConnectWallet';
-import { InstallWallet } from '@/components/framework/GameWidget/InstallWallet';
-import { Competition } from '@/components/framework/GameWidget/Competition';
+import { ConnectWallet } from '@/components/framework/GameWidget/ui/popups/ConnectWallet';
+import { InstallWallet } from '@/components/framework/GameWidget/ui/popups/InstallWallet';
+import { Competition } from '@/components/framework/GameWidget/ui/Competition';
 import { Currency } from '@/constants/currency';
 import { motion, useAnimationControls } from 'framer-motion';
 import { ICompetitionPVP } from '@/lib/types';
 import { GameWrap } from '@/components/framework/GamePage/GameWrap';
-import Modal from '@/components/ui/games-store/shared/modal/BaseModal';
-import { RateGame } from '@/components/framework/GameWidget/RateGame';
+import { RateGame } from '@/components/framework/GameWidget/ui/popups/RateGame';
 import { type PendingTransaction } from '@proto-kit/sequencer';
-import { SadSmileSVG } from '@/components/ui/games-store/shared/misc/svg';
-import { toast } from '@/components/ui/games-store/shared/Toast';
+import { SadSmileSVG } from '@/components/shared/misc/svg';
+import toast from '@/components/shared/Toast';
 import { useToasterStore } from '@/lib/stores/toasterStore';
 import { useRateGameStore } from '@/lib/stores/rateGameStore';
 import { formatPubkey } from '@/lib/utils';
-import StatefulModal from '@/components/ui/games-store/shared/modal/StatefulModal';
+import StatefulModal from '@/components/shared/Modal/StatefulModal';
 
 enum GameState {
   WalletNotInstalled,

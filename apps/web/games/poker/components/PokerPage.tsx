@@ -1,13 +1,13 @@
 import PokerCoverSVG from '@/games/poker/assets/game-cover.svg';
 import GamePage from '@/components/framework/GamePage';
 import { pokerConfig } from '@/games/poker/config';
-import { Button } from '@/components/ui/games-store/shared/Button';
+import Button from '@/components/shared/Button';
 import { Currency } from '@/constants/currency';
 import Image from 'next/image';
 import defaultAvatar from '../assets/avatars/defaultAvatar.svg';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
-import StatefulModal from '@/components/ui/games-store/shared/modal/StatefulModal';
+import StatefulModal from '@/components/shared/Modal/StatefulModal';
 
 export const PokerPage = () => {
   const ChatMessage = ({

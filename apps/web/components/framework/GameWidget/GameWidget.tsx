@@ -2,7 +2,7 @@ import { api } from '@/trpc/react';
 import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
 
-export const GameWidget = ({
+export default function GameWidget({
   children,
   ticks,
   score,
@@ -18,7 +18,7 @@ export const GameWidget = ({
   gameId: string;
   isPvp?: boolean;
   playersCount?: number;
-}) => {
+}) {
   const getRatingQuery = api.ratings.getGameRating.useQuery({
     gameId,
   });
@@ -129,4 +129,4 @@ export const GameWidget = ({
       </div>
     </motion.div>
   );
-};
+}

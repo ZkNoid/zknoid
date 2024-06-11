@@ -1,17 +1,15 @@
-import { CompetitionBlock } from '@/components/framework/CompetitionWidget/CompetitionBlock';
-import { SortByFilter } from '@/components/ui/games-store/SortByFilter';
-import {
-  COMPETITIONS_SORT_METHODS,
-  CompetitionsSortBy,
-} from '@/constants/sortBy';
-import { CompetitionListItem } from '@/components/framework/CompetitionWidget/CompetitionListItem';
+import CompetitionBlock from './ui/CompetitionBlock';
+import { SortByFilter } from '@/components/widgets/GameStore/Storefront/ui/SortByFilter';
+import { COMPETITIONS_SORT_METHODS, CompetitionsSortBy } from './lib/sortBy';
+import CompetitionListItem from './ui/CompetitionListItem';
 import { ICompetition } from '@/lib/types';
 import { useEffect, useRef, useState } from 'react';
-import { Button } from '@/components/ui/games-store/shared/Button';
-import { CustomScrollbar } from '@/components/ui/games-store/shared/CustomScrollbar';
+import Button from '@/components/shared/Button';
+import CustomScrollbar from '@/components/shared/CustomScrollbar';
 import { AnimatePresence, useScroll } from 'framer-motion';
+import { sortByFilter } from './lib/sortBy';
 
-export const CompetitionWidget = ({
+export default function CompetitionWidget({
   competitionBlocks,
   competitionList,
   gameId,
@@ -21,45 +19,14 @@ export const CompetitionWidget = ({
   competitionBlocks: ICompetition[];
   competitionList: ICompetition[];
   register: (id: number) => Promise<void>;
-}) => {
+}) {
   const PAGINATION_LIMIT = 5;
-
   const [currentPage, setCurrentPage] = useState<number>(1);
-
   const [sortBy, setSortBy] = useState<CompetitionsSortBy>(
     CompetitionsSortBy.LowFunds
   );
-
   const [containerHeight, setContainerHeight] = useState<number>(0);
-
   const competitionsListRef = useRef<HTMLDivElement | null>(null);
-
-  const sortByFilter = (a: ICompetition, b: ICompetition): number => {
-    switch (sortBy) {
-      case CompetitionsSortBy.HighFees:
-        return Number(a.participationFee - b.participationFee);
-
-      case CompetitionsSortBy.LowFees:
-        return Number(b.participationFee - a.participationFee);
-
-      case CompetitionsSortBy.HighFunds:
-        return Number(a.reward - b.reward);
-
-      case CompetitionsSortBy.LowFunds:
-        return Number(b.reward - a.reward);
-
-      case CompetitionsSortBy.Latest:
-        return (
-          a.competitionDate.start.getDate() - b.competitionDate.start.getDate()
-        );
-
-      case CompetitionsSortBy.Nearest:
-        return (
-          b.competitionDate.start.getDate() - a.competitionDate.start.getDate()
-        );
-    }
-  };
-
   const renderCompetitionsList = competitionList;
 
   useEffect(() => {
@@ -94,7 +61,6 @@ export const CompetitionWidget = ({
       refObj?.removeEventListener('resize', resizeHandler);
     };
   });
-
   const { scrollYProgress } = useScroll({ container: competitionsListRef });
 
   return (
@@ -133,7 +99,7 @@ export const CompetitionWidget = ({
             }
           >
             {renderCompetitionsList
-              .toSorted((a, b) => sortByFilter(a, b))
+              .toSorted((a, b) => sortByFilter(a, b, sortBy))
               .map((item, index) => (
                 <CompetitionListItem
                   key={index}
@@ -158,4 +124,4 @@ export const CompetitionWidget = ({
       </div>
     </>
   );
-};
+}

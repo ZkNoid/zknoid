@@ -44,7 +44,7 @@ import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import { getRandomEmoji } from '@/lib/emoji';
 import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
-import { toast } from '@/components/ui/games-store/shared/Toast';
+import toast from '@/components/shared/Toast';
 import { formatUnits } from '@/lib/unit';
 import { Currency } from '@/constants/currency';
 import { useToasterStore } from '@/lib/stores/toasterStore';
