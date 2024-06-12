@@ -12,6 +12,7 @@ import { useNetworkStore } from '@/lib/stores/network';
 import { MatchmakingFailModal } from './MatchmakingFailModal';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import { useMinaBridge } from '@/lib/stores/protokitBalances';
+import { formatUnits } from '@/lib/unit';
 
 const OpponentItem = ({
   option,
@@ -94,7 +95,7 @@ const OpponentItem = ({
               width={25}
               height={25}
             />
-            <span>{option.pay}</span>
+            <span>{formatUnits(option.pay)}</span>
             <span>{Currency.ZNAKES}</span>
           </span>
         </div>
@@ -119,7 +120,7 @@ const OpponentItem = ({
               width={25}
               height={25}
             />
-            <span>{option.pay * winCoef}</span>
+            <span>{formatUnits(option.pay * winCoef)}</span>
             <span>{Currency.ZNAKES}</span>
           </span>
         </div>
@@ -205,7 +206,7 @@ export const FastMatchmaking = ({
             option={option}
             winCoef={winCoef}
             register={async (id: number) => {
-              if (await bridge(BigInt(option.pay) * 10n ** 9n))
+              if (await bridge(BigInt(option.pay)))
                 throw Error('Not enough funds');
 
               await registerAndRecord(id);
