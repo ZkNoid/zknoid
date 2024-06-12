@@ -50,6 +50,10 @@ import { type PendingTransaction } from '@proto-kit/sequencer';
 import { toast } from '@/components/ui/games-store/shared/Toast';
 import { useToasterStore } from '@/lib/stores/toasterStore';
 import { useRateGameStore } from '@/lib/stores/rateGameStore';
+import {
+  useLobbiesStore,
+  useObserveLobbiesStore,
+} from '@/lib/stores/lobbiesStore';
 
 enum GameState {
   WalletNotInstalled,
@@ -104,6 +108,15 @@ export default function RandzuPage({
   const sessionPrivateKey = useStore(useSessionKeyStore, (state) =>
     state.getSessionKey()
   );
+
+  const query = networkStore.protokitClientStarted
+    ? client.query.runtime.RandzuLogic
+    : undefined;
+
+  useObserveLobbiesStore(query);
+  const lobbiesStore = useLobbiesStore();
+
+  console.log('Active lobby', lobbiesStore.activeLobby);
 
   useObserveRandzuMatchQueue();
   const protokitChain = useProtokitChainStore();
@@ -740,10 +753,10 @@ export default function RandzuPage({
                 rating: getRatingQuery.data?.rating,
                 author: randzuConfig.author,
               },
-              title: competition.name,
-              reward: competition.prizeFund,
+              title: lobbiesStore.activeLobby?.name || 'Unknown',
+              reward: lobbiesStore.activeLobby?.reward || 0n,
               currency: Currency.MINA,
-              startPrice: competition.enteringPrice,
+              startPrice: lobbiesStore.lobbies?.[0]?.fee || 0n,
             }
           }
         />

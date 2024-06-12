@@ -21,6 +21,7 @@ export interface IMatchamkingOption {
 export interface LobbiesState {
   loading: boolean;
   lobbies: ILobby[];
+  activeLobby?: ILobby;
   currentLobby?: ILobby;
   selfReady: boolean;
   activeGameId?: number;
@@ -43,6 +44,7 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
   loading: Boolean(true),
   lobbies: [],
   currentLobby: undefined,
+  activeLobby: undefined,
   selfReady: false,
   activeGameId: undefined,
   matchmakingOptions: [],
@@ -98,6 +100,7 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
 
     const lastLobbyId = await query.lastLobbyId.get();
     let lobbies: ILobby[] = [];
+    let activeLobby: ILobby | undefined = undefined;
 
     if (!lastLobbyId) {
       console.log(`Can't get lobby info`);
@@ -109,6 +112,38 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
     const activeGameId = contractActiveGameId
       ? +contractActiveGameId
       : contractActiveGameId;
+
+    console.log('contractActiveGameId', contractActiveGameId);
+
+    if (contractActiveGameId) {
+      const contractActiveLobby =
+        await query.activeLobby.get(contractActiveGameId);
+      if (contractActiveLobby) {
+        const curLobby = contractActiveLobby!;
+        console.log('CurrLobby', curLobby);
+        const players = +curLobby.curAmount;
+
+        activeLobby = {
+          id: Number(curLobby.id.toBigInt()),
+          active: curLobby.active.toBoolean(),
+          name: curLobby.name.toString(),
+          reward:
+            (BigInt(rewardCoeff * 1000) *
+              curLobby.participationFee.toBigInt()) /
+            1000n,
+          fee: curLobby.participationFee.toBigInt(),
+          maxPlayers: 2,
+          players,
+          playersAddresses: curLobby.players.slice(0, players),
+          playersReady: curLobby.ready
+            .slice(0, players)
+            .map((val: Bool) => val.toBoolean()),
+          privateLobby: curLobby.privateLobby.toBoolean(),
+          currency: Currency.ZNAKES,
+          accessKey: +curLobby.accessKey,
+        };
+      }
+    }
 
     for (let i = 0; i < +lastLobbyId; i++) {
       let curLobby = await query.activeLobby.get(UInt64.from(i));
@@ -163,6 +198,8 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
       }
     }
 
+    console.log('Active lobby', activeLobby);
+
     set((state) => {
       // @ts-ignore
       state.lobbies = lobbies;
@@ -170,6 +207,7 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
       state.currentLobby = curLobby;
       state.activeGameId = activeGameId;
       state.selfReady = selfReady;
+      state.activeLobby = activeLobby;
     });
   },
 

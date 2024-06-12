@@ -26,7 +26,7 @@ export const useObserveCheckersMatchQueue = () => {
   >(AppChainClientContext);
 
   useEffect(() => {
-    if (!network.walletConnected || !network.address) {
+    if (!network.walletConnected || !network.address || !network.protokitClientStarted) {
       return;
     }
 
@@ -45,5 +45,5 @@ export const useObserveCheckersMatchQueue = () => {
       chain.block?.height ?? 0,
       PublicKey.fromBase58(network.address!)
     );
-  }, [chain.block?.height, network.walletConnected, network.address]);
+  }, [chain.block?.height, network.walletConnected, network.address, network.protokitClientStarted]);
 };
