@@ -64,6 +64,7 @@ import { useToasterStore } from '@/lib/stores/toasterStore';
 import { useRateGameStore } from '@/lib/stores/rateGameStore';
 import { formatPubkey } from '@/lib/utils';
 import StatefulModal from '@/components/ui/games-store/shared/modal/StatefulModal';
+import { useLobbiesStore, useObserveLobbiesStore } from '@/lib/stores/lobbiesStore';
 
 enum GameState {
   WalletNotInstalled,
@@ -102,6 +103,15 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   const [finalAnimationStep, setFinalAnimationStep] = useState<number>(0);
   let finalAnimationStepRef = useRef<number>(0);
   const progress = api.progress.setSolvedQuests.useMutation();
+
+  const query = networkStore.protokitClientStarted
+    ? client.query.runtime.ThimblerigLogic
+    : undefined;
+
+  useObserveLobbiesStore(query);
+  const lobbiesStore = useLobbiesStore();
+
+  console.log('Active lobby', lobbiesStore.activeLobby);
 
   const matchQueue = useThimblerigMatchQueueStore();
   const sessionPublicKey = useStore(useSessionKeyStore, (state) =>
@@ -527,10 +537,10 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       rating: getRatingQuery.data?.rating,
       author: thimblerigConfig.author,
     },
-    title: 'TEST COMPETITION',
-    reward: BigInt(+DEFAULT_PARTICIPATION_FEE.toString()),
+    title: lobbiesStore.activeLobby?.name || 'Unknown',
+    reward: (lobbiesStore.activeLobby?.reward || 0n) / 2n,
     currency: Currency.MINA,
-    startPrice: BigInt(+DEFAULT_PARTICIPATION_FEE.toString()),
+    startPrice: lobbiesStore.lobbies?.[0]?.fee || 0n,
   };
 
   const draggableBallControls = useAnimationControls();

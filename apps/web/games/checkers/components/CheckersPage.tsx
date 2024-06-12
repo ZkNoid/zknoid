@@ -48,6 +48,7 @@ import { toast } from '@/components/ui/games-store/shared/Toast';
 import { formatUnits } from '@/lib/unit';
 import { Currency } from '@/constants/currency';
 import { useToasterStore } from '@/lib/stores/toasterStore';
+import { useLobbiesStore, useObserveLobbiesStore } from '@/lib/stores/lobbiesStore';
 
 enum GameState {
   WalletNotInstalled,
@@ -94,6 +95,16 @@ export default function RandzuPage({
   const sessionPrivateKey = useStore(useSessionKeyStore, (state) =>
     state.getSessionKey()
   );
+
+  useObserveCheckersMatchQueue();
+  const query = networkStore.protokitClientStarted
+    ? client.query.runtime.CheckersLogic
+    : undefined;
+
+  useObserveLobbiesStore(query);
+  const lobbiesStore = useLobbiesStore();
+
+  console.log('Active lobby', lobbiesStore.activeLobby);
 
   useObserveCheckersMatchQueue();
   const protokitChain = useProtokitChainStore();
@@ -409,7 +420,7 @@ export default function RandzuPage({
       <PvPGameView
         status={statuses[gameState]}
         opponent={matchQueue.gameInfo?.opponent}
-        startPrice={DEFAULT_PARTICIPATION_FEE.toBigInt()}
+        startPrice={lobbiesStore.lobbies?.[0]?.fee || 0n}
         mainButtonState={mainButtonState}
         startGame={() => startGame()}
         queueSize={matchQueue.getQueueLength()}
@@ -417,13 +428,13 @@ export default function RandzuPage({
         mainText={mainText[gameState]}
         bottomButtonText={bottomButtonState[gameState]?.text}
         bottomButtonHandler={bottomButtonState[gameState]?.handler}
-        competitionName={'Room 1'}
+        competitionName={lobbiesStore.activeLobby?.name || 'Unknown'}
         gameName={'Checkers'}
         gameRules={`Checkers is a two-player game played on an 8x8 board. Players take turns moving their pieces diagonally forward, capturing opponent's pieces by jumping over them. A piece reaching the opponent's back row becomes a king and can move backward. 
         
         The game is won by capturing all of the opponent's pieces or by blocking them from moving
         `}
-        competitionFunds={DEFAULT_PARTICIPATION_FEE.toBigInt() * 2n}
+        competitionFunds={(lobbiesStore.activeLobby?.reward || 0n) / 2n}
       >
         <GameView
           gameInfo={matchQueue.gameInfo}

@@ -6,13 +6,14 @@ import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { ClientAppChain } from 'zknoid-chain-dev';
 import LobbyPage from '@/components/framework/Lobby/LobbyPage';
 import { checkersConfig } from '../config';
+import { useNetworkStore } from '@/lib/stores/network';
 
 export default function CheckersLobby({
   params,
 }: {
   params: { lobbyId: string };
 }) {
-  useState<boolean>(false);
+  const networkStore = useNetworkStore();
 
   const client = useContext(AppChainClientContext) as ClientAppChain<
     typeof checkersConfig.runtimeModules,
@@ -34,7 +35,9 @@ export default function CheckersLobby({
     >
       <LobbyPage
         lobbyId={params.lobbyId}
-        query={client.query.runtime.CheckersLogic}
+        query={networkStore.protokitClientStarted
+          ? client.query.runtime.CheckersLogic
+          : undefined}
         contractName={'CheckersLogic'}
         config={checkersConfig}
       />
