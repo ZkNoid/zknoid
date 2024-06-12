@@ -4,6 +4,7 @@ import Image from 'next/image';
 import znakesImg from '@/public/image/tokens/znakes.svg';
 import { Currency } from '@/constants/currency';
 import { Button } from '@/components/ui/games-store/shared/Button';
+import { formatUnits } from '../../../lib/unit';
 
 export const MatchmakingModal = ({
   isLongSearch,
@@ -112,7 +113,7 @@ export const MatchmakingModal = ({
               />
               <span>
                 {' '}
-                {pay} {Currency.ZNAKES}
+                {formatUnits(pay)} {Currency.ZNAKES}
               </span>
             </div>
             <div className={'flex flex-row gap-2'}>
@@ -130,7 +131,7 @@ export const MatchmakingModal = ({
               />
               <span>
                 {' '}
-                {receive} {Currency.ZNAKES}
+                {formatUnits(receive)} {Currency.ZNAKES}
               </span>
             </div>
           </div>

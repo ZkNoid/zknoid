@@ -67,7 +67,7 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
     for (let i = 0; i < this.matchmakingOptions.length; i++) {
       const pendingLobbyIndex = new PendingLobbyIndex({
         roundId: UInt64.from(blockHeight).div(PENDING_BLOCKS_NUM),
-        type: UInt64.from(i),
+        type: UInt64.from(i + 1),
       });
 
       const pendingLobbyInfo = await query.pendingLobby.get(pendingLobbyIndex);
@@ -75,10 +75,12 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
       matchmakingOptions.push({
         id: this.matchmakingOptions[i].id,
         pay: this.matchmakingOptions[i].pay,
-        isPending: !!pendingLobbyInfo,
+        isPending: pendingLobbyInfo?.players
+          .map((val) => val.toBase58())
+          .includes(address.toBase58())!!,
       });
     }
-    
+
     console.log('New matchmaking options', matchmakingOptions);
 
     set((state) => {
