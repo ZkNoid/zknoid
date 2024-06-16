@@ -1,7 +1,7 @@
 import { createZkNoidGameConfig } from '@/lib/createConfig';
 import { ZkNoidGameType } from '@/lib/platform/game_types';
 import { RandzuLogic } from 'zknoid-chain-dev';
-import RandzuPage from './components/RandzuPage';
+import Randzu from './Randzu';
 import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
 import RandzuLobby from '@/games/randzu/components/RandzuLobby';
 import { LogoMode } from '@/app/constants/games';
@@ -25,6 +25,6 @@ export const randzuConfig = createZkNoidGameConfig({
   runtimeModules: {
     RandzuLogic,
   },
-  page: RandzuPage,
+  page: Randzu,
   lobby: RandzuLobby,
 });

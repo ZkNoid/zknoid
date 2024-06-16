@@ -1,7 +1,7 @@
 import { createZkNoidGameConfig } from '@/lib/createConfig';
 import { ZkNoidGameType } from '@/lib/platform/game_types';
 import { ThimblerigLogic } from 'zknoid-chain-dev';
-import Thimblerig from './components/Thimblerig';
+import Thimblerig from './Thimblerig';
 import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
 import ThimblerigLobby from './components/ThimblerigLobby';
 import { LogoMode } from '@/app/constants/games';

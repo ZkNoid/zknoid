@@ -1,7 +1,7 @@
 import { createZkNoidGameConfig } from '@/lib/createConfig';
 import { ZkNoidGameType } from '@/lib/platform/game_types';
 import { CheckersLogic } from 'zknoid-chain-dev';
-import CheckersPage from './components/CheckersPage';
+import CheckersPage from './Checkers';
 import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
 import CheckersLobby from './components/CheckersLobby';
 import { LogoMode } from '@/app/constants/games';
