@@ -256,6 +256,7 @@ export class GameContext extends Struct({
         console.log(`Right bump ${rightBump.toString()}`);
         console.log(`Top bump ${topBump.toString()}`);
         console.log(`Bottom bump ${bottomBump.toString()}`);
+        
       }
     });
 
