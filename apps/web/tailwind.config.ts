@@ -11,7 +11,6 @@ module.exports = {
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
     "./games/**/*.{ts,tsx}",
-
   ],
   theme: {
     container: {

@@ -47,7 +47,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
     lobbyId,
     query,
     contractName,
-    config,
+    config, 
   };
   const router = useRouter();
   const lobbiesStore = useLobbiesStore();

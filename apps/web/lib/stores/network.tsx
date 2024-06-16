@@ -15,7 +15,6 @@ export interface NetworkState {
   onProtokitClientStarted: () => void;
   connectWallet: (soft: boolean) => Promise<void>;
   walletInstalled: () => boolean;
-
   pendingL2Transactions: PendingTransaction[];
   addPendingL2Transaction: (pendingTransaction: PendingTransaction) => void;
   removePendingL2Transaction: (pendingTransaction: PendingTransaction) => void;
@@ -36,6 +35,7 @@ export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
 
       set((state) => {
         console.log('Target network', network);
+        console.log('Target network')
         state.minaNetwork = network;
         if (network) {
           const Network = O1js.Mina.Network(network?.graphql);
