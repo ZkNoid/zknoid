@@ -50,6 +50,10 @@ import { useToasterStore } from '@/lib/stores/toasterStore';
 import { useRateGameStore } from '@/lib/stores/rateGameStore';
 import { GameState } from './lib/gameState';
 import { useStartGame } from '@/games/randzu/features/startGame';
+import {
+  useLobbiesStore,
+  useObserveLobbiesStore,
+} from '@/lib/stores/lobbiesStore';
 
 const competition = {
   id: 'global',
@@ -65,8 +69,8 @@ export default function Randzu({
 }) {
   const [gameState, setGameState] = useState(GameState.NotStarted);
   const [isRateGame, setIsRateGame] = useState<boolean>(true);
-  let [loading, setLoading] = useState(true);
-  let [loadingElement, setLoadingElement] = useState<
+  const [loading, setLoading] = useState(true);
+  const [loadingElement, setLoadingElement] = useState<
     { x: number; y: number } | undefined
   >({ x: 0, y: 0 });
   const client = useContext(AppChainClientContext) as ClientAppChain<
@@ -94,6 +98,14 @@ export default function Randzu({
   const getRatingQuery = api.ratings.getGameRating.useQuery({
     gameId: 'randzu',
   });
+  const query = networkStore.protokitClientStarted
+    ? client.query.runtime.RandzuLogic
+    : undefined;
+
+  useObserveLobbiesStore(query);
+  const lobbiesStore = useLobbiesStore();
+
+  console.log('Active lobby', lobbiesStore.activeLobby);
 
   const restart = () => {
     matchQueue.resetLastGameState();
@@ -647,10 +659,10 @@ export default function Randzu({
                 rating: getRatingQuery.data?.rating,
                 author: randzuConfig.author,
               },
-              title: competition.name,
-              reward: competition.prizeFund,
+              title: lobbiesStore.activeLobby?.name || 'Unknown',
+              reward: lobbiesStore.activeLobby?.reward || 0n,
               currency: Currency.MINA,
-              startPrice: competition.enteringPrice,
+              startPrice: lobbiesStore.lobbies?.[0]?.fee || 0n,
             }
           }
         />
