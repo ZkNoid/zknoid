@@ -1,6 +1,6 @@
 import { cn } from '@/lib/helpers';
-import TicketCard from './TicketsSection/TicketCard';
-import BuyInfoCard from './TicketsSection/BuyInfoCard';
+import TicketCard from './ui/TicketCard';
+import BuyInfoCard from './ui/BuyInfoCard';
 
 export default function TicketsSection({}: {}) {
   return (
