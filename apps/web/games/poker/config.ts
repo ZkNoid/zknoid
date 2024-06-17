@@ -1,5 +1,5 @@
 import { createZkNoidGameConfig } from '@/lib/createConfig';
-import { PokerPage } from './components/PokerPage';
+import { Poker } from './Poker';
 import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
 import { ZkNoidGameType } from '@/lib/platform/game_types';
 import { LogoMode } from '@/app/constants/games';
@@ -20,5 +20,5 @@ export const pokerConfig = createZkNoidGameConfig({
   popularity: 0,
   rules: 'Poker rules',
   runtimeModules: {}, // TEMPORARY!!!
-  page: PokerPage,
+  page: Poker,
 });

@@ -1,10 +1,9 @@
 import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
 
-
 export enum LogoMode {
   CENTER = 0,
   FULL_WIDTH = 1,
-  BOTTOM_RIGHT = 2
+  BOTTOM_RIGHT = 2,
 }
 export interface IGame {
   id: string;
@@ -21,6 +20,7 @@ export interface IGame {
   popularity: number;
   rating: number;
   author: string;
+  externalUrl?: string;
 }
 
 export const announcedGames: IGame[] = [
@@ -40,7 +40,6 @@ export const announcedGames: IGame[] = [
     popularity: 0,
     author: 'ZkNoid Team',
   },
- 
 ];
 
 export const defaultGames: IGame[] = [
@@ -78,4 +77,55 @@ export const defaultGames: IGame[] = [
     author: 'ZkNoid Team',
     rating: 0,
   },
+  {
+    id: 'thimblerig',
+    name: 'Thimblerig game',
+    description:
+      'One player hides a ball behind a thimbler and second player needs to guess which thimbler it was',
+    logo: '/image/games/thimblerig.svg',
+    logoMode: LogoMode.CENTER,
+    genre: ZkNoidGameGenre.Lucky,
+    features: [ZkNoidGameFeature.P2P],
+    defaultPage: 'lobby/undefined',
+    isReleased: true,
+    active: true,
+    releaseDate: new Date(2024, 2, 25),
+    popularity: 0,
+    author: 'ZkNoid Team',
+    rating: 0,
+  },
+  {
+    id: 'checkers',
+    name: 'Checkers game',
+    description:
+      "Checkers is a two-player game played on an 8x8 board. The objective is to capture all of your opponent's pieces jumping diagonally over them",
+    logo: '/image/games/checkers.svg',
+    logoMode: LogoMode.BOTTOM_RIGHT,
+    genre: ZkNoidGameGenre.BoardGames,
+    features: [ZkNoidGameFeature.Multiplayer],
+    defaultPage: 'lobby/undefined',
+    isReleased: true,
+    active: true,
+    releaseDate: new Date(2024, 0, 1),
+    popularity: 50,
+    author: 'ZkNoid Team',
+    rating: 0,
+  },
+  {
+    id: 'tileville',
+    name: 'Tileville game',
+    description: 'TileVille is a strategic city-building game on the Mina blockchain, where players construct and manage their own cities on the island of Nicobar using hexagonal tiles.',
+    logo: '/image/games/tileville.png',
+    logoMode: LogoMode.CENTER,
+    genre: ZkNoidGameGenre.Arcade,
+    features: [ZkNoidGameFeature.SinglePlayer],
+    isReleased: true,
+    active: true,
+    releaseDate: new Date(2024, 2, 25),
+    popularity: 0,
+    author: 'Satyam Bansal',
+    externalUrl: 'https://www.tileville.xyz/',
+    defaultPage: '',
+    rating: 0
+  }
 ];

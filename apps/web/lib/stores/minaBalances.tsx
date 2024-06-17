@@ -48,6 +48,7 @@ export const useMinaBalancesStore = create<
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'Cookie'
           },
           body: JSON.stringify({
             query: `

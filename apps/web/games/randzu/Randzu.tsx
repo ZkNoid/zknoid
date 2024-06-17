@@ -1,10 +1,9 @@
 'use client';
 
 import { useContext, useEffect, useState } from 'react';
-import { GameView } from './GameView';
+import { GameView } from './components/GameView';
 import { Int64, PublicKey, UInt32, UInt64 } from 'o1js';
 import { useNetworkStore } from '@/lib/stores/network';
-import { useMinaBridge } from '@/lib/stores/protokitBalances';
 import {
   useObserveRandzuMatchQueue,
   useRandzuMatchQueueStore,
@@ -18,17 +17,16 @@ import {
   WinWitness,
 } from 'zknoid-chain-dev';
 import GamePage from '@/components/framework/GamePage';
-import { randzuConfig } from '../config';
+import { randzuConfig } from './config';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import { MainButtonState } from '@/components/framework/GamePage/PvPGameView';
-import RandzuCoverSVG from '../assets/game-cover.svg';
+import RandzuCoverSVG from './assets/game-cover.svg';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
-import { getRandomEmoji } from '@/lib/emoji';
 import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
 import { MOVE_TIMEOUT_IN_BLOCKS } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
-import RandzuCoverMobileSVG from '../assets/game-cover-mobile.svg';
+import RandzuCoverMobileSVG from './assets/game-cover-mobile.svg';
 import GameWidget from '@/components/framework/GameWidget';
 import { motion } from 'framer-motion';
 import { formatPubkey } from '@/lib/utils';
@@ -46,23 +44,16 @@ import { ConnectWallet } from '@/components/framework/GameWidget/ui/popups/Conne
 import { InstallWallet } from '@/components/framework/GameWidget/ui/popups/InstallWallet';
 import { GameWrap } from '@/components/framework/GamePage/GameWrap';
 import { RateGame } from '@/components/framework/GameWidget/ui/popups/RateGame';
-import { type PendingTransaction } from '@proto-kit/sequencer';
+import { type PendingTransaction } from '../../../../protokit-framework/framework/packages/sequencer';
 import toast from '@/components/shared/Toast';
 import { useToasterStore } from '@/lib/stores/toasterStore';
 import { useRateGameStore } from '@/lib/stores/rateGameStore';
-
-enum GameState {
-  WalletNotInstalled,
-  WalletNotConnected,
-  NotStarted,
-  MatchRegistration,
-  Matchmaking,
-  CurrentPlayerTurn,
-  OpponentTurn,
-  OpponentTimeout,
-  Won,
-  Lost,
-}
+import { GameState } from './lib/gameState';
+import { useStartGame } from '@/games/randzu/features/startGame';
+import {
+  useLobbiesStore,
+  useObserveLobbiesStore,
+} from '@/lib/stores/lobbiesStore';
 
 const competition = {
   id: 'global',
@@ -71,13 +62,17 @@ const competition = {
   prizeFund: 0n,
 };
 
-export default function RandzuPage({
+export default function Randzu({
   params,
 }: {
   params: { competitionId: string };
 }) {
   const [gameState, setGameState] = useState(GameState.NotStarted);
   const [isRateGame, setIsRateGame] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
+  const [loadingElement, setLoadingElement] = useState<
+    { x: number; y: number } | undefined
+  >({ x: 0, y: 0 });
   const client = useContext(AppChainClientContext) as ClientAppChain<
     typeof randzuConfig.runtimeModules,
     any,
@@ -89,80 +84,35 @@ export default function RandzuPage({
     throw Error('Context app chain client is not set');
   }
 
-  let [loading, setLoading] = useState(true);
-  let [loadingElement, setLoadingElement] = useState<
-    { x: number; y: number } | undefined
-  >({ x: 0, y: 0 });
-
   const networkStore = useNetworkStore();
   const matchQueue = useRandzuMatchQueueStore();
   const toasterStore = useToasterStore();
   const rateGameStore = useRateGameStore();
-  const sessionPublicKey = useStore(useSessionKeyStore, (state) =>
-    state.getSessionKey()
-  ).toPublicKey();
+  const protokitChain = useProtokitChainStore();
+  useObserveRandzuMatchQueue();
   const sessionPrivateKey = useStore(useSessionKeyStore, (state) =>
     state.getSessionKey()
   );
+  const progress = api.progress.setSolvedQuests.useMutation();
+  const startGame = useStartGame(competition.id, setGameState);
+  const getRatingQuery = api.ratings.getGameRating.useQuery({
+    gameId: 'randzu',
+  });
+  const query = networkStore.protokitClientStarted
+    ? client.query.runtime.RandzuLogic
+    : undefined;
 
-  useObserveRandzuMatchQueue();
-  const protokitChain = useProtokitChainStore();
+  useObserveLobbiesStore(query);
+  const lobbiesStore = useLobbiesStore();
 
-  const bridge = useMinaBridge();
+  console.log('Active lobby', lobbiesStore.activeLobby);
 
   const restart = () => {
     matchQueue.resetLastGameState();
     setGameState(GameState.NotStarted);
   };
 
-  const gameStartedMutation = api.logging.logGameStarted.useMutation();
-  const progress = api.progress.setSolvedQuests.useMutation();
-
-  const startGame = async () => {
-    if (await bridge(DEFAULT_PARTICIPATION_FEE.toBigInt())) return;
-
-    gameStartedMutation.mutate({
-      gameId: 'randzu',
-      userAddress: networkStore.address ?? '',
-      envContext: getEnvContext(),
-    });
-
-    const randzuLogic = client.runtime.resolve('RandzuLogic');
-
-    const tx = await client.transaction(
-      PublicKey.fromBase58(networkStore.address!),
-      async () => {
-        randzuLogic.register(
-          sessionPublicKey,
-          UInt64.from(Math.round(Date.now() / 1000))
-        );
-      }
-    );
-
-    await tx.sign();
-    await tx.send();
-
-    await progress.mutateAsync({
-      userAddress: networkStore.address!,
-      section: 'RANDZU',
-      id: 0,
-      txHash: JSON.stringify((tx.transaction! as PendingTransaction).toJSON()),
-      roomId: competition.id,
-      envContext: getEnvContext(),
-    });
-
-    await progress.mutateAsync({
-      userAddress: networkStore.address!,
-      section: 'RANDZU',
-      id: 1,
-      txHash: JSON.stringify((tx.transaction! as PendingTransaction).toJSON()),
-      roomId: competition.id,
-      envContext: getEnvContext(),
-    });
-
-    setGameState(GameState.MatchRegistration);
-  };
-
+  // nonSSR
   const collectPending = async () => {
     const randzuLogic = client.runtime.resolve('RandzuLogic');
 
@@ -184,6 +134,7 @@ export default function RandzuPage({
     console.log('Tx sent', tx);
   };
 
+  // nonSSR
   const proveOpponentTimeout = async () => {
     const randzuLogic = client.runtime.resolve('RandzuLogic');
 
@@ -200,6 +151,7 @@ export default function RandzuPage({
     await tx.send();
   };
 
+  // nonSSR
   const onCellClicked = async (x: number, y: number) => {
     if (!matchQueue.gameInfo?.isCurrentUserMove) return;
     if (matchQueue.gameInfo.field.value[y][x] != 0) return;
@@ -340,39 +292,6 @@ export default function RandzuPage({
     [GameState.Won]: 'YOU WON',
     [GameState.Lost]: 'YOU LOST',
   } as Record<GameState, string>;
-
-  const bottomButtonState = {
-    [GameState.OpponentTimeout]: {
-      text: "PROVE OPPONENT'S TIMEOUT",
-      handler: () => {
-        proveOpponentTimeout();
-      },
-    },
-    [GameState.Lost]: {
-      text: 'RESTART',
-      handler: () => {
-        restart();
-      },
-    },
-    [GameState.Won]: {
-      text: 'RESTART',
-      handler: () => {
-        restart();
-      },
-    },
-  } as Record<GameState, { text: string; handler: () => void }>;
-
-  const mainText = {
-    [GameState.CurrentPlayerTurn]: 'Make your move',
-    [GameState.OpponentTimeout]: 'Opponent timed out. Prove it to get turn',
-    [GameState.OpponentTurn]: 'Wait for opponent to make a turn',
-    [GameState.Won]: `${getRandomEmoji('happy')}You won! Congratulations!`,
-    [GameState.Lost]: `${getRandomEmoji('sad')} You've lost...`,
-  } as Record<GameState, string>;
-
-  const getRatingQuery = api.ratings.getGameRating.useQuery({
-    gameId: 'randzu',
-  });
 
   useEffect(() => {
     if (gameState == GameState.Won)
@@ -740,10 +659,10 @@ export default function RandzuPage({
                 rating: getRatingQuery.data?.rating,
                 author: randzuConfig.author,
               },
-              title: competition.name,
-              reward: competition.prizeFund,
+              title: lobbiesStore.activeLobby?.name || 'Unknown',
+              reward: lobbiesStore.activeLobby?.reward || 0n,
               currency: Currency.MINA,
-              startPrice: competition.enteringPrice,
+              startPrice: lobbiesStore.lobbies?.[0]?.fee || 0n,
             }
           }
         />

@@ -1,5 +1,5 @@
 import GamePage from '@/components/framework/GamePage';
-import { thimblerigConfig } from '../config';
+import { thimblerigConfig } from './config';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useContext, useEffect, useRef, useState } from 'react';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
@@ -8,27 +8,26 @@ import {
   MOVE_TIMEOUT_IN_BLOCKS,
   PENDING_BLOCKS_NUM_CONST,
 } from 'zknoid-chain-dev';
-import { Field, Poseidon, PublicKey, UInt64 } from 'o1js';
+import { Poseidon, PublicKey, UInt64 } from 'o1js';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
 import { walletInstalled } from '@/lib/helpers';
 import {
   useObserveThimblerigMatchQueue,
   useThimblerigMatchQueueStore,
-} from '../stores/matchQueue';
+} from './stores/matchQueue';
 import { useCommitmentStore } from '@/lib/stores/commitmentStorage';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
-import { useMinaBridge } from '@/lib/stores/protokitBalances';
-import ThimbleSVG from '../assets/thimble.svg';
-import ThimbleOpenedCorrectSVG from '../assets/thimble_opened_correct.svg';
-import BallSVG from '../assets/ball.svg';
-import BallDashedSVG from '../assets/ball-dashed.svg';
-import ArrowSVG from '../assets/arrow.svg';
-import ThimblesMixing from '../assets/thimbles_mixing.json';
-import ThimblerigBallInsideLifting from '../assets/thimblerig_ball_lifting.json';
-import ThimblerigGuessedBallInsideLifting from '../assets/thimblerig_dashed_ball_lifting.json';
-import ThimblerigNoBallInsideLifting from '../assets/thimblerig_noball_lifting.json';
-import ThimblerigCoverSVG from '../assets/game-cover.svg';
+import ThimbleSVG from './assets/thimble.svg';
+import ThimbleOpenedCorrectSVG from './assets/thimble_opened_correct.svg';
+import BallSVG from './assets/ball.svg';
+import BallDashedSVG from './assets/ball-dashed.svg';
+import ArrowSVG from './assets/arrow.svg';
+import ThimblesMixing from './assets/thimbles_mixing.json';
+import ThimblerigBallInsideLifting from './assets/thimblerig_ball_lifting.json';
+import ThimblerigGuessedBallInsideLifting from './assets/thimblerig_dashed_ball_lifting.json';
+import ThimblerigNoBallInsideLifting from './assets/thimblerig_noball_lifting.json';
+import ThimblerigCoverSVG from './assets/game-cover.svg';
 import ThimblerigCoverMobileSVG from '@/public/image/game-page/game-title-mobile-template.svg';
 import Image from 'next/image';
 import Lottie from 'react-lottie';
@@ -38,7 +37,7 @@ import { getEnvContext } from '@/lib/envContext';
 import { getRandomEmoji } from '@/lib/emoji';
 import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
 import { cn } from '@/lib/helpers';
-import AnimatedThimble from './AnimatedThimble';
+import AnimatedThimble from './components/AnimatedThimble';
 import Button from '@/components/shared/Button';
 import GameWidget from '@/components/framework/GameWidget';
 import { UnsetCompetitionPopup } from '@/components/framework/GameWidget/ui/popups/UnsetCompetitionPopup';
@@ -52,42 +51,21 @@ import { motion, useAnimationControls } from 'framer-motion';
 import { ICompetitionPVP } from '@/lib/types';
 import { GameWrap } from '@/components/framework/GamePage/GameWrap';
 import { RateGame } from '@/components/framework/GameWidget/ui/popups/RateGame';
-import { type PendingTransaction } from '@proto-kit/sequencer';
+import { type PendingTransaction } from '../../../../protokit-framework/framework/packages/sequencer';
 import { SadSmileSVG } from '@/components/shared/misc/svg';
 import toast from '@/components/shared/Toast';
 import { useToasterStore } from '@/lib/stores/toasterStore';
 import { useRateGameStore } from '@/lib/stores/rateGameStore';
 import { formatPubkey } from '@/lib/utils';
 import StatefulModal from '@/components/shared/Modal/StatefulModal';
-
-enum GameState {
-  WalletNotInstalled,
-  WalletNotConnected,
-  NotStarted,
-  MatchRegistration,
-  Matchmaking,
-  OpponentTimeout,
-  CurrentPlayerHiding,
-  WaitingForHiding,
-  CurrentPlayerGuessing,
-  WaitingForGuessing,
-  CurrentPlayerRevealing,
-  WaitingForReveal,
-  Won,
-  Lost,
-}
+import { GameState } from './lib/gameState';
+import { useStartGame } from './features/startGame';
+import {
+  useLobbiesStore,
+  useObserveLobbiesStore,
+} from '@/lib/stores/lobbiesStore';
 
 export default function Thimblerig({}: { params: { competitionId: string } }) {
-  const client = useContext(AppChainClientContext) as ClientAppChain<
-    typeof thimblerigConfig.runtimeModules,
-    any,
-    any,
-    any
-  >;
-
-  const networkStore = useNetworkStore();
-  const toasterStore = useToasterStore();
-  const rateGameStore = useRateGameStore();
   const [gameState, setGameState] = useState(GameState.NotStarted);
   const [isRateGame, setIsRateGame] = useState<boolean>(false);
   const [revealedValue, setRevealedValue] = useState<
@@ -95,67 +73,49 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   >(undefined);
   const [ballDragged, setBallDragged] = useState<boolean>(false);
   const [finalAnimationStep, setFinalAnimationStep] = useState<number>(0);
-  let finalAnimationStepRef = useRef<number>(0);
-  const progress = api.progress.setSolvedQuests.useMutation();
-
-  const matchQueue = useThimblerigMatchQueueStore();
-  const sessionPublicKey = useStore(useSessionKeyStore, (state) =>
-    state.getSessionKey()
-  ).toPublicKey();
+  const client = useContext(AppChainClientContext) as ClientAppChain<
+    typeof thimblerigConfig.runtimeModules,
+    any,
+    any,
+    any
+  >;
+  const [loading, setLoading] = useState(false);
+  const [pendingChoosing, setPendingChoosing] = useState(false);
+  const [thimbleOpened, setThimbleOpened] = useState<undefined | 1 | 2 | 3>(
+    undefined
+  );
+  const thimbleOpenedRef = useRef<undefined | 1 | 2 | 3>(undefined);
+  const [thimbleGuessed, setThimbleGuessed] = useState<undefined | 1 | 2 | 3>(
+    undefined
+  );
+  const finalAnimationStepRef = useRef<number>(0);
   const sessionPrivateKey = useStore(useSessionKeyStore, (state) =>
     state.getSessionKey()
   );
-  useObserveThimblerigMatchQueue();
 
-  let [loading, setLoading] = useState(false);
-  let [pendingChoosing, setPendingChoosing] = useState(false);
-
-  let [thimbleOpened, setThimbleOpened] = useState<undefined | 1 | 2 | 3>(
-    undefined
-  );
-  let thimbleOpenedRef = useRef<undefined | 1 | 2 | 3>(undefined);
-
-  let [thimbleGuessed, setThimbleGuessed] = useState<undefined | 1 | 2 | 3>(
-    undefined
-  );
-
-  let commitmentStore = useCommitmentStore();
+  const networkStore = useNetworkStore();
+  const toasterStore = useToasterStore();
+  const rateGameStore = useRateGameStore();
+  const progress = api.progress.setSolvedQuests.useMutation();
+  const matchQueue = useThimblerigMatchQueueStore();
+  const commitmentStore = useCommitmentStore();
   const protokitChain = useProtokitChainStore();
+  useObserveThimblerigMatchQueue();
+  const startGame = useStartGame(setGameState);
+
+  const query = networkStore.protokitClientStarted
+    ? client.query.runtime.ThimblerigLogic
+    : undefined;
+
+  useObserveLobbiesStore(query);
+  const lobbiesStore = useLobbiesStore();
+
+  console.log('Active lobby', lobbiesStore.activeLobby);
 
   const restart = () => {
     matchQueue.resetLastGameState();
     setRevealedValue(undefined);
     setGameState(GameState.NotStarted);
-  };
-  const bridge = useMinaBridge();
-
-  const gameStartedMutation = api.logging.logGameStarted.useMutation();
-
-  const startGame = async () => {
-    if (await bridge(DEFAULT_PARTICIPATION_FEE.toBigInt())) return;
-
-    gameStartedMutation.mutate({
-      gameId: 'thimblerig',
-      userAddress: networkStore.address ?? '',
-      envContext: getEnvContext(),
-    });
-
-    const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
-
-    const tx = await client.transaction(
-      PublicKey.fromBase58(networkStore.address!),
-      async () => {
-        thimblerigLogic.register(
-          sessionPublicKey,
-          UInt64.from(Math.round(Date.now() / 1000))
-        );
-      }
-    );
-
-    await tx.sign();
-    await tx.send();
-
-    setGameState(GameState.MatchRegistration);
   };
 
   const collectPending = async () => {
@@ -452,35 +412,6 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     [GameState.Lost]: `${getRandomEmoji('sad')} You've lost...`,
   } as Record<GameState, string>;
 
-  const bottomButtonState = {
-    [GameState.CurrentPlayerRevealing]: {
-      text: 'REVEAL POSITION',
-      handler: () => {
-        revealThumblerig();
-      },
-    },
-    [GameState.OpponentTimeout]: {
-      text: 'PROVE OPPONENT TIMEOUT',
-      handler: () => {
-        proveOpponentTimeout();
-      },
-    },
-    [GameState.Lost]: {
-      text: 'RESTART',
-      handler: () => {
-        restart();
-      },
-    },
-    [GameState.Won]: {
-      text: 'RESTART',
-      handler: () => {
-        restart();
-      },
-    },
-  } as Record<GameState, { text: string; handler: () => void }>;
-
-  const status = statuses[gameState] ?? 'NONE';
-
   const mainButtonState =
     (
       {
@@ -522,10 +453,10 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       rating: getRatingQuery.data?.rating,
       author: thimblerigConfig.author,
     },
-    title: 'TEST COMPETITION',
-    reward: BigInt(+DEFAULT_PARTICIPATION_FEE.toString()),
+    title: lobbiesStore.activeLobby?.name || 'Unknown',
+    reward: (lobbiesStore.activeLobby?.reward || 0n) / 2n,
     currency: Currency.MINA,
-    startPrice: BigInt(+DEFAULT_PARTICIPATION_FEE.toString()),
+    startPrice: lobbiesStore.lobbies?.[0]?.fee || 0n,
   };
 
   const draggableBallControls = useAnimationControls();

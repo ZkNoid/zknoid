@@ -27,6 +27,7 @@ export type ZkNoidGameConfig<
   pageCompetitionsList?: () => React.ReactNode;
   pageNewCompetition?: () => React.ReactNode;
   lobby?: ({ params }: { params: { lobbyId: string } }) => React.ReactNode;
+  externalUrl?: string;
 };
 
 export function createZkNoidGameConfig<
@@ -50,6 +51,7 @@ export function createZkNoidGameConfig<
   pageCompetitionsList?: () => React.ReactNode;
   pageNewCompetition?: () => React.ReactNode;
   lobby?: ({ params }: { params: { lobbyId: string } }) => React.ReactNode;
+  externalUrl?: string;
 }): ZkNoidGameConfig<RuntimeModules> {
   return params;
 }

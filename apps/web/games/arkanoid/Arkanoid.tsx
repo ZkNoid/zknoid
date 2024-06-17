@@ -1,28 +1,22 @@
 'use client';
 
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { GameView, ITick } from '@/games/arkanoid/components/GameView';
-import {
-  Bricks,
-  GameInputs,
-  Tick,
-  CHUNK_LENGTH,
-  createBricksBySeed,
-} from 'zknoid-chain-dev';
-import { Bool, Field, Int64, PublicKey, UInt64 } from 'o1js';
+import { Bricks } from 'zknoid-chain-dev';
 import { useNetworkStore } from '@/lib/stores/network';
-import { useMinaBridge } from '@/lib/stores/protokitBalances';
+import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
+import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import {
   useArkanoidLeaderboardStore,
   useObserveArkanoidLeaderboard,
 } from '@/games/arkanoid/stores/arkanoidLeaderboard';
+import { useStartGame } from '@/games/arkanoid/features/useStartGame';
+import { useProof } from '@/games/arkanoid/features/useProof';
+import { useGetCompetition } from '@/games/arkanoid/features/useGetCompetition';
+import { arkanoidConfig } from './config';
 import { walletInstalled } from '@/lib/helpers';
 import { ICompetition } from '@/lib/types';
-import { fromContractCompetition } from '@/lib/typesConverter';
-import { useWorkerClientStore } from '@/lib/stores/workerClient';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import GamePage from '@/components/framework/GamePage';
-import { arkanoidConfig } from '../config';
 import GameWidget from '@/components/framework/GameWidget';
 import { Leaderboard } from '@/components/framework/GameWidget/ui/Leaderboard';
 import { Competition } from '@/components/framework/GameWidget/ui/Competition';
@@ -33,34 +27,15 @@ import { Win } from '@/components/framework/GameWidget/ui/popups/Win';
 import { InstallWallet } from '@/components/framework/GameWidget/ui/popups/InstallWallet';
 import { DebugCheckbox } from '@/components/framework/GameWidget/ui/DebugCheckbox';
 import { UnsetCompetitionPopup } from '@/components/framework/GameWidget/ui/popups/UnsetCompetitionPopup';
-import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
 import { FullscreenButton } from '@/components/framework/GameWidget/ui/FullscreenButton';
-import { api } from '@/trpc/react';
-import { getEnvContext } from '@/lib/envContext';
-import ArkanoidCoverSVG from '../assets/game-cover.svg';
-import ArkanoidMobileCoverSVG from '../assets/game-cover-mobile.svg';
 import { FullscreenWrap } from '@/components/framework/GameWidget/ui/FullscreenWrap';
+import { PreRegModal } from './ui/PreRegModal';
 import Button from '@/components/shared/Button';
-import Link from 'next/link';
-import { type PendingTransaction } from '@proto-kit/sequencer';
-import StatefulModal from '@/components/shared/Modal/StatefulModal';
+import ArkanoidCoverSVG from './assets/game-cover.svg';
+import ArkanoidMobileCoverSVG from './assets/game-cover-mobile.svg';
+import { GameState } from './lib/gameState';
 
-enum GameState {
-  NotStarted,
-  Active,
-  Won,
-  Lost,
-  Replay,
-  Proofing,
-  RateGame,
-}
-
-const chunkenize = (arr: any[], size: number) =>
-  Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
-    arr.slice(i * size, i * size + size)
-  );
-
-export default function ArkanoidPage({
+export default function Arkanoid({
   params,
 }: {
   params: { competitionId: string };
@@ -70,52 +45,29 @@ export default function ArkanoidPage({
   const [score, setScore] = useState<number>(0);
   const [ticksAmount, setTicksAmount] = useState<number>(0);
   const [competition, setCompetition] = useState<ICompetition>();
-
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
-  const [isFullscreenLoading, setIsFullscreenLoading] =
-    useState<boolean>(false);
   const [isPreRegModalOpen, setIsPreRegModalOpen] = useState<boolean>(false);
+  const [gameId, setGameId] = useState(0);
+  const [debug, setDebug] = useState(false);
+  const [level, setLevel] = useState<Bricks>(Bricks.empty);
 
   const shouldUpdateLeaderboard = useRef(false);
-
-  const client = useContext(AppChainClientContext);
-
-  if (!client) {
-    throw Error('Context app chain client is not set');
-  }
-
-  useObserveArkanoidLeaderboard(params.competitionId, shouldUpdateLeaderboard);
-
   const leaderboardStore = useArkanoidLeaderboardStore();
   const switchStore = useSwitchWidgetStorage();
   const workerClientStore = useWorkerClientStore();
-
-  let [gameId, setGameId] = useState(0);
-  let [debug, setDebug] = useState(false);
-
-  let [level, setLevel] = useState<Bricks>(Bricks.empty);
-
   const networkStore = useNetworkStore();
-  const gameStartedMutation = api.logging.logGameStarted.useMutation();
+  useObserveArkanoidLeaderboard(params.competitionId, shouldUpdateLeaderboard);
 
-  const progress = api.progress.setSolvedQuests.useMutation();
+  const startGame = useStartGame(setGameState, gameId, setGameId, competition);
+  const proof = useProof(lastTicks, competition, score);
+  const getCompetition = useGetCompetition(
+    +params.competitionId,
+    setCompetition,
+    setLevel
+  );
 
-  let bridge = useMinaBridge();
-
-  const startGame = async () => {
-    if (competition!.participationFee > 0) {
-      if (await bridge(competition!.participationFee)) return;
-    }
-
-    gameStartedMutation.mutate({
-      gameId: 'arkanoid',
-      userAddress: networkStore.address ?? '',
-      envContext: getEnvContext(),
-    });
-
-    setGameState(GameState.Active);
-    setGameId(gameId + 1);
-  };
+  const isRestartButton =
+    gameState === GameState.Lost || gameState === GameState.Won;
 
   useEffect(() => {
     if (!networkStore.protokitClientStarted) return;
@@ -123,147 +75,10 @@ export default function ArkanoidPage({
   }, [networkStore.protokitClientStarted]);
 
   useEffect(() => {
-    if (gameState == GameState.Active) {
-      shouldUpdateLeaderboard.current = false;
-    } else {
-      shouldUpdateLeaderboard.current = true;
-    }
+    gameState == GameState.Active
+      ? (shouldUpdateLeaderboard.current = false)
+      : (shouldUpdateLeaderboard.current = true);
   }, [gameState]);
-
-  const getCompetition = async () => {
-    let competitionId = +params.competitionId;
-    if (isNaN(competitionId)) {
-      console.log(
-        `Can't load level. competitionId is not a number. Loading default level`
-      );
-      return;
-    }
-    let contractCompetition =
-      await client.query.runtime.ArkanoidGameHub.competitions.get(
-        UInt64.from(competitionId)
-      );
-    if (contractCompetition === undefined) {
-      console.log(`Can't get competition with id <${competitionId}>`);
-      return;
-    }
-
-    let creator =
-      (await client.query.runtime.ArkanoidGameHub.competitionCreator.get(
-        UInt64.from(competitionId)
-      )) as PublicKey;
-
-    let competition = fromContractCompetition(
-      competitionId,
-      contractCompetition as any
-    );
-    // @ts-ignore
-    competition.creator = creator;
-
-    let bricks = createBricksBySeed(Field.from(competition!.seed));
-
-    setCompetition(competition);
-    setLevel(bricks);
-  };
-
-  // useEffect(() => {
-  //   let bricks = createBricksBySeed(Int64.from(competition!.seed));
-
-  //   setLevel(bricks);
-  // }, [competition]);
-
-  const proof = async () => {
-    console.log('Ticks', lastTicks);
-
-    let chunks = chunkenize(
-      lastTicks.map(
-        (elem) =>
-          //@ts-ignore
-          new Tick({
-            action: Int64.from(elem.action),
-            momentum: Int64.from(elem.momentum),
-          })
-      ),
-      CHUNK_LENGTH
-    );
-
-    //@ts-ignore
-    let userInputs = chunks.map((chunk) => new GameInputs({ ticks: chunk }));
-
-    try {
-      const proof = await workerClientStore?.client?.proveGameRecord({
-        seed: Field.from(competition!.seed),
-        inputs: userInputs,
-        debug: Bool(false),
-      });
-
-      console.log('Level proof', proof);
-
-      const gameHub = client!.runtime.resolve('ArkanoidGameHub');
-
-      const tx = await client!.transaction(
-        PublicKey.fromBase58(networkStore.address!),
-        async () => {
-          gameHub.addGameResult(UInt64.from(competition!.id), proof!);
-        }
-      );
-
-      await tx.sign();
-      await tx.send();
-
-      if (score > 90000) {
-        await progress.mutateAsync({
-          userAddress: networkStore.address!,
-          section: 'ARKANOID',
-          roomId: competition?.id.toString(),
-          id: 0,
-          txHash: JSON.stringify(
-            (tx.transaction! as PendingTransaction).toJSON()
-          ),
-          envContext: getEnvContext(),
-        });
-      }
-
-      await progress.mutateAsync({
-        userAddress: competition?.creator?.toBase58() || '',
-        section: 'ARKANOID',
-        roomId: competition?.id.toString(),
-        id: 2,
-        txHash: JSON.stringify(
-          (tx.transaction! as PendingTransaction).toJSON()
-        ),
-        envContext: getEnvContext(),
-      });
-
-      if ((competition?.id || 0) > 2) {
-        await progress.mutateAsync({
-          userAddress: networkStore.address!,
-          section: 'ARKANOID',
-          roomId: competition?.id.toString(),
-          id: 3,
-          txHash: JSON.stringify(
-            (tx.transaction! as PendingTransaction).toJSON()
-          ),
-          envContext: getEnvContext(),
-        });
-      }
-
-      if (score > 90000 && (competition?.id || 0) > 2) {
-        await progress.mutateAsync({
-          userAddress: networkStore.address!,
-          section: 'ARKANOID',
-          roomId: competition?.id.toString(),
-          id: 4,
-          txHash: JSON.stringify(
-            (tx.transaction! as PendingTransaction).toJSON()
-          ),
-          envContext: getEnvContext(),
-        });
-      }
-    } catch (e) {
-      console.log('Error while generating ZK proof');
-      console.log(e);
-    }
-  };
 
   useEffect(() => {
     if (
@@ -273,9 +88,6 @@ export default function ArkanoidPage({
       switchStore.setCompetitionId(competition.id);
   }, [competition, params.competitionId, switchStore.competitionId]);
 
-  const isRestartButton =
-    gameState === GameState.Lost || gameState === GameState.Won;
-
   useEffect(() => {
     if (
       competition &&
@@ -284,19 +96,6 @@ export default function ArkanoidPage({
       setIsPreRegModalOpen(true);
     }
   }, [competition]);
-
-  const formatDate = (item: string | undefined) => {
-    // @ts-ignore
-    if (item.length < 2) return '0' + item;
-    else return item;
-  };
-  const formatMonth = (item: number | undefined) => {
-    // @ts-ignore
-    item += 1;
-    // @ts-ignore
-    if (item.toString().length < 2) return '0' + item;
-    else return item;
-  };
 
   return (
     <GamePage
@@ -464,51 +263,7 @@ export default function ArkanoidPage({
           isRestartBtn={isRestartButton}
         />
         {isPreRegModalOpen && competition && (
-          <StatefulModal isDismissible={false} isOpen={true}>
-            <div
-              className={
-                'flex flex-col items-center justify-center gap-4 p-2 text-center lg:p-12'
-              }
-            >
-              <span className={'text-headline-2'}>
-                This competition is not active now
-              </span>
-              {competition.preReg ? (
-                <span className={'font-plexsans text-[14px]/[14px]'}>
-                  This competition in pre-registration mode, please wait until
-                  the competition is started
-                </span>
-              ) : (
-                <span className={'font-plexsans text-[14px]/[14px]'}>
-                  Please wait until the competition is started
-                </span>
-              )}
-              <span className={'my-2'}>
-                Competition starts:{' '}
-                {`${competition.competitionDate.start
-                  ?.getFullYear()
-                  .toString()}-${formatMonth(
-                  competition.competitionDate.start?.getMonth()
-                )}-${formatDate(
-                  competition.competitionDate.start?.getDate().toString()
-                )}`}
-              </span>
-              <Link
-                className={
-                  'group mt-4 flex w-full flex-row items-center justify-center gap-4 rounded-[5px] border border-bg-dark bg-middle-accent py-2 text-center text-headline-2 font-medium text-dark-buttons-text hover:border-middle-accent hover:bg-bg-dark hover:text-middle-accent'
-                }
-                href={`/games/${arkanoidConfig.id}/competitions-list`}
-              >
-                <span
-                  className={
-                    'text-[14px]/[14px] font-medium lg:text-buttons-menu'
-                  }
-                >
-                  To competitions list
-                </span>
-              </Link>
-            </div>
-          </StatefulModal>
+          <PreRegModal competition={competition} />
         )}
       </FullscreenWrap>
       <DebugCheckbox debug={debug} setDebug={setDebug} />
