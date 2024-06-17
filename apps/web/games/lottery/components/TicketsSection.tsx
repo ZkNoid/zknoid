@@ -46,6 +46,7 @@ export default function TicketsSection({}: {}) {
             <div className="flex flex-row gap-[0.33vw]">
               {[0, 1, 2, 3, 4, 5].map((fieldId) => (
                 <div
+                  key={fieldId}
                   className={cn(
                     'h-[2.67vw] w-[2.67vw] rounded-[0.33vw] border-[0.07vw] border-bg-dark shadow-[inset_5px_5px_5px_#C89EF1,inset_-5px_-5px_5px_rgba(200,158,241,0.5)]',
                     'flex justify-center text-[2.13vw] text-black'
