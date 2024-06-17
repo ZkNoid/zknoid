@@ -15,7 +15,7 @@ export const lotteryConfig = createZkNoidGameConfig({
   logoMode: LogoMode.CENTER,
   genre: ZkNoidGameGenre.Lucky,
   features: [ZkNoidGameFeature.SinglePlayer],
-  isReleased: true,
+  isReleased: false,
   releaseDate: new Date(2024, 2, 25),
   popularity: 0,
   author: 'ZkNoid Team',
