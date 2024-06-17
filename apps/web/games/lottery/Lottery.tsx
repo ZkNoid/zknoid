@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { useToasterStore } from '@/lib/stores/toasterStore';
 import { useRateGameStore } from '@/lib/stores/rateGameStore';
 import BannerSection from './ui/BannerSection';
-import TicketsSection from './ui/TicketsSection';
+import TicketsSection from './ui/TicketsSection/TicketsSection';
 import { GameState } from './lib/gameState';
 
 export default function Lottery({}: { params: { competitionId: string } }) {

@@ -1,7 +1,7 @@
 import { cn } from '@/lib/helpers';
-import { TicketBlockButton } from '../LotteryButton';
+import { TicketBlockButton } from '@/games/lottery/ui/buttons/TicketBlockButton';
 
-export default function TicketCard({symbols}: {symbols: string}) {
+export default function TicketCard({ symbols }: { symbols: string }) {
   return (
     <div className="relative h-[13.53vw] w-[24vw] rounded-[1.33vw] bg-right-accent p-[0.33vw]">
       <div className="pointer-events-none absolute h-[12.87vw] w-[23.33vw] rounded-[1vw] border border-black"></div>
@@ -19,8 +19,8 @@ export default function TicketCard({symbols}: {symbols: string}) {
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
+                  fillRule="evenodd"
+                  clipRule="evenodd"
                   d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z"
                   fill="#DCB8FF"
                 />
