@@ -1,5 +1,5 @@
-import { DateTime, DurationObjectUnits, Interval } from "luxon";
-import { useEffect, useState } from "react";
+import { DateTime, DurationObjectUnits, Interval } from 'luxon';
+import { useEffect, useState } from 'react';
 
 const getRoundTime = () => {
   const now = DateTime.now();
@@ -10,9 +10,7 @@ const getRoundTime = () => {
 };
 
 export const useRoundTimer = () => {
-  const [startsIn, setStartsIn] = useState<DurationObjectUnits>(
-    getRoundTime()
-  );
+  const [startsIn, setStartsIn] = useState<DurationObjectUnits>(getRoundTime());
 
   useEffect(() => {
     const interval = setInterval(() => {

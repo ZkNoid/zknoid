@@ -1,8 +1,9 @@
 import Image from 'next/image';
 import Previous from '../assets/Previous.svg';
-import { GreenLotteryButton, VioletLotteryButton } from './LotteryButton';
-import { useRoundTimer } from '../hooks/useRoundTimer';
+import { useRoundTimer } from '../features/useRoundTimer';
 import { cn } from '@/lib/helpers';
+import { GreenLotteryButton } from './buttons/GreenLotteryButton';
+import { VioletLotteryButton } from './buttons/VioletLotteryButton';
 
 export default function BannerSection({ roundId }: { roundId: number }) {
   const roundTimer = useRoundTimer();

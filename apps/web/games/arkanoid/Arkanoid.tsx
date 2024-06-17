@@ -10,9 +10,9 @@ import {
   useArkanoidLeaderboardStore,
   useObserveArkanoidLeaderboard,
 } from '@/games/arkanoid/stores/arkanoidLeaderboard';
-import { useStartGame } from '@/games/arkanoid/features/startGame';
-import { useProof } from '@/games/arkanoid/features/proof';
-import { useGetCompetition } from '@/games/arkanoid/features/getCompetition';
+import { useStartGame } from '@/games/arkanoid/features/useStartGame';
+import { useProof } from '@/games/arkanoid/features/useProof';
+import { useGetCompetition } from '@/games/arkanoid/features/useGetCompetition';
 import { arkanoidConfig } from './config';
 import { walletInstalled } from '@/lib/helpers';
 import { ICompetition } from '@/lib/types';
