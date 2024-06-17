@@ -1,7 +1,8 @@
 import { cn } from '@/lib/helpers';
 import { TicketBlockButton } from '@/games/lottery/ui/buttons/TicketBlockButton';
+import { symbol } from 'zod';
 
-const TicketsNumPicker = ({ amount }: { amount: number }) => {
+const TicketsNumPicker = ({ amount, setAmount }: { amount: number, setAmount: (amount: number) => void }) => {
   return (
     <div
       className={cn(
@@ -9,7 +10,7 @@ const TicketsNumPicker = ({ amount }: { amount: number }) => {
         'border border-bg-dark border-opacity-50 text-[1.07vw] text-[#252525]'
       )}
     >
-      <div className="p-[0.3vw]">
+      <div className="p-[0.3vw]" onClick={() => setAmount(amount - 1)}>
         <svg
           width="16"
           height="3"
@@ -23,7 +24,7 @@ const TicketsNumPicker = ({ amount }: { amount: number }) => {
         </svg>
       </div>
       <div className="mx-[0.4vw] opacity-50">{amount}</div>
-      <div className="p-[0.3vw]">
+      <div className="p-[0.3vw]" onClick={() => setAmount(amount + 1)}>
         <svg
           width="16"
           height="17"
@@ -52,10 +53,14 @@ const TicketsNumPicker = ({ amount }: { amount: number }) => {
 
 export default function TicketCard({
   symbols,
+  setSymbols,
+  setTicketsAmount,
   amount,
   finalized,
 }: {
   symbols: string;
+  setSymbols: (symbols: string) => void;
+  setTicketsAmount: (amount: number) => void;
   amount: number;
   finalized: boolean;
 }) {
@@ -67,13 +72,13 @@ export default function TicketCard({
           <div className="text-[1.6vw] uppercase text-black">Ticket 1</div>
           <div className="ml-auto flex gap-[0.33vw] text-[1.07vw] text-right-accent">
             {amount == 0 ? (
-              <TicketBlockButton>Get ticket</TicketBlockButton>
+              <TicketBlockButton onClick={() => setTicketsAmount(1)}>Get ticket</TicketBlockButton>
             ) : (
-              <TicketsNumPicker amount={amount} />
+              <TicketsNumPicker amount={amount} setAmount={setTicketsAmount}/>
             )}
-            {!finalized && (
-              <TicketBlockButton>
-                {amount == 0 ? (
+            {!finalized &&
+              (amount == 0 ? (
+                <TicketBlockButton onClick={() => setTicketsAmount(1)}>
                   <svg
                     width="16"
                     height="16"
@@ -88,7 +93,9 @@ export default function TicketCard({
                       fill="#DCB8FF"
                     />
                   </svg>
-                ) : (
+                </TicketBlockButton>
+              ) : (
+                <TicketBlockButton onClick={() => setTicketsAmount(0)}>
                   <svg
                     width="16"
                     height="2"
@@ -98,9 +105,8 @@ export default function TicketCard({
                   >
                     <path d="M0 0H16V2H0V0Z" fill="#DCB8FF" />
                   </svg>
-                )}
-              </TicketBlockButton>
-            )}
+                </TicketBlockButton>
+              ))}
           </div>
         </div>
         <div className="flex flex-row gap-[0.33vw]">
@@ -116,17 +122,24 @@ export default function TicketCard({
             </div>
           ))}
         </div>
-        <div className="flex flex-row gap-[0.33vw] mt-[1.6vw]">
+        <div className="mt-[1.6vw] flex flex-row gap-[0.33vw]">
           {amount > 0 &&
             [1, 2, 3, 4, 5, 6, 7, 8, 9, '←'].map((fieldId) => (
               <div
                 key={fieldId}
                 className={cn(
                   'h-[1.87vw] w-[1.87vw] rounded-[0.33vw]',
-                  'flex justify-center text-[2.13vw] text-black border border-dashed border-bg-dark',
-                  'text-[1.07vw] text-bg-dark items-center justify-center',
+                  'flex justify-center border border-dashed border-bg-dark text-[2.13vw] text-black',
+                  'items-center justify-center text-[1.07vw] text-bg-dark',
                   'cursor-pointer'
                 )}
+                onClick={() => {
+                  setSymbols(
+                    fieldId == '←'
+                      ? symbols.slice(0, -1)
+                      : `${symbols}${fieldId}`
+                  );
+                }}
               >
                 {fieldId}
               </div>
