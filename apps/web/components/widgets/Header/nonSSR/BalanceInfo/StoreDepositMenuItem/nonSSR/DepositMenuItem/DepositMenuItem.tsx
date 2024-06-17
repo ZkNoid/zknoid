@@ -18,7 +18,7 @@ import { ProtokitLibrary, ZNAKE_TOKEN_ID } from 'zknoid-chain-dev';
 import { formatUnits } from '@/lib/unit';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
-import { type PendingTransaction } from '@/../../../../protokit-framework/framework/packages/sequencer/src';
+import { type PendingTransaction } from '@proto-kit/sequencer';
 import toast from '@/components/shared/Toast';
 import { useToasterStore } from '@/lib/stores/toasterStore';
 import TopUpCard from '@/components/widgets/Header/nonSSR/BalanceInfo/StoreDepositMenuItem/nonSSR/DepositMenuItem/ui/TopUpCard';

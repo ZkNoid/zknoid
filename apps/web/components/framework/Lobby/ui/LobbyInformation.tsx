@@ -3,7 +3,7 @@ import Button from '@/components/shared/Button';
 import BaseModal from '@/components/shared/Modal/BaseModal';
 import { ILobby } from '@/lib/types';
 import { AnimatePresence, motion } from 'framer-motion';
-import { RuntimeModulesRecord } from '@/../../protokit-framework/framework/packages/module/src';
+import { type RuntimeModulesRecord } from '@proto-kit/module';
 import { ZkNoidGameConfig } from '@/lib/createConfig';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useState } from 'react';
