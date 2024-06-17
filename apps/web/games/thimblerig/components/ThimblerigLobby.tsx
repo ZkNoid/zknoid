@@ -14,7 +14,6 @@ export default function ThimblerigLobby({
   params: { lobbyId: string };
 }) {
   const networkStore = useNetworkStore();
-  useState<boolean>(false);
 
   const client = useContext(AppChainClientContext) as ClientAppChain<
     typeof thimblerigConfig.runtimeModules,
