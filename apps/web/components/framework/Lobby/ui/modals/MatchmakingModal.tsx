@@ -4,7 +4,7 @@ import LoadSpinner from '@/components/shared/LoadSpinner';
 import Image from 'next/image';
 import znakesImg from '@/public/image/tokens/znakes.svg';
 import { Currency } from '@/constants/currency';
-import {formatUnits} from "@/lib/unit";
+import { formatUnits } from '@/lib/unit';
 
 export const MatchmakingModal = ({
   isLongSearch,

@@ -4,137 +4,14 @@ import { pokerConfig } from '@/games/poker/config';
 import Button from '@/components/shared/Button';
 import { Currency } from '@/constants/currency';
 import Image from 'next/image';
-import defaultAvatar from '../assets/avatars/defaultAvatar.svg';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
+import defaultAvatar from './assets/avatars/defaultAvatar.svg';
 import StatefulModal from '@/components/shared/Modal/StatefulModal';
+import ChatMessage from './ui/ChatMessage';
+import LogsMessage from './ui/LogsMessage';
+import PlayerListItem from './ui/PlayerListItem';
+import RulesAccordion from './ui/RulesAccordion';
 
-export const PokerPage = () => {
-  const ChatMessage = ({
-    time,
-    sender,
-    message,
-  }: {
-    time: string;
-    sender: string;
-    message: string;
-  }) => {
-    return (
-      <div className={'flex flex-row gap-2 font-plexsans text-[16px]/[16px]'}>
-        <span className={'font-regular text-foreground'}>{time}</span>
-        <span className={'font-medium text-left-accent'}>{sender}:</span>
-        <span className={'font-light text-foreground'}>{message}</span>
-      </div>
-    );
-  };
-
-  const LogsMessage = ({
-    time,
-    player,
-    message,
-  }: {
-    time: string;
-    player?: string;
-    message: string;
-  }) => {
-    return (
-      <div className={'flex flex-row gap-2 font-plexsans text-[16px]/[16px]'}>
-        <span className={'font-regular text-foreground'}>{time}</span>
-        <span className={'font-regular text-foreground'}>[System]:</span>
-        {player && (
-          <>
-            <span className={'text-foreground'}>Player</span>
-            <span className={'font-medium text-left-accent'}>{player}</span>
-          </>
-        )}
-        <span className={'font-light text-foreground'}>{message}</span>
-      </div>
-    );
-  };
-
-  const PlayerListItem = ({
-    id,
-    address,
-    nickname,
-  }: {
-    id: number;
-    address: string;
-    nickname: string;
-  }) => {
-    return (
-      <div
-        className={
-          'mb-4 flex w-full flex-row justify-between border-t border-foreground pt-4 text-[16px]/[16px] last:border-b last:pb-4'
-        }
-      >
-        <span className={'w-[10%]'}>[{id}]</span>
-        <span className={'w-[60%]'}>{address}</span>
-        <span className={'w-[30%]'}>{nickname}</span>
-      </div>
-    );
-  };
-
-  const RulesAccordion = ({
-    title,
-    rules,
-    defaultOpen = false,
-  }: {
-    title: string;
-    rules: string;
-    defaultOpen?: boolean;
-  }) => {
-    const [isOpen, setIsOpen] = useState<boolean>(defaultOpen);
-    return (
-      <div
-        className={
-          'border-t border-t-left-accent py-4 last:border-b last:border-b-left-accent'
-        }
-      >
-        <div
-          className={
-            'flex cursor-pointer flex-row items-center justify-between font-museo text-[20px]/[20px] text-left-accent hover:opacity-80'
-          }
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          <span>{title}</span>
-
-          <motion.svg
-            width="22"
-            height="12"
-            viewBox="0 0 22 12"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            animate={isOpen ? { rotate: 180 } : { rotate: 0 }}
-            transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
-          >
-            <path
-              d="M1 11L11 1L21 11"
-              stroke="#D2FF00"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </motion.svg>
-        </div>
-        <AnimatePresence initial={false} mode={'wait'}>
-          {isOpen && (
-            <motion.div
-              initial={{ height: 0 }}
-              animate={{ height: 'auto' }}
-              exit={{ height: 0 }}
-              transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
-              className={
-                'text-[16px]-[16px] flex items-center justify-start overflow-hidden pt-2 font-plexsans'
-              }
-            >
-              <div>{rules}</div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    );
-  };
-
+export const Poker = () => {
   return (
     <GamePage
       gameConfig={pokerConfig}
