@@ -1,6 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { IToast } from '@/components/ui/games-store/shared/Toast';
+import { IToast } from "@/components/shared/Toast/types/IToast";
 import { immer } from 'zustand/middleware/immer';
 
 export interface ToasterStore {
