@@ -24,7 +24,6 @@ import {
 import CheckersCoverSVG from './assets/game-cover.svg';
 import CheckersCoverMobileSVG from './assets/game-cover-mobile.svg';
 import { getRandomEmoji } from '@/lib/emoji';
-import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
 import toast from '@/components/shared/Toast';
 import { formatUnits } from '@/lib/unit';
 import { Currency } from '@/constants/currency';
