@@ -1,0 +1,16 @@
+export enum GameState {
+  WalletNotInstalled,
+  WalletNotConnected,
+  NotStarted,
+  MatchRegistration,
+  Matchmaking,
+  OpponentTimeout,
+  CurrentPlayerHiding,
+  WaitingForHiding,
+  CurrentPlayerGuessing,
+  WaitingForGuessing,
+  CurrentPlayerRevealing,
+  WaitingForReveal,
+  Won,
+  Lost,
+}

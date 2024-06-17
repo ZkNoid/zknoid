@@ -1,32 +1,15 @@
 import GamePage from '@/components/framework/GamePage';
-import { lotteryConfig } from '../config';
+import { lotteryConfig } from './config';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useState } from 'react';
-
 import { motion } from 'framer-motion';
 import { useToasterStore } from '@/lib/stores/toasterStore';
 import { useRateGameStore } from '@/lib/stores/rateGameStore';
-import BannerSection from './BannerSection';
-import TicketsSection from './TicketsSection';
+import BannerSection from './ui/BannerSection';
+import TicketsSection from './ui/TicketsSection';
+import { GameState } from './lib/gameState';
 
-enum GameState {
-  WalletNotInstalled,
-  WalletNotConnected,
-  NotStarted,
-  MatchRegistration,
-  Matchmaking,
-  OpponentTimeout,
-  CurrentPlayerHiding,
-  WaitingForHiding,
-  CurrentPlayerGuessing,
-  WaitingForGuessing,
-  CurrentPlayerRevealing,
-  WaitingForReveal,
-  Won,
-  Lost,
-}
-
-export default function Thimblerig({}: { params: { competitionId: string } }) {
+export default function Lottery({}: { params: { competitionId: string } }) {
   const networkStore = useNetworkStore();
   const toasterStore = useToasterStore();
   const rateGameStore = useRateGameStore();
@@ -45,7 +28,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       defaultPage={'Game'}
       customDesign={true}
     >
-      <BannerSection roundId={1}/>
+      <BannerSection roundId={1} />
       <TicketsSection />
 
       <motion.div

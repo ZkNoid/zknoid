@@ -1,11 +1,4 @@
-import Image from 'next/image';
-import Previous from '../assets/Previous.svg';
-import {
-  GreenLotteryButton,
-  TicketBlockButton,
-  VioletLotteryButton,
-} from './LotteryButton';
-import { useRoundTimer } from '../hooks/useRoundTimer';
+import { TicketBlockButton } from './buttons/TicketBlockButton';
 import { cn } from '@/lib/helpers';
 
 export default function TicketsSection({}: {}) {
@@ -34,8 +27,8 @@ export default function TicketsSection({}: {}) {
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
+                      fillRule="evenodd"
+                      clipRule="evenodd"
                       d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z"
                       fill="#DCB8FF"
                     />

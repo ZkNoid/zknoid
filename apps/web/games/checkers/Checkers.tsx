@@ -30,10 +30,12 @@ import { formatUnits } from '@/lib/unit';
 import { Currency } from '@/constants/currency';
 import { useToasterStore } from '@/lib/stores/toasterStore';
 import { GameState } from './lib/gameState';
-import { useStartGame } from './features/startGame';
-import { useOnMoveChosen } from '@/games/checkers/features/onMoveChosen';
-import { useLobbiesStore, useObserveLobbiesStore } from '@/lib/stores/lobbiesStore';
-
+import { useStartGame } from './features/useStartGame';
+import { useOnMoveChosen } from '@/games/checkers/features/useOnMoveChosen';
+import {
+  useLobbiesStore,
+  useObserveLobbiesStore,
+} from '@/lib/stores/lobbiesStore';
 
 export default function RandzuPage({
   params,
@@ -65,17 +67,16 @@ export default function RandzuPage({
   const sessionPrivateKey = useStore(useSessionKeyStore, (state) =>
     state.getSessionKey()
   );
-    const query = networkStore.protokitClientStarted
-        ? client.query.runtime.CheckersLogic
-        : undefined;
+  const query = networkStore.protokitClientStarted
+    ? client.query.runtime.CheckersLogic
+    : undefined;
 
-    useObserveLobbiesStore(query);
-    const lobbiesStore = useLobbiesStore();
+  useObserveLobbiesStore(query);
+  const lobbiesStore = useLobbiesStore();
 
-    console.log('Active lobby', lobbiesStore.activeLobby);
+  console.log('Active lobby', lobbiesStore.activeLobby);
 
-
-    const startGame = useStartGame(setGameState);
+  const startGame = useStartGame(setGameState);
   const onMoveChosen = useOnMoveChosen(
     matchQueue,
     setLoading,
