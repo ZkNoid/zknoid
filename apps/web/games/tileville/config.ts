@@ -1,6 +1,5 @@
 import { createZkNoidGameConfig } from '@/lib/createConfig';
 import { ZkNoidGameType } from '@/lib/platform/game_types';
-import { ThimblerigLogic } from 'zknoid-chain-dev';
 import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
 import { LogoMode } from '@/app/constants/games';
 
