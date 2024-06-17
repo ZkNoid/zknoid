@@ -44,7 +44,9 @@ const setDefaultMatchmaking = async () => {
 
     for (const option of matchmakingOptions) {
       const tx = await client.transaction(alice, async () => {
-        matchmaking.addDefaultLobby(UInt64.from(option.participationFee));
+        matchmaking.addDefaultLobby(
+          UInt64.from(option.participationFee).mul(10 ** 9),
+        );
       });
 
       tx.transaction!.nonce = UInt64.from(nonce++);

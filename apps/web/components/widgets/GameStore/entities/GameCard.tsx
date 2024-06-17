@@ -148,8 +148,13 @@ export const GameCard = ({
         />
       )}
       <Link
-        href={game.active ? `/games/${game.id}/${game.defaultPage}` : '#'}
+        href={
+          game.externalUrl ||
+          (game.active ? `/games/${game.id}/${game.defaultPage}` : '#')
+        }
         className="m-px flex h-full flex-col rounded-xl bg-[#252525] p-2 lg:gap-5 lg:p-4"
+        target={game.externalUrl && '_blank'}
+        rel={game.externalUrl && 'noopener noreferrer'}
       >
         <div
           className={cn(

@@ -1,21 +1,9 @@
 'use client';
 
 import { useContext, useEffect, useState } from 'react';
-import {
-  CAPTURE_TOP_LEFT,
-  CAPTURE_TOP_RIGHT,
-  GameView,
-  MOVE_TOP_LEFT,
-  MOVE_TOP_RIGHT,
-  CHECKERS_FIELD_SIZE,
-  MOVE_KING_BOTTOM_LEFT,
-  MOVE_KING_BOTTOM_RIGHT,
-  CAPTURE_KING_BOTTOM_LEFT,
-  CAPTURE_KING_BOTTOM_RIGHT,
-} from './GameView';
-import { Bool, PublicKey, UInt32, UInt64 } from 'o1js';
+import { GameView } from './components/GameView';
+import { PublicKey, UInt64 } from 'o1js';
 import { useNetworkStore } from '@/lib/stores/network';
-import { useMinaBridge } from '@/lib/stores/protokitBalances';
 import {
   useObserveCheckersMatchQueue,
   useCheckersMatchQueueStore,
@@ -23,13 +11,9 @@ import {
 import { walletInstalled } from '@/lib/helpers';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
-import {
-  CheckersField,
-  ClientAppChain,
-  PENDING_BLOCKS_NUM_CONST,
-} from 'zknoid-chain-dev';
+import { ClientAppChain, PENDING_BLOCKS_NUM_CONST } from 'zknoid-chain-dev';
 import GamePage from '@/components/framework/GamePage';
-import { checkersConfig } from '../config';
+import { checkersConfig } from './config';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import { MOVE_TIMEOUT_IN_BLOCKS } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
@@ -37,30 +21,20 @@ import {
   MainButtonState,
   PvPGameView,
 } from '@/components/framework/GamePage/PvPGameView';
-import CheckersCoverSVG from '../assets/game-cover.svg';
-import CheckersCoverMobileSVG from '../assets/game-cover-mobile.svg';
-
-import { api } from '@/trpc/react';
-import { getEnvContext } from '@/lib/envContext';
+import CheckersCoverSVG from './assets/game-cover.svg';
+import CheckersCoverMobileSVG from './assets/game-cover-mobile.svg';
 import { getRandomEmoji } from '@/lib/emoji';
-import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
 import toast from '@/components/shared/Toast';
 import { formatUnits } from '@/lib/unit';
 import { Currency } from '@/constants/currency';
 import { useToasterStore } from '@/lib/stores/toasterStore';
-
-enum GameState {
-  WalletNotInstalled,
-  WalletNotConnected,
-  NotStarted,
-  MatchRegistration,
-  Matchmaking,
-  CurrentPlayerTurn,
-  OpponentTurn,
-  OpponentTimeout,
-  Won,
-  Lost,
-}
+import { GameState } from './lib/gameState';
+import { useStartGame } from './features/useStartGame';
+import { useOnMoveChosen } from '@/games/checkers/features/useOnMoveChosen';
+import {
+  useLobbiesStore,
+  useObserveLobbiesStore,
+} from '@/lib/stores/lobbiesStore';
 
 export default function RandzuPage({
   params,
@@ -68,6 +42,10 @@ export default function RandzuPage({
   params: { competitionId: string };
 }) {
   const [gameState, setGameState] = useState(GameState.NotStarted);
+  const [loading, setLoading] = useState(true);
+  const [loadingElement, setLoadingElement] = useState<
+    { x: number; y: number } | undefined
+  >({ x: 0, y: 0 });
 
   const client = useContext(AppChainClientContext) as ClientAppChain<
     typeof checkersConfig.runtimeModules,
@@ -80,67 +58,42 @@ export default function RandzuPage({
     throw Error('Context app chain client is not set');
   }
 
-  let [loading, setLoading] = useState(true);
-  let [loadingElement, setLoadingElement] = useState<
-    { x: number; y: number } | undefined
-  >({ x: 0, y: 0 });
-
   const networkStore = useNetworkStore();
   const matchQueue = useCheckersMatchQueueStore();
   const toasterStore = useToasterStore();
-  const sessionPublicKey = useStore(useSessionKeyStore, (state) =>
-    state.getSessionKey()
-  ).toPublicKey();
+  useObserveCheckersMatchQueue();
+  const protokitChain = useProtokitChainStore();
   const sessionPrivateKey = useStore(useSessionKeyStore, (state) =>
     state.getSessionKey()
   );
+  const query = networkStore.protokitClientStarted
+    ? client.query.runtime.CheckersLogic
+    : undefined;
 
-  useObserveCheckersMatchQueue();
-  const protokitChain = useProtokitChainStore();
+  useObserveLobbiesStore(query);
+  const lobbiesStore = useLobbiesStore();
 
-  const bridge = useMinaBridge();
+  console.log('Active lobby', lobbiesStore.activeLobby);
+
+  const startGame = useStartGame(setGameState);
+  const onMoveChosen = useOnMoveChosen(
+    matchQueue,
+    setLoading,
+    setLoadingElement
+  );
 
   const restart = () => {
     matchQueue.resetLastGameState();
     setGameState(GameState.NotStarted);
   };
 
-  const gameStartedMutation = api.logging.logGameStarted.useMutation();
-
-  const startGame = async () => {
-    if (await bridge(DEFAULT_PARTICIPATION_FEE.toBigInt())) return;
-
-    gameStartedMutation.mutate({
-      gameId: 'checkers',
-      userAddress: networkStore.address ?? '',
-      envContext: getEnvContext(),
-    });
-
-    const randzuLogic = client.runtime.resolve('CheckersLogic');
-
-    const tx = await client.transaction(
-      PublicKey.fromBase58(networkStore.address!),
-      async () => {
-        randzuLogic.register(
-          sessionPublicKey,
-          UInt64.from(Math.round(Date.now() / 1000))
-        );
-      }
-    );
-
-    await tx.sign();
-    await tx.send();
-
-    setGameState(GameState.MatchRegistration);
-  };
-
+  // nonSSR
   const collectPending = async () => {
-    const randzuLogic = client.runtime.resolve('CheckersLogic');
-
+    const logic = client.runtime.resolve('CheckersLogic');
     const tx = await client.transaction(
       sessionPrivateKey.toPublicKey(),
       async () => {
-        randzuLogic.collectPendingBalance();
+        logic.collectPendingBalance();
       }
     );
 
@@ -155,9 +108,9 @@ export default function RandzuPage({
     console.log('Tx sent', tx);
   };
 
+  // nonSSR
   const proveOpponentTimeout = async () => {
     const randzuLogic = client.runtime.resolve('CheckersLogic');
-
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
       async () => {
@@ -168,118 +121,6 @@ export default function RandzuPage({
     );
 
     await tx.sign();
-    await tx.send();
-  };
-  const isPlayer1 =
-    matchQueue.gameInfo?.opponent == matchQueue.gameInfo?.player2;
-
-  const onMoveChosen = async (moveId: number, x: number, y: number) => {
-    if (!matchQueue.gameInfo?.isCurrentUserMove) return;
-    console.log('After checks');
-
-    const currentUserId = matchQueue.gameInfo.currentUserIndex + 1;
-
-    const updatedField = (matchQueue.gameInfo.field as CheckersField).value.map(
-      (x: UInt32[]) => x.map((x) => Number(x.toBigint()))
-    );
-
-    const isKing = updatedField[x][y] > 2n;
-
-    console.log('On move chosen', moveId, x, y);
-
-    console.log('On move chosen', updatedField);
-
-    updatedField[x][y] = 0;
-
-    if (moveId == MOVE_TOP_LEFT) {
-      updatedField[x - 1][y + (isPlayer1 ? 1 : -1)] =
-        isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 2 : y == 1)
-          ? currentUserId + 2
-          : currentUserId;
-    } else if (moveId == MOVE_KING_BOTTOM_LEFT) {
-      updatedField[x - 1][y + (isPlayer1 ? -1 : 1)] = currentUserId + 2;
-    } else if (moveId == MOVE_TOP_RIGHT) {
-      updatedField[x + 1][y + (isPlayer1 ? 1 : -1)] =
-        isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 2 : y == 1)
-          ? currentUserId + 2
-          : currentUserId;
-    } else if (moveId == MOVE_KING_BOTTOM_RIGHT) {
-      updatedField[x + 1][y + (isPlayer1 ? -1 : 1)] = currentUserId + 2;
-    } else if (moveId == CAPTURE_TOP_LEFT) {
-      console.log(x, y);
-      updatedField[x - 1][y + (isPlayer1 ? 1 : -1)] = 0;
-      updatedField[x - 2][y + (isPlayer1 ? 2 : -2)] =
-        isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 3 : y == 2)
-          ? currentUserId + 2
-          : currentUserId;
-    } else if (moveId == CAPTURE_KING_BOTTOM_LEFT) {
-      console.log(x, y);
-      updatedField[x - 1][y + (isPlayer1 ? -1 : 1)] = 0;
-      updatedField[x - 2][y + (isPlayer1 ? -2 : 2)] =
-        isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 3 : y == 2)
-          ? currentUserId + 2
-          : currentUserId;
-    } else if (moveId == CAPTURE_TOP_RIGHT) {
-      updatedField[x + 1][y + (isPlayer1 ? 1 : -1)] = 0;
-      updatedField[x + 2][y + (isPlayer1 ? 2 : -2)] =
-        isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 3 : y == 2)
-          ? currentUserId + 2
-          : currentUserId;
-    } else if (moveId == CAPTURE_KING_BOTTOM_RIGHT) {
-      updatedField[x + 1][y + (isPlayer1 ? -1 : 1)] = 0;
-      updatedField[x + 2][y + (isPlayer1 ? -2 : 2)] =
-        isKing || (isPlayer1 ? y == CHECKERS_FIELD_SIZE - 3 : y == 2)
-          ? currentUserId + 2
-          : currentUserId;
-    }
-
-    console.log('On move chosen', updatedField);
-
-    const randzuLogic = client.runtime.resolve('CheckersLogic');
-    const updatedCheckersField = CheckersField.from(updatedField);
-
-    console.log('Proposed is king', isKing);
-
-    const tx =
-      moveId == MOVE_TOP_LEFT ||
-      moveId == MOVE_TOP_RIGHT ||
-      moveId == MOVE_KING_BOTTOM_LEFT ||
-      moveId == MOVE_KING_BOTTOM_RIGHT
-        ? await client.transaction(
-            sessionPrivateKey.toPublicKey(),
-            async () => {
-              randzuLogic.makeMoveChecker(
-                UInt64.from(matchQueue.gameInfo!.gameId),
-                updatedCheckersField,
-                UInt64.from(x),
-                UInt64.from(y),
-                UInt64.from(moveId),
-                Bool(isKing)
-              );
-            }
-          )
-        : await client.transaction(
-            sessionPrivateKey.toPublicKey(),
-            async () => {
-              randzuLogic.makeMoveCapture(
-                UInt64.from(matchQueue.gameInfo!.gameId),
-                updatedCheckersField,
-                UInt64.from(x),
-                UInt64.from(y),
-                UInt64.from(moveId),
-                Bool(isKing)
-              );
-            }
-          );
-
-    setLoading(true);
-    setLoadingElement({
-      x,
-      y,
-    });
-    console.log('Sending tx');
-    // await tx.sign()
-    tx.transaction = tx.transaction?.sign(sessionPrivateKey);
     await tx.send();
   };
 
@@ -409,7 +250,7 @@ export default function RandzuPage({
       <PvPGameView
         status={statuses[gameState]}
         opponent={matchQueue.gameInfo?.opponent}
-        startPrice={DEFAULT_PARTICIPATION_FEE.toBigInt()}
+        startPrice={lobbiesStore.lobbies?.[0]?.fee || 0n}
         mainButtonState={mainButtonState}
         startGame={() => startGame()}
         queueSize={matchQueue.getQueueLength()}
@@ -417,13 +258,13 @@ export default function RandzuPage({
         mainText={mainText[gameState]}
         bottomButtonText={bottomButtonState[gameState]?.text}
         bottomButtonHandler={bottomButtonState[gameState]?.handler}
-        competitionName={'Room 1'}
+        competitionName={lobbiesStore.activeLobby?.name || 'Unknown'}
         gameName={'Checkers'}
         gameRules={`Checkers is a two-player game played on an 8x8 board. Players take turns moving their pieces diagonally forward, capturing opponent's pieces by jumping over them. A piece reaching the opponent's back row becomes a king and can move backward. 
         
         The game is won by capturing all of the opponent's pieces or by blocking them from moving
         `}
-        competitionFunds={DEFAULT_PARTICIPATION_FEE.toBigInt() * 2n}
+        competitionFunds={(lobbiesStore.activeLobby?.reward || 0n) / 2n}
       >
         <GameView
           gameInfo={matchQueue.gameInfo}
