@@ -1,7 +1,64 @@
 import { cn } from '@/lib/helpers';
 import { TicketBlockButton } from '@/games/lottery/ui/buttons/TicketBlockButton';
 
-export default function TicketCard({ symbols }: { symbols: string }) {
+const TicketsNumPicker = ({ amount }: { amount: number }) => {
+  return (
+    <div
+      className={cn(
+        'flex h-[1.67vw] items-center justify-between rounded-[0.33vw]',
+        'border border-bg-dark border-opacity-50 text-[1.07vw] text-[#252525]'
+      )}
+    >
+      <div className="p-[0.3vw]">
+        <svg
+          width="16"
+          height="3"
+          viewBox="0 0 16 3"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-[1.07vw]"
+        >
+          <path d="M0 0.5H16V2.5H0V0.5Z" fill="#000000" />
+          <path d="M0 0.5H16V2.5H0V0.5Z" fill="#000000" />
+        </svg>
+      </div>
+      <div className="mx-[0.4vw] opacity-50">{amount}</div>
+      <div className="p-[0.3vw]">
+        <svg
+          width="16"
+          height="17"
+          viewBox="0 0 16 17"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-[1.07vw]"
+        >
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M7 9.5V16.5H9V9.5H16V7.5H9V0.5H7V7.5H0V9.5H7Z"
+            fill="#000000"
+          />
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M7 9.5V16.5H9V9.5H16V7.5H9V0.5H7V7.5H0V9.5H7Z"
+            fill="#000000"
+          />
+        </svg>
+      </div>
+    </div>
+  );
+};
+
+export default function TicketCard({
+  symbols,
+  amount,
+  finalized,
+}: {
+  symbols: string;
+  amount: number;
+  finalized: boolean;
+}) {
   return (
     <div className="relative h-[13.53vw] w-[24vw] rounded-[1.33vw] bg-right-accent p-[0.33vw]">
       <div className="pointer-events-none absolute h-[12.87vw] w-[23.33vw] rounded-[1vw] border border-black"></div>
@@ -9,23 +66,41 @@ export default function TicketCard({ symbols }: { symbols: string }) {
         <div className="flex flex-row">
           <div className="text-[1.6vw] uppercase text-black">Ticket 1</div>
           <div className="ml-auto flex gap-[0.33vw] text-[1.07vw] text-right-accent">
-            <TicketBlockButton>Get ticket</TicketBlockButton>
-            <TicketBlockButton>
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z"
-                  fill="#DCB8FF"
-                />
-              </svg>
-            </TicketBlockButton>
+            {amount == 0 ? (
+              <TicketBlockButton>Get ticket</TicketBlockButton>
+            ) : (
+              <TicketsNumPicker amount={amount} />
+            )}
+            {!finalized && (
+              <TicketBlockButton>
+                {amount == 0 ? (
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z"
+                      fill="#DCB8FF"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    width="16"
+                    height="2"
+                    viewBox="0 0 16 2"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M0 0H16V2H0V0Z" fill="#DCB8FF" />
+                  </svg>
+                )}
+              </TicketBlockButton>
+            )}
           </div>
         </div>
         <div className="flex flex-row gap-[0.33vw]">
@@ -37,9 +112,25 @@ export default function TicketCard({ symbols }: { symbols: string }) {
                 'flex justify-center text-[2.13vw] text-black'
               )}
             >
-              {symbols[fieldId]}
+              {symbols?.[fieldId] || '_'}
             </div>
           ))}
+        </div>
+        <div className="flex flex-row gap-[0.33vw] mt-[1.6vw]">
+          {amount > 0 &&
+            [1, 2, 3, 4, 5, 6, 7, 8, 9, '←'].map((fieldId) => (
+              <div
+                key={fieldId}
+                className={cn(
+                  'h-[1.87vw] w-[1.87vw] rounded-[0.33vw]',
+                  'flex justify-center text-[2.13vw] text-black border border-dashed border-bg-dark',
+                  'text-[1.07vw] text-bg-dark items-center justify-center',
+                  'cursor-pointer'
+                )}
+              >
+                {fieldId}
+              </div>
+            ))}
         </div>
       </div>
     </div>
