@@ -9,12 +9,12 @@ import { lotteryConfig } from '@/games/lottery/config';
 
 export const zkNoidConfig = createConfig({
   games: [
-    lotteryConfig,
     arkanoidConfig,
     randzuConfig,
     thimblerigConfig,
     checkersConfig,
     tileVilleConfig,
     pokerConfig,
+    lotteryConfig,
   ],
 });
