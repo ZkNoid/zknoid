@@ -119,6 +119,9 @@ importers:
       immer:
         specifier: ^10.0.4
         version: 10.1.1
+      l1-lottery-contracts:
+        specifier: ^0.1.3
+        version: 0.1.3(o1js@protokit-framework+framework+node_modules+o1js)
       lottie-react:
         specifier: ^2.4.0
         version: 2.4.0(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
@@ -2787,6 +2790,12 @@ packages:
     resolution: {integrity: sha512-vDg9PZ/zi+Nqp6boSOT7plNuthRugEKixDv5sFTIpkE89MmNtEArAShI4mxuX2+UrLEe9pxC1vm2cjm9YlWbJw==}
     dependencies:
       undici-types: 5.26.5
+
+  /@types/node@20.14.5:
+    resolution: {integrity: sha512-aoRR+fJkZT2l0aGOJhuA8frnCSoNX6W7U2mpNq63+BxBIj5BQFt8rHy627kijCmm63ijdSdwvGgpUsU6MBsZZA==}
+    dependencies:
+      undici-types: 5.26.5
+    dev: false
 
   /@types/normalize-package-data@2.4.4:
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -6733,6 +6742,16 @@ packages:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
     engines: {node: '>=6'}
     dev: true
+
+  /l1-lottery-contracts@0.1.3(o1js@protokit-framework+framework+node_modules+o1js):
+    resolution: {integrity: sha512-Aa8sGELoaCD+MDiZFb3jsgSHZLDuhiigJJMY4mKhq/zYpoJklMP+eYirEQFJOvHxVFVq/Y08S2TspY6IdJIqAg==}
+    engines: {node: '>=18.14.0'}
+    peerDependencies:
+      o1js: 1.3.0
+    dependencies:
+      '@types/node': 20.14.5
+      o1js: link:protokit-framework/framework/node_modules/o1js
+    dev: false
 
   /language-subtag-registry@0.3.22:
     resolution: {integrity: sha512-tN0MCzyWnoz/4nHS6uxdlFWoUZT7ABptwKPQ52Ea7URk6vll88bWBVhodtnlfEuCcKWNGoc+uGbw1cwa9IKh/w==}
