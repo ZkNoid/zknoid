@@ -7,7 +7,15 @@ import { VioletLotteryButton } from './buttons/VioletLotteryButton';
 import znakesImg from '@/public/image/tokens/znakes.svg';
 import { Currency } from '@/constants/currency';
 
-export default function BannerSection({ roundId }: { roundId: number }) {
+export default function BannerSection({
+  roundId,
+  bank,
+  tickets,
+}: {
+  roundId: number;
+  bank: number;
+  tickets: number;
+}) {
   const roundTimer = useRoundTimer();
   return (
     <div
@@ -66,7 +74,7 @@ export default function BannerSection({ roundId }: { roundId: number }) {
               alt={'znakes'}
               className={'mb-1 h-[30px] w-[30px]'}
             />
-            <span>1200</span>
+            <span>{bank}</span>
             <span>{Currency.ZNAKES}</span>
           </div>
         </div>
@@ -92,7 +100,7 @@ export default function BannerSection({ roundId }: { roundId: number }) {
                 fill="#D2FF00"
               />
             </svg>
-            <span>3500</span>
+            <span>{tickets}</span>
           </div>
         </div>
       </div>
