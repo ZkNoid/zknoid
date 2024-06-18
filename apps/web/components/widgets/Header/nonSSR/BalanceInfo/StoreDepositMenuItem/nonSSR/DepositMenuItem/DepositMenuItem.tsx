@@ -26,6 +26,7 @@ import BridgeModal from '@/components/shared/Modal/BridgeModal';
 import Popover from '@/components/shared/Popover';
 import { useBridgeStore } from '@/lib/stores/bridgeStore';
 import BridgeInput from '@/components/widgets/Header/nonSSR/BalanceInfo/StoreDepositMenuItem/nonSSR/DepositMenuItem/ui/BridgeInput';
+import { useWorkerClientStore } from '@/lib/stores/workerClient';
 
 export default function DepositMenuItem() {
   const bridgeStore = useBridgeStore();
@@ -172,12 +173,15 @@ export default function DepositMenuItem() {
     });
   };
 
+  const workerStore = useWorkerClientStore();
+
   return (
     <>
       <TopUpCard
         text="Top up"
         onClick={() => bridgeStore.setOpen(10n * 10n ** 9n)}
       />
+      {workerStore.status}
       {/* {contextAppChainClient &&
         network.address &&
         balancesStore.balances[network.address] < 100 * 10 ** 9 && (

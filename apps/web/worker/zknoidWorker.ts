@@ -1,10 +1,19 @@
 import 'reflect-metadata';
 
-import { BRIDGE_CACHE } from '@/constants/bridge_cache';
+import { LOTTERY_CACHE } from '@/constants/contracts_cache';
 import { WebFileSystem, fetchCache } from '@/lib/cache';
 import { mockProof } from '@/lib/utils';
 
-import { Field as Field014, UInt64, PublicKey } from 'o1js';
+import {
+  Field as Field014,
+  UInt64,
+  PublicKey,
+  Field,
+  MerkleMapWitness,
+  MerkleMap,
+  UInt32,
+  Mina,
+} from 'o1js';
 import {
   checkMapGeneration,
   checkGameRecord,
@@ -19,7 +28,99 @@ import {
   client,
   Tick,
 } from 'zknoid-chain-dev';
+import { Ticket, Lottery, DistibutionProgram } from 'l1-lottery-contracts';
+import {
+  MerkleMap20,
+  MerkleMap20Witness,
+} from 'l1-lottery-contracts/build/src/CustomMerkleMap';
+import {
+  DistributionProof,
+  DistributionProofPublicInput,
+  init,
+} from 'l1-lottery-contracts/build/src/DistributionProof';
+import {
+  getNullifierId,
+  getEmpty2dMerkleMap,
+  comisionTicket,
+  TICKET_PRICE,
+  NumberPacked,
+
+} from 'l1-lottery-contracts';
 // import { DummyBridge } from 'zknoidcontractsl1';
+
+class StateManager {
+  ticketMap: MerkleMap20;
+  roundTicketMap: MerkleMap20[];
+  roundTickets: Ticket[][];
+  lastTicketInRound: number[];
+  ticketNullifierMap: MerkleMap;
+  bankMap: MerkleMap20;
+  roundResultMap: MerkleMap20;
+  startBlock: Field | undefined;
+  dpProofs: { [key: number]: DistributionProof };
+
+  constructor() {
+    this.ticketMap = getEmpty2dMerkleMap(20);
+    this.roundTicketMap = new Array(20).fill(new MerkleMap20());
+    this.lastTicketInRound = new Array(20).fill(1);
+    this.roundTickets = new Array(20).fill([comisionTicket]);
+    this.ticketNullifierMap = new MerkleMap();
+    this.bankMap = new MerkleMap20();
+    this.roundResultMap = new MerkleMap20();
+    this.dpProofs = {};
+  }
+
+  getNextTicketWitenss(
+    round: number
+  ): [MerkleMap20Witness, MerkleMap20Witness] {
+    const roundWitness = this.ticketMap.getWitness(Field.from(round));
+    const ticketRoundWitness = this.roundTicketMap[round].getWitness(
+      Field.from(this.lastTicketInRound[round])
+    );
+
+    return [roundWitness, ticketRoundWitness];
+  }
+
+  addTicket(
+    ticket: Ticket,
+    round: number
+  ): [MerkleMap20Witness, MerkleMap20Witness, MerkleMap20Witness, Field] {
+    const [roundWitness, ticketRoundWitness] = this.getNextTicketWitenss(round);
+    const [bankWitness, bankValue] = this.getBankWitness(round);
+    this.roundTicketMap[round].set(
+      Field.from(this.lastTicketInRound[round]),
+      ticket.hash()
+    );
+    this.roundTickets[round].push(ticket);
+    this.lastTicketInRound[round]++;
+    this.ticketMap.set(Field.from(round), this.roundTicketMap[round].getRoot());
+
+    this.bankMap.set(
+      Field.from(round),
+      bankValue.add(TICKET_PRICE.mul(ticket.amount).value)
+    );
+
+    return [roundWitness, ticketRoundWitness, bankWitness, bankValue];
+  }
+
+  // Returns witness and value
+  getBankWitness(round: number): [MerkleMap20Witness, Field] {
+    const bankWitness = this.bankMap.getWitness(Field.from(round));
+    const value = this.bankMap.get(Field.from(round));
+
+    return [bankWitness, value];
+  }
+
+  updateResult(round: number, nums: number[]): MerkleMap20Witness {
+    const witness = this.roundResultMap.getWitness(Field.from(round));
+    const packedNumbers = NumberPacked.pack(
+      nums.map((val) => UInt32.from(val))
+    );
+    this.roundResultMap.set(Field.from(round), packedNumbers);
+
+    return witness;
+  }
+}
 
 // type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
@@ -27,9 +128,8 @@ import {
 
 const state = {
   gameRecord: null as null | typeof GameRecord,
-  // dummyBridge: null as null | typeof DummyBridge,
-  // dummyBridgeApp: null as null | DummyBridge,
-  // transaction: null as null | Transaction,
+  Lottery: null as null | typeof Lottery,
+  lotteryGame: null as null | Lottery,
 };
 
 // ---------------------------------------------------------------------------------------
@@ -40,15 +140,63 @@ const functions = {
     state.gameRecord = GameRecord;
     // state.dummyBridge = DummyBridge;
   },
-  compileContracts: async (args: {}) => {
-    console.log('[Worker] compiling contracts');
+  loadLotteryContract: async () => {
+    state.Lottery = Lottery;
+  },
+  compileContracts: async (args: {}) => {},
+  compileDistributionProof: async (args: {}) => {
+    console.log('[Worker] compiling distribution contracts');
 
-    const fetchedCache = await fetchCache(BRIDGE_CACHE);
+    const lotteryCache = await fetchCache(LOTTERY_CACHE);
 
-    // await DummyBridge.compile({
-    //   cache: WebFileSystem(fetchedCache),
-    // });
+    await DistibutionProgram.compile({
+      cache: WebFileSystem(lotteryCache),
+    });
+
     console.log('[Worker] compiling contracts ended');
+  },
+  compileLotteryContracts: async (args: {}) => {
+    console.log('[Worker] compiling lottery contracts');
+
+    const lotteryCache = await fetchCache(LOTTERY_CACHE);
+
+    await Lottery.compile({
+      cache: WebFileSystem(lotteryCache),
+    });
+    console.log('[Worker] compiling contracts ended');
+  },
+  initLotteryInstance: async (args: { lotteryPublicKey58: string }) => {
+    const publicKey = PublicKey.fromBase58(args.lotteryPublicKey58);
+    state.lotteryGame = new state.Lottery!(publicKey);
+    console.log('[Worker] lottery instance init');
+    const Network = Mina.Network(
+      'https://api.minascan.io/node/devnet/v1/graphql'
+    );
+    console.log('Devnet network instance configured.');
+    Mina.setActiveInstance(Network);
+  },
+  buyTicket: async (args: { senderAccount: string, ticketNums: number[] }) => {
+    const stateM = new StateManager();
+
+    const curRound = 14;
+    const senderAccount = PublicKey.fromBase58(args.senderAccount);
+
+    const ticket = Ticket.from(args.ticketNums, senderAccount, 1);
+    let [roundWitness, roundTicketWitness, bankWitness, bankValue] =
+      stateM.addTicket(ticket, curRound);
+
+      let tx = await Mina.transaction(senderAccount, async () => {
+        await state.lotteryGame!.buyTicket(
+          ticket,
+          roundWitness,
+          roundTicketWitness,
+          bankValue,
+          bankWitness
+        );
+      });
+
+      console.log('RECEIVED TX', tx)
+  
   },
   initZkappInstance: async (args: { bridgePublicKey58: string }) => {
     // const publicKey = PublicKey.fromBase58(args.bridgePublicKey58);

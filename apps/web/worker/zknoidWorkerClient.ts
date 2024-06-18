@@ -15,12 +15,26 @@ export default class ZknoidWorkerClient {
   compileContracts() {
     return this._call('compileContracts', {});
   }
+  compileLotteryContracts() {
+    return this._call('compileLotteryContracts', {});
+  }
+  compileDistributionProof() {
+    return this._call('compileDistributionProof', {});
+  }
   initZkappInstance(bridgePublicKey58: string) {
     return this._call('initZkappInstance', { bridgePublicKey58 });
   }
+  initLotteryInstance(bridgePublicKey58: string) {
+    return this._call('initLotteryInstance', { bridgePublicKey58 });
+  }
+  buyTicket(senderAccount: string, ticketNums: number[]) {
+    return this._call('buyTicket', { senderAccount, ticketNums });
+  }
+
   bridge(amount: UInt64) {
     return this._call('bridge', { amount });
   }
+
   async proveGameRecord({
     seed,
     inputs,

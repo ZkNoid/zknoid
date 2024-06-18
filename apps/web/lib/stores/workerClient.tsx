@@ -9,6 +9,8 @@ export interface ClientState {
   status: string;
   client?: ZknoidWorkerClient;
   start: () => Promise<ZknoidWorkerClient>;
+  startLottery: () => Promise<ZknoidWorkerClient>;
+  buyTicket: (senderAccount: string, ticketNums: number[]) => Promise<undefined>;
 }
 
 export const useWorkerClientStore = create<
@@ -52,6 +54,56 @@ export const useWorkerClientStore = create<
       });
 
       return zkappWorkerClient;
+    },
+    async startLottery() {
+      set((state) => {
+        state.status = 'Lottery loading';
+      });
+
+      await this.client!.waitFor();
+
+      set((state) => {
+        state.status = 'Lottery contracts loading';
+      });
+
+      await this.client?._call('loadLotteryContract', {});
+
+      set((state) => {
+        state.status = 'Distribution contracts compiling';
+      });
+
+      await this.client?._call('compileDistributionProof', {});
+
+      set((state) => {
+        state.status = 'Lottery contracts compiling';
+      });
+
+      await this.client?._call('compileLotteryContracts', {});
+
+      set((state) => {
+        state.status = 'Lottery instance init';
+      });
+
+      const lotteryPublicKey58 = 'B62qjeggyBtmNuEhKgUXyQtnYXpDDipU5jUJDUrQCy24xGMBi8tU58f';
+
+      await this.client?._call('initLotteryInstance', { lotteryPublicKey58 });
+
+      set((state) => {
+        state.status = 'Lottery initialized';
+      });
+
+      return this.client!;
+    },
+    async buyTicket(senderAccount: string, ticketNums: number[]) {
+      set((state) => {
+        state.status = 'Ticket buying';
+      });
+
+      await this.client?._call('buyTicket', { senderAccount, ticketNums });
+
+      set((state) => {
+        state.status = 'Ticket bought';
+      });
     },
   }))
 );

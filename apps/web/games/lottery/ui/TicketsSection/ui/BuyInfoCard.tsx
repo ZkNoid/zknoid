@@ -1,6 +1,8 @@
 import { ReactNode } from 'react';
 import { VioletLotteryButton } from '../../buttons/VioletLotteryButton';
 import { cn } from '@/lib/helpers';
+import { useWorkerClientStore } from '@/lib/stores/workerClient';
+import { useNetworkStore } from '@/lib/stores/network';
 
 export default function BuyInfoCard({
   numberOfTickets,
@@ -11,6 +13,9 @@ export default function BuyInfoCard({
   cost: number;
   buttonActive: ReactNode;
 }) {
+  const workerStore = useWorkerClientStore();
+  const networkStore = useNetworkStore();
+
   return (
     <div className="flex h-[13.53vw] w-[22vw] flex-col rounded-[0.67vw] bg-[#252525] p-[1.33vw] text-[1.07vw]">
       <div className="flex flex-row">
@@ -34,6 +39,9 @@ export default function BuyInfoCard({
           'my-[1vw] flex h-[2.13vw] items-center justify-center rounded-[0.33vw] px-[1vw] text-[1.07vw]',
           !buttonActive && 'opacity-50 cursor-not-allowed'
         )}
+        onClick={() => {
+          workerStore.buyTicket(networkStore.address!, [1, 1, 1, 1, 1, 1]);
+        }}
       >
         Pay
       </VioletLotteryButton>
