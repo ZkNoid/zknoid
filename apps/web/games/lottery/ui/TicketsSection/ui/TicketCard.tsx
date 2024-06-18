@@ -1,8 +1,14 @@
 import { cn } from '@/lib/helpers';
 import { TicketBlockButton } from '@/games/lottery/ui/buttons/TicketBlockButton';
-import { symbol } from 'zod';
+import { AnimatePresence, motion } from 'framer-motion';
 
-const TicketsNumPicker = ({ amount, setAmount }: { amount: number, setAmount: (amount: number) => void }) => {
+const TicketsNumPicker = ({
+  amount,
+  setAmount,
+}: {
+  amount: number;
+  setAmount: (amount: number) => void;
+}) => {
   return (
     <div
       className={cn(
@@ -34,14 +40,14 @@ const TicketsNumPicker = ({ amount, setAmount }: { amount: number, setAmount: (a
           className="w-[1.07vw]"
         >
           <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
+            fillRule="evenodd"
+            clipRule="evenodd"
             d="M7 9.5V16.5H9V9.5H16V7.5H9V0.5H7V7.5H0V9.5H7Z"
             fill="#000000"
           />
           <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
+            fillRule="evenodd"
+            clipRule="evenodd"
             d="M7 9.5V16.5H9V9.5H16V7.5H9V0.5H7V7.5H0V9.5H7Z"
             fill="#000000"
           />
@@ -72,9 +78,11 @@ export default function TicketCard({
           <div className="text-[1.6vw] uppercase text-black">Ticket 1</div>
           <div className="ml-auto flex gap-[0.33vw] text-[1.07vw] text-right-accent">
             {amount == 0 ? (
-              <TicketBlockButton onClick={() => setTicketsAmount(1)}>Get ticket</TicketBlockButton>
+              <TicketBlockButton onClick={() => setTicketsAmount(1)}>
+                Get ticket
+              </TicketBlockButton>
             ) : (
-              <TicketsNumPicker amount={amount} setAmount={setTicketsAmount}/>
+              <TicketsNumPicker amount={amount} setAmount={setTicketsAmount} />
             )}
             {!finalized &&
               (amount == 0 ? (
@@ -123,27 +131,33 @@ export default function TicketCard({
           ))}
         </div>
         <div className="mt-[1.6vw] flex flex-row gap-[0.33vw]">
-          {amount > 0 &&
-            [1, 2, 3, 4, 5, 6, 7, 8, 9, '←'].map((fieldId) => (
-              <div
-                key={fieldId}
-                className={cn(
-                  'h-[1.87vw] w-[1.87vw] rounded-[0.33vw]',
-                  'flex justify-center border border-dashed border-bg-dark text-[2.13vw] text-black',
-                  'items-center justify-center text-[1.07vw] text-bg-dark',
-                  'cursor-pointer'
-                )}
-                onClick={() => {
-                  setSymbols(
-                    fieldId == '←'
-                      ? symbols.slice(0, -1)
-                      : `${symbols}${fieldId}`
-                  );
-                }}
-              >
-                {fieldId}
-              </div>
-            ))}
+          <AnimatePresence mode={'wait'}>
+            {amount > 0 &&
+              [1, 2, 3, 4, 5, 6, 7, 8, 9, '←'].map((fieldId, index) => (
+                <motion.div
+                  key={fieldId}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: index * 0.2 }}
+                  exit={{ opacity: 0, transition: { delay: index * 0.15 } }}
+                  className={cn(
+                    'h-[1.87vw] w-[1.87vw] rounded-[0.33vw]',
+                    'flex justify-center border border-dashed border-bg-dark text-[2.13vw] text-black',
+                    'items-center justify-center text-[1.07vw] text-bg-dark',
+                    'cursor-pointer'
+                  )}
+                  onClick={() => {
+                    setSymbols(
+                      fieldId == '←'
+                        ? symbols.slice(0, -1)
+                        : `${symbols}${fieldId}`
+                    );
+                  }}
+                >
+                  {fieldId}
+                </motion.div>
+              ))}
+          </AnimatePresence>
         </div>
       </div>
     </div>
