@@ -2,6 +2,7 @@ import { cn } from '@/lib/helpers';
 import TicketCard from './ui/TicketCard';
 import BuyInfoCard from './ui/BuyInfoCard';
 import { useState } from 'react';
+import GetMoreTicketsButton from './ui/GetMoreTicketsButton';
 
 export default function TicketsSection({}: {}) {
   const [ticketNumberInput, setTicketNumber] = useState('');
@@ -23,12 +24,15 @@ export default function TicketsSection({}: {}) {
             finalized={false}
             setSymbols={setTicketNumber}
             setTicketsAmount={setTicketsAmount}
-          ></TicketCard>
-          <BuyInfoCard
-            numberOfTickets={ticketAmount}
-            cost={ticketAmount}
-            buttonActive={ticketAmount > 0}
-          ></BuyInfoCard>
+          />
+          <div className={'flex flex-col gap-[1.33vw]'}>
+            <BuyInfoCard
+              numberOfTickets={ticketAmount}
+              cost={ticketAmount}
+              buttonActive={ticketAmount > 0}
+            />
+            <GetMoreTicketsButton />
+          </div>
         </div>
       </div>
       <div className="">
