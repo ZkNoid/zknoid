@@ -13,7 +13,7 @@ export interface ClientState {
   buyTicket: (
     senderAccount: string,
     ticketNums: number[]
-  ) => Promise<undefined>;
+  ) => Promise<any>;
 }
 
 export const useWorkerClientStore = create<
@@ -94,7 +94,7 @@ export const useWorkerClientStore = create<
       });
 
       const lotteryPublicKey58 =
-        'B62qjeggyBtmNuEhKgUXyQtnYXpDDipU5jUJDUrQCy24xGMBi8tU58f';
+        'B62qnn7xKrorwy1CMKB1SqJfutjNQ5J9MU89u5uAkc6YCpAtZ39vVWt';
 
       await this.client?._call('initLotteryInstance', { lotteryPublicKey58 });
 
@@ -106,14 +106,16 @@ export const useWorkerClientStore = create<
     },
     async buyTicket(senderAccount: string, ticketNums: number[]) {
       set((state) => {
-        state.status = 'Ticket buying';
+        state.status = 'Ticket buy tx prepare';
       });
 
       await this.client?._call('buyTicket', { senderAccount, ticketNums });
 
       set((state) => {
-        state.status = 'Ticket bought';
+        state.status = 'Ticket buy tx proving';
       });
+
+      return await this.client?._call('proveBuyTicketTransaction', {});
     },
   }))
 );
