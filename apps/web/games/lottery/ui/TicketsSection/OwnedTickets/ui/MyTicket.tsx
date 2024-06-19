@@ -164,7 +164,7 @@ export default function MyTicket({
             <div className={'flex w-full items-center justify-center p-1'}>
               <div
                 className={
-                  'flex min-h-[1.41vw] min-w-[1.41vw] items-center justify-center rounded-full bg-[#F9F8F4] text-black'
+                  'flex min-h-[1.41vw] min-w-[1.41vw] items-center justify-center rounded-full bg-[#F9F8F4] text-[0.625vw] text-black'
                 }
               >
                 {index.toString().length == 1 ? '0' + index : index}
