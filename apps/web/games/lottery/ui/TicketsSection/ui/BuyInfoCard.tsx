@@ -37,10 +37,14 @@ export default function BuyInfoCard({
       <VioletLotteryButton
         className={cn(
           'my-[1vw] flex h-[2.13vw] items-center justify-center rounded-[0.33vw] px-[1vw] text-[1.07vw]',
-          !buttonActive && 'opacity-50 cursor-not-allowed'
+          !buttonActive && 'cursor-not-allowed opacity-50'
         )}
         onClick={() => {
-          workerStore.buyTicket(networkStore.address!, [1, 1, 1, 1, 1, 1]);
+          const txJson = workerStore.buyTicket(
+            networkStore.address!,
+            [1, 1, 1, 1, 1, 1]
+          );
+          console.log('txJson', txJson);
         }}
       >
         Pay
