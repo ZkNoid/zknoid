@@ -6,6 +6,7 @@ import GetMoreTicketsButton from './ui/GetMoreTicketsButton';
 import Image from 'next/image';
 import znakesImg from '@/public/image/tokens/znakes.svg';
 import { Currency } from '@/constants/currency';
+import TicketBG1 from '@/public/image/ticket-bg-1.svg';
 
 type Number = {
   number: number;
@@ -209,6 +210,51 @@ export function PreviousRound({ combination }: { combination: number[] }) {
   );
 }
 
+export function Ticket({ combination }: { combination: number[] }) {
+  return (
+    <div
+      className={
+        'relative flex h-[13.53vw] w-[24vw] flex-col gap-[1vw] rounded-[1.33vw] bg-[#FF5B23] p-[0.33vw]'
+      }
+    >
+      <div
+        className={
+          'pointer-events-none absolute h-[12.87vw] w-[23.33vw] rounded-[1vw] border'
+        }
+      />
+      <div className={'flex h-full w-full flex-col gap-[1vw] p-[0.33vw]'}>
+        <span>Ticket 01</span>
+        <div className={'flex flex-row gap-[0.5vw]'}>
+          {combination.map((item, index) => (
+            <div
+              key={index}
+              className={
+                'flex h-[2.67vw] w-[2.67vw] justify-center rounded-[0.33vw] border text-[2.13vw] text-foreground'
+              }
+            >
+              {item}
+            </div>
+          ))}
+        </div>
+        <Image
+          src={TicketBG1}
+          alt={'Lottery Ticket'}
+          className={'absolute bottom-0 right-0 h-full w-full'}
+        />
+      </div>
+    </div>
+  );
+}
+
+export function OwnedTickets() {
+  return (
+    <div className={'flex w-full flex-col gap-[6vw]'}>
+      {/*<div className="mb-[1.33vw] text-[2.13vw]">Buy tickets</div>*/}
+      <Ticket combination={[1, 2, 3, 4, 5, 6]} />
+    </div>
+  );
+}
+
 export default function TicketsSection({}: {}) {
   const [ticketNumberInput, setTicketNumber] = useState('');
   const [ticketAmount, setTicketsAmount] = useState(0);
@@ -223,6 +269,7 @@ export default function TicketsSection({}: {}) {
       <div className="">
         <div className="mb-[1.33vw] text-[2.13vw]">Buy tickets</div>
         <div className="flex flex-row gap-[1.33vw]">
+          <OwnedTickets />
           <TicketCard
             symbols={ticketNumberInput}
             amount={ticketAmount}
