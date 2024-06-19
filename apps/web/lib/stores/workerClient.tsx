@@ -10,7 +10,10 @@ export interface ClientState {
   client?: ZknoidWorkerClient;
   start: () => Promise<ZknoidWorkerClient>;
   startLottery: () => Promise<ZknoidWorkerClient>;
-  buyTicket: (senderAccount: string, ticketNums: number[]) => Promise<undefined>;
+  buyTicket: (
+    senderAccount: string,
+    ticketNums: number[]
+  ) => Promise<undefined>;
 }
 
 export const useWorkerClientStore = create<
@@ -63,6 +66,12 @@ export const useWorkerClientStore = create<
       await this.client!.waitFor();
 
       set((state) => {
+        state.status = 'Lottery prover cache downloading';
+      });
+
+      await this.client?._call('downloadLotteryCache', {});
+
+      set((state) => {
         state.status = 'Lottery contracts loading';
       });
 
@@ -84,7 +93,8 @@ export const useWorkerClientStore = create<
         state.status = 'Lottery instance init';
       });
 
-      const lotteryPublicKey58 = 'B62qjeggyBtmNuEhKgUXyQtnYXpDDipU5jUJDUrQCy24xGMBi8tU58f';
+      const lotteryPublicKey58 =
+        'B62qjeggyBtmNuEhKgUXyQtnYXpDDipU5jUJDUrQCy24xGMBi8tU58f';
 
       await this.client?._call('initLotteryInstance', { lotteryPublicKey58 });
 
