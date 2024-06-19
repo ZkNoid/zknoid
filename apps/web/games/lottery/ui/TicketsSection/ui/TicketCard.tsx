@@ -123,7 +123,7 @@ export default function TicketCard({
               key={fieldId}
               className={cn(
                 'h-[2.67vw] w-[2.67vw] rounded-[0.33vw] border-[0.07vw] border-bg-dark shadow-[inset_5px_5px_5px_#C89EF1,inset_-5px_-5px_5px_rgba(200,158,241,0.5)]',
-                'flex justify-center text-[2.13vw] text-black'
+                'flex items-center justify-center font-museo text-[2.13vw] font-bold text-black'
               )}
             >
               {symbols?.[fieldId] || '_'}
