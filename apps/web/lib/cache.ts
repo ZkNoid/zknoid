@@ -1,6 +1,7 @@
 export interface ContractCache {
   cachePath: string;
   files: string[];
+  urls: string[];
 }
 
 export interface FetchedCache {
@@ -11,12 +12,18 @@ export async function fetchCache(
   cacheInfo: ContractCache
 ): Promise<FetchedCache> {
   const fetchedCacheObject = await Promise.all(
-    cacheInfo.files.map((file) => {
+    cacheInfo.files.filter(file => !file.endsWith('.header')).map((file, i) => {
+      // console.log(
+      //   'Fetching', i, cacheInfo.files.indexOf(`${file}.header`), 
+      //   cacheInfo.urls[cacheInfo.files.indexOf(`${file}.header`)]
+      // )
+      // console.log('Fetching', i, cacheInfo.urls[cacheInfo.files.indexOf(`${file}`)])
+
       return Promise.all([
-        fetch(`${cacheInfo.cachePath}/${file}.header`).then((res) =>
+        fetch(cacheInfo.urls[cacheInfo.files.indexOf(`${file}.header`)]).then((res) =>
           res.text()
         ),
-        fetch(`${cacheInfo.cachePath}/${file}`).then((res) => res.text()),
+        fetch(cacheInfo.urls[cacheInfo.files.indexOf(`${file}`)]).then((res) => res.text()),
       ]).then(([header, data]) => ({ file, header, data }));
     })
   ).then((cacheList) =>

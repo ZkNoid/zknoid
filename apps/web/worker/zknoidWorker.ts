@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 
 import { LOTTERY_CACHE } from '@/constants/contracts_cache';
-import { WebFileSystem, fetchCache } from '@/lib/cache';
+import { FetchedCache, WebFileSystem, fetchCache } from '@/lib/cache';
 import { mockProof } from '@/lib/utils';
 
 import {
@@ -130,6 +130,7 @@ const state = {
   gameRecord: null as null | typeof GameRecord,
   Lottery: null as null | typeof Lottery,
   lotteryGame: null as null | Lottery,
+  lotteryCache: null as null | FetchedCache
 };
 
 // ---------------------------------------------------------------------------------------
@@ -143,14 +144,16 @@ const functions = {
   loadLotteryContract: async () => {
     state.Lottery = Lottery;
   },
+  downloadLotteryCache: async () => {
+    state.lotteryCache = await fetchCache(LOTTERY_CACHE);
+  },
   compileContracts: async (args: {}) => {},
   compileDistributionProof: async (args: {}) => {
     console.log('[Worker] compiling distribution contracts');
-
-    const lotteryCache = await fetchCache(LOTTERY_CACHE);
+    console.log('Cache info', LOTTERY_CACHE);
 
     await DistibutionProgram.compile({
-      cache: WebFileSystem(lotteryCache),
+      cache: WebFileSystem(state.lotteryCache!),
     });
 
     console.log('[Worker] compiling contracts ended');
@@ -158,10 +161,8 @@ const functions = {
   compileLotteryContracts: async (args: {}) => {
     console.log('[Worker] compiling lottery contracts');
 
-    const lotteryCache = await fetchCache(LOTTERY_CACHE);
-
     await Lottery.compile({
-      cache: WebFileSystem(lotteryCache),
+      cache: WebFileSystem(state.lotteryCache!),
     });
     console.log('[Worker] compiling contracts ended');
   },
