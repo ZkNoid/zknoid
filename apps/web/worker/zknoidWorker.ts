@@ -44,7 +44,6 @@ import {
   comisionTicket,
   TICKET_PRICE,
   NumberPacked,
-
 } from 'l1-lottery-contracts';
 // import { DummyBridge } from 'zknoidcontractsl1';
 
@@ -122,15 +121,15 @@ class StateManager {
   }
 }
 
-// type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
-
 // ---------------------------------------------------------------------------------------
+type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
 const state = {
   gameRecord: null as null | typeof GameRecord,
   Lottery: null as null | typeof Lottery,
   lotteryGame: null as null | Lottery,
-  lotteryCache: null as null | FetchedCache
+  lotteryCache: null as null | FetchedCache,
+  buyTicketTransaction: null as null | Transaction,
 };
 
 // ---------------------------------------------------------------------------------------
@@ -176,28 +175,33 @@ const functions = {
     console.log('Devnet network instance configured.');
     Mina.setActiveInstance(Network);
   },
-  buyTicket: async (args: { senderAccount: string, ticketNums: number[] }) => {
+  buyTicket: async (args: { senderAccount: string; ticketNums: number[] }) => {
     const stateM = new StateManager();
 
-    const curRound = 14;
+    const curRound = 0;
     const senderAccount = PublicKey.fromBase58(args.senderAccount);
 
     const ticket = Ticket.from(args.ticketNums, senderAccount, 1);
     let [roundWitness, roundTicketWitness, bankWitness, bankValue] =
       stateM.addTicket(ticket, curRound);
 
-      let tx = await Mina.transaction(senderAccount, async () => {
-        await state.lotteryGame!.buyTicket(
-          ticket,
-          roundWitness,
-          roundTicketWitness,
-          bankValue,
-          bankWitness
-        );
-      });
+    let tx = await Mina.transaction(senderAccount, async () => {
+      await state.lotteryGame!.buyTicket(
+        ticket,
+        roundWitness,
+        roundTicketWitness,
+        bankValue,
+        bankWitness
+      );
+    });
 
-      console.log('RECEIVED TX', tx)
-  
+    console.log('RECEIVED TX', tx);
+
+    state.buyTicketTransaction = tx;
+  },
+  proveBuyTicketTransaction: async () => {
+    await state.buyTicketTransaction!.prove();
+    return state.buyTicketTransaction!.toJSON();
   },
   initZkappInstance: async (args: { bridgePublicKey58: string }) => {
     // const publicKey = PublicKey.fromBase58(args.bridgePublicKey58);
