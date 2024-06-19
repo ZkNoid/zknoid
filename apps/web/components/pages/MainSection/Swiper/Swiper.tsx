@@ -5,6 +5,7 @@ import defaultSlide from '@/public/image/slides/slide1.svg';
 import mobileCoverIMG from '@/public/image/section1/mobile-cover.svg';
 import lotterySlide from '@/public/image/slides/lottery.svg';
 import tileVilleSlide from '@/public/image/slides/tileville.svg';
+import Link from 'next/link';
 
 export default function Swiper() {
   const [emblaRef, emblaApi] = useEmblaCarousel(
@@ -48,16 +49,30 @@ export default function Swiper() {
                   <Image src={defaultSlide} alt="Slide" className="w-full" />
                 </div>
               </div>
-              <div key={1} className="min-w-0 flex-[0_0_100%]">
+              <Link
+                key={1}
+                href={
+                  'https://forums.minaprotocol.com/t/zknoid-l1-lottery/6269'
+                }
+                target={'_blank'}
+                rel={'noopener noreferrer'}
+                className="min-w-0 flex-[0_0_100%]"
+              >
                 <div className="flex h-full w-full items-center justify-center">
                   <Image src={lotterySlide} alt="Slide" className="w-full" />
                 </div>
-              </div>
-              <div key={2} className="min-w-0 flex-[0_0_100%]">
+              </Link>
+              <Link
+                key={2}
+                href={'https://www.tileville.xyz'}
+                target={'_blank'}
+                rel={'noopener noreferrer'}
+                className="min-w-0 flex-[0_0_100%]"
+              >
                 <div className="flex h-full w-full items-center justify-center">
                   <Image src={tileVilleSlide} alt="Slide" className="w-full" />
                 </div>
-              </div>
+              </Link>
             </div>
           </div>
         </div>
