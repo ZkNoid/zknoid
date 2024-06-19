@@ -196,10 +196,11 @@ const functions = {
     });
 
     console.log('RECEIVED TX', tx);
+
     state.buyTicketTransaction = tx;
   },
   proveBuyTicketTransaction: async () => {
-    state.buyTicketTransaction!.prove();
+    await state.buyTicketTransaction!.prove();
     return state.buyTicketTransaction!.toJSON();
   },
   initZkappInstance: async (args: { bridgePublicKey58: string }) => {
