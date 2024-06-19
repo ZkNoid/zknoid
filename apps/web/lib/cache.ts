@@ -17,7 +17,7 @@ export async function fetchCache(
       //   'Fetching', i, cacheInfo.files.indexOf(`${file}.header`), 
       //   cacheInfo.urls[cacheInfo.files.indexOf(`${file}.header`)]
       // )
-      // console.log('Fetching', i, cacheInfo.urls[cacheInfo.files.indexOf(`${file}`)])
+      console.log('Fetching', i, cacheInfo.urls[cacheInfo.files.indexOf(`${file}`)])
 
       return Promise.all([
         fetch(cacheInfo.urls[cacheInfo.files.indexOf(`${file}.header`)]).then((res) =>
