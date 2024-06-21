@@ -94,70 +94,72 @@ export default function MyTicket({
           >
             <div
               className={
-                'my-auto flex h-[5.73vw] w-full flex-row items-center justify-center gap-1'
+                'my-auto flex h-[8vw] w-full flex-row items-center justify-center gap-1'
               }
             >
               <div
-                className={'flex h-full w-1/2 flex-col-reverse justify-evenly'}
+                className={
+                  'flex h-[8vw] w-[65%] flex-col-reverse justify-between'
+                }
               >
                 {combination.map((item, index) => (
                   <span
                     key={index}
                     className={
-                      'rotate-180 text-[0.83vw] [writing-mode:vertical-rl]'
+                      'rotate-180 font-plexsans text-[0.9vw] font-medium [writing-mode:vertical-rl]'
                     }
                   >
                     {item}
                   </span>
                 ))}
               </div>
-              <span className={'h-full w-1/2'}>
+              <span className={'h-full w-[55%]'}>
                 <svg
                   width="100%"
                   height="100%"
-                  viewBox="0 0 8 109"
+                  viewBox="0 0 10 109"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                  className={'rotate-180'}
+                  className={'h-full w-full rotate-180'}
                 >
-                  <rect y="106" width="8" height="3" fill="#F9F8F4" />
-                  <rect y="95" width="8" height="3" fill="#F9F8F4" />
-                  <rect y="8" width="8" height="3" fill="#F9F8F4" />
-                  <rect y="40" width="8" height="3" fill="#F9F8F4" />
-                  <rect y="68" width="8" height="3" fill="#F9F8F4" />
-                  <rect y="82" width="8" height="4" fill="#F9F8F4" />
-                  <rect y="17" width="8" height="4" fill="#F9F8F4" />
-                  <rect y="63" width="8" height="4" fill="#F9F8F4" />
-                  <rect y="104" width="8" height="0.999999" fill="#F9F8F4" />
-                  <rect y="54" width="8" height="0.999999" fill="#F9F8F4" />
-                  <rect y="25" width="8" height="0.999999" fill="#F9F8F4" />
-                  <rect y="101" width="8" height="2" fill="#F9F8F4" />
-                  <rect y="14" width="8" height="2" fill="#F9F8F4" />
-                  <rect y="46" width="8" height="2" fill="#F9F8F4" />
-                  <rect y="51" width="8" height="2" fill="#F9F8F4" />
-                  <rect y="22" width="8" height="2" fill="#F9F8F4" />
-                  <rect y="92" width="8" height="2" fill="#F9F8F4" />
-                  <rect y="5" width="8" height="2" fill="#F9F8F4" />
-                  <rect y="2" width="8" height="2" fill="#F9F8F4" />
-                  <rect y="37" width="8" height="2" fill="#F9F8F4" />
-                  <rect y="89" width="8" height="2" fill="#F9F8F4" />
-                  <rect y="34" width="8" height="2" fill="#F9F8F4" />
-                  <rect y="79" width="8" height="2" fill="#F9F8F4" />
-                  <rect y="76" width="8" height="2" fill="#F9F8F4" />
-                  <rect y="58" width="8" height="2" fill="#F9F8F4" />
-                  <rect y="29" width="8" height="2" fill="#F9F8F4" />
-                  <rect y="99" width="8" height="0.999999" fill="#F9F8F4" />
-                  <rect y="12" width="8" height="0.999999" fill="#F9F8F4" />
-                  <rect width="8" height="0.999999" fill="#F9F8F4" />
-                  <rect y="44" width="8" height="0.999999" fill="#F9F8F4" />
-                  <rect y="49" width="8" height="0.999999" fill="#F9F8F4" />
-                  <rect y="61" width="8" height="0.999999" fill="#F9F8F4" />
-                  <rect y="87" width="8" height="0.999999" fill="#F9F8F4" />
-                  <rect y="32" width="8" height="0.999999" fill="#F9F8F4" />
-                  <rect y="74" width="8" height="0.999999" fill="#F9F8F4" />
-                  <rect y="56" width="8" height="0.999999" fill="#F9F8F4" />
-                  <rect y="27" width="8" height="0.999999" fill="#F9F8F4" />
-                  <rect y="72" width="8" height="0.999999" fill="#F9F8F4" />
+                  <rect y="106" width="10" height="3" fill="#F9F8F4" />
+                  <rect y="95" width="10" height="3" fill="#F9F8F4" />
+                  <rect y="8" width="10" height="3" fill="#F9F8F4" />
+                  <rect y="40" width="10" height="3" fill="#F9F8F4" />
+                  <rect y="68" width="10" height="3" fill="#F9F8F4" />
+                  <rect y="82" width="10" height="4" fill="#F9F8F4" />
+                  <rect y="17" width="10" height="4" fill="#F9F8F4" />
+                  <rect y="63" width="10" height="4" fill="#F9F8F4" />
+                  <rect y="104" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="54" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="25" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="101" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="14" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="46" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="51" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="22" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="92" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="5" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="2" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="37" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="89" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="34" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="79" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="76" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="58" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="29" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="99" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="12" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="44" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="49" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="61" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="87" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="32" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="74" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="56" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="27" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="72" width="10" height="0.999999" fill="#F9F8F4" />
                 </svg>
               </span>
             </div>
