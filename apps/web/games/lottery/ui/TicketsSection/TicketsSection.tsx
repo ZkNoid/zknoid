@@ -223,10 +223,7 @@ export default function TicketsSection({}: {}) {
     >
       <div className="">
         <div className="flex flex-row justify-between">
-          <div className={'flex flex-col'}>
-            <div className="mb-[1.33vw] text-[2.13vw]">Your tickets</div>
-            <OwnedTickets />
-          </div>
+          <OwnedTickets />
           <div className={'flex flex-col'}>
             <div className="mb-[1.33vw] text-[2.13vw]">Buy tickets</div>
             <div className={'flex flex-row gap-[1.33vw]'}>
