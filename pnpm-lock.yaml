@@ -123,8 +123,8 @@ importers:
         specifier: ^10.0.4
         version: 10.1.1
       l1-lottery-contracts:
-        specifier: ^0.1.4
-        version: 0.1.4(o1js@protokit-framework+framework+node_modules+o1js)
+        specifier: ^0.1.7
+        version: 0.1.8
       lottie-react:
         specifier: ^2.4.0
         version: 2.4.0(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
@@ -3798,6 +3798,10 @@ packages:
       safe-buffer: 5.2.1
     dev: false
 
+  /blakejs@1.2.1:
+    resolution: {integrity: sha512-QXUSXI3QVc/gJME0dBpXrag1kbzOqCjCX8/b54ntNyW6sjtoqxqRk3LTmXzaJoh71zMsDCjM+47jS7XiwN/+fQ==}
+    dev: false
+
   /bluebird@3.7.2:
     resolution: {integrity: sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==}
     dev: false
@@ -3954,6 +3958,11 @@ packages:
   /bytes@3.1.2:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
     engines: {node: '>= 0.8'}
+    dev: false
+
+  /cachedir@2.4.0:
+    resolution: {integrity: sha512-9EtFOZR8g22CL7BWjJ9BUx1+A/djkofnyW3aOXZORNW2kxoUpx2h+uN2cOqwPmFhnpVmxg+KW2OjOSgChTEvsQ==}
+    engines: {node: '>=6'}
     dev: false
 
   /call-bind@1.0.7:
@@ -6156,6 +6165,15 @@ packages:
   /isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
 
+  /isomorphic-fetch@3.0.0:
+    resolution: {integrity: sha512-qvUtwJ3j6qwsF3jLxkZ72qCgjMysPzDfeV240JHiGZsANBYd+EEuu35v7dfrJ9Up0Ak07D7GGSkGhCHTqg/5wA==}
+    dependencies:
+      node-fetch: 2.7.0
+      whatwg-fetch: 3.6.20
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /isstream@0.1.2:
     resolution: {integrity: sha512-Yljz7ffyPbrLpLngrMtZ7NduUgVvi6wG9RJ9IUcyCd59YQ911PBJphODUcbOVbqYfxe1wuYf/LJ8PauMRwsM/g==}
     dev: false
@@ -6668,6 +6686,10 @@ packages:
     resolution: {integrity: sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==}
     dev: true
 
+  /js-sha256@0.9.0:
+    resolution: {integrity: sha512-sga3MHh9sgQN2+pJ9VYZ+1LPwXOxuBJBA5nrR5/ofPfuiJBE2hnjsaN8se8JznOmGLN2p49Pe5U/ttafcs/apA==}
+    dev: false
+
   /js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
@@ -6777,14 +6799,14 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /l1-lottery-contracts@0.1.4(o1js@protokit-framework+framework+node_modules+o1js):
-    resolution: {integrity: sha512-Zy8gldRtNvj/8kJxy3yIxi60KFFUo6ipNyzU3bnEhD/p05lkXzFCpRX/qVeFarmgQhtHpKmyGM5j8l6OIiYWKg==}
+  /l1-lottery-contracts@0.1.8:
+    resolution: {integrity: sha512-QvLu4dG1ND38x+qdlHndTlcf3EQUhHRl7dndJrhhDyMHMx7lyrwH7Z6lXa8qRctadfIze6qvnfspiL4iG4SkTg==}
     engines: {node: '>=18.14.0'}
-    peerDependencies:
-      o1js: 1.3.0
     dependencies:
       '@types/node': 20.14.5
-      o1js: link:protokit-framework/framework/node_modules/o1js
+      o1js: 1.3.1
+    transitivePeerDependencies:
+      - encoding
     dev: false
 
   /language-subtag-registry@0.3.22:
@@ -7297,6 +7319,21 @@ packages:
       nodemon: 2.0.22
       through2: 4.0.2
     dev: true
+
+  /o1js@1.3.1:
+    resolution: {integrity: sha512-FOhkN0/byoWm/Q0F+2y1eHTeKYy22Lcx1oIn4xITLWPsEX6s01B79qP0pJQBPKZW+ev0xmmY/8Jf2pBuWA53fQ==}
+    engines: {node: '>=18.14.0'}
+    hasBin: true
+    dependencies:
+      blakejs: 1.2.1
+      cachedir: 2.4.0
+      isomorphic-fetch: 3.0.0
+      js-sha256: 0.9.0
+      reflect-metadata: 0.1.14
+      tslib: 2.6.2
+    transitivePeerDependencies:
+      - encoding
+    dev: false
 
   /oauth-sign@0.9.0:
     resolution: {integrity: sha512-fexhUFFPTGV8ybAtSIGbV6gOkSv8UtRbDBnAyLQw4QPKkgNlsH2ByPGtMUqdWkos6YCRmAqViwgZrJc/mRDzZQ==}
@@ -9348,6 +9385,10 @@ packages:
       - '@swc/core'
       - esbuild
       - uglify-js
+    dev: false
+
+  /whatwg-fetch@3.6.20:
+    resolution: {integrity: sha512-EqhiFU6daOA8kpjOWTL0olhVOF3i7OrFzSYiGsEMB8GcXS+RrzauAERX65xMeNWVqxA6HXH2m69Z9LaKKdisfg==}
     dev: false
 
   /whatwg-url@13.0.0:
