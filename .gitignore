@@ -35,3 +35,6 @@ apps/web/.env
 
 # vercel
 .vercel
+
+
+lottery_cache

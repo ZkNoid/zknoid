@@ -155,13 +155,13 @@ const functions = {
       cache: WebFileSystem(state.lotteryCache!),
     });
 
-    console.log('[Worker] compiling contracts ended');
+    console.log('[Worker] compiling distr contracts ended');
   },
   compileLotteryContracts: async (args: {}) => {
     console.log('[Worker] compiling lottery contracts');
 
     await Lottery.compile({
-      cache: WebFileSystem(state.lotteryCache!),
+      // cache: WebFileSystem(state.lotteryCache!),
     });
     console.log('[Worker] compiling contracts ended');
   },

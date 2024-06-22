@@ -1,4 +1,5 @@
 const TerserPlugin = require('terser-webpack-plugin')
+const path = require('path');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -16,15 +17,20 @@ const nextConfig = {
   },
   webpack(config, { isServer }) {
     if (!isServer) {
-      // config.optimization.splitChunks.cacheGroups = {
-      //   ...config.optimization.splitChunks.cacheGroups,
-      //   victory: {
-      //     test: /o1js@0.13.1/,
-      //     name: "o1js",
-      //     priority: 50,
-      //     reuseExistingChunk: true,
-      //   },
-      // };
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        o1js: path.resolve(__dirname, 'node_modules/o1js/dist/web/index.js'),
+      };
+
+      config.optimization.splitChunks.cacheGroups = {
+        ...config.optimization.splitChunks.cacheGroups,
+        victory: {
+          test: /o1js@1.3.1/,
+          name: "o1js",
+          priority: 50,
+          reuseExistingChunk: true,
+        },
+      };
     }
 
     config.experiments = { ...config.experiments, topLevelAwait: true };
