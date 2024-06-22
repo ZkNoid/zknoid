@@ -178,7 +178,7 @@ const functions = {
   buyTicket: async (args: { senderAccount: string; ticketNums: number[] }) => {
     const stateM = new StateManager();
 
-    const curRound = 0;
+    const curRound = 2;
     const senderAccount = PublicKey.fromBase58(args.senderAccount);
 
     const ticket = Ticket.from(args.ticketNums, senderAccount, 1);

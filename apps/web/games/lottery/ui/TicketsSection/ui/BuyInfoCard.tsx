@@ -45,6 +45,15 @@ export default function BuyInfoCard({
             [1, 1, 1, 1, 1, 1]
           );
           console.log('txJson', txJson);
+
+          const { hash } = await (window as any).mina.sendTransaction({
+            transaction: txJson,
+            feePayer: {
+              fee: '0.1',
+              memo: '',
+            },
+          });
+      
         }}
       >
         Pay
