@@ -24,6 +24,7 @@ const ClosedTicket = ({
         {
           'rounded-r-[1.33vw]': rounded == 'right',
           'rounded-[1.33vw]': rounded == 'full',
+          'cursor-pointer': onClick,
         },
         className
       )}

@@ -112,7 +112,7 @@ export default function OwnedTickets() {
             isOpen={item.id == currentTicket.id}
             combination={item.combination}
             amount={item.amount}
-            index={index}
+            index={index + 1}
             onClick={() => setCurrentTicket(item)}
           />
         ))}
