@@ -31,7 +31,7 @@ const TicketItem = ({
           <div
             key={index}
             className={cn(
-              'flex h-[1.33vw] w-[1.33vw] items-center justify-center rounded-[0.15vw] border text-[1.065vw]',
+              'flex h-[1.33vw] w-[1.33vw] items-center justify-center rounded-[0.15vw] border font-plexsans text-[0.833vw]',
               {
                 'border-left-accent bg-left-accent': item.win,
                 'border-foreground text-foreground': !item.win,
@@ -43,7 +43,11 @@ const TicketItem = ({
           </div>
         ))}
       </div>
-      <div className={'flex flex-row items-center gap-[0.25vw]'}>
+      <div
+        className={
+          'flex flex-row items-center gap-[0.25vw] font-plexsans text-[0.833vw]'
+        }
+      >
         {funds ? (
           <>
             <span>{funds}</span>
@@ -56,7 +60,7 @@ const TicketItem = ({
       {funds && (
         <button
           className={
-            'items-center rounded-[0.33vw] bg-left-accent px-[0.74vw] py-[0.37vw] text-[1.065vw] text-black hover:opacity-70'
+            'items-center rounded-[0.33vw] bg-left-accent px-[0.74vw] py-[0.37vw] font-museo text-[0.833vw] font-medium text-black hover:opacity-70'
           }
         >
           Claim
@@ -75,14 +79,16 @@ export function PreviousRound({ combination }: { combination: number[] }) {
     >
       <div
         className={
-          'flex w-full flex-row justify-between font-plexsans uppercase text-foreground'
+          'flex w-full flex-row justify-between font-plexsans text-[1.25vw] font-medium uppercase text-foreground'
         }
       >
         <span>Lottery round 3</span>
         <span>3rd-13th MAY</span>
       </div>
       <div className={'flex flex-col gap-[1.5vw]'}>
-        <span className={'font-plexsans text-[0.7vw] text-foreground'}>
+        <span
+          className={'font-plexsans text-[0.833vw] font-medium text-foreground'}
+        >
           Win combination
         </span>
         <div className={'flex flex-row gap-[0.5vw]'}>
@@ -103,7 +109,9 @@ export function PreviousRound({ combination }: { combination: number[] }) {
           }
         >
           <div
-            className={'flex w-[18.52vw] flex-row items-center justify-between'}
+            className={
+              'flex w-[18.52vw] flex-row items-center justify-between font-plexsans text-[0.833vw] font-medium'
+            }
           >
             <div
               className={
@@ -127,7 +135,9 @@ export function PreviousRound({ combination }: { combination: number[] }) {
             </div>
           </div>
           <div
-            className={'flex w-[18.52vw] flex-row items-center justify-between'}
+            className={
+              'flex w-[18.52vw] flex-row items-center justify-between font-plexsans text-[0.833vw] font-medium'
+            }
           >
             <div
               className={
@@ -160,11 +170,17 @@ export function PreviousRound({ combination }: { combination: number[] }) {
         </div>
         <div className={'flex flex-col gap-[1vw]'}>
           <span
-            className={'font-plexsans text-[1.07vw] uppercase text-foreground'}
+            className={
+              'font-plexsans text-[1.25vw] font-medium uppercase text-foreground'
+            }
           >
             Your tickets
           </span>
-          <div className={'grid w-full grid-cols-3'}>
+          <div
+            className={
+              'grid w-full grid-cols-3 font-plexsans text-[0.833vw] font-medium'
+            }
+          >
             <span>Ticket Number</span>
             <span>Funds</span>
             <div />
