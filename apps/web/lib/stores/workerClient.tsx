@@ -94,7 +94,7 @@ export const useWorkerClientStore = create<
       });
 
       const lotteryPublicKey58 =
-        'B62qnn7xKrorwy1CMKB1SqJfutjNQ5J9MU89u5uAkc6YCpAtZ39vVWt';
+        'B62qrJg2tAuviSsTXUaAZLWFE5Uw4n4Gp2eubC11qY9u9rq8ZXiNAwW';
 
       await this.client?._call('initLotteryInstance', { lotteryPublicKey58 });
 
