@@ -23,7 +23,7 @@ const TicketItem = ({
   return (
     <div
       className={
-        'grid grid-cols-3 border-t pr-[2vw] pt-[1vw] last:border-b last:pb-[1vw]'
+        'grid grid-cols-3 border-b py-[0.5vw] first:border-t hover:bg-[#464646]'
       }
     >
       <div className={'flex flex-row items-center gap-[0.25vw]'}>
@@ -185,7 +185,7 @@ export function PreviousRound({ combination }: { combination: number[] }) {
             <span>Funds</span>
             <div />
           </div>
-          <div className={'flex flex-col gap-[1vw]'}>
+          <div className={'flex flex-col'}>
             <TicketItem
               numbers={[
                 { number: 1, win: false },
