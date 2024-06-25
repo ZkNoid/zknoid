@@ -4,6 +4,7 @@ import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
 import { NETWORKS, Network } from '@/app/constants/networks';
+import { requestAccounts } from '../helpers';
 
 export interface NetworkState {
   minaNetwork: Network | undefined;
@@ -35,7 +36,7 @@ export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
 
       set((state) => {
         console.log('Target network', network);
-        console.log('Target network')
+        console.log('Target network');
         state.minaNetwork = network;
         if (network) {
           const Network = O1js.Mina.Network(network?.graphql);
@@ -47,7 +48,9 @@ export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
     async onWalletConnected(address: string | undefined) {
       if (address) {
         localStorage.minaAdderess = address;
-        const network = await (window as any).mina.requestNetwork();
+        const network = await (window as any).mina.request({
+          method: 'mina_requestNetwork',
+        });
         const minaNetwork = NETWORKS.find((x) =>
           network.chainId != 'unknown'
             ? x.chainId == network.chainId
@@ -70,7 +73,7 @@ export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
           return this.onWalletConnected(localStorage.minaAdderess);
         }
       } else {
-        const accounts = await (window as any).mina.requestAccounts();
+        const accounts = await requestAccounts();
         this.onWalletConnected(accounts[0]);
       }
     },
