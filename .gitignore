@@ -38,3 +38,4 @@ apps/web/.env
 
 
 lottery_cache
+tmp
