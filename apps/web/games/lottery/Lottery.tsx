@@ -33,7 +33,7 @@ export default function Lottery({}: { params: { competitionId: string } }) {
       defaultPage={'Game'}
       customDesign={true}
     >
-      <BannerSection roundId={1} bank={1200} tickets={3500} />
+      <BannerSection />
       <TicketsSection />
 
       <motion.div

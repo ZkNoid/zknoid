@@ -5,11 +5,14 @@ import { useState } from 'react';
 import GetMoreTicketsButton from './ui/GetMoreTicketsButton';
 import OwnedTickets from './OwnedTickets';
 import PreviousRound from './PreviousRound';
+import { useLotteryStore } from '@/lib/stores/lotteryStore';
 
-export default function TicketsSection({}: {}) {
+export default function TicketsSection() {
   const [ticketNumberInput, setTicketNumber] = useState('');
   const [ticketAmount, setTicketsAmount] = useState(0);
-
+  const lotteryStore = useLotteryStore();
+  const previousRounds = lotteryStore.getPreviousRounds();
+  console.log(lotteryStore.currentRoundId)
   return (
     <div
       className={cn(
@@ -45,16 +48,49 @@ export default function TicketsSection({}: {}) {
       <div className="">
         <div className="mb-[1.33vw] text-[2.13vw]">Previous Lotteries</div>
         <div className={'flex w-full flex-row gap-4'}>
-          <PreviousRound
-            roundId={3}
-            date={{ start: new Date(2024, 4, 1), end: new Date(2024, 4, 24) }}
-            combination={[1, 2, 3, 4, 5, 1]}
-          />
-          <PreviousRound
-            roundId={2}
-            date={{ start: new Date(2024, 4, 1), end: new Date(2024, 4, 10) }}
-            combination={[7, 8, 1, 9, 0, 3]}
-          />
+          <button
+            className={
+              'flex h-[4vw] w-[9vw] items-center justify-center rounded-[0.521vw] border border-left-accent hover:opacity-80 disabled:opacity-60'
+            }
+            onClick={lotteryStore.toPrevRound}
+            disabled={lotteryStore.currentRoundId - 1 < 1}
+          >
+            <svg
+              width="1.458vw"
+              height="2.552vw"
+              viewBox="0 0 28 49"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M26 46L4 24L26 2" stroke="#D2FF00" strokeWidth="5" />
+            </svg>
+          </button>
+          {previousRounds.map((item, index) => (
+            <PreviousRound key={index} round={item} />
+          ))}
+          <button
+            className={
+              'flex h-[4vw] w-[9vw] items-center justify-center rounded-[0.521vw] border border-left-accent hover:opacity-80 disabled:opacity-60'
+            }
+            onClick={lotteryStore.toNextRound}
+            disabled={
+              lotteryStore.currentRoundId + 1 > lotteryStore.rounds.length
+            }
+          >
+            <svg
+              width="1.458vw"
+              height="2.552vw"
+              viewBox="0 0 28 49"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1.94922 2.68262L23.9492 24.6826L1.94922 46.6826"
+                stroke="#D2FF00"
+                strokeWidth="5"
+              />
+            </svg>
+          </button>
         </div>
       </div>
     </div>

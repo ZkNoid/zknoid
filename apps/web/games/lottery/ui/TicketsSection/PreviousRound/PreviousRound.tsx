@@ -2,19 +2,9 @@ import Image from 'next/image';
 import znakesImg from '@/public/image/tokens/znakes.svg';
 import { Currency } from '@/constants/currency';
 import { TicketItem } from './ui/TicketItem';
+import { IRound } from '@/lib/stores/lotteryStore';
 
-export default function PreviousRound({
-  roundId,
-  date,
-  combination,
-}: {
-  roundId: number;
-  date: {
-    start: Date;
-    end: Date;
-  };
-  combination: number[];
-}) {
+export default function PreviousRound({ round }: { round: IRound }) {
   return (
     <div
       className={
@@ -26,10 +16,10 @@ export default function PreviousRound({
           'flex w-full flex-row justify-between font-plexsans text-[1.25vw] font-medium uppercase text-foreground'
         }
       >
-        <span>Lottery round {roundId}</span>
+        <span>Lottery round {round.id}</span>
         <span>
-          {date.start.toLocaleString('en-US', { dateStyle: 'medium' })} -{' '}
-          {date.end.toLocaleString('en-US', { dateStyle: 'medium' })}
+          {round.date.start.toLocaleString('en-US', { dateStyle: 'medium' })} -{' '}
+          {round.date.end.toLocaleString('en-US', { dateStyle: 'medium' })}
         </span>
       </div>
       <div className={'flex flex-col gap-[1.5vw]'}>
@@ -39,16 +29,27 @@ export default function PreviousRound({
           Win combination
         </span>
         <div className={'flex flex-row gap-[0.5vw]'}>
-          {combination.map((item, index) => (
-            <div
-              key={index}
-              className={
-                'flex h-[2.67vw] w-[2.67vw] justify-center rounded-[0.33vw] bg-left-accent text-[2.13vw] text-black'
-              }
-            >
-              {item}
-            </div>
-          ))}
+          {round.combination
+            ? round.combination.map((item, index) => (
+                <div
+                  key={index}
+                  className={
+                    'flex h-[2.67vw] w-[2.67vw] justify-center rounded-[0.33vw] bg-left-accent text-[2.13vw] text-black'
+                  }
+                >
+                  {item}
+                </div>
+              ))
+            : [...Array(6)].map((_, index) => (
+                <div
+                  key={index}
+                  className={
+                    'flex h-[2.67vw] w-[2.67vw] justify-center rounded-[0.33vw] bg-left-accent text-[2.13vw] text-black'
+                  }
+                >
+                  _
+                </div>
+              ))}
         </div>
         <div
           className={
@@ -77,7 +78,7 @@ export default function PreviousRound({
                 'flex w-full flex-row items-center justify-end gap-[0.5vw]'
               }
             >
-              <span>1000</span>
+              <span>{round.bank}</span>
               <span>{Currency.ZNAKES}</span>
             </div>
           </div>
@@ -111,7 +112,7 @@ export default function PreviousRound({
                 'mb-0.5 flex w-full flex-row items-center justify-end gap-[0.5vw] '
               }
             >
-              <span>53</span>
+              <span>{round.ticketsAmount}</span>
             </div>
           </div>
         </div>
@@ -130,7 +131,6 @@ export default function PreviousRound({
           >
             <span>Ticket Number</span>
             <span>Funds</span>
-            <div />
           </div>
           <div className={'flex flex-col'}>
             <TicketItem
