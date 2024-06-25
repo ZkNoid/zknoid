@@ -3,7 +3,7 @@ import { type PendingTransaction } from '@proto-kit/sequencer';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
-import { NETWORKS, Network } from '@/app/constants/networks';
+import { ALL_NETWORKS, Network } from '@/app/constants/networks';
 
 export interface NetworkState {
   minaNetwork: Network | undefined;
@@ -35,10 +35,12 @@ export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
 
       set((state) => {
         console.log('Target network', network);
-        console.log('Target network')
         state.minaNetwork = network;
         if (network) {
-          const Network = O1js.Mina.Network(network?.graphql);
+          const Network = O1js.Mina.Network({
+            mina: network?.graphql,
+            archive: network?.archive,
+          });
           O1js.Mina.setActiveInstance(Network);
         }
       });
@@ -48,7 +50,7 @@ export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
       if (address) {
         localStorage.minaAdderess = address;
         const network = await (window as any).mina.requestNetwork();
-        const minaNetwork = NETWORKS.find((x) =>
+        const minaNetwork = ALL_NETWORKS.find((x) =>
           network.networkID != 'unknown'
             ? x.networkID == network.networkID
             : x.name == network.name

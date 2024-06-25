@@ -2,7 +2,7 @@ import { useContext, useEffect } from 'react';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
-import { NETWORKS } from '@/app/constants/networks';
+import { ALL_NETWORKS, NETWORKS } from '@/app/constants/networks';
 
 import { useChainStore } from './minaChain';
 import { useNetworkStore } from './network';
@@ -43,7 +43,7 @@ export const useMinaBalancesStore = create<
       });
 
       const response = await fetch(
-        NETWORKS.find((x) => x.networkID == networkID)?.graphql!,
+        ALL_NETWORKS.find((x) => x.networkID == networkID)?.graphql!,
         {
           method: 'POST',
           headers: {

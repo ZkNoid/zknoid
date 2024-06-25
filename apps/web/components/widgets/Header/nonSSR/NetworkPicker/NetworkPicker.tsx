@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { NETWORKS, Network } from '@/app/constants/networks';
+import { ALL_NETWORKS, Network } from '@/app/constants/networks';
 import { walletInstalled } from '@/lib/helpers';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useRegisterWorkerClient } from '@/lib/stores/workerClient';
@@ -43,7 +43,7 @@ export default function NetworkPicker() {
         networkID: string;
         name: string;
       }) => {
-        const minaNetwork = NETWORKS.find((x) =>
+        const minaNetwork = ALL_NETWORKS.find((x) =>
           networkID != 'unknown' ? x.networkID == networkID : x.name == name
         );
         networkStore.setNetwork(minaNetwork);
@@ -100,7 +100,7 @@ export default function NetworkPicker() {
             transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
             className="absolute top-[90%] flex w-full flex-col items-center overflow-hidden rounded-b border border-left-accent bg-bg-dark"
           >
-            {NETWORKS.map((network) => (
+            {ALL_NETWORKS.map((network) => (
               <div
                 key={network.networkID}
                 className="group flex h-full w-full cursor-pointer flex-row items-center gap-2 py-3 pl-2 text-header-menu text-foreground last:rounded-b hover:text-left-accent"

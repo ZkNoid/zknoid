@@ -14,6 +14,7 @@ import {
   UInt32,
   Mina,
   fetchAccount,
+  NetworkId,
 } from 'o1js';
 import {
   checkMapGeneration,
@@ -29,7 +30,12 @@ import {
   client,
   Tick,
 } from 'zknoid-chain-dev';
-import { Ticket, Lottery, DistibutionProgram } from 'l1-lottery-contracts';
+import {
+  Ticket,
+  Lottery,
+  DistibutionProgram,
+  StateManager,
+} from 'l1-lottery-contracts';
 import {
   MerkleMap20,
   MerkleMap20Witness,
@@ -46,81 +52,9 @@ import {
   TICKET_PRICE,
   NumberPacked,
 } from 'l1-lottery-contracts';
+import { BuyTicketEvent } from 'l1-lottery-contracts/build/src/Lottery';
+import { NETWORKS } from '@/app/constants/networks';
 // import { DummyBridge } from 'zknoidcontractsl1';
-
-class StateManager {
-  ticketMap: MerkleMap20;
-  roundTicketMap: MerkleMap20[];
-  roundTickets: Ticket[][];
-  lastTicketInRound: number[];
-  ticketNullifierMap: MerkleMap;
-  bankMap: MerkleMap20;
-  roundResultMap: MerkleMap20;
-  startBlock: Field | undefined;
-  dpProofs: { [key: number]: DistributionProof };
-
-  constructor() {
-    this.ticketMap = getEmpty2dMerkleMap(20);
-    this.roundTicketMap = new Array(20).fill(new MerkleMap20());
-    this.lastTicketInRound = new Array(20).fill(1);
-    this.roundTickets = new Array(20).fill([comisionTicket]);
-    this.ticketNullifierMap = new MerkleMap();
-    this.bankMap = new MerkleMap20();
-    this.roundResultMap = new MerkleMap20();
-    this.dpProofs = {};
-  }
-
-  getNextTicketWitenss(
-    round: number
-  ): [MerkleMap20Witness, MerkleMap20Witness] {
-    const roundWitness = this.ticketMap.getWitness(Field.from(round));
-    const ticketRoundWitness = this.roundTicketMap[round].getWitness(
-      Field.from(this.lastTicketInRound[round])
-    );
-
-    return [roundWitness, ticketRoundWitness];
-  }
-
-  addTicket(
-    ticket: Ticket,
-    round: number
-  ): [MerkleMap20Witness, MerkleMap20Witness, MerkleMap20Witness, Field] {
-    const [roundWitness, ticketRoundWitness] = this.getNextTicketWitenss(round);
-    const [bankWitness, bankValue] = this.getBankWitness(round);
-    this.roundTicketMap[round].set(
-      Field.from(this.lastTicketInRound[round]),
-      ticket.hash()
-    );
-    this.roundTickets[round].push(ticket);
-    this.lastTicketInRound[round]++;
-    this.ticketMap.set(Field.from(round), this.roundTicketMap[round].getRoot());
-
-    this.bankMap.set(
-      Field.from(round),
-      bankValue.add(TICKET_PRICE.mul(ticket.amount).value)
-    );
-
-    return [roundWitness, ticketRoundWitness, bankWitness, bankValue];
-  }
-
-  // Returns witness and value
-  getBankWitness(round: number): [MerkleMap20Witness, Field] {
-    const bankWitness = this.bankMap.getWitness(Field.from(round));
-    const value = this.bankMap.get(Field.from(round));
-
-    return [bankWitness, value];
-  }
-
-  updateResult(round: number, nums: number[]): MerkleMap20Witness {
-    const witness = this.roundResultMap.getWitness(Field.from(round));
-    const packedNumbers = NumberPacked.pack(
-      nums.map((val) => UInt32.from(val))
-    );
-    this.roundResultMap.set(Field.from(round), packedNumbers);
-
-    return witness;
-  }
-}
 
 // ---------------------------------------------------------------------------------------
 type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
@@ -166,13 +100,17 @@ const functions = {
     });
     console.log('[Worker] compiling contracts ended');
   },
-  initLotteryInstance: async (args: { lotteryPublicKey58: string }) => {
+  initLotteryInstance: async (args: {
+    lotteryPublicKey58: string;
+    networkId: NetworkId;
+  }) => {
     const publicKey = PublicKey.fromBase58(args.lotteryPublicKey58);
     state.lotteryGame = new state.Lottery!(publicKey);
     console.log('[Worker] lottery instance init');
-    const Network = Mina.Network(
-      'https://api.minascan.io/node/devnet/v1/graphql'
-    );
+    const Network = Mina.Network({
+      mina: NETWORKS[args.networkId.toString()].graphql,
+      archive: NETWORKS[args.networkId.toString()].archive,
+    });
     console.log('Devnet network instance configured.');
     Mina.setActiveInstance(Network);
 
@@ -180,15 +118,36 @@ const functions = {
     const account = await fetchAccount({ publicKey });
     console.log('Fetched account', account);
   },
-  buyTicket: async (args: { senderAccount: string; ticketNums: number[] }) => {
-    const stateM = new StateManager();
+  buyTicket: async (args: {
+    senderAccount: string;
+    startBlock: number;
+    roundId: number;
+    ticketNums: number[];
+  }) => {
+    const stateM = new StateManager(UInt32.from(args.startBlock).toFields()[0]);
+    stateM.syncWithCurBlock(Number(args.startBlock) + 1);
 
-    const curRound = 0;
     const senderAccount = PublicKey.fromBase58(args.senderAccount);
 
+    const events = await state.lotteryGame!.fetchEvents(UInt32.from(0));
+
+    for (let i = 0; i < events.length; i++) {
+      const event = events[i];
+      if (event.type == 'buy-ticket') {
+        const data = event.event.data as unknown as BuyTicketEvent;
+        console.log(
+          'Adding ticket to state',
+          data.ticket,
+          'round' + data.round
+        );
+
+        stateM.addTicket(data.ticket, +data.round);
+      }
+    }
+    console.log(args.ticketNums, senderAccount, args.roundId)
     const ticket = Ticket.from(args.ticketNums, senderAccount, 1);
     let [roundWitness, roundTicketWitness, bankWitness, bankValue] =
-      stateM.addTicket(ticket, curRound);
+      stateM.addTicket(ticket, args.roundId);
 
     let tx = await Mina.transaction(senderAccount, async () => {
       await state.lotteryGame!.buyTicket(

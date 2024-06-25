@@ -4,14 +4,21 @@ import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
 import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
+import { BLOCK_PER_ROUND } from 'l1-lottery-contracts/build/src/constants';
+import { NetworkIds } from '@/app/constants/networks';
+import { LOTTERY_ADDRESS } from '@/app/constants/addresses';
 
 export interface ClientState {
   status: string;
   client?: ZknoidWorkerClient;
   lotteryState: { currentRound: bigint; startBlock: bigint } | undefined;
   start: () => Promise<ZknoidWorkerClient>;
-  startLottery: () => Promise<ZknoidWorkerClient>;
-  buyTicket: (senderAccount: string, ticketNums: number[]) => Promise<any>;
+  startLottery: (networkId: string) => Promise<ZknoidWorkerClient>;
+  buyTicket: (
+    senderAccount: string,
+    currBlock: number,
+    ticketNums: number[]
+  ) => Promise<any>;
 }
 
 export const useWorkerClientStore = create<
@@ -57,7 +64,7 @@ export const useWorkerClientStore = create<
 
       return zkappWorkerClient;
     },
-    async startLottery() {
+    async startLottery(networkId) {
       set((state) => {
         state.status = 'Lottery loading';
       });
@@ -65,22 +72,39 @@ export const useWorkerClientStore = create<
       await this.client!.waitFor();
 
       set((state) => {
-        state.status = 'Lottery prover cache downloading';
-      });
-
-      await this.client?._call('downloadLotteryCache', {});
-
-      set((state) => {
         state.status = 'Lottery contracts loading';
       });
 
-      await this.client?._call('loadLotteryContract', {});
+      const lotteryPublicKey58 = LOTTERY_ADDRESS[networkId];
+
+      await this.client?.loadLotteryContract();
+
+      await this.client?.initLotteryInstance(lotteryPublicKey58, networkId);
+
+      set((state) => {
+        state.status = 'Lottery state fetching';
+      });
+
+      const lotteryState = await this.client?.getLotteryState();
+
+      set((state) => {
+        state.lotteryState = lotteryState as {
+          currentRound: bigint;
+          startBlock: bigint;
+        };
+      });
+
+      set((state) => {
+        state.status = 'Lottery prover cache downloading';
+      });
+
+      await this.client?.downloadLotteryCache();
 
       set((state) => {
         state.status = 'Distribution contracts compiling';
       });
 
-      await this.client?._call('compileDistributionProof', {});
+      await this.client?.compileDistributionProof();
 
       set((state) => {
         state.status = 'Lottery contracts compiling';
@@ -92,33 +116,31 @@ export const useWorkerClientStore = create<
         state.status = 'Lottery instance init';
       });
 
-      const lotteryPublicKey58 =
-        'B62qrJg2tAuviSsTXUaAZLWFE5Uw4n4Gp2eubC11qY9u9rq8ZXiNAwW';
-
-      await this.client?._call('initLotteryInstance', { lotteryPublicKey58 });
-
       set((state) => {
-        state.status = 'Lottery state fetching';
-      });
-
-      const lotteryState = await this.client?._call('getLotteryState', {});
-
-      set((state) => {
-        state.lotteryState = lotteryState as {
-          currentRound: bigint;
-          startBlock: bigint;
-        };
         state.status = 'Lottery initialized';
       });
 
       return this.client!;
     },
-    async buyTicket(senderAccount: string, ticketNums: number[]) {
+    async buyTicket(
+      senderAccount: string,
+      currBlock: number,
+      ticketNums: number[]
+    ) {
       set((state) => {
         state.status = 'Ticket buy tx prepare';
       });
 
-      await this.client?._call('buyTicket', { senderAccount, ticketNums });
+      const roundId = Math.floor(
+        (currBlock - Number(this.lotteryState?.startBlock!)) / BLOCK_PER_ROUND
+      );
+
+      await this.client?._call('buyTicket', {
+        senderAccount,
+        startBlock: this.lotteryState?.startBlock,
+        roundId,
+        ticketNums,
+      });
 
       set((state) => {
         state.status = 'Ticket buy tx proving';

@@ -11,6 +11,7 @@ import { GameState } from './lib/gameState';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { useChainStore } from '@/lib/stores/minaChain';
 import { BLOCK_PER_ROUND } from 'l1-lottery-contracts/build/src/constants';
+import { DateTime, Duration, Interval } from 'luxon';
 
 export default function Lottery({}: { params: { competitionId: string } }) {
   const networkStore = useNetworkStore();
@@ -19,15 +20,18 @@ export default function Lottery({}: { params: { competitionId: string } }) {
   const [gameState, setGameState] = useState(GameState.NotStarted);
   const [isRateGame, setIsRateGame] = useState<boolean>(false);
   const [roundId, setRoundId] = useState(0);
+  const [roundEndsIn, setRoundEndsIn] = useState<DateTime>(
+    DateTime.fromMillis(0)
+  );
 
   const workerClientStore = useWorkerClientStore();
   const chainStore = useChainStore();
 
   useEffect(() => {
-    if (workerClientStore.client) {
-      workerClientStore.startLottery();
+    if (workerClientStore.client && networkStore.minaNetwork?.networkID) {
+      workerClientStore.startLottery(networkStore.minaNetwork?.networkID!);
     }
-  }, [workerClientStore.client]);
+  }, [workerClientStore.client, networkStore.minaNetwork?.networkID]);
 
   useEffect(() => {
     const startBlock = workerClientStore.lotteryState?.startBlock;
@@ -38,8 +42,18 @@ export default function Lottery({}: { params: { competitionId: string } }) {
         : 0;
 
     console.log('Lottery state', workerClientStore.lotteryState);
-    console.log('Round id', roundId, blockNum, startBlock);
+    console.log('Round id', roundId_);
+
     setRoundId(roundId_);
+    blockNum && startBlock
+      ? setRoundEndsIn(
+          DateTime.now().plus(
+            Duration.fromObject({
+              second: (480 - (Number(blockNum - startBlock) % 480)) * 3 * 60,
+            })
+          )
+        )
+      : 0;
   }, [workerClientStore.lotteryState]);
 
   return (
@@ -50,7 +64,7 @@ export default function Lottery({}: { params: { competitionId: string } }) {
       defaultPage={'Game'}
       customDesign={true}
     >
-      <BannerSection roundId={roundId} />
+      <BannerSection roundId={roundId} roundEndsIn={roundEndsIn} />
       <TicketsSection />
 
       <motion.div

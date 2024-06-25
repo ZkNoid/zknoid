@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
-import { NETWORKS } from '@/app/constants/networks';
+import { ALL_NETWORKS } from '@/app/constants/networks';
 
 import { useNetworkStore } from './network';
 
@@ -58,7 +58,7 @@ export const useChainStore = create<ChainState, [['zustand/immer', never]]>(
       });
 
       const response = await fetch(
-        NETWORKS.find((x) => x.networkID == networkID)?.graphql!,
+        ALL_NETWORKS.find((x) => x.networkID == networkID)?.graphql!,
         {
           method: 'POST',
           headers: {

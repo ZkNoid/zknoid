@@ -12,8 +12,14 @@ export default class ZknoidWorkerClient {
   loadContracts() {
     return this._call('loadContracts', {});
   }
+  loadLotteryContract() {
+    return this._call('loadLotteryContract', {});
+  }
   compileContracts() {
     return this._call('compileContracts', {});
+  }
+  downloadLotteryCache() {
+    return this._call('downloadLotteryCache', {});
   }
   compileLotteryContracts() {
     return this._call('compileLotteryContracts', {});
@@ -24,16 +30,26 @@ export default class ZknoidWorkerClient {
   initZkappInstance(bridgePublicKey58: string) {
     return this._call('initZkappInstance', { bridgePublicKey58 });
   }
-  initLotteryInstance(bridgePublicKey58: string) {
-    return this._call('initLotteryInstance', { bridgePublicKey58 });
+  initLotteryInstance(lotteryPublicKey58: string, networkId: string) {
+    return this._call('initLotteryInstance', { lotteryPublicKey58, networkId });
   }
-  buyTicket(senderAccount: string, ticketNums: number[]) {
-    return this._call('buyTicket', { senderAccount, ticketNums });
+  buyTicket(
+    senderAccount: string,
+    startBlock: number,
+    roundId: number,
+    ticketNums: number[]
+  ) {
+    return this._call('buyTicket', {
+      senderAccount,
+      startBlock,
+      roundId,
+      ticketNums,
+    });
   }
   getLotteryState() {
-    return this._call('getLotteryState', {})
+    return this._call('getLotteryState', {});
   }
-  
+
   bridge(amount: UInt64) {
     return this._call('bridge', { amount });
   }

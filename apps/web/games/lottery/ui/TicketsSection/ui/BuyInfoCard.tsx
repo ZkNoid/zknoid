@@ -3,6 +3,7 @@ import { VioletLotteryButton } from '../../buttons/VioletLotteryButton';
 import { cn } from '@/lib/helpers';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { useNetworkStore } from '@/lib/stores/network';
+import { useChainStore } from '@/lib/stores/minaChain';
 
 export default function BuyInfoCard({
   numberOfTickets,
@@ -15,6 +16,7 @@ export default function BuyInfoCard({
 }) {
   const workerStore = useWorkerClientStore();
   const networkStore = useNetworkStore();
+  const chain = useChainStore();
 
   return (
     <div className="flex h-[13.53vw] w-[22vw] flex-col rounded-[0.67vw] bg-[#252525] p-[1.33vw] text-[1.07vw]">
@@ -42,6 +44,7 @@ export default function BuyInfoCard({
         onClick={async () => {
           const txJson = await workerStore.buyTicket(
             networkStore.address!,
+            Number(chain.block?.height!),
             [1, 1, 1, 1, 1, 1]
           );
           console.log('txJson', txJson);
