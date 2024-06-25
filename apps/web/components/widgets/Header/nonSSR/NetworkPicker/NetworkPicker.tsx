@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { NETWORKS, Network } from '@/app/constants/networks';
-import { walletInstalled } from '@/lib/helpers';
+import { requestAccounts, walletInstalled } from '@/lib/helpers';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useRegisterWorkerClient } from '@/lib/stores/workerClient';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -32,7 +32,7 @@ export default function NetworkPicker() {
       setExpanded(false);
     } catch (e: any) {
       if (e?.code == 1001) {
-        await (window as any).mina.requestAccounts();
+        await requestAccounts();
         await switchNetwork(network);
       }
       throw e;

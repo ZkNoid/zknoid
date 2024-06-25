@@ -27,6 +27,7 @@ import Popover from '@/components/shared/Popover';
 import { useBridgeStore } from '@/lib/stores/bridgeStore';
 import BridgeInput from '@/components/widgets/Header/nonSSR/BalanceInfo/StoreDepositMenuItem/nonSSR/DepositMenuItem/ui/BridgeInput';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
+import { requestAccounts } from '@/lib/helpers';
 
 export default function DepositMenuItem() {
   const bridgeStore = useBridgeStore();
@@ -95,7 +96,7 @@ export default function DepositMenuItem() {
       });
     } catch (e: any) {
       if (e?.code == 1001) {
-        await window.mina?.requestAccounts();
+        await requestAccounts();
         await bridge(amount);
         return;
       }
@@ -159,7 +160,7 @@ export default function DepositMenuItem() {
       await l2tx.send();
     } catch (e: any) {
       if (e?.code == 1001) {
-        await window.mina?.requestAccounts();
+        await requestAccounts();
         await unbridge(amount);
         return;
       }

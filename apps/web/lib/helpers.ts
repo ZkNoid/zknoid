@@ -1,8 +1,19 @@
-import clsx, { ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import clsx, { ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 export function walletInstalled() {
+  // window.mina?.isConnected();
   return typeof mina !== 'undefined';
+}
+
+export async function requestAccounts() {
+  if (window.mina?.isPallad) {
+    return await window.mina
+      ?.request({ method: 'mina_accounts' })
+      .then((resp) => resp.result);
+  } else {
+    return await window.mina?.requestAccounts();
+  }
 }
 
 export const formatAddress = (address: string | undefined) =>
