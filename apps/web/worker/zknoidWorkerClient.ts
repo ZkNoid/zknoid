@@ -30,7 +30,10 @@ export default class ZknoidWorkerClient {
   buyTicket(senderAccount: string, ticketNums: number[]) {
     return this._call('buyTicket', { senderAccount, ticketNums });
   }
-
+  getLotteryState() {
+    return this._call('getLotteryState', {})
+  }
+  
   bridge(amount: UInt64) {
     return this._call('bridge', { amount });
   }

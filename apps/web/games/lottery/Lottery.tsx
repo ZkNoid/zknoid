@@ -25,6 +25,10 @@ export default function Lottery({}: { params: { competitionId: string } }) {
     }
   }, [workerClientStore.client]);
 
+  useEffect(() => {
+    console.log('Lottery state', workerClientStore.lotteryState);
+  }, [workerClientStore.lotteryState]);
+
   return (
     <GamePage
       gameConfig={lotteryConfig}

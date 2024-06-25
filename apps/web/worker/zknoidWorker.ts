@@ -13,6 +13,7 @@ import {
   MerkleMap,
   UInt32,
   Mina,
+  fetchAccount,
 } from 'o1js';
 import {
   checkMapGeneration,
@@ -174,6 +175,10 @@ const functions = {
     );
     console.log('Devnet network instance configured.');
     Mina.setActiveInstance(Network);
+
+    console.log('Fetching account');
+    const account = await fetchAccount({ publicKey });
+    console.log('Fetched account', account);
   },
   buyTicket: async (args: { senderAccount: string; ticketNums: number[] }) => {
     const stateM = new StateManager();
@@ -202,6 +207,15 @@ const functions = {
   proveBuyTicketTransaction: async () => {
     await state.buyTicketTransaction!.prove();
     return state.buyTicketTransaction!.toJSON();
+  },
+  getLotteryState: async () => {
+    return {
+      ticketRoot: state.lotteryGame?.ticketRoot.get().toJSON(),
+      ticketNullifier: state.lotteryGame?.ticketNullifier.get().toJSON(),
+      bankRoot: state.lotteryGame?.startBlock.get().toJSON(),
+      roundResultRoot: state.lotteryGame?.roundResultRoot.get().toJSON(),
+      startBlock: state.lotteryGame?.startBlock.get()?.toBigint(),
+    };
   },
   initZkappInstance: async (args: { bridgePublicKey58: string }) => {
     // const publicKey = PublicKey.fromBase58(args.bridgePublicKey58);

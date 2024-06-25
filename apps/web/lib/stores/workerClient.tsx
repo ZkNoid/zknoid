@@ -8,12 +8,10 @@ import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
 export interface ClientState {
   status: string;
   client?: ZknoidWorkerClient;
+  lotteryState: { currentRound: bigint; startBlock: bigint } | undefined;
   start: () => Promise<ZknoidWorkerClient>;
   startLottery: () => Promise<ZknoidWorkerClient>;
-  buyTicket: (
-    senderAccount: string,
-    ticketNums: number[]
-  ) => Promise<any>;
+  buyTicket: (senderAccount: string, ticketNums: number[]) => Promise<any>;
 }
 
 export const useWorkerClientStore = create<
@@ -22,6 +20,7 @@ export const useWorkerClientStore = create<
 >(
   immer((set) => ({
     status: 'Not loaded',
+    lotteryState: undefined,
     async start() {
       set((state) => {
         state.status = 'Loading worker';
@@ -99,6 +98,16 @@ export const useWorkerClientStore = create<
       await this.client?._call('initLotteryInstance', { lotteryPublicKey58 });
 
       set((state) => {
+        state.status = 'Lottery state fetching';
+      });
+
+      const lotteryState = await this.client?._call('getLotteryState', {});
+
+      set((state) => {
+        state.lotteryState = lotteryState as {
+          currentRound: bigint;
+          startBlock: bigint;
+        };
         state.status = 'Lottery initialized';
       });
 
