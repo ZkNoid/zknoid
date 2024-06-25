@@ -64,8 +64,8 @@ export default function BannerSection() {
           className="flex w-[3.13vw] items-center justify-center border-left-accent text-left-accent"
         >
           <svg
-            width="20"
-            height="35"
+            width="1.042vw"
+            height="1.823vw"
             viewBox="0 0 20 35"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -82,8 +82,8 @@ export default function BannerSection() {
           className="flex w-[3.13vw] items-center justify-center border-left-accent text-left-accent"
         >
           <svg
-            width="20"
-            height="35"
+            width="1.042vw"
+            height="1.823vw"
             viewBox="0 0 20 35"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -113,15 +113,13 @@ export default function BannerSection() {
         </div>
       </div>
       {lotteryStore.currentRoundId != lotteryStore.ongoingRoundId && (
-        <button
-          className="absolute right-0 z-[1] m-[2vw] flex h-[3.13vw] gap-[0.33vw] hover:opacity-80 disabled:opacity-60"
+        <BannerButton
           onClick={lotteryStore.toOngoingRound}
           disabled={lotteryStore.currentRoundId == lotteryStore.ongoingRoundId}
+          className="absolute right-0 z-[1] m-[2vw] flex h-[3.13vw] items-center justify-center gap-[0.33vw] border-right-accent px-[1vw] text-[1.6vw] text-right-accent"
         >
-          <BannerButton className="flex items-center justify-center border-right-accent px-[1vw] text-[1.6vw] text-right-accent">
-            To Ongoing round
-          </BannerButton>
-        </button>
+          To Ongoing round
+        </BannerButton>
       )}
       <div
         className={

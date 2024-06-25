@@ -77,8 +77,8 @@ export const useLotteryStore = create<LotteryStore, [['zustand/immer', never]]>(
         bank: 0,
         ticketsAmount: 0,
         date: {
-          start: new Date(2024, 7, 1),
-          end: new Date(2024, 7, 30),
+          start: new Date(2024, 4, 1),
+          end: new Date(2024, 4, 30),
         },
       },
     ],
