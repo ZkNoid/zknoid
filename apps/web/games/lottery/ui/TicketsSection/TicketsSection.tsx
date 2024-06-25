@@ -12,7 +12,6 @@ export default function TicketsSection() {
   const [ticketAmount, setTicketsAmount] = useState(0);
   const lotteryStore = useLotteryStore();
   const previousRounds = lotteryStore.getPreviousRounds();
-  console.log(lotteryStore.currentRoundId)
   return (
     <div
       className={cn(
@@ -52,8 +51,6 @@ export default function TicketsSection() {
             className={
               'flex h-[4vw] w-[9vw] items-center justify-center rounded-[0.521vw] border border-left-accent hover:opacity-80 disabled:opacity-60'
             }
-            onClick={lotteryStore.toPrevRound}
-            disabled={lotteryStore.currentRoundId - 1 < 1}
           >
             <svg
               width="1.458vw"
@@ -71,10 +68,6 @@ export default function TicketsSection() {
           <button
             className={
               'flex h-[4vw] w-[9vw] items-center justify-center rounded-[0.521vw] border border-left-accent hover:opacity-80 disabled:opacity-60'
-            }
-            onClick={lotteryStore.toNextRound}
-            disabled={
-              lotteryStore.currentRoundId + 1 > lotteryStore.rounds.length
             }
           >
             <svg

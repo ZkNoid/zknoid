@@ -23,15 +23,17 @@ export interface LotteryStore {
   getPreviousRounds: () => IRound[];
   toNextRound: () => void;
   toPrevRound: () => void;
+  toOngoingRound: () => void;
 }
 
 export const useLotteryStore = create<LotteryStore, [['zustand/immer', never]]>(
   immer((set, get) => ({
     currentRoundId: 1,
-    ongoingRoundId: 1,
+    ongoingRoundId: 5,
     rounds: [
       {
         id: 1,
+        combination: [1, 1, 1, 1, 1, 1],
         bank: 0,
         ticketsAmount: 0,
         date: {
@@ -41,11 +43,42 @@ export const useLotteryStore = create<LotteryStore, [['zustand/immer', never]]>(
       },
       {
         id: 2,
+        combination: [2, 2, 2, 2, 2, 2],
         bank: 0,
         ticketsAmount: 0,
         date: {
           start: new Date(2024, 1, 1),
           end: new Date(2024, 1, 30),
+        },
+      },
+      {
+        id: 3,
+        combination: [3, 3, 3, 3, 3, 3],
+        bank: 0,
+        ticketsAmount: 0,
+        date: {
+          start: new Date(2024, 2, 1),
+          end: new Date(2024, 2, 30),
+        },
+      },
+      {
+        id: 4,
+        combination: [4, 4, 4, 4, 4, 4],
+        bank: 0,
+        ticketsAmount: 0,
+        date: {
+          start: new Date(2024, 3, 1),
+          end: new Date(2024, 3, 30),
+        },
+      },
+      {
+        id: 5,
+        combination: [5, 5, 5, 5, 5, 5],
+        bank: 0,
+        ticketsAmount: 0,
+        date: {
+          start: new Date(2024, 7, 1),
+          end: new Date(2024, 7, 30),
         },
       },
     ],
@@ -85,6 +118,13 @@ export const useLotteryStore = create<LotteryStore, [['zustand/immer', never]]>(
       if (get().currentRoundId - 1 >= 1) {
         set((state) => ({
           currentRoundId: state.currentRoundId - 1,
+        }));
+      }
+    },
+    toOngoingRound() {
+      if (get().currentRoundId != get().ongoingRoundId) {
+        set((state) => ({
+          currentRoundId: state.ongoingRoundId,
         }));
       }
     },
