@@ -9,6 +9,8 @@ import BannerSection from './ui/BannerSection';
 import TicketsSection from './ui/TicketsSection/TicketsSection';
 import { GameState } from './lib/gameState';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
+import { useChainStore } from '@/lib/stores/minaChain';
+import { BLOCK_PER_ROUND } from 'l1-lottery-contracts/build/src/constants';
 
 export default function Lottery({}: { params: { competitionId: string } }) {
   const networkStore = useNetworkStore();
@@ -16,8 +18,10 @@ export default function Lottery({}: { params: { competitionId: string } }) {
   const rateGameStore = useRateGameStore();
   const [gameState, setGameState] = useState(GameState.NotStarted);
   const [isRateGame, setIsRateGame] = useState<boolean>(false);
-  const [roundId, setRoundId] = useState(1);
+  const [roundId, setRoundId] = useState(0);
+
   const workerClientStore = useWorkerClientStore();
+  const chainStore = useChainStore();
 
   useEffect(() => {
     if (workerClientStore.client) {
@@ -26,7 +30,16 @@ export default function Lottery({}: { params: { competitionId: string } }) {
   }, [workerClientStore.client]);
 
   useEffect(() => {
+    const startBlock = workerClientStore.lotteryState?.startBlock;
+    const blockNum = chainStore.block?.height;
+    const roundId_ =
+      blockNum && startBlock
+        ? Math.floor(Number(blockNum - startBlock) / BLOCK_PER_ROUND)
+        : 0;
+
     console.log('Lottery state', workerClientStore.lotteryState);
+    console.log('Round id', roundId, blockNum, startBlock);
+    setRoundId(roundId_);
   }, [workerClientStore.lotteryState]);
 
   return (
@@ -37,7 +50,7 @@ export default function Lottery({}: { params: { competitionId: string } }) {
       defaultPage={'Game'}
       customDesign={true}
     >
-      <BannerSection roundId={1} />
+      <BannerSection roundId={roundId} />
       <TicketsSection />
 
       <motion.div

@@ -18,15 +18,8 @@ export default function NetworkPicker() {
   const switchNetwork = async (network: Network) => {
     console.log('Switching to', network);
     try {
-      if (network.chainId == 'zeko') {
-        (window.mina as any).addChain({
-          url: 'https://devnet.zeko.io/graphql',
-          name: 'Zeko',
-        });
-      }
-
       await (window as any).mina.switchChain({
-        chainId: network.chainId,
+        networkID: network.networkID,
       });
       networkStore.setNetwork(network);
       setExpanded(false);
@@ -44,14 +37,14 @@ export default function NetworkPicker() {
 
     (async () => {
       const listener = ({
-        chainId,
+        networkID,
         name,
       }: {
-        chainId: string;
+        networkID: string;
         name: string;
       }) => {
         const minaNetwork = NETWORKS.find((x) =>
-          chainId != 'unknown' ? x.chainId == chainId : x.name == name
+          networkID != 'unknown' ? x.networkID == networkID : x.name == name
         );
         networkStore.setNetwork(minaNetwork);
       };
@@ -70,7 +63,7 @@ export default function NetworkPicker() {
     (async () => {
       const listener = (accounts: string[]) => {
         const [account] = accounts;
-        if (networkStore.minaNetwork?.chainId)
+        if (networkStore.minaNetwork?.networkID)
           networkStore.setNetwork(networkStore.minaNetwork);
         networkStore.onWalletConnected(account);
       };
@@ -88,9 +81,9 @@ export default function NetworkPicker() {
       <NetworkPickerCard
         text={networkStore.minaNetwork?.name || 'Unsupported network'}
         image={
-          networkStore.minaNetwork?.chainId === 'zeko'
+          networkStore.minaNetwork?.networkID === 'zeko:testnet'
             ? zekoLogo
-            : networkStore.minaNetwork?.chainId === 'berkeley'
+            : networkStore.minaNetwork?.networkID === 'mina:berkeley'
               ? berkleyLogo
               : minaLogo
         }
@@ -109,15 +102,15 @@ export default function NetworkPicker() {
           >
             {NETWORKS.map((network) => (
               <div
-                key={network.chainId}
+                key={network.networkID}
                 className="group flex h-full w-full cursor-pointer flex-row items-center gap-2 py-3 pl-2 text-header-menu text-foreground last:rounded-b hover:text-left-accent"
                 onClick={() => switchNetwork(network)}
               >
                 <Image
                   src={
-                    network.chainId === 'zeko'
+                    network.networkID === 'zeko:testnet'
                       ? zekoLogo
-                      : network.chainId === 'berkeley'
+                      : network.networkID === 'mina:berkeley'
                         ? berkleyLogo
                         : minaLogo
                   }

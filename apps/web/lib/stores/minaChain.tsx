@@ -29,9 +29,9 @@ export interface ComputedBlockJSON {
 export interface ChainState {
   loading: boolean;
   block?: {
-    height: string;
+    height: bigint;
   } & ComputedBlockJSON;
-  loadBlock: (chainId: string) => Promise<void>;
+  loadBlock: (networkID: string) => Promise<void>;
 }
 
 export interface BlockQueryResponse {
@@ -50,15 +50,15 @@ export interface BlockQueryResponse {
 export const useChainStore = create<ChainState, [['zustand/immer', never]]>(
   immer((set) => ({
     loading: Boolean(false),
-    async loadBlock(chainId: string) {
-      if (chainId == undefined) return;
+    async loadBlock(networkID: string) {
+      if (networkID == undefined) return;
 
       set((state) => {
         state.loading = true;
       });
 
       const response = await fetch(
-        NETWORKS.find((x) => x.chainId == chainId)?.graphql!,
+        NETWORKS.find((x) => x.networkID == networkID)?.graphql!,
         {
           method: 'POST',
           headers: {
@@ -82,11 +82,10 @@ export const useChainStore = create<ChainState, [['zustand/immer', never]]>(
 
       const { data } = (await response.json()) as BlockQueryResponse;
       const height = data.bestChain[0].protocolState.consensusState.blockHeight;
-
       set((state) => {
         state.loading = false;
         state.block = {
-          height,
+          height: BigInt(height),
           ...data.block,
         };
       });
@@ -100,12 +99,16 @@ export const usePollMinaBlockHeight = () => {
   const network = useNetworkStore();
 
   useEffect(() => {
+    console.log('Poll chain id', network.minaNetwork?.networkID);
+
+    if (!network.minaNetwork?.networkID) return;
+
     const intervalId = setInterval(
-      () => chain.loadBlock(network.minaNetwork?.chainId!),
+      () => chain.loadBlock(network.minaNetwork?.networkID!),
       tickInterval
     );
-    chain.loadBlock(network.minaNetwork?.chainId!);
-    
+    chain.loadBlock(network.minaNetwork?.networkID!);
+
     return () => clearInterval(intervalId);
-  }, []);
+  }, [network.minaNetwork?.networkID]);
 };

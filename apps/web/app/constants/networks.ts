@@ -1,18 +1,18 @@
 export interface Network {
-  chainId: string;
+  networkID: string;
   name: string;
   graphql: string;
 }
 
 export const NETWORKS: Network[] = [
   {
-    chainId: 'zeko',
+    networkID: 'zeko:testnet',
     name: 'Zeko',
     graphql: 'https://devnet.zeko.io/graphql',
   },
   {
-    chainId: 'berkeley',
-    name: 'Berkeley',
-    graphql: 'https://api.minascan.io/node/berkeley/v1/graphql',
+    networkID: 'mina:testnet',
+    name: 'Devnet',
+    graphql: 'https://api.minascan.io/node/devnet/v1/graphql',
   },
 ];

@@ -114,6 +114,7 @@ export const usePollProtokitBlockHeight = () => {
   const chain = useProtokitChainStore();
 
   useEffect(() => {
+    console.log('AAAAAAA')
     const intervalId = setInterval(() => {
       chain.loadBlock();
     }, tickInterval);

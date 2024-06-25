@@ -49,8 +49,8 @@ export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
         localStorage.minaAdderess = address;
         const network = await (window as any).mina.requestNetwork();
         const minaNetwork = NETWORKS.find((x) =>
-          network.chainId != 'unknown'
-            ? x.chainId == network.chainId
+          network.networkID != 'unknown'
+            ? x.networkID == network.networkID
             : x.name == network.name
         );
 

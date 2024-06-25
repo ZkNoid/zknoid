@@ -15,7 +15,7 @@ export interface BalancesState {
     // address - balance
     [key: string]: bigint;
   };
-  loadBalance: (chainId: string, address: string) => Promise<void>;
+  loadBalance: (networkID: string, address: string) => Promise<void>;
 }
 
 export interface BalanceQueryResponse {
@@ -37,13 +37,13 @@ export const useMinaBalancesStore = create<
   immer((set) => ({
     loading: Boolean(false),
     balances: {},
-    async loadBalance(chainId: string, address: string) {
+    async loadBalance(networkID: string, address: string) {
       set((state) => {
         state.loading = true;
       });
 
       const response = await fetch(
-        NETWORKS.find((x) => x.chainId == chainId)?.graphql!,
+        NETWORKS.find((x) => x.networkID == networkID)?.graphql!,
         {
           method: 'POST',
           headers: {
@@ -85,13 +85,13 @@ export const useObserveMinaBalance = () => {
   const network = useNetworkStore();
 
   useEffect(() => {
-    if (!network.walletConnected || !network.address || !network.minaNetwork?.chainId) return;
+    if (!network.walletConnected || !network.address || !network.minaNetwork?.networkID) return;
 
-    balances.loadBalance(network.minaNetwork?.chainId!, network.address!);
+    balances.loadBalance(network.minaNetwork?.networkID!, network.address!);
   }, [
     chain.block?.height,
     network.walletConnected,
-    network.minaNetwork?.chainId,
+    network.minaNetwork?.networkID,
     network.address,
   ]);
 };
