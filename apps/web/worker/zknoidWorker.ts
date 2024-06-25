@@ -162,7 +162,7 @@ const functions = {
     console.log('[Worker] compiling lottery contracts');
 
     await Lottery.compile({
-      // cache: WebFileSystem(state.lotteryCache!),
+      cache: WebFileSystem(state.lotteryCache!),
     });
     console.log('[Worker] compiling contracts ended');
   },
