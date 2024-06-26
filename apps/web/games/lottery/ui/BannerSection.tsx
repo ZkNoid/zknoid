@@ -133,13 +133,13 @@ export default function BannerSection({
           <div className="">Lottery Round {currentRound.id}</div>
           <div className="flex flex-row gap-[1.07vw]">
             <div className="h-[7.67vw] w-[7.67vw] items-center justify-center rounded-[0.67vw] bg-white text-center text-[6vw] text-bg-dark">
-              {roundTimer.startsIn.hours}
+              {roundTimer.startsIn.hours || 0}
             </div>
             <div className="h-[7.67vw] w-[7.67vw] items-center justify-center rounded-[0.67vw] bg-white text-center text-[6vw] text-bg-dark">
-              {roundTimer.startsIn.minutes}
+              {roundTimer.startsIn.minutes || 0}
             </div>
             <div className="h-[7.67vw] w-[7.67vw] items-center justify-center rounded-[0.67vw] bg-white text-center text-[6vw] text-bg-dark">
-              {Math.trunc(roundTimer.startsIn.seconds!)}
+              {Math.trunc(roundTimer.startsIn.seconds! || 0)}
             </div>
           </div>
           <VioletLotteryButton className="mt-[2.67vw] flex items-center justify-center px-[1vw] text-[1.6vw]">

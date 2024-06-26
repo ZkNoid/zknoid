@@ -61,11 +61,7 @@ importers:
         version: 1.0.7(@types/react-dom@18.3.0)(@types/react@18.3.1)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
       '@sentry/nextjs':
         specifier: ^7.109.0
-<<<<<<< HEAD
         version: 7.114.0(next@15.0.0-canary.43)(react@19.0.0-rc-4c2e457c7c-20240522)(webpack@5.91.0)
-=======
-        version: 7.114.0(next@15.0.0-rc.0)(react@19.0.0-rc-4c2e457c7c-20240522)(webpack@5.91.0)
->>>>>>> origin/neogar-develop
       '@tailwindcss/typography':
         specifier: ^0.5.12
         version: 0.5.13(tailwindcss@3.4.3)
@@ -77,11 +73,7 @@ importers:
         version: 11.0.0-rc.332(@trpc/server@11.0.0-rc.332)
       '@trpc/next':
         specifier: 11.0.0-rc.332
-<<<<<<< HEAD
         version: 11.0.0-rc.332(@tanstack/react-query@5.35.1)(@trpc/client@11.0.0-rc.332)(@trpc/react-query@11.0.0-rc.332)(@trpc/server@11.0.0-rc.332)(next@15.0.0-canary.43)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
-=======
-        version: 11.0.0-rc.332(@tanstack/react-query@5.35.1)(@trpc/client@11.0.0-rc.332)(@trpc/react-query@11.0.0-rc.332)(@trpc/server@11.0.0-rc.332)(next@15.0.0-rc.0)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
->>>>>>> origin/neogar-develop
       '@trpc/react-query':
         specifier: 11.0.0-rc.332
         version: 11.0.0-rc.332(@tanstack/react-query@5.35.1)(@trpc/client@11.0.0-rc.332)(@trpc/server@11.0.0-rc.332)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
@@ -93,21 +85,13 @@ importers:
         version: 2.4.1(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
       '@vercel/analytics':
         specifier: ^1.2.2
-<<<<<<< HEAD
         version: 1.2.2(next@15.0.0-canary.43)(react@19.0.0-rc-4c2e457c7c-20240522)
-=======
-        version: 1.2.2(next@15.0.0-rc.0)(react@19.0.0-rc-4c2e457c7c-20240522)
->>>>>>> origin/neogar-develop
       '@vercel/blob':
         specifier: ^0.23.3
         version: 0.23.3
       '@vercel/speed-insights':
         specifier: ^1.0.10
-<<<<<<< HEAD
         version: 1.0.10(next@15.0.0-canary.43)(react@19.0.0-rc-4c2e457c7c-20240522)
-=======
-        version: 1.0.10(next@15.0.0-rc.0)(react@19.0.0-rc-4c2e457c7c-20240522)
->>>>>>> origin/neogar-develop
       babel-plugin-react-compiler:
         specifier: 0.0.0-experimental-592953e-20240517
         version: 0.0.0-experimental-592953e-20240517
@@ -139,13 +123,8 @@ importers:
         specifier: ^10.0.4
         version: 10.1.1
       l1-lottery-contracts:
-<<<<<<< HEAD
         specifier: ^0.3.3
         version: 0.3.3(o1js@1.3.1)
-=======
-        specifier: ^0.3.1
-        version: 0.3.1(o1js@protokit-framework+framework+node_modules+o1js)
->>>>>>> origin/neogar-develop
       lottie-react:
         specifier: ^2.4.0
         version: 2.4.0(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
@@ -165,7 +144,7 @@ importers:
         specifier: ^0.65.1
         version: 0.65.1(request@2.88.2)
       o1js:
-        specifier: 1.3.1
+        specifier: npm:o1js@1.3.1
         version: 1.3.1
       react:
         specifier: 19.0.0-rc-4c2e457c7c-20240522
@@ -1684,78 +1663,48 @@ packages:
       sparse-bitfield: 3.0.3
     dev: false
 
-<<<<<<< HEAD
   /@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.3:
     resolution: {integrity: sha512-QZHtlVgbAdy2zAqNA9Gu1UpIuI8Xvsd1v8ic6B2pZmeFnFcMWiPLfWXh7TVw4eGEZ/C9TH281KwhVoeQUKbyjw==}
-=======
-  /@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.2:
-    resolution: {integrity: sha512-9bfjwDxIDWmmOKusUcqdS4Rw+SETlp9Dy39Xui9BEGEk19dDwH0jhipwFzEff/pFg95NKymc6TOTbRKcWeRqyQ==}
->>>>>>> origin/neogar-develop
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
     dev: false
     optional: true
 
-<<<<<<< HEAD
   /@msgpackr-extract/msgpackr-extract-darwin-x64@3.0.3:
     resolution: {integrity: sha512-mdzd3AVzYKuUmiWOQ8GNhl64/IoFGol569zNRdkLReh6LRLHOXxU4U8eq0JwaD8iFHdVGqSy4IjFL4reoWCDFw==}
-=======
-  /@msgpackr-extract/msgpackr-extract-darwin-x64@3.0.2:
-    resolution: {integrity: sha512-lwriRAHm1Yg4iDf23Oxm9n/t5Zpw1lVnxYU3HnJPTi2lJRkKTrps1KVgvL6m7WvmhYVt/FIsssWay+k45QHeuw==}
->>>>>>> origin/neogar-develop
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
     dev: false
     optional: true
 
-<<<<<<< HEAD
   /@msgpackr-extract/msgpackr-extract-linux-arm64@3.0.3:
     resolution: {integrity: sha512-YxQL+ax0XqBJDZiKimS2XQaf+2wDGVa1enVRGzEvLLVFeqa5kx2bWbtcSXgsxjQB7nRqqIGFIcLteF/sHeVtQg==}
-=======
-  /@msgpackr-extract/msgpackr-extract-linux-arm64@3.0.2:
-    resolution: {integrity: sha512-FU20Bo66/f7He9Fp9sP2zaJ1Q8L9uLPZQDub/WlUip78JlPeMbVL8546HbZfcW9LNciEXc8d+tThSJjSC+tmsg==}
->>>>>>> origin/neogar-develop
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
     dev: false
     optional: true
 
-<<<<<<< HEAD
   /@msgpackr-extract/msgpackr-extract-linux-arm@3.0.3:
     resolution: {integrity: sha512-fg0uy/dG/nZEXfYilKoRe7yALaNmHoYeIoJuJ7KJ+YyU2bvY8vPv27f7UKhGRpY6euFYqEVhxCFZgAUNQBM3nw==}
-=======
-  /@msgpackr-extract/msgpackr-extract-linux-arm@3.0.2:
-    resolution: {integrity: sha512-MOI9Dlfrpi2Cuc7i5dXdxPbFIgbDBGgKR5F2yWEa6FVEtSWncfVNKW5AKjImAQ6CZlBK9tympdsZJ2xThBiWWA==}
->>>>>>> origin/neogar-develop
     cpu: [arm]
     os: [linux]
     requiresBuild: true
     dev: false
     optional: true
 
-<<<<<<< HEAD
   /@msgpackr-extract/msgpackr-extract-linux-x64@3.0.3:
     resolution: {integrity: sha512-cvwNfbP07pKUfq1uH+S6KJ7dT9K8WOE4ZiAcsrSes+UY55E/0jLYc+vq+DO7jlmqRb5zAggExKm0H7O/CBaesg==}
-=======
-  /@msgpackr-extract/msgpackr-extract-linux-x64@3.0.2:
-    resolution: {integrity: sha512-gsWNDCklNy7Ajk0vBBf9jEx04RUxuDQfBse918Ww+Qb9HCPoGzS+XJTLe96iN3BVK7grnLiYghP/M4L8VsaHeA==}
->>>>>>> origin/neogar-develop
     cpu: [x64]
     os: [linux]
     requiresBuild: true
     dev: false
     optional: true
 
-<<<<<<< HEAD
   /@msgpackr-extract/msgpackr-extract-win32-x64@3.0.3:
     resolution: {integrity: sha512-x0fWaQtYp4E6sktbsdAqnehxDgEc/VwM7uLsRCYWaiGu0ykYdZPiS8zCWdnjHwyiumousxfBm4SO31eXqwEZhQ==}
-=======
-  /@msgpackr-extract/msgpackr-extract-win32-x64@3.0.2:
-    resolution: {integrity: sha512-O+6Gs8UeDbyFpbSh2CPEz/UOrrdWPTBYNblZK5CxxLisYt4kGX3Sc+czffFonyjiGSq3jWLwJS/CCJc7tBr4sQ==}
->>>>>>> origin/neogar-develop
     cpu: [x64]
     os: [win32]
     requiresBuild: true
@@ -1771,13 +1720,8 @@ packages:
       - utf-8-validate
     dev: false
 
-<<<<<<< HEAD
   /@next/env@15.0.0-canary.43:
     resolution: {integrity: sha512-Helu+mL8C/naHvaR5kf05o68x3u7BlSxbVOI64flsThAk6iw47n2S4WGOzhx7glpTuHL/ajhuDkew3ME54YzSw==}
-=======
-  /@next/env@15.0.0-rc.0:
-    resolution: {integrity: sha512-6W0ndQvHR9sXcqcKeR/inD2UTRCs9+VkSK3lfaGmEuZs7EjwwXMO2BPYjz9oBrtfPL3xuTjtXsHKSsalYQ5l1Q==}
->>>>>>> origin/neogar-develop
     dev: false
 
   /@next/eslint-plugin-next@14.0.1:
@@ -1786,13 +1730,8 @@ packages:
       glob: 7.1.7
     dev: true
 
-<<<<<<< HEAD
   /@next/swc-darwin-arm64@15.0.0-canary.43:
     resolution: {integrity: sha512-7zFQDZidZqR3oJLdfMUZId91KpTHRCAbOwadj3yIhRvqBuvRAayqBK9JMwVSncAc8zsz/AamKtuonxHDZGeZtw==}
-=======
-  /@next/swc-darwin-arm64@15.0.0-rc.0:
-    resolution: {integrity: sha512-4OpTXvAWcSabXA5d688zdUwa3sfT9QrLnHMdpv4q2UDnnuqmOI0xLb6lrOxwpi+vHJNkneuNLqyc5HGBhkqL6A==}
->>>>>>> origin/neogar-develop
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
@@ -1800,13 +1739,8 @@ packages:
     dev: false
     optional: true
 
-<<<<<<< HEAD
   /@next/swc-darwin-x64@15.0.0-canary.43:
     resolution: {integrity: sha512-QihQllqo9yzRs+zOQc1pWv7JKrWIaoThBJqfZW4c0RZi2l2Pzhf7gElUJU6DNOuvQa6wiAQp1aVB4mEmYV8/cQ==}
-=======
-  /@next/swc-darwin-x64@15.0.0-rc.0:
-    resolution: {integrity: sha512-/TD8M9DT244uhtFA8P/0DUbM7ftg2zio6yOo6ajV16vNjkcug9Kt9//Wa4SrJjWcsGZpViLctOlwn3/6JFAuAA==}
->>>>>>> origin/neogar-develop
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
@@ -1814,13 +1748,8 @@ packages:
     dev: false
     optional: true
 
-<<<<<<< HEAD
   /@next/swc-linux-arm64-gnu@15.0.0-canary.43:
     resolution: {integrity: sha512-s3pWBiE/DjKjF0OI6WBjopdujv9oEqvQpjPUNa511ur3brmwXOAFEEfjNKnu4vrVI+/2wCTbL8FJaANnx5mh7g==}
-=======
-  /@next/swc-linux-arm64-gnu@15.0.0-rc.0:
-    resolution: {integrity: sha512-3VTO32938AcqOlOI/U61/MIpeYrblP22VU1GrgmMQJozsAXEJgLCgf3wxZtn61/FG4Yc0tp7rPZE2t1fIGe0+w==}
->>>>>>> origin/neogar-develop
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
@@ -1828,13 +1757,8 @@ packages:
     dev: false
     optional: true
 
-<<<<<<< HEAD
   /@next/swc-linux-arm64-musl@15.0.0-canary.43:
     resolution: {integrity: sha512-xRM7j4UOz9Zm73+cG8JDMGLNwyIr6rrdCrvx5ZTnHkmYqAMMQF+RvvIUehwy9Jp96r985Fnay7GWF9HgWKTAcQ==}
-=======
-  /@next/swc-linux-arm64-musl@15.0.0-rc.0:
-    resolution: {integrity: sha512-0kDnxM3AfrrHFJ/wTkjkv7cVHIaGwv+CzDg9lL2BoLEM4kMQhH20DTsBOMqpTpo1K2KCg67LuTGd3QOITT5uFQ==}
->>>>>>> origin/neogar-develop
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
@@ -1842,13 +1766,8 @@ packages:
     dev: false
     optional: true
 
-<<<<<<< HEAD
   /@next/swc-linux-x64-gnu@15.0.0-canary.43:
     resolution: {integrity: sha512-33Wbju2Gwz9+LwklX6rsZj7S95inHAod3iTAimqrr2HNJXdHk0Dc9ijpCAli1ancmO2g3mNJIEMOx4J3qHlQGw==}
-=======
-  /@next/swc-linux-x64-gnu@15.0.0-rc.0:
-    resolution: {integrity: sha512-fPMNahzqYFjm5h0ncJ5+F3NrShmWhpusM+zrQl01MMU0Ed5xsL4pJJDSuXV4wPkNUSjCP3XstTjxR5kBdO4juQ==}
->>>>>>> origin/neogar-develop
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
@@ -1856,13 +1775,8 @@ packages:
     dev: false
     optional: true
 
-<<<<<<< HEAD
   /@next/swc-linux-x64-musl@15.0.0-canary.43:
     resolution: {integrity: sha512-DfZFViwxOZWDsy5LuI94G+IeXc0ffPYQRxEgiW2RICb1kCVQvdD6Rpae/Kaf6CCkvwkVqRZJZ6k8TarwIjnDBA==}
-=======
-  /@next/swc-linux-x64-musl@15.0.0-rc.0:
-    resolution: {integrity: sha512-7/FLgOqrrQAxOVQrxfr3bGgZ83pSCmc2S3TXBILnHw0S8qLxmFjhSjH5ogaDmjrES/PSYMaX1FsP5Af88hp7Gw==}
->>>>>>> origin/neogar-develop
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
@@ -1870,13 +1784,8 @@ packages:
     dev: false
     optional: true
 
-<<<<<<< HEAD
   /@next/swc-win32-arm64-msvc@15.0.0-canary.43:
     resolution: {integrity: sha512-xPLMjQ4zLd+tPbpKMi0ahhIjyEY7Et9/m8eEnY7dXLeLRr/UbhnLuyMnRmzdrB8gqWXXD+9PYl1Tw53wxSS2XA==}
-=======
-  /@next/swc-win32-arm64-msvc@15.0.0-rc.0:
-    resolution: {integrity: sha512-5wcqoYHh7hbdghjH6Xs3i5/f0ov+i1Xw2E3O+BzZNESYVLgCM1q7KJu5gdGFoXA2gz5XaKF/VBcYHikLzyjgmA==}
->>>>>>> origin/neogar-develop
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
@@ -1884,13 +1793,8 @@ packages:
     dev: false
     optional: true
 
-<<<<<<< HEAD
   /@next/swc-win32-ia32-msvc@15.0.0-canary.43:
     resolution: {integrity: sha512-w9oPSBhfHb4uqS41O2/74TYZ72jgDxHHoa0F/ErPs4xz6tIASpTups9usGxO4uKdnMWz7MPIoJTiyJLJJCjNGw==}
-=======
-  /@next/swc-win32-ia32-msvc@15.0.0-rc.0:
-    resolution: {integrity: sha512-/hqOmYRTvtBPToE4Dbl9n+sLYU7DPd52R+TtjIrrEzTMgFo2/d7un3sD7GKmb2OwOj/ExyGv6Bd/JzytBVxXlw==}
->>>>>>> origin/neogar-develop
     engines: {node: '>= 10'}
     cpu: [ia32]
     os: [win32]
@@ -1898,13 +1802,8 @@ packages:
     dev: false
     optional: true
 
-<<<<<<< HEAD
   /@next/swc-win32-x64-msvc@15.0.0-canary.43:
     resolution: {integrity: sha512-lIHLuAJleCIPK4sl6txKkB+0rX4z2oaYLgH5GP2Ckrb0bhQYUK8yLD8TRtVsDA0U/2kHxuE9BG3j6BwOXShSoA==}
-=======
-  /@next/swc-win32-x64-msvc@15.0.0-rc.0:
-    resolution: {integrity: sha512-2Jly5nShvCUzzngP3RzdQ3JcuEcHcnIEvkvZDCXqFAK+bWks4+qOkEUO1QIAERQ99J5J9/1AN/8zFBme3Mm57A==}
->>>>>>> origin/neogar-develop
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
@@ -2584,11 +2483,7 @@ packages:
       localforage: 1.10.0
     dev: false
 
-<<<<<<< HEAD
   /@sentry/nextjs@7.114.0(next@15.0.0-canary.43)(react@19.0.0-rc-4c2e457c7c-20240522)(webpack@5.91.0):
-=======
-  /@sentry/nextjs@7.114.0(next@15.0.0-rc.0)(react@19.0.0-rc-4c2e457c7c-20240522)(webpack@5.91.0):
->>>>>>> origin/neogar-develop
     resolution: {integrity: sha512-QRqE+YTVG3btTPVhOfiq0XmHp0dG4A0C/R+ssR/pdfOBr4EfEEav0hlTlqvk9BV0u6naJ5TOvBZ6Fy41rkYYrQ==}
     engines: {node: '>=8'}
     peerDependencies:
@@ -2609,11 +2504,7 @@ packages:
       '@sentry/vercel-edge': 7.114.0
       '@sentry/webpack-plugin': 1.21.0
       chalk: 3.0.0
-<<<<<<< HEAD
       next: 15.0.0-canary.43(@babel/core@7.24.5)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
-=======
-      next: 15.0.0-rc.0(@babel/core@7.24.5)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
->>>>>>> origin/neogar-develop
       react: 19.0.0-rc-4c2e457c7c-20240522
       resolve: 1.22.8
       rollup: 2.78.0
@@ -2748,11 +2639,7 @@ packages:
       '@trpc/server': 11.0.0-rc.332
     dev: false
 
-<<<<<<< HEAD
   /@trpc/next@11.0.0-rc.332(@tanstack/react-query@5.35.1)(@trpc/client@11.0.0-rc.332)(@trpc/react-query@11.0.0-rc.332)(@trpc/server@11.0.0-rc.332)(next@15.0.0-canary.43)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522):
-=======
-  /@trpc/next@11.0.0-rc.332(@tanstack/react-query@5.35.1)(@trpc/client@11.0.0-rc.332)(@trpc/react-query@11.0.0-rc.332)(@trpc/server@11.0.0-rc.332)(next@15.0.0-rc.0)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522):
->>>>>>> origin/neogar-develop
     resolution: {integrity: sha512-TvnPDCNravfskMh3LTgVVonvKdwFkMYCp8ltaiDEMHroNYZKlf5A7nAdKlXG7hk8UYhvTJb7iG2/IRJCy8n3pw==}
     peerDependencies:
       '@tanstack/react-query': ^5.25.0
@@ -2772,11 +2659,7 @@ packages:
       '@trpc/client': 11.0.0-rc.332(@trpc/server@11.0.0-rc.332)
       '@trpc/react-query': 11.0.0-rc.332(@tanstack/react-query@5.35.1)(@trpc/client@11.0.0-rc.332)(@trpc/server@11.0.0-rc.332)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
       '@trpc/server': 11.0.0-rc.332
-<<<<<<< HEAD
       next: 15.0.0-canary.43(@babel/core@7.24.5)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
-=======
-      next: 15.0.0-rc.0(@babel/core@7.24.5)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
->>>>>>> origin/neogar-develop
       react: 19.0.0-rc-4c2e457c7c-20240522
       react-dom: 19.0.0-rc-4c2e457c7c-20240522(react@19.0.0-rc-4c2e457c7c-20240522)
     dev: false
@@ -3252,11 +3135,7 @@ packages:
       - graphql
     dev: false
 
-<<<<<<< HEAD
   /@vercel/analytics@1.2.2(next@15.0.0-canary.43)(react@19.0.0-rc-4c2e457c7c-20240522):
-=======
-  /@vercel/analytics@1.2.2(next@15.0.0-rc.0)(react@19.0.0-rc-4c2e457c7c-20240522):
->>>>>>> origin/neogar-develop
     resolution: {integrity: sha512-X0rctVWkQV1e5Y300ehVNqpOfSOufo7ieA5PIdna8yX/U7Vjz0GFsGf4qvAhxV02uQ2CVt7GYcrFfddXXK2Y4A==}
     peerDependencies:
       next: '>= 13'
@@ -3267,11 +3146,7 @@ packages:
       react:
         optional: true
     dependencies:
-<<<<<<< HEAD
       next: 15.0.0-canary.43(@babel/core@7.24.5)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
-=======
-      next: 15.0.0-rc.0(@babel/core@7.24.5)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
->>>>>>> origin/neogar-develop
       react: 19.0.0-rc-4c2e457c7c-20240522
       server-only: 0.0.1
     dev: false
@@ -3286,11 +3161,7 @@ packages:
       undici: 5.28.4
     dev: false
 
-<<<<<<< HEAD
   /@vercel/speed-insights@1.0.10(next@15.0.0-canary.43)(react@19.0.0-rc-4c2e457c7c-20240522):
-=======
-  /@vercel/speed-insights@1.0.10(next@15.0.0-rc.0)(react@19.0.0-rc-4c2e457c7c-20240522):
->>>>>>> origin/neogar-develop
     resolution: {integrity: sha512-4uzdKB0RW6Ff2FkzshzjZ+RlJfLPxgm/00i0XXgxfMPhwnnsk92YgtqsxT9OcPLdJUyVU1DqFlSWWjIQMPkh0g==}
     requiresBuild: true
     peerDependencies:
@@ -3314,11 +3185,7 @@ packages:
       vue-router:
         optional: true
     dependencies:
-<<<<<<< HEAD
       next: 15.0.0-canary.43(@babel/core@7.24.5)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
-=======
-      next: 15.0.0-rc.0(@babel/core@7.24.5)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
->>>>>>> origin/neogar-develop
       react: 19.0.0-rc-4c2e457c7c-20240522
     dev: false
 
@@ -4117,11 +3984,7 @@ packages:
       glob: 8.1.0
       ioredis: 5.4.1
       lodash: 4.17.21
-<<<<<<< HEAD
       msgpackr: 1.10.2
-=======
-      msgpackr: 1.10.1
->>>>>>> origin/neogar-develop
       semver: 7.6.2
       tslib: 2.6.2
       uuid: 9.0.1
@@ -7155,23 +7018,14 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-<<<<<<< HEAD
   /l1-lottery-contracts@0.3.3(o1js@1.3.1):
     resolution: {integrity: sha512-1KMVcJ/XpB+qeQGjWj6B2I32ANGWCREPJGk3SyLi0jbEyQK9UWGU3wtbC5fl3wv/KvdW6VExK2rphhmdFxQVYQ==}
-=======
-  /l1-lottery-contracts@0.3.1(o1js@protokit-framework+framework+node_modules+o1js):
-    resolution: {integrity: sha512-n94WMWi7KxsEAstoRAxCM5NrI2bUb86FqX8cEw74HVrLsedpSb1ywHItms85n2LoYOBlk8M3gitbLCbigMFGQw==}
->>>>>>> origin/neogar-develop
     engines: {node: '>=18.14.0'}
     peerDependencies:
       o1js: 1.3.1
     dependencies:
       '@types/node': 20.14.5
-<<<<<<< HEAD
       o1js: 1.3.1
-=======
-      o1js: link:protokit-framework/framework/node_modules/o1js
->>>>>>> origin/neogar-develop
       zkapp-cli: 0.21.5
     transitivePeerDependencies:
       - encoding
@@ -7525,7 +7379,6 @@ packages:
   /ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
-<<<<<<< HEAD
   /msgpackr-extract@3.0.3:
     resolution: {integrity: sha512-P0efT1C9jIdVRefqjzOQ9Xml57zpOXnIuS+csaB4MdZbTdmGDLo8XhzBG1N7aO11gKDDkJvBLULeFTo46wwreA==}
     hasBin: true
@@ -7546,28 +7399,6 @@ packages:
     resolution: {integrity: sha512-L60rsPynBvNE+8BWipKKZ9jHcSGbtyJYIwjRq0VrIvQ08cRjntGXJYW/tmciZ2IHWIY8WEW32Qa2xbh5+SKBZA==}
     optionalDependencies:
       msgpackr-extract: 3.0.3
-=======
-  /msgpackr-extract@3.0.2:
-    resolution: {integrity: sha512-SdzXp4kD/Qf8agZ9+iTu6eql0m3kWm1A2y1hkpTeVNENutaB0BwHlSvAIaMxwntmRUAUjon2V4L8Z/njd0Ct8A==}
-    hasBin: true
-    requiresBuild: true
-    dependencies:
-      node-gyp-build-optional-packages: 5.0.7
-    optionalDependencies:
-      '@msgpackr-extract/msgpackr-extract-darwin-arm64': 3.0.2
-      '@msgpackr-extract/msgpackr-extract-darwin-x64': 3.0.2
-      '@msgpackr-extract/msgpackr-extract-linux-arm': 3.0.2
-      '@msgpackr-extract/msgpackr-extract-linux-arm64': 3.0.2
-      '@msgpackr-extract/msgpackr-extract-linux-x64': 3.0.2
-      '@msgpackr-extract/msgpackr-extract-win32-x64': 3.0.2
-    dev: false
-    optional: true
-
-  /msgpackr@1.10.1:
-    resolution: {integrity: sha512-r5VRLv9qouXuLiIBrLpl2d5ZvPt8svdQTl5/vMvE4nzDMyEX4sgW5yWhuBBj5UmgwOTWj8CIdSXn5sAfsHAWIQ==}
-    optionalDependencies:
-      msgpackr-extract: 3.0.2
->>>>>>> origin/neogar-develop
     dev: false
 
   /mz@2.7.0:
@@ -7589,26 +7420,16 @@ packages:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
     dev: false
 
-<<<<<<< HEAD
   /next@15.0.0-canary.43(@babel/core@7.24.5)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522):
     resolution: {integrity: sha512-cvgburhFLnsTjKkl96Q3XBXs9yd+9IOfiLOp7q4tTBxiJS9/Bs6ui0Buza9TmC9rx7h+Emb6GKlaxBHlwOJ1eg==}
-=======
-  /next@15.0.0-rc.0(@babel/core@7.24.5)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522):
-    resolution: {integrity: sha512-IWcCvxUSCAuOK5gig4+9yiyt/dLKpIa+WT01Qcx4CBE4TtwJljyTDnCVVn64jDZ4qmSzsaEYXpb4DTI8qbk03A==}
->>>>>>> origin/neogar-develop
     engines: {node: '>=18.17.0'}
     hasBin: true
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
       '@playwright/test': ^1.41.2
       babel-plugin-react-compiler: '*'
-<<<<<<< HEAD
       react: 19.0.0-rc.0
       react-dom: 19.0.0-rc.0
-=======
-      react: 19.0.0-rc-f994737d14-20240522
-      react-dom: 19.0.0-rc-f994737d14-20240522
->>>>>>> origin/neogar-develop
       sass: ^1.3.0
     peerDependenciesMeta:
       '@opentelemetry/api':
@@ -7620,11 +7441,7 @@ packages:
       sass:
         optional: true
     dependencies:
-<<<<<<< HEAD
       '@next/env': 15.0.0-canary.43
-=======
-      '@next/env': 15.0.0-rc.0
->>>>>>> origin/neogar-develop
       '@swc/helpers': 0.5.11
       babel-plugin-react-compiler: 0.0.0-experimental-592953e-20240517
       busboy: 1.6.0
@@ -7633,7 +7450,6 @@ packages:
       postcss: 8.4.31
       react: 19.0.0-rc-4c2e457c7c-20240522
       react-dom: 19.0.0-rc-4c2e457c7c-20240522(react@19.0.0-rc-4c2e457c7c-20240522)
-<<<<<<< HEAD
       styled-jsx: 5.1.6(@babel/core@7.24.5)(react@19.0.0-rc-4c2e457c7c-20240522)
     optionalDependencies:
       '@next/swc-darwin-arm64': 15.0.0-canary.43
@@ -7645,19 +7461,6 @@ packages:
       '@next/swc-win32-arm64-msvc': 15.0.0-canary.43
       '@next/swc-win32-ia32-msvc': 15.0.0-canary.43
       '@next/swc-win32-x64-msvc': 15.0.0-canary.43
-=======
-      styled-jsx: 5.1.3(@babel/core@7.24.5)(react@19.0.0-rc-4c2e457c7c-20240522)
-    optionalDependencies:
-      '@next/swc-darwin-arm64': 15.0.0-rc.0
-      '@next/swc-darwin-x64': 15.0.0-rc.0
-      '@next/swc-linux-arm64-gnu': 15.0.0-rc.0
-      '@next/swc-linux-arm64-musl': 15.0.0-rc.0
-      '@next/swc-linux-x64-gnu': 15.0.0-rc.0
-      '@next/swc-linux-x64-musl': 15.0.0-rc.0
-      '@next/swc-win32-arm64-msvc': 15.0.0-rc.0
-      '@next/swc-win32-ia32-msvc': 15.0.0-rc.0
-      '@next/swc-win32-x64-msvc': 15.0.0-rc.0
->>>>>>> origin/neogar-develop
       sharp: 0.33.4
     transitivePeerDependencies:
       - '@babel/core'
@@ -7676,19 +7479,12 @@ packages:
       whatwg-url: 5.0.0
     dev: false
 
-<<<<<<< HEAD
   /node-gyp-build-optional-packages@5.2.2:
     resolution: {integrity: sha512-s+w+rBWnpTMwSFbaE0UXsRlg7hU4FjekKU4eyAih5T8nJuNZT1nNsskXpxmeqSK9UzkBl6UgRlnKc8hz8IEqOw==}
     hasBin: true
     requiresBuild: true
     dependencies:
       detect-libc: 2.0.3
-=======
-  /node-gyp-build-optional-packages@5.0.7:
-    resolution: {integrity: sha512-YlCCc6Wffkx0kHkmam79GKvDQ6x+QZkMjFGrIMxgFNILFvGSbCp2fCBC55pGTT9gVaz8Na5CLmxt/urtzRv36w==}
-    hasBin: true
-    requiresBuild: true
->>>>>>> origin/neogar-develop
     dev: false
     optional: true
 
@@ -9166,13 +8962,8 @@ packages:
     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
     engines: {node: '>=8'}
 
-<<<<<<< HEAD
   /styled-jsx@5.1.6(@babel/core@7.24.5)(react@19.0.0-rc-4c2e457c7c-20240522):
     resolution: {integrity: sha512-qSVyDTeMotdvQYoHWLNGwRFJHC+i+ZvdBRYosOFgC+Wg1vx4frN2/RG/NA7SYqqvKNLf39P2LSRA2pu6n0XYZA==}
-=======
-  /styled-jsx@5.1.3(@babel/core@7.24.5)(react@19.0.0-rc-4c2e457c7c-20240522):
-    resolution: {integrity: sha512-qLRShOWTE/Mf6Bvl72kFeKBl8N2Eq9WIFfoAuvbtP/6tqlnj1SCjv117n2MIjOPpa1jTorYqLJgsHKy5Y3ziww==}
->>>>>>> origin/neogar-develop
     engines: {node: '>= 12.0.0'}
     peerDependencies:
       '@babel/core': '*'
@@ -10226,11 +10017,7 @@ packages:
       use-sync-external-store: 1.2.0(react@19.0.0-rc-4c2e457c7c-20240522)
     dev: false
 
-<<<<<<< HEAD
   file:protokit-framework/framework/packages/common(o1js@1.3.1)(tsyringe@4.8.0):
-=======
-  file:protokit-framework/framework/packages/common(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0):
->>>>>>> origin/neogar-develop
     resolution: {directory: protokit-framework/framework/packages/common, type: directory}
     id: file:protokit-framework/framework/packages/common
     name: '@proto-kit/common'
@@ -10240,21 +10027,13 @@ packages:
     dependencies:
       lodash: 4.17.21
       loglevel: 1.9.1
-<<<<<<< HEAD
       o1js: 1.3.1
-=======
-      o1js: link:protokit-framework/framework/node_modules/o1js
->>>>>>> origin/neogar-develop
       reflect-metadata: 0.1.14
       tsyringe: 4.8.0
       typescript-memoize: 1.1.1
     dev: false
 
-<<<<<<< HEAD
   file:protokit-framework/framework/packages/library(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(@proto-kit/sequencer@0.1.1-develop.267+b252853)(o1js@1.3.1)(tsyringe@4.8.0):
-=======
-  file:protokit-framework/framework/packages/library(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(@proto-kit/sequencer@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0):
->>>>>>> origin/neogar-develop
     resolution: {directory: protokit-framework/framework/packages/library, type: directory}
     id: file:protokit-framework/framework/packages/library
     name: '@proto-kit/library'
@@ -10266,7 +10045,6 @@ packages:
       o1js: 1.1.0
       tsyringe: ^4.7.0
     dependencies:
-<<<<<<< HEAD
       '@proto-kit/common': file:protokit-framework/framework/packages/common(o1js@1.3.1)(tsyringe@4.8.0)
       '@proto-kit/module': file:protokit-framework/framework/packages/module(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@1.3.1)(tsyringe@4.8.0)
       '@proto-kit/protocol': file:protokit-framework/framework/packages/protocol(@proto-kit/common@0.1.1-develop.267+b252853)(o1js@1.3.1)(ts-pattern@4.3.0)(tsyringe@4.8.0)
@@ -10275,25 +10053,11 @@ packages:
       lodash: 4.17.21
       loglevel: 1.9.1
       o1js: 1.3.1
-=======
-      '@proto-kit/common': file:protokit-framework/framework/packages/common(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
-      '@proto-kit/module': file:protokit-framework/framework/packages/module(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
-      '@proto-kit/protocol': file:protokit-framework/framework/packages/protocol(@proto-kit/common@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(ts-pattern@4.3.0)(tsyringe@4.8.0)
-      '@proto-kit/sequencer': file:protokit-framework/framework/packages/sequencer(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
-      bigint-isqrt: 0.3.2
-      lodash: 4.17.21
-      loglevel: 1.9.1
-      o1js: link:protokit-framework/framework/node_modules/o1js
->>>>>>> origin/neogar-develop
       reflect-metadata: 0.1.14
       tsyringe: 4.8.0
     dev: false
 
-<<<<<<< HEAD
   file:protokit-framework/framework/packages/module(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@1.3.1)(tsyringe@4.8.0):
-=======
-  file:protokit-framework/framework/packages/module(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0):
->>>>>>> origin/neogar-develop
     resolution: {directory: protokit-framework/framework/packages/module, type: directory}
     id: file:protokit-framework/framework/packages/module
     name: '@proto-kit/module'
@@ -10303,28 +10067,16 @@ packages:
       o1js: 1.1.0
       tsyringe: ^4.7.0
     dependencies:
-<<<<<<< HEAD
       '@proto-kit/common': file:protokit-framework/framework/packages/common(o1js@1.3.1)(tsyringe@4.8.0)
       '@proto-kit/protocol': file:protokit-framework/framework/packages/protocol(@proto-kit/common@0.1.1-develop.267+b252853)(o1js@1.3.1)(ts-pattern@4.3.0)(tsyringe@4.8.0)
       lodash: 4.17.21
       loglevel: 1.9.1
       o1js: 1.3.1
-=======
-      '@proto-kit/common': file:protokit-framework/framework/packages/common(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
-      '@proto-kit/protocol': file:protokit-framework/framework/packages/protocol(@proto-kit/common@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(ts-pattern@4.3.0)(tsyringe@4.8.0)
-      lodash: 4.17.21
-      loglevel: 1.9.1
-      o1js: link:protokit-framework/framework/node_modules/o1js
->>>>>>> origin/neogar-develop
       reflect-metadata: 0.1.14
       tsyringe: 4.8.0
     dev: false
 
-<<<<<<< HEAD
   file:protokit-framework/framework/packages/protocol(@proto-kit/common@0.1.1-develop.267+b252853)(o1js@1.3.1)(ts-pattern@4.3.0)(tsyringe@4.8.0):
-=======
-  file:protokit-framework/framework/packages/protocol(@proto-kit/common@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(ts-pattern@4.3.0)(tsyringe@4.8.0):
->>>>>>> origin/neogar-develop
     resolution: {directory: protokit-framework/framework/packages/protocol, type: directory}
     id: file:protokit-framework/framework/packages/protocol
     name: '@proto-kit/protocol'
@@ -10334,28 +10086,17 @@ packages:
       ts-pattern: ^4.3.0
       tsyringe: ^4.7.0
     dependencies:
-<<<<<<< HEAD
       '@proto-kit/common': file:protokit-framework/framework/packages/common(o1js@1.3.1)(tsyringe@4.8.0)
       lodash: 4.17.21
       loglevel: 1.9.1
       o1js: 1.3.1
-=======
-      '@proto-kit/common': file:protokit-framework/framework/packages/common(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
-      lodash: 4.17.21
-      loglevel: 1.9.1
-      o1js: link:protokit-framework/framework/node_modules/o1js
->>>>>>> origin/neogar-develop
       reflect-metadata: 0.1.14
       ts-mixer: 6.0.4
       ts-pattern: 4.3.0
       tsyringe: 4.8.0
     dev: false
 
-<<<<<<< HEAD
   file:protokit-framework/framework/packages/sdk(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/library@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(@proto-kit/sequencer@0.1.1-develop.267+b252853)(o1js@1.3.1)(reflect-metadata@0.2.2)(tsyringe@4.8.0):
-=======
-  file:protokit-framework/framework/packages/sdk(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/library@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(@proto-kit/sequencer@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(reflect-metadata@0.2.2)(tsyringe@4.8.0):
->>>>>>> origin/neogar-develop
     resolution: {directory: protokit-framework/framework/packages/sdk, type: directory}
     id: file:protokit-framework/framework/packages/sdk
     name: '@proto-kit/sdk'
@@ -10369,39 +10110,23 @@ packages:
       reflect-metadata: ^0.1.13
       tsyringe: ^4.7.0
     dependencies:
-<<<<<<< HEAD
       '@proto-kit/common': file:protokit-framework/framework/packages/common(o1js@1.3.1)(tsyringe@4.8.0)
       '@proto-kit/library': file:protokit-framework/framework/packages/library(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(@proto-kit/sequencer@0.1.1-develop.267+b252853)(o1js@1.3.1)(tsyringe@4.8.0)
       '@proto-kit/module': file:protokit-framework/framework/packages/module(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@1.3.1)(tsyringe@4.8.0)
       '@proto-kit/protocol': file:protokit-framework/framework/packages/protocol(@proto-kit/common@0.1.1-develop.267+b252853)(o1js@1.3.1)(ts-pattern@4.3.0)(tsyringe@4.8.0)
       '@proto-kit/sequencer': file:protokit-framework/framework/packages/sequencer(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@1.3.1)(tsyringe@4.8.0)
-=======
-      '@proto-kit/common': file:protokit-framework/framework/packages/common(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
-      '@proto-kit/library': file:protokit-framework/framework/packages/library(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(@proto-kit/sequencer@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
-      '@proto-kit/module': file:protokit-framework/framework/packages/module(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
-      '@proto-kit/protocol': file:protokit-framework/framework/packages/protocol(@proto-kit/common@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(ts-pattern@4.3.0)(tsyringe@4.8.0)
-      '@proto-kit/sequencer': file:protokit-framework/framework/packages/sequencer(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
->>>>>>> origin/neogar-develop
       '@urql/core': 4.3.0
       comlink: 4.4.1
       lodash: 4.17.21
       loglevel: 1.9.1
-<<<<<<< HEAD
       o1js: 1.3.1
-=======
-      o1js: link:protokit-framework/framework/node_modules/o1js
->>>>>>> origin/neogar-develop
       reflect-metadata: 0.2.2
       tsyringe: 4.8.0
     transitivePeerDependencies:
       - graphql
     dev: false
 
-<<<<<<< HEAD
   file:protokit-framework/framework/packages/sequencer(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@1.3.1)(tsyringe@4.8.0):
-=======
-  file:protokit-framework/framework/packages/sequencer(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/module@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0):
->>>>>>> origin/neogar-develop
     resolution: {directory: protokit-framework/framework/packages/sequencer, type: directory}
     id: file:protokit-framework/framework/packages/sequencer
     name: '@proto-kit/sequencer'
@@ -10412,7 +10137,6 @@ packages:
       o1js: 1.1.0
       tsyringe: ^4.7.0
     dependencies:
-<<<<<<< HEAD
       '@proto-kit/common': file:protokit-framework/framework/packages/common(o1js@1.3.1)(tsyringe@4.8.0)
       '@proto-kit/module': file:protokit-framework/framework/packages/module(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@1.3.1)(tsyringe@4.8.0)
       '@proto-kit/protocol': file:protokit-framework/framework/packages/protocol(@proto-kit/common@0.1.1-develop.267+b252853)(o1js@1.3.1)(ts-pattern@4.3.0)(tsyringe@4.8.0)
@@ -10420,15 +10144,6 @@ packages:
       compute-gcd: 1.2.1
       lodash: 4.17.21
       o1js: 1.3.1
-=======
-      '@proto-kit/common': file:protokit-framework/framework/packages/common(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
-      '@proto-kit/module': file:protokit-framework/framework/packages/module(@proto-kit/common@0.1.1-develop.267+b252853)(@proto-kit/protocol@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(tsyringe@4.8.0)
-      '@proto-kit/protocol': file:protokit-framework/framework/packages/protocol(@proto-kit/common@0.1.1-develop.267+b252853)(o1js@protokit-framework+framework+node_modules+o1js)(ts-pattern@4.3.0)(tsyringe@4.8.0)
-      bullmq: 3.15.8
-      compute-gcd: 1.2.1
-      lodash: 4.17.21
-      o1js: link:protokit-framework/framework/node_modules/o1js
->>>>>>> origin/neogar-develop
       reflect-metadata: 0.1.14
       ts-pattern: 4.3.0
       tsyringe: 4.8.0

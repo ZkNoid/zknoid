@@ -15,7 +15,7 @@ import {
   Mina,
   fetchAccount,
   NetworkId,
-} from 'o1js';
+} from 'o1js-l1';
 import {
   checkMapGeneration,
   checkGameRecord,
@@ -36,22 +36,7 @@ import {
   DistibutionProgram,
   StateManager,
 } from 'l1-lottery-contracts';
-import {
-  MerkleMap20,
-  MerkleMap20Witness,
-} from 'l1-lottery-contracts/build/src/CustomMerkleMap';
-import {
-  DistributionProof,
-  DistributionProofPublicInput,
-  init,
-} from 'l1-lottery-contracts/build/src/DistributionProof';
-import {
-  getNullifierId,
-  getEmpty2dMerkleMap,
-  comisionTicket,
-  TICKET_PRICE,
-  NumberPacked,
-} from 'l1-lottery-contracts';
+
 import { BuyTicketEvent } from 'l1-lottery-contracts/build/src/Lottery';
 import { NETWORKS } from '@/app/constants/networks';
 // import { DummyBridge } from 'zknoidcontractsl1';
