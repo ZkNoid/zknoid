@@ -357,11 +357,7 @@ const VERCEL_LOTTERY_CACHE = [
 export const LOTTERY_CACHE: ContractCache = {
   cachePath: '/dummy_bridge_cache',
   files: VERCEL_LOTTERY_CACHE.map((x) => x.pathname),
-<<<<<<< HEAD
   urls: VERCEL_LOTTERY_CACHE.map((x) => `/lottery_cache/${x.pathname}`),
-=======
-  urls: VERCEL_LOTTERY_CACHE.map((x) => x.url),
->>>>>>> origin/neogar-develop
 };
 
 console.log('Lottery cache', LOTTERY_CACHE);
