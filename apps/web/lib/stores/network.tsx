@@ -4,6 +4,7 @@ import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
 import { ALL_NETWORKS, Network } from '@/app/constants/networks';
+import { requestAccounts } from '../helpers';
 
 export interface NetworkState {
   minaNetwork: Network | undefined;
@@ -72,7 +73,7 @@ export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
           return this.onWalletConnected(localStorage.minaAdderess);
         }
       } else {
-        const accounts = await (window as any).mina.requestAccounts();
+        const accounts = await requestAccounts();
         this.onWalletConnected(accounts[0]);
       }
     },
