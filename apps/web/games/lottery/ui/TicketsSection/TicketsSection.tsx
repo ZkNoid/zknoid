@@ -32,7 +32,7 @@ export default function TicketsSection() {
     >
       <div className="">
         <div className="flex flex-row justify-between">
-          <OwnedTickets />
+          <OwnedTickets roundId={1} />
           <div className={'flex flex-col'}>
             <div className="mb-[1.33vw] text-[2.13vw]">Buy tickets</div>
             <div className={'flex flex-row gap-[1.33vw]'}>

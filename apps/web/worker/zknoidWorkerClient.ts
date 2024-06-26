@@ -46,14 +46,21 @@ export default class ZknoidWorkerClient {
       ticketNums,
     });
   }
+  fetchOffchainState(startBlock: number, roundId: number) {
+    return this._call('fetchOffchainState', {    
+      startBlock,
+      roundId
+  });
+  }
+  getRoundsInfo(roundIds: number[]) {
+    return this._call('getRoundsInfo', {roundIds})
+  }
   getLotteryState() {
     return this._call('getLotteryState', {});
   }
-
   bridge(amount: UInt64) {
     return this._call('bridge', { amount });
   }
-
   async proveGameRecord({
     seed,
     inputs,

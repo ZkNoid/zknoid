@@ -13,12 +13,23 @@ export interface ClientState {
   client?: ZknoidWorkerClient;
   lotteryState: { currentRound: bigint; startBlock: bigint } | undefined;
   start: () => Promise<ZknoidWorkerClient>;
-  startLottery: (networkId: string) => Promise<ZknoidWorkerClient>;
+  startLottery: (networkId: string, currBlock: number) => Promise<ZknoidWorkerClient>;
+  getRoundsInfo(rounds: number[]): Promise<Record<number, {
+    id: number,
+    bank: bigint,
+    tickets: {
+      amount: bigint,
+      numbers: number[],
+      owner: string
+    }[],
+    winningCombination: number[]
+  }>>,
   buyTicket: (
     senderAccount: string,
     currBlock: number,
     ticketNums: number[]
   ) => Promise<any>;
+  offchainStateReady: boolean;
 }
 
 export const useWorkerClientStore = create<
@@ -28,6 +39,7 @@ export const useWorkerClientStore = create<
   immer((set) => ({
     status: 'Not loaded',
     lotteryState: undefined,
+    offchainStateReady: false,
     async start() {
       set((state) => {
         state.status = 'Loading worker';
@@ -64,7 +76,7 @@ export const useWorkerClientStore = create<
 
       return zkappWorkerClient;
     },
-    async startLottery(networkId) {
+    async startLottery(networkId, currBlock) {
       set((state) => {
         state.status = 'Lottery loading';
       });
@@ -85,14 +97,28 @@ export const useWorkerClientStore = create<
         state.status = 'Lottery state fetching';
       });
 
-      const lotteryState = await this.client?.getLotteryState();
+      const lotteryState = await this.client?.getLotteryState() as {
+        currentRound: bigint;
+        startBlock: bigint;
+      };
 
       set((state) => {
-        state.lotteryState = lotteryState as {
-          currentRound: bigint;
-          startBlock: bigint;
-        };
+        state.lotteryState = lotteryState 
       });
+
+      const roundId = Math.floor(
+        (currBlock - Number(lotteryState.startBlock)) / BLOCK_PER_ROUND
+      );
+
+      await this.client?.fetchOffchainState(Number(lotteryState.startBlock), roundId);
+
+      set((state) => {
+        state.offchainStateReady = true;
+      });
+
+      const offchainState = await this.client?.getRoundsInfo([roundId]);
+
+      console.log('Fetched offchain state', offchainState);
 
       set((state) => {
         state.status = 'Lottery prover cache downloading';
@@ -121,6 +147,18 @@ export const useWorkerClientStore = create<
       });
 
       return this.client!;
+    },
+    async getRoundsInfo(rounds: number[]) {
+      return (await this.client?.getRoundsInfo(rounds)) as Record<number, {
+        id: number,
+        bank: bigint,
+        tickets: {
+          amount: bigint,
+          numbers: number[],
+          owner: string
+        }[],
+        winningCombination: number[]
+      }>;
     },
     async buyTicket(
       senderAccount: string,

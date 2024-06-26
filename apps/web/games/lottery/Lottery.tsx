@@ -29,11 +29,13 @@ export default function Lottery({}: { params: { competitionId: string } }) {
 
   useEffect(() => {
     if (workerClientStore.client && networkStore.minaNetwork?.networkID) {
-      workerClientStore.startLottery(networkStore.minaNetwork?.networkID!);
+      workerClientStore.startLottery(networkStore.minaNetwork?.networkID!, Number(chainStore.block?.height));
     }
   }, [workerClientStore.client, networkStore.minaNetwork?.networkID]);
 
   useEffect(() => {
+    if (!workerClientStore.lotteryState) return;
+    
     const startBlock = workerClientStore.lotteryState?.startBlock;
     const blockNum = chainStore.block?.height;
     const roundId_ =
@@ -54,6 +56,10 @@ export default function Lottery({}: { params: { competitionId: string } }) {
           )
         )
       : 0;
+      (async () => {
+        console.log('Effect fetching', await workerClientStore.getRoundsInfo([Number(workerClientStore.lotteryState!.currentRound)]));
+      })()
+  
   }, [workerClientStore.lotteryState]);
 
   return (
