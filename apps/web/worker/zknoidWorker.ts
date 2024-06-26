@@ -15,7 +15,7 @@ import {
   Mina,
   fetchAccount,
   NetworkId,
-} from 'o1js-l1';
+} from 'o1js';
 import {
   checkMapGeneration,
   checkGameRecord,
@@ -110,7 +110,7 @@ const functions = {
     ticketNums: number[];
   }) => {
     const stateM = new StateManager(UInt32.from(args.startBlock).toFields()[0]);
-    stateM.syncWithCurBlock(Number(args.startBlock) + 1);
+    stateM.syncWithCurBlock(Number(args.startBlock) + args.roundId * 480 + 1);
 
     const senderAccount = PublicKey.fromBase58(args.senderAccount);
 
