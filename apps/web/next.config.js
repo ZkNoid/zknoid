@@ -4,6 +4,7 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
+  ignoreBuildErrors: true, // @todo until protokit not released fix
   async headers() {
     return [
       {
