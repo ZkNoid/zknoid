@@ -35,7 +35,7 @@ export default function BuyInfoCard({
         <div className="">{numberOfTickets}</div>
       </div>
       <div className="flex flex-row">
-        <div className="text-nowrap">Cost</div>
+        <div className="text-nowrap">Cost per ticket</div>
         <div className="mx-1 mb-[0.3vw] w-full border-spacing-6 border-b border-dotted border-[#F9F8F4] opacity-50"></div>
         <div className="">{formatUnits(cost)}$</div>
       </div>
