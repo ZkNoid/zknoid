@@ -1,7 +1,6 @@
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import MyTicket from './ui/MyTicket';
 import { useEffect, useState } from 'react';
-import { useChainStore } from '@/lib/stores/minaChain';
 
 interface ITicket {
   id: string;
@@ -9,12 +8,15 @@ interface ITicket {
   amount: number;
 }
 
-export default function OwnedTickets({roundId}: {roundId: number}) {
-  const [currentTicket, setCurrentTicket] = useState<ITicket | undefined>(undefined);
+export default function OwnedTickets({ roundId }: { roundId: number }) {
+  const [currentTicket, setCurrentTicket] = useState<ITicket | undefined>(
+    undefined
+  );
   const workerStore = useWorkerClientStore();
-  const [tickets, setTickets] = useState<{id: string, combination: number[], amount: number}[]>([]);
-  
-  
+  const [tickets, setTickets] = useState<
+    { id: string; combination: number[]; amount: number }[]
+  >([]);
+
   useEffect(() => {
     if (!workerStore.offchainStateReady) return;
 
@@ -22,16 +24,21 @@ export default function OwnedTickets({roundId}: {roundId: number}) {
 
     (async () => {
       const f = await workerStore.getRoundsInfo([roundId]);
-      setTickets(f[roundId].tickets.map((x, i) => ({id: `${i}`, combination: x.numbers, amount: Number(x.amount)})));
+      setTickets(
+        f[roundId].tickets.map((x, i) => ({
+          id: `${i}`,
+          combination: x.numbers,
+          amount: Number(x.amount),
+        }))
+      );
       console.log('Effect fetching', f);
-    })()
-
-  }, [workerStore.offchainStateReady])
+    })();
+  }, [workerStore.offchainStateReady]);
 
   return (
-    <div className={'flex flex-col'}>
-      <div className={'flex flex-row justify-between'}>
-        <div className="mb-[1.33vw] text-[2.13vw]">Your tickets</div>
+    <div className={'flex w-full flex-col'}>
+      <div className={'mb-[1.33vw] flex flex-row items-center justify-between'}>
+        <div className="text-[2.13vw]">Your tickets</div>
         <div className={'flex flex-row gap-[0.5vw]'}>
           <button
             className={

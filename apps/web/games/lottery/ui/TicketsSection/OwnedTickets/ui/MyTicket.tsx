@@ -20,7 +20,7 @@ const ClosedTicket = ({
     <motion.div
       onClick={onClick ?? onClick}
       className={cn(
-        'relative flex flex-row bg-middle-accent p-[0.33vw]',
+        'relative flex h-[13.53vw] flex-row bg-middle-accent p-[0.33vw]',
         {
           'rounded-r-[1.33vw]': rounded == 'right',
           'rounded-[1.33vw]': rounded == 'full',

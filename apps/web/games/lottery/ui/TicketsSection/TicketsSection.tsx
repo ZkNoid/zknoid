@@ -22,6 +22,7 @@ export default function TicketsSection() {
 
   const [ticketNumberInput, setTicketNumber] = useState('');
   const [ticketAmount, setTicketsAmount] = useState(0);
+  const [ticketFinalized, setTicketFinalized] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
 
   const pagesAmount = Math.ceil(previousRounds.length / ROUNDS_LIMIT);
@@ -34,9 +35,13 @@ export default function TicketsSection() {
   const workerClientStore = useWorkerClientStore();
   const chainStore = useChainStore();
 
-  const roundId = workerClientStore.lotteryState ? Math.floor(
-    Number(chainStore.block?.height! -workerClientStore.lotteryState.startBlock) / BLOCK_PER_ROUND
-  ) : 0;
+  const roundId = workerClientStore.lotteryState
+    ? Math.floor(
+        Number(
+          chainStore.block?.height! - workerClientStore.lotteryState.startBlock
+        ) / BLOCK_PER_ROUND
+      )
+    : 0;
 
   return (
     <div
@@ -46,27 +51,28 @@ export default function TicketsSection() {
       )}
     >
       <div className="">
-        <div className="flex flex-row justify-between">
-          {workerClientStore.lotteryState && (
-            <OwnedTickets roundId={roundId} />
-          )}
+        <div className="grid grid-cols-2 gap-[2vw]">
+          {workerClientStore.lotteryState && <OwnedTickets roundId={roundId} />}
           <div className={'flex flex-col'}>
             <div className="mb-[1.33vw] text-[2.13vw]">Buy tickets</div>
             <div className={'flex flex-row gap-[1.33vw]'}>
               <TicketCard
                 symbols={ticketNumberInput}
                 amount={ticketAmount}
-                finalized={false}
+                finalized={ticketFinalized}
+                setFinalized={setTicketFinalized}
                 setSymbols={setTicketNumber}
                 setTicketsAmount={setTicketsAmount}
               />
               <div className={'flex flex-col gap-[1.33vw]'}>
                 <BuyInfoCard
                   buttonActive={ticketAmount > 0}
-                  ticketsInfo={[{
-                    amount: ticketAmount,
-                    numbers: [...ticketNumberInput].map(x => Number(x))
-                  }]}
+                  ticketsInfo={[
+                    {
+                      amount: ticketAmount,
+                      numbers: [...ticketNumberInput].map((x) => Number(x)),
+                    },
+                  ]}
                 />
                 <GetMoreTicketsButton />
               </div>
@@ -79,7 +85,7 @@ export default function TicketsSection() {
         <div className={'flex w-full flex-row gap-[1.042vw]'}>
           <button
             className={
-              'flex h-[4vw] w-[9vw] items-center justify-center rounded-[0.521vw] border border-left-accent hover:opacity-80 disabled:opacity-60'
+              'flex h-[4vw] w-[4vw] items-center justify-center rounded-[0.521vw] border border-left-accent hover:opacity-80 disabled:opacity-60'
             }
             onClick={() => setPage((prevState) => prevState - 1)}
             disabled={page - 1 < 1}
@@ -101,7 +107,7 @@ export default function TicketsSection() {
           </div>
           <button
             className={
-              'flex h-[4vw] w-[9vw] items-center justify-center rounded-[0.521vw] border border-left-accent hover:opacity-80 disabled:opacity-60'
+              'flex h-[4vw] w-[4vw] items-center justify-center rounded-[0.521vw] border border-left-accent hover:opacity-80 disabled:opacity-60'
             }
             onClick={() => setPage((prevState) => prevState + 1)}
             disabled={page + 1 > pagesAmount}
