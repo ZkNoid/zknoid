@@ -2,7 +2,6 @@ import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import MyTicket from './ui/MyTicket';
 import { useEffect, useState } from 'react';
 import { useChainStore } from '@/lib/stores/minaChain';
-import { BLOCK_PER_ROUND } from 'l1-lottery-contracts/build/src/constants';
 
 interface ITicket {
   id: string;
@@ -13,7 +12,6 @@ interface ITicket {
 export default function OwnedTickets({roundId}: {roundId: number}) {
   const [currentTicket, setCurrentTicket] = useState<ITicket | undefined>(undefined);
   const workerStore = useWorkerClientStore();
-  const chainStore = useChainStore();
   const [tickets, setTickets] = useState<{id: string, combination: number[], amount: number}[]>([]);
   
   
@@ -23,7 +21,6 @@ export default function OwnedTickets({roundId}: {roundId: number}) {
     console.log('Offchain state ready', workerStore.lotteryState);
 
     (async () => {
-      console.log('Fg')
       const f = await workerStore.getRoundsInfo([roundId]);
       setTickets(f[roundId].tickets.map((x, i) => ({id: `${i}`, combination: x.numbers, amount: Number(x.amount)})));
       console.log('Effect fetching', f);

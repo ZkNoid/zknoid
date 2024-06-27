@@ -6,6 +6,9 @@ import GetMoreTicketsButton from './ui/GetMoreTicketsButton';
 import OwnedTickets from './OwnedTickets';
 import PreviousRound from './PreviousRound';
 import { useLotteryStore } from '@/lib/stores/lotteryStore';
+import { useWorkerClientStore } from '@/lib/stores/workerClient';
+import { BLOCK_PER_ROUND } from 'l1-lottery-contracts/build/src/constants';
+import { useChainStore } from '@/lib/stores/minaChain';
 
 interface TicketInfo {
   amount: number;
@@ -28,6 +31,13 @@ export default function TicketsSection() {
     page * ROUNDS_LIMIT
   );
 
+  const workerClientStore = useWorkerClientStore();
+  const chainStore = useChainStore();
+
+  const roundId = workerClientStore.lotteryState ? Math.floor(
+    Number(chainStore.block?.height! -workerClientStore.lotteryState.startBlock) / BLOCK_PER_ROUND
+  ) : 0;
+
   return (
     <div
       className={cn(
@@ -37,7 +47,9 @@ export default function TicketsSection() {
     >
       <div className="">
         <div className="flex flex-row justify-between">
-          <OwnedTickets roundId={1} />
+          {workerClientStore.lotteryState && (
+            <OwnedTickets roundId={roundId} />
+          )}
           <div className={'flex flex-col'}>
             <div className="mb-[1.33vw] text-[2.13vw]">Buy tickets</div>
             <div className={'flex flex-row gap-[1.33vw]'}>
