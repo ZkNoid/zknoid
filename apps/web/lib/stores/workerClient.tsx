@@ -12,6 +12,7 @@ export interface ClientState {
   status: string;
   client?: ZknoidWorkerClient;
   lotteryState: { currentRound: bigint; startBlock: bigint } | undefined;
+  lotteryRoundId: number;
   start: () => Promise<ZknoidWorkerClient>;
   startLottery: (networkId: string, currBlock: number) => Promise<ZknoidWorkerClient>;
   getRoundsInfo(rounds: number[]): Promise<Record<number, {
@@ -40,6 +41,7 @@ export const useWorkerClientStore = create<
   immer((set) => ({
     status: 'Not loaded',
     lotteryState: undefined,
+    lotteryRoundId: 0,
     offchainStateReady: false,
     async start() {
       set((state) => {
@@ -110,6 +112,10 @@ export const useWorkerClientStore = create<
       const roundId = Math.floor(
         (currBlock - Number(lotteryState.startBlock)) / BLOCK_PER_ROUND
       );
+
+      set((state) => {
+        state.lotteryRoundId = roundId;
+      });
 
       await this.client?.fetchOffchainState(Number(lotteryState.startBlock), roundId);
 
