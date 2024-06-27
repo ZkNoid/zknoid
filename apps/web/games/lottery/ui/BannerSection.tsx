@@ -7,6 +7,9 @@ import znakesImg from '@/public/image/tokens/znakes.svg';
 import { Currency } from '@/constants/currency';
 import { IRound, useLotteryStore } from '@/lib/stores/lotteryStore';
 import { MouseEventHandler, ReactNode, useEffect, useState } from 'react';
+import { useWorkerClientStore } from '@/lib/stores/workerClient';
+import { TICKET_PRICE } from 'l1-lottery-contracts';
+import { formatUnits } from '@/lib/unit';
 
 function BannerButton({
   children,
@@ -34,28 +37,39 @@ function BannerButton({
 }
 
 export default function BannerSection({
-  roundId,
   roundEndsIn,
 }: {
   roundId: number;
   roundEndsIn: DateTime;
 }) {
   const roundTimer = useRoundTimer(roundEndsIn);
-  const lotteryStore = useLotteryStore();
-  const [currentRound, setCurrentRound] = useState<IRound>(
-    lotteryStore.rounds[0]
-  );
+  const lotteryStore = useWorkerClientStore();
+  const [roundToShow, setRoundToShow] = useState(0);
+  const [roundInfo, setRoundInfo] = useState<{
+    id: number;
+    bank: bigint;
+    tickets: {
+        amount: bigint;
+        numbers: number[];
+        owner: string;
+    }[];
+    winningCombination: number[];
+} | undefined>(undefined);
 
   useEffect(() => {
-    if (currentRound.id != lotteryStore.currentRoundId) {
-      const round = lotteryStore.getRound(lotteryStore.currentRoundId);
-      if (!round)
-        throw new Error(
-          `Round with id ${lotteryStore.currentRoundId} not found`
-        );
-      setCurrentRound(round);
-    }
-  }, [lotteryStore.currentRoundId]);
+    if (!lotteryStore.offchainStateReady) return;
+    (async () => {
+      const roundInfos = await lotteryStore.getRoundsInfo([roundToShow]);
+      console.log('Fetched round infos', roundInfos);
+      setRoundInfo(roundInfos[roundToShow]);  
+    })();
+  }, [roundToShow, lotteryStore.offchainStateReady]);
+
+  useEffect(() => {
+    setRoundToShow(lotteryStore.lotteryRoundId);
+  }, [lotteryStore.lotteryRoundId]);
+
+  const ticketsNum = roundInfo?.tickets.map(x => x.amount).reduce((x, y) => x + y);
 
   return (
     <div
@@ -66,8 +80,8 @@ export default function BannerSection({
     >
       <div className="absolute m-[2vw] flex h-[3.13vw] gap-[0.33vw]">
         <BannerButton
-          onClick={lotteryStore.toPrevRound}
-          disabled={lotteryStore.currentRoundId - 1 < 1}
+          onClick={() => setRoundToShow(roundToShow - 1)}
+          disabled={roundToShow < 1}
           className="flex w-[3.13vw] items-center justify-center border-left-accent text-left-accent"
         >
           <svg
@@ -82,9 +96,9 @@ export default function BannerSection({
           </svg>
         </BannerButton>
         <BannerButton
-          onClick={lotteryStore.toNextRound}
+          onClick={() => setRoundToShow(roundToShow + 1)}
           disabled={
-            lotteryStore.currentRoundId + 1 > lotteryStore.rounds.length
+            roundToShow >= lotteryStore.lotteryRoundId
           }
           className="flex w-[3.13vw] items-center justify-center border-left-accent text-left-accent"
         >
@@ -102,7 +116,7 @@ export default function BannerSection({
       </div>
       <div className="absolute bottom-0 left-0 right-0 top-0 mx-auto h-full w-[25.13vw]">
         <div className="ml-[2.1vw] mt-[3vw] flex w-[25.13vw] flex-col items-center justify-center text-[2.53vw]">
-          <div className="">Lottery Round {roundId}</div>
+          <div className="">Lottery Round {roundToShow}</div>
           <div className="flex flex-row gap-[1.07vw]">
             <div className="h-[7.67vw] w-[7.67vw] items-center justify-center rounded-[0.67vw] bg-white text-center text-[6vw] text-bg-dark">
               {roundTimer.startsIn.hours || 0}
@@ -119,10 +133,10 @@ export default function BannerSection({
           </VioletLotteryButton>
         </div>
       </div>
-      {lotteryStore.currentRoundId != lotteryStore.ongoingRoundId && (
+      {roundToShow != lotteryStore.lotteryRoundId && (
         <BannerButton
-          onClick={lotteryStore.toOngoingRound}
-          disabled={lotteryStore.currentRoundId == lotteryStore.ongoingRoundId}
+          onClick={() => setRoundToShow(lotteryStore.lotteryRoundId)}
+          disabled={roundToShow == lotteryStore.lotteryRoundId}
           className="absolute right-0 z-[1] m-[2vw] flex h-[3.13vw] items-center justify-center gap-[0.33vw] border-right-accent px-[1vw] text-[1.6vw] text-right-accent"
         >
           To Ongoing round
@@ -147,7 +161,7 @@ export default function BannerSection({
               alt={'znakes'}
               className={'mb-1 h-[30px] w-[30px]'}
             />
-            <span>{currentRound.bank}</span>
+            <span>{formatUnits((ticketsNum || 0n) * TICKET_PRICE.toBigInt())}</span>
             <span>{Currency.ZNAKES}</span>
           </div>
         </div>
@@ -173,7 +187,7 @@ export default function BannerSection({
                 fill="#D2FF00"
               />
             </svg>
-            <span>{currentRound.ticketsAmount}</span>
+            <span>{ticketsNum}</span>
           </div>
         </div>
       </div>
