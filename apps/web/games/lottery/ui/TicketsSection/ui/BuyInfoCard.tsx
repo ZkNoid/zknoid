@@ -4,19 +4,26 @@ import { cn } from '@/lib/helpers';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useChainStore } from '@/lib/stores/minaChain';
+import { TICKET_PRICE } from 'l1-lottery-contracts';
+import { formatUnits } from '@/lib/unit';
 
 export default function BuyInfoCard({
-  numberOfTickets,
-  cost,
   buttonActive,
+  ticketsInfo
 }: {
-  numberOfTickets: number;
-  cost: number;
   buttonActive: ReactNode;
+  ticketsInfo: {
+    amount: number,
+    numbers: number[]
+  }[]
 }) {
   const workerStore = useWorkerClientStore();
   const networkStore = useNetworkStore();
   const chain = useChainStore();
+
+  const numberOfTickets = ticketsInfo.map(x => x.amount).reduce((x, y) => x + y);
+  const cost = +TICKET_PRICE;
+  const totalPrice = numberOfTickets * cost;
 
   return (
     <div className="flex h-[13.53vw] w-[22vw] flex-col rounded-[0.67vw] bg-[#252525] p-[1.33vw] text-[1.07vw] shadow-2xl">
@@ -28,24 +35,25 @@ export default function BuyInfoCard({
       <div className="flex flex-row">
         <div className="text-nowrap">Cost</div>
         <div className="mx-1 mb-[0.3vw] w-full border-spacing-6 border-b border-dotted border-[#F9F8F4] opacity-50"></div>
-        <div className="">{cost}$</div>
+        <div className="">{formatUnits(cost)}$</div>
       </div>
 
       <div className="mt-auto flex flex-row">
         <div className="text-nowrap">TOTAL AMOUNT</div>
         <div className="mx-1 mb-[0.3vw] w-full border-spacing-6 border-b border-dotted border-[#F9F8F4] opacity-50"></div>
-        <div className="">{cost}$</div>
+        <div className="">{formatUnits(totalPrice)}$</div>
       </div>
       <VioletLotteryButton
         className={cn(
           'my-[1vw] flex h-[2.13vw] items-center justify-center rounded-[0.33vw] px-[1vw] text-[1.07vw]',
-          !buttonActive && 'cursor-not-allowed opacity-50'
+          !(buttonActive && ticketsInfo.every(x => x.numbers.length == 6)) && 'cursor-not-allowed opacity-50'
         )}
         onClick={async () => {
           const txJson = await workerStore.buyTicket(
             networkStore.address!,
             Number(chain.block?.height!),
-            [1, 1, 1, 1, 1, 1]
+            ticketsInfo[0].numbers,
+            numberOfTickets
           );
           console.log('txJson', txJson);
 

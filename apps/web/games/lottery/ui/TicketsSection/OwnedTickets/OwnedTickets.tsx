@@ -10,34 +10,6 @@ interface ITicket {
   amount: number;
 }
 
-const tickets: ITicket[] = [
-  {
-    id: '1',
-    combination: [1, 2, 3, 4, 5, 6],
-    amount: 2,
-  },
-  {
-    id: '2',
-    combination: [1, 2, 3, 4, 5, 6],
-    amount: 2,
-  },
-  {
-    id: '3',
-    combination: [1, 2, 3, 4, 5, 6],
-    amount: 2,
-  },
-  {
-    id: '4',
-    combination: [1, 2, 3, 4, 5, 6],
-    amount: 2,
-  },
-  {
-    id: '5',
-    combination: [1, 2, 3, 4, 5, 6],
-    amount: 2,
-  },
-];
-
 export default function OwnedTickets({roundId}: {roundId: number}) {
   const [currentTicket, setCurrentTicket] = useState<ITicket | undefined>(undefined);
   const workerStore = useWorkerClientStore();

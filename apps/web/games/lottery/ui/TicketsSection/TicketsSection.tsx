@@ -7,6 +7,11 @@ import OwnedTickets from './OwnedTickets';
 import PreviousRound from './PreviousRound';
 import { useLotteryStore } from '@/lib/stores/lotteryStore';
 
+interface TicketInfo {
+  amount: number;
+  numbers: number[];
+}
+
 export default function TicketsSection() {
   const ROUNDS_LIMIT = 2;
   const lotteryStore = useLotteryStore();
@@ -45,9 +50,11 @@ export default function TicketsSection() {
               />
               <div className={'flex flex-col gap-[1.33vw]'}>
                 <BuyInfoCard
-                  numberOfTickets={ticketAmount}
-                  cost={ticketAmount}
                   buttonActive={ticketAmount > 0}
+                  ticketsInfo={[{
+                    amount: ticketAmount,
+                    numbers: [...ticketNumberInput].map(x => Number(x))
+                  }]}
                 />
                 <GetMoreTicketsButton />
               </div>

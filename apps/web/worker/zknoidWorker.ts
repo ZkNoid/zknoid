@@ -174,6 +174,7 @@ const functions = {
     startBlock: number;
     roundId: number;
     ticketNums: number[];
+    amount: number
   }) => {
 
     const senderAccount = PublicKey.fromBase58(args.senderAccount);
@@ -187,7 +188,7 @@ const functions = {
     const stateM = state.lotteryOffchainState!;
 
     console.log(args.ticketNums, senderAccount, args.roundId)
-    const ticket = Ticket.from(args.ticketNums, senderAccount, 1);
+    const ticket = Ticket.from(args.ticketNums, senderAccount, args.amount);
     let [roundWitness, roundTicketWitness, bankWitness, bankValue] =
       stateM.addTicket(ticket, args.roundId);
 

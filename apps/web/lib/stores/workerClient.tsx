@@ -27,7 +27,8 @@ export interface ClientState {
   buyTicket: (
     senderAccount: string,
     currBlock: number,
-    ticketNums: number[]
+    ticketNums: number[],
+    amount: number
   ) => Promise<any>;
   offchainStateReady: boolean;
 }
@@ -163,7 +164,8 @@ export const useWorkerClientStore = create<
     async buyTicket(
       senderAccount: string,
       currBlock: number,
-      ticketNums: number[]
+      ticketNums: number[],
+      amount: number
     ) {
       set((state) => {
         state.status = 'Ticket buy tx prepare';
@@ -178,6 +180,7 @@ export const useWorkerClientStore = create<
         startBlock: this.lotteryState?.startBlock,
         roundId,
         ticketNums,
+        amount
       });
 
       set((state) => {

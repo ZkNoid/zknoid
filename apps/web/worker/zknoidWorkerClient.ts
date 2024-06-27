@@ -37,13 +37,15 @@ export default class ZknoidWorkerClient {
     senderAccount: string,
     startBlock: number,
     roundId: number,
-    ticketNums: number[]
+    ticketNums: number[],
+    amount: number,
   ) {
     return this._call('buyTicket', {
       senderAccount,
       startBlock,
       roundId,
       ticketNums,
+      amount
     });
   }
   fetchOffchainState(startBlock: number, roundId: number) {
