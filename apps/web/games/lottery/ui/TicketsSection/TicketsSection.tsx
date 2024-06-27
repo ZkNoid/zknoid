@@ -9,6 +9,7 @@ import { useLotteryStore } from '@/lib/stores/lotteryStore';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { BLOCK_PER_ROUND } from 'l1-lottery-contracts/build/src/constants';
 import { useChainStore } from '@/lib/stores/minaChain';
+import { AnimatePresence } from 'framer-motion';
 
 interface TicketInfo {
   amount: number;
@@ -18,22 +19,19 @@ interface TicketInfo {
 export default function TicketsSection() {
   const ROUNDS_LIMIT = 2;
   const lotteryStore = useLotteryStore();
+  const workerClientStore = useWorkerClientStore();
+  const chainStore = useChainStore();
   const previousRounds = lotteryStore.getPreviousRounds();
 
-  const [ticketNumberInput, setTicketNumber] = useState('');
-  const [ticketAmount, setTicketsAmount] = useState(0);
-  const [ticketFinalized, setTicketFinalized] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
-
   const pagesAmount = Math.ceil(previousRounds.length / ROUNDS_LIMIT);
+  const emptyTicket: TicketInfo = { numbers: [0, 0, 0, 0, 0, 0], amount: 0 };
+  const [tickets, _setTickets] = useState<TicketInfo[]>([emptyTicket]);
 
   const renderRounds = previousRounds.slice(
     (page - 1) * ROUNDS_LIMIT,
     page * ROUNDS_LIMIT
   );
-
-  const workerClientStore = useWorkerClientStore();
-  const chainStore = useChainStore();
 
   const roundId = workerClientStore.lotteryState
     ? Math.floor(
@@ -56,25 +54,32 @@ export default function TicketsSection() {
           <div className={'flex flex-col'}>
             <div className="mb-[1.33vw] text-[2.13vw]">Buy tickets</div>
             <div className={'flex flex-row gap-[1.33vw]'}>
-              <TicketCard
-                symbols={ticketNumberInput}
-                amount={ticketAmount}
-                finalized={ticketFinalized}
-                setFinalized={setTicketFinalized}
-                setSymbols={setTicketNumber}
-                setTicketsAmount={setTicketsAmount}
-              />
+              <div className={'flex flex-col gap-0'}>
+                <AnimatePresence>
+                  {tickets.map((_, index) => (
+                    <TicketCard
+                      key={index}
+                      index={index}
+                      ticketsAmount={tickets.length}
+                      addTicket={(ticket) => {
+                        tickets[index] = ticket;
+                      }}
+                      removeTicket={() => tickets.pop()}
+                    />
+                  ))}
+                </AnimatePresence>
+              </div>
               <div className={'flex flex-col gap-[1.33vw]'}>
                 <BuyInfoCard
-                  buttonActive={ticketAmount > 0}
-                  ticketsInfo={[
-                    {
-                      amount: ticketAmount,
-                      numbers: [...ticketNumberInput].map((x) => Number(x)),
-                    },
-                  ]}
+                  buttonActive={tickets.length > 0}
+                  ticketsInfo={tickets}
                 />
-                <GetMoreTicketsButton />
+                <GetMoreTicketsButton
+                  disabled={tickets[tickets.length - 1].amount == 0}
+                  onClick={() => {
+                    tickets.push(emptyTicket);
+                  }}
+                />
               </div>
             </div>
           </div>
