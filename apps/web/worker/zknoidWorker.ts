@@ -38,7 +38,7 @@ import {
   NumberPacked,
 } from 'l1-lottery-contracts';
 
-import { BuyTicketEvent } from 'l1-lottery-contracts/build/src/Lottery';
+import { BuyTicketEvent, ProduceResultEvent } from 'l1-lottery-contracts/build/src/Lottery';
 import { NETWORKS } from '@/app/constants/networks';
 import { number } from 'zod';
 // import { DummyBridge } from 'zknoidcontractsl1';
@@ -132,6 +132,17 @@ const functions = {
 
         stateM.addTicket(data.ticket, +data.round);
       }
+      if (event.type == 'produce-result') {
+        const data = event.event.data as unknown as ProduceResultEvent;
+        console.log(
+          'Produced result',
+          data.result,
+          'round' + data.round
+        );
+
+        stateM.roundResultMap.set(data.round, data.result);
+      }
+
     }
 
     state.lotteryOffchainState = stateM;

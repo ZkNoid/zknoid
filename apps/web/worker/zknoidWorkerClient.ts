@@ -48,11 +48,11 @@ export default class ZknoidWorkerClient {
       amount
     });
   }
-  fetchOffchainState(startBlock: number, roundId: number): number {
+  fetchOffchainState(startBlock: number, roundId: number): Promise<number> {
     return this._call('fetchOffchainState', {    
       startBlock,
       roundId
-  });
+  }) as Promise<number>;
   }
   getRoundsInfo(roundIds: number[]) {
     return this._call('getRoundsInfo', {roundIds})
