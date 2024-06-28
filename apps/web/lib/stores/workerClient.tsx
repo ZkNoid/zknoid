@@ -15,7 +15,7 @@ export interface ClientState {
   lotteryRoundId: number;
   start: () => Promise<ZknoidWorkerClient>;
   startLottery: (networkId: string, currBlock: number) => Promise<ZknoidWorkerClient>;
-  fetchOffchainState: (startBlock: number, roundId: number) => Promise<void>;
+  fetchOffchainState: (startBlock: number, roundId: number) => Promise<number>;
   getRoundsInfo(rounds: number[]): Promise<Record<number, {
     id: number,
     bank: bigint,
@@ -43,7 +43,7 @@ export const useWorkerClientStore = create<
     status: 'Not loaded',
     lotteryState: undefined,
     lotteryRoundId: 0,
-    offchainStateUpdateBlock: false,
+    offchainStateUpdateBlock: 0,
     async start() {
       set((state) => {
         state.status = 'Loading worker';
@@ -169,7 +169,12 @@ export const useWorkerClientStore = create<
       }>;
     },
     async fetchOffchainState(startBlock: number, roundId: number) {
-      await this.client?.fetchOffchainState(startBlock, roundId);
+      const lastOffchainUpdate = await this.client?.fetchOffchainState(startBlock, roundId);
+      console.log('Last offchain update', lastOffchainUpdate);
+      set((state) => {
+        state.offchainStateUpdateBlock = lastOffchainUpdate!;
+      });
+
     },
     async buyTicket(
       senderAccount: string,

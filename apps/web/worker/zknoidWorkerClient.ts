@@ -48,7 +48,7 @@ export default class ZknoidWorkerClient {
       amount
     });
   }
-  fetchOffchainState(startBlock: number, roundId: number) {
+  fetchOffchainState(startBlock: number, roundId: number): number {
     return this._call('fetchOffchainState', {    
       startBlock,
       roundId

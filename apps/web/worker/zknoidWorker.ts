@@ -111,7 +111,7 @@ const functions = {
     roundId: number;
 }) {
     const stateM = new StateManager(UInt32.from(args.startBlock).toFields()[0]);
-  console.log('Args', args);  
+    console.log('Args', args);  
     console.log('Fetching events')
     const events = await state.lotteryGame!.fetchEvents(UInt32.from(0));
     console.log('Fetched events', events);
@@ -135,6 +135,7 @@ const functions = {
     }
 
     state.lotteryOffchainState = stateM;
+    return Number(events.at(-1)?.blockHeight?.toBigint() || 0n);
   },
   async getRoundsInfo(args: {roundIds: number[]}) {
     console.log('Round ids', args.roundIds)
