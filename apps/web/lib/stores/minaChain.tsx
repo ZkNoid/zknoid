@@ -30,6 +30,7 @@ export interface ChainState {
   loading: boolean;
   block?: {
     height: bigint;
+    slotSinceGenesis: bigint;
   } & ComputedBlockJSON;
   loadBlock: (networkID: string) => Promise<void>;
 }
@@ -40,6 +41,7 @@ export interface BlockQueryResponse {
       protocolState: {
         consensusState: {
           blockHeight: string;
+          slotSinceGenesis: string;
         };
       };
     }[];
@@ -70,7 +72,8 @@ export const useChainStore = create<ChainState, [['zustand/immer', never]]>(
               bestChain(maxLength:1) {
                 protocolState {
                   consensusState {
-                    blockHeight
+                    blockHeight,
+                    slotSinceGenesis
                   }
                 }
               }
@@ -82,10 +85,13 @@ export const useChainStore = create<ChainState, [['zustand/immer', never]]>(
 
       const { data } = (await response.json()) as BlockQueryResponse;
       const height = data.bestChain[0].protocolState.consensusState.blockHeight;
+      const slotSinceGenesis = data.bestChain[0].protocolState.consensusState.slotSinceGenesis;
+
       set((state) => {
         state.loading = false;
         state.block = {
           height: BigInt(height),
+          slotSinceGenesis: BigInt(slotSinceGenesis),
           ...data.block,
         };
       });

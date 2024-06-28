@@ -54,7 +54,7 @@ export default function BuyInfoCard({
         onClick={async () => {
           const txJson = await workerStore.buyTicket(
             networkStore.address!,
-            Number(chain.block?.height!),
+            Number(chain.block?.slotSinceGenesis!),
             ticketsInfo[0].numbers,
             numberOfTickets
           );

@@ -31,7 +31,7 @@ export default function Lottery({}: { params: { competitionId: string } }) {
     if (workerClientStore.client && networkStore.minaNetwork?.networkID) {
       workerClientStore.startLottery(
         networkStore.minaNetwork?.networkID!,
-        Number(chainStore.block?.height)
+        Number(chainStore.block?.slotSinceGenesis)
       );
     }
   }, [workerClientStore.client, networkStore.minaNetwork?.networkID]);
@@ -40,7 +40,7 @@ export default function Lottery({}: { params: { competitionId: string } }) {
     if (!workerClientStore.lotteryState) return;
 
     const startBlock = workerClientStore.lotteryState?.startBlock;
-    const blockNum = chainStore.block?.height;
+    const blockNum = chainStore.block?.slotSinceGenesis;
     const roundId_ =
       blockNum && startBlock
         ? Math.floor(Number(blockNum - startBlock) / BLOCK_PER_ROUND)

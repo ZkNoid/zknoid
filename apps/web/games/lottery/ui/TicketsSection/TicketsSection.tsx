@@ -38,7 +38,7 @@ export default function TicketsSection() {
   const roundId = workerClientStore.lotteryState
     ? Math.floor(
         Number(
-          chainStore.block?.height! - workerClientStore.lotteryState.startBlock
+          chainStore.block?.slotSinceGenesis! - workerClientStore.lotteryState.startBlock
         ) / BLOCK_PER_ROUND
       )
     : 0;
