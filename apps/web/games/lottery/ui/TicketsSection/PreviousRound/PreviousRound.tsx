@@ -3,6 +3,7 @@ import znakesImg from '@/public/image/tokens/znakes.svg';
 import { Currency } from '@/constants/currency';
 import { TicketItem } from './ui/TicketItem';
 import { IRound } from '@/lib/stores/lotteryStore';
+import { formatUnits } from '@/lib/unit';
 
 export default function PreviousRound({ round }: { round: IRound }) {
   return (
@@ -78,7 +79,7 @@ export default function PreviousRound({ round }: { round: IRound }) {
                 'flex w-full flex-row items-center justify-end gap-[0.5vw]'
               }
             >
-              <span>{round.bank}</span>
+              <span>{formatUnits(round.bank)}</span>
               <span>{Currency.ZNAKES}</span>
             </div>
           </div>

@@ -1,36 +1,59 @@
 import { cn } from '@/lib/helpers';
 import TicketCard from './ui/TicketCard';
 import BuyInfoCard from './ui/BuyInfoCard';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import GetMoreTicketsButton from './ui/GetMoreTicketsButton';
 import OwnedTickets from './OwnedTickets';
 import PreviousRound from './PreviousRound';
 import { useLotteryStore } from '@/lib/stores/lotteryStore';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
-import { BLOCK_PER_ROUND } from 'l1-lottery-contracts/build/src/constants';
+import { BLOCK_PER_ROUND, TICKET_PRICE } from 'l1-lottery-contracts/build/src/constants';
 import { useChainStore } from '@/lib/stores/minaChain';
 
-interface TicketInfo {
-  amount: number;
-  numbers: number[];
-}
-
 export default function TicketsSection() {
-  const ROUNDS_LIMIT = 2;
-  const lotteryStore = useLotteryStore();
-  const previousRounds = lotteryStore.getPreviousRounds();
+  const ROUNDS_PER_PAGE = 2;
+  const lotteryStore = useWorkerClientStore();
 
   const [ticketNumberInput, setTicketNumber] = useState('');
   const [ticketAmount, setTicketsAmount] = useState(0);
   const [ticketFinalized, setTicketFinalized] = useState<boolean>(false);
-  const [page, setPage] = useState<number>(1);
+  const [page, setPage] = useState<number>(0);
 
-  const pagesAmount = Math.ceil(previousRounds.length / ROUNDS_LIMIT);
+  const roundsToShow = Array.from({length: ROUNDS_PER_PAGE}, (_, i) => 
+    lotteryStore.lotteryRoundId - i - page * ROUNDS_PER_PAGE
+  ).filter(x => x >= 0);
 
-  const renderRounds = previousRounds.slice(
-    (page - 1) * ROUNDS_LIMIT,
-    page * ROUNDS_LIMIT
-  );
+  const [roundInfos, setRoundInfos] = useState<{
+    id: number;
+    bank: bigint;
+    tickets: {
+        amount: bigint;
+        numbers: number[];
+        owner: string;
+    }[];
+    winningCombination: number[];
+}[] | undefined>(undefined);
+
+  useEffect(() => {
+    if (!lotteryStore.offchainStateReady) return;
+    (async () => {
+      console.log('TIckets fetching')
+      const roundInfos = await lotteryStore.getRoundsInfo(
+        roundsToShow
+      );
+      console.log('Fetched round infos', roundInfos, Object.values(roundInfos));
+
+      console.log('Round infos', Object.values(roundInfos));
+      setRoundInfos(Object.values(roundInfos));  
+    })();
+  }, [page, lotteryStore.offchainStateReady]);
+
+  // const pagesAmount = Math.ceil(previousRounds.length / ROUNDS_LIMIT);
+
+  // const renderRounds = previousRounds.slice(
+  //   (page - 1) * ROUNDS_LIMIT,
+  //   page * ROUNDS_LIMIT
+  // );
 
   const workerClientStore = useWorkerClientStore();
   const chainStore = useChainStore();
@@ -101,8 +124,19 @@ export default function TicketsSection() {
             </svg>
           </button>
           <div className={'grid w-full grid-cols-2 gap-[1.042vw]'}>
-            {renderRounds.map((item, index) => (
-              <PreviousRound key={index} round={item} />
+            {roundInfos?.map((round, index) => (
+              <PreviousRound key={index} round={{
+                id: round.id,
+                combination: undefined, //  round.winningCombination as [number, number, number, number, number, number], TODO
+                bank: Number(round.tickets.map(x => x.amount).reduce((x, y) => x + y) * TICKET_PRICE.toBigInt()),
+                ticketsAmount: Number(round.tickets.map(x => x.amount).reduce((x, y) => x + y)),
+                date: {
+                  start: new Date(
+                    Date.now() - (Number(chainStore.block?.slotSinceGenesis! - lotteryStore.lotteryState?.startBlock!) - roundId * 480) * 3 * 60 * 1000),
+                  end: new Date(
+                    Date.now() - (Number(chainStore.block?.slotSinceGenesis! - lotteryStore.lotteryState?.startBlock!) - (roundId + 1) * 480) * 3 * 60 * 1000),
+                }
+              }} />
             ))}
           </div>
           <button
@@ -110,7 +144,7 @@ export default function TicketsSection() {
               'flex h-[4vw] w-[4vw] items-center justify-center rounded-[0.521vw] border border-left-accent hover:opacity-80 disabled:opacity-60'
             }
             onClick={() => setPage((prevState) => prevState + 1)}
-            disabled={page + 1 > pagesAmount}
+            disabled={page + 1 > lotteryStore.lotteryRoundId}
           >
             <svg
               width="1.458vw"
