@@ -1,6 +1,7 @@
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import MyTicket from './ui/MyTicket';
 import { useEffect, useState } from 'react';
+import { useNetworkStore } from '@/lib/stores/network';
 
 interface ITicket {
   id: string;
@@ -16,6 +17,7 @@ export default function OwnedTickets({ roundId }: { roundId: number }) {
   const [tickets, setTickets] = useState<
     { id: string; combination: number[]; amount: number }[]
   >([]);
+  const networkStore = useNetworkStore();
 
   useEffect(() => {
     if (!workerStore.offchainStateUpdateBlock) return;
@@ -25,7 +27,7 @@ export default function OwnedTickets({ roundId }: { roundId: number }) {
     (async () => {
       const f = await workerStore.getRoundsInfo([roundId]);
       setTickets(
-        f[roundId].tickets.map((x, i) => ({
+        f[roundId].tickets.filter(x => x.owner == networkStore.address).map((x, i) => ({
           id: `${i}`,
           combination: x.numbers,
           amount: Number(x.amount),

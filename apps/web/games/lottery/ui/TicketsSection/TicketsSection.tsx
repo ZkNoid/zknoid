@@ -12,6 +12,7 @@ import {
 } from 'l1-lottery-contracts/build/src/constants';
 import { useChainStore } from '@/lib/stores/minaChain';
 import { AnimatePresence } from 'framer-motion';
+import { useNetworkStore } from '@/lib/stores/network';
 
 interface TicketInfo {
   amount: number;
@@ -31,6 +32,8 @@ export default function TicketsSection() {
 
   const workerClientStore = useWorkerClientStore();
   const chainStore = useChainStore();
+
+  const networkStore = useNetworkStore();
 
   const emptyTicket: TicketInfo = { numbers: [0, 0, 0, 0, 0, 0], amount: 0 };
   const [tickets, _setTickets] = useState<TicketInfo[]>([emptyTicket]);
@@ -179,7 +182,9 @@ export default function TicketsSection() {
                           1000
                     ),
                   },
-                  tickets: round.tickets.map(x => ({numbers: x.numbers as [number, number, number, number, number, number]})),
+                  tickets: round.tickets
+                    .filter(x => x.owner == networkStore.address)
+                    .map(x => ({numbers: x.numbers as [number, number, number, number, number, number]})),
                 }}
               />
             ))}
