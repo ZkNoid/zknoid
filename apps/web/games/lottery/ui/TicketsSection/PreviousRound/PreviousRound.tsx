@@ -6,6 +6,20 @@ import { IRound } from '@/lib/stores/lotteryStore';
 import { formatUnits } from '@/lib/unit';
 
 export default function PreviousRound({ round }: { round: IRound }) {
+  const parseNumbers = (numbers: number[]) => {
+    const array: {
+      number: number;
+      win: boolean;
+    }[] = [];
+    numbers.map((item, index) => {
+      array.push({
+        number: item,
+        win: round.combination ? item == round.combination[index] : false,
+      });
+    });
+    return array;
+  };
+
   return (
     <div
       className={
@@ -117,58 +131,35 @@ export default function PreviousRound({ round }: { round: IRound }) {
             </div>
           </div>
         </div>
-        <div className={'flex flex-col gap-[1vw]'}>
-          <span
-            className={
-              'font-plexsans text-[1.25vw] font-medium uppercase text-foreground'
-            }
-          >
-            Your tickets
-          </span>
-          <div
-            className={
-              'grid w-full grid-cols-3 font-plexsans text-[0.833vw] font-medium'
-            }
-          >
-            <span>Ticket Number</span>
-            <span>Funds</span>
+        {round.tickets && (
+          <div className={'flex flex-col gap-[1vw]'}>
+            <span
+              className={
+                'font-plexsans text-[1.25vw] font-medium uppercase text-foreground'
+              }
+            >
+              Your tickets
+            </span>
+            <div
+              className={
+                'grid w-full grid-cols-3 font-plexsans text-[0.833vw] font-medium'
+              }
+            >
+              <span>Ticket Number</span>
+              <span>Funds</span>
+            </div>
+            <div className={'flex flex-col'}>
+              {round.tickets.map((item, index) => (
+                <TicketItem
+                  key={index}
+                  noCombination={!round.combination}
+                  numbers={parseNumbers(item.numbers)}
+                  funds={item.funds}
+                />
+              ))}
+            </div>
           </div>
-          <div className={'flex flex-col'}>
-            <TicketItem
-              numbers={[
-                { number: 1, win: false },
-                { number: 2, win: false },
-                { number: 3, win: true },
-                { number: 4, win: false },
-                { number: 5, win: true },
-                { number: 6, win: false },
-              ]}
-              funds={500}
-            />
-            <TicketItem
-              numbers={[
-                { number: 1, win: false },
-                { number: 2, win: false },
-                { number: 3, win: true },
-                { number: 4, win: false },
-                { number: 5, win: true },
-                { number: 6, win: false },
-              ]}
-              funds={500}
-            />
-            <TicketItem
-              numbers={[
-                { number: 1, win: false },
-                { number: 2, win: false },
-                { number: 3, win: true },
-                { number: 4, win: false },
-                { number: 5, win: true },
-                { number: 6, win: false },
-              ]}
-              funds={500}
-            />
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

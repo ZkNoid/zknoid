@@ -9,9 +9,11 @@ type Number = {
 export function TicketItem({
   numbers,
   funds,
+  noCombination,
 }: {
   numbers: Number[];
   funds: number | undefined;
+  noCombination: boolean;
 }) {
   return (
     <div
@@ -46,6 +48,8 @@ export function TicketItem({
             <span>{funds}</span>
             <span>{Currency.ZNAKES}</span>
           </>
+        ) : noCombination ? (
+          <span>No combination</span>
         ) : (
           <span>No funds</span>
         )}

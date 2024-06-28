@@ -10,6 +10,10 @@ export interface IRound {
     start: Date;
     end: Date;
   };
+  tickets?: {
+    numbers: [number, number, number, number, number, number];
+    funds?: number | undefined;
+  }[];
 }
 
 export interface LotteryStore {
@@ -40,6 +44,10 @@ export const useLotteryStore = create<LotteryStore, [['zustand/immer', never]]>(
           start: new Date(2024, 0, 1),
           end: new Date(2024, 0, 30),
         },
+        tickets: [
+          { numbers: [1, 1, 1, 1, 1, 1], funds: 5 },
+          { numbers: [1, 1, 1, 1, 1, 1] },
+        ],
       },
       {
         id: 2,
@@ -50,6 +58,10 @@ export const useLotteryStore = create<LotteryStore, [['zustand/immer', never]]>(
           start: new Date(2024, 1, 1),
           end: new Date(2024, 1, 30),
         },
+        tickets: [
+          { numbers: [1, 1, 1, 1, 1, 1], funds: 5 },
+          { numbers: [1, 1, 1, 1, 1, 1] },
+        ],
       },
       {
         id: 3,
@@ -60,6 +72,10 @@ export const useLotteryStore = create<LotteryStore, [['zustand/immer', never]]>(
           start: new Date(2024, 2, 1),
           end: new Date(2024, 2, 30),
         },
+        tickets: [
+          { numbers: [1, 1, 1, 1, 1, 1], funds: 5 },
+          { numbers: [1, 1, 1, 1, 1, 1] },
+        ],
       },
       {
         id: 4,
@@ -70,6 +86,10 @@ export const useLotteryStore = create<LotteryStore, [['zustand/immer', never]]>(
           start: new Date(2024, 3, 1),
           end: new Date(2024, 3, 30),
         },
+        tickets: [
+          { numbers: [1, 1, 1, 1, 1, 1], funds: 5 },
+          { numbers: [1, 1, 1, 1, 1, 1] },
+        ],
       },
       {
         id: 5,
@@ -80,6 +100,10 @@ export const useLotteryStore = create<LotteryStore, [['zustand/immer', never]]>(
           start: new Date(2024, 4, 1),
           end: new Date(2024, 4, 30),
         },
+        tickets: [
+          { numbers: [1, 1, 1, 1, 1, 1], funds: 5 },
+          { numbers: [1, 1, 1, 1, 1, 1] },
+        ],
       },
     ],
     addRound(round) {
