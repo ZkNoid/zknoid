@@ -147,7 +147,7 @@ export default function TicketsSection() {
                 key={index}
                 round={{
                   id: round.id,
-                  combination: undefined, //  round.winningCombination as [number, number, number, number, number, number], TODO
+                  combination: round.winningCombination as [number, number, number, number, number, number],
                   bank: Number(
                     round.tickets.map((x) => x.amount).reduce((x, y) => x + y) *
                       TICKET_PRICE.toBigInt()
@@ -179,7 +179,7 @@ export default function TicketsSection() {
                           1000
                     ),
                   },
-                  tickets: [{ numbers: [1, 1, 1, 1, 1, 1] }],
+                  tickets: round.tickets.map(x => ({numbers: x.numbers as [number, number, number, number, number, number]})),
                 }}
               />
             ))}

@@ -35,6 +35,7 @@ import {
   Lottery,
   DistibutionProgram,
   StateManager,
+  NumberPacked,
 } from 'l1-lottery-contracts';
 
 import { BuyTicketEvent } from 'l1-lottery-contracts/build/src/Lottery';
@@ -163,8 +164,8 @@ const functions = {
             owner: x.owner.toBase58()
           })
         ),
-        winningCombination: stateM.roundResultMap
-          .get(Field.from(roundId)).toJSON()
+        winningCombination: NumberPacked.unpack(stateM.roundResultMap
+          .get(Field.from(roundId))).map(x => Number(x.toBigint()))
       }
     }
     return data;
