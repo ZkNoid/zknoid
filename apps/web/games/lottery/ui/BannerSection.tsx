@@ -5,7 +5,6 @@ import { cn } from '@/lib/helpers';
 import { VioletLotteryButton } from './buttons/VioletLotteryButton';
 import znakesImg from '@/public/image/tokens/znakes.svg';
 import { Currency } from '@/constants/currency';
-import { IRound, useLotteryStore } from '@/lib/stores/lotteryStore';
 import { MouseEventHandler, ReactNode, useEffect, useState } from 'react';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { TICKET_PRICE } from 'l1-lottery-contracts';
@@ -45,23 +44,26 @@ export default function BannerSection({
   const roundTimer = useRoundTimer(roundEndsIn);
   const lotteryStore = useWorkerClientStore();
   const [roundToShow, setRoundToShow] = useState(0);
-  const [roundInfo, setRoundInfo] = useState<{
-    id: number;
-    bank: bigint;
-    tickets: {
-        amount: bigint;
-        numbers: number[];
-        owner: string;
-    }[];
-    winningCombination: number[];
-} | undefined>(undefined);
+  const [roundInfo, setRoundInfo] = useState<
+    | {
+        id: number;
+        bank: bigint;
+        tickets: {
+          amount: bigint;
+          numbers: number[];
+          owner: string;
+        }[];
+        winningCombination: number[];
+      }
+    | undefined
+  >(undefined);
 
   useEffect(() => {
     if (!lotteryStore.offchainStateReady) return;
     (async () => {
       const roundInfos = await lotteryStore.getRoundsInfo([roundToShow]);
       console.log('Fetched round infos', roundInfos);
-      setRoundInfo(roundInfos[roundToShow]);  
+      setRoundInfo(roundInfos[roundToShow]);
     })();
   }, [roundToShow, lotteryStore.offchainStateReady]);
 
@@ -69,7 +71,9 @@ export default function BannerSection({
     setRoundToShow(lotteryStore.lotteryRoundId);
   }, [lotteryStore.lotteryRoundId]);
 
-  const ticketsNum = roundInfo?.tickets.map(x => x.amount).reduce((x, y) => x + y);
+  const ticketsNum = roundInfo?.tickets
+    .map((x) => x.amount)
+    .reduce((x, y) => x + y);
 
   return (
     <div
@@ -97,9 +101,7 @@ export default function BannerSection({
         </BannerButton>
         <BannerButton
           onClick={() => setRoundToShow(roundToShow + 1)}
-          disabled={
-            roundToShow >= lotteryStore.lotteryRoundId
-          }
+          disabled={roundToShow >= lotteryStore.lotteryRoundId}
           className="flex w-[3.13vw] items-center justify-center border-left-accent text-left-accent"
         >
           <svg
@@ -115,20 +117,22 @@ export default function BannerSection({
         </BannerButton>
       </div>
       <div className="absolute bottom-0 left-0 right-0 top-0 mx-auto h-full w-[25.13vw]">
-        <div className="ml-[2.1vw] mt-[3vw] flex w-[25.13vw] flex-col items-center justify-center text-[2.53vw]">
-          <div className="">Lottery Round {roundToShow}</div>
+        <div className="ml-[2.1vw] mt-[3vw] flex w-[25.13vw] flex-col items-center justify-center">
+          <div className="w-full text-center font-museo text-[2.5vw] font-bold uppercase">
+            Lottery Round {roundToShow}
+          </div>
           <div className="flex flex-row gap-[1.07vw]">
-            <div className="h-[7.67vw] w-[7.67vw] items-center justify-center rounded-[0.67vw] bg-white text-center text-[6vw] text-bg-dark">
+            <div className="h-[7.67vw] w-[7.67vw] items-center justify-center rounded-[0.67vw] bg-white text-center font-museo text-[5vw] font-bold text-bg-dark">
               {roundTimer.startsIn.hours || 0}
             </div>
-            <div className="h-[7.67vw] w-[7.67vw] items-center justify-center rounded-[0.67vw] bg-white text-center text-[6vw] text-bg-dark">
+            <div className="h-[7.67vw] w-[7.67vw] items-center justify-center rounded-[0.67vw] bg-white text-center font-museo text-[5vw] font-bold text-bg-dark">
               {roundTimer.startsIn.minutes || 0}
             </div>
-            <div className="h-[7.67vw] w-[7.67vw] items-center justify-center rounded-[0.67vw] bg-white text-center text-[6vw] text-bg-dark">
+            <div className="h-[7.67vw] w-[7.67vw] items-center justify-center rounded-[0.67vw] bg-white text-center font-museo text-[5vw] font-bold text-bg-dark">
               {Math.trunc(roundTimer.startsIn.seconds! || 0)}
             </div>
           </div>
-          <VioletLotteryButton className="mt-[2.67vw] flex items-center justify-center px-[1vw] text-[1.6vw]">
+          <VioletLotteryButton className="mt-[2.8vw] flex w-full items-center justify-center px-[1vw] font-museo text-[1.6vw] font-bold">
             BUY TICKETS
           </VioletLotteryButton>
         </div>
@@ -161,7 +165,9 @@ export default function BannerSection({
               alt={'znakes'}
               className={'mb-1 h-[30px] w-[30px]'}
             />
-            <span>{formatUnits((ticketsNum || 0n) * TICKET_PRICE.toBigInt())}</span>
+            <span>
+              {formatUnits((ticketsNum || 0n) * TICKET_PRICE.toBigInt())}
+            </span>
             <span>{Currency.ZNAKES}</span>
           </div>
         </div>

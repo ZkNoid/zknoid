@@ -1,9 +1,17 @@
-export default function GetMoreTicketsButton() {
+export default function GetMoreTicketsButton({
+  disabled,
+  onClick,
+}: {
+  disabled: boolean;
+  onClick: () => void;
+}) {
   return (
-    <div
+    <button
       className={
-        'flex w-full cursor-pointer flex-row items-center justify-center gap-[1.33vw] rounded-[2vw] bg-[#252525] p-[0.67vw] text-[1.07vw] text-foreground shadow-2xl hover:opacity-80'
+        'flex w-full cursor-pointer flex-row items-center justify-center gap-[1.33vw] rounded-[2vw] bg-[#252525] p-[0.67vw] text-[1.07vw] text-foreground shadow-2xl hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60'
       }
+      onClick={onClick}
+      disabled={disabled}
     >
       <svg
         width="16"
@@ -21,6 +29,6 @@ export default function GetMoreTicketsButton() {
         />
       </svg>
       <span>Get one more ticket</span>
-    </div>
+    </button>
   );
 }

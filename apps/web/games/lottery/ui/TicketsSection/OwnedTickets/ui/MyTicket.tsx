@@ -23,7 +23,7 @@ const ClosedTicket = ({
         'relative flex h-[13.53vw] flex-row bg-middle-accent p-[0.33vw]',
         {
           'rounded-r-[1.33vw]': rounded == 'right',
-          'rounded-[1.33vw]': rounded == 'full',
+          'rounded-[2.604vw]': rounded == 'full',
           'cursor-pointer': onClick,
         },
         className
@@ -31,7 +31,7 @@ const ClosedTicket = ({
       whileHover={onClick && { scale: 1.05 }}
     >
       <div
-        className={'flex flex-col justify-between rounded-[1.04vw] border p-1'}
+        className={'flex flex-col justify-between rounded-[1.042vw] border p-1'}
       >
         <div
           className={
@@ -122,12 +122,14 @@ export default function MyTicket({
   index,
   isOpen,
   onClick,
+  tags = ['200 Bees', '2000 Frogs'],
 }: {
   isOpen: boolean;
   combination: number[];
   amount: number;
   index: number;
   onClick: () => void;
+  tags?: string[];
 }) {
   return (
     <AnimatePresence>
@@ -162,20 +164,17 @@ export default function MyTicket({
                 >
                   {amount} Tickets
                 </div>
-                <div
-                  className={
-                    'flex items-center justify-center rounded-[0.33vw]  border-[0.07vw] bg-middle-accent px-[0.3vw] py-[0.15vw] font-plexsans text-[0.8vw] font-medium'
-                  }
-                >
-                  200 Bees
-                </div>
-                <div
-                  className={
-                    'flex items-center justify-center rounded-[0.33vw]  border-[0.07vw] bg-middle-accent px-[0.3vw] py-[0.15vw] font-plexsans text-[0.8vw] font-medium'
-                  }
-                >
-                  2000 Frogs
-                </div>
+                {tags &&
+                  tags.map((item, index) => (
+                    <div
+                      key={index}
+                      className={
+                        'flex items-center justify-center rounded-[0.33vw]  border-[0.07vw] bg-middle-accent px-[0.3vw] py-[0.15vw] font-plexsans text-[0.8vw] font-medium'
+                      }
+                    >
+                      {item}
+                    </div>
+                  ))}
               </div>
               <Image
                 src={TicketBG1}

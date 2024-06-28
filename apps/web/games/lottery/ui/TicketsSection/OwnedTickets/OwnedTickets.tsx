@@ -35,6 +35,10 @@ export default function OwnedTickets({ roundId }: { roundId: number }) {
     })();
   }, [workerStore.offchainStateReady]);
 
+  useEffect(() => {
+    currentTicket == undefined && setCurrentTicket(tickets[0]);
+  }, [currentTicket, tickets]);
+
   return (
     <div className={'flex w-full flex-col'}>
       <div className={'mb-[1.33vw] flex flex-row items-center justify-between'}>
