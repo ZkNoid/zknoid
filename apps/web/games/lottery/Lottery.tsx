@@ -69,6 +69,16 @@ export default function Lottery({}: { params: { competitionId: string } }) {
     })();
   }, [workerClientStore.lotteryState]);
 
+  useEffect(() => {
+    if (workerClientStore.lotteryState) {
+      console.log('Refetching offchain state');
+
+      new Promise( resolve => setTimeout(resolve, 3_000) ).then(() => {
+        workerClientStore?.fetchOffchainState(Number(workerClientStore.lotteryState!.startBlock), roundId);
+      })
+    }
+  }, [chainStore.block?.height]);
+
   return (
     <GamePage
       gameConfig={lotteryConfig}

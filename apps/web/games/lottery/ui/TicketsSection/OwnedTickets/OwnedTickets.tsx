@@ -18,7 +18,7 @@ export default function OwnedTickets({ roundId }: { roundId: number }) {
   >([]);
 
   useEffect(() => {
-    if (!workerStore.offchainStateReady) return;
+    if (!workerStore.offchainStateUpdateBlock) return;
 
     console.log('Offchain state ready', workerStore.lotteryState);
 
@@ -33,7 +33,7 @@ export default function OwnedTickets({ roundId }: { roundId: number }) {
       );
       console.log('Effect fetching', f);
     })();
-  }, [workerStore.offchainStateReady]);
+  }, [workerStore.offchainStateUpdateBlock]);
 
   useEffect(() => {
     currentTicket == undefined && setCurrentTicket(tickets[0]);

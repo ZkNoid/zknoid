@@ -50,7 +50,7 @@ export default function TicketsSection() {
   >(undefined);
 
   useEffect(() => {
-    if (!lotteryStore.offchainStateReady) return;
+    if (!lotteryStore.offchainStateUpdateBlock) return;
     (async () => {
       console.log('TIckets fetching');
       const roundInfos = await lotteryStore.getRoundsInfo(roundsToShow);
@@ -59,7 +59,7 @@ export default function TicketsSection() {
       console.log('Round infos', Object.values(roundInfos));
       setRoundInfos(Object.values(roundInfos));
     })();
-  }, [page, lotteryStore.offchainStateReady]);
+  }, [page, lotteryStore.offchainStateUpdateBlock]);
 
   // const pagesAmount = Math.ceil(previousRounds.length / ROUNDS_LIMIT);
 

@@ -59,13 +59,13 @@ export default function BannerSection({
   >(undefined);
 
   useEffect(() => {
-    if (!lotteryStore.offchainStateReady) return;
+    if (!lotteryStore.offchainStateUpdateBlock) return;
     (async () => {
       const roundInfos = await lotteryStore.getRoundsInfo([roundToShow]);
       console.log('Fetched round infos', roundInfos);
       setRoundInfo(roundInfos[roundToShow]);
     })();
-  }, [roundToShow, lotteryStore.offchainStateReady]);
+  }, [roundToShow, lotteryStore.offchainStateUpdateBlock]);
 
   useEffect(() => {
     setRoundToShow(lotteryStore.lotteryRoundId);

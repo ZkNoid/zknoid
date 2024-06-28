@@ -15,6 +15,7 @@ export interface ClientState {
   lotteryRoundId: number;
   start: () => Promise<ZknoidWorkerClient>;
   startLottery: (networkId: string, currBlock: number) => Promise<ZknoidWorkerClient>;
+  fetchOffchainState: (startBlock: number, roundId: number) => Promise<void>;
   getRoundsInfo(rounds: number[]): Promise<Record<number, {
     id: number,
     bank: bigint,
@@ -31,7 +32,7 @@ export interface ClientState {
     ticketNums: number[],
     amount: number
   ) => Promise<any>;
-  offchainStateReady: boolean;
+  offchainStateUpdateBlock: number;
 }
 
 export const useWorkerClientStore = create<
@@ -42,7 +43,7 @@ export const useWorkerClientStore = create<
     status: 'Not loaded',
     lotteryState: undefined,
     lotteryRoundId: 0,
-    offchainStateReady: false,
+    offchainStateUpdateBlock: false,
     async start() {
       set((state) => {
         state.status = 'Loading worker';
@@ -120,7 +121,7 @@ export const useWorkerClientStore = create<
       await this.client?.fetchOffchainState(Number(lotteryState.startBlock), roundId);
 
       set((state) => {
-        state.offchainStateReady = true;
+        state.offchainStateUpdateBlock = currBlock;
       });
 
       const offchainState = await this.client?.getRoundsInfo([roundId]);
@@ -166,6 +167,9 @@ export const useWorkerClientStore = create<
         }[],
         winningCombination: number[]
       }>;
+    },
+    async fetchOffchainState(startBlock: number, roundId: number) {
+      await this.client?.fetchOffchainState(startBlock, roundId);
     },
     async buyTicket(
       senderAccount: string,
