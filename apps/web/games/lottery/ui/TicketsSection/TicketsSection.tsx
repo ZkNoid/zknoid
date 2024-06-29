@@ -80,6 +80,7 @@ export default function TicketsSection() {
       )
     : 0;
 
+
   return (
     <div
       className={cn(
@@ -132,7 +133,7 @@ export default function TicketsSection() {
               'flex h-[4vw] w-[4vw] items-center justify-center rounded-[0.521vw] border border-left-accent hover:opacity-80 disabled:opacity-60'
             }
             onClick={() => setPage((prevState) => prevState - 1)}
-            disabled={page - 1 < 1}
+            disabled={page - 1 < 0}
           >
             <svg
               width="1.458vw"
@@ -200,7 +201,7 @@ export default function TicketsSection() {
                         number,
                         number,
                       ],
-                      funds: x
+                      funds: x,
                     })),
                 }}
               />
@@ -211,7 +212,7 @@ export default function TicketsSection() {
               'flex h-[4vw] w-[4vw] items-center justify-center rounded-[0.521vw] border border-left-accent hover:opacity-80 disabled:opacity-60'
             }
             onClick={() => setPage((prevState) => prevState + 1)}
-            disabled={page + 1 > lotteryStore.lotteryRoundId}
+            disabled={page + 1 >= lotteryStore.lotteryRoundId}
           >
             <svg
               width="1.458vw"

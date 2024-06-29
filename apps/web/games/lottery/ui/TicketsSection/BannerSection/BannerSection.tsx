@@ -1,14 +1,15 @@
 import Image from 'next/image';
 import { DateTime } from 'luxon';
-import { useRoundTimer } from '../features/useRoundTimer';
+import { useRoundTimer } from '../../../features/useRoundTimer';
 import { cn } from '@/lib/helpers';
-import { VioletLotteryButton } from './buttons/VioletLotteryButton';
+import { VioletLotteryButton } from '../../buttons/VioletLotteryButton';
 import znakesImg from '@/public/image/tokens/znakes.svg';
 import { Currency } from '@/constants/currency';
 import { MouseEventHandler, ReactNode, useEffect, useState } from 'react';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { TICKET_PRICE } from 'l1-lottery-contracts';
 import { formatUnits } from '@/lib/unit';
+import Rules from './ui/Rules';
 
 function BannerButton({
   children,
@@ -197,6 +198,7 @@ export default function BannerSection({
           </div>
         </div>
       </div>
+      <Rules />
     </div>
   );
 }

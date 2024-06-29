@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 // import { useToasterStore } from '@/lib/stores/toasterStore';
 // import { useRateGameStore } from '@/lib/stores/rateGameStore';
-import BannerSection from './ui/BannerSection';
+import BannerSection from './ui/TicketsSection/BannerSection/BannerSection';
 import TicketsSection from './ui/TicketsSection/TicketsSection';
 // import { GameState } from './lib/gameState';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
