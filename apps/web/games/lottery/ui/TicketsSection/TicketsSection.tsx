@@ -80,7 +80,6 @@ export default function TicketsSection() {
       )
     : 0;
 
-
   return (
     <div
       className={cn(
@@ -111,7 +110,7 @@ export default function TicketsSection() {
               </div>
               <div className={'flex flex-col gap-[1.33vw]'}>
                 <BuyInfoCard
-                  buttonActive={tickets.length > 0}
+                  buttonActive={tickets.length > 0 && tickets[0].amount != 0}
                   ticketsInfo={tickets}
                 />
                 <GetMoreTicketsButton
