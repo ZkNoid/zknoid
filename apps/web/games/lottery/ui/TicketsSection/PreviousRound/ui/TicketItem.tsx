@@ -1,5 +1,8 @@
 import { cn } from '@/lib/helpers';
 import { Currency } from '@/constants/currency';
+import { useWorkerClientStore } from '@/lib/stores/workerClient';
+import { useNetworkStore } from '@/lib/stores/network';
+import { useChainStore } from '@/lib/stores/minaChain';
 
 type Number = {
   number: number;
@@ -7,14 +10,20 @@ type Number = {
 };
 
 export function TicketItem({
+  roundId,
   numbers,
   funds,
   noCombination,
 }: {
+  roundId: number,
   numbers: Number[];
   funds: number | undefined;
   noCombination: boolean;
 }) {
+  const workerClient = useWorkerClientStore();
+  const networkStore = useNetworkStore();
+  const chainStore = useChainStore();
+
   return (
     <div
       className={
@@ -59,6 +68,15 @@ export function TicketItem({
           className={
             'items-center rounded-[0.33vw] bg-left-accent px-[0.74vw] py-[0.37vw] font-museo text-[0.833vw] font-medium text-black hover:opacity-70'
           }
+          onClick={() => {
+            workerClient.getReward(
+              networkStore.address!,
+              Number(chainStore.block?.slotSinceGenesis!),
+              roundId,
+              numbers.map((x) => x.number),
+              1
+            );
+          }}
         >
           Claim
         </button>

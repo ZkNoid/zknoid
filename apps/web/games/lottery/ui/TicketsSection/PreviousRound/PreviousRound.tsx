@@ -152,6 +152,7 @@ export default function PreviousRound({ round }: { round: IRound }) {
               {round.tickets.map((item, index) => (
                 <TicketItem
                   key={index}
+                  roundId={round.id}
                   noCombination={!round.combination}
                   numbers={parseNumbers(item.numbers)}
                   funds={parseNumbers(item.numbers).map(x => x.win ? 1 : 0 as number).reduce((x, y) => x + y)}
