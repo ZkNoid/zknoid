@@ -159,12 +159,17 @@ const functions = {
         numbers: number[],
         owner: string
       }[],
-      winningCombination: number[]
+      winningCombination: number[] | undefined
     }>;
 
     for(let i = 0; i < args.roundIds.length; i++) {
       console.log('I', i)
       const roundId = args.roundIds[i];
+
+      const winningCombination = NumberPacked
+        .unpack(stateM.roundResultMap
+        .get(Field.from(roundId)))
+        .map(x => Number(x.toBigint())).slice(0, 6);
       
       data[roundId] = {
         id: roundId,
@@ -176,8 +181,7 @@ const functions = {
             owner: x.owner.toBase58()
           })
         ),
-        winningCombination: NumberPacked.unpack(stateM.roundResultMap
-          .get(Field.from(roundId))).map(x => Number(x.toBigint()))
+        winningCombination: winningCombination.every(x => x == 0) ? undefined : winningCombination
       }
     }
     return data;

@@ -47,7 +47,7 @@ export default function TicketsSection() {
           numbers: number[];
           owner: string;
         }[];
-        winningCombination: number[];
+        winningCombination: number[] | undefined;
       }[]
     | undefined
   >(undefined);

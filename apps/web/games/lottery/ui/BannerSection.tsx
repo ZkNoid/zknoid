@@ -53,7 +53,7 @@ export default function BannerSection({
           numbers: number[];
           owner: string;
         }[];
-        winningCombination: number[];
+        winningCombination: number[] | undefined;
       }
     | undefined
   >(undefined);

@@ -24,7 +24,7 @@ export interface ClientState {
       numbers: number[],
       owner: string
     }[],
-    winningCombination: number[]
+    winningCombination: number[] | undefined
   }>>,
   buyTicket: (
     senderAccount: string,
@@ -165,16 +165,16 @@ export const useWorkerClientStore = create<
           numbers: number[],
           owner: string
         }[],
-        winningCombination: number[]
+        winningCombination: number[] | undefined
       }>;
     },
     async fetchOffchainState(startBlock: number, roundId: number) {
-      const lastOffchainUpdate = await this.client?.fetchOffchainState(startBlock, roundId);
+      const lastOffchainUpdate = await this.client!.fetchOffchainState(startBlock, roundId);
       console.log('Last offchain update', lastOffchainUpdate);
       set((state) => {
         state.offchainStateUpdateBlock = lastOffchainUpdate!;
       });
-
+      return lastOffchainUpdate;
     },
     async buyTicket(
       senderAccount: string,
