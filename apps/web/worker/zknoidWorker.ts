@@ -111,7 +111,10 @@ const functions = {
     console.log('Fetched account', account);
   },
   async fetchOffchainState(args: { startBlock: number; roundId: number }) {
-    const stateM = new StateManager(UInt32.from(args.startBlock).toFields()[0]);
+    const stateM = new StateManager(
+      UInt32.from(args.startBlock).toFields()[0],
+      false
+    );
     console.log('Args', args);
     console.log('Fetching events');
     const events = await state.lotteryGame!.fetchEvents(UInt32.from(0));
@@ -173,10 +176,10 @@ const functions = {
       console.log('I', i);
       const roundId = args.roundIds[i];
 
-      const winningCombination = NumberPacked.unpack(
+      const winningCombination = NumberPacked.unpackToBigints(
         stateM.roundResultMap.get(Field.from(roundId))
       )
-        .map((x) => Number(x.toBigint()))
+        .map((v) => Number(v))
         .slice(0, 6);
 
       data[roundId] = {
@@ -249,9 +252,9 @@ const functions = {
     }
     const stateM = state.lotteryOffchainState!;
 
-    console.log(args.ticketNums, senderAccount, args.roundId);
     const ticket = Ticket.from(args.ticketNums, senderAccount, args.amount);
     let rp = await stateM.getReward(args.roundId, ticket);
+    console.log('RP generated');
 
     let tx = await Mina.transaction(senderAccount, async () => {
       await state.lotteryGame!.getReward(
