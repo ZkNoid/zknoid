@@ -38,7 +38,10 @@ import {
   NumberPacked,
 } from 'l1-lottery-contracts';
 
-import { BuyTicketEvent, ProduceResultEvent } from 'l1-lottery-contracts/build/src/Lottery';
+import {
+  BuyTicketEvent,
+  ProduceResultEvent,
+} from 'l1-lottery-contracts/build/src/Lottery';
 import { NETWORKS } from '@/app/constants/networks';
 import { number } from 'zod';
 // import { DummyBridge } from 'zknoidcontractsl1';
@@ -53,6 +56,7 @@ const state = {
   lotteryOffchainState: null as null | StateManager,
   lotteryCache: null as null | FetchedCache,
   buyTicketTransaction: null as null | Transaction,
+  getRewardTransaction: null as null | Transaction,
 };
 
 // ---------------------------------------------------------------------------------------
@@ -106,19 +110,24 @@ const functions = {
     const account = await fetchAccount({ publicKey });
     console.log('Fetched account', account);
   },
-  async fetchOffchainState(args: {    
-    startBlock: number;
-    roundId: number;
-}) {
+  async fetchOffchainState(args: { startBlock: number; roundId: number }) {
     const stateM = new StateManager(UInt32.from(args.startBlock).toFields()[0]);
-    console.log('Args', args);  
-    console.log('Fetching events')
+    console.log('Args', args);
+    console.log('Fetching events');
     const events = await state.lotteryGame!.fetchEvents(UInt32.from(0));
     console.log('Fetched events', events);
-    console.log('Sync with block', Number(args.startBlock) + args.roundId * 480 + 1)
+    console.log(
+      'Sync with block',
+      Number(args.startBlock) + args.roundId * 480 + 1
+    );
 
     stateM.syncWithCurBlock(Number(args.startBlock) + args.roundId * 480 + 1);
-    console.log('Sync with', args.startBlock, Number(args.startBlock) + args.roundId * 480 + 1, args.roundId)
+    console.log(
+      'Sync with',
+      args.startBlock,
+      Number(args.startBlock) + args.roundId * 480 + 1,
+      args.roundId
+    );
 
     for (let i = 0; i < events.length; i++) {
       const event = events[i];
@@ -134,55 +143,56 @@ const functions = {
       }
       if (event.type == 'produce-result') {
         const data = event.event.data as unknown as ProduceResultEvent;
-        console.log(
-          'Produced result',
-          data.result,
-          'round' + data.round
-        );
+        console.log('Produced result', data.result, 'round' + data.round);
 
         stateM.roundResultMap.set(data.round, data.result);
       }
-
     }
 
     state.lotteryOffchainState = stateM;
     return Number(events.at(-1)?.blockHeight?.toBigint() || 0n);
   },
-  async getRoundsInfo(args: {roundIds: number[]}) {
-    console.log('Round ids', args.roundIds)
+  async getRoundsInfo(args: { roundIds: number[] }) {
+    console.log('Round ids', args.roundIds);
     const stateM = state.lotteryOffchainState!;
-    const data = {} as Record<number, {
-      id: number,
-      bank: bigint,
-      tickets: {
-        amount: bigint,
-        numbers: number[],
-        owner: string
-      }[],
-      winningCombination: number[] | undefined
-    }>;
+    const data = {} as Record<
+      number,
+      {
+        id: number;
+        bank: bigint;
+        tickets: {
+          amount: bigint;
+          numbers: number[];
+          owner: string;
+        }[];
+        winningCombination: number[] | undefined;
+      }
+    >;
 
-    for(let i = 0; i < args.roundIds.length; i++) {
-      console.log('I', i)
+    for (let i = 0; i < args.roundIds.length; i++) {
+      console.log('I', i);
       const roundId = args.roundIds[i];
 
-      const winningCombination = NumberPacked
-        .unpack(stateM.roundResultMap
-        .get(Field.from(roundId)))
-        .map(x => Number(x.toBigint())).slice(0, 6);
-      
+      const winningCombination = NumberPacked.unpack(
+        stateM.roundResultMap.get(Field.from(roundId))
+      )
+        .map((x) => Number(x.toBigint()))
+        .slice(0, 6);
+
       data[roundId] = {
         id: roundId,
-        bank: stateM.roundTickets[roundId].map(x => x.amount.toBigInt()).reduce((x, y) => x + y),
-        tickets: stateM.roundTickets[roundId].map(x => 
-          ({
-            amount: x.amount.toBigInt(),
-            numbers: x.numbers.map(x => Number(x.toBigint())),
-            owner: x.owner.toBase58()
-          })
-        ),
-        winningCombination: winningCombination.every(x => x == 0) ? undefined : winningCombination
-      }
+        bank: stateM.roundTickets[roundId]
+          .map((x) => x.amount.toBigInt())
+          .reduce((x, y) => x + y),
+        tickets: stateM.roundTickets[roundId].map((x) => ({
+          amount: x.amount.toBigInt(),
+          numbers: x.numbers.map((x) => Number(x.toBigint())),
+          owner: x.owner.toBase58(),
+        })),
+        winningCombination: winningCombination.every((x) => x == 0)
+          ? undefined
+          : winningCombination,
+      };
     }
     return data;
   },
@@ -191,20 +201,19 @@ const functions = {
     startBlock: number;
     roundId: number;
     ticketNums: number[];
-    amount: number
+    amount: number;
   }) => {
-
     const senderAccount = PublicKey.fromBase58(args.senderAccount);
 
-    if (!state.lotteryOffchainState) { 
+    if (!state.lotteryOffchainState) {
       await functions.fetchOffchainState({
-        startBlock: args.startBlock, 
-        roundId: args.roundId
+        startBlock: args.startBlock,
+        roundId: args.roundId,
       });
     }
     const stateM = state.lotteryOffchainState!;
 
-    console.log(args.ticketNums, senderAccount, args.roundId)
+    console.log(args.ticketNums, senderAccount, args.roundId);
     const ticket = Ticket.from(args.ticketNums, senderAccount, args.amount);
     let [roundWitness, roundTicketWitness, bankWitness, bankValue] =
       stateM.addTicket(ticket, args.roundId);
@@ -219,13 +228,56 @@ const functions = {
       );
     });
 
-    console.log('RECEIVED TX', tx);
+    console.log('BUY TX', tx);
 
     state.buyTicketTransaction = tx;
+  },
+  getReward: async (args: {
+    senderAccount: string;
+    startBlock: number;
+    roundId: number;
+    ticketNums: number[];
+    amount: number;
+  }) => {
+    const senderAccount = PublicKey.fromBase58(args.senderAccount);
+
+    if (!state.lotteryOffchainState) {
+      await functions.fetchOffchainState({
+        startBlock: args.startBlock,
+        roundId: args.roundId,
+      });
+    }
+    const stateM = state.lotteryOffchainState!;
+
+    console.log(args.ticketNums, senderAccount, args.roundId);
+    const ticket = Ticket.from(args.ticketNums, senderAccount, args.amount);
+    let rp = await stateM.getReward(args.roundId, ticket);
+
+    let tx = await Mina.transaction(senderAccount, async () => {
+      await state.lotteryGame!.getReward(
+        ticket,
+        rp.roundWitness,
+        rp.roundTicketWitness,
+        rp.dp,
+        rp.winningNumbers,
+        rp.resultWitness,
+        rp.bankValue,
+        rp.bankWitness,
+        rp.nullifierWitness
+      );
+    });
+
+    console.log('GET REWARD TX', tx);
+
+    state.getRewardTransaction = tx;
   },
   proveBuyTicketTransaction: async () => {
     await state.buyTicketTransaction!.prove();
     return state.buyTicketTransaction!.toJSON();
+  },
+  proveGetRewardTransaction: async () => {
+    await state.getRewardTransaction!.prove();
+    return state.getRewardTransaction!.toJSON();
   },
   getLotteryState: async () => {
     return {

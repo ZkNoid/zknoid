@@ -14,21 +14,36 @@ export interface ClientState {
   lotteryState: { currentRound: bigint; startBlock: bigint } | undefined;
   lotteryRoundId: number;
   start: () => Promise<ZknoidWorkerClient>;
-  startLottery: (networkId: string, currBlock: number) => Promise<ZknoidWorkerClient>;
+  startLottery: (
+    networkId: string,
+    currBlock: number
+  ) => Promise<ZknoidWorkerClient>;
   fetchOffchainState: (startBlock: number, roundId: number) => Promise<number>;
-  getRoundsInfo(rounds: number[]): Promise<Record<number, {
-    id: number,
-    bank: bigint,
-    tickets: {
-      amount: bigint,
-      numbers: number[],
-      owner: string
-    }[],
-    winningCombination: number[] | undefined
-  }>>,
+  getRoundsInfo(rounds: number[]): Promise<
+    Record<
+      number,
+      {
+        id: number;
+        bank: bigint;
+        tickets: {
+          amount: bigint;
+          numbers: number[];
+          owner: string;
+        }[];
+        winningCombination: number[] | undefined;
+      }
+    >
+  >;
   buyTicket: (
     senderAccount: string,
     currBlock: number,
+    ticketNums: number[],
+    amount: number
+  ) => Promise<any>;
+  getReward: (
+    senderAccount: string,
+    currBlock: number,
+    roundId: number,
     ticketNums: number[],
     amount: number
   ) => Promise<any>;
@@ -101,13 +116,13 @@ export const useWorkerClientStore = create<
         state.status = 'Lottery state fetching';
       });
 
-      const lotteryState = await this.client?.getLotteryState() as {
+      const lotteryState = (await this.client?.getLotteryState()) as {
         currentRound: bigint;
         startBlock: bigint;
       };
 
       set((state) => {
-        state.lotteryState = lotteryState 
+        state.lotteryState = lotteryState;
       });
 
       const roundId = Math.floor(
@@ -118,7 +133,10 @@ export const useWorkerClientStore = create<
         state.lotteryRoundId = roundId;
       });
 
-      await this.client?.fetchOffchainState(Number(lotteryState.startBlock), roundId);
+      await this.client?.fetchOffchainState(
+        Number(lotteryState.startBlock),
+        roundId
+      );
 
       set((state) => {
         state.offchainStateUpdateBlock = currBlock;
@@ -157,19 +175,25 @@ export const useWorkerClientStore = create<
       return this.client!;
     },
     async getRoundsInfo(rounds: number[]) {
-      return (await this.client?.getRoundsInfo(rounds)) as Record<number, {
-        id: number,
-        bank: bigint,
-        tickets: {
-          amount: bigint,
-          numbers: number[],
-          owner: string
-        }[],
-        winningCombination: number[] | undefined
-      }>;
+      return (await this.client?.getRoundsInfo(rounds)) as Record<
+        number,
+        {
+          id: number;
+          bank: bigint;
+          tickets: {
+            amount: bigint;
+            numbers: number[];
+            owner: string;
+          }[];
+          winningCombination: number[] | undefined;
+        }
+      >;
     },
     async fetchOffchainState(startBlock: number, roundId: number) {
-      const lastOffchainUpdate = await this.client!.fetchOffchainState(startBlock, roundId);
+      const lastOffchainUpdate = await this.client!.fetchOffchainState(
+        startBlock,
+        roundId
+      );
       console.log('Last offchain update', lastOffchainUpdate);
       set((state) => {
         state.offchainStateUpdateBlock = lastOffchainUpdate!;
@@ -195,7 +219,7 @@ export const useWorkerClientStore = create<
         startBlock: this.lotteryState?.startBlock,
         roundId,
         ticketNums,
-        amount
+        amount,
       });
 
       set((state) => {
@@ -203,6 +227,31 @@ export const useWorkerClientStore = create<
       });
 
       return await this.client?._call('proveBuyTicketTransaction', {});
+    },
+    async getReward(
+      senderAccount: string,
+      currBlock: number,
+      roundId: number,
+      ticketNums: number[],
+      amount: number
+    ) {
+      set((state) => {
+        state.status = 'Get reward tx prepare';
+      });
+
+      await this.client?._call('getReward', {
+        senderAccount,
+        startBlock: this.lotteryState?.startBlock,
+        roundId,
+        ticketNums,
+        amount,
+      });
+
+      set((state) => {
+        state.status = 'Get reward tx proving';
+      });
+
+      return await this.client?._call('proveGetRewardTransaction', {});
     },
   }))
 );

@@ -38,24 +38,39 @@ export default class ZknoidWorkerClient {
     startBlock: number,
     roundId: number,
     ticketNums: number[],
-    amount: number,
+    amount: number
   ) {
     return this._call('buyTicket', {
       senderAccount,
       startBlock,
       roundId,
       ticketNums,
-      amount
+      amount,
+    });
+  }
+  getReward(
+    senderAccount: string,
+    startBlock: number,
+    roundId: number,
+    ticketNums: number[],
+    amount: number
+  ) {
+    return this._call('getReward', {
+      senderAccount,
+      startBlock,
+      roundId,
+      ticketNums,
+      amount,
     });
   }
   fetchOffchainState(startBlock: number, roundId: number): Promise<number> {
-    return this._call('fetchOffchainState', {    
+    return this._call('fetchOffchainState', {
       startBlock,
-      roundId
-  }) as Promise<number>;
+      roundId,
+    }) as Promise<number>;
   }
   getRoundsInfo(roundIds: number[]) {
-    return this._call('getRoundsInfo', {roundIds})
+    return this._call('getRoundsInfo', { roundIds });
   }
   getLotteryState() {
     return this._call('getLotteryState', {});
