@@ -15,7 +15,7 @@ export function TicketItem({
   funds,
   noCombination,
 }: {
-  roundId: number,
+  roundId: number;
   numbers: Number[];
   funds: number | undefined;
   noCombination: boolean;
@@ -68,14 +68,24 @@ export function TicketItem({
           className={
             'items-center rounded-[0.33vw] bg-left-accent px-[0.74vw] py-[0.37vw] font-museo text-[0.833vw] font-medium text-black hover:opacity-70'
           }
-          onClick={() => {
-            workerClient.getReward(
+          onClick={async () => {
+            let txJson = await workerClient.getReward(
               networkStore.address!,
               Number(chainStore.block?.slotSinceGenesis!),
               roundId,
               numbers.map((x) => x.number),
               1
             );
+
+            console.log('txJson', txJson);
+
+            const { hash } = await (window as any).mina.sendTransaction({
+              transaction: txJson,
+              feePayer: {
+                fee: '0.1',
+                memo: '',
+              },
+            });
           }}
         >
           Claim
