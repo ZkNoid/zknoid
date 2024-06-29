@@ -6,12 +6,15 @@ import { useNetworkStore } from '@/lib/stores/network';
 import { useChainStore } from '@/lib/stores/minaChain';
 import { TICKET_PRICE } from 'l1-lottery-contracts';
 import { formatUnits } from '@/lib/unit';
+import LoadSpinner from '@/components/shared/LoadSpinner';
 
 export default function BuyInfoCard({
   buttonActive,
+  lodaderActive,
   ticketsInfo,
 }: {
   buttonActive: ReactNode;
+  lodaderActive: boolean;
   ticketsInfo: {
     amount: number;
     numbers: number[];
@@ -47,9 +50,10 @@ export default function BuyInfoCard({
       </div>
       <VioletLotteryButton
         className={cn(
-          'my-[1vw] flex h-[2.13vw] items-center justify-center rounded-[0.33vw] px-[1vw] text-[1.07vw] hover:opacity-80',
+          'my-[1vw] flex h-[2.13vw] items-center justify-center rounded-[0.33vw] px-[1vw] text-[1.07vw]',
           !(buttonActive && ticketsInfo.every((x) => x.numbers.length == 6)) &&
-            'cursor-not-allowed opacity-60'
+            'cursor-not-allowed opacity-60',
+          { 'hover:opacity-80': buttonActive }
         )}
         onClick={async () => {
           const txJson = await workerStore.buyTicket(
@@ -69,7 +73,17 @@ export default function BuyInfoCard({
           });
         }}
       >
-        Pay
+        <div className={'flex flex-row items-center gap-[10%]'}>
+          <span>Pay</span>
+          {lodaderActive && (
+            <LoadSpinner
+              width={23}
+              height={23}
+              color={'foreground'}
+              backgroundColor={'dark'}
+            />
+          )}
+        </div>
       </VioletLotteryButton>
     </div>
   );

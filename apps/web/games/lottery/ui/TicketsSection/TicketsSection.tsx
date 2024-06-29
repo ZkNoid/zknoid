@@ -89,7 +89,10 @@ export default function TicketsSection() {
     >
       <div className="">
         <div className="grid grid-cols-2 gap-[2vw]">
-          {workerClientStore.lotteryState && <OwnedTickets roundId={roundId} />}
+          {workerClientStore.lotteryState &&
+            roundInfos?.find((round) => round.id == roundId)?.tickets && (
+              <OwnedTickets roundId={roundId} />
+            )}
           <div className={'flex flex-col'}>
             <div className="mb-[1.33vw] text-[2.13vw]">Buy tickets</div>
             <div className={'flex flex-row gap-[1.33vw]'}>
@@ -110,8 +113,15 @@ export default function TicketsSection() {
               </div>
               <div className={'flex flex-col gap-[1.33vw]'}>
                 <BuyInfoCard
-                  buttonActive={tickets.length > 0 && tickets[0].amount != 0}
+                  buttonActive={
+                    workerClientStore.status === 'Lottery initialized' &&
+                    tickets.length > 0 &&
+                    tickets[0].amount != 0
+                  }
                   ticketsInfo={tickets}
+                  lodaderActive={
+                    workerClientStore.status !== 'Lottery initialized'
+                  }
                 />
                 <GetMoreTicketsButton
                   disabled={tickets[tickets.length - 1].amount == 0}

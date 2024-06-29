@@ -27,11 +27,13 @@ export default function OwnedTickets({ roundId }: { roundId: number }) {
     (async () => {
       const f = await workerStore.getRoundsInfo([roundId]);
       setTickets(
-        f[roundId].tickets.filter(x => x.owner == networkStore.address).map((x, i) => ({
-          id: `${i}`,
-          combination: x.numbers,
-          amount: Number(x.amount),
-        }))
+        f[roundId].tickets
+          .filter((x) => x.owner == networkStore.address)
+          .map((x, i) => ({
+            id: `${i}`,
+            combination: x.numbers,
+            amount: Number(x.amount),
+          }))
       );
       console.log('Effect fetching', f);
     })();
