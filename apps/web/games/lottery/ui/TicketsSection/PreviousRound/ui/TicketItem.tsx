@@ -18,7 +18,7 @@ export function TicketItem({
   return (
     <div
       className={
-        'grid grid-cols-3 border-b py-[0.5vw] first:border-t hover:bg-[#464646]'
+        'grid grid-cols-3 border-b py-[0.521vw] first:border-t hover:bg-[#464646]'
       }
     >
       <div className={'flex flex-row items-center gap-[0.25vw]'}>
