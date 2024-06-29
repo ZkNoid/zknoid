@@ -43,7 +43,7 @@ export function TicketItem({
           'flex flex-row items-center gap-[0.25vw] font-plexsans text-[0.833vw]'
         }
       >
-        {funds ? (
+        {!!funds ? (
           <>
             <span>{funds}</span>
             <span>{Currency.ZNAKES}</span>
@@ -54,7 +54,7 @@ export function TicketItem({
           <span>No funds</span>
         )}
       </div>
-      {funds && (
+      {!!funds && (
         <button
           className={
             'items-center rounded-[0.33vw] bg-left-accent px-[0.74vw] py-[0.37vw] font-museo text-[0.833vw] font-medium text-black hover:opacity-70'

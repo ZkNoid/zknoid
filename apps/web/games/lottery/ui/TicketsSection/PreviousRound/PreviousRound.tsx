@@ -154,7 +154,7 @@ export default function PreviousRound({ round }: { round: IRound }) {
                   key={index}
                   noCombination={!round.combination}
                   numbers={parseNumbers(item.numbers)}
-                  funds={item.funds}
+                  funds={parseNumbers(item.numbers).map(x => x.win ? 1 : 0 as number).reduce((x, y) => x + y)}
                 />
               ))}
             </div>
