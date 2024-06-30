@@ -3,22 +3,17 @@ import { lotteryConfig } from './config';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-// import { useToasterStore } from '@/lib/stores/toasterStore';
-// import { useRateGameStore } from '@/lib/stores/rateGameStore';
 import BannerSection from './ui/TicketsSection/BannerSection/BannerSection';
 import TicketsSection from './ui/TicketsSection/TicketsSection';
-// import { GameState } from './lib/gameState';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { useChainStore } from '@/lib/stores/minaChain';
 import { BLOCK_PER_ROUND } from 'l1-lottery-contracts/build/src/constants';
 import { DateTime, Duration } from 'luxon';
+import {NetworkIds, NETWORKS} from "@/app/constants/networks";
+import WrongNetworkModal from "@/games/lottery/ui/TicketsSection/ui/WrongNetworkModal";
 
 export default function Lottery({}: { params: { competitionId: string } }) {
   const networkStore = useNetworkStore();
-  // const toasterStore = useToasterStore();
-  // const rateGameStore = useRateGameStore();
-  // const [gameState, setGameState] = useState(GameState.NotStarted);
-  // const [isRateGame, setIsRateGame] = useState<boolean>(false);
   const [roundId, setRoundId] = useState(0);
   const [roundEndsIn, setRoundEndsIn] = useState<DateTime>(
     DateTime.fromMillis(0)
@@ -96,6 +91,9 @@ export default function Lottery({}: { params: { competitionId: string } }) {
         }
         animate={'windowed'}
       ></motion.div>
+      {networkStore.minaNetwork?.networkID != NETWORKS[NetworkIds.MINA_DEVNET].networkID && (
+          <WrongNetworkModal/>
+      )}
     </GamePage>
   );
 }
