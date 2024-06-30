@@ -41,6 +41,7 @@ export default function TicketsSection() {
           amount: bigint;
           numbers: number[];
           owner: string;
+          claimed: boolean;
         }[];
         winningCombination: number[] | undefined;
       }[]
@@ -214,7 +215,8 @@ export default function TicketsSection() {
                         number,
                         number,
                       ],
-                      funds: x,
+                      funds: Number(x.amount),
+                      claimed: x.claimed
                     })),
                 }}
               />

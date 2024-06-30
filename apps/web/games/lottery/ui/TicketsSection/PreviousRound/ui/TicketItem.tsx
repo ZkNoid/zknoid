@@ -14,11 +14,13 @@ export function TicketItem({
   numbers,
   funds,
   noCombination,
+  claimed,
 }: {
   roundId: number;
   numbers: Number[];
   funds: number | undefined;
   noCombination: boolean;
+  claimed: boolean;
 }) {
   const workerClient = useWorkerClientStore();
   const networkStore = useNetworkStore();
@@ -63,7 +65,7 @@ export function TicketItem({
           <span>No funds</span>
         )}
       </div>
-      {!!funds && (
+      {!!funds && !claimed && (
         <button
           className={
             'items-center rounded-[0.33vw] bg-left-accent px-[0.74vw] py-[0.37vw] font-museo text-[0.833vw] font-medium text-black hover:opacity-70'
@@ -101,6 +103,15 @@ export function TicketItem({
           }}
         >
           Claim
+        </button>
+      )}
+      {!!funds && claimed && (
+        <button
+          className={
+            'items-center rounded-[0.33vw] bg-left-accent px-[0.74vw] py-[0.37vw] font-museo text-[0.833vw] font-medium text-black hover:opacity-70 opacity-50'
+          }
+        >
+          Claimed
         </button>
       )}
     </div>

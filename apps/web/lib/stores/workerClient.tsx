@@ -29,6 +29,7 @@ export interface ClientState {
           amount: bigint;
           numbers: number[];
           owner: string;
+          claimed: boolean;
         }[];
         winningCombination: number[] | undefined;
       }
@@ -184,6 +185,7 @@ export const useWorkerClientStore = create<
             amount: bigint;
             numbers: number[];
             owner: string;
+            claimed: boolean;
           }[];
           winningCombination: number[] | undefined;
         }

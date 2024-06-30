@@ -172,13 +172,12 @@ const functions = {
             break;
           }
         }
-    
+
         stateM.ticketNullifierMap.set(
           getNullifierId(Field.from(data.round), Field.from(ticketId)),
           Field(1)
         );
       }
-
     }
 
     state.lotteryOffchainState = stateM;
@@ -216,10 +215,13 @@ const functions = {
         bank: stateM.roundTickets[roundId]
           .map((x) => x.amount.toBigInt())
           .reduce((x, y) => x + y),
-        tickets: stateM.roundTickets[roundId].map((x) => ({
+        tickets: stateM.roundTickets[roundId].map((x, i) => ({
           amount: x.amount.toBigInt(),
           numbers: x.numbers.map((x) => Number(x.toBigint())),
           owner: x.owner.toBase58(),
+          claimed: stateM.ticketNullifierMap.get(
+            getNullifierId(Field.from(roundId), Field.from(i))
+          ).equals(Field.from(1)).toBoolean(),
         })),
         winningCombination: winningCombination.every((x) => x == 0)
           ? undefined
