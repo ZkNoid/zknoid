@@ -122,7 +122,7 @@ export default function MyTicket({
   index,
   isOpen,
   onClick,
-  tags = ['200 Bees', '2000 Frogs'],
+  tags,
 }: {
   isOpen: boolean;
   combination: number[];

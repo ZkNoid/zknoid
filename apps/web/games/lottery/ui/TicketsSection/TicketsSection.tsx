@@ -64,13 +64,6 @@ export default function TicketsSection() {
     })();
   }, [page, lotteryStore.offchainStateUpdateBlock]);
 
-  // const pagesAmount = Math.ceil(previousRounds.length / ROUNDS_LIMIT);
-
-  // const renderRounds = previousRounds.slice(
-  //   (page - 1) * ROUNDS_LIMIT,
-  //   page * ROUNDS_LIMIT
-  // );
-
   const roundId = workerClientStore.lotteryState
     ? Math.floor(
         Number(
@@ -79,6 +72,17 @@ export default function TicketsSection() {
         ) / BLOCK_PER_ROUND
       )
     : 0;
+
+  const [userHasTickets, setUserHasTickets] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (roundInfos) {
+      const userTickets: boolean = !!roundInfos?.[roundId]?.tickets
+          .filter((x) => x.owner == networkStore.address)
+
+      setUserHasTickets(userTickets)
+    }
+  }, [workerClientStore.offchainStateUpdateBlock]);
 
   return (
     <div
@@ -89,9 +93,8 @@ export default function TicketsSection() {
     >
       <div className="">
         <div className="grid grid-cols-2 gap-[2vw]">
-          {workerClientStore.lotteryState &&
-            roundInfos?.find((round) => round.id == roundId)?.tickets && (
-              <OwnedTickets roundId={roundId} />
+            {workerClientStore.lotteryState && userHasTickets && (
+                <OwnedTickets roundId={roundId} />
             )}
           <div className={'flex flex-col'}>
             <div className="mb-[1.33vw] text-[2.13vw]">Buy tickets</div>
