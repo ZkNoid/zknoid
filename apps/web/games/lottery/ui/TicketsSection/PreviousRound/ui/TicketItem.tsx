@@ -1,4 +1,4 @@
-import { cn } from '@/lib/helpers';
+import { cn, requestAccounts } from '@/lib/helpers';
 import { Currency } from '@/constants/currency';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { useNetworkStore } from '@/lib/stores/network';
@@ -78,14 +78,26 @@ export function TicketItem({
             );
 
             console.log('txJson', txJson);
-
-            const { hash } = await (window as any).mina.sendTransaction({
-              transaction: txJson,
-              feePayer: {
-                fee: '0.1',
-                memo: '',
-              },
-            });
+            try {
+              const { hash } = await (window as any).mina.sendTransaction({
+                transaction: txJson,
+                feePayer: {
+                  fee: '0.1',
+                  memo: '',
+                },
+              });
+            } catch (e: any) {
+              if (e?.code == 1001) {
+                await requestAccounts();
+                const { hash } = await (window as any).mina.sendTransaction({
+                  transaction: txJson,
+                  feePayer: {
+                    fee: '0.1',
+                    memo: '',
+                  },
+                });
+              }
+            }
           }}
         >
           Claim

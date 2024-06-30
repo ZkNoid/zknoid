@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { VioletLotteryButton } from '../../buttons/VioletLotteryButton';
-import { cn } from '@/lib/helpers';
+import { cn, requestAccounts } from '@/lib/helpers';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useChainStore } from '@/lib/stores/minaChain';
@@ -63,14 +63,26 @@ export default function BuyInfoCard({
             numberOfTickets
           );
           console.log('txJson', txJson);
-
-          const { hash } = await (window as any).mina.sendTransaction({
-            transaction: txJson,
-            feePayer: {
-              fee: '0.1',
-              memo: '',
-            },
-          });
+          try {
+            const { hash } = await (window as any).mina.sendTransaction({
+              transaction: txJson,
+              feePayer: {
+                fee: '0.1',
+                memo: '',
+              },
+            });
+          } catch (e: any) {
+            if (e?.code == 1001) {
+              await requestAccounts();
+              const { hash } = await (window as any).mina.sendTransaction({
+                transaction: txJson,
+                feePayer: {
+                  fee: '0.1',
+                  memo: '',
+                },
+              });
+            }
+          }
         }}
       >
         <div className={'flex flex-row items-center gap-[10%]'}>
