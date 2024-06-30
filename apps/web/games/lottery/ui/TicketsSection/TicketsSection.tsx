@@ -25,11 +25,6 @@ export default function TicketsSection() {
 
   const [page, setPage] = useState<number>(0);
 
-  const roundsToShow = Array.from(
-    { length: ROUNDS_PER_PAGE },
-    (_, i) => lotteryStore.lotteryRoundId - i - page * ROUNDS_PER_PAGE
-  ).filter((x) => x >= 0);
-
   const workerClientStore = useWorkerClientStore();
   const chainStore = useChainStore();
 
@@ -54,6 +49,12 @@ export default function TicketsSection() {
 
   useEffect(() => {
     if (!lotteryStore.offchainStateUpdateBlock) return;
+    
+    const roundsToShow = Array.from(
+      { length: ROUNDS_PER_PAGE },
+      (_, i) => lotteryStore.lotteryRoundId - i - page * ROUNDS_PER_PAGE
+    ).filter((x) => x >= 0);
+  
     (async () => {
       console.log('TIckets fetching');
       const roundInfos = await lotteryStore.getRoundsInfo(roundsToShow);
@@ -144,8 +145,8 @@ export default function TicketsSection() {
             className={
               'flex h-[4vw] w-[4vw] items-center justify-center rounded-[0.521vw] border border-left-accent hover:opacity-80 disabled:opacity-60'
             }
-            onClick={() => setPage((prevState) => prevState - 1)}
-            disabled={page - 1 < 0}
+            onClick={() => setPage((prevState) => prevState + 1)}
+            disabled={page + 1 >= lotteryStore.lotteryRoundId}
           >
             <svg
               width="1.458vw"
@@ -223,8 +224,8 @@ export default function TicketsSection() {
             className={
               'flex h-[4vw] w-[4vw] items-center justify-center rounded-[0.521vw] border border-left-accent hover:opacity-80 disabled:opacity-60'
             }
-            onClick={() => setPage((prevState) => prevState + 1)}
-            disabled={page + 1 >= lotteryStore.lotteryRoundId}
+            onClick={() => setPage((prevState) => prevState - 1)}
+            disabled={page - 1 < 0}
           >
             <svg
               width="1.458vw"
