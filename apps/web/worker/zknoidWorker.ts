@@ -36,10 +36,12 @@ import {
   DistibutionProgram,
   StateManager,
   NumberPacked,
+  getNullifierId,
 } from 'l1-lottery-contracts';
 
 import {
   BuyTicketEvent,
+  GetRewardEvent,
   ProduceResultEvent,
 } from 'l1-lottery-contracts/build/src/Lottery';
 import { NETWORKS } from '@/app/constants/networks';
@@ -150,6 +152,33 @@ const functions = {
 
         stateM.roundResultMap.set(data.round, data.result);
       }
+      if (event.type == 'get-reward') {
+        const data = event.event.data as unknown as GetRewardEvent;
+        console.log('Got reward', data.ticket, 'round' + data.round);
+
+        let ticketId = 0;
+        let roundTicketWitness;
+
+        for (; ticketId < stateM.lastTicketInRound[data.round]; ticketId++) {
+          if (
+            stateM.roundTicketMap[data.round]
+              .get(Field(ticketId))
+              .equals(data.ticket.hash())
+              .toBoolean()
+          ) {
+            roundTicketWitness = stateM.roundTicketMap[data.round].getWitness(
+              Field.from(ticketId)
+            );
+            break;
+          }
+        }
+    
+        stateM.ticketNullifierMap.set(
+          getNullifierId(Field.from(data.round), Field.from(ticketId)),
+          Field(1)
+        );
+      }
+
     }
 
     state.lotteryOffchainState = stateM;
