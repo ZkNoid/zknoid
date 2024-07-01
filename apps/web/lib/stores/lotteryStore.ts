@@ -10,6 +10,7 @@ export interface IRound {
   tickets?: {
     numbers: [number, number, number, number, number, number];
     funds?: number | undefined;
+    amount: number;
     claimed: boolean;
   }[];
 }
