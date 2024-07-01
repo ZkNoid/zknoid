@@ -9,7 +9,7 @@ import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { TICKET_PRICE } from 'l1-lottery-contracts';
 import { formatUnits } from '@/lib/unit';
 import Rules from './ui/Rules';
-import BannerButton from "./ui/BannerButton";
+import BannerButton from './ui/BannerButton';
 
 export default function BannerSection({
   roundEndsIn,

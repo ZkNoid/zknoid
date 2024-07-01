@@ -6,7 +6,7 @@ import { useNetworkStore } from '@/lib/stores/network';
 import { useChainStore } from '@/lib/stores/minaChain';
 import { TICKET_PRICE } from 'l1-lottery-contracts';
 import { formatUnits } from '@/lib/unit';
-import LoadSpinner from '@/components/shared/LoadSpinner';
+import Loader from '@/components/shared/Loader';
 
 export default function BuyInfoCard({
   buttonActive,
@@ -86,15 +86,8 @@ export default function BuyInfoCard({
         }}
       >
         <div className={'flex flex-row items-center gap-[10%]'}>
+          {lodaderActive && <Loader size={19} color={'#212121'} />}
           <span>Pay</span>
-          {lodaderActive && (
-            <LoadSpinner
-              width={23}
-              height={23}
-              color={'foreground'}
-              backgroundColor={'dark'}
-            />
-          )}
         </div>
       </VioletLotteryButton>
     </div>

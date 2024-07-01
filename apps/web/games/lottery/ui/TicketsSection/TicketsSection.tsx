@@ -76,9 +76,9 @@ export default function TicketsSection() {
 
   useEffect(() => {
     if (roundInfos) {
-      const userTickets: boolean = !!roundInfos?.[roundId]?.tickets.filter(
-        (x) => x.owner == networkStore.address
-      );
+      const userTickets: boolean = !!roundInfos
+        ?.find((round) => round.id == roundId)
+        ?.tickets.filter((x) => x.owner == networkStore.address);
 
       setUserHasTickets(userTickets);
     }

@@ -65,6 +65,7 @@
     "framer-motion": "^11.0.10",
     "immer": "^10.0.4",
     "l1-lottery-contracts": "^0.6.2",
+    "ldrs": "^1.0.2",
     "lottie-react": "^2.4.0",
     "lucide-react": "^0.292.0",
     "luxon": "^3.4.4",
