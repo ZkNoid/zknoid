@@ -144,9 +144,9 @@ export default function MyTicket({
                 </div>
               </div>
               <div className="flex flex-row gap-[0.33vw]">
-                {combination.map((fieldId) => (
+                {combination.map((fieldId, index) => (
                   <div
-                    key={fieldId}
+                    key={index}
                     className={cn(
                       'h-[2.67vw] w-[2.67vw] rounded-[0.33vw] border-[0.07vw] border-foreground shadow-[inset_5px_5px_5px_#CF3500,inset_-5px_-5px_5px_rgba(255,91,35,0.5)]',
                       'z-[1] flex items-center justify-center bg-middle-accent font-museo text-[2.13vw] font-bold text-foreground'

@@ -106,7 +106,7 @@ export default function OwnedTickets({ roundId }: { roundId: number }) {
       <div className={'flex w-full flex-row gap-[0.3vw]'}>
         {renderTickets.map((item, index) => (
           <MyTicket
-            key={item.id}
+            key={index}
             isOpen={item.id == currentTicket?.id}
             combination={item.combination}
             amount={item.amount}

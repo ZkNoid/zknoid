@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import znakesImg from '@/public/image/tokens/znakes.svg';
 import { Currency } from '@/constants/currency';
-import { TicketItem } from './ui/TicketItem';
+import { TicketItem } from './TicketItem';
 import { IRound } from '@/lib/stores/lotteryStore';
 import { formatUnits } from '@/lib/unit';
 import { cn } from '@/lib/helpers';
@@ -9,7 +9,7 @@ import CustomScrollbar from '@/components/shared/CustomScrollbar';
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, useScroll } from 'framer-motion';
 
-export default function PreviousRound({ round }: { round: IRound }) {
+export default function PreviousRoundItem({ round }: { round: IRound }) {
   const [containerHeight, setContainerHeight] = useState<number>(0);
   const ticketsListRef = useRef<HTMLDivElement | null>(null);
   const { scrollYProgress } = useScroll({ container: ticketsListRef });
