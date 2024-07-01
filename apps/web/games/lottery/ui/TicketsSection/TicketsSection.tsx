@@ -82,7 +82,12 @@ export default function TicketsSection() {
 
       setUserHasTickets(userTickets);
     }
-  }, [workerClientStore.offchainStateUpdateBlock]);
+  }, [
+    workerClientStore.offchainStateUpdateBlock,
+    roundInfos,
+    roundId,
+    networkStore.address,
+  ]);
 
   return (
     <div
