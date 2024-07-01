@@ -11,6 +11,7 @@ import { BLOCK_PER_ROUND } from 'l1-lottery-contracts';
 import { DateTime, Duration } from 'luxon';
 import {NetworkIds, NETWORKS} from "@/app/constants/networks";
 import WrongNetworkModal from "@/games/lottery/ui/TicketsSection/ui/WrongNetworkModal";
+import { api } from '@/trpc/react';
 
 export default function Lottery({}: { params: { competitionId: string } }) {
   const networkStore = useNetworkStore();
@@ -64,6 +65,8 @@ export default function Lottery({}: { params: { competitionId: string } }) {
     })();
   }, [workerClientStore.lotteryState]);
 
+  const events = api.lotteryBackend.getMinaEvents.useQuery({});
+  
   useEffect(() => {
     if (workerClientStore.lotteryState) {
       console.log('Refetching offchain state');

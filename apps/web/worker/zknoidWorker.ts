@@ -39,7 +39,7 @@ import {
   NumberPacked,
   getNullifierId,
   DistributionProof,
-  DistributionProofPublicInput
+  DistributionProofPublicInput,
 } from 'l1-lottery-contracts';
 
 import {
@@ -49,6 +49,8 @@ import {
 } from 'l1-lottery-contracts';
 import { NETWORKS } from '@/app/constants/networks';
 import { number } from 'zod';
+import { lotteryBackendRouter } from '@/server/api/routers/lottery-backend';
+import { api } from '@/trpc/vanilla';
 // import { DummyBridge } from 'zknoidcontractsl1';
 
 // ---------------------------------------------------------------------------------------
@@ -122,7 +124,9 @@ const functions = {
     );
     console.log('Args', args);
     console.log('Fetching events');
-    const events = await state.lotteryGame!.fetchEvents(UInt32.from(0));
+
+    const events = (await api.lotteryBackend.getMinaEvents.query({})).events;
+
     console.log('Fetched events', events);
     console.log(
       'Sync with block',
@@ -139,8 +143,11 @@ const functions = {
 
     for (let i = 0; i < events.length; i++) {
       const event = events[i];
+      const data = state.lotteryGame.events[event.type as any].fromJSON(
+        event.event.data as undefined as any
+      );
+
       if (event.type == 'buy-ticket') {
-        const data = event.event.data as unknown as BuyTicketEvent;
         console.log(
           'Adding ticket to state',
           data.ticket,
@@ -150,13 +157,11 @@ const functions = {
         stateM.addTicket(data.ticket, +data.round);
       }
       if (event.type == 'produce-result') {
-        const data = event.event.data as unknown as ProduceResultEvent;
         console.log('Produced result', data.result, 'round' + data.round);
 
         stateM.roundResultMap.set(data.round, data.result);
       }
       if (event.type == 'get-reward') {
-        const data = event.event.data as unknown as GetRewardEvent;
         console.log('Got reward', data.ticket, 'round' + data.round);
 
         let ticketId = 0;
@@ -184,7 +189,7 @@ const functions = {
     }
 
     state.lotteryOffchainState = stateM;
-    return Number(events.at(-1)?.blockHeight?.toBigint() || 0n);
+    return events.at(-1)?.blockHeight || 0;
   },
   async getRoundsInfo(args: { roundIds: number[] }) {
     console.log('Round ids', args.roundIds);
@@ -222,9 +227,10 @@ const functions = {
           amount: x.amount.toBigInt(),
           numbers: x.numbers.map((x) => Number(x.toBigint())),
           owner: x.owner.toBase58(),
-          claimed: stateM.ticketNullifierMap.get(
-            getNullifierId(Field.from(roundId), Field.from(i))
-          ).equals(Field.from(1)).toBoolean(),
+          claimed: stateM.ticketNullifierMap
+            .get(getNullifierId(Field.from(roundId), Field.from(i)))
+            .equals(Field.from(1))
+            .toBoolean(),
         })),
         winningCombination: winningCombination.every((x) => x == 0)
           ? undefined
@@ -275,7 +281,7 @@ const functions = {
     roundId: number;
     ticketNums: number[];
     amount: number;
-    dp: JsonProof
+    dp: JsonProof;
   }) => {
     const senderAccount = PublicKey.fromBase58(args.senderAccount);
 
@@ -297,9 +303,7 @@ const functions = {
         rp.roundWitness,
         rp.roundTicketWitness,
         //@ts-ignore
-        await DistributionProof.fromJSON(args.dp as unknown as {
-          publicInput: DistributionProofPublicInput
-        }),
+        await DistributionProof.fromJSON(args.dp),
         rp.winningNumbers,
         rp.resultWitness,
         rp.bankValue,
