@@ -25,7 +25,7 @@ export default function TicketsSection() {
   const emptyTicket: TicketInfo = { numbers: [0, 0, 0, 0, 0, 0], amount: 0 };
 
   const [userHasTickets, setUserHasTickets] = useState<boolean>(false);
-  const [page, setPage] = useState<number>(0);
+  const [page, setPage] = useState<number>(1);
   const [tickets, _setTickets] = useState<TicketInfo[]>([emptyTicket]);
   const [roundInfos, setRoundInfos] = useState<
     | {

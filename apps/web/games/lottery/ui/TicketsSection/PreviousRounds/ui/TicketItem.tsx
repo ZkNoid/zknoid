@@ -4,6 +4,7 @@ import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useChainStore } from '@/lib/stores/minaChain';
 import { api } from '@/trpc/react';
+import Loader from '@/components/shared/Loader';
 
 type Number = {
   number: number;
@@ -75,8 +76,9 @@ export function TicketItem({
       {!!funds && !claimed && (
         <button
           className={
-            'items-center rounded-[0.33vw] bg-left-accent px-[0.74vw] py-[0.37vw] font-museo text-[0.833vw] font-medium text-black hover:opacity-70'
+            'flex items-center justify-center rounded-[0.33vw] bg-left-accent px-[0.74vw] py-[0.37vw] font-museo text-[0.833vw] font-medium text-black hover:opacity-70 disabled:cursor-not-allowed disabled:opacity-60'
           }
+          disabled={workerClient.status != 'Lottery initialized'}
           onClick={async () => {
             let txJson = await workerClient.getReward(
               networkStore.address!,
@@ -110,7 +112,12 @@ export function TicketItem({
             }
           }}
         >
-          Claim
+          <div className={'flex flex-row items-center gap-[10%] pr-[10%]'}>
+            {workerClient.status != 'Lottery initialized' && (
+              <Loader size={'19'} color={'#212121'} />
+            )}
+            <span>Claim</span>
+          </div>
         </button>
       )}
       {!!funds && claimed && (
