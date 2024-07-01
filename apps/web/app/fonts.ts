@@ -1,5 +1,5 @@
 import { IBM_Plex_Mono } from 'next/font/google';
-import { IBM_Plex_Sans } from 'next/font/google'
+import { IBM_Plex_Sans } from 'next/font/google';
 import localFont from 'next/font/local';
 
 export const plexMono = IBM_Plex_Mono({

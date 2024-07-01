@@ -1,39 +1,15 @@
 import Image from 'next/image';
 import { DateTime } from 'luxon';
-import { useRoundTimer } from '../../../features/useRoundTimer';
+import { useRoundTimer } from '../../features/useRoundTimer';
 import { cn } from '@/lib/helpers';
 import znakesImg from '@/public/image/tokens/znakes.svg';
 import { Currency } from '@/constants/currency';
-import { MouseEventHandler, ReactNode, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { TICKET_PRICE } from 'l1-lottery-contracts';
 import { formatUnits } from '@/lib/unit';
 import Rules from './ui/Rules';
-
-function BannerButton({
-  children,
-  className,
-  onClick = undefined,
-  disabled = undefined,
-}: {
-  children: ReactNode;
-  className: string;
-  onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
-  disabled?: boolean | undefined;
-}) {
-  return (
-    <button
-      className={cn(
-        'cursor-pointer rounded-[0.33vw] border hover:opacity-80 disabled:opacity-60',
-        className
-      )}
-      onClick={onClick}
-      disabled={disabled}
-    >
-      {children}
-    </button>
-  );
-}
+import BannerButton from "./ui/BannerButton";
 
 export default function BannerSection({
   roundEndsIn,

@@ -48,7 +48,7 @@ export default function Home() {
             author: x.author,
             rules: x.rules,
             rating: 0,
-            externalUrl: x.externalUrl
+            externalUrl: x.externalUrl,
           })) as IGame[]
         ).concat(announcedGames)
       );

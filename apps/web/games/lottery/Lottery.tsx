@@ -3,14 +3,14 @@ import { lotteryConfig } from './config';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import BannerSection from './ui/TicketsSection/BannerSection/BannerSection';
-import TicketsSection from './ui/TicketsSection/TicketsSection';
+import BannerSection from './ui/BannerSection';
+import TicketsSection from './ui/TicketsSection';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { useChainStore } from '@/lib/stores/minaChain';
 import { BLOCK_PER_ROUND } from 'l1-lottery-contracts';
 import { DateTime, Duration } from 'luxon';
-import {NetworkIds, NETWORKS} from "@/app/constants/networks";
-import WrongNetworkModal from "@/games/lottery/ui/TicketsSection/ui/WrongNetworkModal";
+import { NetworkIds, NETWORKS } from '@/app/constants/networks';
+import WrongNetworkModal from '@/games/lottery/ui/TicketsSection/ui/WrongNetworkModal';
 import { api } from '@/trpc/react';
 
 export default function Lottery({}: { params: { competitionId: string } }) {
@@ -66,14 +66,17 @@ export default function Lottery({}: { params: { competitionId: string } }) {
   }, [workerClientStore.lotteryState]);
 
   const events = api.lotteryBackend.getMinaEvents.useQuery({});
-  
+
   useEffect(() => {
     if (workerClientStore.lotteryState) {
       console.log('Refetching offchain state');
 
-      new Promise( resolve => setTimeout(resolve, 3_000) ).then(() => {
-        workerClientStore?.fetchOffchainState(Number(workerClientStore.lotteryState!.startBlock), roundId);
-      })
+      new Promise((resolve) => setTimeout(resolve, 3_000)).then(() => {
+        workerClientStore?.fetchOffchainState(
+          Number(workerClientStore.lotteryState!.startBlock),
+          roundId
+        );
+      });
     }
   }, [chainStore.block?.height]);
 
@@ -94,9 +97,8 @@ export default function Lottery({}: { params: { competitionId: string } }) {
         }
         animate={'windowed'}
       ></motion.div>
-      {networkStore.minaNetwork?.networkID != NETWORKS[NetworkIds.MINA_DEVNET].networkID && (
-          <WrongNetworkModal/>
-      )}
+      {networkStore.minaNetwork?.networkID !=
+        NETWORKS[NetworkIds.MINA_DEVNET].networkID && <WrongNetworkModal />}
     </GamePage>
   );
 }

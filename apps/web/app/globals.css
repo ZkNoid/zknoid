@@ -4,13 +4,13 @@
 
 :root {
   --background-rgb: #212121;
-  --foreground-rgb: #F9F8F4;
+  --foreground-rgb: #f9f8f4;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background-rgb: #212121;
-    --foreground-rgb: #F9F8F4;
+    --foreground-rgb: #f9f8f4;
   }
 }
 
@@ -47,8 +47,6 @@ img {
     background-image: url(/image/section1/banner-mask.svg);
     background-repeat: no-repeat;
     background-size: 100%;
-
-
   }
 }
 
@@ -59,21 +57,31 @@ img {
 }
 
 @layer base {
-  input[type=number].appearance-none::-webkit-inner-spin-button,
-  input[type=number].appearance-none::-webkit-outer-spin-button {
+  input[type='number'].appearance-none::-webkit-inner-spin-button,
+  input[type='number'].appearance-none::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
-  input[type=number].appearance-none {
-    -moz-appearance:textfield;
+  input[type='number'].appearance-none {
+    -moz-appearance: textfield;
   }
 }
 
 /* clears the ‘X’ from Internet Explorer */
-input[type=search]::-ms-clear { display: none; width : 0; height: 0; }
-input[type=search]::-ms-reveal { display: none; width : 0; height: 0; }
+input[type='search']::-ms-clear {
+  display: none;
+  width: 0;
+  height: 0;
+}
+input[type='search']::-ms-reveal {
+  display: none;
+  width: 0;
+  height: 0;
+}
 /* clears the ‘X’ from Chrome */
-input[type="search"]::-webkit-search-decoration,
-input[type="search"]::-webkit-search-cancel-button,
-input[type="search"]::-webkit-search-results-button,
-input[type="search"]::-webkit-search-results-decoration { display: none; }
+input[type='search']::-webkit-search-decoration,
+input[type='search']::-webkit-search-cancel-button,
+input[type='search']::-webkit-search-results-button,
+input[type='search']::-webkit-search-results-decoration {
+  display: none;
+}

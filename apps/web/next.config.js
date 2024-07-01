@@ -1,19 +1,19 @@
-const TerserPlugin = require('terser-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin');
 const path = require('path');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
   typescript: {
-    ignoreBuildErrors: true // @todo until protokit not released fix
+    ignoreBuildErrors: true, // @todo until protokit not released fix
   },
   async headers() {
     return [
       {
-        source: "/(.*)",
+        source: '/(.*)',
         headers: [
-          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
-          { key: "Cross-Origin-Embedder-Policy", value: "require-corp" },
+          { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
+          { key: 'Cross-Origin-Embedder-Policy', value: 'require-corp' },
         ],
       },
     ];
@@ -29,7 +29,7 @@ const nextConfig = {
         ...config.optimization.splitChunks.cacheGroups,
         victory: {
           test: /o1js@1.3.1/,
-          name: "o1js",
+          name: 'o1js',
           priority: 50,
           reuseExistingChunk: true,
         },
@@ -41,19 +41,21 @@ const nextConfig = {
       ...config,
       optimization: {
         minimize: true,
-        minimizer: [new TerserPlugin({
-          terserOptions: {
-            compress: {
-              keep_classnames: true,
-              keep_fnames: true
+        minimizer: [
+          new TerserPlugin({
+            terserOptions: {
+              compress: {
+                keep_classnames: true,
+                keep_fnames: true,
+              },
+              mangle: {
+                keep_classnames: true,
+                keep_fnames: true,
+              },
             },
-            mangle: {
-              keep_classnames: true,
-              keep_fnames: true
-            },
-          }
-        })]
-      }
+          }),
+        ],
+      },
     };
   },
   eslint: {
@@ -61,18 +63,18 @@ const nextConfig = {
   },
   experimental: {
     reactCompiler: true,
-  },    
+  },
 };
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
-})
-  
-module.exports = withBundleAnalyzer(nextConfig)
+});
+
+module.exports = withBundleAnalyzer(nextConfig);
 
 // Injected content via Sentry wizard below
 
-const { withSentryConfig } = require("@sentry/nextjs");
+const { withSentryConfig } = require('@sentry/nextjs');
 
 module.exports = withSentryConfig(
   module.exports,
@@ -82,8 +84,8 @@ module.exports = withSentryConfig(
 
     // Suppresses source map uploading logs during build
     silent: true,
-    org: "zknoid-2z",
-    project: "javascript-nextjs",
+    org: 'zknoid-2z',
+    project: 'javascript-nextjs',
   },
   {
     // For all available options, see:
@@ -98,7 +100,7 @@ module.exports = withSentryConfig(
     // Routes browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers. (increases server load)
     // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
     // side errors will fail.
-    tunnelRoute: "/monitoring",
+    tunnelRoute: '/monitoring',
 
     // Hides source maps from generated client bundles
     hideSourceMaps: true,

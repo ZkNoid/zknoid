@@ -10,7 +10,7 @@ interface ITicket {
 }
 
 export default function OwnedTickets({ roundId }: { roundId: number }) {
-  const TICKETS_PER_PAGE = 5
+  const TICKETS_PER_PAGE = 5;
   const [currentTicket, setCurrentTicket] = useState<ITicket | undefined>(
     undefined
   );
@@ -19,11 +19,11 @@ export default function OwnedTickets({ roundId }: { roundId: number }) {
     { id: string; combination: number[]; amount: number }[]
   >([]);
   const networkStore = useNetworkStore();
-  const [page, setPage] = useState<number>(1)
+  const [page, setPage] = useState<number>(1);
   const pagesAmount = Math.ceil(tickets.length / TICKETS_PER_PAGE);
   const renderTickets = tickets.slice(
-      (page - 1) * TICKETS_PER_PAGE,
-      page * TICKETS_PER_PAGE
+    (page - 1) * TICKETS_PER_PAGE,
+    page * TICKETS_PER_PAGE
   );
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export default function OwnedTickets({ roundId }: { roundId: number }) {
               className={
                 'flex h-[1.82vw] w-[1.82vw] items-center justify-center rounded-[0.26vw] border border-foreground hover:opacity-80 disabled:opacity-60'
               }
-              onClick={() => setPage(prevState => prevState - 1)}
+              onClick={() => setPage((prevState) => prevState - 1)}
               disabled={page - 1 < 1}
             >
               <svg
@@ -82,7 +82,7 @@ export default function OwnedTickets({ roundId }: { roundId: number }) {
               className={
                 'flex h-[1.82vw] w-[1.82vw] items-center justify-center rounded-[0.26vw] border border-foreground hover:opacity-80 disabled:opacity-60'
               }
-                onClick={() => setPage(prevState => prevState + 1)}
+              onClick={() => setPage((prevState) => prevState + 1)}
               disabled={page + 1 > pagesAmount}
             >
               <svg
@@ -105,17 +105,16 @@ export default function OwnedTickets({ roundId }: { roundId: number }) {
 
       <div className={'flex w-full flex-row gap-[0.3vw]'}>
         {renderTickets.map((item, index) => (
-            <MyTicket
-                key={item.id}
-                isOpen={item.id == currentTicket?.id}
-                combination={item.combination}
-                amount={item.amount}
-                index={index + 1}
-                onClick={() => setCurrentTicket(item)}
-            />
+          <MyTicket
+            key={item.id}
+            isOpen={item.id == currentTicket?.id}
+            combination={item.combination}
+            amount={item.amount}
+            index={index + 1}
+            onClick={() => setCurrentTicket(item)}
+          />
         ))}
       </div>
-
     </div>
   );
 }

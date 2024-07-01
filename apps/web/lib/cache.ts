@@ -12,20 +12,28 @@ export async function fetchCache(
   cacheInfo: ContractCache
 ): Promise<FetchedCache> {
   const fetchedCacheObject = await Promise.all(
-    cacheInfo.files.filter(file => !file.endsWith('.header')).map((file, i) => {
-      // console.log(
-      //   'Fetching', i, cacheInfo.files.indexOf(`${file}.header`), 
-      //   cacheInfo.urls[cacheInfo.files.indexOf(`${file}.header`)]
-      // )
-      console.log('Fetching', i, cacheInfo.urls[cacheInfo.files.indexOf(`${file}`)])
+    cacheInfo.files
+      .filter((file) => !file.endsWith('.header'))
+      .map((file, i) => {
+        // console.log(
+        //   'Fetching', i, cacheInfo.files.indexOf(`${file}.header`),
+        //   cacheInfo.urls[cacheInfo.files.indexOf(`${file}.header`)]
+        // )
+        console.log(
+          'Fetching',
+          i,
+          cacheInfo.urls[cacheInfo.files.indexOf(`${file}`)]
+        );
 
-      return Promise.all([
-        fetch(cacheInfo.urls[cacheInfo.files.indexOf(`${file}.header`)]).then((res) =>
-          res.text()
-        ),
-        fetch(cacheInfo.urls[cacheInfo.files.indexOf(`${file}`)]).then((res) => res.text()),
-      ]).then(([header, data]) => ({ file, header, data }));
-    })
+        return Promise.all([
+          fetch(cacheInfo.urls[cacheInfo.files.indexOf(`${file}.header`)]).then(
+            (res) => res.text()
+          ),
+          fetch(cacheInfo.urls[cacheInfo.files.indexOf(`${file}`)]).then(
+            (res) => res.text()
+          ),
+        ]).then(([header, data]) => ({ file, header, data }));
+      })
   ).then((cacheList) =>
     cacheList.reduce((acc: any, { file, header, data }) => {
       acc[file] = { file, header, data };

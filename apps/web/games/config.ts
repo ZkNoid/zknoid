@@ -8,7 +8,5 @@ import { tileVilleConfig } from '@/games/tileville/config';
 import { lotteryConfig } from '@/games/lottery/config';
 
 export const zkNoidConfig = createConfig({
-  games: [
-    lotteryConfig,
-  ],
+  games: [lotteryConfig],
 });

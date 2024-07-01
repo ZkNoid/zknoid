@@ -21,5 +21,5 @@ export const tileVilleConfig = createZkNoidGameConfig({
   runtimeModules: {},
   page: undefined as any,
   lobby: undefined as any,
-  externalUrl: 'https://www.tileville.xyz/'
+  externalUrl: 'https://www.tileville.xyz/',
 });

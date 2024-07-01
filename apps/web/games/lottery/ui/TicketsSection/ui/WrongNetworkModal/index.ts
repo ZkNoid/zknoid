@@ -1,1 +1,1 @@
-export {default} from './WrongNetworkModal';
+export { default } from './WrongNetworkModal';

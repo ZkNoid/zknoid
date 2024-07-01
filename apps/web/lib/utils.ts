@@ -7,7 +7,6 @@ import { client } from 'zknoid-chain-dev';
 import { dummyProofBase64 } from '@/app/constants/dummyProofBase64';
 import { PublicKey } from 'o1js';
 
-
 const dummy = await GameRecordProof.fromJSON({
   publicInput: [],
   publicOutput: [''],

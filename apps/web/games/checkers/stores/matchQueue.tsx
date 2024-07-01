@@ -26,7 +26,11 @@ export const useObserveCheckersMatchQueue = () => {
   >(AppChainClientContext);
 
   useEffect(() => {
-    if (!network.walletConnected || !network.address || !network.protokitClientStarted) {
+    if (
+      !network.walletConnected ||
+      !network.address ||
+      !network.protokitClientStarted
+    ) {
       return;
     }
 
@@ -34,7 +38,7 @@ export const useObserveCheckersMatchQueue = () => {
       throw Error('Context app chain client is not set');
     }
 
-    console.log('Query', client.query.runtime.CheckersLogic)
+    console.log('Query', client.query.runtime.CheckersLogic);
 
     matchQueue.loadMatchQueue(
       client.query.runtime.CheckersLogic,
@@ -45,5 +49,10 @@ export const useObserveCheckersMatchQueue = () => {
       chain.block?.height ?? 0,
       PublicKey.fromBase58(network.address!)
     );
-  }, [chain.block?.height, network.walletConnected, network.address, network.protokitClientStarted]);
+  }, [
+    chain.block?.height,
+    network.walletConnected,
+    network.address,
+    network.protokitClientStarted,
+  ]);
 };

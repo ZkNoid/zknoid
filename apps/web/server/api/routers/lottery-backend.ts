@@ -35,20 +35,16 @@ export const lotteryBackendRouter = createTRPCRouter({
 
       return {
         proof: roundInfo?.dp as JsonProof,
-        total: roundInfo?.total as number
+        total: roundInfo?.total as number,
       };
     }),
-    getMinaEvents: publicProcedure
-    .input(
-      z.object({
-      })
-    )
+  getMinaEvents: publicProcedure
+    .input(z.object({}))
     .query(async ({ ctx, input }) => {
       const events = await db.collection('mina_events').find({}).toArray();
 
       return {
-        events: events
+        events: events,
       };
     }),
-
 });

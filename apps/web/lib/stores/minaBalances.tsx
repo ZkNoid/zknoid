@@ -48,7 +48,7 @@ export const useMinaBalancesStore = create<
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Accept': 'Cookie'
+            Accept: 'Cookie',
           },
           body: JSON.stringify({
             query: `
@@ -85,7 +85,12 @@ export const useObserveMinaBalance = () => {
   const network = useNetworkStore();
 
   useEffect(() => {
-    if (!network.walletConnected || !network.address || !network.minaNetwork?.networkID) return;
+    if (
+      !network.walletConnected ||
+      !network.address ||
+      !network.minaNetwork?.networkID
+    )
+      return;
 
     balances.loadBalance(network.minaNetwork?.networkID!, network.address!);
   }, [

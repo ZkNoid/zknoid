@@ -66,7 +66,7 @@ const SwitchBtn = ({
   defaultPage: string;
 }) => {
   const switchStore = useSwitchWidgetStorage();
-  const [page, setPage] = useState<string>(defaultPage);
+  const [page, _setPage] = useState<string>(defaultPage);
 
   return (
     <Link
@@ -297,9 +297,7 @@ export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
             </div>
           </>
         ) : (
-          <div className={'flex flex-col px-5'}>
-            {children}
-          </div>
+          <div className={'flex flex-col px-5'}>{children}</div>
         )}
       </div>
       <Footer />

@@ -114,7 +114,8 @@ export const defaultGames: IGame[] = [
   {
     id: 'tileville',
     name: 'Tileville game',
-    description: 'TileVille is a strategic city-building game on the Mina blockchain, where players construct and manage their own cities on the island of Nicobar using hexagonal tiles.',
+    description:
+      'TileVille is a strategic city-building game on the Mina blockchain, where players construct and manage their own cities on the island of Nicobar using hexagonal tiles.',
     logo: '/image/games/tileville.png',
     logoMode: LogoMode.CENTER,
     genre: ZkNoidGameGenre.Arcade,
@@ -126,6 +127,6 @@ export const defaultGames: IGame[] = [
     author: 'Satyam Bansal',
     externalUrl: 'https://www.tileville.xyz/',
     defaultPage: '',
-    rating: 0
-  }
+    rating: 0,
+  },
 ];

@@ -1,6 +1,3 @@
-import { create } from 'zustand';
-import { immer } from 'zustand/middleware/immer';
-
 export interface IRound {
   id: number;
   combination?: [number, number, number, number, number, number];
@@ -13,7 +10,7 @@ export interface IRound {
   tickets?: {
     numbers: [number, number, number, number, number, number];
     funds?: number | undefined;
-    claimed: boolean
+    claimed: boolean;
   }[];
 }
 

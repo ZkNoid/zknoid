@@ -10,7 +10,9 @@ const getRoundTime = (roundEndsIn: DateTime) => {
 };
 
 export const useRoundTimer = (roundEndsIn: DateTime) => {
-  const [startsIn, setStartsIn] = useState<DurationObjectUnits>(getRoundTime(roundEndsIn));
+  const [startsIn, setStartsIn] = useState<DurationObjectUnits>(
+    getRoundTime(roundEndsIn)
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {

@@ -1,5 +1,5 @@
 import GamePage from '@/components/framework/GamePage';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import CheckersCoverSVG from '../assets/game-cover.svg';
 import CheckersCoverMobileSVG from '../assets/game-cover-mobile.svg';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
@@ -35,9 +35,11 @@ export default function CheckersLobby({
     >
       <LobbyPage
         lobbyId={params.lobbyId}
-        query={networkStore.protokitClientStarted
-          ? client.query.runtime.CheckersLogic
-          : undefined}
+        query={
+          networkStore.protokitClientStarted
+            ? client.query.runtime.CheckersLogic
+            : undefined
+        }
         contractName={'CheckersLogic'}
         config={checkersConfig}
       />

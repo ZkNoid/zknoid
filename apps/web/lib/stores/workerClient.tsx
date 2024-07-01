@@ -250,7 +250,7 @@ export const useWorkerClientStore = create<
         roundId,
         ticketNums,
         amount,
-        dp
+        dp,
       });
 
       set((state) => {

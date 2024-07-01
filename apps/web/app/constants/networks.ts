@@ -10,7 +10,7 @@ export const NetworkIds = {
   MINA_DEVNET: 'mina:testnet',
 };
 
-export const NETWORKS: {readonly [networkId: string]: Network} = {
+export const NETWORKS: { readonly [networkId: string]: Network } = {
   [NetworkIds.MINA_DEVNET]: {
     networkID: NetworkIds.MINA_DEVNET,
     name: 'Devnet',
@@ -21,11 +21,11 @@ export const NETWORKS: {readonly [networkId: string]: Network} = {
     networkID: NetworkIds.ZEKO_TESTNET,
     name: 'Zeko',
     graphql: 'https://devnet.zeko.io/graphql',
-    archive: ''
-  }
+    archive: '',
+  },
 };
 
-
 export const ALL_NETWORKS = [
-  NETWORKS[NetworkIds.MINA_DEVNET], NETWORKS[NetworkIds.ZEKO_TESTNET]
-]
+  NETWORKS[NetworkIds.MINA_DEVNET],
+  NETWORKS[NetworkIds.ZEKO_TESTNET],
+];
