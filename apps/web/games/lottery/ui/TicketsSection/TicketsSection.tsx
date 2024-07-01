@@ -9,7 +9,7 @@ import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import {
   BLOCK_PER_ROUND,
   TICKET_PRICE,
-} from 'l1-lottery-contracts/build/src/constants';
+} from 'l1-lottery-contracts';
 import { useChainStore } from '@/lib/stores/minaChain';
 import { AnimatePresence } from 'framer-motion';
 import { useNetworkStore } from '@/lib/stores/network';

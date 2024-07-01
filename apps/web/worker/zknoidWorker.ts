@@ -43,7 +43,7 @@ import {
   BuyTicketEvent,
   GetRewardEvent,
   ProduceResultEvent,
-} from 'l1-lottery-contracts/build/src/Lottery';
+} from 'l1-lottery-contracts';
 import { NETWORKS } from '@/app/constants/networks';
 import { number } from 'zod';
 // import { DummyBridge } from 'zknoidcontractsl1';

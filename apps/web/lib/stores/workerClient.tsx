@@ -4,7 +4,7 @@ import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
 import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
-import { BLOCK_PER_ROUND } from 'l1-lottery-contracts/build/src/constants';
+import { BLOCK_PER_ROUND } from 'l1-lottery-contracts';
 import { NetworkIds } from '@/app/constants/networks';
 import { LOTTERY_ADDRESS } from '@/app/constants/addresses';
 

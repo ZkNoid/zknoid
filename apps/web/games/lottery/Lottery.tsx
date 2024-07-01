@@ -7,7 +7,7 @@ import BannerSection from './ui/TicketsSection/BannerSection/BannerSection';
 import TicketsSection from './ui/TicketsSection/TicketsSection';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { useChainStore } from '@/lib/stores/minaChain';
-import { BLOCK_PER_ROUND } from 'l1-lottery-contracts/build/src/constants';
+import { BLOCK_PER_ROUND } from 'l1-lottery-contracts';
 import { DateTime, Duration } from 'luxon';
 import {NetworkIds, NETWORKS} from "@/app/constants/networks";
 import WrongNetworkModal from "@/games/lottery/ui/TicketsSection/ui/WrongNetworkModal";
