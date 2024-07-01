@@ -6,10 +6,7 @@ import GetMoreTicketsButton from './ui/GetMoreTicketsButton';
 import OwnedTickets from './OwnedTickets';
 import PreviousRound from './PreviousRound';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
-import {
-  BLOCK_PER_ROUND,
-  TICKET_PRICE,
-} from 'l1-lottery-contracts';
+import { BLOCK_PER_ROUND, TICKET_PRICE } from 'l1-lottery-contracts';
 import { useChainStore } from '@/lib/stores/minaChain';
 import { AnimatePresence } from 'framer-motion';
 import { useNetworkStore } from '@/lib/stores/network';
@@ -50,12 +47,12 @@ export default function TicketsSection() {
 
   useEffect(() => {
     if (!lotteryStore.offchainStateUpdateBlock) return;
-    
+
     const roundsToShow = Array.from(
       { length: ROUNDS_PER_PAGE },
       (_, i) => lotteryStore.lotteryRoundId - i - page * ROUNDS_PER_PAGE
     ).filter((x) => x >= 0);
-  
+
     (async () => {
       console.log('TIckets fetching');
       const roundInfos = await lotteryStore.getRoundsInfo(roundsToShow);
@@ -79,10 +76,11 @@ export default function TicketsSection() {
 
   useEffect(() => {
     if (roundInfos) {
-      const userTickets: boolean = !!roundInfos?.[roundId]?.tickets
-          .filter((x) => x.owner == networkStore.address)
+      const userTickets: boolean = !!roundInfos?.[roundId]?.tickets.filter(
+        (x) => x.owner == networkStore.address
+      );
 
-      setUserHasTickets(userTickets)
+      setUserHasTickets(userTickets);
     }
   }, [workerClientStore.offchainStateUpdateBlock]);
 
@@ -95,9 +93,9 @@ export default function TicketsSection() {
     >
       <div className="">
         <div className="grid grid-cols-2 gap-[2vw]">
-            {workerClientStore.lotteryState && userHasTickets && (
-                <OwnedTickets roundId={roundId} />
-            )}
+          {workerClientStore.lotteryState && userHasTickets && (
+            <OwnedTickets roundId={roundId} />
+          )}
           <div className={'flex flex-col'}>
             <div className="mb-[1.33vw] text-[2.13vw]">Buy tickets</div>
             <div className={'flex flex-row gap-[1.33vw]'}>
@@ -216,7 +214,8 @@ export default function TicketsSection() {
                         number,
                       ],
                       funds: Number(x.amount),
-                      claimed: x.claimed
+                      amount: Number(x.amount),
+                      claimed: x.claimed,
                     })),
                 }}
               />

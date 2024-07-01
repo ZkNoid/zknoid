@@ -14,12 +14,14 @@ export function TicketItem({
   roundId,
   numbers,
   funds,
+  amount,
   noCombination,
   claimed,
 }: {
   roundId: number;
   numbers: Number[];
   funds: number | undefined;
+  amount: number;
   noCombination: boolean;
   claimed: boolean;
 }) {
@@ -81,7 +83,7 @@ export function TicketItem({
               Number(chainStore.block?.slotSinceGenesis!),
               roundId,
               numbers.map((x) => x.number),
-              1,
+              amount,
               getRoundQuery.data?.proof!
             );
 

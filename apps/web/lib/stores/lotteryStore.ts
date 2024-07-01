@@ -13,7 +13,8 @@ export interface IRound {
   tickets?: {
     numbers: [number, number, number, number, number, number];
     funds?: number | undefined;
-    claimed: boolean
+    amount: number;
+    claimed: boolean;
   }[];
 }
 

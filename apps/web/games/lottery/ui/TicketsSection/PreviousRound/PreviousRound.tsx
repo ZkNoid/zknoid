@@ -190,6 +190,7 @@ export default function PreviousRound({ round }: { round: IRound }) {
                     funds={parseNumbers(item.numbers)
                       .map((x) => (x.win ? 1 : (0 as number)))
                       .reduce((x, y) => x + y)}
+                    amount={item.amount}
                     claimed={item.claimed}
                   />
                 ))}
