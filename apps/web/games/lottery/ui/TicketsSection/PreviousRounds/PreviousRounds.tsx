@@ -112,6 +112,7 @@ export default function PreviousRounds({
                       number,
                       number,
                     ],
+                    amount: Number(x.amount),
                     funds: Number(x.amount),
                     claimed: x.claimed,
                   })),

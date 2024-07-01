@@ -162,7 +162,7 @@ export default function MyTicket({
                     'flex items-center justify-center rounded-[0.33vw]  border-[0.07vw] bg-middle-accent px-[0.3vw] py-[0.15vw] font-plexsans text-[0.8vw] font-medium'
                   }
                 >
-                  {amount} Tickets
+                  {amount} {amount > 1 ? 'Tickets' : 'Ticket'}
                 </div>
                 {tags &&
                   tags.map((item, index) => (
