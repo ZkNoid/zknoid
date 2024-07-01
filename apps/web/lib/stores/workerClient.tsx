@@ -7,6 +7,7 @@ import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
 import { BLOCK_PER_ROUND } from 'l1-lottery-contracts';
 import { NetworkIds } from '@/app/constants/networks';
 import { LOTTERY_ADDRESS } from '@/app/constants/addresses';
+import { type JsonProof } from 'o1js';
 
 export interface ClientState {
   status: string;
@@ -46,7 +47,8 @@ export interface ClientState {
     currBlock: number,
     roundId: number,
     ticketNums: number[],
-    amount: number
+    amount: number,
+    dp: JsonProof
   ) => Promise<any>;
   offchainStateUpdateBlock: number;
 }
@@ -235,7 +237,8 @@ export const useWorkerClientStore = create<
       currBlock: number,
       roundId: number,
       ticketNums: number[],
-      amount: number
+      amount: number,
+      dp: JsonProof
     ) {
       set((state) => {
         state.status = 'Get reward tx prepare';
@@ -247,6 +250,7 @@ export const useWorkerClientStore = create<
         roundId,
         ticketNums,
         amount,
+        dp
       });
 
       set((state) => {

@@ -3,6 +3,7 @@ import { Currency } from '@/constants/currency';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useChainStore } from '@/lib/stores/minaChain';
+import { api } from '@/trpc/react';
 
 type Number = {
   number: number;
@@ -25,6 +26,10 @@ export function TicketItem({
   const workerClient = useWorkerClientStore();
   const networkStore = useNetworkStore();
   const chainStore = useChainStore();
+
+  const getRoundQuery = api.lotteryBackend.getRoundInfo.useQuery({
+    roundId,
+  });
 
   return (
     <div
@@ -76,7 +81,8 @@ export function TicketItem({
               Number(chainStore.block?.slotSinceGenesis!),
               roundId,
               numbers.map((x) => x.number),
-              1
+              1,
+              getRoundQuery.data?.proof!
             );
 
             console.log('txJson', txJson);
@@ -108,7 +114,7 @@ export function TicketItem({
       {!!funds && claimed && (
         <button
           className={
-            'items-center rounded-[0.33vw] bg-left-accent px-[0.74vw] py-[0.37vw] font-museo text-[0.833vw] font-medium text-black hover:opacity-70 opacity-50'
+            'items-center rounded-[0.33vw] bg-left-accent px-[0.74vw] py-[0.37vw] font-museo text-[0.833vw] font-medium text-black opacity-50 hover:opacity-70'
           }
         >
           Claimed

@@ -15,6 +15,7 @@ import {
   Mina,
   fetchAccount,
   NetworkId,
+  type JsonProof,
 } from 'o1js';
 import {
   checkMapGeneration,
@@ -37,6 +38,8 @@ import {
   StateManager,
   NumberPacked,
   getNullifierId,
+  DistributionProof,
+  DistributionProofPublicInput
 } from 'l1-lottery-contracts';
 
 import {
@@ -115,7 +118,7 @@ const functions = {
   async fetchOffchainState(args: { startBlock: number; roundId: number }) {
     const stateM = new StateManager(
       UInt32.from(args.startBlock).toFields()[0],
-      false
+      true
     );
     console.log('Args', args);
     console.log('Fetching events');
@@ -272,6 +275,7 @@ const functions = {
     roundId: number;
     ticketNums: number[];
     amount: number;
+    dp: JsonProof
   }) => {
     const senderAccount = PublicKey.fromBase58(args.senderAccount);
 
@@ -285,14 +289,17 @@ const functions = {
 
     const ticket = Ticket.from(args.ticketNums, senderAccount, args.amount);
     let rp = await stateM.getReward(args.roundId, ticket);
-    console.log('RP generated');
+    console.log('RP generated', args.dp);
 
     let tx = await Mina.transaction(senderAccount, async () => {
       await state.lotteryGame!.getReward(
         ticket,
         rp.roundWitness,
         rp.roundTicketWitness,
-        rp.dp,
+        //@ts-ignore
+        await DistributionProof.fromJSON(args.dp as unknown as {
+          publicInput: DistributionProofPublicInput
+        }),
         rp.winningNumbers,
         rp.resultWitness,
         rp.bankValue,
