@@ -3,8 +3,9 @@ import { type AppRouter } from '@/server/api/root';
 import SuperJSON from 'superjson';
 
 function getBaseUrl() {
+  if (process.env.NODE_ENV === 'development') return `http://localhost:${process.env.PORT ?? 3000}`
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return `http://localhost:${process.env.PORT ?? 3000}`;
+  return 'https://lottery.zknoid.io/';
 }
 
 export const api = createTRPCClient<AppRouter>({
