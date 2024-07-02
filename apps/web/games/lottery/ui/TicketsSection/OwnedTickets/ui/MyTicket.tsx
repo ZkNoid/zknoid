@@ -1,7 +1,31 @@
 import { cn } from '@/lib/helpers';
 import Image from 'next/image';
-import TicketBG1 from '@/public/image/ticket-bg-1.svg';
+import TicketBG1 from '../assets/ticket-bg-1.svg';
+import TicketBG2 from '../assets/ticket-bg-2.svg';
+import TicketBG3 from '../assets/ticket-bg-3.svg';
+import TicketBG4 from '../assets/ticket-bg-4.svg';
+import TicketBG5 from '../assets/ticket-bg-5.svg';
+import TicketBG6 from '../assets/ticket-bg-6.svg';
+import TicketBG7 from '../assets/ticket-bg-7.svg';
+import TicketBG8 from '../assets/ticket-bg-8.svg';
+import TicketBG9 from '../assets/ticket-bg-9.svg';
+import TicketBG10 from '../assets/ticket-bg-10.svg';
+import TicketBG11 from '../assets/ticket-bg-11.svg';
 import { AnimatePresence, motion } from 'framer-motion';
+
+const ticketsImages = [
+  TicketBG1,
+  TicketBG2,
+  TicketBG3,
+  TicketBG4,
+  TicketBG5,
+  TicketBG6,
+  TicketBG7,
+  TicketBG8,
+  TicketBG9,
+  TicketBG10,
+  TicketBG11,
+];
 
 const ClosedTicket = ({
   combination,
@@ -177,10 +201,14 @@ export default function MyTicket({
                   ))}
               </div>
               <Image
-                src={TicketBG1}
+                src={
+                  ticketsImages[
+                    Math.round(Math.random() * ticketsImages.length)
+                  ]
+                }
                 alt={'Lottery Ticket'}
                 className={
-                  'absolute left-0 top-0 -z-[1] h-full w-full rounded-[1vw] rounded-bl-[0.9vw]'
+                  'absolute left-0 top-0 -z-[1] h-full w-full rounded-[1vw] rounded-bl-[2vw] object-cover object-center p-px'
                 }
               />
             </div>
