@@ -40,11 +40,18 @@ const ClosedTicket = ({
   className?: string;
   onClick?: () => void;
 }) => {
+  const color =
+    rounded == 'right'
+      ? 'bg-middle-accent'
+      : index % 2 === 0
+        ? 'bg-[#FF8961]'
+        : 'bg-middle-accent';
   return (
     <motion.div
       onClick={onClick ?? onClick}
       className={cn(
-        'relative flex h-[13.53vw] flex-row bg-middle-accent p-[0.33vw]',
+        'relative flex h-[13.53vw] flex-row p-[0.33vw]',
+        color,
         {
           'rounded-r-[1.33vw]': rounded == 'right',
           'rounded-[2.604vw]': rounded == 'full',
@@ -160,7 +167,7 @@ export default function MyTicket({
       {isOpen ? (
         <div className={'flex flex-row'} onClick={onClick}>
           <div className="relative h-[13.53vw] w-[24vw] rounded-[1.33vw] rounded-r-none bg-middle-accent p-[0.33vw]">
-            <div className="pointer-events-none absolute h-[12.87vw] w-[23.33vw] rounded-[1vw] border"></div>
+            <div className="pointer-events-none absolute h-[12.87vw] w-[23.33vw] overflow-hidden rounded-[1vw] border"></div>
             <div className="relative z-0 flex h-full w-full flex-col p-[1.33vw]">
               <div className="flex flex-row">
                 <div className="text-[1.6vw] uppercase text-foreground">
@@ -208,7 +215,7 @@ export default function MyTicket({
                 }
                 alt={'Lottery Ticket'}
                 className={
-                  'absolute left-0 top-0 -z-[1] h-full w-full rounded-[1vw] rounded-b-[1.5vw] object-cover object-center p-px'
+                  'absolute left-0 top-0 -z-[1] h-full w-full rounded-[1vw] object-cover object-center p-px'
                 }
               />
             </div>
