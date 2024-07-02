@@ -68,7 +68,7 @@ export default function Lottery({}: { params: { competitionId: string } }) {
   const events = api.lotteryBackend.getMinaEvents.useQuery({});
 
   useEffect(() => {
-    if (workerClientStore.lotteryState) {
+    if (workerClientStore.lotteryState && roundId) {
       console.log('Refetching offchain state');
 
       new Promise((resolve) => setTimeout(resolve, 3_000)).then(() => {
@@ -78,7 +78,7 @@ export default function Lottery({}: { params: { competitionId: string } }) {
         );
       });
     }
-  }, [chainStore.block?.height]);
+  }, [chainStore.block?.height, roundId]);
 
   return (
     <GamePage
