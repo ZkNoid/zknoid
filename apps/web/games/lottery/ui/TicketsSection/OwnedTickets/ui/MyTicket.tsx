@@ -208,7 +208,7 @@ export default function MyTicket({
                 }
                 alt={'Lottery Ticket'}
                 className={
-                  'absolute left-0 top-0 -z-[1] h-full w-full rounded-[1vw] rounded-bl-[2vw] object-cover object-center p-px'
+                  'absolute left-0 top-0 -z-[1] h-full w-full rounded-[1vw] rounded-b-[1.5vw] object-cover object-center p-px'
                 }
               />
             </div>
