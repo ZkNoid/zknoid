@@ -10,6 +10,7 @@ import { useChainStore } from '@/lib/stores/minaChain';
 import { AnimatePresence } from 'framer-motion';
 import { useNetworkStore } from '@/lib/stores/network';
 import PreviousRounds from '@/games/lottery/ui/TicketsSection/PreviousRounds';
+import Skeleton from '@/components/shared/Skeleton';
 
 interface TicketInfo {
   amount: number;
@@ -122,7 +123,7 @@ export default function TicketsSection() {
                     tickets[0].amount != 0
                   }
                   ticketsInfo={tickets}
-                  lodaderActive={
+                  loaderActive={
                     workerClientStore.status !== 'Lottery initialized'
                   }
                 />
@@ -137,15 +138,35 @@ export default function TicketsSection() {
           </div>
         </div>
       </div>
-      {!!roundInfos && (
-        <PreviousRounds
-          page={page}
-          setPage={setPage}
-          ROUNDS_PER_PAGE={ROUNDS_PER_PAGE}
-          roundInfos={roundInfos}
-          roundId={roundId}
-        />
-      )}
+      <div className="">
+        <div className="mb-[1.33vw] text-[2.13vw]">Previous Lotteries</div>
+        <div className={'flex w-full flex-row gap-[1.042vw]'}>
+          {!!roundInfos ? (
+            <PreviousRounds
+              page={page}
+              setPage={setPage}
+              ROUNDS_PER_PAGE={ROUNDS_PER_PAGE}
+              roundInfos={roundInfos}
+              roundId={roundId}
+            />
+          ) : (
+            <div className={'grid w-full grid-cols-2 gap-[1.042vw] p-4'}>
+              <Skeleton
+                isLoading={!roundInfos}
+                className={'h-[15vw] w-full rounded-[0.67vw]'}
+              >
+                <div />
+              </Skeleton>
+              <Skeleton
+                isLoading={!roundInfos}
+                className={'h-[15vw] w-full rounded-[0.67vw]'}
+              >
+                <div />
+              </Skeleton>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

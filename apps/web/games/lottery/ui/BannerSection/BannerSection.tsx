@@ -10,6 +10,7 @@ import { TICKET_PRICE } from 'l1-lottery-contracts';
 import { formatUnits } from '@/lib/unit';
 import Rules from './ui/Rules';
 import BannerButton from './ui/BannerButton';
+import Skeleton from '@/components/shared/Skeleton';
 
 export default function BannerSection({
   roundEndsIn,
@@ -145,12 +146,19 @@ export default function BannerSection({
                 alt={'Znakes token'}
                 className={'h-[1.563vw] w-[1.563vw]'}
               />
-              <span
-                className={'font-museo text-[1.25vw] font-bold text-foreground'}
+              <Skeleton
+                isLoading={!ticketsNum}
+                className={'h-[1.25vw] w-[30%] rounded-[0.33vw]'}
               >
-                {formatUnits((ticketsNum || 0n) * TICKET_PRICE.toBigInt())}{' '}
-                {Currency.ZNAKES}
-              </span>
+                <span
+                  className={
+                    'font-museo text-[1.25vw] font-bold text-foreground'
+                  }
+                >
+                  {formatUnits((ticketsNum || 0n) * TICKET_PRICE.toBigInt())}{' '}
+                  {Currency.ZNAKES}
+                </span>
+              </Skeleton>
             </div>
           </div>
           <div className={'flex flex-col gap-[0.677vw]'}>
@@ -173,11 +181,18 @@ export default function BannerSection({
                   fill="#D2FF00"
                 />
               </svg>
-              <span
-                className={'font-museo text-[1.25vw] font-bold text-foreground'}
+              <Skeleton
+                isLoading={!ticketsNum}
+                className={'h-[1.25vw] w-[20%] rounded-[0.33vw]'}
               >
-                {ticketsNum || 0}
-              </span>
+                <span
+                  className={
+                    'font-museo text-[1.25vw] font-bold text-foreground'
+                  }
+                >
+                  {ticketsNum}
+                </span>
+              </Skeleton>
             </div>
           </div>
         </div>

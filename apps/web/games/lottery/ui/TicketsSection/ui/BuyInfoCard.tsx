@@ -10,11 +10,11 @@ import Loader from '@/components/shared/Loader';
 
 export default function BuyInfoCard({
   buttonActive,
-  lodaderActive,
+  loaderActive,
   ticketsInfo,
 }: {
   buttonActive: ReactNode;
-  lodaderActive: boolean;
+  loaderActive: boolean;
   ticketsInfo: {
     amount: number;
     numbers: number[];
@@ -86,7 +86,7 @@ export default function BuyInfoCard({
         }}
       >
         <div className={'flex flex-row items-center gap-[10%]'}>
-          {lodaderActive && <Loader size={19} color={'#212121'} />}
+          {loaderActive && <Loader size={19} color={'#212121'} />}
           <span>Pay</span>
         </div>
       </VioletLotteryButton>
