@@ -61,19 +61,10 @@ export default function TicketsSection() {
     })();
   }, [page, lotteryStore.offchainStateUpdateBlock]);
 
-  const roundId = workerClientStore.lotteryState
-    ? Math.floor(
-        Number(
-          chainStore.block?.slotSinceGenesis! -
-            workerClientStore.lotteryState.startBlock
-        ) / BLOCK_PER_ROUND
-      )
-    : 0;
-
   useEffect(() => {
     if (roundInfos) {
       const userTickets: boolean = !!roundInfos
-        ?.find((round) => round.id == roundId)
+        ?.find((round) => round.id == workerClientStore.lotteryRoundId)
         ?.tickets.filter((x) => x.owner == networkStore.address);
 
       setUserHasTickets(userTickets);
@@ -81,7 +72,7 @@ export default function TicketsSection() {
   }, [
     workerClientStore.offchainStateUpdateBlock,
     roundInfos,
-    roundId,
+    workerClientStore.lotteryRoundId,
     networkStore.address,
   ]);
 
@@ -95,7 +86,7 @@ export default function TicketsSection() {
       <div className="">
         <div className="grid grid-cols-2 gap-[2vw]">
           {workerClientStore.lotteryState && userHasTickets && (
-            <OwnedTickets roundId={roundId} />
+            <OwnedTickets roundId={workerClientStore.lotteryRoundId} />
           )}
           <div className={'flex flex-col'}>
             <div className="mb-[1.33vw] text-[2.13vw]">Buy tickets</div>
@@ -147,7 +138,7 @@ export default function TicketsSection() {
               setPage={setPage}
               ROUNDS_PER_PAGE={ROUNDS_PER_PAGE}
               roundInfos={roundInfos}
-              roundId={roundId}
+              roundId={workerClientStore.lotteryRoundId}
             />
           ) : (
             <div className={'grid w-full grid-cols-2 gap-[1.042vw] p-4'}>
