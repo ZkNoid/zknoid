@@ -98,10 +98,10 @@ export default function LotteryComponent({}: {
       !workerClientStore?.lotteryGame
     )
       return;
-    // workerClientStore.updateOffchainState(
-    //   Number(chainStore.block!.slotSinceGenesis),
-    //   events.data?.events as unknown as object[]
-    // );
+    workerClientStore.updateOffchainState(
+      Number(chainStore.block!.slotSinceGenesis),
+      events.data?.events as unknown as object[]
+    );
   }, [
     events.data,
     chainStore.block?.slotSinceGenesis,
