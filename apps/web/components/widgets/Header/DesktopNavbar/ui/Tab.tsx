@@ -51,7 +51,9 @@ export default function Tab({
                   }
                 >
                   {item.icon}
-                  <span>{item.text}</span>
+                  <span className={'font-plexsans text-[0.833vw]'}>
+                    {item.text}
+                  </span>
                 </Link>
               ))}
             </div>
