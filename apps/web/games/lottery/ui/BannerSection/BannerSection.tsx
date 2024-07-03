@@ -245,6 +245,17 @@ export default function BannerSection({
                 'bg-left-accent': roundToShow != lotteryStore.lotteryRoundId,
               }
             )}
+            onClick={() => {
+              const element = document.getElementById(
+                roundToShow != lotteryStore.lotteryRoundId
+                  ? 'previousLotteries'
+                  : 'ticketsToBuy'
+              );
+              if (element) {
+                const offset = element.offsetTop + element.offsetHeight;
+                window.scrollTo({ top: offset, left: 0, behavior: 'smooth' });
+              }
+            }}
           >
             {roundToShow != lotteryStore.lotteryRoundId
               ? 'Claim rewards'

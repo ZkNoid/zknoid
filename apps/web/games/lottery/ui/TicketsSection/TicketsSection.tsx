@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import GetMoreTicketsButton from './ui/GetMoreTicketsButton';
 import OwnedTickets from './OwnedTickets';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
-import { BLOCK_PER_ROUND } from 'l1-lottery-contracts';
 import { useChainStore } from '@/lib/stores/minaChain';
 import { AnimatePresence } from 'framer-motion';
 import { useNetworkStore } from '@/lib/stores/network';
@@ -88,7 +87,7 @@ export default function TicketsSection() {
                   ))}
                 </AnimatePresence>
               </div>
-              <div className={'flex flex-col gap-[1.33vw]'}>
+              <div className={'flex flex-col gap-[1.33vw]'} id={'ticketsToBuy'}>
                 <BuyInfoCard
                   buttonActive={
                     workerClientStore.status === 'Lottery initialized' &&
@@ -113,7 +112,10 @@ export default function TicketsSection() {
       </div>
       <div className="">
         <div className="mb-[1.33vw] text-[2.13vw]">Previous Lotteries</div>
-        <div className={'flex w-full flex-row gap-[1.042vw]'}>
+        <div
+          className={'flex w-full flex-row gap-[1.042vw]'}
+          id={'previousLotteries'}
+        >
           {!!roundInfos ? (
             <PreviousRounds
               page={page}
