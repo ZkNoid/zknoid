@@ -310,7 +310,7 @@ export const useWorkerClientStore = create<
       this.client?.fetchOnchainState();
 
       set((state) => {
-        state.status = 'Onchain state update finished';
+        state.status = 'Lottery initialized';
       });
     },
     async updateOffchainState(currBlock, events) {
@@ -340,7 +340,7 @@ export const useWorkerClientStore = create<
       });
 
       set((state) => {
-        state.status = 'Synced with events';
+        state.status = 'Lottery initialized';
       });
     },
     async fetchOffchainState(
