@@ -82,7 +82,7 @@ export function SortByFilter<T extends string>({
                   setIsOpen(false);
                 }}
                 className={
-                  'h-full w-full cursor-pointer px-4 py-2 font-plexsans text-main last:pb-4 hover:bg-[#252525] hover:text-left-accent'
+                  'bg-bg-grey h-full w-full cursor-pointer px-4 py-2 font-plexsans text-main last:pb-4 hover:bg-[#252525] hover:text-left-accent'
                 }
               >
                 {value}

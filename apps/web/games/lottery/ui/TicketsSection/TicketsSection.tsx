@@ -63,7 +63,7 @@ export default function TicketsSection() {
   return (
     <div
       className={cn(
-        'relative rounded-[0.67vw] border border-left-accent',
+        'bg-bg-grey relative rounded-[0.67vw] border border-left-accent',
         'flex flex-col gap-[6vw] px-[2vw] py-[2.67vw]'
       )}
     >

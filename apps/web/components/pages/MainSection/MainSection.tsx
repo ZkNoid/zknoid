@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IGame } from '@/app/constants/games';
 import FavoriteGames from '@/components/widgets/GameStore/FavoriteGames';
 import Storefront from '@/components/widgets/GameStore/Storefront';
@@ -26,7 +26,7 @@ export default function MainSection({ games }: { games: IGame[] }) {
         <div className="absolute left-0 top-0 -z-10 hidden h-full w-full flex-col lg:flex">
           <svg
             viewBox="0 0 1502 200"
-            fill="none"
+            fill="#212121"
             xmlns="http://www.w3.org/2000/svg"
             className="w-full"
           >
@@ -37,10 +37,10 @@ export default function MainSection({ games }: { games: IGame[] }) {
               vectorEffect="non-scaling-stroke"
             />
           </svg>
-          <div className="flex-grow border-x-[0.160rem] border-left-accent" />
+          <div className="bg-bg-grey flex-grow border-x-[0.160rem] border-left-accent" />
           <svg
             viewBox="0 2142 1502 200"
-            fill="none"
+            fill="#212121"
             xmlns="http://www.w3.org/2000/svg"
             className="w-full"
             preserveAspectRatio="none"

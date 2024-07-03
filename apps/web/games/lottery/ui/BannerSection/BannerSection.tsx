@@ -68,7 +68,7 @@ export default function BannerSection({
         <BannerButton
           onClick={() => setRoundToShow(roundToShow - 1)}
           disabled={roundToShow < 1}
-          className="flex w-[3.13vw] items-center justify-center border-left-accent text-left-accent"
+          className="bg-bg-grey flex w-[3.13vw] items-center justify-center border-left-accent text-left-accent"
         >
           <svg
             width="1.042vw"
@@ -84,7 +84,7 @@ export default function BannerSection({
         <BannerButton
           onClick={() => setRoundToShow(roundToShow + 1)}
           disabled={roundToShow >= lotteryStore.lotteryRoundId}
-          className="flex w-[3.13vw] items-center justify-center border-left-accent text-left-accent"
+          className="bg-bg-grey flex w-[3.13vw] items-center justify-center border-left-accent text-left-accent"
         >
           <svg
             width="1.042vw"
