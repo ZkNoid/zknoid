@@ -4,22 +4,54 @@ import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
 import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
-import { BLOCK_PER_ROUND } from 'l1-lottery-contracts';
+import {
+  BLOCK_PER_ROUND,
+  Lottery,
+  NumberPacked,
+  StateManager,
+  getNullifierId,
+} from 'l1-lottery-contracts';
 import { NetworkIds } from '@/app/constants/networks';
 import { LOTTERY_ADDRESS } from '@/app/constants/addresses';
-import { type JsonProof } from 'o1js';
+import { Field, PublicKey, UInt32, type JsonProof } from 'o1js';
+import {
+  BaseMinaEvent,
+  syncWithEvents,
+} from '../state-manager/feed_with_events';
 
 export interface ClientState {
   status: string;
   client?: ZknoidWorkerClient;
-  lotteryState: { currentRound: bigint; startBlock: bigint } | undefined;
+  onchainState:
+    | {
+        ticketRoot: Field;
+        ticketNullifier: Field;
+        bankRoot: Field;
+        roundResultRoot: Field;
+        startBlock: bigint;
+      }
+    | undefined;
   lotteryRoundId: number;
   start: () => Promise<ZknoidWorkerClient>;
+  stateM: StateManager | undefined;
   startLottery: (
     networkId: string,
-    currBlock: number
+    currBlock: number,
+    events: object[]
   ) => Promise<ZknoidWorkerClient>;
-  fetchOffchainState: (startBlock: number, roundId: number) => Promise<number>;
+  fetchOffchainState: (
+    startBlock: number,
+    roundId: number,
+    events: object[]
+  ) => Promise<number>;
+   setOnchainState: (onchainState: {
+    ticketRoot: Field;
+    ticketNullifier: Field;
+    bankRoot: Field;
+    roundResultRoot: Field;
+    startBlock: bigint;
+  }) => Promise<void>;
+  setRoundId: (roundId: number) => Promise<void>;
   getRoundsInfo(rounds: number[]): Promise<
     Record<
       number,
@@ -59,9 +91,10 @@ export const useWorkerClientStore = create<
 >(
   immer((set) => ({
     status: 'Not loaded',
-    lotteryState: undefined,
+    onchainState: undefined,
     lotteryRoundId: 0,
     offchainStateUpdateBlock: 0,
+    stateM: undefined,
     async start() {
       set((state) => {
         state.status = 'Loading worker';
@@ -98,56 +131,139 @@ export const useWorkerClientStore = create<
 
       return zkappWorkerClient;
     },
-    async startLottery(networkId, currBlock) {
+    async getRoundsInfo(rounds: number[]) {
+      console.log('Round ids', rounds);
+      const data = {} as Record<
+        number,
+        {
+          id: number;
+          bank: bigint;
+          tickets: {
+            amount: bigint;
+            numbers: number[];
+            owner: string;
+            claimed: boolean;
+          }[];
+          winningCombination: number[] | undefined;
+        }
+      >;
+
+      const stateM = this.stateM!;
+
+      for (let i = 0; i < rounds.length; i++) {
+        console.log('I', i);
+        const roundId = rounds[i];
+
+        const winningCombination = NumberPacked.unpackToBigints(
+          stateM.roundResultMap.get(Field.from(roundId))
+        )
+          .map((v) => Number(v))
+          .slice(0, 6);
+
+        data[roundId] = {
+          id: roundId,
+          bank: stateM.roundTickets[roundId]
+            .map((x) => x.amount.toBigInt())
+            .reduce((x, y) => x + y),
+          tickets: stateM.roundTickets[roundId].map((x, i) => ({
+            amount: x.amount.toBigInt(),
+            numbers: x.numbers.map((x) => Number(x.toBigint())),
+            owner: x.owner.toBase58(),
+            claimed: stateM.ticketNullifierMap
+              .get(getNullifierId(Field.from(roundId), Field.from(i)))
+              .equals(Field.from(1))
+              .toBoolean(),
+          })),
+          winningCombination: winningCombination.every((x) => x == 0)
+            ? undefined
+            : winningCombination,
+        };
+      }
+      return data;
+    },
+    async setOnchainState(onchainState) {
+      set((state) => {
+        // @ts-ignore
+        state.onchainState = onchainState;
+      });
+    },
+    async setRoundId(roundId) {
+      set((state) => {
+        // @ts-ignore
+        state.lotteryRoundId = roundId;
+      });
+    },
+    async startLottery(networkId, currBlock, events) {
       set((state) => {
         state.status = 'Lottery loading';
       });
 
       await this.client!.waitFor();
-
-      set((state) => {
-        state.status = 'Lottery contracts loading';
-      });
-
       const lotteryPublicKey58 = LOTTERY_ADDRESS[networkId];
-
-      await this.client?.loadLotteryContract();
-
-      await this.client?.initLotteryInstance(lotteryPublicKey58, networkId);
 
       set((state) => {
         state.status = 'Lottery state fetching';
       });
 
-      const lotteryState = (await this.client?.getLotteryState()) as {
-        currentRound: bigint;
-        startBlock: bigint;
-      };
+      await this.client?.initLotteryInstance(lotteryPublicKey58, networkId);
 
-      set((state) => {
-        state.lotteryState = lotteryState;
-      });
+      const onchainState = this.onchainState!;
+
+      console.log('Fetched state', this.onchainState);
 
       const roundId = Math.floor(
-        (currBlock - Number(lotteryState.startBlock)) / BLOCK_PER_ROUND
+        (currBlock - Number(onchainState.startBlock)) / BLOCK_PER_ROUND
       );
 
       set((state) => {
         state.lotteryRoundId = roundId;
+        state.status = 'State manager loading';
       });
 
-      console.log('Fetching for', roundId)
+      let stateM = new StateManager(
+        UInt32.from(onchainState.startBlock).toFields()[0],
+        true
+      );
+
+      const publicKey = PublicKey.fromBase58(lotteryPublicKey58);
+      const lotteryGame = new Lottery(publicKey);
+
+      set((state) => {
+        state.status = 'Sync with events';
+      });
+
+      stateM = await syncWithEvents(
+        stateM,
+        Number(onchainState.startBlock),
+        roundId,
+        events as unknown as BaseMinaEvent[],
+        lotteryGame.events
+      )!;
+
+      set((state) => {
+        // @ts-ignore
+        state.stateM = stateM;
+      });
+
+      this.stateM = stateM;
+
+      await this.fetchOffchainState(
+        Number(onchainState.startBlock),
+        roundId,
+        events
+      );
 
       await this.client?.fetchOffchainState(
-        Number(lotteryState.startBlock),
-        roundId
+        Number(onchainState.startBlock),
+        roundId,
+        events
       );
 
       set((state) => {
         state.offchainStateUpdateBlock = currBlock;
       });
 
-      const offchainState = await this.client?.getRoundsInfo([roundId]);
+      const offchainState = await this.getRoundsInfo([roundId]);
 
       console.log('Fetched offchain state', offchainState);
 
@@ -179,26 +295,18 @@ export const useWorkerClientStore = create<
 
       return this.client!;
     },
-    async getRoundsInfo(rounds: number[]) {
-      return (await this.client?.getRoundsInfo(rounds)) as Record<
-        number,
-        {
-          id: number;
-          bank: bigint;
-          tickets: {
-            amount: bigint;
-            numbers: number[];
-            owner: string;
-            claimed: boolean;
-          }[];
-          winningCombination: number[] | undefined;
-        }
-      >;
+    async updateLotteryState() {
+
     },
-    async fetchOffchainState(startBlock: number, roundId: number) {
+    async fetchOffchainState(
+      startBlock: number,
+      roundId: number,
+      events: object[]
+    ) {
       const lastOffchainUpdate = await this.client!.fetchOffchainState(
         startBlock,
-        roundId
+        roundId,
+        events
       );
       console.log('Last offchain update', lastOffchainUpdate);
       set((state) => {
@@ -217,12 +325,12 @@ export const useWorkerClientStore = create<
       });
 
       const roundId = Math.floor(
-        (currBlock - Number(this.lotteryState?.startBlock!)) / BLOCK_PER_ROUND
+        (currBlock - Number(this.onchainState?.startBlock!)) / BLOCK_PER_ROUND
       );
 
       await this.client?._call('buyTicket', {
         senderAccount,
-        startBlock: this.lotteryState?.startBlock,
+        startBlock: this.onchainState?.startBlock,
         roundId,
         ticketNums,
         amount,
@@ -248,7 +356,7 @@ export const useWorkerClientStore = create<
 
       await this.client?._call('getReward', {
         senderAccount,
-        startBlock: this.lotteryState?.startBlock,
+        startBlock: this.onchainState?.startBlock,
         roundId,
         ticketNums,
         amount,

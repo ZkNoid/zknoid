@@ -12,9 +12,6 @@ export default class ZknoidWorkerClient {
   loadContracts() {
     return this._call('loadContracts', {});
   }
-  loadLotteryContract() {
-    return this._call('loadLotteryContract', {});
-  }
   compileContracts() {
     return this._call('compileContracts', {});
   }
@@ -29,6 +26,9 @@ export default class ZknoidWorkerClient {
   }
   initZkappInstance(bridgePublicKey58: string) {
     return this._call('initZkappInstance', { bridgePublicKey58 });
+  }
+  fetchOnchainState() {
+    return this._call('fetchOnchainState', {});
   }
   initLotteryInstance(lotteryPublicKey58: string, networkId: string) {
     return this._call('initLotteryInstance', { lotteryPublicKey58, networkId });
@@ -63,14 +63,12 @@ export default class ZknoidWorkerClient {
       amount,
     });
   }
-  fetchOffchainState(startBlock: number, roundId: number): Promise<number> {
+  fetchOffchainState(startBlock: number, roundId: number, events: object[]): Promise<number> {
     return this._call('fetchOffchainState', {
       startBlock,
       roundId,
+      events
     }) as Promise<number>;
-  }
-  getRoundsInfo(roundIds: number[]) {
-    return this._call('getRoundsInfo', { roundIds });
   }
   getLotteryState() {
     return this._call('getLotteryState', {});

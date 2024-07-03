@@ -2,6 +2,7 @@ import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import MyTicket from './ui/MyTicket';
 import { useEffect, useState } from 'react';
 import { useNetworkStore } from '@/lib/stores/network';
+import { cn } from '@/lib/helpers';
 
 interface ITicket {
   id: string;
@@ -27,9 +28,11 @@ export default function OwnedTickets({ roundId }: { roundId: number }) {
   );
 
   useEffect(() => {
+    console.log('Owned tickets offchain state', workerStore.offchainStateUpdateBlock);
+
     if (!workerStore.offchainStateUpdateBlock) return;
 
-    console.log('Offchain state ready', workerStore.lotteryState);
+    console.log('Offchain state ready', workerStore.onchainState);
 
     (async () => {
       const f = await workerStore.getRoundsInfo([roundId]);
@@ -51,7 +54,7 @@ export default function OwnedTickets({ roundId }: { roundId: number }) {
   }, [currentTicket, tickets]);
 
   return (
-    <div className={'flex w-full flex-col'}>
+    <div className={cn('flex w-full flex-col', tickets.length == 0 && 'hidden')}>
       <div className={'mb-[1.33vw] flex flex-row items-center justify-between'}>
         <div className="text-[2.13vw]">Your tickets</div>
         {tickets.length > 5 && (

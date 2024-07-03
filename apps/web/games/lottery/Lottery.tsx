@@ -7,13 +7,17 @@ import BannerSection from './ui/BannerSection';
 import TicketsSection from './ui/TicketsSection';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { useChainStore } from '@/lib/stores/minaChain';
-import { BLOCK_PER_ROUND } from 'l1-lottery-contracts';
 import { DateTime, Duration } from 'luxon';
 import { NetworkIds, NETWORKS } from '@/app/constants/networks';
 import WrongNetworkModal from '@/games/lottery/ui/TicketsSection/ui/WrongNetworkModal';
 import { api } from '@/trpc/react';
+import { Field, fetchAccount } from 'o1js';
+import { LOTTERY_ADDRESS } from '@/app/constants/addresses';
+import { BLOCK_PER_ROUND } from 'l1-lottery-contracts';
 
-export default function Lottery({}: { params: { competitionId: string } }) {
+export default function LotteryComponent({}: {
+  params: { competitionId: string };
+}) {
   const networkStore = useNetworkStore();
   const [roundEndsIn, setRoundEndsIn] = useState<DateTime>(
     DateTime.fromMillis(0)
@@ -21,31 +25,67 @@ export default function Lottery({}: { params: { competitionId: string } }) {
 
   const workerClientStore = useWorkerClientStore();
   const chainStore = useChainStore();
+  const events = api.lotteryBackend.getMinaEvents.useQuery({});
+
+  useEffect(() => {
+    if (!networkStore.minaNetwork?.networkID) return;
+
+    const lotteryPublicKey58 =
+      LOTTERY_ADDRESS[networkStore.minaNetwork?.networkID!];
+
+    (async () => {
+      const account = await fetchAccount({ publicKey: lotteryPublicKey58 });
+
+      const onchainState = {
+        ticketRoot: account.account?.zkapp?.appState[0]!,
+        ticketNullifier: account.account?.zkapp?.appState[1]!,
+        bankRoot: account.account?.zkapp?.appState[2]!,
+        roundResultRoot: account.account?.zkapp?.appState[3]!,
+        startBlock: account.account?.zkapp?.appState[4].toBigInt()!,
+      };
+
+      workerClientStore.setOnchainState(onchainState);
+
+      if (chainStore.block?.height) {
+        const roundId = Math.floor(
+          Number(chainStore.block!.slotSinceGenesis - onchainState.startBlock) /
+            BLOCK_PER_ROUND
+        );
+
+        workerClientStore.setRoundId(roundId);
+      }
+    })();
+  }, [networkStore.minaNetwork?.networkID, chainStore.block?.height]);
 
   useEffect(() => {
     if (
       workerClientStore.client &&
       networkStore.minaNetwork?.networkID &&
-      chainStore.block?.slotSinceGenesis
+      chainStore.block?.slotSinceGenesis &&
+      events.data?.events
     ) {
+      console.log('Starting lottery');
       workerClientStore.startLottery(
         networkStore.minaNetwork?.networkID!,
-        Number(chainStore.block?.slotSinceGenesis)
+        Number(chainStore.block?.slotSinceGenesis),
+        events.data?.events as unknown as object[]
       );
     }
   }, [
     workerClientStore.client,
     networkStore.minaNetwork?.networkID,
     chainStore.block?.slotSinceGenesis,
+    events.data,
   ]);
 
+  // When onchain state is ready
   useEffect(() => {
     if (!workerClientStore.lotteryRoundId) return;
 
-    const startBlock = workerClientStore.lotteryState?.startBlock;
+    const startBlock = workerClientStore.onchainState?.startBlock;
     const blockNum = chainStore.block?.slotSinceGenesis;
 
-    console.log('Lottery state', workerClientStore.lotteryState);
+    console.log('Lottery state', workerClientStore.onchainState);
     console.log('Round id', workerClientStore.lotteryRoundId);
 
     blockNum && startBlock
@@ -57,33 +97,41 @@ export default function Lottery({}: { params: { competitionId: string } }) {
           )
         )
       : 0;
-    (async () => {
-      console.log(
-        'Effect fetching',
-        await workerClientStore.getRoundsInfo([
-          Number(workerClientStore.lotteryState!.currentRound),
-        ])
-      );
-    })();
-  }, [
-    workerClientStore.lotteryState,
-    workerClientStore.offchainStateUpdateBlock,
-  ]);
+  }, [workerClientStore.onchainState, workerClientStore.lotteryRoundId]);
 
-  const events = api.lotteryBackend.getMinaEvents.useQuery({});
+  // When offchain state is ready
+  useEffect(() => {
+    if (!workerClientStore.lotteryRoundId) return;
+    // (async () => {
+    //   console.log(
+    //     'Effect fetching',
+    //     await workerClientStore.getRoundsInfo([
+    //       Number(workerClientStore.lotteryRoundId),
+    //     ])
+    //   );
+    // })();
+  }, [workerClientStore.stateM]);
 
   useEffect(() => {
-    if (workerClientStore.lotteryState && workerClientStore.lotteryRoundId) {
+    if (
+      workerClientStore.onchainState &&
+      workerClientStore.lotteryRoundId &&
+      events.data
+    ) {
       console.log('Refetching offchain state');
 
-      new Promise((resolve) => setTimeout(resolve, 3_000)).then(() => {
-        workerClientStore?.fetchOffchainState(
-          Number(workerClientStore.lotteryState!.startBlock),
-          workerClientStore.lotteryRoundId
-        );
+      const startBlock = Number(workerClientStore.onchainState!.startBlock);
+      const roundId = workerClientStore.lotteryRoundId;
+
+      new Promise((resolve) => setTimeout(resolve, 3_000)).then(async () => {
+        // workerClientStore?.fetchOffchainState(
+        //   startBlock,
+        //   workerClientStore.lotteryRoundId,
+        //   events.data.events
+        // );
       });
     }
-  }, [chainStore.block?.height, workerClientStore.lotteryRoundId]);
+  }, [chainStore.block?.height, workerClientStore.lotteryRoundId, events.data]);
 
   return (
     <GamePage

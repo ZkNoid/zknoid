@@ -36,7 +36,7 @@ export default function BannerSection({
   >(undefined);
 
   useEffect(() => {
-    if (!lotteryStore.offchainStateUpdateBlock) return;
+    if (!lotteryStore.stateM) return;
     (async () => {
       const roundInfos = await lotteryStore.getRoundsInfo([roundToShow]);
       console.log('Fetched round infos', roundInfos);

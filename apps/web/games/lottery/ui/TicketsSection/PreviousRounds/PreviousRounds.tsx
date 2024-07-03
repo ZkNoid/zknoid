@@ -39,10 +39,7 @@ export default function PreviousRounds({
           'flex h-[4vw] w-[4vw] items-center justify-center rounded-[0.521vw] border border-left-accent hover:opacity-80 disabled:opacity-60'
         }
         onClick={() => setPage(page + 1)}
-        disabled={
-          page + 1 > roundInfos.length / ROUNDS_PER_PAGE ||
-          workerClientStore.status !== 'Lottery initialized'
-        }
+        disabled={page + 1 > roundInfos.length / ROUNDS_PER_PAGE}
       >
         <svg
           width="1.458vw"
@@ -80,7 +77,7 @@ export default function PreviousRounds({
                   Date.now() -
                     (Number(
                       chainStore.block?.slotSinceGenesis! -
-                        lotteryStore.lotteryState?.startBlock!
+                        lotteryStore.onchainState?.startBlock!
                     ) -
                       roundId * 480) *
                       3 *
@@ -91,7 +88,7 @@ export default function PreviousRounds({
                   Date.now() -
                     (Number(
                       chainStore.block?.slotSinceGenesis! -
-                        lotteryStore.lotteryState?.startBlock!
+                        lotteryStore.onchainState?.startBlock!
                     ) -
                       (roundId + 1) * 480) *
                       3 *
@@ -123,9 +120,7 @@ export default function PreviousRounds({
           'flex h-[4vw] w-[4vw] items-center justify-center rounded-[0.521vw] border border-left-accent hover:opacity-80 disabled:opacity-60'
         }
         onClick={() => setPage(page - 1)}
-        disabled={
-          page - 1 < 0 || workerClientStore.status !== 'Lottery initialized'
-        }
+        disabled={page - 1 < 0}
       >
         <svg
           width="1.458vw"

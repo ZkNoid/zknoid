@@ -25,7 +25,6 @@ export default function TicketsSection() {
   const lotteryStore = useWorkerClientStore();
   const emptyTicket: TicketInfo = { numbers: [0, 0, 0, 0, 0, 0], amount: 0 };
 
-  const [userHasTickets, setUserHasTickets] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [tickets, _setTickets] = useState<TicketInfo[]>([emptyTicket]);
   const [roundInfos, setRoundInfos] = useState<
@@ -44,7 +43,7 @@ export default function TicketsSection() {
   >(undefined);
 
   useEffect(() => {
-    if (!lotteryStore.offchainStateUpdateBlock) return;
+    if (!lotteryStore.stateM) return;
 
     const roundsToShow = Array.from(
       { length: ROUNDS_PER_PAGE },
@@ -59,22 +58,7 @@ export default function TicketsSection() {
       console.log('Round infos', Object.values(roundInfos));
       setRoundInfos(Object.values(roundInfos));
     })();
-  }, [page, lotteryStore.offchainStateUpdateBlock]);
-
-  useEffect(() => {
-    if (roundInfos) {
-      const userTickets: boolean = !!roundInfos
-        ?.find((round) => round.id == workerClientStore.lotteryRoundId)
-        ?.tickets.filter((x) => x.owner == networkStore.address);
-
-      setUserHasTickets(userTickets);
-    }
-  }, [
-    workerClientStore.offchainStateUpdateBlock,
-    roundInfos,
-    workerClientStore.lotteryRoundId,
-    networkStore.address,
-  ]);
+  }, [page, lotteryStore.stateM]);
 
   return (
     <div
@@ -85,9 +69,7 @@ export default function TicketsSection() {
     >
       <div className="">
         <div className="grid grid-cols-2 gap-[2vw]">
-          {workerClientStore.lotteryState && userHasTickets && (
-            <OwnedTickets roundId={workerClientStore.lotteryRoundId} />
-          )}
+          <OwnedTickets roundId={workerClientStore.lotteryRoundId} />
           <div className={'flex flex-col'}>
             <div className="mb-[1.33vw] text-[2.13vw]">Buy tickets</div>
             <div className={'flex flex-row gap-[1.33vw]'}>
