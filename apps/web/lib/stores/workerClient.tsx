@@ -136,6 +136,8 @@ export const useWorkerClientStore = create<
         state.lotteryRoundId = roundId;
       });
 
+      console.log('Fetching for', roundId)
+
       await this.client?.fetchOffchainState(
         Number(lotteryState.startBlock),
         roundId
