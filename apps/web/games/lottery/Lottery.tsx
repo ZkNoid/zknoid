@@ -58,11 +58,18 @@ export default function LotteryComponent({}: {
   }, [networkStore.minaNetwork?.networkID, chainStore.block?.height]);
 
   useEffect(() => {
+    console.log(workerClientStore.client,
+      networkStore.minaNetwork?.networkID,
+      chainStore.block?.slotSinceGenesis,
+      events.data?.events,
+      !workerClientStore.lotteryGame
+    )
     if (
       workerClientStore.client &&
       networkStore.minaNetwork?.networkID &&
       chainStore.block?.slotSinceGenesis &&
-      events.data?.events
+      events.data?.events &&
+      !workerClientStore.lotteryGame
     ) {
       console.log('Starting lottery');
       workerClientStore.startLottery(
@@ -76,6 +83,29 @@ export default function LotteryComponent({}: {
     networkStore.minaNetwork?.networkID,
     chainStore.block?.slotSinceGenesis,
     events.data,
+    workerClientStore.lotteryGame
+  ]);
+
+  useEffect(() => {
+    if (workerClientStore.lotteryGame?.address)
+      workerClientStore.updateOnchainState();
+
+  }, [chainStore.block?.height]);
+  useEffect(() => {
+    if (
+      !chainStore.block?.slotSinceGenesis ||
+      !workerClientStore.onchainState?.startBlock ||
+      !workerClientStore?.lotteryGame
+    )
+      return;
+    // workerClientStore.updateOffchainState(
+    //   Number(chainStore.block!.slotSinceGenesis),
+    //   events.data?.events as unknown as object[]
+    // );
+  }, [
+    events.data,
+    chainStore.block?.slotSinceGenesis,
+    workerClientStore.onchainState?.startBlock,
   ]);
 
   // When onchain state is ready

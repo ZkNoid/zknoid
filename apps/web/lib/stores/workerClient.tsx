@@ -21,9 +21,9 @@ import {
 
 export interface ClientState {
   status: string;
-  client?: ZknoidWorkerClient;
+  client: ZknoidWorkerClient | undefined;
   onchainState:
-    | {
+    {
         ticketRoot: Field;
         ticketNullifier: Field;
         bankRoot: Field;
@@ -34,11 +34,18 @@ export interface ClientState {
   lotteryRoundId: number;
   start: () => Promise<ZknoidWorkerClient>;
   stateM: StateManager | undefined;
+  lotteryGame: Lottery | undefined;
+
   startLottery: (
     networkId: string,
     currBlock: number,
     events: object[]
   ) => Promise<ZknoidWorkerClient>;
+  updateOnchainState: () => Promise<void>;
+  updateOffchainState: (
+    currBlock: number,
+    events: object[]
+  ) => Promise<void>;
   fetchOffchainState: (
     startBlock: number,
     roundId: number,
@@ -91,10 +98,18 @@ export const useWorkerClientStore = create<
 >(
   immer((set) => ({
     status: 'Not loaded',
-    onchainState: undefined,
+    client: undefined,
+    onchainState: undefined as {
+      ticketRoot: Field;
+      ticketNullifier: Field;
+      bankRoot: Field;
+      roundResultRoot: Field;
+      startBlock: bigint;
+    } | undefined,
     lotteryRoundId: 0,
     offchainStateUpdateBlock: 0,
-    stateM: undefined,
+    stateM: undefined as StateManager | undefined,
+    lotteryGame: undefined as Lottery | undefined,
     async start() {
       set((state) => {
         state.status = 'Loading worker';
@@ -230,7 +245,9 @@ export const useWorkerClientStore = create<
 
       set((state) => {
         state.status = 'Sync with events';
+        state.lotteryGame = lotteryGame;
       });
+      this.lotteryGame = lotteryGame;
 
       stateM = await syncWithEvents(
         stateM,
@@ -253,19 +270,9 @@ export const useWorkerClientStore = create<
         events
       );
 
-      await this.client?.fetchOffchainState(
-        Number(onchainState.startBlock),
-        roundId,
-        events
-      );
-
       set((state) => {
         state.offchainStateUpdateBlock = currBlock;
       });
-
-      const offchainState = await this.getRoundsInfo([roundId]);
-
-      console.log('Fetched offchain state', offchainState);
 
       set((state) => {
         state.status = 'Lottery prover cache downloading';
@@ -295,20 +302,75 @@ export const useWorkerClientStore = create<
 
       return this.client!;
     },
-    async updateLotteryState() {
+    async updateOnchainState() {
+      set((state) => {
+        state.status = 'Onchain state update';
+      });
 
+      this.client?.fetchOnchainState();
+
+      set((state) => {
+        state.status = 'Onchain state update finished';
+      });
+    },
+    async updateOffchainState(currBlock, events) {
+      set((state) => {
+        state.status = 'Sync with events';
+      });
+
+      const onchainState = this.onchainState!;
+
+      const roundId = Math.floor(
+        (currBlock - Number(onchainState.startBlock)) / BLOCK_PER_ROUND
+      );
+
+      set((state) => {
+        state.lotteryRoundId = roundId;
+        state.status = 'State manager loading';
+      });
+
+      await this.fetchOffchainState(
+        Number(onchainState.startBlock),
+        roundId,
+        events
+      );
+
+      set((state) => {
+        state.offchainStateUpdateBlock = currBlock;
+      });
+
+      set((state) => {
+        state.status = 'Synced with events';
+      });
     },
     async fetchOffchainState(
       startBlock: number,
       roundId: number,
       events: object[]
     ) {
+      
+      let stateM = new StateManager(Field.from(startBlock), true);
+      stateM = await syncWithEvents(
+        stateM,
+        startBlock,
+        roundId,
+        events as BaseMinaEvent[],
+        this.lotteryGame!.events
+      )!;
+
+      set((state) => {
+        // @ts-ignore
+        state.stateM = stateM;
+      })
+      
+
       const lastOffchainUpdate = await this.client!.fetchOffchainState(
         startBlock,
         roundId,
         events
       );
       console.log('Last offchain update', lastOffchainUpdate);
+
       set((state) => {
         state.offchainStateUpdateBlock = lastOffchainUpdate!;
       });
