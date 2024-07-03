@@ -9,6 +9,7 @@ import {
   Lottery,
   NumberPacked,
   StateManager,
+  TICKET_PRICE,
   getNullifierId,
 } from 'l1-lottery-contracts';
 import { NetworkIds } from '@/app/constants/networks';
@@ -23,7 +24,7 @@ export interface ClientState {
   status: string;
   client: ZknoidWorkerClient | undefined;
   onchainState:
-    {
+    | {
         ticketRoot: Field;
         ticketNullifier: Field;
         bankRoot: Field;
@@ -42,16 +43,13 @@ export interface ClientState {
     events: object[]
   ) => Promise<ZknoidWorkerClient>;
   updateOnchainState: () => Promise<void>;
-  updateOffchainState: (
-    currBlock: number,
-    events: object[]
-  ) => Promise<void>;
+  updateOffchainState: (currBlock: number, events: object[]) => Promise<void>;
   fetchOffchainState: (
     startBlock: number,
     roundId: number,
     events: object[]
   ) => Promise<number>;
-   setOnchainState: (onchainState: {
+  setOnchainState: (onchainState: {
     ticketRoot: Field;
     ticketNullifier: Field;
     bankRoot: Field;
@@ -70,6 +68,7 @@ export interface ClientState {
           numbers: number[];
           owner: string;
           claimed: boolean;
+          funds: bigint;
         }[];
         winningCombination: number[] | undefined;
       }
@@ -99,13 +98,15 @@ export const useWorkerClientStore = create<
   immer((set) => ({
     status: 'Not loaded',
     client: undefined,
-    onchainState: undefined as {
-      ticketRoot: Field;
-      ticketNullifier: Field;
-      bankRoot: Field;
-      roundResultRoot: Field;
-      startBlock: bigint;
-    } | undefined,
+    onchainState: undefined as
+      | {
+          ticketRoot: Field;
+          ticketNullifier: Field;
+          bankRoot: Field;
+          roundResultRoot: Field;
+          startBlock: bigint;
+        }
+      | undefined,
     lotteryRoundId: 0,
     offchainStateUpdateBlock: 0,
     stateM: undefined as StateManager | undefined,
@@ -158,6 +159,7 @@ export const useWorkerClientStore = create<
             numbers: number[];
             owner: string;
             claimed: boolean;
+            funds: bigint;
           }[];
           winningCombination: number[] | undefined;
         }
@@ -165,15 +167,47 @@ export const useWorkerClientStore = create<
 
       const stateM = this.stateM!;
 
+      const SCORE_COEFFICIENTS: bigint[] = [
+        0n,
+        90n,
+        324n,
+        2187n,
+        26244n,
+        590490n,
+        31886460n,
+      ];
+
       for (let i = 0; i < rounds.length; i++) {
         console.log('I', i);
         const roundId = rounds[i];
+
+        const roundBank = stateM.roundTickets[roundId]
+          .map((x) => x.amount.toBigInt() * TICKET_PRICE.toBigInt())
+          .reduce((x, y) => x + y);
 
         const winningCombination = NumberPacked.unpackToBigints(
           stateM.roundResultMap.get(Field.from(roundId))
         )
           .map((v) => Number(v))
           .slice(0, 6);
+
+        const ticketsShares = stateM.roundTickets[roundId].map((x) => {
+          const ticketShares =
+            SCORE_COEFFICIENTS[
+              Array.from({ length: 6 }, (p, i) => i)
+                .map((i) =>
+                  Number(x.numbers[i].toBigint()) == winningCombination[i]
+                    ? 1
+                    : (0 as number)
+                )
+
+                .reduce((a, b) => a + b)
+            ] * x.amount.toBigInt();
+
+          return ticketShares;
+        });
+
+        const totalShares = ticketsShares.reduce((x, y) => x + y);
 
         data[roundId] = {
           id: roundId,
@@ -188,6 +222,7 @@ export const useWorkerClientStore = create<
               .get(getNullifierId(Field.from(roundId), Field.from(i)))
               .equals(Field.from(1))
               .toBoolean(),
+            funds: 100500n
           })),
           winningCombination: winningCombination.every((x) => x == 0)
             ? undefined
@@ -348,7 +383,6 @@ export const useWorkerClientStore = create<
       roundId: number,
       events: object[]
     ) {
-      
       let stateM = new StateManager(Field.from(startBlock), true);
       stateM = await syncWithEvents(
         stateM,
@@ -361,8 +395,7 @@ export const useWorkerClientStore = create<
       set((state) => {
         // @ts-ignore
         state.stateM = stateM;
-      })
-      
+      });
 
       const lastOffchainUpdate = await this.client!.fetchOffchainState(
         startBlock,

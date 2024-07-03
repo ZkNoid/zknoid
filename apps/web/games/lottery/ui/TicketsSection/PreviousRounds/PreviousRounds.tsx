@@ -22,6 +22,7 @@ export default function PreviousRounds({
       numbers: number[];
       owner: string;
       claimed: boolean;
+      funds: bigint;
     }[];
     winningCombination: number[] | undefined;
   }[];
@@ -108,7 +109,7 @@ export default function PreviousRounds({
                     number,
                   ],
                   amount: Number(x.amount),
-                  funds: Number(x.amount),
+                  funds: Number(x.funds),
                   claimed: x.claimed,
                 })),
             }}

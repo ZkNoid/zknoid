@@ -6,8 +6,8 @@ export interface Network {
 }
 
 export const NetworkIds = {
-  ZEKO_TESTNET: 'zeko:testnet',
-  MINA_DEVNET: 'mina:testnet',
+  ZEKO_TESTNET: window.mina?.isPallad ? '69420' : 'zeko:testnet',
+  MINA_DEVNET: window.mina?.isPallad ? '29936104443aaf264a7f0192ac64b1c7173198c1ed404c1bcff5e562e05eb7f6' : 'mina:testnet',
 };
 
 export const NETWORKS: { readonly [networkId: string]: Network } = {
