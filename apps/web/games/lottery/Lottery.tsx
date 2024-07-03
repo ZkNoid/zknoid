@@ -23,13 +23,21 @@ export default function Lottery({}: { params: { competitionId: string } }) {
   const chainStore = useChainStore();
 
   useEffect(() => {
-    if (workerClientStore.client && networkStore.minaNetwork?.networkID) {
+    if (
+      workerClientStore.client &&
+      networkStore.minaNetwork?.networkID &&
+      chainStore.block?.slotSinceGenesis
+    ) {
       workerClientStore.startLottery(
         networkStore.minaNetwork?.networkID!,
         Number(chainStore.block?.slotSinceGenesis)
       );
     }
-  }, [workerClientStore.client, networkStore.minaNetwork?.networkID]);
+  }, [
+    workerClientStore.client,
+    networkStore.minaNetwork?.networkID,
+    chainStore.block?.slotSinceGenesis,
+  ]);
 
   useEffect(() => {
     if (!workerClientStore.lotteryRoundId) return;
