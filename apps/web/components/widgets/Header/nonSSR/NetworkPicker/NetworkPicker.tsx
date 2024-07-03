@@ -17,18 +17,27 @@ export default function NetworkPicker() {
 
   const switchNetwork = async (network: Network) => {
     console.log('Switching to', network);
-    try {
-      await (window as any).mina.switchChain({
-        networkID: network.networkID,
+    if (window.mina?.isPallad) {
+      await window.mina.request({
+        method: 'mina_switchChain',
+        params: {
+          chainId: network.networkID,
+        },
       });
-      networkStore.setNetwork(network);
-      setExpanded(false);
-    } catch (e: any) {
-      if (e?.code == 1001) {
-        await requestAccounts();
-        await switchNetwork(network);
+    } else {
+      try {
+        await (window as any).mina.switchChain({
+          networkID: network.networkID,
+        });
+        networkStore.setNetwork(network);
+        setExpanded(false);
+      } catch (e: any) {
+        if (e?.code == 1001) {
+          await requestAccounts();
+          await switchNetwork(network);
+        }
+        throw e;
       }
-      throw e;
     }
   };
 
