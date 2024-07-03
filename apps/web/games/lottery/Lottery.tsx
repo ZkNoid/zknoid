@@ -15,7 +15,6 @@ import { api } from '@/trpc/react';
 
 export default function Lottery({}: { params: { competitionId: string } }) {
   const networkStore = useNetworkStore();
-  const [roundId, setRoundId] = useState(0);
   const [roundEndsIn, setRoundEndsIn] = useState<DateTime>(
     DateTime.fromMillis(0)
   );
@@ -33,19 +32,14 @@ export default function Lottery({}: { params: { competitionId: string } }) {
   }, [workerClientStore.client, networkStore.minaNetwork?.networkID]);
 
   useEffect(() => {
-    if (!workerClientStore.lotteryState) return;
+    if (!workerClientStore.lotteryRoundId) return;
 
     const startBlock = workerClientStore.lotteryState?.startBlock;
     const blockNum = chainStore.block?.slotSinceGenesis;
-    const roundId_ =
-      blockNum && startBlock
-        ? Math.floor(Number(blockNum - startBlock) / BLOCK_PER_ROUND)
-        : 0;
 
     console.log('Lottery state', workerClientStore.lotteryState);
-    console.log('Round id', roundId_);
+    console.log('Round id', workerClientStore.lotteryRoundId);
 
-    setRoundId(roundId_);
     blockNum && startBlock
       ? setRoundEndsIn(
           DateTime.now().plus(
@@ -63,22 +57,25 @@ export default function Lottery({}: { params: { competitionId: string } }) {
         ])
       );
     })();
-  }, [workerClientStore.lotteryState]);
+  }, [
+    workerClientStore.lotteryState,
+    workerClientStore.offchainStateUpdateBlock,
+  ]);
 
   const events = api.lotteryBackend.getMinaEvents.useQuery({});
 
   useEffect(() => {
-    if (workerClientStore.lotteryState && roundId) {
+    if (workerClientStore.lotteryState && workerClientStore.lotteryRoundId) {
       console.log('Refetching offchain state');
 
       new Promise((resolve) => setTimeout(resolve, 3_000)).then(() => {
         workerClientStore?.fetchOffchainState(
           Number(workerClientStore.lotteryState!.startBlock),
-          roundId
+          workerClientStore.lotteryRoundId
         );
       });
     }
-  }, [chainStore.block?.height, roundId]);
+  }, [chainStore.block?.height, workerClientStore.lotteryRoundId]);
 
   return (
     <GamePage
@@ -88,7 +85,10 @@ export default function Lottery({}: { params: { competitionId: string } }) {
       defaultPage={'Game'}
       customDesign={true}
     >
-      <BannerSection roundId={roundId} roundEndsIn={roundEndsIn} />
+      <BannerSection
+        roundId={workerClientStore.lotteryRoundId}
+        roundEndsIn={roundEndsIn}
+      />
       <TicketsSection />
 
       <motion.div
