@@ -50,12 +50,20 @@ export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
     async onWalletConnected(address: string | undefined) {
       if (address) {
         localStorage.minaAdderess = address;
-        const network = await (window as any).mina.requestNetwork();
-        const minaNetwork = ALL_NETWORKS.find((x) =>
-          network.networkID != 'unknown'
-            ? x.networkID == network.networkID
-            : x.name == network.name
-        );
+        let minaNetwork;
+        if (window.mina?.isPallad) {
+          const network = await (window as any).mina.requestNetwork();
+          minaNetwork = ALL_NETWORKS.find(
+            (x) => x.palladNetworkID == network.result
+          );
+        } else {
+          const network = await (window as any).mina.requestNetwork();
+          minaNetwork = ALL_NETWORKS.find((x) =>
+            network.networkID != 'unknown'
+              ? x.networkID == network.networkID
+              : x.name == network.name
+          );
+        }
 
         this.setNetwork(minaNetwork);
       } else {
