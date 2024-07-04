@@ -19,7 +19,7 @@ export default function NetworkSwitchButton() {
       await window.mina.request({
         method: 'mina_switchChain',
         params: {
-          chainId: network.networkID,
+          chainId: network.palladNetworkID,
         },
       });
     } else {
