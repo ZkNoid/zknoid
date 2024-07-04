@@ -2,7 +2,6 @@ import clsx, { ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 export function walletInstalled() {
-  // window.mina?.isConnected();
   return typeof mina !== 'undefined';
 }
 

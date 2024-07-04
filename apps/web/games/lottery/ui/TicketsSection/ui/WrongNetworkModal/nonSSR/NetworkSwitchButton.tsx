@@ -11,7 +11,6 @@ import { useEffect } from 'react';
 
 export default function NetworkSwitchButton() {
   const networkStore = useNetworkStore();
-  useRegisterWorkerClient();
 
   const switchNetwork = async (network: Network) => {
     console.log('Switching to', network);
