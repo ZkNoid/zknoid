@@ -25,7 +25,7 @@ export default function TicketsSection() {
   const emptyTicket: TicketInfo = { numbers: [0, 0, 0, 0, 0, 0], amount: 0 };
 
   const [page, setPage] = useState<number>(1);
-  const [tickets, _setTickets] = useState<TicketInfo[]>([emptyTicket]);
+  const [tickets, setTickets] = useState<TicketInfo[]>([emptyTicket]);
   const [roundInfos, setRoundInfos] = useState<
     | {
         id: number;
@@ -99,6 +99,7 @@ export default function TicketsSection() {
                   loaderActive={
                     workerClientStore.status !== 'Lottery initialized'
                   }
+                  onFinally={() => setTickets([emptyTicket])}
                 />
                 <GetMoreTicketsButton
                   disabled={tickets[tickets.length - 1].amount == 0}

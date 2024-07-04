@@ -12,6 +12,7 @@ export default function BuyInfoCard({
   buttonActive,
   loaderActive,
   ticketsInfo,
+  onFinally,
 }: {
   buttonActive: ReactNode;
   loaderActive: boolean;
@@ -19,6 +20,7 @@ export default function BuyInfoCard({
     amount: number;
     numbers: number[];
   }[];
+  onFinally: () => void;
 }) {
   const workerStore = useWorkerClientStore();
   const networkStore = useNetworkStore();
@@ -82,6 +84,8 @@ export default function BuyInfoCard({
                 },
               });
             }
+          } finally {
+            onFinally();
           }
         }}
       >

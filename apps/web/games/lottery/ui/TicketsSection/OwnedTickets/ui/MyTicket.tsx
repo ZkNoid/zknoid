@@ -228,18 +228,18 @@ export default function MyTicket({
             >
               <div
                 className={
-                  '-mt-[0.57vw] h-[1.15vw] w-[1.15vw] rounded-full bg-bg-dark'
+                  '-mt-[0.57vw] h-[1.15vw] w-[1.15vw] rounded-full bg-bg-grey'
                 }
               />
               {[...Array(16)].map((_, index) => (
                 <div
                   key={index}
-                  className={'h-[0.31vw] w-[0.31vw] rounded-full bg-bg-dark'}
+                  className={'h-[0.31vw] w-[0.31vw] rounded-full bg-bg-grey'}
                 />
               ))}
               <div
                 className={
-                  '-mb-[0.57vw] h-[1.15vw] w-[1.15vw] rounded-full bg-bg-dark'
+                  '-mb-[0.57vw] h-[1.15vw] w-[1.15vw] rounded-full bg-bg-grey'
                 }
               />
             </div>
