@@ -56,9 +56,12 @@ export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
             const network = await window.mina.request({
               method: 'mina_chainId',
             });
+            console.log('Wallet network', network);
+
             minaNetwork = ALL_NETWORKS.find(
               (x) => x.palladNetworkID == network.result
-            );  
+            );
+            console.log('Connecting to mina network', minaNetwork);
           } catch (e) {
             console.log('Error while wallet connect');
             console.log('Error while wallet connect', e);
