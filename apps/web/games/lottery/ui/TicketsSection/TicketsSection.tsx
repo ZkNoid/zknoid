@@ -35,6 +35,7 @@ export default function TicketsSection() {
           numbers: number[];
           owner: string;
           claimed: boolean;
+          funds: bigint;
         }[];
         winningCombination: number[] | undefined;
       }[]
@@ -62,7 +63,7 @@ export default function TicketsSection() {
   return (
     <div
       className={cn(
-        'bg-bg-grey relative rounded-[0.67vw] border border-left-accent',
+        'relative rounded-[0.67vw] border border-left-accent bg-bg-grey',
         'flex flex-col gap-[6vw] px-[2vw] py-[2.67vw]'
       )}
     >
