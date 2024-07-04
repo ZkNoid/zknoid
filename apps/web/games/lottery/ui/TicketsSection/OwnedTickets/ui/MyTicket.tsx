@@ -208,11 +208,7 @@ export default function MyTicket({
                   ))}
               </div>
               <Image
-                src={
-                  ticketsImages[
-                    Math.round(Math.random() * ticketsImages.length)
-                  ]
-                }
+                src={ticketsImages[combination[0] - 1]}
                 alt={'Lottery Ticket'}
                 className={
                   'absolute left-0 top-0 -z-[1] h-full w-full rounded-[1vw] object-cover object-center p-px'
