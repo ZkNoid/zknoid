@@ -52,7 +52,9 @@ export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
         localStorage.minaAdderess = address;
         let minaNetwork;
         if (window.mina?.isPallad) {
-          const network = await (window as any).mina.requestNetwork();
+          const network = await window.mina.request({
+            method: 'mina_chainId',
+          });
           minaNetwork = ALL_NETWORKS.find(
             (x) => x.palladNetworkID == network.result
           );
