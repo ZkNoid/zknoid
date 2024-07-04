@@ -121,7 +121,7 @@ export default function Rules() {
       ) : (
         <button
           className={
-            'absolute bottom-[1.042vw] right-[1.042vw] flex h-[3.125vw] w-[3.125vw] items-center justify-center rounded-[0.26vw] border border-left-accent hover:bg-left-accent/10'
+            'bg-bg-grey absolute bottom-[1.042vw] right-[1.042vw] flex h-[3.125vw] w-[3.125vw] items-center justify-center rounded-[0.26vw] border border-left-accent hover:bg-left-accent/10'
           }
           onClick={() => setIsOpen(true)}
         >

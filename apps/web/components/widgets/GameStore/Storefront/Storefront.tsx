@@ -66,7 +66,7 @@ export default function Storefront({ games }: { games: IGame[] }) {
 
   return (
     <div className="top-0 mb-[100px] flex h-full w-full flex-col gap-5 p-4 lg:p-10">
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-5" id={'events'}>
         <div className="pb-3 text-headline-2 lg:text-headline-1">
           Events & competitions
         </div>
@@ -184,7 +184,10 @@ export default function Storefront({ games }: { games: IGame[] }) {
           </div>
         </div>
         <div className="flex w-full flex-col gap-6">
-          <div className={'flex w-full flex-row items-center justify-between'}>
+          <div
+            className={'flex w-full flex-row items-center justify-between'}
+            id={'games'}
+          >
             <div className="text-headline-2 lg:text-headline-1">Games</div>
             <SortByFilter
               sortMethods={GAME_STORE_SORT_METHODS}

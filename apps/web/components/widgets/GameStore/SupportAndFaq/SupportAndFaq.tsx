@@ -5,7 +5,10 @@ import Accordion from '@/components/shared/Accordion';
 
 export default function SupportAndFaq() {
   return (
-    <div className="top-0 flex h-full w-full flex-col gap-20 p-4 pb-[100px] lg:p-10">
+    <div
+      className="top-0 flex h-full w-full flex-col gap-20 p-4 pb-[100px] lg:p-10"
+      id={'faq'}
+    >
       <div className={'flex max-w-full flex-col gap-5 lg:max-w-[40%]'}>
         <div className="pb-3 text-headline-2 lg:text-headline-1">
           Technical support

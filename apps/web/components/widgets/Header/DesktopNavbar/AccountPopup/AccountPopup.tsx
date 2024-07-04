@@ -61,7 +61,7 @@ export default function AccountPopup({
   return (
     <motion.div
       className={
-        'absolute -right-2 top-0 z-20 flex w-[110%] flex-col rounded-[10px] bg-right-accent p-10'
+        'absolute -right-2 top-0 z-20 flex max-w-[500px] flex-col rounded-[10px] bg-right-accent p-10'
       }
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}

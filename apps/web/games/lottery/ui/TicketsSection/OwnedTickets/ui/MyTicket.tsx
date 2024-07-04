@@ -62,7 +62,7 @@ const ClosedTicket = ({
       whileHover={onClick && { scale: 1.05 }}
     >
       <div
-        className={'flex flex-col justify-between rounded-[1.042vw] border p-1'}
+        className={'flex flex-col justify-between rounded-[2.604vw] border p-1'}
       >
         <div
           className={
@@ -208,11 +208,7 @@ export default function MyTicket({
                   ))}
               </div>
               <Image
-                src={
-                  ticketsImages[
-                    Math.round(Math.random() * ticketsImages.length)
-                  ]
-                }
+                src={ticketsImages[combination[0] - 1]}
                 alt={'Lottery Ticket'}
                 className={
                   'absolute left-0 top-0 -z-[1] h-full w-full rounded-[1vw] object-cover object-center p-px'
@@ -228,18 +224,18 @@ export default function MyTicket({
             >
               <div
                 className={
-                  '-mt-[0.57vw] h-[1.15vw] w-[1.15vw] rounded-full bg-bg-dark'
+                  '-mt-[0.57vw] h-[1.15vw] w-[1.15vw] rounded-full bg-bg-grey'
                 }
               />
               {[...Array(16)].map((_, index) => (
                 <div
                   key={index}
-                  className={'h-[0.31vw] w-[0.31vw] rounded-full bg-bg-dark'}
+                  className={'h-[0.31vw] w-[0.31vw] rounded-full bg-bg-grey'}
                 />
               ))}
               <div
                 className={
-                  '-mb-[0.57vw] h-[1.15vw] w-[1.15vw] rounded-full bg-bg-dark'
+                  '-mb-[0.57vw] h-[1.15vw] w-[1.15vw] rounded-full bg-bg-grey'
                 }
               />
             </div>

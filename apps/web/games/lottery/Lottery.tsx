@@ -14,6 +14,7 @@ import { api } from '@/trpc/react';
 import { Field, fetchAccount } from 'o1js';
 import { LOTTERY_ADDRESS } from '@/app/constants/addresses';
 import { BLOCK_PER_ROUND } from 'l1-lottery-contracts';
+import StateManager from '@/games/lottery/ui/StateManager';
 
 export default function LotteryComponent({}: {
   params: { competitionId: string };
@@ -58,12 +59,13 @@ export default function LotteryComponent({}: {
   }, [networkStore.minaNetwork?.networkID, chainStore.block?.height]);
 
   useEffect(() => {
-    console.log(workerClientStore.client,
+    console.log(
+      workerClientStore.client,
       networkStore.minaNetwork?.networkID,
       chainStore.block?.slotSinceGenesis,
       events.data?.events,
       !workerClientStore.lotteryGame
-    )
+    );
     if (
       workerClientStore.client &&
       networkStore.minaNetwork?.networkID &&
@@ -83,13 +85,12 @@ export default function LotteryComponent({}: {
     networkStore.minaNetwork?.networkID,
     chainStore.block?.slotSinceGenesis,
     events.data,
-    workerClientStore.lotteryGame
+    workerClientStore.lotteryGame,
   ]);
 
   useEffect(() => {
     if (workerClientStore.lotteryGame?.address)
       workerClientStore.updateOnchainState();
-
   }, [chainStore.block?.height]);
   useEffect(() => {
     if (
@@ -171,6 +172,8 @@ export default function LotteryComponent({}: {
       defaultPage={'Game'}
       customDesign={true}
     >
+      <StateManager />
+
       <BannerSection
         roundId={workerClientStore.lotteryRoundId}
         roundEndsIn={roundEndsIn}

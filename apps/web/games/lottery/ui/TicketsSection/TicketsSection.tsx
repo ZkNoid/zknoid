@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import GetMoreTicketsButton from './ui/GetMoreTicketsButton';
 import OwnedTickets from './OwnedTickets';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
-import { BLOCK_PER_ROUND } from 'l1-lottery-contracts';
 import { useChainStore } from '@/lib/stores/minaChain';
 import { AnimatePresence } from 'framer-motion';
 import { useNetworkStore } from '@/lib/stores/network';
@@ -26,7 +25,7 @@ export default function TicketsSection() {
   const emptyTicket: TicketInfo = { numbers: [0, 0, 0, 0, 0, 0], amount: 0 };
 
   const [page, setPage] = useState<number>(1);
-  const [tickets, _setTickets] = useState<TicketInfo[]>([emptyTicket]);
+  const [tickets, setTickets] = useState<TicketInfo[]>([emptyTicket]);
   const [roundInfos, setRoundInfos] = useState<
     | {
         id: number;
@@ -36,6 +35,7 @@ export default function TicketsSection() {
           numbers: number[];
           owner: string;
           claimed: boolean;
+          funds: bigint;
         }[];
         winningCombination: number[] | undefined;
       }[]
@@ -63,7 +63,7 @@ export default function TicketsSection() {
   return (
     <div
       className={cn(
-        'relative rounded-[0.67vw] border border-left-accent',
+        'relative rounded-[0.67vw] border border-left-accent bg-bg-grey',
         'flex flex-col gap-[6vw] px-[2vw] py-[2.67vw]'
       )}
     >
@@ -88,7 +88,7 @@ export default function TicketsSection() {
                   ))}
                 </AnimatePresence>
               </div>
-              <div className={'flex flex-col gap-[1.33vw]'}>
+              <div className={'flex flex-col gap-[1.33vw]'} id={'ticketsToBuy'}>
                 <BuyInfoCard
                   buttonActive={
                     workerClientStore.status === 'Lottery initialized' &&
@@ -99,6 +99,7 @@ export default function TicketsSection() {
                   loaderActive={
                     workerClientStore.status !== 'Lottery initialized'
                   }
+                  onFinally={() => setTickets([emptyTicket])}
                 />
                 <GetMoreTicketsButton
                   disabled={tickets[tickets.length - 1].amount == 0}
@@ -113,7 +114,10 @@ export default function TicketsSection() {
       </div>
       <div className="">
         <div className="mb-[1.33vw] text-[2.13vw]">Previous Lotteries</div>
-        <div className={'flex w-full flex-row gap-[1.042vw]'}>
+        <div
+          className={'flex w-full flex-row gap-[1.042vw]'}
+          id={'previousLotteries'}
+        >
           {!!roundInfos ? (
             <PreviousRounds
               page={page}

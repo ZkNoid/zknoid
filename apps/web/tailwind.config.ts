@@ -40,7 +40,8 @@ module.exports = {
         'rating-numbers': ['16px', { lineHeight: '14px', fontWeight: '500' }],
       },
       colors: {
-        'bg-dark': '#212121',
+        'bg-dark': '#141414',
+        'bg-grey': '#212121',
         foreground: '#F9F8F4',
         'left-accent': '#D2FF00',
         'middle-accent': '#FF5B23',

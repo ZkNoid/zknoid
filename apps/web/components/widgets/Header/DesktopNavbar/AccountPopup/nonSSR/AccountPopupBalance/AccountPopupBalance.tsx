@@ -41,7 +41,7 @@ export default function AccountPopupBalance() {
             </div>
             <div className="flex items-center gap-[10px]">
               <Image alt="" src={MinaCoinImg} width={26} height={26} />
-              <div className="w-full text-end text-bg-dark lg:w-auto">
+              <div className="w-full text-start text-bg-dark lg:w-auto">
                 Wallet balance {minaDeposit}
               </div>
             </div>

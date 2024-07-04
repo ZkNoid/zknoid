@@ -13,7 +13,7 @@ export const SOCIALS = [
   {
     id: 'github',
     name: 'Github',
-    link: 'https://github.com/ZkNoid',
+    link: 'https://github.com/ZkNoid/zknoid',
     image: githubImg,
     whiteImage: githubImgWhite,
   },
