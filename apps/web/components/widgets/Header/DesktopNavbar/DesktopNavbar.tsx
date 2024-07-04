@@ -11,7 +11,13 @@ import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import AccountCard from './ui/AccountCard';
 import AccountPopup from './AccountPopup';
-import { AnimatePresence } from 'framer-motion';
+import {
+  AnimatePresence,
+  motion,
+  useCycle,
+  useMotionValueEvent,
+  useScroll,
+} from 'framer-motion';
 import Tab from './ui/Tab';
 import boardGameIcon from '@/public/image/misc/board-game-icon.svg';
 import arcadeGameIcon from '@/public/image/misc/arcade-game-icon.svg';
@@ -34,7 +40,25 @@ export default function DesktopNavbar({
 }: {
   autoconnect: boolean;
 }) {
+  const [hidden, setHidden] = useState(false);
+  const [isOpen, toggleOpen] = useCycle(false, true);
   const networkStore = useNetworkStore();
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, 'change', (latest) => {
+    const previous = scrollY.getPrevious();
+    // @ts-ignore
+    if (latest > previous && latest > 200 && !isOpen) {
+      setHidden(true);
+    } else if (
+      // @ts-ignore
+      (isOpen && latest - previous >= 100) ||
+      // @ts-ignore
+      (previous - latest >= 100 && isOpen)
+    ) {
+      toggleOpen();
+    } else setHidden(false);
+  });
   const [isAccountOpen, setIsAccountOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -57,7 +81,15 @@ export default function DesktopNavbar({
   }, [networkStore.walletConnected]);
 
   return (
-    <header className="sticky top-0 z-50 hidden h-[91px] w-full items-center bg-bg-dark px-3 lg:flex lg:px-[50px]">
+    <motion.header
+      variants={{
+        visible: { y: 0 },
+        hidden: { y: '-300%' },
+      }}
+      animate={hidden ? 'hidden' : 'visible'}
+      transition={{ duration: 0.35, ease: 'easeInOut', type: 'just' }}
+      className="sticky top-0 z-50 hidden h-[91px] w-full items-center bg-bg-dark px-3 lg:flex lg:px-[50px]"
+    >
       <div className={'flex w-full items-center justify-between'}>
         <Link
           href={'/'}
@@ -205,6 +237,6 @@ export default function DesktopNavbar({
           )}
         </div>
       </div>
-    </header>
+    </motion.header>
   );
 }
