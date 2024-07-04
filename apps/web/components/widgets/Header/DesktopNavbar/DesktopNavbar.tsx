@@ -18,7 +18,6 @@ import arcadeGameIcon from '@/public/image/misc/arcade-game-icon.svg';
 import luckyGameIcon from '@/public/image/misc/lucky-game-icon.svg';
 import { SOCIALS } from '@/constants/socials';
 
-
 const Balance = dynamic(() => import('./nonSSR/Balance'), {
   ssr: false,
 });
@@ -58,7 +57,7 @@ export default function DesktopNavbar({
   }, [networkStore.walletConnected]);
 
   return (
-    <header className="z-10 hidden h-[91px] w-full items-center px-3 lg:flex lg:px-[50px]">
+    <header className="sticky top-0 z-50 hidden h-[91px] w-full items-center bg-bg-dark px-3 lg:flex lg:px-[50px]">
       <div className={'flex w-full items-center justify-between'}>
         <Link
           href={'/'}
