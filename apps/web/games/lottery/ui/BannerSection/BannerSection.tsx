@@ -68,7 +68,7 @@ export default function BannerSection({
         <BannerButton
           onClick={() => setRoundToShow(roundToShow - 1)}
           disabled={roundToShow < 1}
-          className="bg-bg-grey flex w-[3.13vw] items-center justify-center border-left-accent text-left-accent"
+          className="flex w-[3.13vw] items-center justify-center border-left-accent bg-bg-grey text-left-accent"
         >
           <svg
             width="1.042vw"
@@ -84,7 +84,7 @@ export default function BannerSection({
         <BannerButton
           onClick={() => setRoundToShow(roundToShow + 1)}
           disabled={roundToShow >= lotteryStore.lotteryRoundId}
-          className="bg-bg-grey flex w-[3.13vw] items-center justify-center border-left-accent text-left-accent"
+          className="flex w-[3.13vw] items-center justify-center border-left-accent bg-bg-grey text-left-accent"
         >
           <svg
             width="1.042vw"
@@ -239,7 +239,7 @@ export default function BannerSection({
           </div>
           <button
             className={cn(
-              'mt-[2.8vw] flex w-full cursor-pointer items-center justify-center rounded-[0.67vw] border-bg-dark px-[1vw] font-museo text-[1.6vw] font-bold uppercase text-bg-dark',
+              'mt-[2.8vw] flex w-full cursor-pointer items-center justify-center rounded-[0.67vw] border-bg-dark px-[1vw] font-museo text-[1.6vw] font-bold uppercase text-bg-dark hover:opacity-80',
               {
                 'bg-right-accent': roundToShow == lotteryStore.lotteryRoundId,
                 'bg-left-accent': roundToShow != lotteryStore.lotteryRoundId,

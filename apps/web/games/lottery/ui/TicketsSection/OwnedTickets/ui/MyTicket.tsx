@@ -62,7 +62,7 @@ const ClosedTicket = ({
       whileHover={onClick && { scale: 1.05 }}
     >
       <div
-        className={'flex flex-col justify-between rounded-[1.042vw] border p-1'}
+        className={'flex flex-col justify-between rounded-[2.604vw] border p-1'}
       >
         <div
           className={
