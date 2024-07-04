@@ -53,6 +53,8 @@ export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
         let minaNetwork;
         if (window.mina?.isPallad) {
           try {
+            console.log('Fetching chain id');
+
             const network = await window.mina.request({
               method: 'mina_chainId',
             });
