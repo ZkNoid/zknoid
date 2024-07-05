@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { VioletLotteryButton } from '../../buttons/VioletLotteryButton';
-import { cn, requestAccounts } from '@/lib/helpers';
+import { cn, requestAccounts, sendTransaction } from '@/lib/helpers';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useChainStore } from '@/lib/stores/minaChain';
@@ -66,24 +66,7 @@ export default function BuyInfoCard({
           );
           console.log('txJson', txJson);
           try {
-            const { hash } = await (window as any).mina.sendTransaction({
-              transaction: txJson,
-              feePayer: {
-                fee: '0.1',
-                memo: '',
-              },
-            });
-          } catch (e: any) {
-            if (e?.code == 1001) {
-              await requestAccounts();
-              const { hash } = await (window as any).mina.sendTransaction({
-                transaction: txJson,
-                feePayer: {
-                  fee: '0.1',
-                  memo: '',
-                },
-              });
-            }
+            await sendTransaction(txJson);
           } finally {
             onFinally();
           }
