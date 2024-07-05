@@ -97,7 +97,7 @@ export default function TicketsSection() {
                   }
                   ticketsInfo={tickets}
                   loaderActive={
-                    workerClientStore.lotteryCompiled || workerClientStore.isActiveTx
+                    workerClientStore.lotteryCompiled && workerClientStore.isActiveTx
                   }
                   onFinally={() => setTickets([emptyTicket])}
                 />
