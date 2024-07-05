@@ -222,7 +222,7 @@ export const useWorkerClientStore = create<
               .get(getNullifierId(Field.from(roundId), Field.from(i)))
               .equals(Field.from(1))
               .toBoolean(),
-            funds: 100500n
+            funds: roundBank * ticketsShares[i] / totalShares
           })),
           winningCombination: winningCombination.every((x) => x == 0)
             ? undefined

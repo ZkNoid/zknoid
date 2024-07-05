@@ -5,6 +5,7 @@ import { useNetworkStore } from '@/lib/stores/network';
 import { useChainStore } from '@/lib/stores/minaChain';
 import { api } from '@/trpc/react';
 import Loader from '@/components/shared/Loader';
+import { formatUnits } from '@/lib/unit';
 
 type Number = {
   number: number;
@@ -64,7 +65,7 @@ export function TicketItem({
       >
         {!!funds ? (
           <>
-            <span>{funds}</span>
+            <span>{formatUnits(funds)}</span>
             <span>{Currency.ZNAKES}</span>
           </>
         ) : noCombination ? (
