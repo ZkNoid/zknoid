@@ -23,6 +23,10 @@ import {
 export interface ClientState {
   status: string;
   client: ZknoidWorkerClient | undefined;
+  onchainStateInitialized: boolean;
+  offchainStateInitialized: boolean;
+  lotteryCompiled: boolean;
+  isActiveTx: boolean;
   onchainState:
     | {
         ticketRoot: Field;
@@ -98,6 +102,10 @@ export const useWorkerClientStore = create<
   immer((set) => ({
     status: 'Not loaded',
     client: undefined,
+    onchainStateInitialized: false,
+    offchainStateInitialized: false,
+    lotteryCompiled: false,
+    isActiveTx: false,
     onchainState: undefined as
       | {
           ticketRoot: Field;
@@ -222,7 +230,7 @@ export const useWorkerClientStore = create<
               .get(getNullifierId(Field.from(roundId), Field.from(i)))
               .equals(Field.from(1))
               .toBoolean(),
-            funds: roundBank * ticketsShares[i] / totalShares
+            funds: (roundBank * ticketsShares[i]) / totalShares,
           })),
           winningCombination: winningCombination.every((x) => x == 0)
             ? undefined
@@ -235,6 +243,7 @@ export const useWorkerClientStore = create<
       set((state) => {
         // @ts-ignore
         state.onchainState = onchainState;
+        state.offchainStateInitialized = true
       });
     },
     async setRoundId(roundId) {
@@ -325,9 +334,10 @@ export const useWorkerClientStore = create<
         state.status = 'Lottery contracts compiling';
       });
 
-      await this.client?._call('compileLotteryContracts', {});
+      await this.client?.compileLotteryContracts();
 
       set((state) => {
+        state.lotteryCompiled = true;
         state.status = 'Lottery instance init';
       });
 
@@ -345,7 +355,8 @@ export const useWorkerClientStore = create<
       this.client?.fetchOnchainState();
 
       set((state) => {
-        state.status = 'Lottery initialized';
+        state.onchainStateInitialized = true;
+        state.status = 'Onchain state fetched';
       });
     },
     async updateOffchainState(currBlock, events) {
@@ -375,6 +386,7 @@ export const useWorkerClientStore = create<
       });
 
       set((state) => {
+        state.offchainStateInitialized = true;
         state.status = 'Lottery initialized';
       });
     },
@@ -417,6 +429,7 @@ export const useWorkerClientStore = create<
     ) {
       set((state) => {
         state.status = 'Ticket buy tx prepare';
+        state.isActiveTx = true;
       });
 
       const roundId = Math.floor(
@@ -435,7 +448,14 @@ export const useWorkerClientStore = create<
         state.status = 'Ticket buy tx proving';
       });
 
-      return await this.client?._call('proveBuyTicketTransaction', {});
+      const txJson = await this.client?._call('proveBuyTicketTransaction', {});
+
+      set((state) => {
+        state.status = 'Ticket buy tx proved';
+        state.isActiveTx = false;
+      });
+
+      return txJson;
     },
     async getReward(
       senderAccount: string,
@@ -447,6 +467,7 @@ export const useWorkerClientStore = create<
     ) {
       set((state) => {
         state.status = 'Get reward tx prepare';
+        state.isActiveTx = true;
       });
 
       await this.client?._call('getReward', {
@@ -462,7 +483,13 @@ export const useWorkerClientStore = create<
         state.status = 'Get reward tx proving';
       });
 
-      return await this.client?._call('proveGetRewardTransaction', {});
+      const txJson = await this.client?._call('proveGetRewardTransaction', {});
+
+      set((state) => {
+        state.status = 'Get reward tx proved';
+      });
+
+      return txJson;
     },
   }))
 );
