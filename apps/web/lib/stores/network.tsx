@@ -52,12 +52,22 @@ export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
         localStorage.minaAdderess = address;
         let minaNetwork;
         if (window.mina?.isPallad) {
-          const network = await window.mina.request({
-            method: 'mina_chainId',
-          });
-          minaNetwork = ALL_NETWORKS.find(
-            (x) => x.palladNetworkID == network.result
-          );
+          try {
+            console.log('Fetching chain id');
+
+            const network = await window.mina.request({
+              method: 'mina_chainId',
+            });
+            console.log('Wallet network', network);
+
+            minaNetwork = ALL_NETWORKS.find(
+              (x) => x.palladNetworkID == network.result
+            );
+            console.log('Connecting to mina network', minaNetwork);
+          } catch (e) {
+            console.log('Error while wallet connect');
+            console.log('Error while wallet connect', e);
+          }
         } else {
           const network = await (window as any).mina.requestNetwork();
           minaNetwork = ALL_NETWORKS.find((x) =>

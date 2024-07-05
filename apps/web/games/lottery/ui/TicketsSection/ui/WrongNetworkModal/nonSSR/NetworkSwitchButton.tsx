@@ -11,7 +11,6 @@ import { useEffect } from 'react';
 
 export default function NetworkSwitchButton() {
   const networkStore = useNetworkStore();
-  useRegisterWorkerClient();
 
   const switchNetwork = async (network: Network) => {
     console.log('Switching to', network);
@@ -68,6 +67,7 @@ export default function NetworkSwitchButton() {
 
     (async () => {
       const listener = (accounts: string[]) => {
+        console.log('Accounts changed', accounts);
         const [account] = accounts;
         if (networkStore.minaNetwork?.networkID)
           networkStore.setNetwork(networkStore.minaNetwork);

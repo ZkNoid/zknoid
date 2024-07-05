@@ -1,10 +1,11 @@
-import { cn, requestAccounts } from '@/lib/helpers';
+import { cn, requestAccounts, sendTransaction } from '@/lib/helpers';
 import { Currency } from '@/constants/currency';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useChainStore } from '@/lib/stores/minaChain';
 import { api } from '@/trpc/react';
 import Loader from '@/components/shared/Loader';
+import { formatUnits } from '@/lib/unit';
 
 type Number = {
   number: number;
@@ -64,7 +65,7 @@ export function TicketItem({
       >
         {!!funds ? (
           <>
-            <span>{funds}</span>
+            <span>{formatUnits(funds)}</span>
             <span>{Currency.ZNAKES}</span>
           </>
         ) : noCombination ? (
@@ -90,26 +91,7 @@ export function TicketItem({
             );
 
             console.log('txJson', txJson);
-            try {
-              const { hash } = await (window as any).mina.sendTransaction({
-                transaction: txJson,
-                feePayer: {
-                  fee: '0.1',
-                  memo: '',
-                },
-              });
-            } catch (e: any) {
-              if (e?.code == 1001) {
-                await requestAccounts();
-                const { hash } = await (window as any).mina.sendTransaction({
-                  transaction: txJson,
-                  feePayer: {
-                    fee: '0.1',
-                    memo: '',
-                  },
-                });
-              }
-            }
+            await sendTransaction(txJson);
           }}
         >
           <div className={'flex flex-row items-center gap-[10%] pr-[10%]'}>
