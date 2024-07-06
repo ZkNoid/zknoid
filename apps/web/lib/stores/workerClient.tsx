@@ -190,6 +190,7 @@ export const useWorkerClientStore = create<
         const roundId = rounds[i];
 
         const roundBank = stateM.roundTickets[roundId]
+          .filter((x) => !x.numbers.every((x) => x.toBigint() == 0n))
           .map((x) => x.amount.toBigInt() * TICKET_PRICE.toBigInt())
           .reduce((x, y) => x + y);
 
@@ -230,7 +231,9 @@ export const useWorkerClientStore = create<
               .get(getNullifierId(Field.from(roundId), Field.from(i)))
               .equals(Field.from(1))
               .toBoolean(),
-            funds: totalShares ? (roundBank * ticketsShares[i]) / totalShares : 0n,
+            funds: totalShares
+              ? (roundBank * ticketsShares[i]) / ((totalShares * 103n) / 100n)
+              : 0n,
           })),
           winningCombination: winningCombination.every((x) => x == 0)
             ? undefined

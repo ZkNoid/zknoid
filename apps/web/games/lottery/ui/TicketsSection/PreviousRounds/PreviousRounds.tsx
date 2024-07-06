@@ -67,8 +67,10 @@ export default function PreviousRounds({
                 number,
               ],
               bank: Number(
-                round.tickets.map((x) => x.amount).reduce((x, y) => x + y) *
-                  TICKET_PRICE.toBigInt()
+                round.tickets
+                  .filter((x) => !x.numbers.every((x) => x == 0))
+                  .map((x) => x.amount)
+                  .reduce((x, y) => x + y) * TICKET_PRICE.toBigInt()
               ),
               ticketsAmount: Number(
                 round.tickets.map((x) => x.amount).reduce((x, y) => x + y)
