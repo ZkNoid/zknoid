@@ -243,7 +243,7 @@ export const useWorkerClientStore = create<
       set((state) => {
         // @ts-ignore
         state.onchainState = onchainState;
-        state.offchainStateInitialized = true
+        state.offchainStateInitialized = true;
       });
     },
     async setRoundId(roundId) {
@@ -487,6 +487,7 @@ export const useWorkerClientStore = create<
 
       set((state) => {
         state.status = 'Get reward tx proved';
+        state.isActiveTx = false;
       });
 
       return txJson;
