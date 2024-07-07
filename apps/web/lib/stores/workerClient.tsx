@@ -192,7 +192,7 @@ export const useWorkerClientStore = create<
         const roundBank = stateM.roundTickets[roundId]
           .filter((x) => !x.numbers.every((x) => x.toBigint() == 0n))
           .map((x) => x.amount.toBigInt() * TICKET_PRICE.toBigInt())
-          .reduce((x, y) => x + y);
+          .reduce((x, y) => x + y, 0n);
 
         const winningCombination = NumberPacked.unpackToBigints(
           stateM.roundResultMap.get(Field.from(roundId))
@@ -216,13 +216,13 @@ export const useWorkerClientStore = create<
           return ticketShares;
         });
 
-        const totalShares = ticketsShares.reduce((x, y) => x + y);
+        const totalShares = ticketsShares.reduce((x, y) => x + y, 0n);
 
         data[roundId] = {
           id: roundId,
           bank: stateM.roundTickets[roundId]
             .map((x) => x.amount.toBigInt())
-            .reduce((x, y) => x + y),
+            .reduce((x, y) => x + y, 0n),
           tickets: stateM.roundTickets[roundId].map((x, i) => ({
             amount: x.amount.toBigInt(),
             numbers: x.numbers.map((x) => Number(x.toBigint())),

@@ -50,7 +50,7 @@ export default function BannerSection({
 
   const ticketsNum = roundInfo?.tickets
     .map((x) => x.amount)
-    .reduce((x, y) => x + y);
+    .reduce((x, y) => x + y, 0n);
 
   return (
     <div

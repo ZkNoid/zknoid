@@ -70,10 +70,10 @@ export default function PreviousRounds({
                 round.tickets
                   .filter((x) => !x.numbers.every((x) => x == 0))
                   .map((x) => x.amount)
-                  .reduce((x, y) => x + y) * TICKET_PRICE.toBigInt()
+                  .reduce((x, y) => x + y, 0n) * TICKET_PRICE.toBigInt()
               ),
               ticketsAmount: Number(
-                round.tickets.map((x) => x.amount).reduce((x, y) => x + y)
+                round.tickets.map((x) => x.amount).reduce((x, y) => x + y, 0n)
               ),
               date: {
                 start: new Date(
