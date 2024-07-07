@@ -23,6 +23,10 @@ import {
 export interface ClientState {
   status: string;
   client: ZknoidWorkerClient | undefined;
+  onchainStateInitialized: boolean;
+  offchainStateInitialized: boolean;
+  lotteryCompiled: boolean;
+  isActiveTx: boolean;
   onchainState:
     | {
         ticketRoot: Field;
@@ -98,6 +102,10 @@ export const useWorkerClientStore = create<
   immer((set) => ({
     status: 'Not loaded',
     client: undefined,
+    onchainStateInitialized: false,
+    offchainStateInitialized: false,
+    lotteryCompiled: false,
+    isActiveTx: false,
     onchainState: undefined as
       | {
           ticketRoot: Field;
@@ -182,8 +190,9 @@ export const useWorkerClientStore = create<
         const roundId = rounds[i];
 
         const roundBank = stateM.roundTickets[roundId]
+          .filter((x) => !x.numbers.every((x) => x.toBigint() == 0n))
           .map((x) => x.amount.toBigInt() * TICKET_PRICE.toBigInt())
-          .reduce((x, y) => x + y);
+          .reduce((x, y) => x + y, 0n);
 
         const winningCombination = NumberPacked.unpackToBigints(
           stateM.roundResultMap.get(Field.from(roundId))
@@ -207,13 +216,13 @@ export const useWorkerClientStore = create<
           return ticketShares;
         });
 
-        const totalShares = ticketsShares.reduce((x, y) => x + y);
+        const totalShares = ticketsShares.reduce((x, y) => x + y, 0n);
 
         data[roundId] = {
           id: roundId,
           bank: stateM.roundTickets[roundId]
             .map((x) => x.amount.toBigInt())
-            .reduce((x, y) => x + y),
+            .reduce((x, y) => x + y, 0n),
           tickets: stateM.roundTickets[roundId].map((x, i) => ({
             amount: x.amount.toBigInt(),
             numbers: x.numbers.map((x) => Number(x.toBigint())),
@@ -222,7 +231,9 @@ export const useWorkerClientStore = create<
               .get(getNullifierId(Field.from(roundId), Field.from(i)))
               .equals(Field.from(1))
               .toBoolean(),
-            funds: roundBank * ticketsShares[i] / totalShares
+            funds: totalShares
+              ? (roundBank * ticketsShares[i]) / ((totalShares * 103n) / 100n)
+              : 0n,
           })),
           winningCombination: winningCombination.every((x) => x == 0)
             ? undefined
@@ -235,6 +246,7 @@ export const useWorkerClientStore = create<
       set((state) => {
         // @ts-ignore
         state.onchainState = onchainState;
+        state.offchainStateInitialized = true;
       });
     },
     async setRoundId(roundId) {
@@ -325,9 +337,10 @@ export const useWorkerClientStore = create<
         state.status = 'Lottery contracts compiling';
       });
 
-      await this.client?._call('compileLotteryContracts', {});
+      await this.client?.compileLotteryContracts();
 
       set((state) => {
+        state.lotteryCompiled = true;
         state.status = 'Lottery instance init';
       });
 
@@ -345,7 +358,8 @@ export const useWorkerClientStore = create<
       this.client?.fetchOnchainState();
 
       set((state) => {
-        state.status = 'Lottery initialized';
+        state.onchainStateInitialized = true;
+        state.status = 'Onchain state fetched';
       });
     },
     async updateOffchainState(currBlock, events) {
@@ -375,6 +389,7 @@ export const useWorkerClientStore = create<
       });
 
       set((state) => {
+        state.offchainStateInitialized = true;
         state.status = 'Lottery initialized';
       });
     },
@@ -417,6 +432,7 @@ export const useWorkerClientStore = create<
     ) {
       set((state) => {
         state.status = 'Ticket buy tx prepare';
+        state.isActiveTx = true;
       });
 
       const roundId = Math.floor(
@@ -435,7 +451,14 @@ export const useWorkerClientStore = create<
         state.status = 'Ticket buy tx proving';
       });
 
-      return await this.client?._call('proveBuyTicketTransaction', {});
+      const txJson = await this.client?._call('proveBuyTicketTransaction', {});
+
+      set((state) => {
+        state.status = 'Ticket buy tx proved';
+        state.isActiveTx = false;
+      });
+
+      return txJson;
     },
     async getReward(
       senderAccount: string,
@@ -447,6 +470,7 @@ export const useWorkerClientStore = create<
     ) {
       set((state) => {
         state.status = 'Get reward tx prepare';
+        state.isActiveTx = true;
       });
 
       await this.client?._call('getReward', {
@@ -462,7 +486,14 @@ export const useWorkerClientStore = create<
         state.status = 'Get reward tx proving';
       });
 
-      return await this.client?._call('proveGetRewardTransaction', {});
+      const txJson = await this.client?._call('proveGetRewardTransaction', {});
+
+      set((state) => {
+        state.status = 'Get reward tx proved';
+        state.isActiveTx = false;
+      });
+
+      return txJson;
     },
   }))
 );

@@ -45,7 +45,7 @@ export default function LotteryComponent({}: {
         startBlock: account.account?.zkapp?.appState[4].toBigInt()!,
       };
 
-      workerClientStore.setOnchainState(onchainState);
+      await workerClientStore.setOnchainState(onchainState);
 
       if (chainStore.block?.height) {
         const roundId = Math.floor(

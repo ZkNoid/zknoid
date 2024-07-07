@@ -28,7 +28,7 @@ export default function BuyInfoCard({
 
   const numberOfTickets = ticketsInfo
     .map((x) => x.amount)
-    .reduce((x, y) => x + y);
+    .reduce((x, y) => x + y, 0);
   const cost = +TICKET_PRICE;
   const totalPrice = numberOfTickets * cost;
 

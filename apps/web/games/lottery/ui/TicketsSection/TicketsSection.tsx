@@ -24,7 +24,7 @@ export default function TicketsSection() {
   const lotteryStore = useWorkerClientStore();
   const emptyTicket: TicketInfo = { numbers: [0, 0, 0, 0, 0, 0], amount: 0 };
 
-  const [page, setPage] = useState<number>(1);
+  const [page, setPage] = useState<number>(0);
   const [tickets, setTickets] = useState<TicketInfo[]>([emptyTicket]);
   const [roundInfos, setRoundInfos] = useState<
     | {
@@ -91,13 +91,13 @@ export default function TicketsSection() {
               <div className={'flex flex-col gap-[1.33vw]'} id={'ticketsToBuy'}>
                 <BuyInfoCard
                   buttonActive={
-                    workerClientStore.status === 'Lottery initialized' &&
+                    workerClientStore.lotteryCompiled &&
                     tickets.length > 0 &&
                     tickets[0].amount != 0
                   }
                   ticketsInfo={tickets}
                   loaderActive={
-                    workerClientStore.status !== 'Lottery initialized'
+                    workerClientStore.lotteryCompiled && workerClientStore.isActiveTx
                   }
                   onFinally={() => setTickets([emptyTicket])}
                 />

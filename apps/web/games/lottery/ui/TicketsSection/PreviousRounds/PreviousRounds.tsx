@@ -40,7 +40,7 @@ export default function PreviousRounds({
           'flex h-[4vw] w-[4vw] items-center justify-center rounded-[0.521vw] border border-left-accent hover:opacity-80 disabled:opacity-60'
         }
         onClick={() => setPage(page + 1)}
-        disabled={page + 1 > roundInfos.length / ROUNDS_PER_PAGE}
+        disabled={page + 1 > workerClientStore.lotteryRoundId / ROUNDS_PER_PAGE}
       >
         <svg
           width="1.458vw"
@@ -67,11 +67,13 @@ export default function PreviousRounds({
                 number,
               ],
               bank: Number(
-                round.tickets.map((x) => x.amount).reduce((x, y) => x + y) *
-                  TICKET_PRICE.toBigInt()
+                round.tickets
+                  .filter((x) => !x.numbers.every((x) => x == 0))
+                  .map((x) => x.amount)
+                  .reduce((x, y) => x + y, 0n) * TICKET_PRICE.toBigInt()
               ),
               ticketsAmount: Number(
-                round.tickets.map((x) => x.amount).reduce((x, y) => x + y)
+                round.tickets.map((x) => x.amount).reduce((x, y) => x + y, 0n)
               ),
               date: {
                 start: new Date(

@@ -182,7 +182,7 @@ const functions = {
         id: roundId,
         bank: stateM.roundTickets[roundId]
           .map((x) => x.amount.toBigInt())
-          .reduce((x, y) => x + y),
+          .reduce((x, y) => x + y, 0n),
         tickets: stateM.roundTickets[roundId].map((x, i) => ({
           amount: x.amount.toBigInt(),
           numbers: x.numbers.map((x) => Number(x.toBigint())),
