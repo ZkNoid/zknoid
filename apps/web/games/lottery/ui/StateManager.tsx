@@ -10,9 +10,8 @@ export default function StateManager() {
   const [isOpen, setIsOpen] = useState<boolean>(true);
 
   useEffect(() => {
-    if (workerClientStore.status === 'Lottery initialized' && isLoading)
-      setIsLoading(false);
-  }, [workerClientStore.status]);
+    if (workerClientStore.lotteryCompiled && isLoading) setIsLoading(false);
+  }, [workerClientStore.lotteryCompiled]);
 
   return (
     <div
@@ -67,9 +66,7 @@ export default function StateManager() {
         <span
           className={'font-plexsans text-[0.938vw] font-medium text-foreground'}
         >
-          {isLoading
-            ? workerClientStore.status + '...'
-            : 'Lottery initialized!'}
+          {workerClientStore.status}
         </span>
       </span>
       <svg
