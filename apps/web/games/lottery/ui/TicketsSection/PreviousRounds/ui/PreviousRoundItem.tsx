@@ -54,7 +54,7 @@ export default function PreviousRoundItem({ round }: { round: IRound }) {
           'flex w-full flex-row justify-between font-plexsans text-[1.25vw] font-medium uppercase text-foreground'
         }
       >
-        <span>Lottery round {round.id}</span>
+        <span className='text-nowrap'>Lottery round {round.id}</span>
         <span>
           {round.date.start.toLocaleString('en-US', { dateStyle: 'medium' })} -{' '}
           {round.date.end.toLocaleString('en-US', { dateStyle: 'medium' })}

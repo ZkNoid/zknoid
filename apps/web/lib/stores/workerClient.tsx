@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
+import { performance } from 'perf_hooks';
 
 import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
 import {
@@ -19,6 +20,7 @@ import {
   BaseMinaEvent,
   syncWithEvents,
 } from '../state-manager/feed_with_events';
+import { DateTime, Duration } from 'luxon';
 
 export interface ClientState {
   status: string;
@@ -331,21 +333,34 @@ export const useWorkerClientStore = create<
         state.status = 'Distribution contracts compiling';
       });
 
+      const DPcompilationStartTime = Date.now() / 1000;
+
       await this.client?.compileDistributionProof();
 
       set((state) => {
         state.status = 'Lottery contracts compiling';
       });
 
+      const LotterycompilationStartTime = Date.now() / 1000;
+
       await this.client?.compileLotteryContracts();
+
+      const compilationEndTime = Date.now() / 1000;
 
       set((state) => {
         state.lotteryCompiled = true;
-        state.status = 'Lottery instance init';
       });
 
+      const dt1 = (
+        LotterycompilationStartTime - DPcompilationStartTime
+      ).toFixed(2);
+      const dt2 = (compilationEndTime - LotterycompilationStartTime).toFixed(2);
+
+      const msg = `Lottery initialized (${dt1}s,${dt2}s)`;
+      console.log(msg);
+
       set((state) => {
-        state.status = 'Lottery initialized';
+        state.status = msg;
       });
 
       return this.client!;

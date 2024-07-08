@@ -119,7 +119,9 @@ const functions = {
     await functions.fetchOnchainState();
   },
   async fetchOnchainState() {
-    const account = await fetchAccount({ publicKey: state.lotteryGame!.address });
+    const account = await fetchAccount({
+      publicKey: state.lotteryGame!.address,
+    });
     console.log('Fetched account', account);
   },
   async fetchOffchainState(args: {
@@ -255,7 +257,15 @@ const functions = {
 
     const ticket = Ticket.from(args.ticketNums, senderAccount, args.amount);
     let rp = await stateM.getReward(args.roundId, ticket);
-    console.log('RP generated', args.dp);
+    console.log(
+      'RP generated', args.ticketNums, args.roundId,
+      args.dp,
+      stateM.roundTickets[args.roundId].map((x) => ({
+        amount: Number(x.amount.toBigInt()),
+        numbers: x.numbers.map((x) => Number(x.toBigint())),
+        owner: x.owner.toBase58(),
+      }))
+    );
 
     let tx = await Mina.transaction(senderAccount, async () => {
       await state.lotteryGame!.getReward(
@@ -277,11 +287,26 @@ const functions = {
     state.getRewardTransaction = tx;
   },
   proveBuyTicketTransaction: async () => {
+    const provingStartTime = Date.now() / 1000;
     await state.buyTicketTransaction!.prove();
+    const provingEnd = Date.now() / 1000;
+
+    console.log('Buy proving time', (provingEnd - provingStartTime).toFixed(2));
+
     return state.buyTicketTransaction!.toJSON();
   },
   proveGetRewardTransaction: async () => {
+    const provingStartTime = Date.now() / 1000;
+
     await state.getRewardTransaction!.prove();
+
+    const provingEnd = Date.now() / 1000;
+
+    console.log(
+      'Claim proving time',
+      (provingEnd - provingStartTime).toFixed(2)
+    );
+
     return state.getRewardTransaction!.toJSON();
   },
   getLotteryState: async () => {

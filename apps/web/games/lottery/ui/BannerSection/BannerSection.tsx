@@ -211,6 +211,7 @@ export default function BannerSection({
             className={cn(
               'w-full font-museo text-[2.5vw] font-bold uppercase',
               {
+                'text-[2.3vw]': roundToShow >= 10,
                 'text-center': roundToShow == lotteryStore.lotteryRoundId,
                 'text-left leading-[1]':
                   roundToShow != lotteryStore.lotteryRoundId,
