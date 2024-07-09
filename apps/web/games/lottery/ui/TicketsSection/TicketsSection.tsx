@@ -64,7 +64,7 @@ export default function TicketsSection() {
     <div
       className={cn(
         'relative rounded-[0.67vw] border border-left-accent bg-bg-grey',
-        'flex flex-col gap-[6vw] px-[2vw] py-[2.67vw]'
+        'flex flex-col gap-[2.604vw] px-[2vw] py-[2.67vw]'
       )}
     >
       <div className="">
@@ -97,7 +97,8 @@ export default function TicketsSection() {
                   }
                   ticketsInfo={tickets}
                   loaderActive={
-                    workerClientStore.lotteryCompiled && workerClientStore.isActiveTx
+                    workerClientStore.lotteryCompiled &&
+                    workerClientStore.isActiveTx
                   }
                   onFinally={() => setTickets([emptyTicket])}
                 />
