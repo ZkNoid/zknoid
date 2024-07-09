@@ -297,6 +297,8 @@ export const useWorkerClientStore = create<
         state.status = 'Sync with events';
         state.lotteryGame = lotteryGame;
       });
+
+      // Cannot assign to read only property 'lotteryGame' of object '#<Object>'
       this.lotteryGame = lotteryGame;
 
       stateM = await syncWithEvents(

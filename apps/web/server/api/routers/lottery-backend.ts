@@ -41,7 +41,7 @@ export const lotteryBackendRouter = createTRPCRouter({
   getMinaEvents: publicProcedure
     .input(z.object({}))
     .query(async ({ ctx, input }) => {
-      const events = await db.collection('mina_events2').find({}).toArray();
+      const events = await db.collection('mina_events').find({}).toArray();
 
       return {
         events: events,
