@@ -15,6 +15,7 @@ import { Field, fetchAccount } from 'o1js';
 import { LOTTERY_ADDRESS } from '@/app/constants/addresses';
 import { BLOCK_PER_ROUND } from 'l1-lottery-contracts';
 import StateManager from '@/games/lottery/ui/StateManager';
+import ConnectWalletModal from '@/components/shared/ConnectWalletModal';
 
 export default function LotteryComponent({}: {
   params: { competitionId: string };
@@ -186,8 +187,13 @@ export default function LotteryComponent({}: {
         }
         animate={'windowed'}
       ></motion.div>
-      {networkStore.minaNetwork?.networkID !=
-        NETWORKS[NetworkIds.MINA_DEVNET].networkID && <WrongNetworkModal />}
+
+      {networkStore.address && networkStore.walletConnected ? (
+        networkStore.minaNetwork?.networkID !=
+          NETWORKS[NetworkIds.MINA_DEVNET].networkID && <WrongNetworkModal />
+      ) : (
+        <ConnectWalletModal />
+      )}
     </GamePage>
   );
 }
