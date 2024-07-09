@@ -112,7 +112,7 @@ export default function BannerSection({
           onClick={() => setRoundToShow(lotteryStore.lotteryRoundId)}
           disabled={roundToShow == lotteryStore.lotteryRoundId}
           className={
-            'absolute right-[1vw] top-[1vw] z-[1] flex cursor-pointer flex-row items-center justify-center gap-[0.26vw] hover:opacity-80 disabled:opacity-60'
+            'absolute right-[1vw] top-[1vw] flex cursor-pointer flex-row items-center justify-center gap-[0.26vw] hover:opacity-80 disabled:opacity-60'
           }
         >
           <div className="flex h-[2.448vw] items-center justify-center rounded-[0.33vw] border border-right-accent px-[1vw] text-center text-[1.25vw] text-right-accent">

@@ -5,10 +5,10 @@ export default function Rules() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   return (
     <div
-      className={cn(
-        'absolute bottom-0 right-0 h-full w-[35vw] rounded-l-[1.042vw] rounded-r-[0.521vw]',
-        { 'bg-right-accent': isOpen }
-      )}
+      className={cn({
+        'absolute bottom-0 right-0 z-0 h-full w-[35vw] rounded-l-[1.042vw] rounded-r-[0.521vw] bg-right-accent':
+          isOpen,
+      })}
     >
       {isOpen && (
         <div
