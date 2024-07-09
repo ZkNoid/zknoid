@@ -46,7 +46,7 @@ export default function CenterConsole({
       >
         <div
           className={
-            'w-full text-center font-museo text-[1.719vw] font-bold uppercase'
+            'w-full text-center font-museo text-[1.65vw] font-bold uppercase'
           }
         >
           {roundToShow != lotteryStore.lotteryRoundId
