@@ -67,13 +67,25 @@ export default function CenterConsole({
           {roundToShow == lotteryStore.lotteryRoundId ? (
             <>
               <div className="flex h-[5.469vw] w-[5.469vw] items-center justify-center rounded-[0.67vw] bg-white text-center font-museo text-[4.219vw] font-bold text-bg-dark">
-                {roundTimer.startsIn.hours || '00'}
+                {!!roundTimer.startsIn.hours
+                  ? roundTimer.startsIn.hours < 10
+                    ? '0' + roundTimer.startsIn.hours
+                    : roundTimer.startsIn.hours
+                  : '00'}
               </div>
               <div className="flex h-[5.469vw] w-[5.469vw] items-center justify-center rounded-[0.67vw] bg-white text-center font-museo text-[4.219vw] font-bold text-bg-dark">
-                {roundTimer.startsIn.minutes || '00'}
+                {!!roundTimer.startsIn.minutes
+                  ? roundTimer.startsIn.minutes < 10
+                    ? '0' + roundTimer.startsIn.minutes
+                    : roundTimer.startsIn.minutes
+                  : '00'}
               </div>
               <div className="flex h-[5.469vw] w-[5.469vw] items-center justify-center rounded-[0.67vw] bg-white text-center font-museo text-[4.219vw] font-bold text-bg-dark">
-                {Math.trunc(roundTimer.startsIn.seconds! || 0)}
+                {!!roundTimer.startsIn.seconds
+                  ? Math.trunc(roundTimer.startsIn.seconds) < 10
+                    ? '0' + Math.trunc(roundTimer.startsIn.seconds)
+                    : Math.trunc(roundTimer.startsIn.seconds)
+                  : '00'}
               </div>
             </>
           ) : roundInfo?.winningCombination ? (
