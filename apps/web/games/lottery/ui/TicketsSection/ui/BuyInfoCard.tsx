@@ -7,6 +7,7 @@ import { useChainStore } from '@/lib/stores/minaChain';
 import { TICKET_PRICE } from 'l1-lottery-contracts';
 import { formatUnits } from '@/lib/unit';
 import Loader from '@/components/shared/Loader';
+import { Currency } from '@/constants/currency';
 
 export default function BuyInfoCard({
   buttonActive,
@@ -42,13 +43,19 @@ export default function BuyInfoCard({
       <div className="flex flex-row">
         <div className="text-nowrap">Cost per ticket</div>
         <div className="mx-1 mb-[0.3vw] w-full border-spacing-6 border-b border-dotted border-[#F9F8F4] opacity-50"></div>
-        <div className="">{formatUnits(cost)}$</div>
+        <div className="">
+          {formatUnits(cost)}
+          {Currency.MINA}
+        </div>
       </div>
 
       <div className="mt-auto flex flex-row">
         <div className="text-nowrap font-medium">TOTAL AMOUNT</div>
         <div className="mx-1 mb-[0.3vw] w-full border-spacing-6 border-b border-dotted border-[#F9F8F4] opacity-50"></div>
-        <div className="">{formatUnits(totalPrice)}$</div>
+        <div className="">
+          {formatUnits(totalPrice)}
+          {Currency.MINA}
+        </div>
       </div>
       <VioletLotteryButton
         className={cn(
