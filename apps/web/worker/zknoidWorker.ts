@@ -133,7 +133,10 @@ const functions = {
     const account = await fetchAccount({
       publicKey: state.lotteryGame!.address,
     });
-    console.log('Fetched account', account.account?.zkapp?.appState.map(x => x.toString()));
+    console.log(
+      'Fetched account',
+      account.account?.zkapp?.appState.map((x) => x.toString())
+    );
   },
   async fetchOffchainState(args: {
     startBlock: number;
@@ -232,14 +235,11 @@ const functions = {
 
     console.log(args.ticketNums, senderAccount, args.roundId);
     const ticket = Ticket.from(args.ticketNums, senderAccount, args.amount);
-    let [roundWitness, roundTicketWitness, bankWitness, bankValue] =
-      stateM.addTicket(ticket, args.roundId);
+    // let [roundWitness, roundTicketWitness, bankWitness, bankValue] =
+    //   stateM.addTicket(ticket, args.roundId);
 
     let tx = await Mina.transaction(senderAccount, async () => {
-      await state.lotteryGame!.buyTicket(
-        ticket,
-        Field014.from(args.roundId)
-      );
+      await state.lotteryGame!.buyTicket(ticket, Field014.from(args.roundId));
     });
 
     console.log('BUY TX', tx);
@@ -267,7 +267,9 @@ const functions = {
     const ticket = Ticket.from(args.ticketNums, senderAccount, args.amount);
     let rp = await stateM.getReward(args.roundId, ticket);
     console.log(
-      'RP generated', args.ticketNums, args.roundId,
+      'RP generated',
+      args.ticketNums,
+      args.roundId,
       args.dp,
       stateM.roundTickets[args.roundId].map((x) => ({
         amount: Number(x.amount.toBigInt()),
