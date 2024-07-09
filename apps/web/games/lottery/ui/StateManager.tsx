@@ -8,9 +8,13 @@ export default function StateManager() {
   const workerClientStore = useWorkerClientStore();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isOpen, setIsOpen] = useState<boolean>(true);
+  const [loadedMsg, setLoadedMsg] = useState<string | undefined>();
 
   useEffect(() => {
-    if (workerClientStore.lotteryCompiled && isLoading) setIsLoading(false);
+    if (workerClientStore.lotteryCompiled && isLoading) {
+      setLoadedMsg(workerClientStore.status);
+      setIsLoading(false);
+    }
   }, [workerClientStore.lotteryCompiled]);
 
   return (
@@ -66,7 +70,7 @@ export default function StateManager() {
         <span
           className={'font-plexsans text-[0.938vw] font-medium text-foreground'}
         >
-          {workerClientStore.status}
+          {loadedMsg || workerClientStore.status}
         </span>
       </span>
       <svg

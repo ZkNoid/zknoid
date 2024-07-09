@@ -356,7 +356,7 @@ export const useWorkerClientStore = create<
       ).toFixed(2);
       const dt2 = (compilationEndTime - LotterycompilationStartTime).toFixed(2);
 
-      const msg = `Lottery compiled (${dt1}s,${dt2}s)`;
+      const msg = `Lottery compiled (${dt1}s, ${dt2}s)`;
       console.log(msg);
 
       set((state) => {
