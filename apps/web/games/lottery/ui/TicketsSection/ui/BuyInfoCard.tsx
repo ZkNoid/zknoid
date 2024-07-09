@@ -58,6 +58,8 @@ export default function BuyInfoCard({
           { 'hover:opacity-80': buttonActive }
         )}
         onClick={async () => {
+          if (!ticketsInfo.length) return;
+
           const txJson = await workerStore.buyTicket(
             networkStore.address!,
             Number(chain.block?.slotSinceGenesis!),

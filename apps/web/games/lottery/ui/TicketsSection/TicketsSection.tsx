@@ -19,13 +19,10 @@ interface TicketInfo {
 export default function TicketsSection() {
   const ROUNDS_PER_PAGE = 2;
   const workerClientStore = useWorkerClientStore();
-  const chainStore = useChainStore();
-  const networkStore = useNetworkStore();
   const lotteryStore = useWorkerClientStore();
-  const emptyTicket: TicketInfo = { numbers: [0, 0, 0, 0, 0, 0], amount: 0 };
 
   const [page, setPage] = useState<number>(0);
-  const [tickets, setTickets] = useState<TicketInfo[]>([emptyTicket]);
+  const [tickets, setTickets] = useState<TicketInfo[]>([]);
   const [roundInfos, setRoundInfos] = useState<
     | {
         id: number;
@@ -75,13 +72,17 @@ export default function TicketsSection() {
             <div className={'flex flex-row gap-[1.33vw]'}>
               <div className={'flex flex-col gap-0'}>
                 <AnimatePresence>
-                  {tickets.map((_, index) => (
+                  {[...tickets, null].map((_, index) => (
                     <TicketCard
                       key={index}
                       index={index}
                       ticketsAmount={tickets.length}
                       addTicket={(ticket) => {
-                        tickets[index] = ticket;
+                        if (tickets.length == index) {
+                          setTickets([...tickets, ticket])
+                        } else {
+                          tickets[index] = ticket;
+                        }
                       }}
                       removeTicket={() => tickets.pop()}
                     />
@@ -99,12 +100,12 @@ export default function TicketsSection() {
                   loaderActive={
                     workerClientStore.lotteryCompiled && workerClientStore.isActiveTx
                   }
-                  onFinally={() => setTickets([emptyTicket])}
+                  onFinally={() => setTickets([])}
                 />
                 <GetMoreTicketsButton
-                  disabled={tickets[tickets.length - 1].amount == 0}
+                  disabled={!tickets.length || tickets[tickets.length - 1].amount == 0}
                   onClick={() => {
-                    setTickets([...tickets, emptyTicket])
+                    setTickets([...tickets])
                   }}
                 />
               </div>
