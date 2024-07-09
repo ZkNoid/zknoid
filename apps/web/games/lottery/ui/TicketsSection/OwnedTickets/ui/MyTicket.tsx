@@ -10,7 +10,6 @@ import TicketBG7 from '../assets/ticket-bg-7.svg';
 import TicketBG8 from '../assets/ticket-bg-8.svg';
 import TicketBG9 from '../assets/ticket-bg-9.svg';
 import TicketBG10 from '../assets/ticket-bg-10.svg';
-import TicketBG11 from '../assets/ticket-bg-11.svg';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const ticketsImages = [
@@ -24,7 +23,6 @@ const ticketsImages = [
   TicketBG8,
   TicketBG9,
   TicketBG10,
-  TicketBG11,
 ];
 
 const ClosedTicket = ({

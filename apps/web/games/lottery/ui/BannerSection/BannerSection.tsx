@@ -124,11 +124,12 @@ export default function BannerSection({
             }
           >
             <svg
-              width="20"
-              height="35"
+              width="1.042vw"
+              height="1.823vw"
               viewBox="0 0 20 35"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
+              className="mx-auto my-auto block w-[1vw]"
             >
               <path d="M2 2L17 17.5L2 33" stroke="#DCB8FF" strokeWidth="3" />
             </svg>
