@@ -33,9 +33,10 @@ import {
 } from 'zknoid-chain-dev';
 import {
   Ticket,
-  Lottery,
+  PLottery,
+  TicketReduceProgram,
   DistibutionProgram,
-  StateManager,
+  PStateManager,
   NumberPacked,
   getNullifierId,
   DistributionProof,
@@ -62,9 +63,9 @@ type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
 const state = {
   gameRecord: null as null | typeof GameRecord,
-  Lottery: null as null | typeof Lottery,
-  lotteryGame: null as null | Lottery,
-  lotteryOffchainState: null as null | StateManager,
+  Lottery: null as null | typeof PLottery,
+  lotteryGame: null as null | PLottery,
+  lotteryOffchainState: null as null | PStateManager,
   lotteryCache: null as null | FetchedCache,
   buyTicketTransaction: null as null | Transaction,
   getRewardTransaction: null as null | Transaction,
@@ -82,6 +83,16 @@ const functions = {
     state.lotteryCache = await fetchCache(LOTTERY_CACHE);
   },
   compileContracts: async (args: {}) => {},
+  compileReduceProof: async (args: {}) => {
+    console.log('[Worker] compiling reduce proof contracts');
+    console.log('Cache info', LOTTERY_CACHE);
+
+    await TicketReduceProgram.compile({
+      cache: WebFileSystem(state.lotteryCache!),
+    });
+
+    console.log('[Worker] compiling reduce contracts ended');
+  },
   compileDistributionProof: async (args: {}) => {
     console.log('[Worker] compiling distribution contracts');
     console.log('Cache info', LOTTERY_CACHE);
@@ -95,7 +106,7 @@ const functions = {
   compileLotteryContracts: async (args: {}) => {
     console.log('[Worker] compiling lottery contracts');
 
-    await Lottery.compile({
+    await PLottery.compile({
       cache: WebFileSystem(state.lotteryCache!),
     });
     console.log('[Worker] compiling contracts ended');
@@ -105,7 +116,7 @@ const functions = {
     networkId: NetworkId;
   }) => {
     const publicKey = PublicKey.fromBase58(args.lotteryPublicKey58);
-    state.lotteryGame = new Lottery(publicKey);
+    state.lotteryGame = new PLottery(publicKey);
     console.log('[Worker] lottery instance init');
     const Network = Mina.Network({
       mina: NETWORKS[args.networkId.toString()].graphql,
@@ -122,14 +133,15 @@ const functions = {
     const account = await fetchAccount({
       publicKey: state.lotteryGame!.address,
     });
-    console.log('Fetched account', account);
+    console.log('Fetched account', account.account?.zkapp?.appState.map(x => x.toString()));
   },
   async fetchOffchainState(args: {
     startBlock: number;
     roundId: number;
     events: BaseMinaEvent[];
   }) {
-    const stateM = new StateManager(
+    const stateM = new PStateManager(
+      state.lotteryGame!,
       UInt32.from(args.startBlock).toFields()[0],
       true
     );
@@ -226,10 +238,7 @@ const functions = {
     let tx = await Mina.transaction(senderAccount, async () => {
       await state.lotteryGame!.buyTicket(
         ticket,
-        roundWitness,
-        roundTicketWitness,
-        bankValue,
-        bankWitness
+        Field014.from(args.roundId)
       );
     });
 

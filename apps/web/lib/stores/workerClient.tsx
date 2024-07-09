@@ -7,9 +7,9 @@ import { performance } from 'perf_hooks';
 import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
 import {
   BLOCK_PER_ROUND,
-  Lottery,
+  PLottery,
   NumberPacked,
-  StateManager,
+  PStateManager,
   TICKET_PRICE,
   getNullifierId,
 } from 'l1-lottery-contracts';
@@ -40,8 +40,8 @@ export interface ClientState {
     | undefined;
   lotteryRoundId: number;
   start: () => Promise<ZknoidWorkerClient>;
-  stateM: StateManager | undefined;
-  lotteryGame: Lottery | undefined;
+  stateM: PStateManager | undefined;
+  lotteryGame: PLottery | undefined;
 
   startLottery: (
     networkId: string,
@@ -119,8 +119,8 @@ export const useWorkerClientStore = create<
       | undefined,
     lotteryRoundId: 0,
     offchainStateUpdateBlock: 0,
-    stateM: undefined as StateManager | undefined,
-    lotteryGame: undefined as Lottery | undefined,
+    stateM: undefined as PStateManager | undefined,
+    lotteryGame: undefined as PLottery | undefined,
     async start() {
       set((state) => {
         state.status = 'Loading worker';
@@ -284,13 +284,14 @@ export const useWorkerClientStore = create<
         state.status = 'State manager loading';
       });
 
-      let stateM = new StateManager(
+      const publicKey = PublicKey.fromBase58(lotteryPublicKey58);
+      const lotteryGame = new PLottery(publicKey);
+
+      let stateM = new PStateManager(
+        lotteryGame,
         UInt32.from(onchainState.startBlock).toFields()[0],
         true
       );
-
-      const publicKey = PublicKey.fromBase58(lotteryPublicKey58);
-      const lotteryGame = new Lottery(publicKey);
 
       set((state) => {
         state.status = 'Sync with events';
@@ -330,10 +331,18 @@ export const useWorkerClientStore = create<
       await this.client?.downloadLotteryCache();
 
       set((state) => {
-        state.status = 'Distribution contracts compiling';
+        state.status = 'Reduce contracts compiling';
       });
 
-      const DPcompilationStartTime = Date.now() / 1000;
+      const t1 = Date.now() / 1000;
+
+      await this.client?.compileReduceProof();
+
+      set((state) => {
+        state.status = 'Distri contracts compiling';
+      });
+
+      const t2 = Date.now() / 1000;
 
       await this.client?.compileDistributionProof();
 
@@ -341,22 +350,21 @@ export const useWorkerClientStore = create<
         state.status = 'Lottery contracts compiling';
       });
 
-      const LotterycompilationStartTime = Date.now() / 1000;
+      const t3 = Date.now() / 1000;
 
       await this.client?.compileLotteryContracts();
 
-      const compilationEndTime = Date.now() / 1000;
+      const t4 = Date.now() / 1000;
 
       set((state) => {
         state.lotteryCompiled = true;
       });
 
-      const dt1 = (
-        LotterycompilationStartTime - DPcompilationStartTime
-      ).toFixed(2);
-      const dt2 = (compilationEndTime - LotterycompilationStartTime).toFixed(2);
+      const dt1 = (t2 - t1).toFixed(2);
+      const dt2 = (t3 - t2).toFixed(2);
+      const dt3 = (t4 - t3).toFixed(2);
 
-      const msg = `Lottery compiled (${dt1}s, ${dt2}s)`;
+      const msg = `Lottery compiled (${dt1}s, ${dt2}s, ${dt3}s)`;
       console.log(msg);
 
       set((state) => {
@@ -413,7 +421,11 @@ export const useWorkerClientStore = create<
       roundId: number,
       events: object[]
     ) {
-      let stateM = new StateManager(Field.from(startBlock), true);
+      let stateM = new PStateManager(
+        this.lotteryGame!,
+        Field.from(startBlock),
+        true
+      );
       stateM = await syncWithEvents(
         stateM,
         startBlock,

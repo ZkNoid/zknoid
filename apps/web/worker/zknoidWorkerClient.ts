@@ -21,6 +21,9 @@ export default class ZknoidWorkerClient {
   compileLotteryContracts() {
     return this._call('compileLotteryContracts', {});
   }
+  compileReduceProof() {
+    return this._call('compileReduceProof', {});
+  }
   compileDistributionProof() {
     return this._call('compileDistributionProof', {});
   }

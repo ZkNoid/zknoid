@@ -123,8 +123,8 @@ importers:
         specifier: ^10.0.4
         version: 10.1.1
       l1-lottery-contracts:
-        specifier: ^0.6.2
-        version: 0.6.2(o1js@1.3.1)
+        specifier: ^0.7.3
+        version: 0.7.3(o1js@1.3.1)
       ldrs:
         specifier: ^1.0.2
         version: 1.0.2
@@ -7259,8 +7259,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /l1-lottery-contracts@0.6.2(o1js@1.3.1):
-    resolution: {integrity: sha512-BKzybEn5Y584mL0yyXy1Mpg1IcpOvenCoRIgXblPE0Lxb5WbEONHJh0Lo8UIiZKpdjky1EhaQjPdIRrtg3O3ng==}
+  /l1-lottery-contracts@0.7.3(o1js@1.3.1):
+    resolution: {integrity: sha512-TpnpbssN5X8ynd4KhM7OlfT9GoFFXxmWcZQuDBfTQks7R1OeTybq+d5UHL3nv4vwbqMzYoAEKVboq3l+E5cZjQ==}
     engines: {node: '>=18.14.0'}
     peerDependencies:
       o1js: 1.3.1

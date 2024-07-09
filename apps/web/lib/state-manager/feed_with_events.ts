@@ -3,7 +3,7 @@ import {
   GetRewardEvent,
   ProduceResultEvent,
   RefundEvent,
-  StateManager,
+  PStateManager,
   getNullifierId,
 } from 'l1-lottery-contracts';
 import { Field } from 'o1js';
@@ -38,12 +38,12 @@ export interface BaseMinaEvent extends Document {
 }
 
 export async function syncWithEvents(
-  stateM: StateManager,
+  stateM: PStateManager,
   startBlock: number,
   roundId: number,
   events: BaseMinaEvent[],
   lotteryContractEvents: LotteryContractEvent
-): Promise<StateManager> {
+): Promise<PStateManager> {
   stateM.syncWithCurBlock(Number(startBlock) + roundId * 480 + 1);
   console.log('Sync with', startBlock, roundId);
 

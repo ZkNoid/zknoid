@@ -104,7 +104,7 @@ export default function TicketsSection() {
                 <GetMoreTicketsButton
                   disabled={tickets[tickets.length - 1].amount == 0}
                   onClick={() => {
-                    tickets.push(emptyTicket);
+                    setTickets([...tickets, emptyTicket])
                   }}
                 />
               </div>
