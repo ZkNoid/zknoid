@@ -158,16 +158,14 @@ export default function TicketCard({
   return (
     <motion.div
       className={cn(
-        'relative -mt-[23%] w-[22.5vw] rounded-[1.33vw] bg-right-accent p-[0.33vw] first:mt-0',
+        'relative -mt-[25%] w-[22.5vw] rounded-[1.33vw] bg-right-accent p-[0.33vw] first:mt-0',
         { 'h-[13.53vw]': !finalized, 'h-fit': finalized }
       )}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       whileHover={
-        finalized && ticketsAmount > 1 && index != ticketsAmount
-          ? { y: '-35%' }
-          : undefined
+        finalized && index != ticketsAmount ? { y: '-35%' } : undefined
       }
       transition={{ damping: 0, stiffness: 0 }}
     >
