@@ -59,6 +59,8 @@ export default function TicketsSection({
     })();
   }, [page, lotteryStore.stateM]);
 
+  console.log('TICKETS:::', tickets); // DEBUG
+
   return (
     <div
       className={cn(
@@ -92,18 +94,9 @@ export default function TicketsSection({
                             tickets[index] = ticket;
                           }
                         }}
-                        removeTicket={(numbers?: number[]) => {
-                          if (numbers && tickets.length > 1) {
-                            const newTickets = tickets.filter(
-                              (ticket) => ticket.numbers != numbers
-                            );
-                            setTickets(newTickets);
-                          } else {
-                            if (tickets.length > 1) {
-                              tickets.pop();
-                            } else {
-                              setTickets([]);
-                            }
+                        removeTicketByIdx={(index: number) => {
+                          if (tickets.length != 0) {
+                            tickets.splice(index, 1);
                           }
                         }}
                       />
@@ -128,9 +121,7 @@ export default function TicketsSection({
                     onFinally={() => setTickets([])}
                   />
                   <GetMoreTicketsButton
-                    disabled={
-                      !tickets.length || tickets[tickets.length - 1].amount == 0
-                    }
+                    disabled={tickets.length == 0}
                     onClick={() => {
                       setTickets([...tickets]);
                     }}

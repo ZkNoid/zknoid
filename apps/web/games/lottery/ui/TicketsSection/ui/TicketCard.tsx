@@ -10,7 +10,7 @@ const TicketsNumPicker = ({
 }: {
   amount: number;
   setAmount: (amount: number) => void;
-  removeTicket: (numbers?: []) => void;
+  removeTicket: () => void;
 }) => {
   return (
     <div
@@ -95,12 +95,12 @@ export default function TicketCard({
   index,
   ticketsAmount,
   addTicket,
-  removeTicket,
+  removeTicketByIdx,
 }: {
   index: number;
   ticketsAmount: number;
   addTicket: (ticket: { numbers: number[]; amount: number }) => void;
-  removeTicket: (numbers?: number[]) => void;
+  removeTicketByIdx: (index: number) => void;
 }) {
   const [symbols, setSymbols] = useState<string>('');
   const [amount, setAmount] = useState<number>(0);
@@ -135,6 +135,15 @@ export default function TicketCard({
     }
   }, [ticketsAmount]);
 
+  const removeTicket = () => {
+    if (ticketsAmount == 0) {
+      clearStates();
+    }
+    removeTicketByIdx(index);
+  };
+
+  console.log('TICKETS:::', index, ticketsAmount, symbols, finalized); // DEBUG
+
   return (
     <motion.div
       className={cn(
@@ -166,7 +175,7 @@ export default function TicketCard({
               </TicketBlockButton>
             ) : finalized ? (
               <div className={'flex flex-row gap-[0.26vw]'}>
-                <ClearTicketButton onClick={() => {}} />
+                <ClearTicketButton onClick={removeTicket} />
                 <div
                   className={
                     'h-[1.6vw] rounded-[0.33vw] border border-bg-dark px-[0.3vw] pb-[0.3vw] pt-[0.15vw] font-plexsans text-[0.833vw] font-medium text-bg-dark'
@@ -177,11 +186,11 @@ export default function TicketCard({
               </div>
             ) : (
               <div className={'flex flex-row gap-[0.26vw]'}>
-                <ClearTicketButton onClick={() => {}} />
+                <ClearTicketButton onClick={removeTicket} />
                 <TicketsNumPicker
                   amount={amount}
                   setAmount={setAmount}
-                  removeTicket={() => {}}
+                  removeTicket={removeTicket}
                 />
               </div>
             )}
