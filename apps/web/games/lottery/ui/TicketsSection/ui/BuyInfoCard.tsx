@@ -34,7 +34,7 @@ export default function BuyInfoCard({
   const totalPrice = numberOfTickets * cost;
 
   return (
-    <div className="flex h-[13.53vw] w-[19.5vw] flex-col rounded-[0.67vw] bg-[#252525] p-[1.33vw] font-plexsans text-[0.833vw] shadow-2xl">
+    <div className="flex h-[13.53vw] w-[20vw] flex-col rounded-[0.67vw] bg-[#252525] p-[1.33vw] font-plexsans text-[0.833vw] shadow-2xl">
       <div className="flex flex-row">
         <div className="text-nowrap">Number of tickets</div>
         <div className="mx-1 mb-[0.3vw] w-full border-spacing-6 border-b border-dotted border-[#F9F8F4] opacity-50"></div>

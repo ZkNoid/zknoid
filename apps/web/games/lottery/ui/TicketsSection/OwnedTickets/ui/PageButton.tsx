@@ -21,7 +21,7 @@ export default function PageButton({
         'relative flex h-[13.53vw] cursor-pointer flex-row rounded-[2.604vw] bg-middle-accent p-[0.33vw] disabled:cursor-not-allowed disabled:opacity-60',
         className
       )}
-      whileHover={!disabled ? { scale: 1.05 } : undefined}
+      whileHover={!disabled ? { scale: 1.05 } : { scale: 1 }}
       disabled={disabled}
     >
       <div

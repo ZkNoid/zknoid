@@ -90,7 +90,7 @@ export default function OwnedTickets({ roundId }: { roundId: number }) {
             onClick={() => setCurrentTicket(item)}
           />
         ))}
-        {tickets.length > TICKETS_PER_PAGE && (
+        {tickets.length > TICKETS_PER_PAGE && page + 1 <= pagesAmount && (
           <PageButton
             text={'Next page'}
             symbol={'→'}
