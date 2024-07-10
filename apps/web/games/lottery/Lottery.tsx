@@ -112,7 +112,7 @@ export default function LotteryComponent({}: {
 
   // When onchain state is ready
   useEffect(() => {
-    if (!workerClientStore.lotteryRoundId) return;
+    if (typeof workerClientStore.lotteryRoundId == undefined) return;
 
     const startBlock = workerClientStore.onchainState?.startBlock;
     const blockNum = chainStore.block?.slotSinceGenesis;
@@ -133,7 +133,7 @@ export default function LotteryComponent({}: {
 
   // When offchain state is ready
   useEffect(() => {
-    if (!workerClientStore.lotteryRoundId) return;
+    if (typeof workerClientStore.lotteryRoundId == undefined) return;
     // (async () => {
     //   console.log(
     //     'Effect fetching',
@@ -145,6 +145,7 @@ export default function LotteryComponent({}: {
   }, [workerClientStore.stateM]);
 
   useEffect(() => {
+
     if (
       workerClientStore.onchainState &&
       workerClientStore.lotteryRoundId &&
