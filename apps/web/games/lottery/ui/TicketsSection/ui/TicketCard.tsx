@@ -154,7 +154,7 @@ export default function TicketCard({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       whileHover={
-        finalized && ticketsAmount > 1 && index != ticketsAmount - 1
+        finalized && ticketsAmount > 1 && index != ticketsAmount
           ? { y: '-35%' }
           : undefined
       }
