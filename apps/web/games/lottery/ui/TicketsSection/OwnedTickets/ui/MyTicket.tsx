@@ -1,4 +1,4 @@
-import { cn } from '@/lib/helpers';
+import { cn, sendTransaction } from '@/lib/helpers';
 import Image from 'next/image';
 import TicketBG1 from '../assets/ticket-bg-1.svg';
 import TicketBG2 from '../assets/ticket-bg-2.svg';
@@ -11,6 +11,11 @@ import TicketBG8 from '../assets/ticket-bg-8.svg';
 import TicketBG9 from '../assets/ticket-bg-9.svg';
 import TicketBG10 from '../assets/ticket-bg-10.svg';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useState } from 'react';
+import { api } from '@/trpc/react';
+import { useNetworkStore } from '@/lib/stores/network';
+import { useChainStore } from '@/lib/stores/minaChain';
+import { useWorkerClientStore } from '@/lib/stores/workerClient';
 
 const ticketsImages = [
   TicketBG1,
@@ -31,12 +36,14 @@ const ClosedTicket = ({
   rounded,
   className,
   onClick,
+  funds,
 }: {
   combination: number[];
   index: number;
   rounded: 'full' | 'right';
   className?: string;
   onClick?: () => void;
+  funds: bigint | undefined;
 }) => {
   const color =
     rounded == 'right'
@@ -49,93 +56,125 @@ const ClosedTicket = ({
       onClick={onClick ?? onClick}
       className={cn(
         'relative flex h-[13.53vw] flex-row p-[0.33vw]',
-        color,
+        !funds && color,
         {
           'rounded-r-[1.33vw]': rounded == 'right',
           'rounded-[2.604vw]': rounded == 'full',
           'cursor-pointer': onClick,
+          'bg-foreground': !!funds,
         },
         className
       )}
       whileHover={onClick && { scale: 1.05 }}
     >
       <div
-        className={'flex flex-col justify-between rounded-[2.604vw] border p-1'}
+        className={cn(
+          'flex flex-col justify-between rounded-[2.604vw] border p-1',
+          { 'border-middle-accent': !!funds }
+        )}
       >
         <div
           className={
             'my-auto flex h-[8vw] w-full flex-row items-center justify-center gap-1'
           }
         >
-          <div
-            className={'flex h-[8vw] w-[65%] flex-col-reverse justify-between'}
-          >
-            {combination.map((item, index) => (
-              <span
-                key={index}
+          {!funds ? (
+            <>
+              <div
                 className={
-                  'rotate-180 font-plexsans text-[0.9vw] font-medium [writing-mode:vertical-rl]'
+                  'flex h-[8vw] w-[65%] flex-col-reverse justify-between'
                 }
               >
-                {item}
+                {combination.map((item, index) => (
+                  <span
+                    key={index}
+                    className={
+                      'rotate-180 font-plexsans text-[0.9vw] font-medium [writing-mode:vertical-rl]'
+                    }
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+              <span className={'h-full w-[55%]'}>
+                <svg
+                  width="100%"
+                  height="100%"
+                  viewBox="0 0 10 109"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={'h-full w-full rotate-180'}
+                >
+                  <rect y="106" width="10" height="3" fill="#F9F8F4" />
+                  <rect y="95" width="10" height="3" fill="#F9F8F4" />
+                  <rect y="8" width="10" height="3" fill="#F9F8F4" />
+                  <rect y="40" width="10" height="3" fill="#F9F8F4" />
+                  <rect y="68" width="10" height="3" fill="#F9F8F4" />
+                  <rect y="82" width="10" height="4" fill="#F9F8F4" />
+                  <rect y="17" width="10" height="4" fill="#F9F8F4" />
+                  <rect y="63" width="10" height="4" fill="#F9F8F4" />
+                  <rect y="104" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="54" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="25" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="101" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="14" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="46" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="51" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="22" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="92" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="5" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="2" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="37" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="89" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="34" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="79" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="76" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="58" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="29" width="10" height="2" fill="#F9F8F4" />
+                  <rect y="99" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="12" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="44" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="49" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="61" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="87" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="32" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="74" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="56" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="27" width="10" height="0.999999" fill="#F9F8F4" />
+                  <rect y="72" width="10" height="0.999999" fill="#F9F8F4" />
+                </svg>
               </span>
-            ))}
-          </div>
-          <span className={'h-full w-[55%]'}>
-            <svg
-              width="100%"
-              height="100%"
-              viewBox="0 0 10 109"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className={'h-full w-full rotate-180'}
+            </>
+          ) : (
+            <div
+              className={
+                'my-auto flex h-[8vw] w-full flex-row items-center justify-center gap-1'
+              }
             >
-              <rect y="106" width="10" height="3" fill="#F9F8F4" />
-              <rect y="95" width="10" height="3" fill="#F9F8F4" />
-              <rect y="8" width="10" height="3" fill="#F9F8F4" />
-              <rect y="40" width="10" height="3" fill="#F9F8F4" />
-              <rect y="68" width="10" height="3" fill="#F9F8F4" />
-              <rect y="82" width="10" height="4" fill="#F9F8F4" />
-              <rect y="17" width="10" height="4" fill="#F9F8F4" />
-              <rect y="63" width="10" height="4" fill="#F9F8F4" />
-              <rect y="104" width="10" height="0.999999" fill="#F9F8F4" />
-              <rect y="54" width="10" height="0.999999" fill="#F9F8F4" />
-              <rect y="25" width="10" height="0.999999" fill="#F9F8F4" />
-              <rect y="101" width="10" height="2" fill="#F9F8F4" />
-              <rect y="14" width="10" height="2" fill="#F9F8F4" />
-              <rect y="46" width="10" height="2" fill="#F9F8F4" />
-              <rect y="51" width="10" height="2" fill="#F9F8F4" />
-              <rect y="22" width="10" height="2" fill="#F9F8F4" />
-              <rect y="92" width="10" height="2" fill="#F9F8F4" />
-              <rect y="5" width="10" height="2" fill="#F9F8F4" />
-              <rect y="2" width="10" height="2" fill="#F9F8F4" />
-              <rect y="37" width="10" height="2" fill="#F9F8F4" />
-              <rect y="89" width="10" height="2" fill="#F9F8F4" />
-              <rect y="34" width="10" height="2" fill="#F9F8F4" />
-              <rect y="79" width="10" height="2" fill="#F9F8F4" />
-              <rect y="76" width="10" height="2" fill="#F9F8F4" />
-              <rect y="58" width="10" height="2" fill="#F9F8F4" />
-              <rect y="29" width="10" height="2" fill="#F9F8F4" />
-              <rect y="99" width="10" height="0.999999" fill="#F9F8F4" />
-              <rect y="12" width="10" height="0.999999" fill="#F9F8F4" />
-              <rect width="10" height="0.999999" fill="#F9F8F4" />
-              <rect y="44" width="10" height="0.999999" fill="#F9F8F4" />
-              <rect y="49" width="10" height="0.999999" fill="#F9F8F4" />
-              <rect y="61" width="10" height="0.999999" fill="#F9F8F4" />
-              <rect y="87" width="10" height="0.999999" fill="#F9F8F4" />
-              <rect y="32" width="10" height="0.999999" fill="#F9F8F4" />
-              <rect y="74" width="10" height="0.999999" fill="#F9F8F4" />
-              <rect y="56" width="10" height="0.999999" fill="#F9F8F4" />
-              <rect y="27" width="10" height="0.999999" fill="#F9F8F4" />
-              <rect y="72" width="10" height="0.999999" fill="#F9F8F4" />
-            </svg>
-          </span>
+              <div
+                className={'h-[8vw] w-[90%] flex-col-reverse justify-between'}
+              >
+                <span
+                  className={
+                    'w-full rotate-180 font-plexsans text-[1vw] font-medium uppercase text-middle-accent [writing-mode:vertical-rl]'
+                  }
+                >
+                  Claim rewards
+                </span>
+              </div>
+            </div>
+          )}
         </div>
         <div className={'flex w-full items-center justify-center p-1'}>
           <div
-            className={
-              'flex min-h-[1.41vw] min-w-[1.41vw] items-center justify-center rounded-full bg-[#F9F8F4] text-[0.625vw] text-black'
-            }
+            className={cn(
+              'flex min-h-[1.41vw] min-w-[1.41vw] items-center justify-center rounded-full  text-[0.625vw] ',
+              {
+                'bg-middle-accent/70 text-foreground': !!funds,
+                'bg-[#F9F8F4] text-black': !funds,
+              }
+            )}
           >
             {index.toString().length == 1 ? '0' + index : index}
           </div>
@@ -152,6 +191,9 @@ export default function MyTicket({
   isOpen,
   onClick,
   tags,
+  funds,
+  claimed,
+  roundId,
 }: {
   isOpen: boolean;
   combination: number[];
@@ -159,16 +201,103 @@ export default function MyTicket({
   index: number;
   onClick: () => void;
   tags?: string[];
+  funds: bigint | undefined;
+  claimed: boolean;
+  roundId: number;
 }) {
+  const [isHovered, setIsHovered] = useState<boolean>(false);
+  const workerStore = useWorkerClientStore();
+  const networkStore = useNetworkStore();
+  const chainStore = useChainStore();
+  const getRoundQuery = api.lotteryBackend.getRoundInfo.useQuery({
+    roundId,
+  });
+  const claimTicket = async (numbers: number[], amount: number) => {
+    let txJson = await workerStore.getReward(
+      networkStore.address!,
+      Number(chainStore.block?.slotSinceGenesis!),
+      roundId,
+      numbers,
+      amount,
+      getRoundQuery.data?.proof!
+    );
+
+    console.log('txJson', txJson);
+    await sendTransaction(txJson);
+  };
   return (
     <AnimatePresence>
       {isOpen ? (
-        <div className={'flex flex-row'} onClick={onClick}>
-          <div className="relative h-[13.53vw] w-[24vw] rounded-[1.33vw] rounded-r-none bg-middle-accent p-[0.33vw]">
-            <div className="pointer-events-none absolute h-[12.87vw] w-[23.33vw] overflow-hidden rounded-[1vw] border"></div>
+        <div
+          className={cn('relative flex flex-row', {
+            'cursor-progress hover:opacity-80':
+              !!funds && !claimed && !workerStore.lotteryCompiled,
+          })}
+          onClick={() => (!funds ? onClick() : undefined)}
+          onMouseEnter={() =>
+            !!funds && !claimed ? setIsHovered(true) : undefined
+          }
+          onMouseLeave={() =>
+            !!funds && !claimed ? setIsHovered(false) : undefined
+          }
+        >
+          {claimed && (
+            <div
+              className={
+                'absolute z-[1] flex h-full w-full flex-col items-center justify-center rounded-[1.042vw] bg-bg-grey/80'
+              }
+            >
+              <span
+                className={
+                  'font-museo text-[1.667vw] font-bold uppercase text-middle-accent'
+                }
+              >
+                Claimed
+              </span>
+            </div>
+          )}
+          {isHovered && !claimed && workerStore.lotteryCompiled && (
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => claimTicket(combination, amount)}
+              className={
+                'absolute z-[1] flex h-full w-full cursor-pointer flex-col items-center justify-center rounded-[1.042vw] bg-bg-grey/80'
+              }
+            >
+              <span
+                className={
+                  'font-museo text-[1.667vw] font-bold uppercase text-middle-accent'
+                }
+              >
+                Click to claim ticket
+              </span>
+            </motion.button>
+          )}
+          <div
+            className={cn(
+              'relative h-[13.53vw] w-[24vw] rounded-[1.33vw] rounded-r-none p-[0.33vw]',
+              {
+                'bg-middle-accent': !funds,
+                'bg-foreground': !!funds,
+              }
+            )}
+          >
+            <div
+              className={cn(
+                'pointer-events-none absolute h-[12.87vw] w-[23.33vw] overflow-hidden rounded-[1vw]',
+                { border: !funds }
+              )}
+            ></div>
             <div className="relative z-0 flex h-full w-full flex-col p-[1.33vw]">
               <div className="flex flex-row">
-                <div className="text-[1.6vw] uppercase text-foreground">
+                <div
+                  className={cn('text-[1.6vw] uppercase', {
+                    'text-foreground': !funds,
+                    'text-middle-accent': !!funds,
+                  })}
+                >
                   Ticket {index}
                 </div>
               </div>
@@ -216,9 +345,10 @@ export default function MyTicket({
           </div>
           <div className={'flex flex-row'}>
             <div
-              className={
-                'flex flex-col items-center justify-between bg-middle-accent'
-              }
+              className={cn('flex flex-col items-center justify-between', {
+                'bg-middle-accent': !funds,
+                'bg-foreground': !!funds,
+              })}
             >
               <div
                 className={
@@ -241,6 +371,7 @@ export default function MyTicket({
               combination={combination}
               index={index}
               rounded={'right'}
+              funds={funds}
             />
           </div>
         </div>
@@ -250,6 +381,7 @@ export default function MyTicket({
           index={index}
           rounded={'full'}
           onClick={onClick}
+          funds={funds}
         />
       )}
     </AnimatePresence>

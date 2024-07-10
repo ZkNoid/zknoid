@@ -24,6 +24,7 @@ export default function LotteryComponent({}: {
   const [roundEndsIn, setRoundEndsIn] = useState<DateTime>(
     DateTime.fromMillis(0)
   );
+  const [roundToShow, setRoundToShow] = useState(0);
 
   const workerClientStore = useWorkerClientStore();
   const chainStore = useChainStore();
@@ -145,7 +146,6 @@ export default function LotteryComponent({}: {
   }, [workerClientStore.stateM]);
 
   useEffect(() => {
-
     if (
       workerClientStore.onchainState &&
       workerClientStore.lotteryRoundId &&
@@ -177,10 +177,11 @@ export default function LotteryComponent({}: {
       <StateManager />
 
       <BannerSection
-        roundId={workerClientStore.lotteryRoundId}
         roundEndsIn={roundEndsIn}
+        roundToShow={roundToShow}
+        setRoundToShow={setRoundToShow}
       />
-      <TicketsSection />
+      <TicketsSection roundToShowId={roundToShow} />
 
       <motion.div
         className={

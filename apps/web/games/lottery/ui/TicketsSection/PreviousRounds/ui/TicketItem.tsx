@@ -1,4 +1,4 @@
-import { cn, requestAccounts, sendTransaction } from '@/lib/helpers';
+import { cn, sendTransaction } from '@/lib/helpers';
 import { Currency } from '@/constants/currency';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { useNetworkStore } from '@/lib/stores/network';
@@ -65,8 +65,8 @@ export function TicketItem({
       >
         {!!funds ? (
           <>
-            <span>{formatUnits(funds)}</span>
-            <span>{Currency.ZNAKES}</span>
+            <span>{Number(formatUnits(funds)).toFixed(2)}</span>
+            <span>{Currency.MINA}</span>
           </>
         ) : noCombination ? (
           <span>No combination</span>

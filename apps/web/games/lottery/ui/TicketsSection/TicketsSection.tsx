@@ -5,9 +5,7 @@ import { useEffect, useState } from 'react';
 import GetMoreTicketsButton from './ui/GetMoreTicketsButton';
 import OwnedTickets from './OwnedTickets';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
-import { useChainStore } from '@/lib/stores/minaChain';
 import { AnimatePresence } from 'framer-motion';
-import { useNetworkStore } from '@/lib/stores/network';
 import PreviousRounds from '@/games/lottery/ui/TicketsSection/PreviousRounds';
 import Skeleton from '@/components/shared/Skeleton';
 
@@ -16,7 +14,11 @@ interface TicketInfo {
   numbers: number[];
 }
 
-export default function TicketsSection() {
+export default function TicketsSection({
+  roundToShowId,
+}: {
+  roundToShowId: number;
+}) {
   const ROUNDS_PER_PAGE = 2;
   const workerClientStore = useWorkerClientStore();
   const lotteryStore = useWorkerClientStore();
@@ -44,7 +46,7 @@ export default function TicketsSection() {
 
     const roundsToShow = Array.from(
       { length: ROUNDS_PER_PAGE },
-      (_, i) => lotteryStore.lotteryRoundId - i - page * ROUNDS_PER_PAGE
+      (_, i) => roundToShowId - i - page * ROUNDS_PER_PAGE
     ).filter((x) => x >= 0);
 
     (async () => {
@@ -65,68 +67,78 @@ export default function TicketsSection() {
       )}
     >
       <div className="">
-        <div className="grid grid-cols-2 gap-[2vw]">
-          <OwnedTickets roundId={workerClientStore.lotteryRoundId} />
-          <div className={'flex flex-col'}>
-            <div className="mb-[1.33vw] text-[2.13vw]">Buy tickets</div>
-            <div className={'flex flex-row gap-[1.33vw]'}>
-              <div className={'flex flex-col gap-0'}>
-                <AnimatePresence>
-                  {[...tickets, null].map((_, index) => (
-                    <TicketCard
-                      key={index}
-                      index={index}
-                      ticketsAmount={tickets.length}
-                      addTicket={(ticket) => {
-                        if (tickets.length == index) {
-                          setTickets([...tickets, ticket]);
-                        } else {
-                          tickets[index] = ticket;
-                        }
-                      }}
-                      removeTicket={(numbers?: number[]) => {
-                        if (numbers && tickets.length > 1) {
-                          const newTickets = tickets.filter(
-                            (ticket) => ticket.numbers != numbers
-                          );
-                          setTickets(newTickets);
-                        } else {
-                          if (tickets.length > 1) {
-                            tickets.pop();
+        <div
+          className={cn('grid gap-[2vw]', {
+            'grid-cols-2': roundToShowId == lotteryStore.lotteryRoundId,
+            'grid-cols-1': roundToShowId != lotteryStore.lotteryRoundId,
+          })}
+        >
+          <OwnedTickets roundId={roundToShowId} />
+          {roundToShowId == lotteryStore.lotteryRoundId && (
+            <div className={'flex flex-col'}>
+              <div className="mb-[1.33vw] text-[2.13vw]">Buy tickets</div>
+              <div className={'flex flex-row gap-[1.33vw]'}>
+                <div className={'flex flex-col gap-0'}>
+                  <AnimatePresence>
+                    {[...tickets, null].map((_, index) => (
+                      <TicketCard
+                        key={index}
+                        index={index}
+                        ticketsAmount={tickets.length}
+                        addTicket={(ticket) => {
+                          if (tickets.length == index) {
+                            setTickets([...tickets, ticket]);
                           } else {
-                            setTickets([]);
+                            tickets[index] = ticket;
                           }
-                        }
-                      }}
-                    />
-                  ))}
-                </AnimatePresence>
-              </div>
-              <div className={'flex flex-col gap-[1.33vw]'} id={'ticketsToBuy'}>
-                <BuyInfoCard
-                  buttonActive={
-                    workerClientStore.lotteryCompiled &&
-                    tickets.length > 0 &&
-                    tickets[0].amount != 0
-                  }
-                  ticketsInfo={tickets}
-                  loaderActive={
-                    workerClientStore.lotteryCompiled &&
-                    workerClientStore.isActiveTx
-                  }
-                  onFinally={() => setTickets([])}
-                />
-                <GetMoreTicketsButton
-                  disabled={
-                    !tickets.length || tickets[tickets.length - 1].amount == 0
-                  }
-                  onClick={() => {
-                    setTickets([...tickets]);
-                  }}
-                />
+                        }}
+                        removeTicket={(numbers?: number[]) => {
+                          if (numbers && tickets.length > 1) {
+                            const newTickets = tickets.filter(
+                              (ticket) => ticket.numbers != numbers
+                            );
+                            setTickets(newTickets);
+                          } else {
+                            if (tickets.length > 1) {
+                              tickets.pop();
+                            } else {
+                              setTickets([]);
+                            }
+                          }
+                        }}
+                      />
+                    ))}
+                  </AnimatePresence>
+                </div>
+                <div
+                  className={'flex flex-col gap-[1.33vw]'}
+                  id={'ticketsToBuy'}
+                >
+                  <BuyInfoCard
+                    buttonActive={
+                      workerClientStore.lotteryCompiled &&
+                      tickets.length > 0 &&
+                      tickets[0].amount != 0
+                    }
+                    ticketsInfo={tickets}
+                    loaderActive={
+                      workerClientStore.lotteryCompiled &&
+                      workerClientStore.isActiveTx
+                    }
+                    onFinally={() => setTickets([])}
+                  />
+                  <GetMoreTicketsButton
+                    disabled={
+                      !tickets.length || tickets[tickets.length - 1].amount == 0
+                    }
+                    onClick={() => {
+                      setTickets([...tickets]);
+                    }}
+                  />
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
       <div className="">

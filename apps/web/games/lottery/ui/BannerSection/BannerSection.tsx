@@ -10,12 +10,15 @@ import PrevRoundInfo from '@/games/lottery/ui/BannerSection/ui/PrevRoundInfo';
 
 export default function BannerSection({
   roundEndsIn,
+  roundToShow,
+  setRoundToShow,
 }: {
-  roundId: number;
+  roundToShow: number;
+  setRoundToShow: (roundId: number) => void;
   roundEndsIn: DateTime;
 }) {
   const lotteryStore = useWorkerClientStore();
-  const [roundToShow, setRoundToShow] = useState(0);
+  // const [roundToShow, setRoundToShow] = useState(0);
   const [roundInfo, setRoundInfo] = useState<
     | {
         id: number;
