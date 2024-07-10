@@ -4,6 +4,8 @@ import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { DateTime } from 'luxon';
 import BouncyLoader from '@/components/shared/BouncyLoader';
 import Skeleton from '@/components/shared/Skeleton';
+import { formatUnits } from '@/lib/unit';
+import { Currency } from '@/constants/currency';
 
 export default function CenterConsole({
   roundToShow,
@@ -160,6 +162,16 @@ export default function CenterConsole({
                       }
                     >
                       {formatAddress(item.owner)}
+                    </span>
+                    <span
+                      className={
+                        'ml-auto py-[0.25vw] font-museo text-[0.833vw] font-medium text-foreground'
+                      }
+                    >
+                      {item.funds
+                        ? Number(formatUnits(item.funds)).toFixed(2)
+                        : 0}{' '}
+                      {Currency.MINA}
                     </span>
                   </div>
                 ))
