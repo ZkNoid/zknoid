@@ -86,6 +86,7 @@ export default function TicketsSection({
                       <TicketCard
                         key={index}
                         index={index}
+                        ticketInfo={tickets?.[index] || undefined}
                         ticketsAmount={tickets.length}
                         addTicket={(ticket) => {
                           if (tickets.length == index) {
@@ -95,9 +96,7 @@ export default function TicketsSection({
                           }
                         }}
                         removeTicketByIdx={(index: number) => {
-                          if (tickets.length != 0) {
-                            tickets.splice(index, 1);
-                          }
+                          setTickets(tickets.filter((_, i) => i != index));
                         }}
                       />
                     ))}
