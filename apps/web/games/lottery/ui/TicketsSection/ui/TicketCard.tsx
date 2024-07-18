@@ -153,7 +153,11 @@ export default function TicketCard({
     removeTicketByIdx(index);
   };
 
-  console.log('TICKETS:::', index, ticketsAmount, symbols, finalized); // DEBUG
+  useEffect(() => {
+    if (finalized && ticketsAmount == 0) {
+      clearStates();
+    }
+  }, [finalized, ticketsAmount]);
 
   return (
     <motion.div
@@ -165,7 +169,7 @@ export default function TicketCard({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       whileHover={
-        finalized && index != ticketsAmount ? { y: '-35%' } : undefined
+        finalized && index != ticketsAmount - 1 ? { y: '-35%' } : undefined
       }
       transition={{ damping: 0, stiffness: 0 }}
     >

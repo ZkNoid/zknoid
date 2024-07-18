@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { IGame } from '@/app/constants/games';
 import FavoriteGames from '@/components/widgets/GameStore/FavoriteGames';
 import Storefront from '@/components/widgets/GameStore/Storefront';
@@ -37,7 +37,7 @@ export default function MainSection({ games }: { games: IGame[] }) {
               vectorEffect="non-scaling-stroke"
             />
           </svg>
-          <div className="bg-bg-grey flex-grow border-x-[0.160rem] border-left-accent" />
+          <div className="flex-grow border-x-[0.160rem] border-left-accent bg-bg-grey" />
           <svg
             viewBox="0 2142 1502 200"
             fill="#212121"
