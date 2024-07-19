@@ -6,11 +6,13 @@ import BouncyLoader from '@/components/shared/BouncyLoader';
 import Skeleton from '@/components/shared/Skeleton';
 import { formatUnits } from '@/lib/unit';
 import { Currency } from '@/constants/currency';
+import { Pages } from '@/games/lottery/Lottery';
 
 export default function CenterConsole({
   roundToShow,
   roundEndsIn,
   roundInfo,
+  setPage,
 }: {
   roundToShow: number;
   roundEndsIn: DateTime;
@@ -27,6 +29,7 @@ export default function CenterConsole({
         winningCombination: number[] | undefined;
       }
     | undefined;
+  setPage: (page: Pages) => void;
 }) {
   const roundTimer = useRoundTimer(roundEndsIn);
   const lotteryStore = useWorkerClientStore();
@@ -215,15 +218,30 @@ export default function CenterConsole({
             roundToShow != lotteryStore.lotteryRoundId &&
             !roundInfo?.winningCombination
           }
+          // onClick={() => {
+          //   const element = document.getElementById(
+          //     roundToShow != lotteryStore.lotteryRoundId
+          //       ? 'previousLotteries'
+          //       : 'ticketsToBuy'
+          //   );
+          //   if (element) {
+          //     const offset = element.offsetTop + element.offsetHeight;
+          //     window.scrollTo({ top: offset, left: 0, behavior: 'smooth' });
+          //   }
+          // }}
           onClick={() => {
-            const element = document.getElementById(
-              roundToShow != lotteryStore.lotteryRoundId
-                ? 'previousLotteries'
-                : 'ticketsToBuy'
-            );
-            if (element) {
-              const offset = element.offsetTop + element.offsetHeight;
-              window.scrollTo({ top: offset, left: 0, behavior: 'smooth' });
+            if (roundToShow != lotteryStore.lotteryRoundId) {
+              setPage(Pages.Storage);
+            } else {
+              const element = document.getElementById('ticketsToBuy');
+              if (element) {
+                const offset = element.offsetTop + element.offsetHeight;
+                window.scrollTo({
+                  top: offset,
+                  left: 0,
+                  behavior: 'smooth',
+                });
+              }
             }
           }}
         >

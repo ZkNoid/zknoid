@@ -7,15 +7,18 @@ import BannerButton from './ui/BannerButton';
 import CenterConsole from '@/games/lottery/ui/BannerSection/ui/CenterConsole';
 import CurrentRoundInfo from '@/games/lottery/ui/BannerSection/ui/CurrentRoundInfo';
 import PrevRoundInfo from '@/games/lottery/ui/BannerSection/ui/PrevRoundInfo';
+import { Pages } from '../../Lottery';
 
 export default function BannerSection({
   roundEndsIn,
   roundToShow,
   setRoundToShow,
+  setPage,
 }: {
   roundToShow: number;
   setRoundToShow: (roundId: number) => void;
   roundEndsIn: DateTime;
+  setPage: (page: Pages) => void;
 }) {
   const lotteryStore = useWorkerClientStore();
   // const [roundToShow, setRoundToShow] = useState(0);
@@ -108,6 +111,7 @@ export default function BannerSection({
         roundToShow={roundToShow}
         roundEndsIn={roundEndsIn}
         roundInfo={roundInfo}
+        setPage={setPage}
       />
 
       {roundToShow != lotteryStore.lotteryRoundId && (

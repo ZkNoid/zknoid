@@ -2,7 +2,7 @@ import GamePage from '@/components/framework/GamePage';
 import { lotteryConfig } from './config';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import BannerSection from './ui/BannerSection';
 import TicketsSection from './ui/TicketsSection';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
@@ -16,6 +16,12 @@ import { LOTTERY_ADDRESS } from '@/app/constants/addresses';
 import { BLOCK_PER_ROUND } from 'l1-lottery-contracts';
 import StateManager from '@/games/lottery/ui/StateManager';
 import ConnectWalletModal from '@/components/shared/ConnectWalletModal';
+import TicketsStorage from '@/games/lottery/ui/TicketsStorage';
+
+export enum Pages {
+  Main,
+  Storage,
+}
 
 export default function LotteryComponent({}: {
   params: { competitionId: string };
@@ -25,6 +31,7 @@ export default function LotteryComponent({}: {
     DateTime.fromMillis(0)
   );
   const [roundToShow, setRoundToShow] = useState(0);
+  const [page, setPage] = useState<Pages>(Pages.Main);
 
   const workerClientStore = useWorkerClientStore();
   const chainStore = useChainStore();
@@ -177,13 +184,47 @@ export default function LotteryComponent({}: {
       customDesign={true}
     >
       <StateManager />
+      {/*<div className={'flex flex-row items-center justify-center gap-2 px-5'}>*/}
+      {/*  <button*/}
+      {/*    className={'rounded-[0.26vw] bg-right-accent text-bg-dark'}*/}
+      {/*    onClick={() => setPage(Pages.Main)}*/}
+      {/*  >*/}
+      {/*    To main page*/}
+      {/*  </button>*/}
+      {/*  <button*/}
+      {/*    className={'rounded-[0.26vw] bg-left-accent text-bg-dark'}*/}
+      {/*    onClick={() => setPage(Pages.Storage)}*/}
+      {/*  >*/}
+      {/*    To storage page*/}
+      {/*  </button>*/}
+      {/*</div>*/}
 
-      <BannerSection
-        roundEndsIn={roundEndsIn}
-        roundToShow={roundToShow}
-        setRoundToShow={setRoundToShow}
-      />
-      <TicketsSection roundToShowId={roundToShow} />
+      <AnimatePresence mode={'wait'}>
+        {page == Pages.Main && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <BannerSection
+              roundEndsIn={roundEndsIn}
+              roundToShow={roundToShow}
+              setRoundToShow={setRoundToShow}
+              setPage={setPage}
+            />
+            <TicketsSection roundToShowId={roundToShow} />
+          </motion.div>
+        )}
+        {page == Pages.Storage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <TicketsStorage setPage={setPage} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <motion.div
         className={
