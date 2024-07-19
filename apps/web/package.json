@@ -64,7 +64,7 @@
     "formik": "^2.4.6",
     "framer-motion": "^11.0.10",
     "immer": "^10.0.4",
-    "l1-lottery-contracts": "^0.7.3",
+    "l1-lottery-contracts": "0.7.9",
     "ldrs": "^1.0.2",
     "lottie-react": "^2.4.0",
     "lucide-react": "^0.292.0",
