@@ -16,8 +16,6 @@ import { api } from '@/trpc/react';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useChainStore } from '@/lib/stores/minaChain';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
-import { NotificationType } from '@/components/shared/Notification/types/notificationType';
-import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
 
 const ticketsImages = [
   TicketBG1,
@@ -211,7 +209,6 @@ export default function MyTicket({
   const workerStore = useWorkerClientStore();
   const networkStore = useNetworkStore();
   const chainStore = useChainStore();
-  const notificationStore = useNotificationStore();
   const getRoundQuery = api.lotteryBackend.getRoundInfo.useQuery({
     roundId,
   });
@@ -226,25 +223,7 @@ export default function MyTicket({
     );
 
     console.log('txJson', txJson);
-    await sendTransaction(txJson)
-      .then(() => {
-        notificationStore.create({
-          type: NotificationType.success,
-          message: 'Transaction sent',
-          isDismissible: true,
-          dismissAfterDelay: true,
-        });
-      })
-      .catch((error) => {
-        console.log('Error while sending transaction', error);
-        notificationStore.create({
-          type: NotificationType.error,
-          message: 'Error while sending transaction',
-          isDismissible: true,
-          dismissAfterDelay: true,
-          dismissDelay: 10000,
-        });
-      });
+    await sendTransaction(txJson);
   };
   return (
     <AnimatePresence>

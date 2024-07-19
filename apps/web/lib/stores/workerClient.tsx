@@ -341,7 +341,7 @@ export const useWorkerClientStore = create<
       await this.client?.compileReduceProof();
 
       set((state) => {
-        state.status = 'Distribution contracts compiling';
+        state.status = 'Distri contracts compiling';
       });
 
       const t2 = Date.now() / 1000;

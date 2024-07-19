@@ -77,7 +77,7 @@ export function TicketItem({
       {!!funds && !claimed && (
         <button
           className={
-            'flex items-center justify-center rounded-[0.33vw] bg-left-accent px-[0.74vw] py-[0.37vw] font-museo text-[0.833vw] font-medium text-black hover:opacity-70 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:opacity-60'
+            'flex items-center justify-center rounded-[0.33vw] bg-left-accent px-[0.74vw] py-[0.37vw] font-museo text-[0.833vw] font-medium text-black hover:opacity-70 disabled:cursor-not-allowed disabled:opacity-60'
           }
           disabled={!workerClient.lotteryCompiled}
           onClick={async () => {

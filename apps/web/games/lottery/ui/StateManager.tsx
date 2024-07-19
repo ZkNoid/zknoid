@@ -17,16 +17,10 @@ export default function StateManager() {
     }
   }, [workerClientStore.lotteryCompiled]);
 
-  useEffect(() => {
-    if (!isLoading && isOpen) {
-      setTimeout(() => setIsOpen(false), 10000);
-    }
-  }, [isLoading]);
-
   return (
     <div
       className={cn(
-        'fixed bottom-[2.5%] left-[38%] right-[38%] z-30 flex cursor-pointer items-center justify-center rounded-[0.521vw] bg-[#323232] p-[1.042vw] shadow-2xl hover:bg-[#3f3f3f]',
+        'fixed bottom-[5%] right-5 z-30 flex cursor-pointer items-center justify-center rounded-[0.521vw] bg-[#323232] p-[1.042vw] shadow-2xl hover:bg-[#3f3f3f]',
         { hidden: !isOpen }
       )}
       onClick={() => setIsOpen(false)}
@@ -74,9 +68,7 @@ export default function StateManager() {
           )}
         </AnimatePresence>
         <span
-          className={
-            'text-pretty text-center font-plexsans text-[0.938vw] font-medium text-foreground'
-          }
+          className={'font-plexsans text-[0.938vw] font-medium text-foreground'}
         >
           {loadedMsg || workerClientStore.status}
         </span>

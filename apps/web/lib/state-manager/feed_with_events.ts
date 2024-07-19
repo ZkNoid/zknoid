@@ -57,7 +57,7 @@ export async function syncWithEvents(
       const data = dataRaw as BuyTicketEvent;
       console.log('Adding ticket to state', data.ticket, 'round' + data.round);
 
-      stateM.addTicket(data.ticket, +data.round, true);
+      stateM.addTicket(data.ticket, +data.round);
     }
     if (event.type == 'produce-result') {
       const data = dataRaw as ProduceResultEvent;

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { VioletLotteryButton } from '../../buttons/VioletLotteryButton';
-import { cn, sendTransaction } from '@/lib/helpers';
+import { cn, requestAccounts, sendTransaction } from '@/lib/helpers';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useChainStore } from '@/lib/stores/minaChain';
@@ -8,8 +8,6 @@ import { TICKET_PRICE } from 'l1-lottery-contracts';
 import { formatUnits } from '@/lib/unit';
 import Loader from '@/components/shared/Loader';
 import { Currency } from '@/constants/currency';
-import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
-import { NotificationType } from '@/components/shared/Notification/types/notificationType';
 
 export default function BuyInfoCard({
   buttonActive,
@@ -28,7 +26,6 @@ export default function BuyInfoCard({
   const workerStore = useWorkerClientStore();
   const networkStore = useNetworkStore();
   const chain = useChainStore();
-  const notificationStore = useNotificationStore();
 
   const numberOfTickets = ticketsInfo
     .map((x) => x.amount)
@@ -77,26 +74,11 @@ export default function BuyInfoCard({
             numberOfTickets
           );
           console.log('txJson', txJson);
-          await sendTransaction(txJson)
-            .then(() => {
-              onFinally();
-              notificationStore.create({
-                type: NotificationType.success,
-                message: 'Transaction sent',
-                isDismissible: true,
-                dismissAfterDelay: true,
-              });
-            })
-            .catch((error) => {
-              console.log('Error while sending transaction', error);
-              notificationStore.create({
-                type: NotificationType.error,
-                message: 'Error while sending transaction',
-                isDismissible: true,
-                dismissAfterDelay: true,
-                dismissDelay: 10000,
-              });
-            });
+          try {
+            await sendTransaction(txJson);
+          } finally {
+            onFinally();
+          }
         }}
       >
         <div className={'flex flex-row items-center gap-[10%]'}>

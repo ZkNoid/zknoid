@@ -82,7 +82,7 @@ export default function PreviousRounds({
                       chainStore.block?.slotSinceGenesis! -
                         lotteryStore.onchainState?.startBlock!
                     ) -
-                      round.id * 480) *
+                      roundId * 480) *
                       3 *
                       60 *
                       1000
@@ -93,7 +93,7 @@ export default function PreviousRounds({
                       chainStore.block?.slotSinceGenesis! -
                         lotteryStore.onchainState?.startBlock!
                     ) -
-                      (round.id + 1) * 480) *
+                      (roundId + 1) * 480) *
                       3 *
                       60 *
                       1000
