@@ -5,7 +5,10 @@ import {
   RefundEvent,
   PStateManager,
   getNullifierId,
+  ReduceEvent,
+  BLOCK_PER_ROUND,
 } from 'l1-lottery-contracts';
+
 import { Field } from 'o1js';
 
 interface LotteryContractEvent {
@@ -13,6 +16,7 @@ interface LotteryContractEvent {
   'produce-result': typeof ProduceResultEvent;
   'get-reward': typeof GetRewardEvent;
   'get-refund': typeof RefundEvent;
+  reduce: typeof ReduceEvent;
 }
 
 interface MinaEventTransactionInfo {
@@ -28,7 +32,12 @@ interface MinaEvent {
 
 export interface BaseMinaEvent extends Document {
   _id: string;
-  type: 'buy-ticket' | 'produce-result' | 'get-reward' | 'get-refund';
+  type:
+    | 'buy-ticket'
+    | 'produce-result'
+    | 'get-reward'
+    | 'get-refund'
+    | 'reduce';
   event: MinaEvent;
   blockHeight: number;
   blockHash: string;
@@ -44,7 +53,7 @@ export async function syncWithEvents(
   events: BaseMinaEvent[],
   lotteryContractEvents: LotteryContractEvent
 ): Promise<PStateManager> {
-  stateM.syncWithCurBlock(Number(startBlock) + roundId * 480 + 1);
+  stateM.syncWithCurBlock(Number(startBlock) + roundId * BLOCK_PER_ROUND + 1);
   console.log('Sync with', startBlock, roundId);
 
   for (let i = 0; i < events.length; i++) {
