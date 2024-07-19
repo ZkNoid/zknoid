@@ -264,36 +264,7 @@ const functions = {
     // }
     const stateM = state.lotteryOffchainState!;
 
-    console.log('Target ticket', args.ticketNums, senderAccount, args.amount)
-
     const ticket = Ticket.from(args.ticketNums, senderAccount, args.amount);
-    console.log('Round tickets', stateM.roundTickets[args.roundId].map((x) => ({
-      amount: Number(x.amount.toBigInt()),
-      numbers: x.numbers.map((x) => Number(x.toBigint())),
-      owner: x.owner.toBase58(),
-    })));
-
-    let roundTicketWitness;
-    // Find ticket in tree
-    const ticketHash = ticket.hash();
-
-    let ticketId = 0;
-    for (; ticketId < stateM.lastTicketInRound[args.roundId]; ticketId++) {
-      console.log('Ticket id', ticketId, 'Last ticket', stateM.lastTicketInRound[args.roundId], 'Round', args.roundId)
-      console.log('Checking', stateM.roundTicketMap[args.roundId].get(Field(ticketId)).toString(), 'Ticket hash', ticketHash.toString());
-
-        if (stateM.roundTicketMap[args.roundId]
-            .get(Field(ticketId))
-            .equals(ticketHash)
-            .toBoolean()) {
-            roundTicketWitness = stateM.roundTicketMap[args.roundId].getWitness(Field.from(ticketId));
-            break;
-        }
-    }
-    if (!roundTicketWitness) {
-        throw Error(`!!!! No such ticket in round ${args.roundId}`);
-    }
-
     let rp = await stateM.getReward(args.roundId, ticket);
     console.log(
       'RP generated',

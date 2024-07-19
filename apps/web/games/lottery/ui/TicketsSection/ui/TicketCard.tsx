@@ -91,27 +91,20 @@ const ClearTicketButton = ({ onClick }: { onClick: () => void }) => {
   );
 };
 
-interface TicketInfo {
-  amount: number;
-  numbers: number[];
-}
-
 export default function TicketCard({
   index,
-  ticketInfo,
   ticketsAmount,
   addTicket,
   removeTicketByIdx,
 }: {
-  index: number,
-  ticketInfo: TicketInfo | undefined;
+  index: number;
   ticketsAmount: number;
   addTicket: (ticket: { numbers: number[]; amount: number }) => void;
   removeTicketByIdx: (index: number) => void;
 }) {
   const [symbols, setSymbols] = useState<string>('');
   const [amount, setAmount] = useState<number>(0);
-  const finalized = !!ticketInfo;
+  const [finalized, setFinalized] = useState<boolean>(false);
 
   const generateRandomNumbers = () => {
     let numbers = '';
@@ -126,12 +119,14 @@ export default function TicketCard({
   };
 
   const submitTicket = () => {
+    setFinalized(true);
     addTicket({ numbers: convertSymbolsToNumbers(), amount: amount });
   };
 
   const clearStates = () => {
     setSymbols('');
     setAmount(0);
+    setFinalized(false);
   };
 
   useEffect(() => {
@@ -139,12 +134,6 @@ export default function TicketCard({
       setAmount(1);
     }
   }, [ticketsAmount]);
-
-  useEffect(() => {
-    if (!ticketInfo) {
-      setSymbols('');
-    }
-  }, [ticketInfo]);
 
   const removeTicket = () => {
     if (ticketsAmount == 0) {
@@ -218,7 +207,7 @@ export default function TicketCard({
                 'flex items-center justify-center font-museo text-[2.13vw] font-bold text-black'
               )}
             >
-              {ticketInfo?.numbers[fieldId] || symbols?.[fieldId] || '_'}
+              {symbols?.[fieldId] || '_'}
             </div>
           ))}
         </div>
