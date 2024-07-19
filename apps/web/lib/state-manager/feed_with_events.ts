@@ -64,9 +64,9 @@ export async function syncWithEvents(
 
     if (event.type == 'buy-ticket') {
       const data = dataRaw as BuyTicketEvent;
-      console.log('Adding ticket to state', data.ticket, 'round' + data.round);
+      console.log('Buy ticket', data.ticket, 'in round' + data.round);
 
-      stateM.addTicket(data.ticket, +data.round);
+      stateM.addTicket(data.ticket, +data.round, false);
     }
     if (event.type == 'produce-result') {
       const data = dataRaw as ProduceResultEvent;
@@ -100,6 +100,29 @@ export async function syncWithEvents(
         getNullifierId(Field.from(data.round), Field.from(ticketId)),
         Field(1)
       );
+    }
+
+    if (event.type == 'reduce') {
+      const data = dataRaw as ReduceEvent;
+      console.log('Reduce: ', event.event.data);
+      let fromActionState = data.startActionState;
+      let endActionState = data.endActionState;
+
+      let actions = await stateM.contract.reducer.fetchActions({
+        fromActionState,
+        endActionState,
+      });
+
+      actions.flat(1).map((action) => {
+        stateM.addTicket(action.ticket, +action.round, true);
+
+        if (stateM.processedTicketData.round == +action.round) {
+          stateM.processedTicketData.ticketId++;
+        } else {
+          stateM.processedTicketData.ticketId = 0;
+          stateM.processedTicketData.round = +action.round;
+        }
+      });
     }
   }
 
