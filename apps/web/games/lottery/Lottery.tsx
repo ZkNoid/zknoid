@@ -73,7 +73,8 @@ export default function LotteryComponent({}: {
       networkStore.minaNetwork?.networkID &&
       chainStore.block?.slotSinceGenesis &&
       events.data?.events &&
-      !workerClientStore.lotteryGame
+      !workerClientStore.lotteryGame &&
+      workerClientStore.onchainState
     ) {
       console.log('Starting lottery');
       workerClientStore.startLottery(
@@ -87,6 +88,7 @@ export default function LotteryComponent({}: {
     networkStore.minaNetwork?.networkID,
     chainStore.block?.slotSinceGenesis,
     events.data,
+    workerClientStore.onchainState,
     workerClientStore.lotteryGame,
   ]);
 
