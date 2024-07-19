@@ -11,7 +11,7 @@ import { DateTime, Duration } from 'luxon';
 import { NetworkIds, NETWORKS } from '@/app/constants/networks';
 import WrongNetworkModal from '@/games/lottery/ui/TicketsSection/ui/WrongNetworkModal';
 import { api } from '@/trpc/react';
-import { Field, fetchAccount } from 'o1js';
+import { fetchAccount } from 'o1js';
 import { LOTTERY_ADDRESS } from '@/app/constants/addresses';
 import { BLOCK_PER_ROUND } from 'l1-lottery-contracts';
 import StateManager from '@/games/lottery/ui/StateManager';

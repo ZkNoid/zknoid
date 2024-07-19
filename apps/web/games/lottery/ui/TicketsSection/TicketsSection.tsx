@@ -8,6 +8,8 @@ import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { AnimatePresence } from 'framer-motion';
 import PreviousRounds from '@/games/lottery/ui/TicketsSection/PreviousRounds';
 import Skeleton from '@/components/shared/Skeleton';
+import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
+import { NotificationType } from '@/components/shared/Notification/types/notificationType';
 
 interface TicketInfo {
   amount: number;
@@ -22,9 +24,11 @@ export default function TicketsSection({
   const ROUNDS_PER_PAGE = 2;
   const workerClientStore = useWorkerClientStore();
   const lotteryStore = useWorkerClientStore();
+  const notificationStore = useNotificationStore();
 
   const [page, setPage] = useState<number>(0);
   const [tickets, setTickets] = useState<TicketInfo[]>([]);
+  const [blankTicket, setBlankTicket] = useState<boolean>(true);
   const [roundInfos, setRoundInfos] = useState<
     | {
         id: number;
@@ -59,7 +63,11 @@ export default function TicketsSection({
     })();
   }, [page, lotteryStore.stateM]);
 
-  console.log('TICKETS:::', tickets); // DEBUG
+  useEffect(() => {
+    if (tickets.length == 0 && !blankTicket) setBlankTicket(true);
+  }, [tickets.length]);
+
+  const renderTickets = blankTicket ? [...tickets, blankTicket] : tickets;
 
   return (
     <div
@@ -82,11 +90,10 @@ export default function TicketsSection({
               <div className={'flex flex-row gap-[1.33vw]'}>
                 <div className={'flex flex-col gap-0'}>
                   <AnimatePresence>
-                    {[...tickets, null].map((_, index) => (
+                    {renderTickets.map((_, index) => (
                       <TicketCard
                         key={index}
                         index={index}
-                        ticketInfo={tickets?.[index] || undefined}
                         ticketsAmount={tickets.length}
                         addTicket={(ticket) => {
                           if (tickets.length == index) {
@@ -94,9 +101,29 @@ export default function TicketsSection({
                           } else {
                             tickets[index] = ticket;
                           }
+                          setBlankTicket(false);
+                          notificationStore.create({
+                            type: NotificationType.success,
+                            message: `Ticket ${ticket.numbers.toString().replaceAll(',', '')} submitted`,
+                            isDismissible: true,
+                            dismissAfterDelay: true,
+                          });
                         }}
                         removeTicketByIdx={(index: number) => {
-                          setTickets(tickets.filter((_, i) => i != index));
+                          if (tickets.length != 0) {
+                            if (index == tickets.length) {
+                              setBlankTicket(false);
+                            } else {
+                              tickets.splice(index, 1);
+                            }
+
+                            notificationStore.create({
+                              type: NotificationType.success,
+                              message: 'Ticket removed',
+                              isDismissible: true,
+                              dismissAfterDelay: true,
+                            });
+                          }
                         }}
                       />
                     ))}
@@ -117,12 +144,14 @@ export default function TicketsSection({
                       workerClientStore.lotteryCompiled &&
                       workerClientStore.isActiveTx
                     }
-                    onFinally={() => setTickets([])}
+                    onFinally={() => {
+                      setTickets([]);
+                    }}
                   />
                   <GetMoreTicketsButton
-                    disabled={tickets.length == 0}
+                    disabled={blankTicket}
                     onClick={() => {
-                      setTickets([...tickets]);
+                      setBlankTicket(true);
                     }}
                   />
                 </div>

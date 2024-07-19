@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { IGame } from '@/app/constants/games';
 import FavoriteGames from '@/components/widgets/GameStore/FavoriteGames';
 import Storefront from '@/components/widgets/GameStore/Storefront';
