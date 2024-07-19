@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import { NotificationType } from '../types/notificationType';
 import { INotification } from '../types/INotification';
 
 export interface NotificationStore {
@@ -8,9 +7,9 @@ export interface NotificationStore {
   getById: (id: string) => INotification | undefined;
   create: (notification: {
     id?: string;
-    type: NotificationType;
+    type: 'message' | 'loader' | 'success' | 'error';
     message: string;
-    isDismissible: boolean;
+    isDismissible?: boolean;
     dismissAfterDelay?: boolean;
     dismissDelay?: number;
   }) => string;
@@ -27,24 +26,41 @@ export const useNotificationStore = create<
     getById: (id: string) => {
       return get().notifications.find((notification) => notification.id === id);
     },
-    create: (notification: {
+    create: ({
+      id,
+      type = 'message',
+      message,
+      isDismissible = true,
+      dismissAfterDelay = true,
+      dismissDelay = 5000,
+    }: {
       id?: string;
-      type: NotificationType;
+      type?: 'message' | 'loader' | 'success' | 'error';
       message: string;
-      isDismissible: boolean;
+      isDismissible?: boolean;
       dismissAfterDelay?: boolean;
       dismissDelay?: number;
     }) => {
-      if (!notification.id) {
-        notification.id = `${notification.type}-${Date.now()}`;
+      if (!id) {
+        id = `${type}-${Date.now()}`;
       }
-      if (notification.dismissAfterDelay && !notification.dismissDelay) {
-        notification.dismissDelay = 5000;
-      }
+      // if (!notification.dismissDelay) {
+      //   notification.dismissDelay = 5000;
+      // }
       set((state) => ({
-        notifications: [...state.notifications, notification],
+        notifications: [
+          ...state.notifications,
+          {
+            id,
+            type,
+            message,
+            isDismissible,
+            dismissAfterDelay,
+            dismissDelay,
+          },
+        ],
       }));
-      return notification.id;
+      return id;
     },
     remove: (id: string) => {
       set((state) => ({

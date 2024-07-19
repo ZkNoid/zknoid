@@ -2,7 +2,6 @@ import { cn } from '@/lib/helpers';
 import { motion } from 'framer-motion';
 import { INotification } from './types/INotification';
 import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
-import { NotificationType } from '@/components/shared/Notification/types/notificationType';
 import Loader from '../Loader';
 
 export default function Notification({
@@ -36,10 +35,10 @@ export default function Notification({
       }}
     >
       <span className={'flex w-full flex-row items-center gap-[0.521vw]'}>
-        {notification.type == NotificationType.loader && (
+        {notification.type === 'loader' && (
           <Loader size={19} color={'#D2FF00'} />
         )}
-        {notification.type == NotificationType.success && (
+        {notification.type === 'success' && (
           <motion.div
             className={
               'relative cursor-pointer rounded-[5px] border p-1 hover:opacity-80'
@@ -71,7 +70,7 @@ export default function Notification({
             </svg>
           </motion.div>
         )}
-        {notification.type == NotificationType.error && (
+        {notification.type === 'error' && (
           <motion.div
             className={
               'relative cursor-pointer rounded-[5px] border p-1 hover:opacity-80'

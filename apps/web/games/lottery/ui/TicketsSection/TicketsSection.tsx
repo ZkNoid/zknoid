@@ -9,7 +9,6 @@ import { AnimatePresence } from 'framer-motion';
 import PreviousRounds from '@/games/lottery/ui/TicketsSection/PreviousRounds';
 import Skeleton from '@/components/shared/Skeleton';
 import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
-import { NotificationType } from '@/components/shared/Notification/types/notificationType';
 
 interface TicketInfo {
   amount: number;
@@ -103,7 +102,7 @@ export default function TicketsSection({
                           }
                           setBlankTicket(false);
                           notificationStore.create({
-                            type: NotificationType.success,
+                            type: 'success',
                             message: `Ticket ${ticket.numbers.toString().replaceAll(',', '')} submitted`,
                             isDismissible: true,
                             dismissAfterDelay: true,
@@ -118,7 +117,7 @@ export default function TicketsSection({
                             }
 
                             notificationStore.create({
-                              type: NotificationType.success,
+                              type: 'success',
                               message: 'Ticket removed',
                               isDismissible: true,
                               dismissAfterDelay: true,

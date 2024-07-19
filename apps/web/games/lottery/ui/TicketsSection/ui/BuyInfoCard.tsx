@@ -9,7 +9,6 @@ import { formatUnits } from '@/lib/unit';
 import Loader from '@/components/shared/Loader';
 import { Currency } from '@/constants/currency';
 import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
-import { NotificationType } from '@/components/shared/Notification/types/notificationType';
 
 export default function BuyInfoCard({
   buttonActive,
@@ -78,22 +77,25 @@ export default function BuyInfoCard({
           );
           console.log('txJson', txJson);
           await sendTransaction(txJson)
-            .then(() => {
-              onFinally();
-              notificationStore.create({
-                type: NotificationType.success,
-                message: 'Transaction sent',
-                isDismissible: true,
-                dismissAfterDelay: true,
-              });
+            .then((transaction: string | undefined) => {
+              if (transaction) {
+                onFinally();
+                notificationStore.create({
+                  type: 'success',
+                  message: 'Transaction sent',
+                });
+              } else {
+                notificationStore.create({
+                  type: 'error',
+                  message: 'Transaction rejected by user',
+                });
+              }
             })
             .catch((error) => {
               console.log('Error while sending transaction', error);
               notificationStore.create({
-                type: NotificationType.error,
+                type: 'error',
                 message: 'Error while sending transaction',
-                isDismissible: true,
-                dismissAfterDelay: true,
                 dismissDelay: 10000,
               });
             });

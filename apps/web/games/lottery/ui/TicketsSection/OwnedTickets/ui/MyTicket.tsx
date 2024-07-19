@@ -16,7 +16,6 @@ import { api } from '@/trpc/react';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useChainStore } from '@/lib/stores/minaChain';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
-import { NotificationType } from '@/components/shared/Notification/types/notificationType';
 import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
 
 const ticketsImages = [
@@ -229,7 +228,7 @@ export default function MyTicket({
     await sendTransaction(txJson)
       .then(() => {
         notificationStore.create({
-          type: NotificationType.success,
+          type: 'success',
           message: 'Transaction sent',
           isDismissible: true,
           dismissAfterDelay: true,
@@ -238,7 +237,7 @@ export default function MyTicket({
       .catch((error) => {
         console.log('Error while sending transaction', error);
         notificationStore.create({
-          type: NotificationType.error,
+          type: 'error',
           message: 'Error while sending transaction',
           isDismissible: true,
           dismissAfterDelay: true,

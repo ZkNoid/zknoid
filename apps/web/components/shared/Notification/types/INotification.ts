@@ -1,8 +1,6 @@
-import { NotificationType } from './notificationType';
-
 export interface INotification {
   id: string;
-  type: NotificationType;
+  type: 'message' | 'loader' | 'success' | 'error';
   message: string;
   isDismissible: boolean;
   dismissAfterDelay?: boolean;
