@@ -123,8 +123,8 @@ importers:
         specifier: ^10.0.4
         version: 10.1.1
       l1-lottery-contracts:
-        specifier: ^0.7.3
-        version: 0.7.3(o1js@1.3.1)
+        specifier: 0.7.9
+        version: 0.7.9(o1js@1.3.1)
       ldrs:
         specifier: ^1.0.2
         version: 1.0.2
@@ -3889,6 +3889,16 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
+  /axios@1.7.2:
+    resolution: {integrity: sha512-2A8QhOMrbomlDuiLeK9XibIBzuHeRcqqNOHp0Cyp5EoJ1IFDh+XZH3A6BkXtv0K4gFGCI0Y4BM7B1wOEi0Rmgw==}
+    dependencies:
+      follow-redirects: 1.15.6
+      form-data: 4.0.0
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+    dev: false
+
   /axobject-query@3.2.1:
     resolution: {integrity: sha512-jsyHu61e6N4Vbz/v18DHwWYKK0bSWLqn47eeDSKPB7m8tqMHF9YJ+mhIk2lVteyZrY8tnSj/jHOv4YiTCuCJgg==}
     dependencies:
@@ -5835,6 +5845,16 @@ packages:
   /flatted@3.3.1:
     resolution: {integrity: sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==}
 
+  /follow-redirects@1.15.6:
+    resolution: {integrity: sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dev: false
+
   /for-each@0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
     dependencies:
@@ -5868,6 +5888,15 @@ packages:
       combined-stream: 1.0.8
       mime-types: 2.1.35
     dev: true
+
+  /form-data@4.0.0:
+    resolution: {integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==}
+    engines: {node: '>= 6'}
+    dependencies:
+      asynckit: 0.4.0
+      combined-stream: 1.0.8
+      mime-types: 2.1.35
+    dev: false
 
   /formik@2.4.6(react@19.0.0-rc-4c2e457c7c-20240522):
     resolution: {integrity: sha512-A+2EI7U7aG296q2TLGvNapDNTZp1khVt5Vk0Q/fyfSROss0V/V6+txt2aJnwEos44IxTCW/LYAi/zgWzlevj+g==}
@@ -7259,18 +7288,20 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /l1-lottery-contracts@0.7.3(o1js@1.3.1):
-    resolution: {integrity: sha512-TpnpbssN5X8ynd4KhM7OlfT9GoFFXxmWcZQuDBfTQks7R1OeTybq+d5UHL3nv4vwbqMzYoAEKVboq3l+E5cZjQ==}
+  /l1-lottery-contracts@0.7.9(o1js@1.3.1):
+    resolution: {integrity: sha512-cpPs9YZ8yYCSxaBQyJwOL/y2qd+Y3cQnVB8Bof5TjFQSjEORFMMW2VSbTqtyHEbepSrnww/JETWi/+3+ZBpq9g==}
     engines: {node: '>=18.14.0'}
     peerDependencies:
       o1js: 1.3.1
     dependencies:
       '@types/node': 20.14.5
+      axios: 1.7.2
       esbuild: 0.21.5
       minimist: 1.2.8
       o1js: 1.3.1
       zkapp-cli: 0.21.5
     transitivePeerDependencies:
+      - debug
       - encoding
       - supports-color
     dev: false
