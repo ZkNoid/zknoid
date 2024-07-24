@@ -103,22 +103,6 @@ export default function LotteryComponent({}: {
     if (workerClientStore.lotteryGame?.address)
       workerClientStore.updateOnchainState();
   }, [chainStore.block?.height]);
-  useEffect(() => {
-    if (
-      !chainStore.block?.slotSinceGenesis ||
-      !workerClientStore.onchainState?.startBlock ||
-      !workerClientStore?.lotteryGame
-    )
-      return;
-    workerClientStore.updateOffchainState(
-      Number(chainStore.block!.slotSinceGenesis),
-      events.data?.events as unknown as object[]
-    );
-  }, [
-    events.data,
-    chainStore.block?.slotSinceGenesis,
-    workerClientStore.onchainState?.startBlock,
-  ]);
 
   // When onchain state is ready
   useEffect(() => {
@@ -140,40 +124,6 @@ export default function LotteryComponent({}: {
         )
       : 0;
   }, [workerClientStore.onchainState, workerClientStore.lotteryRoundId]);
-
-  // When offchain state is ready
-  useEffect(() => {
-    if (typeof workerClientStore.lotteryRoundId == undefined) return;
-    // (async () => {
-    //   console.log(
-    //     'Effect fetching',
-    //     await workerClientStore.getRoundsInfo([
-    //       Number(workerClientStore.lotteryRoundId),
-    //     ])
-    //   );
-    // })();
-  }, [workerClientStore.stateM]);
-
-  useEffect(() => {
-    if (
-      workerClientStore.onchainState &&
-      workerClientStore.lotteryRoundId &&
-      events.data
-    ) {
-      console.log('Refetching offchain state');
-
-      const startBlock = Number(workerClientStore.onchainState!.startBlock);
-      const roundId = workerClientStore.lotteryRoundId;
-
-      new Promise((resolve) => setTimeout(resolve, 3_000)).then(async () => {
-        // workerClientStore?.fetchOffchainState(
-        //   startBlock,
-        //   workerClientStore.lotteryRoundId,
-        //   events.data.events
-        // );
-      });
-    }
-  }, [chainStore.block?.height, workerClientStore.lotteryRoundId, events.data]);
 
   return (
     <GamePage

@@ -9,6 +9,9 @@ import { AnimatePresence } from 'framer-motion';
 import PreviousRounds from '@/games/lottery/ui/TicketsSection/PreviousRounds';
 import Skeleton from '@/components/shared/Skeleton';
 import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
+import { api } from '@/trpc/react';
+import { useNetworkStore } from '@/lib/stores/network';
+import { useChainStore } from '@/lib/stores/minaChain';
 
 interface TicketInfo {
   amount: number;
@@ -44,23 +47,29 @@ export default function TicketsSection({
     | undefined
   >(undefined);
 
+  const roundsToShow = Array.from(
+    { length: ROUNDS_PER_PAGE },
+    (_, i) => roundToShowId - i - page * ROUNDS_PER_PAGE
+  ).filter((x) => x >= 0);
+
+  const getRoundQuery = api.lotteryBackend.getRoundInfos.useQuery({
+    roundIds: roundsToShow,
+  }, {
+    refetchInterval: 5000
+  });
+  const chainStore = useChainStore();
+
   useEffect(() => {
-    if (!lotteryStore.stateM) return;
+    if (!getRoundQuery.data || !chainStore.block?.slotSinceGenesis) return;
 
-    const roundsToShow = Array.from(
-      { length: ROUNDS_PER_PAGE },
-      (_, i) => roundToShowId - i - page * ROUNDS_PER_PAGE
-    ).filter((x) => x >= 0);
+    console.log('Tickets fetching', roundsToShow);
+    const roundInfos = getRoundQuery.data!;
+    console.log('Fetched round infos', roundInfos);
+    console.log('Fetched round infos2', Object.values(roundInfos));
 
-    (async () => {
-      console.log('Tickets fetching');
-      const roundInfos = await lotteryStore.getRoundsInfo(roundsToShow);
-      console.log('Fetched round infos', roundInfos, Object.values(roundInfos));
-
-      console.log('Round infos', Object.values(roundInfos));
-      setRoundInfos(Object.values(roundInfos));
-    })();
-  }, [page, lotteryStore.stateM]);
+    console.log('Round infos', Object.values(roundInfos));
+    setRoundInfos(Object.values(roundInfos));
+  }, [getRoundQuery.data]);
 
   useEffect(() => {
     if (tickets.length == 0 && !blankTicket) setBlankTicket(true);

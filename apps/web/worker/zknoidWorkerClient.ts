@@ -52,6 +52,7 @@ export default class ZknoidWorkerClient {
     });
   }
   getReward(
+    networkId: string,
     senderAccount: string,
     startBlock: number,
     roundId: number,
@@ -59,6 +60,7 @@ export default class ZknoidWorkerClient {
     amount: number
   ) {
     return this._call('getReward', {
+      networkId,
       senderAccount,
       startBlock,
       roundId,
@@ -66,13 +68,7 @@ export default class ZknoidWorkerClient {
       amount,
     });
   }
-  fetchOffchainState(startBlock: number, roundId: number, events: object[]): Promise<number> {
-    return this._call('fetchOffchainState', {
-      startBlock,
-      roundId,
-      events
-    }) as Promise<number>;
-  }
+  
   getLotteryState() {
     return this._call('getLotteryState', {});
   }

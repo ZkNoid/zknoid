@@ -33,6 +33,8 @@ export function TicketItem({
 
   const getRoundQuery = api.lotteryBackend.getRoundInfo.useQuery({
     roundId,
+  }, {
+    refetchInterval: 5000
   });
 
   return (
@@ -83,11 +85,10 @@ export function TicketItem({
           onClick={async () => {
             let txJson = await workerClient.getReward(
               networkStore.address!,
-              Number(chainStore.block?.slotSinceGenesis!),
+              networkStore.minaNetwork!.networkID,
               roundId,
               numbers.map((x) => x.number),
               amount,
-              getRoundQuery.data?.proof!
             );
 
             console.log('txJson', txJson);
