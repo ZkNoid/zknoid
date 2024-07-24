@@ -191,11 +191,10 @@ const TicketItem = ({
   const claimTicket = async (numbers: number[], amount: number) => {
     let txJson = await workerStore.getReward(
       networkStore.address!,
-      Number(chainStore.block?.slotSinceGenesis!),
+      networkStore.minaNetwork!.networkID,
       roundId,
       numbers,
-      amount,
-      getRoundQuery.data?.proof!
+      amount
     );
 
     console.log('txJson', txJson);
@@ -319,6 +318,7 @@ export default function TicketsStorage({
   const PAGINATION_LIMIT = 10;
   const lotteryStore = useWorkerClientStore();
   const networkStore = useNetworkStore();
+  const chainStore = useChainStore();
 
   const [onlyLoosing, setOnlyLoosing] = useState<boolean>(false);
   const [onlyClaimable, setOnlyClaimable] = useState<boolean>(false);
@@ -344,42 +344,65 @@ export default function TicketsStorage({
       winningCombination: number[] | undefined;
     }[]
   >([]);
-  const [roundIds, setRoundsIds] = useState<{ id: number; hasWin: boolean }[]>(
-    []
+  const [roundIds, setRoundsIds] = useState<
+    { id: number; hasClaim: boolean }[]
+  >([]);
+
+  // fetch for rounds ids
+  const getRoundQueryIDS = api.lotteryBackend.getRoundInfos.useQuery(
+    {
+      roundIds: [...Array(lotteryStore.lotteryRoundId)].map((_, i) => i),
+    },
+    {
+      refetchInterval: 5000,
+    }
   );
 
   useEffect(() => {
-    if (!lotteryStore.stateM) return;
-    (async () => {
-      const roundInfos = await lotteryStore.getRoundsInfo(
-        [...Array(lotteryStore.lotteryRoundId)].map((_, i) => i)
-      );
-      const ids = Object.values(roundInfos).map((item) => ({
+    if (!getRoundQueryIDS.data || !chainStore.block?.slotSinceGenesis) return;
+
+    const roundInfos = getRoundQueryIDS.data!;
+    setRoundsIds(
+      Object.values(roundInfos).map((item) => ({
         id: item.id,
-        hasWin: !!item.tickets.find(
+        hasClaim: !!item.tickets.find(
           (ticket) => ticket.owner === networkStore.address && ticket.funds
         ),
-      }));
-      setRoundsIds(ids);
-    })();
-  }, [lotteryStore.stateM]);
+      }))
+    );
+  }, [getRoundQueryIDS.data]);
+
+  const roundsToShow = currentRoundId
+    ? [currentRoundId]
+    : [...Array(lotteryStore.lotteryRoundId)].map((_, i) => i);
+
+  // fetch for rounds
+  const getRoundQuery = api.lotteryBackend.getRoundInfos.useQuery(
+    {
+      roundIds: roundsToShow,
+    },
+    {
+      refetchInterval: 5000,
+    }
+  );
 
   useEffect(() => {
-    if (!lotteryStore.stateM) return;
-    const roundsToShow = currentRoundId
-      ? [currentRoundId]
-      : [...Array(lotteryStore.lotteryRoundId)].map((_, i) => i);
+    if (!getRoundQuery.data || !chainStore.block?.slotSinceGenesis) return;
 
-    (async () => {
-      const roundInfos = await lotteryStore.getRoundsInfo(roundsToShow);
-      setRoundInfos(Object.values(roundInfos));
-    })();
-  }, [currentRoundId, lotteryStore.stateM]);
+    console.log('Tickets fetching', roundsToShow);
+    const roundInfos = getRoundQuery.data!;
+    console.log('Fetched round infos', roundInfos);
+    console.log('Fetched round infos2', Object.values(roundInfos));
+
+    console.log('Round infos', Object.values(roundInfos));
+    setRoundInfos(Object.values(roundInfos));
+  }, [currentRoundId, getRoundQuery.data]);
 
   const renderRounds = roundInfos.slice(
     (currentPage - 1) * PAGINATION_LIMIT,
     currentPage * PAGINATION_LIMIT
   );
+
   useEffect(() => {
     const refObj = containerRef.current;
 
@@ -470,13 +493,7 @@ export default function TicketsStorage({
           <RoundsDropdown
             currentRoundId={currentRoundId}
             setCurrentRoundId={setCurrentRoundId}
-            rounds={roundInfos.map((item) => ({
-              id: item.id,
-              hasClaim: !!item.tickets.find(
-                (ticket) =>
-                  ticket.owner === networkStore.address && ticket.funds
-              ),
-            }))}
+            rounds={roundIds}
           />
         </div>
       </div>
@@ -550,11 +567,13 @@ export default function TicketsStorage({
                     <TicketItem
                       key={ticketIndex}
                       roundId={round.id}
-                      winCombination={round.winningCombination}
+                      winCombination={round.winningCombination || []}
                       ticketNumbers={ticket.numbers.map(
                         (number, numberIndex) => ({
                           number: number,
-                          win: number == round.winningCombination[numberIndex],
+                          win: round.winningCombination
+                            ? number == round.winningCombination[numberIndex]
+                            : false,
                         })
                       )}
                       combination={ticket.numbers}

@@ -52,6 +52,8 @@ export const lotteryBackendRouter = createTRPCRouter({
           amount: bigint;
           numbers: number[];
           owner: string;
+          claimed: boolean;
+          funds: bigint;
         }[];
         winningCombination: number[] | undefined;
       };
@@ -85,6 +87,8 @@ export const lotteryBackendRouter = createTRPCRouter({
             amount: bigint;
             numbers: number[];
             owner: string;
+            claimed: boolean;
+            funds: bigint;
           }[];
           winningCombination: number[] | undefined;
         }

@@ -10,7 +10,6 @@ import PreviousRounds from '@/games/lottery/ui/TicketsSection/PreviousRounds';
 import Skeleton from '@/components/shared/Skeleton';
 import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
 import { api } from '@/trpc/react';
-import { useNetworkStore } from '@/lib/stores/network';
 import { useChainStore } from '@/lib/stores/minaChain';
 
 interface TicketInfo {
@@ -52,11 +51,14 @@ export default function TicketsSection({
     (_, i) => roundToShowId - i - page * ROUNDS_PER_PAGE
   ).filter((x) => x >= 0);
 
-  const getRoundQuery = api.lotteryBackend.getRoundInfos.useQuery({
-    roundIds: roundsToShow,
-  }, {
-    refetchInterval: 5000
-  });
+  const getRoundQuery = api.lotteryBackend.getRoundInfos.useQuery(
+    {
+      roundIds: roundsToShow,
+    },
+    {
+      refetchInterval: 5000,
+    }
+  );
   const chainStore = useChainStore();
 
   useEffect(() => {
