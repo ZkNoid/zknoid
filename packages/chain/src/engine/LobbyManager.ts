@@ -228,7 +228,7 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
     creatorSessionKey: PublicKey,
     accessKey: Field,
   ): Promise<void> {
-    let lobby = this._addLobby(
+    let lobby = await this._addLobby(
       Lobby.from(name, participationFee, privateLobby, accessKey),
       Bool(true),
     );
@@ -237,32 +237,35 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   }
 
   @runtimeMethod()
-  public async joinLobbyWithSessionKey(lobbyId: UInt64, sessionKey: PublicKey): Promise<void> {
+  public async joinLobbyWithSessionKey(
+    lobbyId: UInt64,
+    sessionKey: PublicKey,
+  ): Promise<void> {
     this.sessions.set(sessionKey, this.transaction.sender.value);
     this.joinLobby(lobbyId);
   }
 
   @runtimeMethod()
   public async joinLobby(lobbyId: UInt64): Promise<void> {
-    const currentLobby = this.currentLobby.get(
-      this.transaction.sender.value,
+    const currentLobby = (
+      await this.currentLobby.get(this.transaction.sender.value)
     ).value;
     assert(currentLobby.equals(UInt64.zero), 'You already in lobby');
-    const lobby = this.activeLobby
-      .get(lobbyId)
-      .orElse(Lobby.default(lobbyId, Bool(false)));
+    const lobby = (await this.activeLobby.get(lobbyId)).orElse(
+      Lobby.default(lobbyId, Bool(false)),
+    );
     this._joinLobby(lobby);
     this.currentLobby.set(this.transaction.sender.value, lobbyId);
     this.activeLobby.set(lobbyId, lobby);
   }
 
-  protected _joinLobby(lobby: Lobby): void {
+  protected async _joinLobby(lobby: Lobby): Promise<void> {
     const sender = this.transaction.sender.value;
 
     lobby.addPlayer(sender);
 
     const pendingBalance = ProtoUInt64.from(
-      this.pendingBalances.get(sender).value,
+      (await this.pendingBalances.get(sender)).value,
     );
 
     const fee = ProtoUInt64.from(lobby.participationFee);
@@ -288,9 +291,9 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   @runtimeMethod()
   public async leaveLobby(): Promise<void> {
     const sender = this.transaction.sender.value;
-    let currentLobbyId = this.currentLobby.get(sender).value;
+    let currentLobbyId = (await this.currentLobby.get(sender)).value;
 
-    let lobby = this.activeLobby.get(currentLobbyId).value;
+    let lobby = (await this.activeLobby.get(currentLobbyId)).value;
     lobby.removePlayer(sender);
 
     this.activeLobby.set(currentLobbyId, lobby);
@@ -300,9 +303,9 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
   @runtimeMethod()
   public async ready(): Promise<void> {
     const sender = this.transaction.sender.value;
-    let currentLobby = this.currentLobby.get(sender).value;
+    let currentLobby = (await this.currentLobby.get(sender)).value;
 
-    let lobby = this.activeLobby.get(currentLobby).value;
+    let lobby = (await this.activeLobby.get(currentLobby)).value;
 
     let playerIndex = lobby.getIndex(sender);
 
@@ -315,8 +318,8 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
     this.initGame(lobby, lobbyReady);
   }
 
-  protected _addLobby(lobby: Lobby, shouldUpdate: Bool): Lobby {
-    const lobbyId = this.lastLobbyId.get().orElse(UInt64.from(1));
+  protected async _addLobby(lobby: Lobby, shouldUpdate: Bool): Promise<Lobby> {
+    const lobbyId = (await this.lastLobbyId.get()).orElse(UInt64.from(1));
     lobby.id = lobbyId;
     this.activeLobby.set(lobbyId, lobby); // It will be overwriteen later, so dont care about this
     const addValue = Provable.if(shouldUpdate, UInt64.from(1), UInt64.from(0));
@@ -327,7 +330,7 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
 
   @runtimeMethod()
   public async startGame(lobbyId: UInt64): Promise<void> {
-    let lobby = this.activeLobby.get(lobbyId).value;
+    let lobby = (await this.activeLobby.get(lobbyId)).value;
 
     this.initGame(lobby, Bool(true));
   }
@@ -355,13 +358,13 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
     return gameId;
   }
 
-  protected forEachUserInInitGame(
+  protected async forEachUserInInitGame(
     lobby: Lobby,
     player: PublicKey,
     shouldInit: Bool,
-  ): void {
+  ): Promise<void> {
     // Eat pendingBalances of users
-    let curBalance = this.pendingBalances.get(player).value;
+    let curBalance = (await this.pendingBalances.get(player)).value;
     this.pendingBalances.set(
       player,
       Provable.if<ProtoUInt64>(
@@ -379,28 +382,28 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
     );
   }
 
-  protected getFunds(
+  protected async getFunds(
     gameId: UInt64,
     player1: PublicKey,
     player2: PublicKey,
     player1Share: ProtoUInt64,
     player2Share: ProtoUInt64,
   ) {
-    assert(this.gameFinished.get(gameId).value.not());
+    assert((await this.gameFinished.get(gameId)).value.not());
 
     this.gameFinished.set(gameId, Bool(true));
 
     this.balances.mint(
       ZNAKE_TOKEN_ID,
       player1,
-      ProtoUInt64.from(this.gameFund.get(gameId).value)
+      ProtoUInt64.from((await this.gameFund.get(gameId)).value)
         .mul(player1Share)
         .div(player1Share.add(player2Share)),
     );
     this.balances.mint(
       ZNAKE_TOKEN_ID,
       player2,
-      ProtoUInt64.from(this.gameFund.get(gameId).value)
+      ProtoUInt64.from((await this.gameFund.get(gameId)).value)
         .mul(player2Share)
         .div(player1Share.add(player2Share)),
     );
@@ -408,18 +411,18 @@ export class LobbyManager extends RuntimeModule<LobbyManagerConfig> {
 
   @runtimeMethod()
   public async collectPendingBalance(): Promise<void> {
-    const sender = this.sessions.get(this.transaction.sender.value).value;
+    const sender = (await this.sessions.get(this.transaction.sender.value)).value;
 
     const pendingBalance = ProtoUInt64.from(
-      this.pendingBalances.get(sender).value,
+      (await this.pendingBalances.get(sender)).value,
     );
 
     this.balances.mint(ZNAKE_TOKEN_ID, sender, pendingBalance);
     this.pendingBalances.set(sender, ProtoUInt64.from(0));
   }
 
-  protected _onLobbyEnd(lobbyId: UInt64, shouldEnd: Bool): void {
-    let lobby = this.activeLobby.get(lobbyId).value;
+  protected async _onLobbyEnd(lobbyId: UInt64, shouldEnd: Bool): Promise<void> {
+    let lobby = (await this.activeLobby.get(lobbyId)).value;
 
     for (let i = 0; i < PLAYER_AMOUNT; i++) {
       this.currentLobby.set(

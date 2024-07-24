@@ -159,14 +159,14 @@ export class RandzuLogic extends MatchMaker {
     newField: RandzuField,
     winWitness: WinWitness,
   ): Promise<void> {
-    const sessionSender = this.sessions.get(this.transaction.sender.value);
+    const sessionSender = await this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
       sessionSender.value,
       this.transaction.sender.value,
     );
 
-    const game = this.games.get(gameId);
+    const game = await this.games.get(gameId);
     assert(game.isSome, 'Invalid game id');
     assert(game.value.currentMoveUser.equals(sender), `Not your move`);
     assert(game.value.winner.equals(PublicKey.empty()), `Game finished`);

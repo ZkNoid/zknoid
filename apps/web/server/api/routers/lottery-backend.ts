@@ -63,8 +63,6 @@ export const lotteryBackendRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      console.log('Input', input.roundIds);
-
       const roundInfos = await db
         .collection('rounds')
         .find({
@@ -73,8 +71,6 @@ export const lotteryBackendRouter = createTRPCRouter({
           },
         })
         .toArray();
-
-      console.log('Output', roundInfos);
 
       const data = {} as Record<
         number,

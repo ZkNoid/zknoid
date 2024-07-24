@@ -134,14 +134,14 @@ export class CheckersLogic extends MatchMaker {
     moveType: UInt64,
     proposedIsKing: Bool,
   ): Promise<void> {
-    const sessionSender = this.sessions.get(this.transaction.sender.value);
+    const sessionSender = await this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
       sessionSender.value,
       this.transaction.sender.value,
     );
 
-    const gameOption = this.games.get(gameId);
+    const gameOption = await this.games.get(gameId);
     const game = gameOption.value;
 
     const moveFromX = x;
@@ -396,14 +396,14 @@ export class CheckersLogic extends MatchMaker {
     moveType: UInt64,
     proposedIsKing: Bool,
   ): Promise<void> {
-    const sessionSender = this.sessions.get(this.transaction.sender.value);
+    const sessionSender = await this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
       sessionSender.value,
       this.transaction.sender.value,
     );
 
-    const gameOption = this.games.get(gameId);
+    const gameOption = await this.games.get(gameId);
     const game = gameOption.value;
 
     const moveFromX = x;

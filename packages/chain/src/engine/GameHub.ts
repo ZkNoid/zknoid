@@ -71,7 +71,7 @@ export class Gamehub<
 
   @runtimeMethod()
   public async updateSeed(seed: UInt64): Promise<void> {
-    const lastSeedIndex = this.lastSeed.get().orElse(UInt64.from(0));
+    const lastSeedIndex = (await this.lastSeed.get()).orElse(UInt64.from(0));
     this.seeds.set(lastSeedIndex, seed);
     this.lastSeed.set(lastSeedIndex.add(1));
   }
@@ -83,7 +83,7 @@ export class Gamehub<
    */
   @runtimeMethod()
   public async createCompetition(competition: Competition): Promise<void> {
-    const competitionId = this.lastCompetitonId.get().orElse(UInt64.from(0));
+    const competitionId = (await this.lastCompetitonId.get()).orElse(UInt64.from(0));
     this.competitionCreator.set(competitionId, this.transaction.sender.value);
     this.competitions.set(competitionId, competition);
     this.lastCompetitonId.set(competitionId.add(1));
@@ -129,8 +129,8 @@ export class Gamehub<
 
     // Check for registration
     const registrationNeeded =
-      this.competitions.get(competitionId).value.prereg;
-    const userRegistration = this.registrations.get(gameKey).value;
+      (await this.competitions.get(competitionId)).value.prereg;
+    const userRegistration = (await this.registrations.get(gameKey)).value;
 
     assert(
       registrationNeeded.not().or(userRegistration),
@@ -139,7 +139,7 @@ export class Gamehub<
 
     this.payCompetitionFee(competitionId, registrationNeeded.not());
 
-    const currentScore = this.gameRecords.get(gameKey).value;
+    const currentScore = (await this.gameRecords.get(gameKey)).value;
     const newScore = gameRecordProof.publicOutput.score;
 
     const betterScore = currentScore.lessThan(newScore);
@@ -163,7 +163,7 @@ export class Gamehub<
           competitionId,
           index: UInt64.from(i),
         });
-        const gameRecord = this.leaderboard.get(leaderboardKey).orElse(
+        const gameRecord = (await this.leaderboard.get(leaderboardKey)).orElse(
           new LeaderboardScore({
             score: UInt64.from(0),
             player: PublicKey.empty(),
@@ -186,22 +186,22 @@ export class Gamehub<
   /// #TODO add timestamp check, when timestamp will be on protokit
   @runtimeMethod()
   public async getReward(competitionId: UInt64): Promise<void> {
-    let competition = this.competitions.get(competitionId).value;
+    let competition = (await this.competitions.get(competitionId)).value;
 
     let key = new GameRecordKey({
       competitionId,
       player: this.transaction.sender.value,
     });
 
-    assert(this.gotReward.get(key).value, 'Already got your reward');
+    assert((await this.gotReward.get(key)).value, 'Already got your reward');
     this.gotReward.set(key, Bool(true));
 
-    let winner = this.leaderboard.get(
+    let winner = (await this.leaderboard.get(
       new LeaderboardIndex({
         competitionId,
         index: UInt64.zero,
       }),
-    ).value;
+    )).value;
 
     assert(
       winner.player.equals(this.transaction.sender.value),
@@ -215,8 +215,8 @@ export class Gamehub<
     );
   }
 
-  private payCompetitionFee(competitionId: UInt64, shouldPay: Bool): void {
-    let competition = this.competitions.get(competitionId).value;
+  private async payCompetitionFee(competitionId: UInt64, shouldPay: Bool): Promise<void> {
+    let competition = (await this.competitions.get(competitionId)).value;
     let fee = Provable.if<ProtoUInt64>(shouldPay, ProtoUInt64, competition.participationFee, ProtoUInt64.zero);
 
     this.balances.transfer(

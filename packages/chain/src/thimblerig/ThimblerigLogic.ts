@@ -91,14 +91,14 @@ export class ThimblerigLogic extends MatchMaker {
 
   @runtimeMethod()
   public async commitValue(gameId: UInt64, commitment: Field): Promise<void> {
-    const sessionSender = this.sessions.get(this.transaction.sender.value);
+    const sessionSender = await this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
       sessionSender.value,
       this.transaction.sender.value,
     );
 
-    const game = this.games.get(gameId);
+    const game = await this.games.get(gameId);
     assert(game.isSome, 'Invalid game id');
     assert(game.value.field.choice.equals(UInt64.from(0)), 'Already chosen');
     assert(game.value.field.commitedHash.equals(0), 'Already commited');
@@ -116,14 +116,14 @@ export class ThimblerigLogic extends MatchMaker {
 
   @runtimeMethod()
   public async chooseThumble(gameId: UInt64, choice: UInt64): Promise<void> {
-    const sessionSender = this.sessions.get(this.transaction.sender.value);
+    const sessionSender = await this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
       sessionSender.value,
       this.transaction.sender.value,
     );
 
-    const game = this.games.get(gameId);
+    const game = await this.games.get(gameId);
     assert(game.isSome, 'Invalid game id');
     assert(
       Bool.and(
@@ -148,14 +148,14 @@ export class ThimblerigLogic extends MatchMaker {
 
   @runtimeMethod()
   public async revealCommitment(gameId: UInt64, value: UInt64, salt: Field): Promise<void> {
-    const sessionSender = this.sessions.get(this.transaction.sender.value);
+    const sessionSender = await this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
       sessionSender.value,
       this.transaction.sender.value,
     );
 
-    const game = this.games.get(gameId);
+    const game = await this.games.get(gameId);
     assert(game.isSome, 'Invalid game id');
     assert(game.value.field.choice.greaterThan(UInt64.from(0)), 'Not chosen');
     assert(game.value.field.commitedHash.greaterThan(0), 'Not commited');
@@ -229,7 +229,7 @@ export class ThimblerigLogic extends MatchMaker {
   @runtimeMethod()
   public async proveCommitNotRevealed(gameId: UInt64): Promise<void> {
     super.proveOpponentTimeout(gameId, false);
-    const game = this.games.get(gameId);
+    const game = await this.games.get(gameId);
     this.acquireFunds(
       gameId,
       game.value.winner,
