@@ -184,20 +184,20 @@ export default function LotteryComponent({}: {
       customDesign={true}
     >
       <StateManager />
-      <div className={'flex flex-row items-center justify-center gap-2 px-5'}>
-        <button
-          className={'rounded-[0.26vw] bg-right-accent text-bg-dark'}
-          onClick={() => setPage(Pages.Main)}
-        >
-          To main page
-        </button>
-        <button
-          className={'rounded-[0.26vw] bg-left-accent text-bg-dark'}
-          onClick={() => setPage(Pages.Storage)}
-        >
-          To storage page
-        </button>
-      </div>
+      {/*<div className={'flex flex-row items-center justify-center gap-2 px-5'}>*/}
+      {/*  <button*/}
+      {/*    className={'rounded-[0.26vw] bg-right-accent text-bg-dark'}*/}
+      {/*    onClick={() => setPage(Pages.Main)}*/}
+      {/*  >*/}
+      {/*    To main page*/}
+      {/*  </button>*/}
+      {/*  <button*/}
+      {/*    className={'rounded-[0.26vw] bg-left-accent text-bg-dark'}*/}
+      {/*    onClick={() => setPage(Pages.Storage)}*/}
+      {/*  >*/}
+      {/*    To storage page*/}
+      {/*  </button>*/}
+      {/*</div>*/}
 
       <AnimatePresence mode={'wait'}>
         {page == Pages.Main && (

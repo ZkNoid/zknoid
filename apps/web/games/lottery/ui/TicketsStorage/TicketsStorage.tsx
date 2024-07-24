@@ -1,9 +1,14 @@
 import { Pages } from '@/games/lottery/Lottery';
 import { useEffect, useRef, useState } from 'react';
-import { cn } from '@/lib/helpers';
+import { cn, sendTransaction } from '@/lib/helpers';
 import { AnimatePresence, motion, useScroll } from 'framer-motion';
 import CustomScrollbar from '@/components/shared/CustomScrollbar';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
+import { useNetworkStore } from '@/lib/stores/network';
+import { formatUnits } from '@/lib/unit';
+import { useChainStore } from '@/lib/stores/minaChain';
+import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
+import { api } from '@/trpc/react';
 
 const RoundsDropdown = ({
   currentRoundId,
@@ -159,6 +164,7 @@ const TicketItem = ({
   roundId,
   winCombination,
   ticketNumbers,
+  combination,
   quantity,
   reward,
   // chosen,
@@ -168,12 +174,52 @@ const TicketItem = ({
   roundId: number;
   winCombination: number[];
   ticketNumbers: { number: number; win: boolean }[];
-  quantity: number;
-  reward: number;
+  combination: number[];
+  quantity: bigint;
+  reward: string;
   // chosen: boolean;
   // setChosen: (chosen: boolean) => void;
   claimed: boolean;
 }) => {
+  const workerStore = useWorkerClientStore();
+  const networkStore = useNetworkStore();
+  const chainStore = useChainStore();
+  const notificationStore = useNotificationStore();
+  const getRoundQuery = api.lotteryBackend.getRoundInfo.useQuery({
+    roundId,
+  });
+  const claimTicket = async (numbers: number[], amount: number) => {
+    let txJson = await workerStore.getReward(
+      networkStore.address!,
+      Number(chainStore.block?.slotSinceGenesis!),
+      roundId,
+      numbers,
+      amount,
+      getRoundQuery.data?.proof!
+    );
+
+    console.log('txJson', txJson);
+    await sendTransaction(txJson)
+      .then(() => {
+        notificationStore.create({
+          type: 'success',
+          message: 'Transaction sent',
+          isDismissible: true,
+          dismissAfterDelay: true,
+        });
+      })
+      .catch((error) => {
+        console.log('Error while sending transaction', error);
+        notificationStore.create({
+          type: 'error',
+          message: 'Error while sending transaction',
+          isDismissible: true,
+          dismissAfterDelay: true,
+          dismissDelay: 10000,
+        });
+      });
+  };
+
   return (
     <div
       className={
@@ -248,12 +294,14 @@ const TicketItem = ({
       {/*    </svg>*/}
       {/*  </button>*/}
       {/*</div>*/}
-      {reward && !claimed && (
+      {!!reward && !claimed && (
         <div className={'col-span-2 flex w-full items-center justify-center'}>
           <button
             className={
-              'w-1/2 rounded-[0.26vw] bg-left-accent px-[1.51vw] py-[0.26vw] font-museo text-[0.833vw] font-medium text-bg-dark hover:opacity-80'
+              'w-1/2 rounded-[0.26vw] bg-left-accent px-[1.51vw] py-[0.26vw] font-museo text-[0.833vw] font-medium text-bg-dark hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60'
             }
+            onClick={() => claimTicket(combination, Number(quantity))}
+            disabled={claimed || !reward || !workerStore.lotteryCompiled}
           >
             Claim
           </button>
@@ -268,20 +316,9 @@ export default function TicketsStorage({
 }: {
   setPage: (page: Pages) => void;
 }) {
-  // const rounds = [
-  //   { id: 1, hasClaim: true },
-  //   { id: 2, hasClaim: false },
-  //   { id: 3, hasClaim: false },
-  //   { id: 4, hasClaim: false },
-  //   { id: 5, hasClaim: false },
-  //   { id: 6, hasClaim: true },
-  //   { id: 7, hasClaim: false },
-  //   { id: 8, hasClaim: true },
-  //   { id: 9, hasClaim: false },
-  //   { id: 10, hasClaim: true },
-  // ];
   const PAGINATION_LIMIT = 10;
   const lotteryStore = useWorkerClientStore();
+  const networkStore = useNetworkStore();
 
   const [onlyLoosing, setOnlyLoosing] = useState<boolean>(false);
   const [onlyClaimable, setOnlyClaimable] = useState<boolean>(false);
@@ -307,22 +344,34 @@ export default function TicketsStorage({
       winningCombination: number[] | undefined;
     }[]
   >([]);
+  const [roundIds, setRoundsIds] = useState<{ id: number; hasWin: boolean }[]>(
+    []
+  );
 
   useEffect(() => {
     if (!lotteryStore.stateM) return;
+    (async () => {
+      const roundInfos = await lotteryStore.getRoundsInfo(
+        [...Array(lotteryStore.lotteryRoundId)].map((_, i) => i)
+      );
+      const ids = Object.values(roundInfos).map((item) => ({
+        id: item.id,
+        hasWin: !!item.tickets.find(
+          (ticket) => ticket.owner === networkStore.address && ticket.funds
+        ),
+      }));
+      setRoundsIds(ids);
+    })();
+  }, [lotteryStore.stateM]);
 
+  useEffect(() => {
+    if (!lotteryStore.stateM) return;
     const roundsToShow = currentRoundId
-      ? Array.from({ length: 20 }, (_, i) => currentRoundId - i).filter(
-          (x) => x >= 0
-        )
-      : [...Array(lotteryStore.lotteryRoundId)];
+      ? [currentRoundId]
+      : [...Array(lotteryStore.lotteryRoundId)].map((_, i) => i);
 
     (async () => {
-      console.log('Tickets fetching');
       const roundInfos = await lotteryStore.getRoundsInfo(roundsToShow);
-      console.log('Fetched round infos', roundInfos, Object.values(roundInfos));
-
-      console.log('Round infos', Object.values(roundInfos));
       setRoundInfos(Object.values(roundInfos));
     })();
   }, [currentRoundId, lotteryStore.stateM]);
@@ -421,11 +470,13 @@ export default function TicketsStorage({
           <RoundsDropdown
             currentRoundId={currentRoundId}
             setCurrentRoundId={setCurrentRoundId}
-            rounds={[
-              { id: 0, hasClaim: false },
-              { id: 1, hasClaim: false },
-              { id: 2, hasClaim: false },
-            ]}
+            rounds={roundInfos.map((item) => ({
+              id: item.id,
+              hasClaim: !!item.tickets.find(
+                (ticket) =>
+                  ticket.owner === networkStore.address && ticket.funds
+              ),
+            }))}
           />
         </div>
       </div>
@@ -482,26 +533,39 @@ export default function TicketsStorage({
               'flex max-h-[400px] w-full flex-col gap-0 overflow-y-scroll no-scrollbar'
             }
           >
-            {renderRounds.map((item, index) => (
-              <TicketItem
-                key={index}
-                roundId={item.id}
-                winCombination={[1, 1, 1, 1, 1, 1]}
-                ticketNumbers={[
-                  { number: 1, win: true },
-                  { number: 2, win: false },
-                  { number: 3, win: false },
-                  { number: 4, win: false },
-                  { number: 5, win: false },
-                  { number: 6, win: false },
-                ]}
-                quantity={2}
-                reward={1}
-                // chosen={false}
-                // setChosen={() => {}}
-                claimed={false}
-              />
-            ))}
+            {renderRounds
+              .filter(
+                (filterRound) =>
+                  filterRound.winningCombination &&
+                  filterRound.tickets.length != 0
+              )
+              .map((round, roundIndex) =>
+                round.tickets
+                  .filter(
+                    (filterTicket) =>
+                      filterTicket.owner === networkStore.address &&
+                      filterTicket.funds
+                  )
+                  .map((ticket, ticketIndex) => (
+                    <TicketItem
+                      key={ticketIndex}
+                      roundId={round.id}
+                      winCombination={round.winningCombination}
+                      ticketNumbers={ticket.numbers.map(
+                        (number, numberIndex) => ({
+                          number: number,
+                          win: number == round.winningCombination[numberIndex],
+                        })
+                      )}
+                      combination={ticket.numbers}
+                      quantity={ticket.amount}
+                      reward={Number(formatUnits(ticket.funds)).toFixed(2)}
+                      // chosen={false}
+                      // setChosen={() => {}}
+                      claimed={ticket.claimed}
+                    />
+                  ))
+              )}
           </div>
           <AnimatePresence initial={false} mode={'wait'}>
             {containerHeight === 400 && (
