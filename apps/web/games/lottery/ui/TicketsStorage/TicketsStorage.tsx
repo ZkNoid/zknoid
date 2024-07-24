@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/helpers';
 import { AnimatePresence, motion, useScroll } from 'framer-motion';
 import CustomScrollbar from '@/components/shared/CustomScrollbar';
+import { useWorkerClientStore } from '@/lib/stores/workerClient';
 
 const RoundsDropdown = ({
   currentRoundId,
@@ -160,8 +161,8 @@ const TicketItem = ({
   ticketNumbers,
   quantity,
   reward,
-  chosen,
-  setChosen,
+  // chosen,
+  // setChosen,
   claimed,
 }: {
   roundId: number;
@@ -169,22 +170,26 @@ const TicketItem = ({
   ticketNumbers: { number: number; win: boolean }[];
   quantity: number;
   reward: number;
-  chosen: boolean;
-  setChosen: (chosen: boolean) => void;
+  // chosen: boolean;
+  // setChosen: (chosen: boolean) => void;
   claimed: boolean;
 }) => {
   return (
     <div
       className={
-        'grid w-full grid-cols-7 border-t border-foreground py-[0.521vw] last:border-b hover:bg-[#464646]'
+        'grid w-full grid-cols-7 grid-rows-1 border-t border-foreground py-[0.521vw] last:border-b hover:bg-[#464646]'
       }
     >
-      <div className={'flex w-full items-center justify-start pl-[0.99vw]'}>
+      <div className={'flex w-full items-center justify-center pr-[40%]'}>
         <span className={'font-plexsans text-[0.833vw] text-foreground'}>
           {roundId}
         </span>
       </div>
-      <div className={'flex flex-row items-center justify-start gap-[0.781vw]'}>
+      <div
+        className={
+          'flex flex-row items-center justify-center gap-[0.781vw]  pr-[40%]'
+        }
+      >
         {winCombination.map((item, index) => (
           <span
             className={'font-plexsans text-[0.833vw] text-foreground'}
@@ -194,7 +199,7 @@ const TicketItem = ({
           </span>
         ))}
       </div>
-      <div className={'flex flex-row items-center justify-start gap-[0.26vw]'}>
+      <div className={'flex flex-row items-center justify-center gap-[0.26vw]'}>
         {ticketNumbers.map((item, index) => (
           <div
             key={index}
@@ -209,47 +214,50 @@ const TicketItem = ({
           </div>
         ))}
       </div>
-      <div className={'flex w-full items-center justify-start'}>
+      <div className={'flex w-full items-center justify-center'}>
         <span className={'font-plexsans text-[0.833vw] text-foreground'}>
           {quantity}
         </span>
       </div>
-      <div className={'flex w-full items-center justify-start'}>
+      <div className={'flex w-full items-center justify-center'}>
         <span className={'font-plexsans text-[0.833vw] text-foreground'}>
           {reward} MINA
         </span>
       </div>
-      <div className={'flex w-full items-center justify-start'}>
-        <button
-          className={cn(
-            'flex h-[0.938vw] w-[0.938vw] cursor-pointer flex-col items-center justify-center rounded-[0.104vw] border hover:opacity-80',
-            {
-              'border-foreground': !chosen,
-              'border-left-accent bg-left-accent': chosen,
-            }
-          )}
-          onClick={() => setChosen(true)}
-        >
-          <svg
-            width="0.625vw"
-            height="0.417vw"
-            viewBox="0 0 14 10"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className={cn('h-[0.417vw] w-[0.625vw]', { 'opacity-0': !chosen })}
-          >
-            <path d="M1 4L5.5 8.5L13 1" stroke="#252525" />
-          </svg>
-        </button>
-      </div>
+      {/*<div />*/}
+      {/*<div className={'flex w-full items-center justify-center'}>*/}
+      {/*  <button*/}
+      {/*    className={cn(*/}
+      {/*      'flex h-[0.938vw] w-[0.938vw] cursor-pointer flex-col items-center justify-center rounded-[0.104vw] border hover:opacity-80',*/}
+      {/*      {*/}
+      {/*        'border-foreground': !chosen,*/}
+      {/*        'border-left-accent bg-left-accent': chosen,*/}
+      {/*      }*/}
+      {/*    )}*/}
+      {/*    onClick={() => setChosen(true)}*/}
+      {/*  >*/}
+      {/*    <svg*/}
+      {/*      width="0.625vw"*/}
+      {/*      height="0.417vw"*/}
+      {/*      viewBox="0 0 14 10"*/}
+      {/*      fill="none"*/}
+      {/*      xmlns="http://www.w3.org/2000/svg"*/}
+      {/*      className={cn('h-[0.417vw] w-[0.625vw]', { 'opacity-0': !chosen })}*/}
+      {/*    >*/}
+      {/*      <path d="M1 4L5.5 8.5L13 1" stroke="#252525" />*/}
+      {/*    </svg>*/}
+      {/*  </button>*/}
+      {/*</div>*/}
       {reward && !claimed && (
-        <button
-          className={
-            'rounded-[0.26vw] bg-left-accent px-[1.51vw] py-[0.26vw] font-museo text-[0.833vw] font-medium text-bg-dark hover:opacity-80'
-          }
-        >
-          Claim
-        </button>
+        <div className={'col-span-2 flex w-full items-center justify-center'}>
+          <button
+            className={
+              'w-1/2 rounded-[0.26vw] bg-left-accent px-[1.51vw] py-[0.26vw] font-museo text-[0.833vw] font-medium text-bg-dark hover:opacity-80'
+            }
+          >
+            Claim
+          </button>
+        </div>
       )}
     </div>
   );
@@ -260,18 +268,89 @@ export default function TicketsStorage({
 }: {
   setPage: (page: Pages) => void;
 }) {
+  // const rounds = [
+  //   { id: 1, hasClaim: true },
+  //   { id: 2, hasClaim: false },
+  //   { id: 3, hasClaim: false },
+  //   { id: 4, hasClaim: false },
+  //   { id: 5, hasClaim: false },
+  //   { id: 6, hasClaim: true },
+  //   { id: 7, hasClaim: false },
+  //   { id: 8, hasClaim: true },
+  //   { id: 9, hasClaim: false },
+  //   { id: 10, hasClaim: true },
+  // ];
+  const PAGINATION_LIMIT = 10;
+  const lotteryStore = useWorkerClientStore();
+
   const [onlyLoosing, setOnlyLoosing] = useState<boolean>(false);
   const [onlyClaimable, setOnlyClaimable] = useState<boolean>(false);
   const [currentRoundId, setCurrentRoundId] = useState<number | undefined>(
     undefined
   );
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const [containerHeight, setContainerHeight] = useState<number>(0);
-  const ticketsListRef = useRef<HTMLDivElement | null>(null);
-  const { scrollYProgress } = useScroll({ container: ticketsListRef });
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const [roundInfos, setRoundInfos] = useState<
+    {
+      id: number;
+      bank: bigint;
+      tickets: {
+        amount: bigint;
+        numbers: number[];
+        owner: string;
+        claimed: boolean;
+        funds: bigint;
+      }[];
+      winningCombination: number[] | undefined;
+    }[]
+  >([]);
 
   useEffect(() => {
-    const refObj = ticketsListRef.current;
+    if (!lotteryStore.stateM) return;
+
+    const roundsToShow = currentRoundId
+      ? Array.from({ length: 20 }, (_, i) => currentRoundId - i).filter(
+          (x) => x >= 0
+        )
+      : [...Array(lotteryStore.lotteryRoundId)];
+
+    (async () => {
+      console.log('Tickets fetching');
+      const roundInfos = await lotteryStore.getRoundsInfo(roundsToShow);
+      console.log('Fetched round infos', roundInfos, Object.values(roundInfos));
+
+      console.log('Round infos', Object.values(roundInfos));
+      setRoundInfos(Object.values(roundInfos));
+    })();
+  }, [currentRoundId, lotteryStore.stateM]);
+
+  const renderRounds = roundInfos.slice(
+    (currentPage - 1) * PAGINATION_LIMIT,
+    currentPage * PAGINATION_LIMIT
+  );
+  useEffect(() => {
+    const refObj = containerRef.current;
+
+    const scrollHandler = () => {
+      if (
+        // @ts-ignore
+        refObj?.scrollHeight - refObj?.scrollTop === refObj?.clientHeight &&
+        renderRounds.length < roundInfos.length
+      ) {
+        setCurrentPage((prevState) => prevState + 1);
+      }
+    };
+    refObj?.addEventListener('scroll', scrollHandler);
+    return () => {
+      refObj?.removeEventListener('scroll', scrollHandler);
+    };
+  });
+
+  useEffect(() => {
+    const refObj = containerRef.current;
     const resizeHandler = () => {
       if (containerHeight != refObj?.clientHeight) {
         // @ts-ignore
@@ -283,20 +362,9 @@ export default function TicketsStorage({
     return () => {
       refObj?.removeEventListener('resize', resizeHandler);
     };
-  }, []);
+  });
+  const { scrollYProgress } = useScroll({ container: containerRef });
 
-  const rounds = [
-    { id: 1, hasClaim: true },
-    { id: 2, hasClaim: false },
-    { id: 3, hasClaim: false },
-    { id: 4, hasClaim: false },
-    { id: 5, hasClaim: false },
-    { id: 6, hasClaim: true },
-    { id: 7, hasClaim: false },
-    { id: 8, hasClaim: true },
-    { id: 9, hasClaim: false },
-    { id: 10, hasClaim: true },
-  ];
   return (
     <div
       className={
@@ -305,15 +373,19 @@ export default function TicketsStorage({
     >
       <span
         className={
-          'mb-[1.042vw] font-museo text-[1.667vw] font-bold text-foreground'
+          'mb-[1.042vw] max-w-[85%] font-museo text-[1.667vw] font-bold text-foreground'
         }
       >
         Tickets storage
       </span>
-      <div className={'mb-[1.563vw] flex w-full flex-row justify-between'}>
+      <div
+        className={
+          'mb-[1.563vw] flex w-full max-w-[85%] flex-row justify-between'
+        }
+      >
         <button
           className={
-            'flex h-[1.354vw] w-[3.802vw] flex-row items-center justify-center rounded-[0.144vw] border border-foreground'
+            'flex h-[1.354vw] w-[3.802vw] flex-row items-center justify-center rounded-[0.144vw] border border-foreground hover:opacity-80'
           }
           onClick={() => setPage(Pages.Main)}
         >
@@ -328,7 +400,9 @@ export default function TicketsStorage({
             <path d="M8.36328 0.5L1.10522 8L8.36328 15.5" stroke="#F9F8F4" />
           </svg>
           <span
-            className={'font-museo text-[0.729vw] font-medium text-foreground'}
+            className={
+              'pt-px font-museo text-[0.729vw] font-medium text-foreground'
+            }
           >
             Back
           </span>
@@ -347,67 +421,71 @@ export default function TicketsStorage({
           <RoundsDropdown
             currentRoundId={currentRoundId}
             setCurrentRoundId={setCurrentRoundId}
-            rounds={rounds}
+            rounds={[
+              { id: 0, hasClaim: false },
+              { id: 1, hasClaim: false },
+              { id: 2, hasClaim: false },
+            ]}
           />
         </div>
       </div>
 
-      <div className={'flex w-full flex-col gap-0'}>
-        <div className={'grid w-full grid-cols-7 pb-[0.781vw]'}>
+      <div className={'flex w-full max-w-[85%] flex-col  gap-0'}>
+        <div className={'grid w-full grid-cols-7 pb-[0.781vw] pr-[1.875vw]'}>
           <span
             className={
-              'text-start font-plexsans text-[0.833vw] font-medium text-foreground'
+              'pr-[40%] text-center font-plexsans text-[0.833vw] font-medium text-foreground'
             }
           >
             Round
           </span>
           <span
             className={
-              'text-start font-plexsans text-[0.833vw] font-medium text-foreground'
+              'pr-[40%] text-center font-plexsans text-[0.833vw] font-medium  text-foreground'
             }
           >
             Win combination
           </span>
           <span
             className={
-              'text-start font-plexsans text-[0.833vw] font-medium text-foreground'
+              'text-center font-plexsans text-[0.833vw] font-medium text-foreground'
             }
           >
             Ticket Number
           </span>
           <span
             className={
-              'text-start font-plexsans text-[0.833vw] font-medium text-foreground'
+              'text-center font-plexsans text-[0.833vw] font-medium text-foreground'
             }
           >
             Quantity
           </span>
           <span
             className={
-              'text-start font-plexsans text-[0.833vw] font-medium text-foreground'
+              'text-center font-plexsans text-[0.833vw] font-medium text-foreground'
             }
           >
             Accessible rewards
           </span>
-          <span
-            className={
-              'text-start font-plexsans text-[0.833vw] font-medium text-foreground'
-            }
-          >
-            Chosen
-          </span>
+          {/*<span*/}
+          {/*  className={*/}
+          {/*    'text-center font-plexsans text-[0.833vw] font-medium text-foreground'*/}
+          {/*  }*/}
+          {/*>*/}
+          {/*  Chosen*/}
+          {/*</span>*/}
         </div>
         <div className={'flex w-full flex-row gap-[1.042vw]'}>
           <div
-            ref={ticketsListRef}
+            ref={containerRef}
             className={
               'flex max-h-[400px] w-full flex-col gap-0 overflow-y-scroll no-scrollbar'
             }
           >
-            {[...Array(30)].map((_, index) => (
+            {renderRounds.map((item, index) => (
               <TicketItem
                 key={index}
-                roundId={1}
+                roundId={item.id}
                 winCombination={[1, 1, 1, 1, 1, 1]}
                 ticketNumbers={[
                   { number: 1, win: true },
@@ -419,8 +497,8 @@ export default function TicketsStorage({
                 ]}
                 quantity={2}
                 reward={1}
-                chosen={false}
-                setChosen={() => {}}
+                // chosen={false}
+                // setChosen={() => {}}
                 claimed={false}
               />
             ))}
