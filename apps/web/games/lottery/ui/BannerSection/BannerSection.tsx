@@ -7,6 +7,7 @@ import BannerButton from './ui/BannerButton';
 import CenterConsole from '@/games/lottery/ui/BannerSection/ui/CenterConsole';
 import CurrentRoundInfo from '@/games/lottery/ui/BannerSection/ui/CurrentRoundInfo';
 import PrevRoundInfo from '@/games/lottery/ui/BannerSection/ui/PrevRoundInfo';
+import { api } from '@/trpc/react';
 
 export default function BannerSection({
   roundEndsIn,
@@ -33,15 +34,17 @@ export default function BannerSection({
       }
     | undefined
   >(undefined);
+  
+  const getRoundQuery = api.lotteryBackend.getRoundInfo.useQuery({
+    roundId: roundToShow,
+  }, {
+    refetchInterval: 5000
+  });
 
   useEffect(() => {
-    if (!lotteryStore.stateM) return;
-    (async () => {
-      const roundInfos = await lotteryStore.getRoundsInfo([roundToShow]);
-      console.log('Fetched round infos', roundInfos);
-      setRoundInfo(roundInfos[roundToShow]);
-    })();
-  }, [roundToShow, lotteryStore.offchainStateUpdateBlock]);
+    if (getRoundQuery.data)
+      setRoundInfo(getRoundQuery.data);
+  }, [getRoundQuery.data]);
 
   useEffect(() => {
     setRoundToShow(lotteryStore.lotteryRoundId);

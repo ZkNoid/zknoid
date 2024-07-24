@@ -33,10 +33,79 @@ export const lotteryBackendRouter = createTRPCRouter({
         roundId: input.roundId,
       });
 
+      if (!roundInfo) return null;
+
       return {
+        id: roundInfo?.roundId,
+        bank: BigInt(roundInfo?.roundId),
+        tickets: roundInfo?.tickets.map((ticket: any) => ({
+          ...ticket,
+          amount: BigInt(ticket.amount),
+        })),
+        winningCombination: roundInfo?.winningCombination,
         proof: roundInfo?.dp as JsonProof,
         total: roundInfo?.total as number,
+      } as {
+        id: number;
+        bank: bigint;
+        tickets: {
+          amount: bigint;
+          numbers: number[];
+          owner: string;
+        }[];
+        winningCombination: number[] | undefined;
       };
+    }),
+  getRoundInfos: publicProcedure
+    .input(
+      z.object({
+        roundIds: z.array(z.number()),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      console.log('Input', input.roundIds);
+
+      const roundInfos = await db
+        .collection('rounds')
+        .find({
+          roundId: {
+            $in: input.roundIds,
+          },
+        })
+        .toArray();
+
+      console.log('Output', roundInfos);
+
+      const data = {} as Record<
+        number,
+        {
+          id: number;
+          bank: bigint;
+          tickets: {
+            amount: bigint;
+            numbers: number[];
+            owner: string;
+          }[];
+          winningCombination: number[] | undefined;
+        }
+      >;
+
+      for (let i = 0; i < roundInfos.length; i++) {
+        const roundInfo = roundInfos[i];
+        data[roundInfos[i].roundId!] = {
+          id: roundInfo?.roundId,
+          bank: BigInt(roundInfo?.roundId),
+          tickets: roundInfo?.tickets.map((ticket: any) => ({
+            ...ticket,
+            amount: BigInt(ticket.amount),
+          })),
+          winningCombination: roundInfo?.winningCombination,
+          // proof: roundInfo?.dp as JsonProof,
+          total: roundInfo?.total as number,
+        } as any;
+      }
+
+      return data;
     }),
   getMinaEvents: publicProcedure
     .input(z.object({}))

@@ -41,6 +41,7 @@ import {
   getNullifierId,
   DistributionProof,
   DistributionProofPublicInput,
+  MerkleMap20Witness,
 } from 'l1-lottery-contracts';
 
 import {
@@ -52,10 +53,6 @@ import { NETWORKS } from '@/app/constants/networks';
 import { number } from 'zod';
 import { lotteryBackendRouter } from '@/server/api/routers/lottery-backend';
 import { api } from '@/trpc/vanilla';
-import {
-  BaseMinaEvent,
-  syncWithEvents,
-} from '@/lib/state-manager/feed_with_events';
 // import { DummyBridge } from 'zknoidcontractsl1';
 
 // ---------------------------------------------------------------------------------------
@@ -65,7 +62,6 @@ const state = {
   gameRecord: null as null | typeof GameRecord,
   Lottery: null as null | typeof PLottery,
   lotteryGame: null as null | PLottery,
-  lotteryOffchainState: null as null | PStateManager,
   lotteryCache: null as null | FetchedCache,
   buyTicketTransaction: null as null | Transaction,
   getRewardTransaction: null as null | Transaction,
@@ -138,84 +134,6 @@ const functions = {
       account.account?.zkapp?.appState.map((x) => x.toString())
     );
   },
-  async fetchOffchainState(args: {
-    startBlock: number;
-    roundId: number;
-    events: BaseMinaEvent[];
-  }) {
-    const stateM = new PStateManager(
-      state.lotteryGame!,
-      UInt32.from(args.startBlock).toFields()[0],
-      true
-    );
-    console.log('Args', args);
-    console.log('Fetching events');
-
-    const events = args.events;
-
-    console.log('Fetched events', events);
-    console.log(
-      'Sync with block',
-      Number(args.startBlock) + args.roundId * 480 + 1
-    );
-
-    state.lotteryOffchainState = await syncWithEvents(
-      stateM,
-      args.startBlock,
-      args.roundId,
-      events as BaseMinaEvent[],
-      state.lotteryGame!.events
-    )!;
-    return events.at(-1)?.blockHeight || 0;
-  },
-  async getRoundsInfo(args: { roundIds: number[] }) {
-    console.log('Round ids', args.roundIds);
-    const stateM = state.lotteryOffchainState!;
-    const data = {} as Record<
-      number,
-      {
-        id: number;
-        bank: bigint;
-        tickets: {
-          amount: bigint;
-          numbers: number[];
-          owner: string;
-        }[];
-        winningCombination: number[] | undefined;
-      }
-    >;
-
-    for (let i = 0; i < args.roundIds.length; i++) {
-      console.log('I', i);
-      const roundId = args.roundIds[i];
-
-      const winningCombination = NumberPacked.unpackToBigints(
-        stateM.roundResultMap.get(Field.from(roundId))
-      )
-        .map((v) => Number(v))
-        .slice(0, 6);
-
-      data[roundId] = {
-        id: roundId,
-        bank: stateM.roundTickets[roundId]
-          .map((x) => x.amount.toBigInt())
-          .reduce((x, y) => x + y, 0n),
-        tickets: stateM.roundTickets[roundId].map((x, i) => ({
-          amount: x.amount.toBigInt(),
-          numbers: x.numbers.map((x) => Number(x.toBigint())),
-          owner: x.owner.toBase58(),
-          claimed: stateM.ticketNullifierMap
-            .get(getNullifierId(Field.from(roundId), Field.from(i)))
-            .equals(Field.from(1))
-            .toBoolean(),
-        })),
-        winningCombination: winningCombination.every((x) => x == 0)
-          ? undefined
-          : winningCombination,
-      };
-    }
-    return data;
-  },
   buyTicket: async (args: {
     senderAccount: string;
     startBlock: number;
@@ -225,18 +143,8 @@ const functions = {
   }) => {
     const senderAccount = PublicKey.fromBase58(args.senderAccount);
 
-    // if (!state.lotteryOffchainState) {
-    //   await functions.fetchOffchainState({
-    //     startBlock: args.startBlock,
-    //     roundId: args.roundId,
-    //   });
-    // }
-    const stateM = state.lotteryOffchainState!;
-
     console.log(args.ticketNums, senderAccount, args.roundId);
     const ticket = Ticket.from(args.ticketNums, senderAccount, args.amount);
-    // let [roundWitness, roundTicketWitness, bankWitness, bankValue] =
-    //   stateM.addTicket(ticket, args.roundId);
 
     let tx = await Mina.transaction(senderAccount, async () => {
       await state.lotteryGame!.buyTicket(ticket, Field014.from(args.roundId));
@@ -247,49 +155,52 @@ const functions = {
     state.buyTicketTransaction = tx;
   },
   getReward: async (args: {
+    networkId: string;
     senderAccount: string;
     startBlock: number;
     roundId: number;
     ticketNums: number[];
     amount: number;
-    dp: JsonProof;
   }) => {
     const senderAccount = PublicKey.fromBase58(args.senderAccount);
 
-    // if (!state.lotteryOffchainState) {
-    //   await functions.fetchOffchainState({
-    //     startBlock: args.startBlock,
-    //     roundId: args.roundId,
-    //   });
-    // }
-    const stateM = state.lotteryOffchainState!;
-
-    const ticket = Ticket.from(args.ticketNums, senderAccount, args.amount);
-    let rp = await stateM.getReward(args.roundId, ticket);
-    console.log(
-      'RP generated',
-      args.ticketNums,
-      args.roundId,
-      args.dp,
-      stateM.roundTickets[args.roundId].map((x) => ({
-        amount: Number(x.amount.toBigInt()),
-        numbers: x.numbers.map((x) => Number(x.toBigint())),
-        owner: x.owner.toBase58(),
-      }))
+    const claimData = await fetch(
+      'https://api2.zknoid.io/claim-api/get-claim-data',
+      {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          roundId: args.roundId,
+          networkID: args.networkId,
+          ticketNums: args.ticketNums,
+          senderAccount,
+          amount: args.amount,
+        }),
+      }
     );
 
+    console.log('Got claim data', claimData);
+
+    const { rp } = await claimData.json();
+
+    console.log('Received rp', rp);
+
+    const ticket = Ticket.from(args.ticketNums, senderAccount, args.amount);
+    
     let tx = await Mina.transaction(senderAccount, async () => {
       await state.lotteryGame!.getReward(
         ticket,
-        rp.roundWitness,
-        rp.roundTicketWitness,
+        MerkleMap20Witness.fromJSON(rp.roundWitness) as MerkleMap20Witness,
+        MerkleMap20Witness.fromJSON(rp.roundTicketWitness) as MerkleMap20Witness,
         //@ts-ignore
-        await DistributionProof.fromJSON(args.dp),
-        rp.winningNumbers,
-        rp.resultWitness,
-        rp.bankValue,
-        rp.bankWitness,
-        rp.nullifierWitness
+        await DistributionProof.fromJSON(rp.dp),
+        Field.fromJSON(rp.winningNumbers),
+        MerkleMap20Witness.fromJSON(rp.resultWitness) as MerkleMap20Witness,
+        Field.fromJSON(rp.bankValue),
+        MerkleMap20Witness.fromJSON(rp.bankWitness) as MerkleMap20Witness,
+        MerkleMapWitness.fromJSON(rp.nullifierWitness) as MerkleMapWitness
       );
     });
 

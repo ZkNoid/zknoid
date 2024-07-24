@@ -213,15 +213,16 @@ export default function MyTicket({
   const notificationStore = useNotificationStore();
   const getRoundQuery = api.lotteryBackend.getRoundInfo.useQuery({
     roundId,
+  }, {
+    refetchInterval: 5000
   });
   const claimTicket = async (numbers: number[], amount: number) => {
     let txJson = await workerStore.getReward(
       networkStore.address!,
-      Number(chainStore.block?.slotSinceGenesis!),
+      networkStore.minaNetwork!.networkID,
       roundId,
       numbers,
       amount,
-      getRoundQuery.data?.proof!
     );
 
     console.log('txJson', txJson);

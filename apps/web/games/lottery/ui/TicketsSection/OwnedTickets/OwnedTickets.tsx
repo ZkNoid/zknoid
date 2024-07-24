@@ -6,6 +6,7 @@ import { cn } from '@/lib/helpers';
 import PageButton from './ui/PageButton';
 import { formatUnits } from '@/lib/unit';
 import { Currency } from '@/constants/currency';
+import { api } from '@/trpc/react';
 
 interface ITicket {
   id: string;
@@ -38,32 +39,29 @@ export default function OwnedTickets({ roundId }: { roundId: number }) {
     page * TICKETS_PER_PAGE
   );
 
+  const getRoundQuery = api.lotteryBackend.getRoundInfo.useQuery({
+    roundId: roundId,
+  }, {
+    refetchInterval: 5000
+  });
+
   useEffect(() => {
-    console.log(
-      'Owned tickets offchain state',
-      workerStore.offchainStateUpdateBlock
+    if (!getRoundQuery.data) return;
+
+    setTickets(
+      getRoundQuery.data.tickets
+        .filter(
+          (x: { owner: string | undefined }) => x.owner == networkStore.address
+        )
+        .map((x: { numbers: any; amount: any; funds: any; claimed: any; }, i: any) => ({
+          id: `${i}`,
+          combination: x.numbers,
+          amount: Number(x.amount),
+          funds: x.funds,
+          claimed: x.claimed,
+        }))
     );
-
-    if (!workerStore.offchainStateUpdateBlock) return;
-
-    console.log('Offchain state ready', workerStore.onchainState);
-
-    (async () => {
-      const f = await workerStore.getRoundsInfo([roundId]);
-      setTickets(
-        f[roundId].tickets
-          .filter((x) => x.owner == networkStore.address)
-          .map((x, i) => ({
-            id: `${i}`,
-            combination: x.numbers,
-            amount: Number(x.amount),
-            funds: x.funds,
-            claimed: x.claimed,
-          }))
-      );
-      console.log('Effect fetching', f);
-    })();
-  }, [workerStore.offchainStateUpdateBlock, roundId]);
+  }, [getRoundQuery.data]);
 
   return (
     <div
