@@ -173,9 +173,6 @@ export const useWorkerClientStore = create<
         state.lotteryGame = lotteryGame;
       });
 
-      // Cannot assign to read only property 'lotteryGame' of object '#<Object>'
-      this.lotteryGame = lotteryGame;
-
       set((state) => {
         state.status = 'Lottery prover cache downloading';
       });
