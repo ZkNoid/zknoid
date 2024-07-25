@@ -149,6 +149,10 @@ export const useWorkerClientStore = create<
       await this.client?.initLotteryInstance(lotteryPublicKey58, networkId);
 
       const onchainState = this.onchainState!;
+      
+      set((state) => {
+        state.onchainStateInitialized = true;
+      });
 
       console.log('Fetched state', this.onchainState);
 
