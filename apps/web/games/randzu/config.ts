@@ -48,5 +48,5 @@ export const randzuRedirectConfig = createZkNoidGameConfig({
   runtimeModules: {},
   page: undefined as any,
   lobby: undefined as any,
-  externalUrl: 'https://app.zknoid.io/games/randzu/global'
+  externalUrl: 'https://proto.zknoid.io/games/randzu/global'
 });

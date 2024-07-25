@@ -58,5 +58,5 @@ export const arkanoidRedirectConfig = createZkNoidGameConfig({
   page: undefined as any,
   pageCompetitionsList: ArkanoidCompetitionsListPage,
   pageNewCompetition: NewArkanoidCompetitionPage,
-  externalUrl: 'https://app.zknoid.io/games/arkanoid/global'
+  externalUrl: 'https://proto.zknoid.io/games/arkanoid/global'
 });

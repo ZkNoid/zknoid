@@ -52,5 +52,5 @@ export const checkersRedirectConfig = createZkNoidGameConfig({
         
   The game is won by capturing all of the opponent's pieces or by blocking them from moving
   `,
-  externalUrl: 'https://app.zknoid.io/games/checkers/global',
+  externalUrl: 'https://proto.zknoid.io/games/checkers/global',
 });

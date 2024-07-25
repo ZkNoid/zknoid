@@ -48,5 +48,5 @@ export const thimblerigRedirectConfig = createZkNoidGameConfig({
   runtimeModules: {},
   page: undefined as any,
   lobby: undefined as any,
-  externalUrl: 'https://app.zknoid.io/games/thimblerig/global'
+  externalUrl: 'https://proto.zknoid.io/games/thimblerig/global'
 });
