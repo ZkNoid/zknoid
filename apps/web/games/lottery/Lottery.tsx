@@ -95,7 +95,7 @@ export default function LotteryComponent({}: {
   useEffect(() => {
     if (workerClientStore.lotteryGame?.address)
       workerClientStore.updateOnchainState();
-  }, [chainStore.block?.height]);
+  }, [chainStore.block?.height, workerClientStore.lotteryGame?.address]);
 
   // When onchain state is ready
   useEffect(() => {

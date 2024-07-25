@@ -52,11 +52,14 @@ export default function TicketsSection({
     (_, i) => roundToShowId - i - page * ROUNDS_PER_PAGE
   ).filter((x) => x >= 0);
 
-  const getRoundQuery = api.lotteryBackend.getRoundInfos.useQuery({
-    roundIds: roundsToShow,
-  }, {
-    refetchInterval: 5000
-  });
+  const getRoundQuery = api.lotteryBackend.getRoundInfos.useQuery(
+    {
+      roundIds: roundsToShow,
+    },
+    {
+      refetchInterval: 5000,
+    }
+  );
   const chainStore = useChainStore();
 
   useEffect(() => {
@@ -69,7 +72,7 @@ export default function TicketsSection({
 
     console.log('Round infos', Object.values(roundInfos));
     setRoundInfos(Object.values(roundInfos));
-  }, [getRoundQuery.data]);
+  }, [getRoundQuery.data, chainStore.block?.slotSinceGenesis]);
 
   useEffect(() => {
     if (tickets.length == 0 && !blankTicket) setBlankTicket(true);
