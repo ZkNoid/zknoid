@@ -24,22 +24,22 @@ export interface IGame {
 }
 
 export const announcedGames: IGame[] = [
-  {
-    id: 'znake',
-    logo: '/image/games/soon.svg',
-    logoMode: LogoMode.CENTER,
-    rating: 0,
-    name: 'Znake game',
-    description: 'Collect all the points and try not to bite your tail',
-    genre: ZkNoidGameGenre.Arcade,
-    features: [ZkNoidGameFeature.SinglePlayer],
-    defaultPage: 'global',
-    active: false,
-    isReleased: false,
-    releaseDate: new Date(2024, 5, 1),
-    popularity: 0,
-    author: 'ZkNoid Team',
-  },
+  // {
+  //   id: 'znake',
+  //   logo: '/image/games/soon.svg',
+  //   logoMode: LogoMode.CENTER,
+  //   rating: 0,
+  //   name: 'Znake game',
+  //   description: 'Collect all the points and try not to bite your tail',
+  //   genre: ZkNoidGameGenre.Arcade,
+  //   features: [ZkNoidGameFeature.SinglePlayer],
+  //   defaultPage: 'global',
+  //   active: false,
+  //   isReleased: false,
+  //   releaseDate: new Date(2024, 5, 1),
+  //   popularity: 0,
+  //   author: 'ZkNoid Team',
+  // },
 ];
 
 export const defaultGames: IGame[] = [

@@ -39,3 +39,24 @@ export const arkanoidConfig = createZkNoidGameConfig({
   pageCompetitionsList: ArkanoidCompetitionsListPage,
   pageNewCompetition: NewArkanoidCompetitionPage,
 });
+
+export const arkanoidRedirectConfig = createZkNoidGameConfig({
+  id: 'arkanoid',
+  type: ZkNoidGameType.SinglePlayer,
+  name: 'Arkanoid game',
+  description: description,
+  image: '/image/games/arkanoid.svg',
+  logoMode: LogoMode.FULL_WIDTH,
+  genre: ZkNoidGameGenre.Arcade,
+  features: [ZkNoidGameFeature.SinglePlayer],
+  isReleased: true,
+  releaseDate: new Date(2023, 11, 1),
+  popularity: 60,
+  author: 'ZkNoid Team',
+  rules: rules,
+  runtimeModules: {},
+  page: undefined as any,
+  pageCompetitionsList: ArkanoidCompetitionsListPage,
+  pageNewCompetition: NewArkanoidCompetitionPage,
+  externalUrl: 'https://app.zknoid.io/games/arkanoid/global'
+});
