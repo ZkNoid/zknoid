@@ -2,6 +2,7 @@ import { cn } from '@/lib/helpers';
 import { TicketBlockButton } from '@/games/lottery/ui/buttons/TicketBlockButton';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { useWorkerClientStore } from '@/lib/stores/workerClient';
 
 const TicketsNumPicker = ({
   amount,
@@ -107,6 +108,8 @@ export default function TicketCard({
   const [finalized, setFinalized] = useState<boolean>(false);
   const [finalAmount, setFinalAmount] = useState<number | undefined>(undefined);
 
+  const workerClientStore = useWorkerClientStore();
+
   const generateRandomNumbers = () => {
     let numbers = '';
     for (let i = 0; i < 6; i++) {
@@ -179,7 +182,9 @@ export default function TicketCard({
               </TicketBlockButton>
             ) : finalized ? (
               <div className={'flex flex-row gap-[0.26vw]'}>
-                <ClearTicketButton onClick={removeTicket} />
+                {!workerClientStore.isActiveTx && (
+                  <ClearTicketButton onClick={removeTicket} />
+                )}
                 <div
                   className={
                     'h-[1.6vw] rounded-[0.33vw] border border-bg-dark px-[0.3vw] pb-[0.3vw] pt-[0.15vw] font-plexsans text-[0.833vw] font-medium text-bg-dark'

@@ -146,6 +146,7 @@ export default function TicketsSection({
                   <BuyInfoCard
                     buttonActive={
                       workerClientStore.lotteryCompiled &&
+                      !workerClientStore.isActiveTx &&
                       tickets.length > 0 &&
                       tickets[0].amount != 0
                     }

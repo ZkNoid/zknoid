@@ -64,7 +64,7 @@ export default function BuyInfoCard({
           'my-[1vw] flex h-[2.13vw] items-center justify-center rounded-[0.33vw] px-[1vw] text-[1.07vw]',
           !(buttonActive && ticketsInfo.every((x) => x.numbers.length == 6)) &&
             'cursor-not-allowed opacity-60',
-          { 'hover:opacity-80': buttonActive }
+          { 'hover:opacity-80': buttonActive, 'cursor-progress': loaderActive }
         )}
         onClick={async () => {
           if (!ticketsInfo.length) return;
