@@ -280,25 +280,45 @@ export default function MyTicket({
               </span>
             </div>
           )}
-          {isHovered && !claimed && workerStore.lotteryCompiled && (
-            <motion.button
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => claimTicket(combination, amount)}
-              className={
-                'absolute z-[1] flex h-full w-full cursor-pointer flex-col items-center justify-center rounded-[1.042vw] bg-bg-grey/80'
-              }
-            >
-              <span
+          {isHovered &&
+            !claimed &&
+            workerStore.lotteryCompiled &&
+            !workerStore.isActiveTx && (
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => claimTicket(combination, amount)}
                 className={
-                  'font-museo text-[1.667vw] font-bold uppercase text-middle-accent'
+                  'absolute z-[1] flex h-full w-full cursor-pointer flex-col items-center justify-center rounded-[1.042vw] bg-bg-grey/80'
                 }
               >
-                Click to claim ticket
-              </span>
-            </motion.button>
-          )}
+                <span
+                  className={
+                    'font-museo text-[1.667vw] font-bold uppercase text-middle-accent'
+                  }
+                >
+                  Click to claim ticket
+                </span>
+              </motion.button>
+            )}
+          {!claimed &&
+            workerStore.lotteryCompiled &&
+            workerStore.isActiveTx && (
+              <div
+                className={
+                  'absolute z-[1] flex h-full w-full cursor-pointer flex-col items-center justify-center rounded-[1.042vw] bg-bg-grey/80'
+                }
+              >
+                <span
+                  className={
+                    'font-museo text-[1.667vw] font-bold uppercase text-middle-accent'
+                  }
+                >
+                  Generating transaction...
+                </span>
+              </div>
+            )}
           <div
             className={cn(
               'relative h-[13.53vw] w-[24vw] rounded-[1.33vw] rounded-r-none p-[0.33vw]',

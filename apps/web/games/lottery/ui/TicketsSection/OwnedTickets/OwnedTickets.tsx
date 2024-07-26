@@ -39,11 +39,14 @@ export default function OwnedTickets({ roundId }: { roundId: number }) {
     page * TICKETS_PER_PAGE
   );
 
-  const getRoundQuery = api.lotteryBackend.getRoundInfo.useQuery({
-    roundId: roundId,
-  }, {
-    refetchInterval: 5000
-  });
+  const getRoundQuery = api.lotteryBackend.getRoundInfo.useQuery(
+    {
+      roundId: roundId,
+    },
+    {
+      refetchInterval: 5000,
+    }
+  );
 
   useEffect(() => {
     if (!getRoundQuery.data) return;
@@ -53,13 +56,18 @@ export default function OwnedTickets({ roundId }: { roundId: number }) {
         .filter(
           (x: { owner: string | undefined }) => x.owner == networkStore.address
         )
-        .map((x: { numbers: any; amount: any; funds: any; claimed: any; }, i: any) => ({
-          id: `${i}`,
-          combination: x.numbers,
-          amount: Number(x.amount),
-          funds: x.funds,
-          claimed: x.claimed,
-        }))
+        .map(
+          (
+            x: { numbers: any; amount: any; funds: any; claimed: any },
+            i: any
+          ) => ({
+            id: `${i}`,
+            combination: x.numbers,
+            amount: Number(x.amount),
+            funds: x.funds,
+            claimed: x.claimed,
+          })
+        )
     );
   }, [getRoundQuery.data]);
 
