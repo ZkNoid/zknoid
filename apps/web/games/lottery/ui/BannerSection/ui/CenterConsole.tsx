@@ -71,26 +71,41 @@ export default function CenterConsole({
         >
           {roundToShow == lotteryStore.lotteryRoundId ? (
             <>
-              <div className="flex h-[5.469vw] w-[5.469vw] items-center justify-center rounded-[0.67vw] bg-white text-center font-museo text-[4.219vw] font-bold text-bg-dark">
-                {!!roundTimer.startsIn.hours
-                  ? roundTimer.startsIn.hours < 10
-                    ? '0' + roundTimer.startsIn.hours
-                    : roundTimer.startsIn.hours
-                  : '00'}
+              <div className={'flex flex-col gap-0'}>
+                <div className="flex h-[5.469vw] w-[5.469vw] items-center justify-center rounded-[0.67vw] bg-white text-center font-museo text-[4.219vw] font-bold text-bg-dark">
+                  {!!roundTimer.startsIn.hours
+                    ? roundTimer.startsIn.hours < 10
+                      ? '0' + roundTimer.startsIn.hours
+                      : roundTimer.startsIn.hours
+                    : '00'}
+                </div>
+                <span className={'text-center font-plexsans text-[0.625vw]'}>
+                  Hours
+                </span>
               </div>
-              <div className="flex h-[5.469vw] w-[5.469vw] items-center justify-center rounded-[0.67vw] bg-white text-center font-museo text-[4.219vw] font-bold text-bg-dark">
-                {!!roundTimer.startsIn.minutes
-                  ? roundTimer.startsIn.minutes < 10
-                    ? '0' + roundTimer.startsIn.minutes
-                    : roundTimer.startsIn.minutes
-                  : '00'}
+              <div className={'flex flex-col gap-0'}>
+                <div className="flex h-[5.469vw] w-[5.469vw] items-center justify-center rounded-[0.67vw] bg-white text-center font-museo text-[4.219vw] font-bold text-bg-dark">
+                  {!!roundTimer.startsIn.minutes
+                    ? roundTimer.startsIn.minutes < 10
+                      ? '0' + roundTimer.startsIn.minutes
+                      : roundTimer.startsIn.minutes
+                    : '00'}
+                </div>
+                <span className={'text-center font-plexsans text-[0.625vw]'}>
+                  Minutes
+                </span>
               </div>
-              <div className="flex h-[5.469vw] w-[5.469vw] items-center justify-center rounded-[0.67vw] bg-white text-center font-museo text-[4.219vw] font-bold text-bg-dark">
-                {!!roundTimer.startsIn.seconds
-                  ? Math.trunc(roundTimer.startsIn.seconds) < 10
-                    ? '0' + Math.trunc(roundTimer.startsIn.seconds)
-                    : Math.trunc(roundTimer.startsIn.seconds)
-                  : '00'}
+              <div className={'flex flex-col gap-0'}>
+                <div className="flex h-[5.469vw] w-[5.469vw] items-center justify-center rounded-[0.67vw] bg-white text-center font-museo text-[4.219vw] font-bold text-bg-dark">
+                  {!!roundTimer.startsIn.seconds
+                    ? Math.trunc(roundTimer.startsIn.seconds) < 10
+                      ? '0' + Math.trunc(roundTimer.startsIn.seconds)
+                      : Math.trunc(roundTimer.startsIn.seconds)
+                    : '00'}
+                </div>
+                <span className={'text-center font-plexsans text-[0.625vw]'}>
+                  Seconds
+                </span>
               </div>
             </>
           ) : roundInfo?.winningCombination ? (
@@ -202,7 +217,7 @@ export default function CenterConsole({
         </div>
         <button
           className={cn(
-            'mt-[1.6vw] flex w-full cursor-pointer items-center justify-center rounded-[0.67vw] border-bg-dark px-[1vw] font-museo text-[1.6vw] font-bold uppercase text-bg-dark hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60',
+            'mt-[0.8vw] flex w-full cursor-pointer items-center justify-center rounded-[0.67vw] border-bg-dark px-[1vw] font-museo text-[1.6vw] font-bold uppercase text-bg-dark hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60',
             {
               'bg-right-accent': roundToShow == lotteryStore.lotteryRoundId,
               'bg-left-accent': roundToShow != lotteryStore.lotteryRoundId,
