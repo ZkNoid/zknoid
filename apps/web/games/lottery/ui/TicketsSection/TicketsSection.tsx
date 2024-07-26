@@ -74,6 +74,10 @@ export default function TicketsSection({
   }, [getRoundQuery.data, chainStore.block?.slotSinceGenesis]);
 
   useEffect(() => {
+    setTickets([]);
+  }, [roundToShowId]);
+
+  useEffect(() => {
     if (tickets.length == 0 && !blankTicket) setBlankTicket(true);
   }, [tickets.length]);
 

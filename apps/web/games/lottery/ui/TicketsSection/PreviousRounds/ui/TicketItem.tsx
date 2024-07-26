@@ -31,11 +31,14 @@ export function TicketItem({
   const networkStore = useNetworkStore();
   const chainStore = useChainStore();
 
-  const getRoundQuery = api.lotteryBackend.getRoundInfo.useQuery({
-    roundId,
-  }, {
-    refetchInterval: 5000
-  });
+  const getRoundQuery = api.lotteryBackend.getRoundInfo.useQuery(
+    {
+      roundId,
+    },
+    {
+      refetchInterval: 5000,
+    }
+  );
 
   return (
     <div
@@ -88,7 +91,7 @@ export function TicketItem({
               networkStore.minaNetwork!.networkID,
               roundId,
               numbers.map((x) => x.number),
-              amount,
+              amount
             );
 
             console.log('txJson', txJson);
@@ -99,18 +102,20 @@ export function TicketItem({
             {(!workerClient.lotteryCompiled || workerClient.isActiveTx) && (
               <Loader size={'19'} color={'#212121'} />
             )}
-            <span>Claim</span>
+            <span>
+              {workerClient.isActiveTx ? 'Generating transaction...' : 'Claim'}
+            </span>
           </div>
         </button>
       )}
       {!!funds && claimed && (
-        <button
+        <div
           className={
-            'items-center rounded-[0.33vw] bg-left-accent px-[0.74vw] py-[0.37vw] font-museo text-[0.833vw] font-medium text-black opacity-50 hover:opacity-70'
+            'items-center rounded-[0.33vw] bg-left-accent px-[0.74vw] py-[0.37vw] font-museo text-[0.833vw] font-medium text-black opacity-50'
           }
         >
           Claimed
-        </button>
+        </div>
       )}
     </div>
   );
