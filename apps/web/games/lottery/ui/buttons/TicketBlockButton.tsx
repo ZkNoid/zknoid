@@ -9,7 +9,7 @@ export function TicketBlockButton({
 }) {
   return (
     <div
-      className="flex h-[1.6vw] cursor-pointer items-center justify-center rounded-[0.33vw] bg-bg-dark p-[0.33vw]"
+      className="flex h-[1.6vw] cursor-pointer items-center justify-center rounded-[0.33vw] bg-bg-dark p-[0.33vw] hover:opacity-80"
       onClick={onClick}
     >
       {children}

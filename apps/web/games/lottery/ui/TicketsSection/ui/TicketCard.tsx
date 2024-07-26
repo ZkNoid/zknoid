@@ -21,7 +21,7 @@ const TicketsNumPicker = ({
       )}
     >
       <div
-        className="p-[0.3vw]"
+        className="cursor-pointer p-[0.3vw] hover:opacity-60"
         onClick={() => {
           if (amount - 1 >= 1) {
             setAmount(amount - 1);
@@ -43,7 +43,10 @@ const TicketsNumPicker = ({
         </svg>
       </div>
       <div className="mx-[0.4vw] opacity-50">{amount}</div>
-      <div className="p-[0.3vw]" onClick={() => setAmount(amount + 1)}>
+      <div
+        className="cursor-pointer p-[0.3vw] hover:opacity-60"
+        onClick={() => setAmount(amount + 1)}
+      >
         <svg
           width="16"
           height="17"
@@ -234,6 +237,11 @@ export default function TicketCard({
                       : { opacity: 1 }
                   }
                   exit={{ opacity: 0 }}
+                  whileHover={
+                    symbols.length != 6 || index == 9
+                      ? { opacity: 0.6, cursor: 'pointer' }
+                      : undefined
+                  }
                   className={
                     'relative flex h-[1.6vw] w-[1.6vw] flex-col items-center justify-center'
                   }
@@ -280,7 +288,7 @@ export default function TicketCard({
           </AnimatePresence>
         </div>
         <AnimatePresence mode={'wait'}>
-          {!finalized && amount > 0 && (
+          {!finalized && amount != 0 && (
             <motion.button
               initial={{ opacity: 0 }}
               animate={
@@ -289,6 +297,7 @@ export default function TicketCard({
                   : { opacity: 1 }
               }
               exit={{ opacity: 0 }}
+              whileHover={{ opacity: 0.8 }}
               className={
                 'mb-auto mt-[0.26vw] w-full rounded-[0.26vw] bg-bg-dark py-[0.417vw] text-center font-museo text-[0.833vw] text-foreground'
               }
