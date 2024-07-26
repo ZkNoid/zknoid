@@ -100,9 +100,11 @@ export default function LotteryComponent({}: {
   ]);
 
   useEffect(() => {
-    if (workerClientStore.lotteryGame?.address)
+    // Initialy onchain state initialized in startlottery.
+    // Then we only update it with new blocks coming
+    if (workerClientStore.lotteryCompiled)
       workerClientStore.updateOnchainState();
-  }, [chainStore.block?.height]);
+  }, [chainStore.block?.height, workerClientStore.lotteryCompiled]);
 
   // When onchain state is ready
   useEffect(() => {

@@ -53,70 +53,72 @@ export default function PreviousRounds({
         </svg>
       </button>
       <div className={'grid w-full grid-cols-2 gap-[1.042vw]'}>
-        {roundInfos.map((round, index) => (
-          <PreviousRoundItem
-            key={index}
-            round={{
-              id: round.id,
-              combination: round.winningCombination as [
-                number,
-                number,
-                number,
-                number,
-                number,
-                number,
-              ],
-              bank: Number(
-                round.tickets
-                  .filter((x) => !x.numbers.every((x) => x == 0))
-                  .map((x) => x.amount)
-                  .reduce((x, y) => x + y, 0n) * TICKET_PRICE.toBigInt()
-              ),
-              ticketsAmount: Number(
-                round.tickets.map((x) => x.amount).reduce((x, y) => x + y, 0n)
-              ),
-              date: {
-                start: new Date(
-                  Date.now() -
-                    (Number(
-                      chainStore.block?.slotSinceGenesis! -
-                        lotteryStore.onchainState?.startBlock!
-                    ) -
-                      round.id * 480) *
-                      3 *
-                      60 *
-                      1000
+        {chainStore.block &&
+          lotteryStore.onchainStateInitialized &&
+          roundInfos.map((round, index) => (
+            <PreviousRoundItem
+              key={index}
+              round={{
+                id: round.id,
+                combination: round.winningCombination as [
+                  number,
+                  number,
+                  number,
+                  number,
+                  number,
+                  number,
+                ],
+                bank: Number(
+                  round.tickets
+                    .filter((x) => !x.numbers.every((x) => x == 0))
+                    .map((x) => x.amount)
+                    .reduce((x, y) => x + y, 0n) * TICKET_PRICE.toBigInt()
                 ),
-                end: new Date(
-                  Date.now() -
-                    (Number(
-                      chainStore.block?.slotSinceGenesis! -
-                        lotteryStore.onchainState?.startBlock!
-                    ) -
-                      (round.id + 1) * 480) *
-                      3 *
-                      60 *
-                      1000
+                ticketsAmount: Number(
+                  round.tickets.map((x) => x.amount).reduce((x, y) => x + y, 0n)
                 ),
-              },
-              tickets: round.tickets
-                .filter((x) => x.owner == networkStore.address)
-                .map((x) => ({
-                  numbers: x.numbers as [
-                    number,
-                    number,
-                    number,
-                    number,
-                    number,
-                    number,
-                  ],
-                  amount: Number(x.amount),
-                  funds: Number(x.funds),
-                  claimed: x.claimed,
-                })),
-            }}
-          />
-        ))}
+                date: {
+                  start: new Date(
+                    Date.now() -
+                      (Number(
+                        chainStore.block?.slotSinceGenesis! -
+                          lotteryStore.onchainState?.startBlock!
+                      ) -
+                        round.id * 480) *
+                        3 *
+                        60 *
+                        1000
+                  ),
+                  end: new Date(
+                    Date.now() -
+                      (Number(
+                        chainStore.block?.slotSinceGenesis! -
+                          lotteryStore.onchainState?.startBlock!
+                      ) -
+                        (round.id + 1) * 480) *
+                        3 *
+                        60 *
+                        1000
+                  ),
+                },
+                tickets: round.tickets
+                  .filter((x) => x.owner == networkStore.address)
+                  .map((x) => ({
+                    numbers: x.numbers as [
+                      number,
+                      number,
+                      number,
+                      number,
+                      number,
+                      number,
+                    ],
+                    amount: Number(x.amount),
+                    funds: Number(x.funds),
+                    claimed: x.claimed,
+                  })),
+              }}
+            />
+          ))}
       </div>
       <button
         className={

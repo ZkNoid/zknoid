@@ -21,4 +21,5 @@ export const pokerConfig = createZkNoidGameConfig({
   rules: 'Poker rules',
   runtimeModules: {}, // TEMPORARY!!!
   page: Poker,
+  externalUrl: 'https://proto.zknoid.io/games/poker/global'
 });

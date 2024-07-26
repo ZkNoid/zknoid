@@ -71,7 +71,7 @@ export default function TicketsSection({
 
     console.log('Round infos', Object.values(roundInfos));
     setRoundInfos(Object.values(roundInfos));
-  }, [getRoundQuery.data]);
+  }, [getRoundQuery.data, chainStore.block?.slotSinceGenesis]);
 
   useEffect(() => {
     if (tickets.length == 0 && !blankTicket) setBlankTicket(true);
