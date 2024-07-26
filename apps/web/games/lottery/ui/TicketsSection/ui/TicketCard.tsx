@@ -105,6 +105,7 @@ export default function TicketCard({
   const [symbols, setSymbols] = useState<string>('');
   const [amount, setAmount] = useState<number>(0);
   const [finalized, setFinalized] = useState<boolean>(false);
+  const [finalAmount, setFinalAmount] = useState<number | undefined>(undefined);
 
   const generateRandomNumbers = () => {
     let numbers = '';
@@ -119,6 +120,7 @@ export default function TicketCard({
   };
 
   const submitTicket = () => {
+    setFinalAmount(amount);
     setFinalized(true);
     addTicket({ numbers: convertSymbolsToNumbers(), amount: amount });
   };
@@ -183,7 +185,9 @@ export default function TicketCard({
                     'h-[1.6vw] rounded-[0.33vw] border border-bg-dark px-[0.3vw] pb-[0.3vw] pt-[0.15vw] font-plexsans text-[0.833vw] font-medium text-bg-dark'
                   }
                 >
-                  {amount} {amount == 1 ? 'Ticket' : 'Tickets'}
+                  {finalAmount
+                    ? `${finalAmount} ${finalAmount == 1 ? 'Ticket' : 'Tickets'}`
+                    : `${amount} ${amount == 1 ? 'Ticket' : 'Tickets'}`}
                 </div>
               </div>
             ) : (

@@ -2,7 +2,6 @@ import { cn } from '@/lib/helpers';
 import TicketCard from './ui/TicketCard';
 import BuyInfoCard from './ui/BuyInfoCard';
 import { useEffect, useState } from 'react';
-import GetMoreTicketsButton from './ui/GetMoreTicketsButton';
 import OwnedTickets from './OwnedTickets';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { AnimatePresence } from 'framer-motion';
@@ -11,6 +10,7 @@ import Skeleton from '@/components/shared/Skeleton';
 import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
 import { api } from '@/trpc/react';
 import { useChainStore } from '@/lib/stores/minaChain';
+// import GetMoreTicketsButton from './ui/GetMoreTicketsButton';
 
 interface TicketInfo {
   amount: number;
@@ -158,12 +158,12 @@ export default function TicketsSection({
                       setTickets([]);
                     }}
                   />
-                  <GetMoreTicketsButton
-                    disabled={blankTicket}
-                    onClick={() => {
-                      setBlankTicket(true);
-                    }}
-                  />
+                  {/*<GetMoreTicketsButton*/}
+                  {/*  disabled={blankTicket}*/}
+                  {/*  onClick={() => {*/}
+                  {/*    setBlankTicket(true);*/}
+                  {/*  }}*/}
+                  {/*/>*/}
                 </div>
               </div>
             </div>
