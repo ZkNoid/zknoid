@@ -43,7 +43,7 @@ export function TicketItem({
   return (
     <div
       className={
-        'grid grid-cols-3 border-b py-[0.521vw] first:border-t hover:bg-[#464646]'
+        'grid grid-cols-4 border-b py-[0.521vw] first:border-t hover:bg-[#464646]'
       }
     >
       <div className={'flex flex-row items-center gap-[0.25vw]'}>
@@ -62,6 +62,13 @@ export function TicketItem({
             {item.number}
           </div>
         ))}
+      </div>
+      <div
+        className={
+          'flex flex-row items-center justify-center gap-[0.25vw] font-plexsans text-[0.833vw]'
+        }
+      >
+        {amount}
       </div>
       <div
         className={
@@ -84,7 +91,7 @@ export function TicketItem({
           className={
             'flex items-center justify-center rounded-[0.33vw] bg-left-accent px-[0.74vw] py-[0.37vw] font-museo text-[0.833vw] font-medium text-black hover:opacity-70 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:opacity-60'
           }
-          disabled={!workerClient.lotteryCompiled}
+          disabled={!workerClient.lotteryCompiled || workerClient.isActiveTx}
           onClick={async () => {
             let txJson = await workerClient.getReward(
               networkStore.address!,
@@ -99,12 +106,10 @@ export function TicketItem({
           }}
         >
           <div className={'flex flex-row items-center gap-[10%] pr-[10%]'}>
-            {(!workerClient.lotteryCompiled || workerClient.isActiveTx) && (
+            {workerClient.isActiveTx && (
               <Loader size={'19'} color={'#212121'} />
             )}
-            <span>
-              {workerClient.isActiveTx ? 'Generating transaction...' : 'Claim'}
-            </span>
+            <span>Claim</span>
           </div>
         </button>
       )}

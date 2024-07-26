@@ -168,10 +168,11 @@ export default function PreviousRoundItem({ round }: { round: IRound }) {
             </span>
             <div
               className={
-                'mb-[0.521vw] grid w-full grid-cols-3 font-plexsans text-[0.938vw] font-medium'
+                'mb-[0.521vw] grid w-full grid-cols-4 font-plexsans text-[0.938vw] font-medium'
               }
             >
               <span>Ticket Number</span>
+              <span className={'text-center'}>Amount</span>
               <span>Funds</span>
             </div>
             <div className={'flex w-full flex-row gap-[0.5vw]'}>
