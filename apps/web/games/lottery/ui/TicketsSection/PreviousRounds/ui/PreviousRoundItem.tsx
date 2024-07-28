@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import znakesImg from '@/public/image/tokens/znakes.svg';
+import minaImg from '@/public/image/tokens/mina.svg';
 import { Currency } from '@/constants/currency';
 import { TicketItem } from './TicketItem';
 import { IRound } from '@/lib/stores/lotteryStore';
@@ -108,8 +108,8 @@ export default function PreviousRoundItem({ round }: { round: IRound }) {
               }
             >
               <Image
-                src={znakesImg}
-                alt={'znakes'}
+                src={minaImg}
+                alt={'mina'}
                 className={'h-[1.042vw] w-[1.042vw]'}
               />
               <span>Bank</span>
@@ -120,7 +120,7 @@ export default function PreviousRoundItem({ round }: { round: IRound }) {
               }
             >
               <span>{formatUnits(round.bank)}</span>
-              <span>{Currency.ZNAKES}</span>
+              <span>{Currency.MINA}</span>
             </div>
           </div>
           <div

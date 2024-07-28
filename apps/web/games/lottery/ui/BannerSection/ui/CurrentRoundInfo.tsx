@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import znakesImg from '@/public/image/tokens/znakes.svg';
+import minaImg from '@/public/image/tokens/mina.svg';
 import { formatUnits } from '@/lib/unit';
 import { TICKET_PRICE } from 'l1-lottery-contracts';
 import { Currency } from '@/constants/currency';
@@ -25,14 +25,14 @@ export default function CurrentRoundInfo({
         </span>
         <div className={'flex flex-row items-center gap-2 text-[0.833vw]'}>
           <Image
-            src={znakesImg}
-            alt={'znakes'}
+            src={minaImg}
+            alt={'mina'}
             className={'mb-1 h-[1.146vw] w-[1.146vw]'}
           />
           <span>
             {formatUnits((ticketsNum || 0n) * TICKET_PRICE.toBigInt())}
           </span>
-          <span>{Currency.ZNAKES}</span>
+          <span>{Currency.MINA}</span>
         </div>
       </div>
       <div
