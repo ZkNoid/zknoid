@@ -25,7 +25,9 @@ export default function PageButton({
       disabled={disabled}
     >
       <div
-        className={'flex flex-col justify-between rounded-[2.604vw] border p-1'}
+        className={
+          'flex h-full w-full flex-col justify-between rounded-[2.604vw] border p-1'
+        }
       >
         <div
           className={
