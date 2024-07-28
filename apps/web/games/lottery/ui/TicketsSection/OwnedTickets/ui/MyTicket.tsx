@@ -280,45 +280,36 @@ export default function MyTicket({
               </span>
             </div>
           )}
-          {isHovered &&
-            !claimed &&
-            workerStore.lotteryCompiled &&
-            !workerStore.isActiveTx && (
-              <motion.button
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => claimTicket(combination, amount)}
+          {isHovered && !claimed && workerStore.lotteryCompiled && (
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => {
+                const id = notificationStore.create({
+                  type: 'loader',
+                  message: 'Generating transaction...',
+                  isDismissible: false,
+                  dismissAfterDelay: false,
+                });
+                claimTicket(combination, amount).then(() =>
+                  notificationStore.remove(id)
+                );
+              }}
+              disabled={workerStore.isActiveTx}
+              className={
+                'absolute z-[1] flex h-full w-full cursor-pointer flex-col items-center justify-center rounded-[1.042vw] bg-bg-grey/80'
+              }
+            >
+              <span
                 className={
-                  'absolute z-[1] flex h-full w-full cursor-pointer flex-col items-center justify-center rounded-[1.042vw] bg-bg-grey/80'
+                  'font-museo text-[1.667vw] font-bold uppercase text-middle-accent'
                 }
               >
-                <span
-                  className={
-                    'font-museo text-[1.667vw] font-bold uppercase text-middle-accent'
-                  }
-                >
-                  Click to claim ticket
-                </span>
-              </motion.button>
-            )}
-          {!claimed &&
-            workerStore.lotteryCompiled &&
-            workerStore.isActiveTx && (
-              <div
-                className={
-                  'absolute z-[1] flex h-full w-full cursor-pointer flex-col items-center justify-center rounded-[1.042vw] bg-bg-grey/80'
-                }
-              >
-                <span
-                  className={
-                    'font-museo text-[1.667vw] font-bold uppercase text-middle-accent'
-                  }
-                >
-                  Generating transaction...
-                </span>
-              </div>
-            )}
+                Click to claim ticket
+              </span>
+            </motion.button>
+          )}
           <div
             className={cn(
               'relative h-[13.53vw] w-[24vw] rounded-[1.33vw] rounded-r-none p-[0.33vw]',
