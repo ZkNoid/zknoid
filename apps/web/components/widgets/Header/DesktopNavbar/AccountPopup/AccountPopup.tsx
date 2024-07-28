@@ -6,6 +6,9 @@ import { useBridgeStore } from '@/lib/stores/bridgeStore';
 import * as Yup from 'yup';
 import { Field, Form, Formik } from 'formik';
 import dynamic from 'next/dynamic';
+import { api } from '@/trpc/react';
+import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
+import handEmojiImg from '@/public/image/misc/handEmoji.svg';
 
 const AccountPopupBalance = dynamic(
   () => import('./nonSSR/AccountPopupBalance'),
@@ -21,8 +24,22 @@ export default function AccountPopup({
 }) {
   const networkStore = useNetworkStore();
   const bridgeStore = useBridgeStore();
+  const notificationStore = useNotificationStore();
   const [linkCopied, setLinkCopied] = useState<boolean>(false);
   const [name, setName] = useState<string | undefined>(undefined);
+
+  const getAccountQuery = api.accounts.getAccount.useQuery({
+    userAddress: networkStore.address || '',
+  });
+
+  const setNameMutation = api.accounts.setName.useMutation();
+
+  useEffect(() => {
+    if (getAccountQuery.data) {
+      if (getAccountQuery.data.account)
+        setName(getAccountQuery.data.account.name);
+    }
+  }, [getAccountQuery.data]);
 
   useEffect(() => {
     if (bridgeStore.open) setIsAccountOpen(false);
@@ -56,6 +73,20 @@ export default function AccountPopup({
         console.log('Error while disconnect', err);
       });
     setIsAccountOpen(false);
+  };
+
+  const submitForm = (name: string) => {
+    if (!networkStore.address) return;
+    setNameMutation.mutate({
+      userAddress: networkStore.address,
+      name: name,
+    });
+    setName(name);
+    notificationStore.create({
+      type: 'message',
+      message: `Hi ${name}!`,
+      customIcon: handEmojiImg,
+    });
   };
 
   return (
@@ -123,7 +154,7 @@ export default function AccountPopup({
         <Formik
           initialValues={initialValues}
           validationSchema={validateSchema}
-          onSubmit={(values) => setName(values.name)}
+          onSubmit={(values) => submitForm(values.name)}
         >
           {({ errors, touched }) => (
             <Form>

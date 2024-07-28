@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { INotification } from '../types/INotification';
+import { ReactNode } from 'react';
 
 export interface NotificationStore {
   notifications: INotification[];
@@ -9,6 +10,7 @@ export interface NotificationStore {
     id?: string;
     type: 'message' | 'loader' | 'success' | 'error';
     message: string;
+    customIcon?: any;
     isDismissible?: boolean;
     dismissAfterDelay?: boolean;
     dismissDelay?: number;
@@ -30,6 +32,7 @@ export const useNotificationStore = create<
       id,
       type = 'message',
       message,
+      customIcon,
       isDismissible = true,
       dismissAfterDelay = true,
       dismissDelay = 5000,
@@ -37,6 +40,7 @@ export const useNotificationStore = create<
       id?: string;
       type?: 'message' | 'loader' | 'success' | 'error';
       message: string;
+      customIcon?: any;
       isDismissible?: boolean;
       dismissAfterDelay?: boolean;
       dismissDelay?: number;
@@ -54,6 +58,7 @@ export const useNotificationStore = create<
             id,
             type,
             message,
+            customIcon,
             isDismissible,
             dismissAfterDelay,
             dismissDelay,
