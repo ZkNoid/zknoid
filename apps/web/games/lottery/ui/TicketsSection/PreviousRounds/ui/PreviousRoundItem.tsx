@@ -119,7 +119,11 @@ export default function PreviousRoundItem({ round }: { round: IRound }) {
                 'flex w-full flex-row items-center justify-end gap-[0.5vw]'
               }
             >
-              <span>{formatUnits(round.bank)}</span>
+              <span>
+                {formatUnits(
+                  Number(round.bank) - (Number(round.bank) / 100) * 3
+                )}
+              </span>
               <span>{Currency.MINA}</span>
             </div>
           </div>

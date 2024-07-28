@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import znakesImg from '@/public/image/tokens/znakes.svg';
+import minaImg from '@/public/image/tokens/mina.svg';
 import Skeleton from '@/components/shared/Skeleton';
 import { formatUnits } from '@/lib/unit';
 import { TICKET_PRICE } from 'l1-lottery-contracts';
@@ -12,6 +12,7 @@ export default function PrevRoundInfo({
   ticketsNum: bigint | undefined;
   winningCombination: number[] | undefined;
 }) {
+  const bank = Number((ticketsNum || 0n) * TICKET_PRICE.toBigInt());
   return (
     <div
       className={
@@ -61,8 +62,8 @@ export default function PrevRoundInfo({
           </span>
           <div className={'flex flex-row items-center gap-[0.521vw]'}>
             <Image
-              src={znakesImg}
-              alt={'Znakes token'}
+              src={minaImg}
+              alt={'mina'}
               className={'h-[1.146vw] w-[1.146vw]'}
             />
             <Skeleton
@@ -74,8 +75,7 @@ export default function PrevRoundInfo({
                   'font-museo text-[0.833vw] font-bold text-foreground'
                 }
               >
-                {formatUnits((ticketsNum || 0n) * TICKET_PRICE.toBigInt())}{' '}
-                {Currency.ZNAKES}
+                {formatUnits(bank - (bank / 100) * 3)} {Currency.MINA}
               </span>
             </Skeleton>
           </div>

@@ -9,6 +9,7 @@ export default function CurrentRoundInfo({
 }: {
   ticketsNum: bigint | undefined;
 }) {
+  const bank = Number((ticketsNum || 0n) * TICKET_PRICE.toBigInt());
   return (
     <div
       className={
@@ -29,9 +30,7 @@ export default function CurrentRoundInfo({
             alt={'mina'}
             className={'mb-1 h-[1.146vw] w-[1.146vw]'}
           />
-          <span>
-            {formatUnits((ticketsNum || 0n) * TICKET_PRICE.toBigInt())}
-          </span>
+          <span>{formatUnits(bank - (bank / 100) * 3)}</span>
           <span>{Currency.MINA}</span>
         </div>
       </div>
