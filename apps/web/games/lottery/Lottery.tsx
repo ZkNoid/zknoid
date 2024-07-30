@@ -120,7 +120,7 @@ export default function LotteryComponent({}: {
       ? setRoundEndsIn(
           DateTime.now().plus(
             Duration.fromObject({
-              second: (480 - (Number(blockNum - startBlock) % 480)) * 3 * 60,
+              second: (BLOCK_PER_ROUND - (Number(blockNum - startBlock) % BLOCK_PER_ROUND)) * 3 * 60,
             })
           )
         )

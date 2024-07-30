@@ -1,5 +1,5 @@
 import PreviousRoundItem from './ui/PreviousRoundItem';
-import { TICKET_PRICE } from 'l1-lottery-contracts';
+import { BLOCK_PER_ROUND, TICKET_PRICE } from 'l1-lottery-contracts';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { useChainStore } from '@/lib/stores/minaChain';
 import { useNetworkStore } from '@/lib/stores/network';
@@ -84,7 +84,7 @@ export default function PreviousRounds({
                         chainStore.block?.slotSinceGenesis! -
                           lotteryStore.onchainState?.startBlock!
                       ) -
-                        round.id * 480) *
+                        round.id * BLOCK_PER_ROUND) *
                         3 *
                         60 *
                         1000
@@ -95,7 +95,7 @@ export default function PreviousRounds({
                         chainStore.block?.slotSinceGenesis! -
                           lotteryStore.onchainState?.startBlock!
                       ) -
-                        (round.id + 1) * 480) *
+                        (round.id + 1) * BLOCK_PER_ROUND) *
                         3 *
                         60 *
                         1000
