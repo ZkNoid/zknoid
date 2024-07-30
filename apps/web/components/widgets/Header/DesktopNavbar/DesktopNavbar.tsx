@@ -114,51 +114,51 @@ export default function DesktopNavbar({
                   <Image
                     src={arcadeGameIcon}
                     alt={'arcade'}
-                    className={'h-[0.938vw] w-[0.938vw] pb-[0.208vw]'}
+                    className={'my-[0.208vw] h-[0.938vw] w-[0.938vw]'}
                   />
                 ),
                 text: 'Arkanoid',
-                link: '/games/arkanoid/global',
+                link: 'https://proto.zknoid.io/games/arkanoid/global',
               },
               {
                 icon: (
                   <Image
                     src={boardGameIcon}
                     alt={'board'}
-                    className={'h-[0.938vw] w-[0.938vw] pb-[0.208vw]'}
+                    className={'my-[0.208vw] h-[0.938vw] w-[0.938vw]'}
                   />
                 ),
                 text: 'Randzu',
-                link: '/games/randzu/global',
+                link: 'https://proto.zknoid.io/games/randzu/global',
               },
               {
                 icon: (
                   <Image
                     src={luckyGameIcon}
                     alt={'lucky'}
-                    className={'h-[0.938vw] w-[0.938vw] pb-[0.208vw]'}
+                    className={'my-[0.208vw] h-[0.938vw] w-[0.938vw]'}
                   />
                 ),
                 text: 'Thimblerig',
-                link: '/games/thimblerig/global',
+                link: 'https://proto.zknoid.io/games/thimblerig/global',
               },
               {
                 icon: (
                   <Image
                     src={boardGameIcon}
                     alt={'board'}
-                    className={'h-[0.938vw] w-[0.938vw] pb-[0.208vw]'}
+                    className={'my-[0.208vw] h-[0.938vw] w-[0.938vw]'}
                   />
                 ),
                 text: 'Checkers',
-                link: '/games/checkers/global',
+                link: 'https://proto.zknoid.io/games/checkers/global',
               },
               {
                 icon: (
                   <Image
                     src={arcadeGameIcon}
                     alt={'arcade'}
-                    className={'h-[0.938vw] w-[0.938vw] pb-[0.208vw]'}
+                    className={'my-[0.208vw] h-[0.938vw] w-[0.938vw]'}
                   />
                 ),
                 text: 'TileVille',
@@ -169,7 +169,7 @@ export default function DesktopNavbar({
                   <Image
                     src={luckyGameIcon}
                     alt={'lucky'}
-                    className={'h-[0.938vw] w-[0.938vw] pb-[0.208vw]'}
+                    className={'my-[0.208vw] h-[0.938vw] w-[0.938vw]'}
                   />
                 ),
                 text: 'Lottery',
@@ -188,7 +188,7 @@ export default function DesktopNavbar({
                   <Image
                     src={item.image}
                     alt={item.name}
-                    className={'h-[1.2vw] w-[1.2vw] pb-[0.208vw]'}
+                    className={'my-[0.208vw] h-[1.2vw] w-[1.2vw]'}
                   />
                 ),
                 link: item.link,
