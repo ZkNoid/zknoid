@@ -103,8 +103,7 @@ export const lotteryBackendRouter = createTRPCRouter({
             ...ticket,
             amount: BigInt(ticket.amount),
           })),
-          winningCombination: roundInfo?.winningCombination,
-          // proof: roundInfo?.dp as JsonProof,
+          winningCombination: !!roundInfo?.dp ? roundInfo?.winningCombination : [],
           total: roundInfo?.total as number,
         } as any;
       }
