@@ -272,7 +272,11 @@ export default function TicketsStorage({
       </div>
 
       <div className={'flex w-full max-w-[85%] flex-col  gap-0'}>
-        <div className={'grid w-full grid-cols-7 pb-[0.781vw] pr-[1.875vw]'}>
+        <div
+          className={cn('grid w-full grid-cols-7 pb-[0.781vw]', {
+            'pr-[1.875vw]': containerHeight == 400,
+          })}
+        >
           <span
             className={
               'pr-[40%] text-center font-plexsans text-[0.833vw] font-medium text-foreground'
