@@ -23,14 +23,11 @@ export enum Pages {
   Storage,
 }
 
-export default function LotteryComponent({}: {
-  params: { competitionId: string };
-}) {
+export default function Lottery({}: { params: { competitionId: string } }) {
   const networkStore = useNetworkStore();
   const [roundEndsIn, setRoundEndsIn] = useState<DateTime>(
     DateTime.fromMillis(0)
   );
-  const [roundToShow, setRoundToShow] = useState(0);
   const [page, setPage] = useState<Pages>(Pages.Main);
 
   const workerClientStore = useWorkerClientStore();
@@ -68,13 +65,13 @@ export default function LotteryComponent({}: {
   }, [networkStore.minaNetwork?.networkID, chainStore.block?.height]);
 
   useEffect(() => {
-    console.log(
-      workerClientStore.client,
-      networkStore.minaNetwork?.networkID,
-      chainStore.block?.slotSinceGenesis,
-      events.data?.events,
-      !workerClientStore.lotteryGame
-    );
+    // console.log(
+    //   workerClientStore.client,
+    //   networkStore.minaNetwork?.networkID,
+    //   chainStore.block?.slotSinceGenesis,
+    //   events.data?.events,
+    //   !workerClientStore.lotteryGame
+    // );
     if (
       workerClientStore.client &&
       networkStore.minaNetwork?.networkID &&
@@ -113,14 +110,18 @@ export default function LotteryComponent({}: {
     const startBlock = workerClientStore.onchainState?.startBlock;
     const blockNum = chainStore.block?.slotSinceGenesis;
 
-    console.log('Lottery state', workerClientStore.onchainState);
-    console.log('Round id', workerClientStore.lotteryRoundId);
+    // console.log('Lottery state', workerClientStore.onchainState);
+    // console.log('Round id', workerClientStore.lotteryRoundId);
 
     blockNum && startBlock
       ? setRoundEndsIn(
           DateTime.now().plus(
             Duration.fromObject({
-              second: (BLOCK_PER_ROUND - (Number(blockNum - startBlock) % BLOCK_PER_ROUND)) * 3 * 60,
+              second:
+                (BLOCK_PER_ROUND -
+                  (Number(blockNum - startBlock) % BLOCK_PER_ROUND)) *
+                3 *
+                60,
             })
           )
         )
@@ -144,13 +145,8 @@ export default function LotteryComponent({}: {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <BannerSection
-              roundEndsIn={roundEndsIn}
-              roundToShow={roundToShow}
-              setRoundToShow={setRoundToShow}
-              setPage={setPage}
-            />
-            <TicketsSection roundToShowId={roundToShow} />
+            <BannerSection roundEndsIn={roundEndsIn} setPage={setPage} />
+            <TicketsSection />
           </motion.div>
         )}
         {page == Pages.Storage && (

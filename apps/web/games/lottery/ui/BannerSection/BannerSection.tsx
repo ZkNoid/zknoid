@@ -9,38 +9,25 @@ import CurrentRoundInfo from '@/games/lottery/ui/BannerSection/ui/CurrentRoundIn
 import PrevRoundInfo from '@/games/lottery/ui/BannerSection/ui/PrevRoundInfo';
 import { Pages } from '../../Lottery';
 import { api } from '@/trpc/react';
+import { ILotteryRound } from '@/games/lottery/lib/types';
+import { useRoundsStore } from '@/games/lottery/lib/roundsStore';
 
 export default function BannerSection({
   roundEndsIn,
-  roundToShow,
-  setRoundToShow,
   setPage,
 }: {
-  roundToShow: number;
-  setRoundToShow: (roundId: number) => void;
   roundEndsIn: DateTime;
   setPage: (page: Pages) => void;
 }) {
   const lotteryStore = useWorkerClientStore();
-  // const [roundToShow, setRoundToShow] = useState(0);
-  const [roundInfo, setRoundInfo] = useState<
-    | {
-        id: number;
-        bank: bigint;
-        tickets: {
-          amount: bigint;
-          numbers: number[];
-          owner: string;
-          funds: bigint | undefined;
-        }[];
-        winningCombination: number[] | undefined;
-      }
-    | undefined
-  >(undefined);
+  const [roundInfo, setRoundInfo] = useState<ILotteryRound | undefined>(
+    undefined
+  );
+  const roundsStore = useRoundsStore();
 
   const getRoundQuery = api.lotteryBackend.getRoundInfo.useQuery(
     {
-      roundId: roundToShow,
+      roundId: roundsStore.roundToShowId,
     },
     {
       refetchInterval: 5000,
@@ -48,11 +35,12 @@ export default function BannerSection({
   );
 
   useEffect(() => {
-    if (getRoundQuery.data) setRoundInfo(getRoundQuery.data);
+    if (!getRoundQuery.data) return undefined;
+    setRoundInfo(getRoundQuery.data);
   }, [getRoundQuery.data]);
 
   useEffect(() => {
-    setRoundToShow(lotteryStore.lotteryRoundId);
+    roundsStore.setRoundToShowId(lotteryStore.lotteryRoundId);
   }, [lotteryStore.lotteryRoundId]);
 
   const ticketsNum = roundInfo?.tickets
@@ -65,16 +53,18 @@ export default function BannerSection({
         'relative mb-[2.083vw] h-[17.969vw] items-center justify-center rounded-[0.67vw] border border-left-accent',
         {
           "bg-[url('/image/games/lottery/TopBanner-1.svg')] bg-contain bg-center bg-no-repeat":
-            roundToShow == lotteryStore.lotteryRoundId,
+            roundsStore.roundToShowId == lotteryStore.lotteryRoundId,
           "bg-[url('/image/games/lottery/TopBanner-2.svg')] bg-contain bg-center bg-no-repeat":
-            roundToShow != lotteryStore.lotteryRoundId,
+            roundsStore.roundToShowId != lotteryStore.lotteryRoundId,
         }
       )}
     >
       <div className="absolute m-[1vw] flex h-[3.13vw] gap-[0.33vw]">
         <BannerButton
-          onClick={() => setRoundToShow(roundToShow - 1)}
-          disabled={roundToShow < 1}
+          onClick={() =>
+            roundsStore.setRoundToShowId(roundsStore.roundToShowId - 1)
+          }
+          disabled={roundsStore.roundToShowId < 1}
           className="flex w-[3.13vw] items-center justify-center border-left-accent bg-bg-grey text-left-accent"
         >
           <svg
@@ -89,8 +79,10 @@ export default function BannerSection({
           </svg>
         </BannerButton>
         <BannerButton
-          onClick={() => setRoundToShow(roundToShow + 1)}
-          disabled={roundToShow >= lotteryStore.lotteryRoundId}
+          onClick={() =>
+            roundsStore.setRoundToShowId(roundsStore.roundToShowId + 1)
+          }
+          disabled={roundsStore.roundToShowId >= lotteryStore.lotteryRoundId}
           className="flex w-[3.13vw] items-center justify-center border-left-accent bg-bg-grey text-left-accent"
         >
           <svg
@@ -105,7 +97,7 @@ export default function BannerSection({
           </svg>
         </BannerButton>
       </div>
-      {roundToShow != lotteryStore.lotteryRoundId && (
+      {roundsStore.roundToShowId != lotteryStore.lotteryRoundId && (
         <PrevRoundInfo
           ticketsNum={ticketsNum}
           winningCombination={roundInfo?.winningCombination}
@@ -113,16 +105,18 @@ export default function BannerSection({
       )}
 
       <CenterConsole
-        roundToShow={roundToShow}
+        roundToShow={roundsStore.roundToShowId}
         roundEndsIn={roundEndsIn}
         roundInfo={roundInfo}
         setPage={setPage}
       />
 
-      {roundToShow != lotteryStore.lotteryRoundId && (
+      {roundsStore.roundToShowId != lotteryStore.lotteryRoundId && (
         <button
-          onClick={() => setRoundToShow(lotteryStore.lotteryRoundId)}
-          disabled={roundToShow == lotteryStore.lotteryRoundId}
+          onClick={() =>
+            roundsStore.setRoundToShowId(lotteryStore.lotteryRoundId)
+          }
+          disabled={roundsStore.roundToShowId == lotteryStore.lotteryRoundId}
           className={
             'absolute right-[1vw] top-[1vw] flex cursor-pointer flex-row items-center justify-center gap-[0.26vw] hover:opacity-80 disabled:opacity-60'
           }
@@ -149,7 +143,7 @@ export default function BannerSection({
         </button>
       )}
 
-      {roundToShow == lotteryStore.lotteryRoundId && (
+      {roundsStore.roundToShowId == lotteryStore.lotteryRoundId && (
         <CurrentRoundInfo ticketsNum={ticketsNum} />
       )}
 

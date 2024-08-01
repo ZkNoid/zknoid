@@ -2,14 +2,23 @@ import Image from 'next/image';
 import minaImg from '@/public/image/tokens/mina.svg';
 import { Currency } from '@/constants/currency';
 import { TicketItem } from './TicketItem';
-import { IRound } from '@/lib/stores/lotteryStore';
 import { formatUnits } from '@/lib/unit';
 import { cn } from '@/lib/helpers';
 import CustomScrollbar from '@/components/shared/CustomScrollbar';
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, useScroll } from 'framer-motion';
+import { ILotteryRound } from '@/games/lottery/lib/types';
+import { TICKET_PRICE } from 'l1-lottery-contracts';
+import { useNetworkStore } from '@/lib/stores/network';
 
-export default function PreviousRoundItem({ round }: { round: IRound }) {
+export default function PreviousRoundItem({
+  round,
+  roundDates,
+}: {
+  round: ILotteryRound;
+  roundDates: { start: Date; end: Date };
+}) {
+  const networkStore = useNetworkStore();
   const [containerHeight, setContainerHeight] = useState<number>(0);
   const ticketsListRef = useRef<HTMLDivElement | null>(null);
   const { scrollYProgress } = useScroll({ container: ticketsListRef });
@@ -37,11 +46,27 @@ export default function PreviousRoundItem({ round }: { round: IRound }) {
     numbers.map((item, index) => {
       array.push({
         number: item,
-        win: round.combination ? item == round.combination[index] : false,
+        win: round.winningCombination
+          ? item == round.winningCombination[index]
+          : false,
       });
     });
     return array;
   };
+
+  const bank = Number(
+    round.tickets
+      .filter((x) => !x.numbers.every((x) => x == 0))
+      .map((x) => x.amount)
+      .reduce((x, y) => x + y, 0n) * TICKET_PRICE.toBigInt()
+  );
+  const ticketsAmount = Number(
+    round.tickets.map((x) => x.amount).reduce((x, y) => x + y, 0n)
+  );
+
+  const userTickets = round.tickets.filter(
+    (x) => x.owner == networkStore.address
+  );
 
   return (
     <div
@@ -56,8 +81,8 @@ export default function PreviousRoundItem({ round }: { round: IRound }) {
       >
         <span className="text-nowrap">Lottery round {round.id}</span>
         <span>
-          {round.date.start.toLocaleString('en-US', { dateStyle: 'medium' })} -{' '}
-          {round.date.end.toLocaleString('en-US', { dateStyle: 'medium' })}
+          {roundDates.start.toLocaleString('en-US', { dateStyle: 'medium' })} -{' '}
+          {roundDates.end.toLocaleString('en-US', { dateStyle: 'medium' })}
         </span>
       </div>
       <div className={'flex flex-col'}>
@@ -69,8 +94,8 @@ export default function PreviousRoundItem({ round }: { round: IRound }) {
           Win combination
         </span>
         <div className={'mb-[1.094vw] flex flex-row gap-[0.5vw]'}>
-          {round.combination
-            ? round.combination.map((item, index) => (
+          {round.winningCombination
+            ? round.winningCombination.map((item, index) => (
                 <div
                   key={index}
                   className={
@@ -94,7 +119,7 @@ export default function PreviousRoundItem({ round }: { round: IRound }) {
         <div
           className={cn(
             ' flex flex-col gap-[0.5vw] font-plexsans text-[0.7vw] font-medium text-foreground',
-            { 'mb-[1.563vw]': round.tickets?.length !== 0 }
+            { 'mb-[1.563vw]': userTickets?.length !== 0 }
           )}
         >
           <div
@@ -120,9 +145,7 @@ export default function PreviousRoundItem({ round }: { round: IRound }) {
               }
             >
               <span>
-                {formatUnits(
-                  Number(round.bank) - (Number(round.bank) / 100) * 3
-                )}
+                {formatUnits(Number(bank) - (Number(bank) / 100) * 3)}
               </span>
               <span>{Currency.MINA}</span>
             </div>
@@ -157,11 +180,11 @@ export default function PreviousRoundItem({ round }: { round: IRound }) {
                 'mb-0.5 flex w-full flex-row items-center justify-end gap-[0.5vw] '
               }
             >
-              <span>{round.ticketsAmount}</span>
+              <span>{ticketsAmount}</span>
             </div>
           </div>
         </div>
-        {round.tickets && round.tickets.length != 0 && (
+        {userTickets && userTickets.length != 0 && (
           <div className={'flex flex-col'}>
             <span
               className={
@@ -186,14 +209,14 @@ export default function PreviousRoundItem({ round }: { round: IRound }) {
                 }
                 ref={ticketsListRef}
               >
-                {round.tickets.map((item, index) => (
+                {userTickets.map((item, index) => (
                   <TicketItem
                     key={index}
                     roundId={round.id}
-                    noCombination={!round.combination}
+                    noCombination={!round.winningCombination}
                     numbers={parseNumbers(item.numbers)}
-                    funds={item.funds}
-                    amount={item.amount}
+                    funds={Number(item.funds)}
+                    amount={Number(item.amount)}
                     claimed={item.claimed}
                   />
                 ))}

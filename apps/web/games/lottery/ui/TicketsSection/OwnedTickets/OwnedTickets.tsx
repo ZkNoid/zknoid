@@ -7,31 +7,23 @@ import PageButton from './ui/PageButton';
 import { formatUnits } from '@/lib/unit';
 import { Currency } from '@/constants/currency';
 import { api } from '@/trpc/react';
+import { useRoundsStore } from '@/games/lottery/lib/roundsStore';
+import { ILotteryTicket } from '@/games/lottery/lib/types';
 
-interface ITicket {
+interface ITicket extends ILotteryTicket {
   id: string;
-  combination: number[];
-  amount: number;
-  claimed: boolean;
-  funds: bigint | undefined;
 }
 
-export default function OwnedTickets({ roundId }: { roundId: number }) {
+export default function OwnedTickets() {
+  const roundsStore = useRoundsStore();
   const [currentTicket, setCurrentTicket] = useState<ITicket | undefined>(
     undefined
   );
   const workerStore = useWorkerClientStore();
-  const [tickets, setTickets] = useState<
-    {
-      id: string;
-      combination: number[];
-      amount: number;
-      claimed: boolean;
-      funds: bigint | undefined;
-    }[]
-  >([]);
+  const [tickets, setTickets] = useState<ITicket[]>([]);
   const networkStore = useNetworkStore();
-  const TICKETS_PER_PAGE = roundId != workerStore.lotteryRoundId ? 6 : 4;
+  const TICKETS_PER_PAGE =
+    roundsStore.roundToShowId != workerStore.lotteryRoundId ? 6 : 4;
   const [page, setPage] = useState<number>(1);
   const pagesAmount = Math.ceil(tickets.length / TICKETS_PER_PAGE);
   const renderTickets = tickets.slice(
@@ -41,7 +33,7 @@ export default function OwnedTickets({ roundId }: { roundId: number }) {
 
   const getRoundQuery = api.lotteryBackend.getRoundInfo.useQuery(
     {
-      roundId: roundId,
+      roundId: roundsStore.roundToShowId,
     },
     {
       refetchInterval: 5000,
@@ -58,18 +50,25 @@ export default function OwnedTickets({ roundId }: { roundId: number }) {
         )
         .map(
           (
-            x: { numbers: any; amount: any; funds: any; claimed: any },
+            x: {
+              numbers: any;
+              amount: any;
+              funds: any;
+              claimed: any;
+              owner: any;
+            },
             i: any
           ) => ({
             id: `${i}`,
-            combination: x.numbers,
-            amount: Number(x.amount),
+            numbers: x.numbers,
+            amount: x.amount,
             funds: x.funds,
             claimed: x.claimed,
+            owner: x.owner,
           })
         )
     );
-  }, [getRoundQuery.data]);
+  }, [roundsStore.roundToShowId, getRoundQuery.data]);
 
   return (
     <div
@@ -81,7 +80,7 @@ export default function OwnedTickets({ roundId }: { roundId: number }) {
         }
       >
         <div className="text-[2.13vw]">Your tickets</div>
-        {roundId != workerStore.lotteryRoundId &&
+        {roundsStore.roundToShowId != workerStore.lotteryRoundId &&
           tickets.length > TICKETS_PER_PAGE && (
             <div className={'flex flex-row gap-[0.5vw]'}>
               <button
@@ -133,12 +132,13 @@ export default function OwnedTickets({ roundId }: { roundId: number }) {
 
       <div
         className={cn('flex w-full flex-row gap-[0.3vw]', {
-          'flex-wrap gap-[1.042vw]': roundId != workerStore.lotteryRoundId,
+          'flex-wrap gap-[1.042vw]':
+            roundsStore.roundToShowId != workerStore.lotteryRoundId,
         })}
       >
         {tickets.length > TICKETS_PER_PAGE &&
           page != 1 &&
-          roundId == workerStore.lotteryRoundId && (
+          roundsStore.roundToShowId == workerStore.lotteryRoundId && (
             <PageButton
               text={'Previous page'}
               symbol={'←'}
@@ -153,12 +153,12 @@ export default function OwnedTickets({ roundId }: { roundId: number }) {
           <MyTicket
             key={index}
             isOpen={
-              roundId != workerStore.lotteryRoundId ||
+              roundsStore.roundToShowId != workerStore.lotteryRoundId ||
               item.id == currentTicket?.id ||
               (currentTicket == undefined && index == 0)
             }
-            combination={item.combination}
-            amount={item.amount}
+            combination={item.numbers}
+            amount={Number(item.amount)}
             index={
               page == 1
                 ? index + 1
@@ -174,12 +174,12 @@ export default function OwnedTickets({ roundId }: { roundId: number }) {
             }
             claimed={item.claimed}
             funds={item.funds}
-            roundId={roundId}
+            roundId={roundsStore.roundToShowId}
           />
         ))}
         {tickets.length > TICKETS_PER_PAGE &&
           page + 1 <= pagesAmount &&
-          roundId == workerStore.lotteryRoundId && (
+          roundsStore.roundToShowId == workerStore.lotteryRoundId && (
             <PageButton
               text={'Next page'}
               symbol={'→'}
