@@ -67,7 +67,7 @@ export default function PrevRoundInfo({
               className={'h-[1.146vw] w-[1.146vw]'}
             />
             <Skeleton
-              isLoading={!ticketsNum}
+              isLoading={!ticketsNum && !winningCombination}
               className={'h-[0.833vw] w-full rounded-[0.33vw]'}
             >
               <span
@@ -103,7 +103,7 @@ export default function PrevRoundInfo({
               />
             </svg>
             <Skeleton
-              isLoading={!ticketsNum}
+              isLoading={!ticketsNum && !winningCombination}
               className={'h-[0.833vw] w-full rounded-[0.33vw]'}
             >
               <span
@@ -111,7 +111,7 @@ export default function PrevRoundInfo({
                   'font-museo text-[0.833vw] font-bold text-foreground'
                 }
               >
-                {ticketsNum}
+                {ticketsNum || 0}
               </span>
             </Skeleton>
           </div>

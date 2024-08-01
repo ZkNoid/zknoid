@@ -37,7 +37,7 @@ export default function BannerSection({
   useEffect(() => {
     if (!getRoundQuery.data) return undefined;
     setRoundInfo(getRoundQuery.data);
-  }, [getRoundQuery.data]);
+  }, [roundsStore.roundToShowId, getRoundQuery.data]);
 
   useEffect(() => {
     roundsStore.setRoundToShowId(lotteryStore.lotteryRoundId);
