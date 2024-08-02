@@ -23,14 +23,14 @@ export class Balances extends BaseBalances<BalancesConfig> {
     address: PublicKey,
     amount: Balance,
   ): Promise<void> {
-    this.mint(tokenId, address, amount);
+    await this.mint(tokenId, address, amount);
   }
   @runtimeMethod()
   public async burnBalance(
     tokenId: TokenId,
     amount: Balance,
   ): Promise<void> {
-    this.burn(tokenId, this.transaction.sender.value, amount);
+    await this.burn(tokenId, this.transaction.sender.value, amount);
   }
 }
 

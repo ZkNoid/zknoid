@@ -72,8 +72,8 @@ export class Gamehub<
   @runtimeMethod()
   public async updateSeed(seed: UInt64): Promise<void> {
     const lastSeedIndex = (await this.lastSeed.get()).orElse(UInt64.from(0));
-    this.seeds.set(lastSeedIndex, seed);
-    this.lastSeed.set(lastSeedIndex.add(1));
+    await this.seeds.set(lastSeedIndex, seed);
+    await this.lastSeed.set(lastSeedIndex.add(1));
   }
 
   /**
@@ -84,11 +84,11 @@ export class Gamehub<
   @runtimeMethod()
   public async createCompetition(competition: Competition): Promise<void> {
     const competitionId = (await this.lastCompetitonId.get()).orElse(UInt64.from(0));
-    this.competitionCreator.set(competitionId, this.transaction.sender.value);
-    this.competitions.set(competitionId, competition);
-    this.lastCompetitonId.set(competitionId.add(1));
+    await this.competitionCreator.set(competitionId, this.transaction.sender.value);
+    await this.competitions.set(competitionId, competition);
+    await this.lastCompetitonId.set(competitionId.add(1));
 
-    this.balances.transfer(
+    await this.balances.transfer(
       ZNAKE_TOKEN_ID,
       this.transaction.sender.value,
       PublicKey.empty(),
@@ -98,7 +98,7 @@ export class Gamehub<
 
   @runtimeMethod()
   public async register(competitionId: UInt64): Promise<void> {
-    this.registrations.set(
+    await this.registrations.set(
       new GameRecordKey({
         competitionId,
         player: this.transaction.sender.value,
@@ -106,7 +106,7 @@ export class Gamehub<
       Bool(true),
     );
 
-    this.payCompetitionFee(competitionId, Bool(true));
+    await this.payCompetitionFee(competitionId, Bool(true));
   }
 
   /**
@@ -137,7 +137,7 @@ export class Gamehub<
       'Should register first',
     );
 
-    this.payCompetitionFee(competitionId, registrationNeeded.not());
+    await this.payCompetitionFee(competitionId, registrationNeeded.not());
 
     const currentScore = (await this.gameRecords.get(gameKey)).value;
     const newScore = gameRecordProof.publicOutput.score;
@@ -147,7 +147,7 @@ export class Gamehub<
     {
       // Everything that is done here, should be done only if <betterScore>
       // So all set should be with <betterScore> check
-      this.gameRecords.set(
+      await this.gameRecords.set(
         gameKey,
         Provable.if(betterScore, newScore, currentScore),
       );
@@ -172,7 +172,7 @@ export class Gamehub<
 
         found = found.or(gameRecord.score.lessThan(prevValue.score));
 
-        this.leaderboard.set(
+        await this.leaderboard.set(
           leaderboardKey,
           Provable.if(found, LeaderboardScore, prevValue, gameRecord),
         );
@@ -194,7 +194,7 @@ export class Gamehub<
     });
 
     assert((await this.gotReward.get(key)).value, 'Already got your reward');
-    this.gotReward.set(key, Bool(true));
+    await this.gotReward.set(key, Bool(true));
 
     let winner = (await this.leaderboard.get(
       new LeaderboardIndex({
@@ -208,7 +208,7 @@ export class Gamehub<
       'You are not the winner',
     );
 
-    this.balances.mint(
+    await this.balances.mint(
       ZNAKE_TOKEN_ID,
       this.transaction.sender.value,
       ProtoUInt64.from(competition.funds),
@@ -219,13 +219,13 @@ export class Gamehub<
     let competition = (await this.competitions.get(competitionId)).value;
     let fee = Provable.if<ProtoUInt64>(shouldPay, ProtoUInt64, competition.participationFee, ProtoUInt64.zero);
 
-    this.balances.transfer(
+    await this.balances.transfer(
       ZNAKE_TOKEN_ID,
       this.transaction.sender.value,
       PublicKey.empty(),
       ProtoUInt64.from(fee),
     );
     competition.funds = competition.funds.add(fee);
-    this.competitions.set(competitionId, competition);
+    await this.competitions.set(competitionId, competition);
   }
 }

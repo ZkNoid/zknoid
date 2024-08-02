@@ -21,11 +21,11 @@ export class MatchMakerHelper extends MatchMaker {
 
   @state() public gamesNum = State.from<UInt64>(UInt64);
 
-  public override initGame(lobby: Lobby, shouldUpdate: Bool): UInt64 {
-    const currentGameId = this.getNextGameId();
+  public override async initGame(lobby: Lobby, shouldUpdate: Bool): Promise<UInt64> {
+    const currentGameId = await this.getNextGameId();
 
     // Setting active game if opponent found
-    this.games.set(
+    await this.games.set(
       Provable.if(shouldUpdate, currentGameId, UInt64.from(0)),
       new GameInfo({
         player1: lobby.players[0],
@@ -34,37 +34,37 @@ export class MatchMakerHelper extends MatchMaker {
       }),
     );
 
-    this.gamesNum.set(currentGameId);
-    this.gameFund.set(
+    await this.gamesNum.set(currentGameId);
+    await this.gameFund.set(
       currentGameId,
       ProtoUInt64.from(lobby.participationFee).mul(2),
     );
 
-    return super.initGame(lobby, shouldUpdate);
+    return await super.initGame(lobby, shouldUpdate);
   }
 
-  public override getNextGameId(): UInt64 {
-    return this.gamesNum.get().orElse(UInt64.from(1));
+  public async getNextGameId(): Promise<UInt64> {
+    return (await this.gamesNum.get()).orElse(UInt64.from(1));
   }
-  public override updateNextGameId(shouldUpdate: Bool): void {
+  public async updateNextGameId(shouldUpdate: Bool): Promise<void> {
     let curGameId = this.getNextGameId();
 
-    this.gamesNum.set(Provable.if(shouldUpdate, curGameId.add(1), curGameId));
+    await this.gamesNum.set(Provable.if(shouldUpdate, curGameId.add(1), curGameId));
   }
 
   @runtimeMethod()
-  public claimWin(gameId: UInt64): void {
+  public async claimWin(gameId: UInt64): Promise<void> {
     const sender = this.transaction.sender.value;
-    let game = this.games.get(gameId).value;
+    let game = (await this.games.get(gameId)).value;
     assert(game.player1.equals(sender).or(game.player2.equals(sender)));
     assert(game.winner.equals(PublicKey.empty()));
 
     game.winner = sender;
-    this.games.set(gameId, game);
+    await this.games.set(gameId, game);
 
-    this.activeGameId.set(game.player1, UInt64.zero);
-    this.activeGameId.set(game.player2, UInt64.zero);
+    await this.activeGameId.set(game.player1, UInt64.zero);
+    await this.activeGameId.set(game.player2, UInt64.zero);
   }
 
-  public override proveOpponentTimeout(gameId: UInt64): void {}
+  public override async proveOpponentTimeout(gameId: UInt64): Promise<void> {}
 }

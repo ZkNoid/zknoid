@@ -79,8 +79,8 @@ export class MatchMaker extends LobbyManager {
     let lobby = Lobby.default(UInt64.zero, Bool(false));
     lobby.participationFee = participationFee;
     const lastLobbyId = (await this.lastDefaultLobby.get()).orElse(UInt64.from(1));
-    this.defaultLobbies.set(lastLobbyId, lobby);
-    this.lastDefaultLobby.set(lastLobbyId.add(1));
+    await this.defaultLobbies.set(lastLobbyId, lobby);
+    await this.lastDefaultLobby.set(lastLobbyId.add(1));
   }
 
   @runtimeMethod()
@@ -117,7 +117,7 @@ export class MatchMaker extends LobbyManager {
       'Player already in game',
     );
 
-    this.sessions.set(sessionKey, sender);
+    await this.sessions.set(sessionKey, sender);
     const roundId = this.network.block.height.div(PENDING_BLOCKS_NUM);
     const pendingLobbyIndex = new PendingLobbyIndex({
       roundId,
@@ -132,7 +132,7 @@ export class MatchMaker extends LobbyManager {
 
     lobby = await this.flushPendingLobby(pendingLobbyIndex, lobbyReady);
 
-    const gameId = this.initGame(lobby, lobbyReady);
+    const gameId = await this.initGame(lobby, lobbyReady);
   }
 
   @runtimeMethod()
@@ -159,14 +159,14 @@ export class MatchMaker extends LobbyManager {
     );
 
     lobby.removePlayer(sender);
-    this.queueRegisteredRoundUsers.set(
+    await this.queueRegisteredRoundUsers.set(
       new RoundIdxUser({
         roundId: lobby.id,
         userAddress: sender,
       }),
       Bool(false),
     );
-    this.pendingLobby.set(pendingLobbyIndex, lobby);
+    await this.pendingLobby.set(pendingLobbyIndex, lobby);
   }
 
   private async joinPendingLobby(lobbyIndex: PendingLobbyIndex): Promise<Lobby> {
@@ -187,7 +187,7 @@ export class MatchMaker extends LobbyManager {
       'User already in queue',
     );
 
-    this.queueRegisteredRoundUsers.set(
+    await this.queueRegisteredRoundUsers.set(
       new RoundIdxUser({
         roundId: lobby.id,
         userAddress: sender,
@@ -195,8 +195,9 @@ export class MatchMaker extends LobbyManager {
       Bool(true),
     );
 
-    this._joinLobby(lobby);
-    this.pendingLobby.set(lobbyIndex, lobby);
+    await this._joinLobby(lobby);
+    await this.pendingLobby.set(lobbyIndex, lobby);
+
     return lobby;
   }
 
@@ -208,17 +209,17 @@ export class MatchMaker extends LobbyManager {
   ): Promise<Lobby> {
     let lobby = (await this.pendingLobby.get(pendingLobyIndex)).value;
 
-    lobby.players.forEach(async (player) => {
-      this.queueRegisteredRoundUsers.set(
+    for (const player of lobby.players) {
+      await this.queueRegisteredRoundUsers.set(
         new RoundIdxUser({
           roundId: lobby.id,
           userAddress: player,
         }),
         shouldFlush.not(),
       );
-    });
+    }
 
-    this.pendingLobby.set(
+    await this.pendingLobby.set(
       pendingLobyIndex,
       Provable.if(
         shouldFlush,
@@ -228,7 +229,7 @@ export class MatchMaker extends LobbyManager {
       ) as Lobby,
     );
 
-    let activeLobby = this._addLobby(lobby, shouldFlush);
+    let activeLobby = await this._addLobby(lobby, shouldFlush);
 
     return activeLobby;
   }
@@ -282,11 +283,11 @@ export class MatchMaker extends LobbyManager {
       game.value.winner = sender;
       game.value.lastMoveBlockHeight = this.network.block.height;
       // Removing active game for players if game ended
-      this.activeGameId.set(game.value.player1, UInt64.from(0));
-      this.activeGameId.set(game.value.player2, UInt64.from(0));
+      await this.activeGameId.set(game.value.player1, UInt64.from(0));
+      await this.activeGameId.set(game.value.player2, UInt64.from(0));
     }
 
-    this.games.set(gameId, game.value);
+    await this.games.set(gameId, game.value);
   }
 
   protected async acquireFunds(
@@ -308,7 +309,7 @@ export class MatchMaker extends LobbyManager {
     //     .mul(player2Share)
     //     .div(totalShares),
     // );
-    this.pendingBalances.set(
+    await this.pendingBalances.set(
       player1,
       ProtoUInt64.from(player1PendingBalance.value).add(
         ProtoUInt64.from((await this.gameFund.get(gameId)).value)
@@ -317,7 +318,7 @@ export class MatchMaker extends LobbyManager {
       ),
     );
 
-    this.pendingBalances.set(
+    await this.pendingBalances.set(
       player2,
       ProtoUInt64.from(player2PendingBalance.value).add(
         ProtoUInt64.from((await this.gameFund.get(gameId)).value)

@@ -122,11 +122,11 @@ export class RandzuLogic extends MatchMaker {
 
   @state() public gamesNum = State.from<UInt64>(UInt64);
 
-  public override initGame(lobby: Lobby, shouldUpdate: Bool): UInt64 {
+  public override async initGame(lobby: Lobby, shouldUpdate: Bool): Promise<UInt64> {
     const currentGameId = lobby.id;
 
     // Setting active game if opponent found
-    this.games.set(
+    await this.games.set(
       Provable.if(shouldUpdate, currentGameId, UInt64.from(0)),
       new GameInfo({
         player1: lobby.players[0],
@@ -140,17 +140,17 @@ export class RandzuLogic extends MatchMaker {
       }),
     );
 
-    this.gameFund.set(
+    await this.gameFund.set(
       currentGameId,
       ProtoUInt64.from(lobby.participationFee).mul(2),
     );
 
-    return super.initGame(lobby, shouldUpdate);
+    return await super.initGame(lobby, shouldUpdate);
   }
 
   @runtimeMethod()
   public async proveOpponentTimeout(gameId: UInt64): Promise<void> {
-    super.proveOpponentTimeout(gameId, true);
+    await super.proveOpponentTimeout(gameId, true);
   }
 
   @runtimeMethod()
@@ -259,7 +259,7 @@ export class RandzuLogic extends MatchMaker {
       ),
     );
 
-    this.acquireFunds(
+    await this.acquireFunds(
       gameId,
       game.value.winner,
       PublicKey.empty(),
@@ -275,18 +275,18 @@ export class RandzuLogic extends MatchMaker {
       game.value.player1,
     );
     game.value.lastMoveBlockHeight = this.network.block.height;
-    this.games.set(gameId, game.value);
+    await this.games.set(gameId, game.value);
 
     // Removing active game for players if game ended
-    this.activeGameId.set(
+    await this.activeGameId.set(
       Provable.if(winProposed, game.value.player2, PublicKey.empty()),
       UInt64.from(0),
     );
-    this.activeGameId.set(
+    await this.activeGameId.set(
       Provable.if(winProposed, game.value.player1, PublicKey.empty()),
       UInt64.from(0),
     );
 
-    this._onLobbyEnd(gameId, winProposed);
+    await this._onLobbyEnd(gameId, winProposed);
   }
 }
