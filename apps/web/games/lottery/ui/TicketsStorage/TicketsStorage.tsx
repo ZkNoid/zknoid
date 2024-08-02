@@ -151,15 +151,15 @@ export default function TicketsStorage({
     }[];
     winningCombination: number[] | undefined;
   }) => {
-    // round.tickets = round.tickets.filter((ticket) =>
-    //   !onlyClaimable && !onlyLoosing
-    //     ? ticket.owner === networkStore.address
-    //     : onlyClaimable
-    //       ? ticket.owner === networkStore.address &&
-    //         !!ticket.funds &&
-    //         !ticket.claimed
-    //       : ticket.owner === networkStore.address && !ticket.funds
-    // );
+    round.tickets = round.tickets.filter((ticket) =>
+      !onlyClaimable && !onlyLoosing
+        ? ticket.owner === networkStore.address
+        : onlyClaimable
+          ? ticket.owner === networkStore.address &&
+            !!ticket.funds &&
+            !ticket.claimed
+          : ticket.owner === networkStore.address && !ticket.funds
+    );
     return round;
   };
 
