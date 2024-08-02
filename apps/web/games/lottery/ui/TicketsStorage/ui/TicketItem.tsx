@@ -11,8 +11,6 @@ export const TicketItem = ({
   quantity,
   hasReward,
   reward,
-  // chosen,
-  // setChosen,
   claimed,
 }: {
   roundId: number;
@@ -22,8 +20,6 @@ export const TicketItem = ({
   quantity: bigint;
   hasReward: boolean;
   reward: string;
-  // chosen: boolean;
-  // setChosen: (chosen: boolean) => void;
   claimed: boolean;
 }) => {
   const workerStore = useWorkerClientStore();
@@ -64,17 +60,19 @@ export const TicketItem = ({
   return (
     <div
       className={
-        'grid w-full grid-cols-7 grid-rows-1 border-t border-foreground py-[0.521vw] last:border-b hover:bg-[#464646]'
+        'grid w-full grid-cols-6 grid-rows-1 border-t border-foreground py-[0.521vw] last:border-b hover:bg-[#464646]'
       }
     >
-      <div className={'flex w-full items-center justify-center pr-[40%]'}>
+      <div
+        className={'flex w-full items-center justify-start pl-[5%] pr-[50%]'}
+      >
         <span className={'font-plexsans text-[0.833vw] text-foreground'}>
           {roundId}
         </span>
       </div>
       <div
         className={
-          'flex flex-row items-center justify-center gap-[0.781vw]  pr-[40%]'
+          'flex flex-row items-center justify-center gap-[0.781vw] pr-[50%]'
         }
       >
         {winCombination.map((item, index) => (
@@ -111,32 +109,19 @@ export const TicketItem = ({
           {hasReward ? `${reward} MINA` : 'No reward'}
         </span>
       </div>
-      {/*<div />*/}
-      {/*<div className={'flex w-full items-center justify-center'}>*/}
-      {/*  <button*/}
-      {/*    className={cn(*/}
-      {/*      'flex h-[0.938vw] w-[0.938vw] cursor-pointer flex-col items-center justify-center rounded-[0.104vw] border hover:opacity-80',*/}
-      {/*      {*/}
-      {/*        'border-foreground': !chosen,*/}
-      {/*        'border-left-accent bg-left-accent': chosen,*/}
-      {/*      }*/}
-      {/*    )}*/}
-      {/*    onClick={() => setChosen(true)}*/}
-      {/*  >*/}
-      {/*    <svg*/}
-      {/*      width="0.625vw"*/}
-      {/*      height="0.417vw"*/}
-      {/*      viewBox="0 0 14 10"*/}
-      {/*      fill="none"*/}
-      {/*      xmlns="http://www.w3.org/2000/svg"*/}
-      {/*      className={cn('h-[0.417vw] w-[0.625vw]', { 'opacity-0': !chosen })}*/}
-      {/*    >*/}
-      {/*      <path d="M1 4L5.5 8.5L13 1" stroke="#252525" />*/}
-      {/*    </svg>*/}
-      {/*  </button>*/}
-      {/*</div>*/}
+      {claimed && (
+        <div className={'flex w-full items-center justify-end'}>
+          <span
+            className={
+              'w-1/2 rounded-[0.781vw] border border-right-accent px-[1.51vw] py-[0.26vw] text-center font-museo text-[0.833vw] font-medium text-right-accent'
+            }
+          >
+            Claimed
+          </span>
+        </div>
+      )}
       {hasReward && !claimed && (
-        <div className={'col-span-2 flex w-full items-center justify-center'}>
+        <div className={'flex w-full items-center justify-end'}>
           <button
             className={
               'w-1/2 rounded-[0.26vw] bg-left-accent px-[1.51vw] py-[0.26vw] font-museo text-[0.833vw] font-medium text-bg-dark hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60'

@@ -151,15 +151,15 @@ export default function TicketsStorage({
     }[];
     winningCombination: number[] | undefined;
   }) => {
-    round.tickets = round.tickets.filter((ticket) =>
-      !onlyClaimable && !onlyLoosing
-        ? ticket.owner === networkStore.address
-        : onlyClaimable
-          ? ticket.owner === networkStore.address &&
-            !!ticket.funds &&
-            !ticket.claimed
-          : ticket.owner === networkStore.address && !ticket.funds
-    );
+    // round.tickets = round.tickets.filter((ticket) =>
+    //   !onlyClaimable && !onlyLoosing
+    //     ? ticket.owner === networkStore.address
+    //     : onlyClaimable
+    //       ? ticket.owner === networkStore.address &&
+    //         !!ticket.funds &&
+    //         !ticket.claimed
+    //       : ticket.owner === networkStore.address && !ticket.funds
+    // );
     return round;
   };
 
@@ -273,20 +273,20 @@ export default function TicketsStorage({
 
       <div className={'flex w-full max-w-[85%] flex-col  gap-0'}>
         <div
-          className={cn('grid w-full grid-cols-7 pb-[0.781vw]', {
+          className={cn('grid w-full grid-cols-6 pb-[0.781vw]', {
             'pr-[1.875vw]': containerHeight == 400,
           })}
         >
           <span
             className={
-              'pr-[40%] text-center font-plexsans text-[0.833vw] font-medium text-foreground'
+              'pr-[50%] text-left font-plexsans text-[0.833vw] font-medium text-foreground'
             }
           >
             Round
           </span>
           <span
             className={
-              'pr-[40%] text-center font-plexsans text-[0.833vw] font-medium  text-foreground'
+              'pr-[50%] text-center font-plexsans text-[0.833vw] font-medium  text-foreground'
             }
           >
             Win combination
@@ -312,13 +312,6 @@ export default function TicketsStorage({
           >
             Accessible rewards
           </span>
-          {/*<span*/}
-          {/*  className={*/}
-          {/*    'text-center font-plexsans text-[0.833vw] font-medium text-foreground'*/}
-          {/*  }*/}
-          {/*>*/}
-          {/*  Chosen*/}
-          {/*</span>*/}
         </div>
         <div className={'flex w-full flex-row gap-[1.042vw]'}>
           <div
@@ -346,8 +339,6 @@ export default function TicketsStorage({
                     quantity={ticket.amount}
                     hasReward={ticket.funds > 0}
                     reward={Number(formatUnits(ticket.funds)).toFixed(2)}
-                    // chosen={false}
-                    // setChosen={() => {}}
                     claimed={ticket.claimed}
                   />
                 ))
