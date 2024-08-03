@@ -56,6 +56,7 @@ export default function OwnedTickets() {
               funds: any;
               claimed: any;
               owner: any;
+              hash: any;
             },
             i: any
           ) => ({
@@ -65,6 +66,7 @@ export default function OwnedTickets() {
             funds: x.funds,
             claimed: x.claimed,
             owner: x.owner,
+            hash: x.hash,
           })
         )
     );
@@ -175,6 +177,7 @@ export default function OwnedTickets() {
             claimed={item.claimed}
             funds={item.funds}
             roundId={roundsStore.roundToShowId}
+            hash={item.hash}
           />
         ))}
         {tickets.length > TICKETS_PER_PAGE &&

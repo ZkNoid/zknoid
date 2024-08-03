@@ -12,6 +12,7 @@ export const TicketItem = ({
   hasReward,
   reward,
   claimed,
+  hash,
 }: {
   roundId: number;
   winCombination: number[];
@@ -21,6 +22,7 @@ export const TicketItem = ({
   hasReward: boolean;
   reward: string;
   claimed: boolean;
+  hash: string;
 }) => {
   const workerStore = useWorkerClientStore();
   const networkStore = useNetworkStore();

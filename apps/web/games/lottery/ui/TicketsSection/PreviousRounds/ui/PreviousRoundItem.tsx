@@ -218,6 +218,7 @@ export default function PreviousRoundItem({
                     funds={Number(item.funds)}
                     amount={Number(item.amount)}
                     claimed={item.claimed}
+                    hash={item.hash}
                   />
                 ))}
               </div>

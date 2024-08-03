@@ -19,6 +19,7 @@ export function TicketItem({
   amount,
   noCombination,
   claimed,
+  hash,
 }: {
   roundId: number;
   numbers: Number[];
@@ -26,6 +27,7 @@ export function TicketItem({
   amount: number;
   noCombination: boolean;
   claimed: boolean;
+  hash: string;
 }) {
   const workerClient = useWorkerClientStore();
   const networkStore = useNetworkStore();

@@ -195,6 +195,7 @@ export default function MyTicket({
   funds,
   claimed,
   roundId,
+  hash,
 }: {
   isOpen: boolean;
   combination: number[];
@@ -205,6 +206,7 @@ export default function MyTicket({
   funds: bigint | undefined;
   claimed: boolean;
   roundId: number;
+  hash: string;
 }) {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const workerStore = useWorkerClientStore();

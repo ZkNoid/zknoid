@@ -4,6 +4,7 @@ export interface ILotteryTicket {
   owner: string;
   claimed: boolean;
   funds: bigint;
+  hash: string;
 }
 
 export interface ILotteryRound {

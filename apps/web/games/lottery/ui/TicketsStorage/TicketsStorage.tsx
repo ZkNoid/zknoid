@@ -10,6 +10,7 @@ import { useChainStore } from '@/lib/stores/minaChain';
 import { api } from '@/trpc/react';
 import { RoundsDropdown } from './ui/RoundsDropdown';
 import { TicketItem } from './ui/TicketItem';
+import { ILotteryRound } from '@/games/lottery/lib/types';
 
 const CheckboxButton = ({
   text,
@@ -74,20 +75,7 @@ export default function TicketsStorage({
   const [containerHeight, setContainerHeight] = useState<number>(0);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const [roundInfos, setRoundInfos] = useState<
-    {
-      id: number;
-      bank: bigint;
-      tickets: {
-        amount: bigint;
-        numbers: number[];
-        owner: string;
-        claimed: boolean;
-        funds: bigint;
-      }[];
-      winningCombination: number[] | undefined;
-    }[]
-  >([]);
+  const [roundInfos, setRoundInfos] = useState<ILotteryRound[]>([]);
   const [roundIds, setRoundsIds] = useState<
     { id: number; hasClaim: boolean }[]
   >([]);
@@ -139,18 +127,7 @@ export default function TicketsStorage({
     );
   }, [currentRoundId, getRoundQuery.data]);
 
-  const filterRound = (round: {
-    id: number;
-    bank: bigint;
-    tickets: {
-      amount: bigint;
-      numbers: number[];
-      owner: string;
-      claimed: boolean;
-      funds: bigint;
-    }[];
-    winningCombination: number[] | undefined;
-  }) => {
+  const filterRound = (round: ILotteryRound) => {
     round.tickets = round.tickets.filter((ticket) =>
       !onlyClaimable && !onlyLoosing
         ? ticket.owner === networkStore.address
@@ -340,6 +317,7 @@ export default function TicketsStorage({
                     hasReward={ticket.funds > 0}
                     reward={Number(formatUnits(ticket.funds)).toFixed(2)}
                     claimed={ticket.claimed}
+                    hash={ticket.hash}
                   />
                 ))
               )
