@@ -114,6 +114,7 @@ export default function BuyInfoCard({
         onClick={async () => {
           if (!ticketsInfo.length) return;
           if (Number(balance) < Number(formatUnits(totalPrice))) return;
+          if (!buttonActive) return;
 
           const txJson = await workerStore.buyTicket(
             networkStore.address!,
