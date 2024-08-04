@@ -109,6 +109,7 @@ export const useObserveProtokitBalance = ({
   const network = useNetworkStore();
   const balances = useProtokitBalancesStore();
   useEffect(() => {
+    console.log(network.protokitClientStarted, network.walletConnected, network.address)
     if (!network.protokitClientStarted) return;
     if (!network.walletConnected) return;
     if (!network.address) return;

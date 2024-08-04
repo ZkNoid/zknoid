@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import DepositMenuItem from './nonSSR/DepositMenuItem/DepositMenuItem';
 import { buildClient } from '@/lib/utils';
 import { DefaultRuntimeModules } from '@/lib/runtimeModules';

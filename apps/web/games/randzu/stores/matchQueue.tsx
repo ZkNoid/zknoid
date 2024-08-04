@@ -26,7 +26,7 @@ export const useObserveRandzuMatchQueue = () => {
   >(AppChainClientContext);
 
   useEffect(() => {
-    if (!network.walletConnected || !network.address || !chain.block?.height) {
+    if (!network.walletConnected || !network.address || !chain.block?.height || !network.protokitClientStarted) {
       return;
     }
 
@@ -43,5 +43,5 @@ export const useObserveRandzuMatchQueue = () => {
       chain.block?.height,
       PublicKey.fromBase58(network.address!)
     );
-  }, [chain.block?.height, network.walletConnected, network.address]);
+  }, [chain.block?.height, network.walletConnected, network.address, network.protokitClientStarted]);
 };
