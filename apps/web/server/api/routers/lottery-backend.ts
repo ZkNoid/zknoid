@@ -38,10 +38,12 @@ export const lotteryBackendRouter = createTRPCRouter({
       return {
         id: roundInfo?.roundId,
         bank: BigInt(roundInfo?.roundId),
-        tickets: roundInfo?.tickets.map((ticket: any) => ({
-          ...ticket,
-          amount: BigInt(ticket.amount),
-        })),
+        tickets: roundInfo?.tickets
+          .filter((x: any) => x.amount > 0)
+          .map((ticket: any) => ({
+            ...ticket,
+            amount: BigInt(ticket.amount),
+          })),
         winningCombination: roundInfo?.winningCombination,
         proof: roundInfo?.dp as JsonProof,
         total: roundInfo?.total as number,
