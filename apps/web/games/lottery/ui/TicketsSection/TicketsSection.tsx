@@ -4,14 +4,16 @@ import BuyInfoCard from './ui/BuyInfoCard';
 import { useEffect, useState } from 'react';
 import OwnedTickets from './OwnedTickets';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import PreviousRounds from '@/games/lottery/ui/TicketsSection/PreviousRounds';
 import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
 import { useRoundsStore } from '@/games/lottery/lib/roundsStore';
-import { Field, Form, Formik } from 'formik';
-import * as Yup from 'yup';
-import Image from 'next/image';
-import noCodesImg from '@/public/image/misc/no-gift-codes.svg';
+import OwnedGiftCodes from '@/games/lottery/ui/TicketsSection/OwnedGiftCodes';
+import BoughtGiftCodes from '@/games/lottery/ui/TicketsSection/BoughtGiftCodes';
+import UseGiftCodeForm from '@/games/lottery/ui/TicketsSection/UseGiftCodeForm';
+import InvalidGiftCode from '@/games/lottery/ui/TicketsSection/InvalidGiftCode';
+import NoUserGiftCodes from '@/games/lottery/ui/TicketsSection/NoUserGiftCodes';
+import BuyGiftCodesCounter from '@/games/lottery/ui/TicketsSection/BuyGiftCodesCounter';
 // import GetMoreTicketsButton from './ui/GetMoreTicketsButton';
 
 interface TicketInfo {
@@ -27,88 +29,6 @@ enum VoucherMode {
   UseValid,
   Closed,
 }
-
-const BoughtGiftCode = ({ code }: { code: string }) => {
-  const notificationStore = useNotificationStore();
-  const [linkCopied, setLinkCopied] = useState<boolean>(false);
-  const copyCodes = (giftCode: string | string[]) => {
-    const codes = giftCode.toString().replaceAll(',', ', ');
-    navigator.clipboard.writeText(codes);
-    setLinkCopied(true);
-    setTimeout(() => setLinkCopied(false), 3000);
-    notificationStore.create({
-      type: 'success',
-      message: 'Copied!',
-    });
-  };
-
-  return (
-    <button
-      className={
-        'flex w-full cursor-pointer flex-row gap-[0.26vw] hover:opacity-80'
-      }
-      onClick={() => copyCodes(code)}
-    >
-      <div
-        className={
-          'w-full rounded-[0.26vw] border border-foreground p-[0.26vw] text-start'
-        }
-      >
-        {code}
-      </div>
-      <AnimatePresence>
-        {linkCopied ? (
-          <div
-            className={
-              'flex items-center justify-center rounded-[0.26vw] border border-foreground p-[0.26vw]'
-            }
-          >
-            <motion.svg
-              aria-hidden="true"
-              role="presentation"
-              viewBox="0 0 17 18"
-              className={'h-[1.25vw] w-[1.25vw]'}
-            >
-              <motion.polyline
-                fill="none"
-                points="1 9 7 14 15 4"
-                stroke="#F9F8F4"
-                strokeDasharray="22"
-                strokeDashoffset="44"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                exit={{ pathLength: 0 }}
-              />
-            </motion.svg>
-          </div>
-        ) : (
-          <div
-            className={
-              'flex items-center justify-center rounded-[0.26vw] border border-foreground p-[0.26vw]'
-            }
-          >
-            <svg
-              width="14"
-              height="17"
-              viewBox="0 0 14 17"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className={'h-[1.25vw] w-[1.25vw]'}
-            >
-              <path
-                d="M7.7 14.0965C8.62792 14.0954 9.51751 13.7283 10.1736 13.0757C10.8298 12.4231 11.1989 11.5383 11.2 10.6154V4.51846C11.2011 4.15249 11.1291 3.78995 10.9883 3.45185C10.8475 3.11374 10.6406 2.8068 10.3796 2.54882L8.8102 0.98787C8.55082 0.728297 8.24222 0.522511 7.90229 0.382442C7.56235 0.242372 7.19785 0.170804 6.8299 0.171887H3.5C2.57208 0.172993 1.68249 0.540111 1.02635 1.19272C0.370217 1.84532 0.0011115 2.73012 0 3.65304V10.6154C0.0011115 11.5383 0.370217 12.4231 1.02635 13.0757C1.68249 13.7283 2.57208 14.0954 3.5 14.0965H7.7ZM1.4 10.6154V3.65304C1.4 3.09909 1.62125 2.56782 2.01508 2.17611C2.4089 1.78441 2.94305 1.56435 3.5 1.56435C3.5 1.56435 6.9433 1.5741 7 1.58106V2.95681C7 3.32612 7.1475 3.6803 7.41005 3.94143C7.6726 4.20257 8.0287 4.34928 8.4 4.34928H9.7832C9.7902 4.40567 9.8 10.6154 9.8 10.6154C9.8 11.1693 9.57875 11.7006 9.18492 12.0923C8.7911 12.484 8.25695 12.7041 7.7 12.7041H3.5C2.94305 12.7041 2.4089 12.484 2.01508 12.0923C1.62125 11.7006 1.4 11.1693 1.4 10.6154ZM14 5.74174V13.4003C13.9989 14.3232 13.6298 15.208 12.9736 15.8606C12.3175 16.5132 11.4279 16.8803 10.5 16.8814H4.2C4.01435 16.8814 3.8363 16.8081 3.70503 16.6775C3.57375 16.547 3.5 16.3699 3.5 16.1852C3.5 16.0006 3.57375 15.8235 3.70503 15.6929C3.8363 15.5623 4.01435 15.489 4.2 15.489H10.5C11.057 15.489 11.5911 15.2689 11.9849 14.8772C12.3788 14.4855 12.6 13.9542 12.6 13.4003V5.74174C12.6 5.55709 12.6737 5.38 12.805 5.24943C12.9363 5.11886 13.1143 5.04551 13.3 5.04551C13.4857 5.04551 13.6637 5.11886 13.795 5.24943C13.9263 5.38 14 5.55709 14 5.74174Z"
-                fill="#F9F8F4"
-              />
-            </svg>
-          </div>
-        )}
-      </AnimatePresence>
-    </button>
-  );
-};
 
 export default function TicketsSection() {
   const workerClientStore = useWorkerClientStore();
@@ -138,25 +58,9 @@ export default function TicketsSection() {
 
   const renderTickets = blankTicket ? [...tickets, blankTicket] : tickets;
 
-  const validateSchema = Yup.object().shape({
-    giftCode: Yup.string().required('This field required'),
-    // .test('Check giftCode', 'Code invalid', (testCode) =>
-    //     testCode != code ? getCodeQuery.data : true
-    // ),
-  });
-
   const submitForm = (giftCode: string) => {
     setGiftCode(giftCode);
     setVoucherMode(VoucherMode.UseValid);
-  };
-
-  const copyCodes = (giftCode: string | string[]) => {
-    const codes = giftCode.toString().replaceAll(',', ', ');
-    navigator.clipboard.writeText(codes);
-    notificationStore.create({
-      type: 'success',
-      message: 'Copied!',
-    });
   };
 
   return (
@@ -228,117 +132,10 @@ export default function TicketsSection() {
                         </span>
                       </button>
                       {voucherMode == VoucherMode.Use && (
-                        <div
-                          className={
-                            'flex w-[22.5vw] flex-col gap-[0.521vw] rounded-b-[0.521vw] bg-[#252525] p-[0.521vw]'
-                          }
-                        >
-                          <span
-                            className={
-                              'font-plexsans text-[0.729vw] text-foreground'
-                            }
-                          >
-                            Enter your gift code here
-                          </span>
-                          <Formik
-                            initialValues={{ giftCode: '' }}
-                            onSubmit={({ giftCode }) => submitForm(giftCode)}
-                            validationSchema={validateSchema}
-                          >
-                            {({ errors, touched }) => (
-                              <Form
-                                className={
-                                  'flex w-[80%] flex-row items-center justify-start gap-[0.521vw]'
-                                }
-                              >
-                                <div
-                                  className={
-                                    'flex w-full flex-col gap-[0.521vw]'
-                                  }
-                                >
-                                  <Field
-                                    name={'giftCode'}
-                                    type={'text'}
-                                    className={
-                                      'w-full rounded-[0.26vw] border border-foreground bg-[#252525] p-[0.208vw] font-plexsans text-[0.729vw] text-foreground placeholder:opacity-60'
-                                    }
-                                    placeholder={'Type your gift code...'}
-                                  />
-                                  <AnimatePresence>
-                                    {errors.giftCode && touched.giftCode && (
-                                      <motion.div
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
-                                        transition={{
-                                          type: 'spring',
-                                          duration: 0.8,
-                                          bounce: 0,
-                                        }}
-                                        className={
-                                          'flex w-full flex-row items-center gap-[0.417vw]'
-                                        }
-                                      >
-                                        <svg
-                                          width="18"
-                                          height="18"
-                                          viewBox="0 0 14 14"
-                                          fill="none"
-                                          xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                          <circle
-                                            cx="7"
-                                            cy="7"
-                                            r="6"
-                                            fill="#FF0000"
-                                            stroke="#FF0000"
-                                            strokeWidth="0.500035"
-                                          />
-                                          <path
-                                            d="M6.71858 8.69036L6.29858 5.10236V2.71436H7.71458V5.10236L7.31858 8.69036H6.71858ZM7.01858 11.2344C6.71458 11.2344 6.49058 11.1624 6.34658 11.0184C6.21058 10.8664 6.14258 10.6744 6.14258 10.4424V10.2384C6.14258 10.0064 6.21058 9.81836 6.34658 9.67436C6.49058 9.52236 6.71458 9.44636 7.01858 9.44636C7.32258 9.44636 7.54258 9.52236 7.67858 9.67436C7.82258 9.81836 7.89458 10.0064 7.89458 10.2384V10.4424C7.89458 10.6744 7.82258 10.8664 7.67858 11.0184C7.54258 11.1624 7.32258 11.2344 7.01858 11.2344Z"
-                                            fill="#F9F8F4"
-                                          />
-                                        </svg>
-                                        <span
-                                          className={
-                                            'font-plexsans text-[0.729vw] text-[#FF0000]'
-                                          }
-                                        >
-                                          {errors.giftCode}
-                                        </span>
-                                      </motion.div>
-                                    )}
-                                  </AnimatePresence>
-                                </div>
-                                <button
-                                  type={'submit'}
-                                  className={
-                                    'mb-auto w-[3.646vw] rounded-[0.26vw] bg-middle-accent p-[0.313vw] text-center font-museo text-[0.729vw] font-medium hover:opacity-80'
-                                  }
-                                >
-                                  Submit
-                                </button>
-                              </Form>
-                            )}
-                          </Formik>
-                        </div>
+                        <UseGiftCodeForm submitForm={submitForm} />
                       )}
                       {voucherMode == VoucherMode.UseValid && (
-                        <div
-                          className={
-                            'flex w-[22.5vw] flex-col gap-[0.521vw] rounded-b-[0.521vw] bg-[#252525] p-[0.521vw]'
-                          }
-                        >
-                          <span
-                            className={
-                              'font-plexsans text-[0.729vw] text-foreground'
-                            }
-                          >
-                            Code <b className={'font-extrabold'}>{giftCode}</b>{' '}
-                            is valid. Please fill the ticket numbers and receive
-                            the ticket
-                          </span>
-                        </div>
+                        <InvalidGiftCode giftCode={giftCode} />
                       )}
                     </div>
                   )}
@@ -385,300 +182,26 @@ export default function TicketsSection() {
                       </div>
                       {voucherMode == VoucherMode.Buy &&
                         boughtGiftCodes.length == 0 && (
-                          <div
-                            className={
-                              'flex flex-col rounded-b-[0.521vw] bg-[#252525] px-[0.521vw] pb-[0.521vw] pt-[1.25vw]'
-                            }
-                          >
-                            <div
-                              className={
-                                'flex w-[90%] flex-row items-center justify-between border-b border-foreground pb-[0.729vw]'
-                              }
-                            >
-                              <span
-                                className={
-                                  'font-plexsans text-[0.833vw] font-medium text-foreground'
-                                }
-                              >
-                                Add codes to cart
-                              </span>
-                              <div
-                                className={cn(
-                                  'flex h-[1.6vw] items-center justify-between rounded-[0.33vw]',
-                                  'text-[1.07vw] text-[#252525]'
-                                )}
-                              >
-                                <button
-                                  className="cursor-pointer p-[0.3vw] hover:opacity-60 disabled:cursor-not-allowed disabled:opacity-30"
-                                  onClick={() =>
-                                    setGiftCodeToBuyAmount(
-                                      (prevState) => prevState - 1
-                                    )
-                                  }
-                                  disabled={giftCodeToBuyAmount - 1 < 1}
-                                >
-                                  <svg
-                                    width="16"
-                                    height="3"
-                                    viewBox="0 0 16 3"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="w-[1.07vw]"
-                                  >
-                                    <path
-                                      d="M0 0.5H16V2.5H0V0.5Z"
-                                      fill="#F9F8F4"
-                                    />
-                                    <path
-                                      d="M0 0.5H16V2.5H0V0.5Z"
-                                      fill="#F9F8F4"
-                                    />
-                                  </svg>
-                                </button>
-                                <div className="mx-[0.4vw] text-foreground opacity-50">
-                                  {giftCodeToBuyAmount}
-                                </div>
-                                <div
-                                  className="cursor-pointer p-[0.3vw] hover:opacity-60"
-                                  onClick={() =>
-                                    setGiftCodeToBuyAmount(
-                                      (prevState) => prevState + 1
-                                    )
-                                  }
-                                >
-                                  <svg
-                                    width="16"
-                                    height="17"
-                                    viewBox="0 0 16 17"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="w-[1.07vw]"
-                                  >
-                                    <path
-                                      fillRule="evenodd"
-                                      clipRule="evenodd"
-                                      d="M7 9.5V16.5H9V9.5H16V7.5H9V0.5H7V7.5H0V9.5H7Z"
-                                      fill="#F9F8F4"
-                                    />
-                                    <path
-                                      fillRule="evenodd"
-                                      clipRule="evenodd"
-                                      d="M7 9.5V16.5H9V9.5H16V7.5H9V0.5H7V7.5H0V9.5H7Z"
-                                      fill="#F9F8F4"
-                                    />
-                                  </svg>
-                                </div>
-                              </div>
-                            </div>
-                            <span
-                              className={
-                                'w-[90%] pt-[0.521vw] font-plexsans text-[0.729vw] text-foreground'
-                              }
-                            >
-                              After paying for the gift codes, you can copy them
-                              in this window and give them to your friends
-                            </span>
-                          </div>
+                          <BuyGiftCodesCounter
+                            giftCodeToBuyAmount={giftCodeToBuyAmount}
+                            setGiftCodeToBuyAmount={setGiftCodeToBuyAmount}
+                          />
                         )}
                       {voucherMode == VoucherMode.Buy &&
                         boughtGiftCodes.length != 0 && (
-                          <div
-                            className={
-                              'flex flex-col rounded-b-[0.521vw] bg-[#252525] px-[0.521vw] pb-[0.521vw] pt-[1.25vw]'
-                            }
-                          >
-                            <div
-                              className={
-                                'flex w-[90%] flex-row items-center justify-between border-b border-foreground pb-[0.729vw]'
-                              }
-                            >
-                              <span
-                                className={
-                                  'font-plexsans text-[0.833vw] font-medium text-foreground'
-                                }
-                              >
-                                Codes preparation
-                              </span>
-                            </div>
-                            <span
-                              className={
-                                'w-[90%] pt-[0.521vw] font-plexsans text-[0.729vw] text-foreground'
-                              }
-                            >
-                              After paying for the gift codes, you can copy them
-                              in this window and give them to your friends
-                            </span>
-                            <div
-                              className={
-                                'mt-[0.781vw] flex w-full flex-row gap-[0.521vw]'
-                              }
-                            >
-                              <div
-                                className={
-                                  'grid max-h-[6.771vw] w-full grid-cols-2 gap-x-[1.094vw] gap-y-[0.521vw] overflow-y-scroll pr-[0.5vw]'
-                                }
-                              >
-                                {boughtGiftCodes.map((item, index) => (
-                                  <BoughtGiftCode key={index} code={item} />
-                                ))}
-                              </div>
-                              {/*<div></div>*/}
-                            </div>
-                            <button
-                              className={
-                                'mt-[0.521vw] w-full cursor-pointer rounded-[0.26vw] bg-right-accent py-[0.26vw] text-center font-museo text-[0.729vw] font-medium text-bg-dark hover:opacity-80'
-                              }
-                              onClick={() => copyCodes(boughtGiftCodes)}
-                            >
-                              Copy all
-                            </button>
-                          </div>
+                          <BoughtGiftCodes giftCodes={boughtGiftCodes} />
                         )}
                       {voucherMode == VoucherMode.List &&
                         userGiftCodes.length == 0 && (
-                          <div
-                            className={
-                              'flex h-full flex-col items-center justify-between p-[0.521vw]'
+                          <NoUserGiftCodes
+                            setVoucherMode={() =>
+                              setVoucherMode(VoucherMode.Buy)
                             }
-                          >
-                            <span
-                              className={
-                                'font-plexsans text-[0.729vw] text-foreground'
-                              }
-                            >
-                              You haven&apos;t purchased the codes yet and you
-                              don&apos;t have any available. Go to “NEW CODES”
-                              or click button to purchase one.
-                            </span>
-                            <Image
-                              src={noCodesImg}
-                              alt={'No codes image'}
-                              className={'my-[0.99vw] w-1/2'}
-                            />
-                            <button
-                              className={
-                                'w-full rounded-[0.26vw] bg-right-accent py-[0.26vw] text-center font-museo text-[0.729vw] font-medium text-bg-dark'
-                              }
-                              onClick={() => setVoucherMode(VoucherMode.Buy)}
-                            >
-                              Buy access gift codes
-                            </button>
-                          </div>
+                          />
                         )}
                       {voucherMode == VoucherMode.List &&
                         userGiftCodes.length != 0 && (
-                          <div
-                            className={
-                              'flex flex-col gap-[0.521vw] p-[0.521vw]'
-                            }
-                          >
-                            <span
-                              className={
-                                'w-full font-plexsans text-[0.729vw] text-foreground'
-                              }
-                            >
-                              The codes you already bought previously
-                            </span>
-                            <div className={'flex flex-col'}>
-                              <div className={'grid grid-cols-5 pt-[0.521vw]'}>
-                                <span
-                                  className={
-                                    'my-auto font-plexsans text-[0.729vw] text-foreground'
-                                  }
-                                >
-                                  #
-                                </span>
-                                <span
-                                  className={
-                                    'col-span-2 my-auto font-plexsans text-[0.729vw] text-foreground'
-                                  }
-                                >
-                                  Code
-                                </span>
-                                <span
-                                  className={
-                                    'my-auto font-plexsans text-[0.729vw] text-foreground'
-                                  }
-                                >
-                                  Status
-                                </span>
-                              </div>
-                            </div>
-                            <div
-                              className={
-                                'flex max-h-[12vw] flex-col overflow-y-scroll pr-[0.5vw]'
-                              }
-                            >
-                              {userGiftCodes.map((item, index) => (
-                                <div
-                                  key={index}
-                                  className={
-                                    'grid grid-cols-5 border-b border-foreground py-[0.521vw] first:border-t'
-                                  }
-                                >
-                                  <span
-                                    className={
-                                      'my-auto font-plexsans text-[0.729vw] text-foreground'
-                                    }
-                                  >
-                                    {index + 1}
-                                  </span>
-                                  <span
-                                    className={
-                                      'col-span-2 my-auto font-plexsans text-[0.729vw] text-foreground'
-                                    }
-                                  >
-                                    {item.code}
-                                  </span>
-                                  <span
-                                    className={cn(
-                                      'my-auto font-plexsans text-[0.729vw] text-foreground',
-                                      {
-                                        'text-[#FF5B23]': item.used,
-                                      }
-                                    )}
-                                  >
-                                    {item.used ? 'Used' : 'Available'}
-                                  </span>
-                                  {!item.used && (
-                                    <button
-                                      className={
-                                        'cursor-pointer rounded-[0.26vw] bg-right-accent text-center text-bg-dark hover:opacity-80'
-                                      }
-                                      onClick={() => copyCodes(item.code)}
-                                    >
-                                      Copy
-                                    </button>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-                            <div
-                              className={
-                                'mt-[0.521vw] flex w-full flex-row gap-[0.521vw]'
-                              }
-                            >
-                              <button
-                                className={
-                                  'w-full cursor-pointer rounded-[0.26vw] bg-middle-accent py-[0.26vw] font-museo text-[0.625vw] font-medium text-foreground hover:opacity-80'
-                                }
-                              >
-                                Delete all used codes
-                              </button>
-                              <button
-                                className={
-                                  'w-full cursor-pointer rounded-[0.26vw] bg-right-accent py-[0.26vw] font-museo text-[0.625vw] font-medium text-bg-dark hover:opacity-80'
-                                }
-                                onClick={() =>
-                                  copyCodes(
-                                    userGiftCodes.map((item) => item.code)
-                                  )
-                                }
-                              >
-                                Copy all
-                              </button>
-                            </div>
-                          </div>
+                          <OwnedGiftCodes userGiftCodes={userGiftCodes} />
                         )}
                     </div>
                   )}
