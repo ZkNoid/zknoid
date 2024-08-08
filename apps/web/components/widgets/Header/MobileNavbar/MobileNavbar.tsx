@@ -38,6 +38,8 @@ export default function MobileNavbar({
 }: {
   autoconnect: boolean;
 }) {
+  const [networkExpanded, setNetworkExpanded] = useState(false);
+
   const [hidden, setHidden] = useState(false);
   const [isOpen, toggleOpen] = useCycle(false, true);
   const networkStore = useNetworkStore();
@@ -178,7 +180,10 @@ export default function MobileNavbar({
                   {networkStore.walletConnected && networkStore.address ? (
                     <>
                       <MobileAccount />
-                      <NetworkPicker />
+                      <NetworkPicker
+                        expanded={networkExpanded}
+                        setExpanded={setNetworkExpanded}
+                      />
                     </>
                   ) : walletInstalled() ? (
                     <HeaderCard

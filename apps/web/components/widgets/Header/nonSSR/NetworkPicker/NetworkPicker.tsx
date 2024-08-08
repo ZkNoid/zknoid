@@ -10,8 +10,13 @@ import berkleyLogo from '@/public/image/cards/berkleyLogo.svg';
 import minaLogo from '@/public/image/cards/minaLogo.svg';
 import Image from 'next/image';
 
-export default function NetworkPicker() {
-  const [expanded, setExpanded] = useState(false);
+export default function NetworkPicker({
+  expanded,
+  setExpanded,
+}: {
+  expanded: boolean;
+  setExpanded: (expanded: boolean) => void;
+}) {
   const networkStore = useNetworkStore();
   useRegisterWorkerClient();
 

@@ -40,6 +40,7 @@ export default function DesktopNavbar({
 }: {
   autoconnect: boolean;
 }) {
+  const [networkExpanded, setNetworkExpanded] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [isOpen, toggleOpen] = useCycle(false, true);
   const networkStore = useNetworkStore();
@@ -79,6 +80,13 @@ export default function DesktopNavbar({
       });
     }
   }, [networkStore.walletConnected]);
+
+  useEffect(() => {
+    if (hidden) {
+      setIsAccountOpen(false);
+      setNetworkExpanded(false);
+    }
+  }, [hidden]);
 
   return (
     <motion.header
@@ -206,7 +214,10 @@ export default function DesktopNavbar({
                 text={formatAddress(networkStore.address)}
                 onClick={() => setIsAccountOpen(true)}
               />
-              <NetworkPicker />
+              <NetworkPicker
+                expanded={networkExpanded}
+                setExpanded={setNetworkExpanded}
+              />
               <AnimatePresence>
                 {isAccountOpen && (
                   <AccountPopup setIsAccountOpen={setIsAccountOpen} />
