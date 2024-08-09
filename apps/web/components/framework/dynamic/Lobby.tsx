@@ -1,9 +1,10 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { zkNoidConfig } from '@/games/config';
 import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import { useNetworkStore } from '@/lib/stores/network';
 
 export default function Page({
   gameId,
@@ -17,8 +18,13 @@ export default function Page({
     []
   );
   const client = useMemo(() => zkNoidConfig.getClient(), []);
+  const networkStore = useNetworkStore();
 
   const Lobby = config.lobby!;
+
+  useEffect(() => {
+    client.start().then(() => networkStore.onProtokitClientStarted());
+  }, [client]);
 
   return (
     <AppChainClientContext.Provider value={client}>

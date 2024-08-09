@@ -8,7 +8,7 @@ import { api } from '@/trpc/react';
 import { useNetworkStore } from '@/lib/stores/network';
 import { getEnvContext } from '@/lib/envContext';
 
-export default function Page({
+export default function GamePageWrapper({
   gameId,
   competitionId,
 }: {
@@ -22,6 +22,10 @@ export default function Page({
   const client = useMemo(() => zkNoidConfig.getClient(), []);
   const networkStore = useNetworkStore();
   const logGameOpenedMutation = api.logging.logGameOpened.useMutation();
+
+  useEffect(() => {
+    client.start().then(() => networkStore.onProtokitClientStarted());
+  }, [client]);
 
   useEffect(() => {
     if (networkStore.address) {

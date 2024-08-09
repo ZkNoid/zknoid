@@ -19,8 +19,6 @@ import { cn } from '@/lib/helpers';
 import Header from '@/components/widgets/Header';
 import Footer from '@/components/widgets/Footer';
 
-let started = false;
-
 const Updater = () => {
   usePollMinaBlockHeight();
   usePollProtokitBlockHeight();
@@ -33,17 +31,6 @@ const Updater = () => {
     any
   >;
   const networkStore = useNetworkStore();
-
-  useEffect(() => {
-    console.log('Starting client', started);
-    started = true;
-
-    if (!started)
-      client.start().then(() => networkStore.onProtokitClientStarted());
-  }, []);
-
-  useObserveProtokitBalance({ client });
-
   return <></>;
 };
 

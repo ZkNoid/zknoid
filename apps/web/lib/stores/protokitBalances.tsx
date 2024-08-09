@@ -100,16 +100,15 @@ export const useProtokitBalancesStore = create<
   }))
 );
 
-export const useObserveProtokitBalance = ({
-  client,
-}: {
-  client?: ClientAppChain<typeof DefaultRuntimeModules, any, any, any>;
-}) => {
+export const useObserveProtokitBalance = () => {
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
   const balances = useProtokitBalancesStore();
+  const client = useContext(
+    AppChainClientContext
+  ) as ClientAppChain<typeof DefaultRuntimeModules, any, any, any>;
+
   useEffect(() => {
-    console.log(network.protokitClientStarted, network.walletConnected, network.address)
     if (!network.protokitClientStarted) return;
     if (!network.walletConnected) return;
     if (!network.address) return;
