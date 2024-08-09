@@ -50,7 +50,7 @@
     "lucide-react": "^0.292.0",
     "luxon": "^3.4.4",
     "mongodb": "^6.5.0",
-    "next": "v15.0.0-canary.110",
+    "next": "v15.0.0-canary.106",
     "node-telegram-bot-api": "^0.65.1",
     "o1js": "npm:o1js@1.3.1",
     "react": "19.0.0-rc-4c2e457c7c-20240522",
