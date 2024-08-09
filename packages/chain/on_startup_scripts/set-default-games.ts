@@ -4,7 +4,6 @@ import { getDefaultCompetitions, client } from '../src';
 const setDefaultGames = async () => {
   const alicePrivateKey = PrivateKey.random();
   const alice = alicePrivateKey.toPublicKey();
-  await client.start();
   const gameHub = client.runtime.resolve('ArkanoidGameHub');
   const defaultCompetitions = getDefaultCompetitions();
   for (let i = 0; i < defaultCompetitions.length; i++) {
@@ -33,7 +32,6 @@ const setDefaultMatchmaking = async () => {
 
   const alicePrivateKey = PrivateKey.random();
   const alice = alicePrivateKey.toPublicKey();
-  await client.start();
 
   const games = ['RandzuLogic', 'CheckersLogic', 'ThimblerigLogic'];
 
@@ -57,6 +55,7 @@ const setDefaultMatchmaking = async () => {
     }
   }
 };
+await client.start();
 
 await setDefaultGames();
 await setDefaultMatchmaking();
