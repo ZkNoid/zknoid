@@ -4,7 +4,7 @@ import { useNotificationStore } from '@/components/shared/Notification/lib/notif
 export default function OwnedGiftCodes({
   userGiftCodes,
 }: {
-  userGiftCodes: { code: string; used: boolean }[];
+  userGiftCodes: { code: string; used: boolean; createdAt: string }[];
 }) {
   const notificationStore = useNotificationStore();
   const copyCodes = (giftCode: string | string[]) => {
@@ -16,7 +16,7 @@ export default function OwnedGiftCodes({
     });
   };
   return (
-    <div className={'flex flex-col gap-[0.521vw] p-[0.521vw]'}>
+    <div className={'flex h-full flex-col gap-[0.521vw] p-[0.521vw]'}>
       <span className={'w-full font-plexsans text-[0.729vw] text-foreground'}>
         The codes you already bought previously
       </span>
@@ -86,7 +86,7 @@ export default function OwnedGiftCodes({
           </div>
         ))}
       </div>
-      <div className={'mt-[0.521vw] flex w-full flex-row gap-[0.521vw]'}>
+      <div className={'mt-auto flex w-full flex-row gap-[0.521vw]'}>
         <button
           className={
             'w-full cursor-pointer rounded-[0.26vw] bg-middle-accent py-[0.26vw] font-museo text-[0.625vw] font-medium text-foreground hover:opacity-80'

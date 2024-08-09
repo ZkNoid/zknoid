@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
-import { VioletLotteryButton } from '../../buttons/VioletLotteryButton';
-import { cn, sendTransaction } from '@/lib/helpers';
+import { cn, requestAccounts, sendTransaction } from '@/lib/helpers';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useChainStore } from '@/lib/stores/minaChain';
@@ -10,12 +9,20 @@ import Loader from '@/components/shared/Loader';
 import { Currency } from '@/constants/currency';
 import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
 import { useMinaBalancesStore } from '@/lib/stores/minaBalances';
+import { VoucherMode } from '@/games/lottery/ui/TicketsSection/lib/voucherMode';
+import { BRIDGE_ADDR } from '@/app/constants';
+import { api } from '@/trpc/react';
+import * as crypto from 'crypto';
 
 export default function BuyInfoCard({
   buttonActive,
   loaderActive,
   ticketsInfo,
   onFinally,
+  voucherMode,
+  setVoucherMode,
+  giftCodeToBuyAmount,
+  setBoughtGiftCodes,
 }: {
   buttonActive: ReactNode;
   loaderActive: boolean;
@@ -24,23 +31,118 @@ export default function BuyInfoCard({
     numbers: number[];
   }[];
   onFinally: () => void;
+  voucherMode: VoucherMode;
+  setVoucherMode: (mode: VoucherMode) => void;
+  giftCodeToBuyAmount: number;
+  setBoughtGiftCodes: (codes: string[]) => void;
 }) {
   const workerStore = useWorkerClientStore();
   const networkStore = useNetworkStore();
   const chain = useChainStore();
   const notificationStore = useNotificationStore();
 
-  const numberOfTickets = ticketsInfo
-    .map((x) => x.amount)
-    .reduce((x, y) => x + y, 0);
+  const addGiftCodeMutation = api.giftCodes.addGiftCode.useMutation();
+  const addGiftCodesMutation = api.giftCodes.addGiftCodes.useMutation();
+
+  const numberOfTickets =
+    voucherMode == VoucherMode.Buy
+      ? giftCodeToBuyAmount
+      : ticketsInfo.map((x) => x.amount).reduce((x, y) => x + y, 0);
   const cost = +TICKET_PRICE;
-  const totalPrice = numberOfTickets * cost;
+  const totalPrice =
+    voucherMode == VoucherMode.Buy
+      ? giftCodeToBuyAmount * cost
+      : numberOfTickets * cost;
 
   const minaBalancesStore = useMinaBalancesStore();
   const balance = (
     Number(minaBalancesStore.balances[networkStore.address!] ?? 0n) /
     10 ** 9
   ).toFixed(2);
+
+  const buyTicket = async () => {
+    const txJson = await workerStore.buyTicket(
+      networkStore.address!,
+      Number(chain.block?.slotSinceGenesis!),
+      ticketsInfo[0].numbers,
+      numberOfTickets
+    );
+    console.log('txJson', txJson);
+    await sendTransaction(txJson)
+      .then((transaction: string | undefined) => {
+        if (transaction) {
+          onFinally();
+          notificationStore.create({
+            type: 'success',
+            message: 'Transaction sent',
+          });
+        } else {
+          notificationStore.create({
+            type: 'error',
+            message: 'Transaction rejected by user',
+          });
+        }
+      })
+      .catch((error) => {
+        console.log('Error while sending transaction', error);
+        notificationStore.create({
+          type: 'error',
+          message: 'Error while sending transaction',
+          dismissDelay: 10000,
+        });
+      });
+  };
+
+  const buyVoucher = async () => {
+    if (!networkStore.address) return;
+
+    try {
+      const tx = await (window as any).mina.sendPayment({
+        memo: `zknoid.io game bridging #${process.env.BRIDGE_ID ?? 100}`,
+        to: BRIDGE_ADDR,
+        amount: 1,
+        // amount: formatUnits(totalPrice),
+      });
+      if (numberOfTickets > 1) {
+        const codes = [];
+        for (let i = 0; i < numberOfTickets; i++) {
+          const code = {
+            userAddress: networkStore.address,
+            transactionHash: tx.hash,
+            code: crypto.randomBytes(8).toString('hex'),
+          };
+          codes.push(code);
+        }
+        addGiftCodesMutation.mutate(codes);
+        setBoughtGiftCodes(codes.map((item) => item.code));
+        setVoucherMode(VoucherMode.BuySuccess);
+      } else {
+        const code = {
+          userAddress: networkStore.address,
+          transactionHash: tx.hash,
+          code: crypto.randomBytes(8).toString('hex'),
+        };
+        addGiftCodeMutation.mutate(code);
+        setBoughtGiftCodes([code.code]);
+        setVoucherMode(VoucherMode.BuySuccess);
+      }
+      notificationStore.create({
+        type: 'success',
+        message: 'Gift codes successfully bought',
+      });
+    } catch (error: any) {
+      if (error.code == 1001) {
+        await requestAccounts();
+        // await bridge(totalPrice);
+        return;
+      }
+      console.log(error);
+      notificationStore.create({
+        type: 'error',
+        message: 'Error while buying gift code',
+      });
+    }
+  };
 
   return (
     <div className="flex h-[13.53vw] w-[20vw] flex-col rounded-[0.67vw] bg-[#252525] p-[1.33vw] font-plexsans text-[0.833vw] shadow-2xl">
@@ -96,56 +198,24 @@ export default function BuyInfoCard({
           </span>
         </div>
       )}
-      <VioletLotteryButton
+      <button
         className={cn(
-          'mb-[1vw] flex h-[2.13vw] items-center justify-center rounded-[0.33vw] px-[1vw] text-[1.07vw]',
-          !(buttonActive && ticketsInfo.every((x) => x.numbers.length == 6)) &&
-            'cursor-not-allowed opacity-60',
+          'mb-[1vw] flex h-[2.13vw] cursor-pointer items-center justify-center rounded-[0.33vw] border-bg-dark bg-right-accent px-[1vw] text-[1.07vw] text-bg-dark hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:opacity-60',
           {
-            'hover:opacity-80':
-              buttonActive && Number(balance) > Number(formatUnits(totalPrice)),
             'cursor-progress': loaderActive,
             'mt-[0.25vw]': Number(balance) < Number(formatUnits(totalPrice)),
             'mt-[1vw]': Number(balance) > Number(formatUnits(totalPrice)),
-            'cursor-not-allowed opacity-60':
-              Number(balance) < Number(formatUnits(totalPrice)),
           }
         )}
+        disabled={
+          Number(balance) < Number(formatUnits(totalPrice)) ||
+          !buttonActive ||
+          (voucherMode != VoucherMode.Buy && !ticketsInfo.length)
+        }
         onClick={async () => {
-          if (!ticketsInfo.length) return;
-          if (Number(balance) < Number(formatUnits(totalPrice))) return;
-          if (!buttonActive) return;
-
-          const txJson = await workerStore.buyTicket(
-            networkStore.address!,
-            Number(chain.block?.slotSinceGenesis!),
-            ticketsInfo[0].numbers,
-            numberOfTickets
-          );
-          console.log('txJson', txJson);
-          await sendTransaction(txJson)
-            .then((transaction: string | undefined) => {
-              if (transaction) {
-                onFinally();
-                notificationStore.create({
-                  type: 'success',
-                  message: 'Transaction sent',
-                });
-              } else {
-                notificationStore.create({
-                  type: 'error',
-                  message: 'Transaction rejected by user',
-                });
-              }
-            })
-            .catch((error) => {
-              console.log('Error while sending transaction', error);
-              notificationStore.create({
-                type: 'error',
-                message: 'Error while sending transaction',
-                dismissDelay: 10000,
-              });
-            });
+          voucherMode == VoucherMode.Buy
+            ? await buyVoucher()
+            : await buyTicket();
         }}
       >
         <div className={'flex flex-row items-center gap-[10%]'}>
@@ -157,7 +227,7 @@ export default function BuyInfoCard({
               : 'Pay'}
           </span>
         </div>
-      </VioletLotteryButton>
+      </button>
     </div>
   );
 }

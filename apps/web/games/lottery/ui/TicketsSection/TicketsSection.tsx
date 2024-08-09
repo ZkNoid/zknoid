@@ -5,15 +5,19 @@ import { useEffect, useState } from 'react';
 import OwnedTickets from './OwnedTickets';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { AnimatePresence } from 'framer-motion';
-import PreviousRounds from '@/games/lottery/ui/TicketsSection/PreviousRounds';
+import PreviousRounds from './PreviousRounds';
 import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
 import { useRoundsStore } from '@/games/lottery/lib/roundsStore';
-import OwnedGiftCodes from '@/games/lottery/ui/TicketsSection/OwnedGiftCodes';
-import BoughtGiftCodes from '@/games/lottery/ui/TicketsSection/BoughtGiftCodes';
-import UseGiftCodeForm from '@/games/lottery/ui/TicketsSection/UseGiftCodeForm';
-import InvalidGiftCode from '@/games/lottery/ui/TicketsSection/InvalidGiftCode';
-import NoUserGiftCodes from '@/games/lottery/ui/TicketsSection/NoUserGiftCodes';
-import BuyGiftCodesCounter from '@/games/lottery/ui/TicketsSection/BuyGiftCodesCounter';
+import OwnedGiftCodes from './OwnedGiftCodes';
+import BoughtGiftCodes from './BoughtGiftCodes';
+import UseGiftCodeForm from './UseGiftCodeForm';
+import InvalidGiftCode from './InvalidGiftCode';
+import NoUserGiftCodes from './NoUserGiftCodes';
+import BuyGiftCodesCounter from './BuyGiftCodesCounter';
+import { api } from '@/trpc/react';
+import { useNetworkStore } from '@/lib/stores/network';
+import { VoucherMode } from './lib/voucherMode';
+
 // import GetMoreTicketsButton from './ui/GetMoreTicketsButton';
 
 interface TicketInfo {
@@ -21,20 +25,12 @@ interface TicketInfo {
   numbers: number[];
 }
 
-enum VoucherMode {
-  Buy,
-  BuySuccess,
-  List,
-  Use,
-  UseValid,
-  Closed,
-}
-
 export default function TicketsSection() {
   const workerClientStore = useWorkerClientStore();
   const lotteryStore = useWorkerClientStore();
   const roundsStore = useRoundsStore();
   const notificationStore = useNotificationStore();
+  const networkStore = useNetworkStore();
 
   const [tickets, setTickets] = useState<TicketInfo[]>([]);
   const [blankTicket, setBlankTicket] = useState<boolean>(true);
@@ -45,8 +41,29 @@ export default function TicketsSection() {
   const [giftCodeToBuyAmount, setGiftCodeToBuyAmount] = useState<number>(1);
   const [boughtGiftCodes, setBoughtGiftCodes] = useState<string[]>([]);
   const [userGiftCodes, setUserGiftCodes] = useState<
-    { code: string; used: boolean }[]
+    { code: string; used: boolean; createdAt: string }[]
   >([]);
+
+  const getUserTicketQuery = api.giftCodes.getUserGiftCodes.useQuery(
+    {
+      userAddress: networkStore.address || '',
+    },
+    { refetchInterval: 5000 }
+  );
+
+  useEffect(() => {
+    if (getUserTicketQuery.data) {
+      if (getUserTicketQuery.data.giftCodes) {
+        setUserGiftCodes(
+          getUserTicketQuery.data.giftCodes.map((item) => ({
+            code: item.code,
+            used: item.used,
+            createdAt: item.createdAt,
+          }))
+        );
+      }
+    }
+  }, [getUserTicketQuery.data]);
 
   useEffect(() => {
     setTickets([]);
@@ -214,6 +231,7 @@ export default function TicketsSection() {
                             key={index}
                             index={index}
                             ticketsAmount={tickets.length}
+                            voucherMode={voucherMode}
                             addTicket={(ticket) => {
                               if (tickets.length == index) {
                                 setTickets([...tickets, ticket]);
@@ -235,7 +253,6 @@ export default function TicketsSection() {
                                 } else {
                                   tickets.splice(index, 1);
                                 }
-
                                 notificationStore.create({
                                   type: 'success',
                                   message: 'Ticket removed',
@@ -291,7 +308,11 @@ export default function TicketsSection() {
                       className={
                         'mb-[0.521vw] flex h-[1.354vw] w-[3.802vw] flex-row items-center justify-center rounded-[0.144vw] border border-foreground hover:opacity-80'
                       }
-                      onClick={() => setVoucherMode(VoucherMode.Closed)}
+                      onClick={() => {
+                        if (voucherMode == VoucherMode.BuySuccess)
+                          setBoughtGiftCodes([]);
+                        setVoucherMode(VoucherMode.Closed);
+                      }}
                     >
                       <svg
                         width="0.378vw"
@@ -323,8 +344,8 @@ export default function TicketsSection() {
                       buttonActive={
                         workerClientStore.lotteryCompiled &&
                         !workerClientStore.isActiveTx &&
-                        tickets.length > 0 &&
-                        tickets[0].amount != 0
+                        ((tickets.length > 0 && tickets[0].amount != 0) ||
+                          voucherMode == VoucherMode.Buy)
                       }
                       ticketsInfo={tickets}
                       loaderActive={
@@ -334,6 +355,10 @@ export default function TicketsSection() {
                       onFinally={() => {
                         setTickets([]);
                       }}
+                      voucherMode={voucherMode}
+                      setVoucherMode={setVoucherMode}
+                      giftCodeToBuyAmount={giftCodeToBuyAmount}
+                      setBoughtGiftCodes={setBoughtGiftCodes}
                     />
                     {/*<GetMoreTicketsButton*/}
                     {/*  disabled={blankTicket}*/}

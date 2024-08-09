@@ -3,6 +3,7 @@ import { TicketBlockButton } from '@/games/lottery/ui/buttons/TicketBlockButton'
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
+import { VoucherMode } from '@/games/lottery/ui/TicketsSection/lib/voucherMode';
 
 const TicketsNumPicker = ({
   amount,
@@ -100,11 +101,13 @@ export default function TicketCard({
   ticketsAmount,
   addTicket,
   removeTicketByIdx,
+  voucherMode,
 }: {
   index: number;
   ticketsAmount: number;
   addTicket: (ticket: { numbers: number[]; amount: number }) => void;
   removeTicketByIdx: (index: number) => void;
+  voucherMode: VoucherMode;
 }) {
   const [symbols, setSymbols] = useState<string>('');
   const [amount, setAmount] = useState<number>(0);
