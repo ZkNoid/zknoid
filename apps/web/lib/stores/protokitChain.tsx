@@ -64,31 +64,31 @@ export const useProtokitChainStore = create<
           body: JSON.stringify({
             query: `
           query GetBlock {
-            block {
-              txs {
-                tx {
-                  argsFields
-                  argsJSON
-                  methodId
-                  nonce
-                  sender
-                  signature {
-                    r
-                    s
+              block {
+                txs {
+                  tx {
+                    argsFields
+                    auxiliaryData
+                    methodId
+                    nonce
+                    sender
+                    signature {
+                      r
+                      s
+                    }
+                  }
+                  status
+                  statusMessage
+                }
+              }
+              network {
+                unproven {
+                  block {
+                    height
                   }
                 }
-                status
-                statusMessage
               }
             }
-            network {
-              unproven {
-                block {
-                  height
-                }
-              }
-            }
-          }
         `,
           }),
         }

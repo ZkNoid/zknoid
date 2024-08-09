@@ -73,7 +73,7 @@ export class CheckersLogic extends MatchMaker {
   @state() public games = StateMap.from<UInt64, GameInfo>(UInt64, GameInfo);
   @state() public gamesNum = State.from<UInt64>(UInt64);
 
-  public override initGame(lobby: Lobby, shouldUpdate: Bool): UInt64 {
+  public override async initGame(lobby: Lobby, shouldUpdate: Bool): Promise<UInt64> {
     const currentGameId = lobby.id;
     const field = Array.from({ length: CHECKERS_FIELD_SIZE }, () =>
       Array(CHECKERS_FIELD_SIZE)
@@ -98,7 +98,7 @@ export class CheckersLogic extends MatchMaker {
     }
 
     // Setting active game if opponent found
-    this.games.set(
+    await this.games.set(
       Provable.if(shouldUpdate, currentGameId, UInt64.from(0)),
       new GameInfo({
         player1: lobby.players[0],
@@ -112,17 +112,17 @@ export class CheckersLogic extends MatchMaker {
       }),
     );
 
-    this.gameFund.set(
+    await this.gameFund.set(
       currentGameId,
       ProtoUInt64.from(lobby.participationFee).mul(2),
     );
 
-    return super.initGame(lobby, shouldUpdate);
+    return await super.initGame(lobby, shouldUpdate);
   }
 
   @runtimeMethod()
   public async proveOpponentTimeout(gameId: UInt64): Promise<void> {
-    super.proveOpponentTimeout(gameId, false);
+    await super.proveOpponentTimeout(gameId, false);
   }
 
   @runtimeMethod()
@@ -134,14 +134,14 @@ export class CheckersLogic extends MatchMaker {
     moveType: UInt64,
     proposedIsKing: Bool,
   ): Promise<void> {
-    const sessionSender = this.sessions.get(this.transaction.sender.value);
+    const sessionSender = await this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
       sessionSender.value,
       this.transaction.sender.value,
     );
 
-    const gameOption = this.games.get(gameId);
+    const gameOption = await this.games.get(gameId);
     const game = gameOption.value;
 
     const moveFromX = x;
@@ -340,7 +340,7 @@ export class CheckersLogic extends MatchMaker {
       game.player1,
     );
     game.lastMoveBlockHeight = this.network.block.height;
-    this.games.set(gameId, game);
+    await this.games.set(gameId, game);
   }
 
   private getCaptureCells(
@@ -396,14 +396,14 @@ export class CheckersLogic extends MatchMaker {
     moveType: UInt64,
     proposedIsKing: Bool,
   ): Promise<void> {
-    const sessionSender = this.sessions.get(this.transaction.sender.value);
+    const sessionSender = await this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
       sessionSender.value,
       this.transaction.sender.value,
     );
 
-    const gameOption = this.games.get(gameId);
+    const gameOption = await this.games.get(gameId);
     const game = gameOption.value;
 
     const moveFromX = x;
@@ -805,7 +805,7 @@ export class CheckersLogic extends MatchMaker {
       Provable.if<ProtoUInt64>(winProposed, ProtoUInt64, ProtoUInt64.from(1), ProtoUInt64.from(0)),
     );
 
-    this.acquireFunds(
+    await this.acquireFunds(
       gameId,
       game.winner,
       PublicKey.empty(),
@@ -838,18 +838,18 @@ export class CheckersLogic extends MatchMaker {
       ),
     );
     game.lastMoveBlockHeight = this.network.block.height;
-    this.games.set(gameId, game);
+    await this.games.set(gameId, game);
 
     // Removing active game for players if game ended
-    this.activeGameId.set(
+    await this.activeGameId.set(
       Provable.if(winProposed, game.player2, PublicKey.empty()),
       UInt64.from(0),
     );
-    this.activeGameId.set(
+    await this.activeGameId.set(
       Provable.if(winProposed, game.player1, PublicKey.empty()),
       UInt64.from(0),
     );
 
-    this._onLobbyEnd(gameId, winProposed);
+    await this._onLobbyEnd(gameId, winProposed);
   }
 }

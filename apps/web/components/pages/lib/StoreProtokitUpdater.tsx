@@ -9,6 +9,8 @@ import { usePollProtokitBlockHeight } from '@/lib/stores/protokitChain';
 import { buildClient } from '@/lib/utils';
 import { type ClientAppChain } from 'zknoid-chain-dev';
 
+let started = false;
+
 export default function StoreProtokitUpdater() {
   const client = useMemo(() => buildClient(DefaultRuntimeModules), []);
   const networkStore = useNetworkStore();
@@ -17,10 +19,14 @@ export default function StoreProtokitUpdater() {
   useObserveMinaBalance();
 
   useEffect(() => {
-    console.log('Starting client');
+    console.log('Starting client by updater');
+    started = true;
 
-    client.start().then(() => networkStore.onProtokitClientStarted());
+    if (!started)
+      client.start().then(() => networkStore.onProtokitClientStarted());
   }, []);
+
+  console.log('Observing protokit balance');
 
   // Order is important
   // @todo remove any

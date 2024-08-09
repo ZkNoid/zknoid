@@ -11,9 +11,10 @@ export const zkNoidConfig = createConfig({
   games: [
     lotteryConfig,
     tileVilleConfig,
-    checkersRedirectConfig,
-    thimblerigRedirectConfig,
-    randzuRedirectConfig,
-    arkanoidRedirectConfig
+    arkanoidConfig,
+    randzuConfig,
+    checkersConfig,
+    thimblerigConfig,
+    pokerConfig,
   ],
 });

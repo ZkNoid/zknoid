@@ -60,11 +60,11 @@ export class ThimblerigLogic extends MatchMaker {
   @state() public games = StateMap.from<UInt64, GameInfo>(UInt64, GameInfo);
   @state() public gamesNum = State.from<UInt64>(UInt64);
 
-  public override initGame(lobby: Lobby, shouldUpdate: Bool): UInt64 {
+  public override async initGame(lobby: Lobby, shouldUpdate: Bool): Promise<UInt64> {
     const currentGameId = lobby.id;
 
     // Setting active game if opponent found
-    this.games.set(
+    await this.games.set(
       Provable.if(shouldUpdate, currentGameId, UInt64.from(0)),
       new GameInfo({
         player1: lobby.players[0],
@@ -81,24 +81,24 @@ export class ThimblerigLogic extends MatchMaker {
       }),
     );
 
-    this.gameFund.set(
+    await this.gameFund.set(
       currentGameId,
       ProtoUInt64.from(lobby.participationFee).mul(2),
     );
 
-    return super.initGame(lobby, shouldUpdate);
+    return await super.initGame(lobby, shouldUpdate);
   }
 
   @runtimeMethod()
   public async commitValue(gameId: UInt64, commitment: Field): Promise<void> {
-    const sessionSender = this.sessions.get(this.transaction.sender.value);
+    const sessionSender = await this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
       sessionSender.value,
       this.transaction.sender.value,
     );
 
-    const game = this.games.get(gameId);
+    const game = await this.games.get(gameId);
     assert(game.isSome, 'Invalid game id');
     assert(game.value.field.choice.equals(UInt64.from(0)), 'Already chosen');
     assert(game.value.field.commitedHash.equals(0), 'Already commited');
@@ -111,19 +111,19 @@ export class ThimblerigLogic extends MatchMaker {
     game.value.field.commitedHash = commitment;
     game.value.currentMoveUser = game.value.player2;
     game.value.lastMoveBlockHeight = this.network.block.height;
-    this.games.set(gameId, game.value);
+    await this.games.set(gameId, game.value);
   }
 
   @runtimeMethod()
   public async chooseThumble(gameId: UInt64, choice: UInt64): Promise<void> {
-    const sessionSender = this.sessions.get(this.transaction.sender.value);
+    const sessionSender = await this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
       sessionSender.value,
       this.transaction.sender.value,
     );
 
-    const game = this.games.get(gameId);
+    const game = await this.games.get(gameId);
     assert(game.isSome, 'Invalid game id');
     assert(
       Bool.and(
@@ -143,19 +143,19 @@ export class ThimblerigLogic extends MatchMaker {
     game.value.field.choice = choice;
     game.value.currentMoveUser = game.value.player1;
     game.value.lastMoveBlockHeight = this.network.block.height;
-    this.games.set(gameId, game.value);
+    await this.games.set(gameId, game.value);
   }
 
   @runtimeMethod()
   public async revealCommitment(gameId: UInt64, value: UInt64, salt: Field): Promise<void> {
-    const sessionSender = this.sessions.get(this.transaction.sender.value);
+    const sessionSender = await this.sessions.get(this.transaction.sender.value);
     const sender = Provable.if(
       sessionSender.isSome,
       sessionSender.value,
       this.transaction.sender.value,
     );
 
-    const game = this.games.get(gameId);
+    const game = await this.games.get(gameId);
     assert(game.isSome, 'Invalid game id');
     assert(game.value.field.choice.greaterThan(UInt64.from(0)), 'Not chosen');
     assert(game.value.field.commitedHash.greaterThan(0), 'Not commited');
@@ -206,7 +206,7 @@ export class ThimblerigLogic extends MatchMaker {
       ProtoUInt64.from(0),
     );
 
-    this.acquireFunds(
+    await this.acquireFunds(
       gameId,
       game.value.winner,
       looser,
@@ -218,19 +218,19 @@ export class ThimblerigLogic extends MatchMaker {
     game.value.field.salt = salt;
     game.value.field.value = value;
 
-    this.games.set(gameId, game.value);
+    await this.games.set(gameId, game.value);
 
-    this.activeGameId.set(game.value.player2, UInt64.from(0));
-    this.activeGameId.set(game.value.player1, UInt64.from(0));
+    await this.activeGameId.set(game.value.player2, UInt64.from(0));
+    await this.activeGameId.set(game.value.player1, UInt64.from(0));
 
-    this._onLobbyEnd(gameId, Bool(true));
+    await this._onLobbyEnd(gameId, Bool(true));
   }
 
   @runtimeMethod()
   public async proveCommitNotRevealed(gameId: UInt64): Promise<void> {
-    super.proveOpponentTimeout(gameId, false);
-    const game = this.games.get(gameId);
-    this.acquireFunds(
+    await super.proveOpponentTimeout(gameId, false);
+    const game = await this.games.get(gameId);
+    await this.acquireFunds(
       gameId,
       game.value.winner,
       PublicKey.empty(),
@@ -239,6 +239,6 @@ export class ThimblerigLogic extends MatchMaker {
       ProtoUInt64.from(1),
     );
 
-    this._onLobbyEnd(gameId, Bool(true));
+    await this._onLobbyEnd(gameId, Bool(true));
   }
 }

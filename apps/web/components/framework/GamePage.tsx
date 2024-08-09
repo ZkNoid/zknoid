@@ -31,15 +31,6 @@ const Updater = () => {
     any
   >;
   const networkStore = useNetworkStore();
-
-  useEffect(() => {
-    console.log('Starting client');
-
-    client.start().then(() => networkStore.onProtokitClientStarted());
-  }, []);
-
-  useObserveProtokitBalance({ client });
-
   return <></>;
 };
 
