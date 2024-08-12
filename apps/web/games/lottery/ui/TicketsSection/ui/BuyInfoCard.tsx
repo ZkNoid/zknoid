@@ -18,11 +18,13 @@ export default function BuyInfoCard({
   buttonActive,
   loaderActive,
   ticketsInfo,
-  onFinally,
+  clearTickets,
   voucherMode,
   setVoucherMode,
   giftCodeToBuyAmount,
+  setGiftCodeToBuyAmount,
   setBoughtGiftCodes,
+  giftCode,
 }: {
   buttonActive: ReactNode;
   loaderActive: boolean;
@@ -30,11 +32,13 @@ export default function BuyInfoCard({
     amount: number;
     numbers: number[];
   }[];
-  onFinally: () => void;
+  clearTickets: () => void;
   voucherMode: VoucherMode;
   setVoucherMode: (mode: VoucherMode) => void;
   giftCodeToBuyAmount: number;
+  setGiftCodeToBuyAmount: (amount: number) => void;
   setBoughtGiftCodes: (codes: string[]) => void;
+  giftCode: string;
 }) {
   const workerStore = useWorkerClientStore();
   const networkStore = useNetworkStore();
@@ -43,6 +47,8 @@ export default function BuyInfoCard({
 
   const addGiftCodeMutation = api.giftCodes.addGiftCode.useMutation();
   const addGiftCodesMutation = api.giftCodes.addGiftCodes.useMutation();
+  const sendTicketQueueMutation = api.giftCodes.sendTicketQueue.useMutation();
+  const useGiftCodeMutation = api.giftCodes.useGiftCode.useMutation();
 
   const numberOfTickets =
     voucherMode == VoucherMode.Buy
@@ -71,7 +77,7 @@ export default function BuyInfoCard({
     await sendTransaction(txJson)
       .then((transaction: string | undefined) => {
         if (transaction) {
-          onFinally();
+          clearTickets();
           notificationStore.create({
             type: 'success',
             message: 'Transaction sent',
@@ -100,8 +106,7 @@ export default function BuyInfoCard({
       const tx = await (window as any).mina.sendPayment({
         memo: `zknoid.io game bridging #${process.env.BRIDGE_ID ?? 100}`,
         to: BRIDGE_ADDR,
-        amount: 1,
-        // amount: formatUnits(totalPrice),
+        amount: formatUnits(totalPrice),
       });
       if (numberOfTickets > 1) {
         const codes = [];
@@ -115,6 +120,7 @@ export default function BuyInfoCard({
         }
         addGiftCodesMutation.mutate(codes);
         setBoughtGiftCodes(codes.map((item) => item.code));
+        setGiftCodeToBuyAmount(1);
         setVoucherMode(VoucherMode.BuySuccess);
       } else {
         const code = {
@@ -144,12 +150,31 @@ export default function BuyInfoCard({
     }
   };
 
+  const sendTicketQueue = () => {
+    sendTicketQueueMutation.mutate({
+      userAddress: networkStore.address || '',
+      giftCode: giftCode,
+      roundId: workerStore.lotteryRoundId,
+      ticket: { numbers: ticketsInfo[0].numbers },
+    });
+    useGiftCodeMutation.mutate({
+      giftCode: giftCode,
+    });
+    setVoucherMode(VoucherMode.Closed);
+    clearTickets();
+    notificationStore.create({
+      type: 'success',
+      message: 'Transaction sent',
+    });
+  };
   return (
     <div className="flex h-[13.53vw] w-[20vw] flex-col rounded-[0.67vw] bg-[#252525] p-[1.33vw] font-plexsans text-[0.833vw] shadow-2xl">
       <div className="flex flex-row">
         <div className="text-nowrap">Number of tickets</div>
         <div className="mx-1 mb-[0.3vw] w-full border-spacing-6 border-b border-dotted border-[#F9F8F4] opacity-50"></div>
-        <div className="">{numberOfTickets}</div>
+        <div className="">
+          {voucherMode == VoucherMode.UseValid ? '1' : numberOfTickets}
+        </div>
       </div>
       <div className="flex flex-row">
         <div className="text-nowrap">Cost per ticket</div>
@@ -159,12 +184,22 @@ export default function BuyInfoCard({
           {Currency.MINA}
         </div>
       </div>
+      {voucherMode == VoucherMode.UseValid && (
+        <div className="flex flex-row">
+          <div className="text-nowrap">Discount</div>
+          <div className="mx-1 mb-[0.3vw] w-full border-spacing-6 border-b border-dotted border-[#F9F8F4] opacity-50"></div>
+          <div className="">
+            -{formatUnits(cost)}
+            {Currency.MINA}
+          </div>
+        </div>
+      )}
 
       <div className="mt-auto flex flex-row">
         <div className="text-nowrap font-medium">TOTAL AMOUNT</div>
         <div className="mx-1 mb-[0.3vw] w-full border-spacing-6 border-b border-dotted border-[#F9F8F4] opacity-50"></div>
         <div className="">
-          {formatUnits(totalPrice)}
+          {voucherMode == VoucherMode.UseValid ? '0' : formatUnits(totalPrice)}
           {Currency.MINA}
         </div>
       </div>
@@ -213,18 +248,21 @@ export default function BuyInfoCard({
           (voucherMode != VoucherMode.Buy && !ticketsInfo.length)
         }
         onClick={async () => {
-          voucherMode == VoucherMode.Buy
-            ? await buyVoucher()
-            : await buyTicket();
+          voucherMode == VoucherMode.UseValid
+            ? sendTicketQueue()
+            : voucherMode == VoucherMode.Buy
+              ? await buyVoucher()
+              : await buyTicket();
         }}
       >
         <div className={'flex flex-row items-center gap-[10%]'}>
           {loaderActive && <Loader size={19} color={'#212121'} />}
-          {/*<span>{Number(balance) < Number(formatUnits(totalPrice)) ? 'Add funds' : 'Pay'}</span>*/}
           <span>
-            {Number(balance) < Number(formatUnits(totalPrice))
-              ? 'Not enough funds'
-              : 'Pay'}
+            {voucherMode == VoucherMode.UseValid
+              ? 'Receive ticket'
+              : Number(balance) < Number(formatUnits(totalPrice))
+                ? 'Not enough funds'
+                : 'Pay'}
           </span>
         </div>
       </button>

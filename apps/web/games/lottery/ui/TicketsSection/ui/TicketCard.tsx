@@ -136,9 +136,13 @@ export default function TicketCard({
 
   const clearStates = () => {
     setSymbols('');
-    setAmount(0);
+    if (voucherMode !== VoucherMode.UseValid) setAmount(0);
     setFinalized(false);
   };
+
+  useEffect(() => {
+    if (voucherMode == VoucherMode.UseValid && amount != 1) setAmount(1);
+  }, [voucherMode]);
 
   useEffect(() => {
     if (ticketsAmount != 0) {
@@ -147,10 +151,14 @@ export default function TicketCard({
   }, [ticketsAmount]);
 
   const removeTicket = () => {
-    if (ticketsAmount == 0) {
+    if (voucherMode == VoucherMode.UseValid) {
       clearStates();
+    } else {
+      if (ticketsAmount == 0) {
+        clearStates();
+      }
+      removeTicketByIdx(index);
     }
-    removeTicketByIdx(index);
   };
 
   useEffect(() => {
@@ -204,11 +212,13 @@ export default function TicketCard({
             ) : (
               <div className={'flex flex-row gap-[0.26vw]'}>
                 <ClearTicketButton onClick={removeTicket} />
-                <TicketsNumPicker
-                  amount={amount}
-                  setAmount={setAmount}
-                  removeTicket={removeTicket}
-                />
+                {voucherMode !== VoucherMode.UseValid && (
+                  <TicketsNumPicker
+                    amount={amount}
+                    setAmount={setAmount}
+                    removeTicket={removeTicket}
+                  />
+                )}
               </div>
             )}
           </div>

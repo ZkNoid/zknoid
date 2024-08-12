@@ -11,7 +11,7 @@ import { useRoundsStore } from '@/games/lottery/lib/roundsStore';
 import OwnedGiftCodes from './OwnedGiftCodes';
 import BoughtGiftCodes from './BoughtGiftCodes';
 import UseGiftCodeForm from './UseGiftCodeForm';
-import InvalidGiftCode from './InvalidGiftCode';
+import ValidGiftCode from './ValidGiftCode';
 import NoUserGiftCodes from './NoUserGiftCodes';
 import BuyGiftCodesCounter from './BuyGiftCodesCounter';
 import { api } from '@/trpc/react';
@@ -152,7 +152,7 @@ export default function TicketsSection() {
                         <UseGiftCodeForm submitForm={submitForm} />
                       )}
                       {voucherMode == VoucherMode.UseValid && (
-                        <InvalidGiftCode giftCode={giftCode} />
+                        <ValidGiftCode giftCode={giftCode} />
                       )}
                     </div>
                   )}
@@ -197,14 +197,13 @@ export default function TicketsSection() {
                           Already bought codes
                         </button>
                       </div>
-                      {voucherMode == VoucherMode.Buy &&
-                        boughtGiftCodes.length == 0 && (
-                          <BuyGiftCodesCounter
-                            giftCodeToBuyAmount={giftCodeToBuyAmount}
-                            setGiftCodeToBuyAmount={setGiftCodeToBuyAmount}
-                          />
-                        )}
-                      {voucherMode == VoucherMode.Buy &&
+                      {voucherMode == VoucherMode.Buy && (
+                        <BuyGiftCodesCounter
+                          giftCodeToBuyAmount={giftCodeToBuyAmount}
+                          setGiftCodeToBuyAmount={setGiftCodeToBuyAmount}
+                        />
+                      )}
+                      {voucherMode == VoucherMode.BuySuccess &&
                         boughtGiftCodes.length != 0 && (
                           <BoughtGiftCodes giftCodes={boughtGiftCodes} />
                         )}
@@ -352,13 +351,15 @@ export default function TicketsSection() {
                         workerClientStore.lotteryCompiled &&
                         workerClientStore.isActiveTx
                       }
-                      onFinally={() => {
+                      clearTickets={() => {
                         setTickets([]);
                       }}
                       voucherMode={voucherMode}
                       setVoucherMode={setVoucherMode}
                       giftCodeToBuyAmount={giftCodeToBuyAmount}
+                      setGiftCodeToBuyAmount={setGiftCodeToBuyAmount}
                       setBoughtGiftCodes={setBoughtGiftCodes}
+                      giftCode={giftCode}
                     />
                     {/*<GetMoreTicketsButton*/}
                     {/*  disabled={blankTicket}*/}
