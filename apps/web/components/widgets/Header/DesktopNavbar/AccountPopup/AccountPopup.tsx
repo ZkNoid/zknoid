@@ -24,6 +24,13 @@ import avatar11 from '@/public/image/avatars/avatar-11.svg';
 import avatar12 from '@/public/image/avatars/avatar-12.svg';
 import avatar13 from '@/public/image/avatars/avatar-13.svg';
 import avatar14 from '@/public/image/avatars/avatar-14.svg';
+import avatar15 from '@/public/image/avatars/avatar-15.svg';
+import avatar16 from '@/public/image/avatars/avatar-16.svg';
+import avatar17 from '@/public/image/avatars/avatar-17.svg';
+import avatar18 from '@/public/image/avatars/avatar-18.svg';
+import avatar19 from '@/public/image/avatars/avatar-19.svg';
+import avatar20 from '@/public/image/avatars/avatar-20.svg';
+import avatar21 from '@/public/image/avatars/avatar-21.svg';
 import Image from 'next/image';
 
 const avatars = [
@@ -42,6 +49,13 @@ const avatars = [
   avatar12,
   avatar13,
   avatar14,
+  avatar15,
+  avatar16,
+  avatar17,
+  avatar18,
+  avatar19,
+  avatar20,
+  avatar21,
 ];
 
 const AccountPopupBalance = dynamic(
