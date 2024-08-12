@@ -1,12 +1,18 @@
 import { cn } from '@/lib/helpers';
 import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
+import { api } from '@/trpc/react';
+import { useNetworkStore } from '@/lib/stores/network';
 
 export default function OwnedGiftCodes({
   userGiftCodes,
 }: {
   userGiftCodes: { code: string; used: boolean; createdAt: string }[];
 }) {
+  const removeUsedGiftCodesMutation =
+    api.giftCodes.removeUsedGiftCodes.useMutation();
+
   const notificationStore = useNotificationStore();
+  const networkStore = useNetworkStore();
   const copyCodes = (giftCode: string | string[]) => {
     const codes = giftCode.toString().replaceAll(',', ', ');
     navigator.clipboard.writeText(codes);
@@ -89,8 +95,18 @@ export default function OwnedGiftCodes({
       <div className={'mt-auto flex w-full flex-row gap-[0.521vw]'}>
         <button
           className={
-            'w-full cursor-pointer rounded-[0.26vw] bg-middle-accent py-[0.26vw] font-museo text-[0.625vw] font-medium text-foreground hover:opacity-80'
+            'w-full cursor-pointer rounded-[0.26vw] bg-middle-accent py-[0.26vw] font-museo text-[0.625vw] font-medium text-foreground hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:opacity-60'
           }
+          disabled={!userGiftCodes.find((item) => item.used)}
+          onClick={() => {
+            removeUsedGiftCodesMutation.mutate({
+              userAddress: networkStore.address || '',
+            });
+            notificationStore.create({
+              type: 'success',
+              message: 'Successfully deleted used codes',
+            });
+          }}
         >
           Delete all used codes
         </button>

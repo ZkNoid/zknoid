@@ -94,6 +94,6 @@ export const giftCodesRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       await db
         .collection('gift-codes')
-        .deleteMany({ userAddress: input.userAddress, code: { used: true } });
+        .deleteMany({ userAddress: input.userAddress, used: true });
     }),
 });
