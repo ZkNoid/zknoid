@@ -7,6 +7,8 @@ import Skeleton from '@/components/shared/Skeleton';
 import { formatUnits } from '@/lib/unit';
 import { Currency } from '@/constants/currency';
 import { Pages } from '@/games/lottery/Lottery';
+import { api } from '@/trpc/react';
+import { useEffect, useState } from 'react';
 
 export default function CenterConsole({
   roundToShow,
@@ -34,10 +36,38 @@ export default function CenterConsole({
   const roundTimer = useRoundTimer(roundEndsIn);
   const lotteryStore = useWorkerClientStore();
 
+  const [userAddresses, setUserAddresses] = useState<string[]>([]);
+  const [accounts, setAccounts] = useState<
+    { userAddress: string; name: string | undefined }[]
+  >([]);
+
+  const getAccountsQuery = api.accounts.getAccounts.useQuery({
+    userAddresses: userAddresses,
+  });
+
+  useEffect(() => {
+    if (getAccountsQuery.data) {
+      if (getAccountsQuery.data.accounts) {
+        // @ts-ignore
+        setAccounts(getAccountsQuery.data.accounts);
+      }
+    }
+  }, [getAccountsQuery.data]);
+
   const leaderboard = roundInfo?.tickets
     .filter((ticket) => !!ticket.funds)
     .sort((a, b) => (b.funds! > a.funds! ? 1 : -1))
-    .slice(0, 3);
+    .slice(0, 3)
+    .map((ticket) => ({
+      owner: ticket.owner,
+      funds: ticket.funds,
+    }));
+
+  useEffect(() => {
+    if (leaderboard && leaderboard.length != 0) {
+      setUserAddresses(leaderboard.map((item) => item.owner));
+    }
+  }, [leaderboard?.length]);
 
   return (
     <div className="absolute bottom-0 left-0 right-0 top-0 mx-auto h-[13vw] w-[19.4vw]">
@@ -185,7 +215,9 @@ export default function CenterConsole({
                               'py-[0.25vw] font-museo text-[0.833vw] font-medium text-foreground'
                             }
                           >
-                            {formatAddress(item.owner)}
+                            {accounts.find(
+                              (account) => account.userAddress === item.owner
+                            )?.name || formatAddress(item.owner)}
                           </span>
                           <span
                             className={

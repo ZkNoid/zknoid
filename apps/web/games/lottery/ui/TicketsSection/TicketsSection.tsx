@@ -44,12 +44,9 @@ export default function TicketsSection() {
     { code: string; used: boolean; createdAt: string }[]
   >([]);
 
-  const getUserTicketQuery = api.giftCodes.getUserGiftCodes.useQuery(
-    {
-      userAddress: networkStore.address || '',
-    },
-    { refetchInterval: 5000 }
-  );
+  const getUserTicketQuery = api.giftCodes.getUserGiftCodes.useQuery({
+    userAddress: networkStore.address || '',
+  });
 
   useEffect(() => {
     if (getUserTicketQuery.data) {
