@@ -14,7 +14,7 @@ export const giftCodesRouter = createTRPCRouter({
       return {
         giftCodes: await db
           .collection('gift-codes')
-          .find({ userAddress: input.userAddress })
+          .find({ userAddress: input.userAddress, deleted: false })
           .toArray(),
       };
     }),
@@ -32,6 +32,7 @@ export const giftCodesRouter = createTRPCRouter({
         transactionHash: input.transactionHash,
         code: input.code,
         used: false,
+        deleted: false,
         createdAt: new Date().toISOString(),
       });
       return {
@@ -39,6 +40,7 @@ export const giftCodesRouter = createTRPCRouter({
         transactionHash: input.transactionHash,
         code: input.code,
         used: false,
+        deleted: false,
         createdAt: new Date().toISOString(),
       };
     }),
@@ -59,6 +61,7 @@ export const giftCodesRouter = createTRPCRouter({
           transactionHash: item.transactionHash,
           code: item.code,
           used: false,
+          deleted: false,
           createdAt: new Date().toISOString(),
         }))
       );
@@ -67,6 +70,7 @@ export const giftCodesRouter = createTRPCRouter({
         transactionHash: item.transactionHash,
         code: item.code,
         used: false,
+        deleted: false,
         createdAt: new Date().toISOString(),
       }));
     }),
@@ -75,7 +79,7 @@ export const giftCodesRouter = createTRPCRouter({
     .query(async ({ input }) => {
       const code = await db
         .collection('gift-codes')
-        .findOne({ code: input.code, used: false });
+        .findOne({ code: input.code, used: false, deleted: false });
       return !!code;
     }),
   useGiftCode: publicProcedure
@@ -90,7 +94,10 @@ export const giftCodesRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       await db
         .collection('gift-codes')
-        .deleteMany({ userAddress: input.userAddress, used: true });
+        .updateMany(
+          { userAddress: input.userAddress, used: true },
+          { $set: { deleted: true } }
+        );
     }),
   sendTicketQueue: publicProcedure
     .input(
