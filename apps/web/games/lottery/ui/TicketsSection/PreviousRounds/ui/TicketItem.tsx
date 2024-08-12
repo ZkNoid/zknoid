@@ -2,10 +2,9 @@ import { cn, sendTransaction } from '@/lib/helpers';
 import { Currency } from '@/constants/currency';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { useNetworkStore } from '@/lib/stores/network';
-import { useChainStore } from '@/lib/stores/minaChain';
-import { api } from '@/trpc/react';
 import Loader from '@/components/shared/Loader';
 import { formatUnits } from '@/lib/unit';
+import { useState } from 'react';
 
 type Number = {
   number: number;
@@ -31,16 +30,7 @@ export function TicketItem({
 }) {
   const workerClient = useWorkerClientStore();
   const networkStore = useNetworkStore();
-  const chainStore = useChainStore();
-
-  const getRoundQuery = api.lotteryBackend.getRoundInfo.useQuery(
-    {
-      roundId,
-    },
-    {
-      refetchInterval: 5000,
-    }
-  );
+  const [isLoader, setIsLoader] = useState<boolean>(false);
 
   return (
     <div
@@ -104,13 +94,16 @@ export function TicketItem({
             );
 
             console.log('txJson', txJson);
-            await sendTransaction(txJson);
+            setIsLoader(true);
+            await sendTransaction(txJson).finally(() => setIsLoader(false));
           }}
         >
-          <div className={'flex flex-row items-center gap-[10%] pr-[10%]'}>
-            {workerClient.isActiveTx && (
-              <Loader size={'19'} color={'#212121'} />
-            )}
+          <div
+            className={
+              'flex flex-row items-center gap-[10%] pr-[10%] text-center'
+            }
+          >
+            {isLoader && <Loader size={'19'} color={'#212121'} />}
             <span>Claim</span>
           </div>
         </button>
