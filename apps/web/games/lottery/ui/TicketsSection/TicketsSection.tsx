@@ -43,6 +43,7 @@ export default function TicketsSection() {
   const [userGiftCodes, setUserGiftCodes] = useState<
     { code: string; used: boolean; createdAt: string }[]
   >([]);
+  const [hasOwnedTickets, setHasOwnedTickets] = useState<boolean>(false);
 
   const getUserTicketQuery = api.giftCodes.getUserGiftCodes.useQuery({
     userAddress: networkStore.address || '',
@@ -80,8 +81,12 @@ export default function TicketsSection() {
   return (
     <div
       className={cn(
-        'relative rounded-[0.67vw] border border-left-accent bg-bg-grey',
-        'flex flex-col gap-[2.604vw] px-[2vw] py-[2.67vw]'
+        'relative flex flex-col rounded-[0.67vw] border border-left-accent bg-bg-grey px-[2vw] py-[2.67vw]',
+        {
+          'gap-[2.604vw]':
+            hasOwnedTickets ||
+            roundsStore.roundToShowId == lotteryStore.lotteryRoundId,
+        }
       )}
     >
       <div className="">
@@ -93,7 +98,10 @@ export default function TicketsSection() {
               roundsStore.roundToShowId != lotteryStore.lotteryRoundId,
           })}
         >
-          <OwnedTickets />
+          <OwnedTickets
+            hasOwnedTickets={hasOwnedTickets}
+            setHasOwnedTickets={setHasOwnedTickets}
+          />
           {roundsStore.roundToShowId == lotteryStore.lotteryRoundId && (
             <div className={'flex flex-col'}>
               <div className="mb-[1.33vw] text-[2.13vw]">Buy tickets</div>
