@@ -5,6 +5,7 @@ import { useNetworkStore } from '@/lib/stores/network';
 import Loader from '@/components/shared/Loader';
 import { formatUnits } from '@/lib/unit';
 import { useState } from 'react';
+import Link from 'next/link';
 
 type Number = {
   number: number;
@@ -109,13 +110,16 @@ export function TicketItem({
         </button>
       )}
       {!!funds && claimed && (
-        <div
+        <Link
+          href={`https://minascan.io/devnet/tx/${hash}?type=zk-tx`}
+          target={'_blank'}
+          rel={'noopener noreferrer'}
           className={
-            'items-center rounded-[0.33vw] bg-left-accent px-[0.74vw] py-[0.37vw] font-museo text-[0.833vw] font-medium text-black opacity-50'
+            'items-center rounded-[0.33vw] px-[0.74vw] py-[0.37vw] font-museo text-[0.833vw] font-medium text-foreground underline hover:cursor-pointer hover:text-left-accent'
           }
         >
-          Claimed
-        </div>
+          Transaction link
+        </Link>
       )}
     </div>
   );
