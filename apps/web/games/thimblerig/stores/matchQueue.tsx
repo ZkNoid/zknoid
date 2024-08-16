@@ -2,7 +2,7 @@ import { PublicKey } from 'o1js';
 import { useContext, useEffect } from 'react';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import { useNetworkStore } from '@/lib/stores/network';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import { thimblerigConfig } from '../config';
 import { type ClientAppChain } from '@proto-kit/sdk';
 import { create } from 'zustand';
@@ -20,10 +20,7 @@ export const useObserveThimblerigMatchQueue = () => {
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
   const matchQueue = useThimblerigMatchQueueStore();
-  const client = useContext<
-    | ClientAppChain<typeof thimblerigConfig.runtimeModules, any, any, any>
-    | undefined
-  >(AppChainClientContext);
+  const { client } = useContext(ZkNoidGameContext);
 
   useEffect(() => {
     if (!network.walletConnected || !network.address || !chain.block?.height) {

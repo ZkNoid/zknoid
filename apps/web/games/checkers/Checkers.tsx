@@ -14,7 +14,7 @@ import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
 import { ClientAppChain, PENDING_BLOCKS_NUM_CONST } from 'zknoid-chain-dev';
 import GamePage from '@/components/framework/GamePage';
 import { checkersConfig } from './config';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import { MOVE_TIMEOUT_IN_BLOCKS } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
 import {
@@ -47,7 +47,7 @@ export default function RandzuPage({
     { x: number; y: number } | undefined
   >({ x: 0, y: 0 });
 
-  const client = useContext(AppChainClientContext) as ClientAppChain<
+  const client = useContext(ZkNoidGameContext) as ClientAppChain<
     typeof checkersConfig.runtimeModules,
     any,
     any,

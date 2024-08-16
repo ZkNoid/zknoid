@@ -3,7 +3,7 @@
 import { useEffect, useMemo } from 'react';
 
 import { zkNoidConfig } from '@/games/config';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import { useNetworkStore } from '@/lib/stores/network';
 
 export default function Page({
@@ -27,8 +27,12 @@ export default function Page({
   }, [client]);
 
   return (
-    <AppChainClientContext.Provider value={client}>
+    <ZkNoidGameContext.Provider value={{
+      client,
+      appchainSupported: !!config.runtimeModules,
+      buildLocalClient: false
+    }}>
       <Lobby params={{ lobbyId: lobbyId }} />
-    </AppChainClientContext.Provider>
+    </ZkNoidGameContext.Provider>
   );
 }

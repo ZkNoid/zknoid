@@ -7,7 +7,7 @@ import { ALL_NETWORKS, NETWORKS } from '@/app/constants/networks';
 import { useChainStore } from './minaChain';
 import { useNetworkStore } from './network';
 
-import AppChainClientContext from '../contexts/AppChainClientContext';
+import ZkNoidGameContext from '../contexts/ZkNoidGameContext';
 
 export interface BalancesState {
   loading: boolean;

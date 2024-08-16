@@ -3,7 +3,7 @@
 import { useEffect, useMemo } from 'react';
 
 import { zkNoidConfig } from '@/games/config';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import { useNetworkStore } from '@/lib/stores/network';
 
 export default function Page({ gameId }: { gameId: string }) {
@@ -21,8 +21,14 @@ export default function Page({ gameId }: { gameId: string }) {
   const CompetitionsPage = config.pageCompetitionsList!;
 
   return (
-    <AppChainClientContext.Provider value={client}>
+    <ZkNoidGameContext.Provider
+      value={{
+        client,
+        appchainSupported: !!config.runtimeModules,
+        buildLocalClient: false,
+      }}
+    >
       <CompetitionsPage />
-    </AppChainClientContext.Provider>
+    </ZkNoidGameContext.Provider>
   );
 }

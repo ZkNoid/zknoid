@@ -10,7 +10,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { CreateNewLobby } from '@/components/framework/Lobby/ui/CreateNewLobby';
 import { AnimatePresence, motion } from 'framer-motion';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import { ClientAppChain, MatchMaker, ProtoUInt64 } from 'zknoid-chain-dev';
 import { Field, Bool, CircuitString, PublicKey, UInt64 } from 'o1js';
 import { useNetworkStore } from '@/lib/stores/network';
@@ -63,13 +63,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
     useState<boolean>(false);
   const progress = api.progress.setSolvedQuests.useMutation();
 
-  const client = useContext(AppChainClientContext) as ClientAppChain<
-    // typeof params.config.runtimeModules,
-    any,
-    any,
-    any,
-    any
-  >;
+  const { client } = useContext(ZkNoidGameContext);
 
   // const query = client.query.runtime[params.contractName];
 

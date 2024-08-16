@@ -2,8 +2,8 @@
 
 import { type RuntimeModulesRecord } from '@proto-kit/module';
 import { type ClientAppChain } from '@proto-kit/sdk';
-import { ReactNode, useContext, useEffect, useState } from 'react';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import { ReactNode, useState } from 'react';
+import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import { ZkNoidGameConfig } from '@/lib/createConfig';
 import { useObserveMinaBalance } from '@/lib/stores/minaBalances';
 import { usePollMinaBlockHeight } from '@/lib/stores/minaChain';
@@ -24,13 +24,6 @@ const Updater = () => {
   usePollProtokitBlockHeight();
   useObserveMinaBalance();
 
-  const client = useContext(AppChainClientContext) as ClientAppChain<
-    any,
-    any,
-    any,
-    any
-  >;
-  const networkStore = useNetworkStore();
   return <></>;
 };
 

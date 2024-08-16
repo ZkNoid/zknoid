@@ -7,7 +7,7 @@ import { useNetworkStore } from '../../../lib/stores/network';
 import { LeaderboardIndex } from 'zknoid-chain-dev';
 import { type ClientAppChain } from '@proto-kit/sdk';
 import { arkanoidConfig } from '../config';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 
 interface ILeaderboardInfo {
   score: UInt64;
@@ -89,10 +89,7 @@ export const useObserveArkanoidLeaderboard = (
   competitionId: string,
   shouldUpdate: MutableRefObject<boolean>
 ) => {
-  const client = useContext<
-    | ClientAppChain<typeof arkanoidConfig.runtimeModules, any, any, any>
-    | undefined
-  >(AppChainClientContext);
+  const { client } = useContext(ZkNoidGameContext);
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
   const leaderboard = useArkanoidLeaderboardStore();

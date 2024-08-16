@@ -7,7 +7,7 @@ import {
   useArkanoidCompetitionsStore,
   useObserveArkanoidCompetitions,
 } from '@/games/arkanoid/stores/arkanoidCompetitions';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import GamePage from '@/components/framework/GamePage';
 import { arkanoidConfig } from '../config';
 import CompetitionWidget from '@/components/framework/CompetitionWidget';
@@ -21,7 +21,7 @@ export default function ArkanoidCompetitionsListPage() {
 
   useObserveArkanoidCompetitions();
 
-  const client = useContext(AppChainClientContext);
+  const { client } = useContext(ZkNoidGameContext);
 
   if (!client) {
     throw Error('Context app chain client is not set');

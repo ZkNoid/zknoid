@@ -1,20 +1,19 @@
 import { useContext, useEffect, useMemo } from 'react';
 import DepositMenuItem from './nonSSR/DepositMenuItem/DepositMenuItem';
-import { buildClient } from '@/lib/utils';
-import { DefaultRuntimeModules } from '@/lib/runtimeModules';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 
 export default function StoreDepositMenuItem() {
-  const contextAppChainClient = useContext(AppChainClientContext);
+  const { client } = useContext(ZkNoidGameContext);
 
-  const defaultClient = useMemo(
-    () => contextAppChainClient || buildClient(DefaultRuntimeModules),
-    []
-  );
+  const defaultClient = useMemo(() => client, []);
 
   return (
-    <AppChainClientContext.Provider value={defaultClient}>
+    <ZkNoidGameContext.Provider value={{
+      client: defaultClient,
+      appchainSupported: false,
+      buildLocalClient: false
+    }}>
       <DepositMenuItem />
-    </AppChainClientContext.Provider>
+    </ZkNoidGameContext.Provider>
   );
 }

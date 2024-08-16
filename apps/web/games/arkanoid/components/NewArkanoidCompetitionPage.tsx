@@ -22,7 +22,7 @@ import {
   useMinaBridge,
   useProtokitBalancesStore,
 } from '@/lib/stores/protokitBalances';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import { arkanoidConfig } from '../config';
 import GamePage from '@/components/framework/GamePage';
 import Input from '@/components/shared/Input';
@@ -89,7 +89,7 @@ export default function NewArkanoidCompetitionPage() {
   const protokitBalances = useProtokitBalancesStore();
   const bridge = useMinaBridge();
 
-  const client = useContext(AppChainClientContext);
+  const { client } = useContext(ZkNoidGameContext);
 
   const progress = api.progress.setSolvedQuests.useMutation();
 

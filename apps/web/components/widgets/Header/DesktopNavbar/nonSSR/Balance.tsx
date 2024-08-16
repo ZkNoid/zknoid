@@ -16,8 +16,9 @@ export default function Balance({ network }: { network: 'protokit' | 'L1' }) {
   const networkStore = useNetworkStore();
   usePollMinaBlockHeight();
   useObserveMinaBalance();
-  useObserveProtokitBalance({});
+  useObserveProtokitBalance();
   const protokitBalancesStore = useProtokitBalancesStore();
+  
 
   const deposit = (
     Number(protokitBalancesStore.balances[networkStore.address!] ?? 0n) /

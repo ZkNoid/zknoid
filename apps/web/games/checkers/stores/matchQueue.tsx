@@ -2,7 +2,7 @@ import { PublicKey, UInt64 } from 'o1js';
 import { useContext, useEffect } from 'react';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import { useNetworkStore } from '@/lib/stores/network';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import { checkersConfig } from '../config';
 import { type ClientAppChain } from '@proto-kit/sdk';
 import {
@@ -20,10 +20,7 @@ export const useObserveCheckersMatchQueue = () => {
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
   const matchQueue = useCheckersMatchQueueStore();
-  const client = useContext<
-    | ClientAppChain<typeof checkersConfig.runtimeModules, any, any, any>
-    | undefined
-  >(AppChainClientContext);
+  const { client } = useContext(ZkNoidGameContext);
 
   useEffect(() => {
     if (

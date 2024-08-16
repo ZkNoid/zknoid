@@ -6,7 +6,7 @@ import { ITick } from '@/games/arkanoid/components/GameView';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { ICompetition } from '@/lib/types';
 import { useContext } from 'react';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import { useNetworkStore } from '@/lib/stores/network';
 import { api } from '@/trpc/react';
 
@@ -17,7 +17,7 @@ export const useProof = (
 ) => {
   const workerClientStore = useWorkerClientStore();
   const networkStore = useNetworkStore();
-  const client = useContext(AppChainClientContext);
+  const { client } = useContext(ZkNoidGameContext);
   const progress = api.progress.setSolvedQuests.useMutation();
 
   if (!client) {

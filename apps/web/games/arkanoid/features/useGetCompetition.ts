@@ -2,7 +2,7 @@ import { Field, PublicKey, UInt64 } from 'o1js';
 import { fromContractCompetition } from '@/lib/typesConverter';
 import { Bricks, createBricksBySeed } from 'zknoid-chain-dev';
 import { useContext } from 'react';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import { ICompetition } from '@/lib/types';
 
 export const useGetCompetition = (
@@ -10,7 +10,7 @@ export const useGetCompetition = (
   setCompetition: (competition: ICompetition) => void,
   setLevel: (level: Bricks) => void
 ) => {
-  const client = useContext(AppChainClientContext);
+  const { client } = useContext(ZkNoidGameContext);
   if (!client) {
     throw Error('Context app chain client is not set');
   }

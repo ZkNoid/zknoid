@@ -7,6 +7,7 @@ import Footer from '@/components/widgets/Footer/Footer';
 import MainSection from '@/components/pages/MainSection';
 import { IGame, announcedGames, defaultGames } from './constants/games';
 import Header from '@/components/widgets/Header';
+import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 // import { ToastContainer } from '@/components/ui/games-store/shared/Toast';
 
 const zkNoidConfig = import('@/games/config');
@@ -56,18 +57,22 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <StoreProtokitUpdater />
+    <ZkNoidGameContext.Provider value={{
+      client: undefined,
+      appchainSupported: true,
+      buildLocalClient: true
+    }}>
+      <div className="flex min-h-screen flex-col">
+        <Header />
 
-      <Header />
+        <main className="flex flex-col px-5">
+          <MainSection games={games} />
+        </main>
 
-      <main className="flex flex-col px-5">
-        <MainSection games={games} />
-      </main>
+        <Footer />
 
-      <Footer />
-
-      {/*<ToastContainer />*/}
-    </div>
+        {/*<ToastContainer />*/}
+      </div>
+    </ZkNoidGameContext.Provider>
   );
 }

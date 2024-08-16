@@ -9,7 +9,7 @@ import { L1_ASSETS, L2_ASSET } from '@/constants/assets';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useMinaBalancesStore } from '@/lib/stores/minaBalances';
 import { motion } from 'framer-motion';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import 'reflect-metadata';
 import { AccountUpdate, Mina, PublicKey } from 'o1js';
 import { useEffect } from 'react';
@@ -35,7 +35,7 @@ export default function DepositMenuItem() {
   const protokitBalancesStore = useProtokitBalancesStore();
   const toasterStore = useToasterStore();
   const networkStore = useNetworkStore();
-  const contextAppChainClient = useContext(AppChainClientContext);
+  const {client: contextAppChainClient} = useContext(ZkNoidGameContext);
   const progress = api.progress.setSolvedQuests.useMutation();
   // const testBalanceGetter = useTestBalanceGetter();
   // const balancesStore = useProtokitBalancesStore();
@@ -300,8 +300,8 @@ export default function DepositMenuItem() {
             }}
             balance={
               !isUnbridge
-                ? minaBalancesStore.balances[networkStore.address!] ?? 0n
-                : protokitBalancesStore.balances[networkStore.address!] ?? 0n
+                ? (minaBalancesStore.balances[networkStore.address!] ?? 0n)
+                : (protokitBalancesStore.balances[networkStore.address!] ?? 0n)
             }
             isPay={true}
           />
@@ -326,8 +326,8 @@ export default function DepositMenuItem() {
             }}
             balance={
               !isUnbridge
-                ? protokitBalancesStore.balances[networkStore.address!] ?? 0n
-                : minaBalancesStore.balances[networkStore.address!] ?? 0n
+                ? (protokitBalancesStore.balances[networkStore.address!] ?? 0n)
+                : (minaBalancesStore.balances[networkStore.address!] ?? 0n)
             }
             isPay={false}
           />

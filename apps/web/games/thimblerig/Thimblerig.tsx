@@ -2,7 +2,7 @@ import GamePage from '@/components/framework/GamePage';
 import { thimblerigConfig } from './config';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useContext, useEffect, useRef, useState } from 'react';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import {
   type ClientAppChain,
   MOVE_TIMEOUT_IN_BLOCKS,
@@ -73,12 +73,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   >(undefined);
   const [ballDragged, setBallDragged] = useState<boolean>(false);
   const [finalAnimationStep, setFinalAnimationStep] = useState<number>(0);
-  const client = useContext(AppChainClientContext) as ClientAppChain<
-    typeof thimblerigConfig.runtimeModules,
-    any,
-    any,
-    any
-  >;
+  const { client } = useContext(ZkNoidGameContext);
   const [loading, setLoading] = useState(false);
   const [pendingChoosing, setPendingChoosing] = useState(false);
   const [thimbleOpened, setThimbleOpened] = useState<undefined | 1 | 2 | 3>(

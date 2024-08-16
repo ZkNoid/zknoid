@@ -9,7 +9,7 @@ import { create } from 'zustand';
 import { useProtokitChainStore } from './protokitChain';
 import { useNetworkStore } from './network';
 import { useContext, useEffect } from 'react';
-import AppChainClientContext from '../contexts/AppChainClientContext';
+import ZkNoidGameContext from '../contexts/ZkNoidGameContext';
 import { PendingLobbyIndex } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
 
 export interface IMatchamkingOption {
@@ -245,9 +245,7 @@ export const useObserveLobbiesStore = (
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
   const lobbiesStore = useLobbiesStore();
-  const client = useContext<ClientAppChain<any, any, any, any> | undefined>(
-    AppChainClientContext
-  );
+  const { client } = useContext(ZkNoidGameContext);
 
   useEffect(() => {
     if (!network.protokitClientStarted) {

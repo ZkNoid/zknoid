@@ -11,7 +11,7 @@ import { immer } from 'zustand/middleware/immer';
 
 import { useNetworkStore } from './network';
 import { useProtokitChainStore } from './protokitChain';
-import AppChainClientContext from '../contexts/AppChainClientContext';
+import ZkNoidGameContext from '../contexts/ZkNoidGameContext';
 
 import { DefaultRuntimeModules } from '../runtimeModules';
 import { Balances, ProtoUInt64, ZNAKE_TOKEN_ID } from 'zknoid-chain-dev';
@@ -104,9 +104,7 @@ export const useObserveProtokitBalance = () => {
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
   const balances = useProtokitBalancesStore();
-  const client = useContext(
-    AppChainClientContext
-  ) as ClientAppChain<typeof DefaultRuntimeModules, any, any, any>;
+  const { client } = useContext(ZkNoidGameContext);
 
   useEffect(() => {
     if (!network.protokitClientStarted) return;
@@ -145,9 +143,12 @@ export const useTestBalanceGetter = () => {
   const defaultBalance = 100 * 10 ** 9;
   const balancesStore = useProtokitBalancesStore();
   const network = useNetworkStore();
-  const contextAppChainClient = useContext(
-    AppChainClientContext
-  ) as ClientAppChain<typeof DefaultRuntimeModules, any, any, any>;
+  const contextAppChainClient = useContext(ZkNoidGameContext) as ClientAppChain<
+    typeof DefaultRuntimeModules,
+    any,
+    any,
+    any
+  >;
   const logTestBalanceRecevied =
     api.logging.logTestBalanceRecevied.useMutation();
 

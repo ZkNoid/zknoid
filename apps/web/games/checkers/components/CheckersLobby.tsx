@@ -2,7 +2,7 @@ import GamePage from '@/components/framework/GamePage';
 import { useContext } from 'react';
 import CheckersCoverSVG from '../assets/game-cover.svg';
 import CheckersCoverMobileSVG from '../assets/game-cover-mobile.svg';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import { ClientAppChain } from 'zknoid-chain-dev';
 import LobbyPage from '@/components/framework/Lobby/LobbyPage';
 import { checkersConfig } from '../config';
@@ -15,12 +15,7 @@ export default function CheckersLobby({
 }) {
   const networkStore = useNetworkStore();
 
-  const client = useContext(AppChainClientContext) as ClientAppChain<
-    typeof checkersConfig.runtimeModules,
-    any,
-    any,
-    any
-  >;
+  const { client } = useContext(ZkNoidGameContext);
 
   if (!client) {
     throw Error('Context app chain client is not set');

@@ -2,7 +2,7 @@ import { PublicKey, UInt64 } from 'o1js';
 import { useContext, useEffect } from 'react';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import { useNetworkStore } from '@/lib/stores/network';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import { randzuConfig } from '../config';
 import { type ClientAppChain } from '@proto-kit/sdk';
 import {
@@ -20,13 +20,15 @@ export const useObserveRandzuMatchQueue = () => {
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
   const matchQueue = useRandzuMatchQueueStore();
-  const client = useContext<
-    | ClientAppChain<typeof randzuConfig.runtimeModules, any, any, any>
-    | undefined
-  >(AppChainClientContext);
+  const { client } = useContext(ZkNoidGameContext);
 
   useEffect(() => {
-    if (!network.walletConnected || !network.address || !chain.block?.height || !network.protokitClientStarted) {
+    if (
+      !network.walletConnected ||
+      !network.address ||
+      !chain.block?.height ||
+      !network.protokitClientStarted
+    ) {
       return;
     }
 
@@ -43,5 +45,10 @@ export const useObserveRandzuMatchQueue = () => {
       chain.block?.height,
       PublicKey.fromBase58(network.address!)
     );
-  }, [chain.block?.height, network.walletConnected, network.address, network.protokitClientStarted]);
+  }, [
+    chain.block?.height,
+    network.walletConnected,
+    network.address,
+    network.protokitClientStarted,
+  ]);
 };

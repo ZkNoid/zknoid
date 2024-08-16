@@ -18,7 +18,7 @@ import {
 } from 'zknoid-chain-dev';
 import GamePage from '@/components/framework/GamePage';
 import { randzuConfig } from './config';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import { MainButtonState } from '@/components/framework/GamePage/PvPGameView';
 import RandzuCoverSVG from './assets/game-cover.svg';
@@ -73,12 +73,7 @@ export default function Randzu({
   const [loadingElement, setLoadingElement] = useState<
     { x: number; y: number } | undefined
   >({ x: 0, y: 0 });
-  const client = useContext(AppChainClientContext) as ClientAppChain<
-    typeof randzuConfig.runtimeModules,
-    any,
-    any,
-    any
-  >;
+  const { client } = useContext(ZkNoidGameContext);
 
   if (!client) {
     throw Error('Context app chain client is not set');

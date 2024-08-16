@@ -3,7 +3,7 @@ import { randzuConfig } from '@/games/randzu/config';
 import RandzuCoverSVG from '@/games/randzu/assets/game-cover.svg';
 import RandzuCoverMobileSVG from '@/games/randzu/assets/game-cover-mobile.svg';
 import { useContext, useState } from 'react';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import { ClientAppChain, ProtoUInt64 } from 'zknoid-chain-dev';
 import { useNetworkStore } from '@/lib/stores/network';
 import LobbyPage from '@/components/framework/Lobby/LobbyPage';
@@ -15,12 +15,7 @@ export default function RandzuLobby({
 }) {
   const networkStore = useNetworkStore();
 
-  const client = useContext(AppChainClientContext) as ClientAppChain<
-    typeof randzuConfig.runtimeModules,
-    any,
-    any,
-    any
-  >;
+  const { client } = useContext(ZkNoidGameContext);
 
   if (!client) {
     throw Error('Context app chain client is not set');

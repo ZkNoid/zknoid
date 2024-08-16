@@ -9,7 +9,7 @@ import { ICompetition } from '@/lib/types';
 import { fromContractCompetition } from '@/lib/typesConverter';
 import { type ClientAppChain } from '@proto-kit/sdk';
 import { arkanoidConfig } from '../config';
-import AppChainClientContext from '@/lib/contexts/AppChainClientContext';
+import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 
 export interface CompetitionsState {
   loading: boolean;
@@ -50,7 +50,6 @@ export const useArkanoidCompetitionsStore = create<
 
         let registered =
           await client.query.runtime.ArkanoidGameHub.registrations.get(
-            //@ts-ignore
             new GameRecordKey({
               competitionId: UInt64.from(i),
               player,
@@ -79,10 +78,7 @@ export const useArkanoidCompetitionsStore = create<
 );
 
 export const useObserveArkanoidCompetitions = () => {
-  const client = useContext<
-    | ClientAppChain<typeof arkanoidConfig.runtimeModules, any, any, any>
-    | undefined
-  >(AppChainClientContext);
+  const { client } = useContext(ZkNoidGameContext);
   console.log('Client', client);
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
