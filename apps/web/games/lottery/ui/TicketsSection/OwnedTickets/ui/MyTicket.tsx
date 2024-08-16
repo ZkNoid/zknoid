@@ -12,11 +12,10 @@ import TicketBG9 from '../assets/ticket-bg-9.svg';
 import TicketBG10 from '../assets/ticket-bg-10.svg';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
-import { api } from '@/trpc/react';
 import { useNetworkStore } from '@/lib/stores/network';
-import { useChainStore } from '@/lib/stores/minaChain';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
+import Link from 'next/link';
 
 const ticketsImages = [
   TicketBG1,
@@ -195,7 +194,7 @@ export default function MyTicket({
   funds,
   claimed,
   roundId,
-  hash,
+  hash = '5JvDnBiYQ4m3j8mLSJEYtpPJQ75V9wGqo93M1Bjnu2ooNrtrKSGQ',
 }: {
   isOpen: boolean;
   combination: number[];
@@ -211,16 +210,19 @@ export default function MyTicket({
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const workerStore = useWorkerClientStore();
   const networkStore = useNetworkStore();
-  const chainStore = useChainStore();
   const notificationStore = useNotificationStore();
-  const getRoundQuery = api.lotteryBackend.getRoundInfo.useQuery(
-    {
-      roundId,
-    },
-    {
-      refetchInterval: 5000,
-    }
-  );
+  const [isPending, setIsPending] = useState<boolean>(true);
+
+  // console.log('PENDING::::', isPending);
+
+  // const getPendingState = () => {
+  //   isPendingTicket(hash).then((isPending) => setIsPending(isPending));
+  // };
+  //
+  // useEffect(() => {
+  //   getPendingState();
+  // }, []);
+
   const claimTicket = async (numbers: number[], amount: number) => {
     let txJson = await workerStore.getReward(
       networkStore.address!,
@@ -251,6 +253,7 @@ export default function MyTicket({
         });
       });
   };
+
   return (
     <AnimatePresence>
       {isOpen ? (
@@ -354,22 +357,41 @@ export default function MyTicket({
               <div className={'mt-auto flex flex-row gap-[0.33vw]'}>
                 <div
                   className={
-                    'flex items-center justify-center rounded-[0.33vw]  border-[0.07vw] bg-middle-accent px-[0.3vw] py-[0.15vw] font-plexsans text-[0.8vw] font-medium'
+                    'flex items-center justify-center rounded-[0.33vw] border-[0.07vw] bg-middle-accent px-[0.3vw] py-[0.15vw] font-plexsans text-[0.8vw] font-medium'
                   }
                 >
                   {amount} {amount > 1 ? 'Tickets' : 'Ticket'}
                 </div>
+                {isPending && (
+                  <div
+                    className={
+                      'flex items-center justify-center rounded-[0.33vw] border-[0.07vw] bg-middle-accent px-[0.3vw] py-[0.15vw] font-plexsans text-[0.8vw] font-medium'
+                    }
+                  >
+                    Pending
+                  </div>
+                )}
                 {tags &&
                   tags.map((item, index) => (
                     <div
                       key={index}
                       className={
-                        'flex items-center justify-center rounded-[0.33vw]  border-[0.07vw] bg-middle-accent px-[0.3vw] py-[0.15vw] font-plexsans text-[0.8vw] font-medium'
+                        'flex items-center justify-center rounded-[0.33vw] border-[0.07vw] bg-middle-accent px-[0.3vw] py-[0.15vw] font-plexsans text-[0.8vw] font-medium'
                       }
                     >
                       {item}
                     </div>
                   ))}
+                <Link
+                  href={`https://minascan.io/devnet/tx/${hash}?type=zk-tx`}
+                  target={'_blank'}
+                  rel={'noopener noreferrer'}
+                  className={
+                    'flex cursor-pointer items-center justify-center rounded-[0.33vw] border-[0.07vw] bg-middle-accent px-[0.3vw] py-[0.15vw] font-plexsans text-[0.8vw] font-medium hover:bg-[#FF6B38]'
+                  }
+                >
+                  Transaction link
+                </Link>
               </div>
               <Image
                 src={ticketsImages[combination[0] - 1]}

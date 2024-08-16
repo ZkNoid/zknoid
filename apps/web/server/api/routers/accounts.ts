@@ -10,11 +10,21 @@ const db = client.db(process.env.MONGODB_DB);
 export const accountsRouter = createTRPCRouter({
   getAccount: publicProcedure
     .input(z.object({ userAddress: z.string() }))
-    .query(async ({ ctx, input }) => {
+    .query(async ({ input }) => {
       return {
         account: await db
           .collection('accounts')
           .findOne({ userAddress: input.userAddress }),
+      };
+    }),
+  getAccounts: publicProcedure
+    .input(z.object({ userAddresses: z.array(z.string()) }))
+    .query(async ({ input }) => {
+      return {
+        accounts: await db
+          .collection('accounts')
+          .find({ userAddress: { $in: input.userAddresses } })
+          .toArray(),
       };
     }),
   setName: publicProcedure
@@ -36,7 +46,7 @@ export const accountsRouter = createTRPCRouter({
     }),
   checkNameUnique: publicProcedure
     .input(z.object({ name: z.string() }))
-    .query(async ({ ctx, input }) => {
+    .query(async ({ input }) => {
       const account = await db
         .collection('accounts')
         .findOne({ name: input.name });

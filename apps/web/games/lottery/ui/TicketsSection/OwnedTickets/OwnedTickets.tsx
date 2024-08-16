@@ -14,7 +14,13 @@ interface ITicket extends ILotteryTicket {
   id: string;
 }
 
-export default function OwnedTickets() {
+export default function OwnedTickets({
+  hasOwnedTickets,
+  setHasOwnedTickets,
+}: {
+  hasOwnedTickets: boolean;
+  setHasOwnedTickets: (hasTickets: boolean) => void;
+}) {
   const roundsStore = useRoundsStore();
   const [currentTicket, setCurrentTicket] = useState<ITicket | undefined>(
     undefined
@@ -71,6 +77,12 @@ export default function OwnedTickets() {
         )
     );
   }, [roundsStore.roundToShowId, getRoundQuery.data]);
+
+  useEffect(() => {
+    if (tickets.length != 0 && !hasOwnedTickets) {
+      setHasOwnedTickets(true);
+    }
+  }, [tickets.length]);
 
   return (
     <div

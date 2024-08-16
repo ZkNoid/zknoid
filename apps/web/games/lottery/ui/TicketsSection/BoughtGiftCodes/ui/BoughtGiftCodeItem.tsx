@@ -25,7 +25,7 @@ export default function BoughtGiftCodeItem({ code }: { code: string }) {
     >
       <div
         className={
-          'w-full rounded-[0.26vw] border border-foreground p-[0.26vw] text-start'
+          'w-full rounded-[0.26vw] border border-foreground p-[0.26vw] text-start font-plexsans text-[0.729vw]'
         }
       >
         {code}

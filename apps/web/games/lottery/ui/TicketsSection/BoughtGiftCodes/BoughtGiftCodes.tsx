@@ -18,7 +18,7 @@ export default function BoughtGiftCodes({
   return (
     <div
       className={
-        'flex flex-col rounded-b-[0.521vw] bg-[#252525] px-[0.521vw] pb-[0.521vw] pt-[1.25vw]'
+        'flex h-full flex-col rounded-b-[0.521vw] bg-[#252525] px-[0.521vw] pb-[0.521vw] pt-[1.25vw]'
       }
     >
       <div
@@ -40,7 +40,11 @@ export default function BoughtGiftCodes({
         After paying for the gift codes, you can copy them in this window and
         give them to your friends
       </span>
-      <div className={'mt-[0.781vw] flex w-full flex-row gap-[0.521vw]'}>
+      <div
+        className={
+          'mb-[0.521vw] mt-[0.781vw] flex w-full flex-row gap-[0.521vw]'
+        }
+      >
         <div
           className={
             'grid max-h-[6.771vw] w-full grid-cols-2 gap-x-[1.094vw] gap-y-[0.521vw] overflow-y-scroll pr-[0.5vw]'
@@ -54,7 +58,7 @@ export default function BoughtGiftCodes({
       </div>
       <button
         className={
-          'mt-[0.521vw] w-full cursor-pointer rounded-[0.26vw] bg-right-accent py-[0.26vw] text-center font-museo text-[0.729vw] font-medium text-bg-dark hover:opacity-80'
+          'mt-auto w-full cursor-pointer rounded-[0.26vw] bg-right-accent py-[0.26vw] text-center font-museo text-[0.729vw] font-medium text-bg-dark hover:opacity-80'
         }
         onClick={() => copyCodes(giftCodes)}
       >

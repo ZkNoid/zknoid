@@ -1,4 +1,4 @@
-export default function InvalidGiftCode({ giftCode }: { giftCode: string }) {
+export default function ValidGiftCode({ giftCode }: { giftCode: string }) {
   return (
     <div
       className={
