@@ -10,8 +10,6 @@ import Header from '@/components/widgets/Header';
 import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 // import { ToastContainer } from '@/components/ui/games-store/shared/Toast';
 
-const zkNoidConfig = import('@/games/config');
-
 const StoreProtokitUpdater = dynamic(
   () => import('@/components/pages/lib/StoreProtokitUpdater'),
   {
@@ -25,6 +23,8 @@ export default function Home() {
   );
 
   useEffect(() => {
+    const zkNoidConfig = import('@/games/config');
+
     zkNoidConfig.then((zkNoidGames) => {
       setGames(
         (
@@ -57,11 +57,13 @@ export default function Home() {
   }, []);
 
   return (
-    <ZkNoidGameContext.Provider value={{
-      client: undefined,
-      appchainSupported: true,
-      buildLocalClient: true
-    }}>
+    <ZkNoidGameContext.Provider
+      value={{
+        client: undefined,
+        appchainSupported: true,
+        buildLocalClient: true,
+      }}
+    >
       <div className="flex min-h-screen flex-col">
         <Header />
 
