@@ -32,7 +32,7 @@ nvm use
 
 pnpm install
 
-npm run dev
+pnpm env:inmemory dev
 ```
 
 ### Implementing your own game
