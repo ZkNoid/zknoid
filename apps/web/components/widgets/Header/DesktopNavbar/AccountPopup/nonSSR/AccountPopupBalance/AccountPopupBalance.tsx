@@ -6,8 +6,8 @@ import { useNetworkStore } from '@/lib/stores/network';
 import { useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
 import { usePollMinaBlockHeight } from '@/lib/stores/minaChain';
 import Image from 'next/image';
-import CoinImg from '@/components/widgets/Header/nonSSR/BalanceInfo/assets/coin.svg';
-import MinaCoinImg from '@/components/widgets/Header/nonSSR/BalanceInfo/assets/mina.png';
+import CoinImg from '@/components/widgets/Header/assets/coin.svg';
+import MinaCoinImg from '@/components/widgets/Header/assets/mina.png';
 import { useBridgeStore } from '@/lib/stores/bridgeStore';
 
 export default function AccountPopupBalance() {

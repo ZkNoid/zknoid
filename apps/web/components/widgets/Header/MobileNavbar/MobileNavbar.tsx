@@ -18,12 +18,10 @@ import { SOCIALS } from '@/constants/socials';
 import MobileAccount from '@/components/widgets/Header/MobileNavbar/ui/MobileAccount';
 import { useBridgeStore } from '@/lib/stores/bridgeStore';
 
-const BalanceInfo = dynamic(
-  () => import('@/components/widgets/Header/nonSSR/BalanceInfo/BalanceInfo'),
-  {
-    ssr: false,
-  }
-);
+const MobileBalanceInfo = dynamic(() => import('./nonSSR/MobileBalanceInfo'), {
+  ssr: false,
+});
+
 
 const NetworkPicker = dynamic(
   () =>
@@ -217,7 +215,7 @@ export default function MobileNavbar({
                     }
                   )}
                 >
-                  {networkStore.walletConnected && <BalanceInfo />}
+                  {networkStore.walletConnected && <MobileBalanceInfo />}
                   <div
                     className={cn('mt-6 flex gap-3', {
                       'justify-center': networkStore.walletConnected,

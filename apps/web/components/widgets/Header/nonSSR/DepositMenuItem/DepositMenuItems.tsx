@@ -21,11 +21,11 @@ import { getEnvContext } from '@/lib/envContext';
 import { type PendingTransaction } from '@proto-kit/sequencer';
 import toast from '@/components/shared/Toast';
 import { useToasterStore } from '@/lib/stores/toasterStore';
-import TopUpCard from '@/components/widgets/Header/nonSSR/BalanceInfo/StoreDepositMenuItem/nonSSR/DepositMenuItem/ui/TopUpCard';
+import TopUpCard from './ui/TopUpCard';
 import BridgeModal from '@/components/shared/Modal/BridgeModal';
 import Popover from '@/components/shared/Popover';
 import { useBridgeStore } from '@/lib/stores/bridgeStore';
-import BridgeInput from '@/components/widgets/Header/nonSSR/BalanceInfo/StoreDepositMenuItem/nonSSR/DepositMenuItem/ui/BridgeInput';
+import BridgeInput from './ui/BridgeInput';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { requestAccounts } from '@/lib/helpers';
 

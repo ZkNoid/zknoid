@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import MinaCoinImg from '@/components/widgets/Header/nonSSR/BalanceInfo/assets/mina.png';
 import {
   useMinaBalancesStore,
   useObserveMinaBalance,
@@ -10,13 +9,13 @@ import {
   useObserveProtokitBalance,
   useProtokitBalancesStore,
 } from '@/lib/stores/protokitBalances';
-import CoinImg from '@/components/widgets/Header/nonSSR/BalanceInfo/assets/coin.svg';
-import DepositMenuItem from '../../nonSSR/BalanceInfo/StoreDepositMenuItem/nonSSR/DepositMenuItem';
-import StoreDepositMenuItem from '../../nonSSR/BalanceInfo/StoreDepositMenuItem';
+import CoinImg from '@/components/widgets/Header/assets/coin.svg';
+import MinaCoinImg from '@/components/widgets/Header/assets/mina.png';
 import { useContext } from 'react';
 import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
+import DepositMenuItem from '../../nonSSR/DepositMenuItem/DepositMenuItems';
 
-export default function Balance() {
+export default function DesktopBalanceInfo() {
   const minaBalancesStore = useMinaBalancesStore();
   const networkStore = useNetworkStore();
   usePollMinaBlockHeight();
@@ -38,7 +37,6 @@ export default function Balance() {
 
   return (
     <div className="flex items-center gap-[10px]">
-      <StoreDepositMenuItem />
       <Image
         alt=""
         src={!appchainSupported ? MinaCoinImg : CoinImg}
@@ -57,6 +55,7 @@ export default function Balance() {
           <div className="w-full text-start lg:w-auto">Deposit: {deposit}</div>
         )}
       </div>
+      {appchainSupported && <DepositMenuItem />}
     </div>
   );
 }

@@ -24,7 +24,7 @@ import arcadeGameIcon from '@/public/image/misc/arcade-game-icon.svg';
 import luckyGameIcon from '@/public/image/misc/lucky-game-icon.svg';
 import { SOCIALS } from '@/constants/socials';
 
-const Balance = dynamic(() => import('./nonSSR/Balance'), {
+const Balance = dynamic(() => import('./nonSSR/DesktopBalanceInfo'), {
   ssr: false,
 });
 
@@ -87,6 +87,12 @@ export default function DesktopNavbar({
       setNetworkExpanded(false);
     }
   }, [hidden]);
+
+  const [isWalletInstalled, setWalletInstalled] = useState(false);
+
+  useEffect(() => {
+    setWalletInstalled(walletInstalled());
+  }, []);
 
   return (
     <motion.header
@@ -224,7 +230,7 @@ export default function DesktopNavbar({
                 )}
               </AnimatePresence>
             </>
-          ) : walletInstalled() ? (
+          ) : isWalletInstalled ? (
             <HeaderCard
               svg={'account'}
               text="Connect wallet"
