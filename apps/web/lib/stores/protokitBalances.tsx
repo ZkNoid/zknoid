@@ -143,7 +143,12 @@ export const useTestBalanceGetter = () => {
   const defaultBalance = 100 * 10 ** 9;
   const balancesStore = useProtokitBalancesStore();
   const network = useNetworkStore();
-  const contextAppChainClient = useContext(ZkNoidGameContext) as ClientAppChain<
+
+  
+
+  const {client: contextAppChainClient} = useContext(ZkNoidGameContext);
+
+  const client_ = contextAppChainClient as ClientAppChain<
     typeof DefaultRuntimeModules,
     any,
     any,
@@ -156,14 +161,14 @@ export const useTestBalanceGetter = () => {
     if (!network.address) return;
     if (balancesStore.balances[network.address] >= 100 * 10 ** 9) return;
 
-    const balances = contextAppChainClient.runtime.resolve(
+    const balances = client_.runtime.resolve(
       'Balances'
     ) as Balances;
     const sender = PublicKey.fromBase58(network.address!);
 
     console.log(balances);
 
-    const l2tx = await contextAppChainClient.transaction(sender, async () => {
+    const l2tx = await client_.transaction(sender, async () => {
       balances.addBalance(
         ZNAKE_TOKEN_ID,
         sender,

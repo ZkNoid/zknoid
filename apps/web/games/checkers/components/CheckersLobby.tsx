@@ -21,6 +21,13 @@ export default function CheckersLobby({
     throw Error('Context app chain client is not set');
   }
 
+  const client_ = client as ClientAppChain<
+    typeof checkersConfig.runtimeModules,
+    any,
+    any,
+    any
+  >;
+
   return (
     <GamePage
       gameConfig={checkersConfig}
@@ -32,7 +39,7 @@ export default function CheckersLobby({
         lobbyId={params.lobbyId}
         query={
           networkStore.protokitClientStarted
-            ? client.query.runtime.CheckersLogic
+            ? client_.query.runtime.CheckersLogic
             : undefined
         }
         contractName={'CheckersLogic'}

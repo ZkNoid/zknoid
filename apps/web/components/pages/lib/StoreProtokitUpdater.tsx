@@ -28,16 +28,16 @@ export default function StoreProtokitUpdater() {
 
   console.log('Observing protokit balance');
 
+  const client_ = client as any as ClientAppChain<
+    typeof DefaultRuntimeModules,
+    any,
+    any,
+    any
+  >;
+
   // Order is important
   // @todo remove any
-  useObserveProtokitBalance({
-    client: client as any as ClientAppChain<
-      typeof DefaultRuntimeModules,
-      any,
-      any,
-      any
-    >,
-  });
+  useObserveProtokitBalance();
 
   return <></>;
 }

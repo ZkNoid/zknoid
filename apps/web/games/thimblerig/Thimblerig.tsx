@@ -51,7 +51,6 @@ import { motion, useAnimationControls } from 'framer-motion';
 import { ICompetitionPVP } from '@/lib/types';
 import { GameWrap } from '@/components/framework/GamePage/GameWrap';
 import { RateGame } from '@/components/framework/GameWidget/ui/popups/RateGame';
-import { type PendingTransaction } from '../../../../protokit-framework/framework/packages/sequencer';
 import { SadSmileSVG } from '@/components/shared/misc/svg';
 import toast from '@/components/shared/Toast';
 import { useToasterStore } from '@/lib/stores/toasterStore';
@@ -64,6 +63,7 @@ import {
   useLobbiesStore,
   useObserveLobbiesStore,
 } from '@/lib/stores/lobbiesStore';
+import { PendingTransaction } from '@proto-kit/sequencer';
 
 export default function Thimblerig({}: { params: { competitionId: string } }) {
   const [gameState, setGameState] = useState(GameState.NotStarted);
@@ -98,8 +98,10 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   useObserveThimblerigMatchQueue();
   const startGame = useStartGame(setGameState);
 
+  const client_ = client as ClientAppChain<typeof thimblerigConfig.runtimeModules, any, any, any>;
+
   const query = networkStore.protokitClientStarted
-    ? client.query.runtime.ThimblerigLogic
+    ? client_.query.runtime.ThimblerigLogic
     : undefined;
 
   useObserveLobbiesStore(query);
@@ -114,9 +116,9 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   };
 
   const collectPending = async () => {
-    const randzuLogic = client.runtime.resolve('ThimblerigLogic');
+    const randzuLogic = client_.runtime.resolve('ThimblerigLogic');
 
-    const tx = await client.transaction(
+    const tx = await client_.transaction(
       sessionPrivateKey.toPublicKey(),
       async () => {
         randzuLogic.collectPendingBalance();
@@ -141,10 +143,10 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   const commitThumblerig = async (id: number) => {
     const salt = commitmentStore.commit(id);
 
-    const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
+    const thimblerigLogic = client_.runtime.resolve('ThimblerigLogic');
 
     const commitment = Poseidon.hash([...UInt64.from(id).toFields(), salt]);
-    const tx = await client.transaction(
+    const tx = await client_.transaction(
       PublicKey.fromBase58(networkStore.address!),
       async () => {
         thimblerigLogic.commitValue(
@@ -165,8 +167,8 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   const chooseThumblerig = async (choice: number) => {
     setPendingChoosing(true);
     try {
-      const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
-      const tx = await client.transaction(
+      const thimblerigLogic = client_.runtime.resolve('ThimblerigLogic');
+      const tx = await client_.transaction(
         PublicKey.fromBase58(networkStore.address!),
         async () => {
           thimblerigLogic.chooseThumble(
@@ -195,10 +197,10 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   };
 
   const revealThumblerig = async () => {
-    const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
+    const thimblerigLogic = client_.runtime.resolve('ThimblerigLogic');
     const commitment = commitmentStore.getCommitment();
 
-    const tx = await client.transaction(
+    const tx = await client_.transaction(
       PublicKey.fromBase58(networkStore.address!),
       async () => {
         thimblerigLogic.revealCommitment(
@@ -223,9 +225,9 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   };
 
   const proveOpponentTimeout = async () => {
-    const thibmerigLogic = client.runtime.resolve('ThimblerigLogic');
+    const thibmerigLogic = client_.runtime.resolve('ThimblerigLogic');
 
-    const tx = await client.transaction(
+    const tx = await client_.transaction(
       PublicKey.fromBase58(networkStore.address!),
       async () => {
         thibmerigLogic.proveCommitNotRevealed(

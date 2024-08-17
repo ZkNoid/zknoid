@@ -44,7 +44,6 @@ import { ConnectWallet } from '@/components/framework/GameWidget/ui/popups/Conne
 import { InstallWallet } from '@/components/framework/GameWidget/ui/popups/InstallWallet';
 import { GameWrap } from '@/components/framework/GamePage/GameWrap';
 import { RateGame } from '@/components/framework/GameWidget/ui/popups/RateGame';
-import { type PendingTransaction } from '../../../../protokit-framework/framework/packages/sequencer';
 import toast from '@/components/shared/Toast';
 import { useToasterStore } from '@/lib/stores/toasterStore';
 import { useRateGameStore } from '@/lib/stores/rateGameStore';
@@ -54,6 +53,7 @@ import {
   useLobbiesStore,
   useObserveLobbiesStore,
 } from '@/lib/stores/lobbiesStore';
+import { type PendingTransaction } from '@proto-kit/sequencer';
 
 const competition = {
   id: 'global',
@@ -93,8 +93,16 @@ export default function Randzu({
   const getRatingQuery = api.ratings.getGameRating.useQuery({
     gameId: 'randzu',
   });
+
+  const client_ = client as ClientAppChain<
+    typeof randzuConfig.runtimeModules,
+    any,
+    any,
+    any
+  >;
+
   const query = networkStore.protokitClientStarted
-    ? client.query.runtime.RandzuLogic
+    ? client_.query.runtime.RandzuLogic
     : undefined;
 
   useObserveLobbiesStore(query);

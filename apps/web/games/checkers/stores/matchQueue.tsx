@@ -10,6 +10,7 @@ import {
   matchQueueInitializer,
 } from '@/lib/stores/matchQueue';
 import { create } from 'zustand';
+import { client } from 'zknoid-chain-dev';
 
 export const useCheckersMatchQueueStore = create<
   MatchQueueState,
@@ -35,14 +36,19 @@ export const useObserveCheckersMatchQueue = () => {
       throw Error('Context app chain client is not set');
     }
 
-    console.log('Query', client.query.runtime.CheckersLogic);
+    const client_ = client as ClientAppChain<
+      typeof checkersConfig.runtimeModules,
+      any,
+      any,
+      any
+    >;
 
     matchQueue.loadMatchQueue(
-      client.query.runtime.CheckersLogic,
+      client_.query.runtime.CheckersLogic,
       chain.block?.height ?? 0
     );
     matchQueue.loadActiveGame(
-      client.query.runtime.CheckersLogic,
+      client_.query.runtime.CheckersLogic,
       chain.block?.height ?? 0,
       PublicKey.fromBase58(network.address!)
     );

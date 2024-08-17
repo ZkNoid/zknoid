@@ -21,6 +21,13 @@ export default function RandzuLobby({
     throw Error('Context app chain client is not set');
   }
 
+  const client_ = client as ClientAppChain<
+    typeof randzuConfig.runtimeModules,
+    any,
+    any,
+    any
+  >;
+
   return (
     <GamePage
       gameConfig={randzuConfig}
@@ -32,7 +39,7 @@ export default function RandzuLobby({
         lobbyId={params.lobbyId}
         query={
           networkStore.protokitClientStarted
-            ? client.query.runtime.RandzuLogic
+            ? client_.query.runtime.RandzuLogic
             : undefined
         }
         contractName={'RandzuLogic'}

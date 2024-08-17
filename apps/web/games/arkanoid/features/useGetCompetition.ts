@@ -1,9 +1,11 @@
 import { Field, PublicKey, UInt64 } from 'o1js';
 import { fromContractCompetition } from '@/lib/typesConverter';
 import { Bricks, createBricksBySeed } from 'zknoid-chain-dev';
+import { ClientAppChain } from '@proto-kit/sdk';
 import { useContext } from 'react';
 import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import { ICompetition } from '@/lib/types';
+import { arkanoidConfig } from '../config';
 
 export const useGetCompetition = (
   competitionId: number,
@@ -14,6 +16,14 @@ export const useGetCompetition = (
   if (!client) {
     throw Error('Context app chain client is not set');
   }
+
+  const client_ = client as ClientAppChain<
+    typeof arkanoidConfig.runtimeModules,
+    any,
+    any,
+    any
+  >;
+
   return async () => {
     if (isNaN(competitionId)) {
       console.log(
@@ -22,7 +32,7 @@ export const useGetCompetition = (
       return;
     }
     let contractCompetition =
-      await client.query.runtime.ArkanoidGameHub.competitions.get(
+      await client_.query.runtime.ArkanoidGameHub.competitions.get(
         UInt64.from(competitionId)
       );
     if (contractCompetition === undefined) {
@@ -31,7 +41,7 @@ export const useGetCompetition = (
     }
 
     let creator =
-      (await client.query.runtime.ArkanoidGameHub.competitionCreator.get(
+      (await client_.query.runtime.ArkanoidGameHub.competitionCreator.get(
         UInt64.from(competitionId)
       )) as PublicKey;
 

@@ -1,6 +1,5 @@
 import { CHUNK_LENGTH, GameInputs, Tick } from 'zknoid-chain-dev';
 import { Bool, Field, Int64, PublicKey, UInt64 } from 'o1js';
-import type { PendingTransaction } from '../../../../../protokit-framework/framework/packages/sequencer';
 import { getEnvContext } from '@/lib/envContext';
 import { ITick } from '@/games/arkanoid/components/GameView';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
@@ -9,6 +8,7 @@ import { useContext } from 'react';
 import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import { useNetworkStore } from '@/lib/stores/network';
 import { api } from '@/trpc/react';
+import { type PendingTransaction } from '@proto-kit/sequencer';
 
 export const useProof = (
   lastTicks: ITick[],

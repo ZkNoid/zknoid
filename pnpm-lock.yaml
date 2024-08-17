@@ -28,22 +28,22 @@ importers:
         version: 14.2.5
       '@proto-kit/common':
         specifier: 0.1.1-develop.833
-        version: 0.1.1-develop.833(o1js@1.3.1)(tsyringe@4.8.0)
+        version: 0.1.1-develop.833(o1js@1.6.0)(tsyringe@4.8.0)
       '@proto-kit/library':
         specifier: 0.1.1-develop.833
-        version: 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(@proto-kit/module@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(@proto-kit/sequencer@0.1.1-develop.833)(o1js@1.3.1)(tsyringe@4.8.0)
+        version: 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(@proto-kit/module@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(@proto-kit/sequencer@0.1.1-develop.833)(o1js@1.6.0)(tsyringe@4.8.0)
       '@proto-kit/module':
         specifier: 0.1.1-develop.833
-        version: 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(o1js@1.3.1)(tsyringe@4.8.0)
+        version: 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(o1js@1.6.0)(tsyringe@4.8.0)
       '@proto-kit/protocol':
         specifier: 0.1.1-develop.833
-        version: 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(o1js@1.3.1)(ts-pattern@4.3.0)(tsyringe@4.8.0)
+        version: 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(o1js@1.6.0)(ts-pattern@4.3.0)(tsyringe@4.8.0)
       '@proto-kit/sdk':
         specifier: 0.1.1-develop.833
-        version: 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(@proto-kit/library@0.1.1-develop.833)(@proto-kit/module@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(@proto-kit/sequencer@0.1.1-develop.833)(o1js@1.3.1)(tsyringe@4.8.0)
+        version: 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(@proto-kit/library@0.1.1-develop.833)(@proto-kit/module@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(@proto-kit/sequencer@0.1.1-develop.833)(graphql@16.6.0)(o1js@1.6.0)(tsyringe@4.8.0)
       '@proto-kit/sequencer':
         specifier: 0.1.1-develop.833
-        version: 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(@proto-kit/module@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(o1js@1.3.1)(tsyringe@4.8.0)
+        version: 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(@proto-kit/module@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(o1js@1.6.0)(tsyringe@4.8.0)
       '@radix-ui/react-label':
         specifier: ^2.0.2
         version: 2.1.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
@@ -127,7 +127,7 @@ importers:
         version: 10.1.1
       l1-lottery-contracts:
         specifier: 0.7.14
-        version: 0.7.14(o1js@1.3.1)
+        version: 0.7.14(o1js@1.6.0)
       ldrs:
         specifier: ^1.0.2
         version: 1.0.2
@@ -150,8 +150,8 @@ importers:
         specifier: ^0.65.1
         version: 0.65.1(request@2.88.2)
       o1js:
-        specifier: npm:o1js@1.3.1
-        version: 1.3.1
+        specifier: npm:o1js@1.6.0
+        version: 1.6.0
       react:
         specifier: 19.0.0-rc-4c2e457c7c-20240522
         version: 19.0.0-rc-4c2e457c7c-20240522
@@ -2107,20 +2107,6 @@ packages:
       - supports-color
     dev: false
 
-  /@proto-kit/common@0.1.1-develop.833(o1js@1.3.1)(tsyringe@4.8.0):
-    resolution: {integrity: sha512-hMLUx4ht4zWchTJ8KjODxHdpkKvpc6RsR5UkhmBLyCKPfV4gI+6m6SNAcfiP+qqmGjO34XsVBeR0bSwmQgLZxw==}
-    peerDependencies:
-      o1js: ^1.1.0
-      tsyringe: ^4.7.0
-    dependencies:
-      lodash: 4.17.21
-      loglevel: 1.9.1
-      o1js: 1.3.1
-      reflect-metadata: 0.1.14
-      tsyringe: 4.8.0
-      typescript-memoize: 1.1.1
-    dev: false
-
   /@proto-kit/common@0.1.1-develop.833(o1js@1.6.0)(tsyringe@4.8.0):
     resolution: {integrity: sha512-hMLUx4ht4zWchTJ8KjODxHdpkKvpc6RsR5UkhmBLyCKPfV4gI+6m6SNAcfiP+qqmGjO34XsVBeR0bSwmQgLZxw==}
     peerDependencies:
@@ -2159,28 +2145,6 @@ packages:
       yargs: 17.7.2
     dev: false
 
-  /@proto-kit/library@0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(@proto-kit/module@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(@proto-kit/sequencer@0.1.1-develop.833)(o1js@1.3.1)(tsyringe@4.8.0):
-    resolution: {integrity: sha512-tS3DddBl6LVFam4PdZJuzzfrGHCZPM/vrARuvKL9dlmWVDEPJA3vG9EUkk6xYvsakF8X2jqy8rxX+YBlMwO5MQ==}
-    peerDependencies:
-      '@proto-kit/common': '*'
-      '@proto-kit/module': '*'
-      '@proto-kit/protocol': '*'
-      '@proto-kit/sequencer': '*'
-      o1js: ^1.1.0
-      tsyringe: ^4.7.0
-    dependencies:
-      '@proto-kit/common': 0.1.1-develop.833(o1js@1.3.1)(tsyringe@4.8.0)
-      '@proto-kit/module': 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(o1js@1.3.1)(tsyringe@4.8.0)
-      '@proto-kit/protocol': 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(o1js@1.3.1)(ts-pattern@4.3.0)(tsyringe@4.8.0)
-      '@proto-kit/sequencer': 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(@proto-kit/module@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(o1js@1.3.1)(tsyringe@4.8.0)
-      bigint-isqrt: 0.3.2
-      lodash: 4.17.21
-      loglevel: 1.9.1
-      o1js: 1.3.1
-      reflect-metadata: 0.1.14
-      tsyringe: 4.8.0
-    dev: false
-
   /@proto-kit/library@0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(@proto-kit/module@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(@proto-kit/sequencer@0.1.1-develop.833)(o1js@1.6.0)(tsyringe@4.8.0):
     resolution: {integrity: sha512-tS3DddBl6LVFam4PdZJuzzfrGHCZPM/vrARuvKL9dlmWVDEPJA3vG9EUkk6xYvsakF8X2jqy8rxX+YBlMwO5MQ==}
     peerDependencies:
@@ -2199,23 +2163,6 @@ packages:
       lodash: 4.17.21
       loglevel: 1.9.1
       o1js: 1.6.0
-      reflect-metadata: 0.1.14
-      tsyringe: 4.8.0
-    dev: false
-
-  /@proto-kit/module@0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(o1js@1.3.1)(tsyringe@4.8.0):
-    resolution: {integrity: sha512-Xc+0e2YrcghOILKILaX0KwlivCkSgmK+tkAhDvMt7nWcRPzPJIlaLjprvm8bEZJfe93gdXD92K4a3+BhvpeD6Q==}
-    peerDependencies:
-      '@proto-kit/common': '*'
-      '@proto-kit/protocol': '*'
-      o1js: ^1.1.0
-      tsyringe: ^4.7.0
-    dependencies:
-      '@proto-kit/common': 0.1.1-develop.833(o1js@1.3.1)(tsyringe@4.8.0)
-      '@proto-kit/protocol': 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(o1js@1.3.1)(ts-pattern@4.3.0)(tsyringe@4.8.0)
-      lodash: 4.17.21
-      loglevel: 1.9.1
-      o1js: 1.3.1
       reflect-metadata: 0.1.14
       tsyringe: 4.8.0
     dev: false
@@ -2257,24 +2204,6 @@ packages:
       prisma: 5.17.0
       redis: 4.7.0
       reflect-metadata: 0.1.14
-      tsyringe: 4.8.0
-    dev: false
-
-  /@proto-kit/protocol@0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(o1js@1.3.1)(ts-pattern@4.3.0)(tsyringe@4.8.0):
-    resolution: {integrity: sha512-NLla3kOJAM/Mbxh0Ssl2B9EFNG++ormZehBVBNIi+sFx7qtXMslg3QA4it2maY9hfs8bHyJrP1JCjCadWE/Z0g==}
-    peerDependencies:
-      '@proto-kit/common': '*'
-      o1js: ^1.1.0
-      ts-pattern: ^4.3.0
-      tsyringe: ^4.7.0
-    dependencies:
-      '@proto-kit/common': 0.1.1-develop.833(o1js@1.3.1)(tsyringe@4.8.0)
-      lodash: 4.17.21
-      loglevel: 1.9.1
-      o1js: 1.3.1
-      reflect-metadata: 0.1.14
-      ts-mixer: 6.0.4
-      ts-pattern: 4.3.0
       tsyringe: 4.8.0
     dev: false
 
@@ -2321,53 +2250,6 @@ packages:
       tsyringe: 4.8.0
     transitivePeerDependencies:
       - graphql
-    dev: false
-
-  /@proto-kit/sdk@0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(@proto-kit/library@0.1.1-develop.833)(@proto-kit/module@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(@proto-kit/sequencer@0.1.1-develop.833)(o1js@1.3.1)(tsyringe@4.8.0):
-    resolution: {integrity: sha512-Z+LHN0GMR6pGyLZK0E0O/5DAN3wSsn9I4i/iKifbbbfcmbMDRRSaG9TotSQ70HoHhmBk9LeYMgd4lpd0IAC2rA==}
-    peerDependencies:
-      '@proto-kit/common': '*'
-      '@proto-kit/library': '*'
-      '@proto-kit/module': '*'
-      '@proto-kit/protocol': '*'
-      '@proto-kit/sequencer': '*'
-      o1js: ^1.1.0
-      tsyringe: ^4.7.0
-    dependencies:
-      '@proto-kit/common': 0.1.1-develop.833(o1js@1.3.1)(tsyringe@4.8.0)
-      '@proto-kit/library': 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(@proto-kit/module@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(@proto-kit/sequencer@0.1.1-develop.833)(o1js@1.3.1)(tsyringe@4.8.0)
-      '@proto-kit/module': 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(o1js@1.3.1)(tsyringe@4.8.0)
-      '@proto-kit/protocol': 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(o1js@1.3.1)(ts-pattern@4.3.0)(tsyringe@4.8.0)
-      '@proto-kit/sequencer': 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(@proto-kit/module@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(o1js@1.3.1)(tsyringe@4.8.0)
-      '@urql/core': 4.3.0(graphql@16.6.0)
-      comlink: 4.4.1
-      lodash: 4.17.21
-      loglevel: 1.9.1
-      o1js: 1.3.1
-      reflect-metadata: 0.1.14
-      tsyringe: 4.8.0
-    transitivePeerDependencies:
-      - graphql
-    dev: false
-
-  /@proto-kit/sequencer@0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(@proto-kit/module@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(o1js@1.3.1)(tsyringe@4.8.0):
-    resolution: {integrity: sha512-L06+uOyYYHjOpxoNFOIjdKIuIiyfReS1LJZr6g0IwWgFtg4OH0DK+bkyusrGY9oPtAyJnEjoWjxm4ZyQScV4ng==}
-    peerDependencies:
-      '@proto-kit/common': '*'
-      '@proto-kit/module': '*'
-      '@proto-kit/protocol': '*'
-      o1js: ^1.1.0
-      tsyringe: ^4.7.0
-    dependencies:
-      '@proto-kit/common': 0.1.1-develop.833(o1js@1.3.1)(tsyringe@4.8.0)
-      '@proto-kit/module': 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(o1js@1.3.1)(tsyringe@4.8.0)
-      '@proto-kit/protocol': 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(o1js@1.3.1)(ts-pattern@4.3.0)(tsyringe@4.8.0)
-      compute-gcd: 1.2.1
-      lodash: 4.17.21
-      o1js: 1.3.1
-      reflect-metadata: 0.1.14
-      ts-pattern: 4.3.0
-      tsyringe: 4.8.0
     dev: false
 
   /@proto-kit/sequencer@0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(@proto-kit/module@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(o1js@1.6.0)(tsyringe@4.8.0):
@@ -7943,7 +7825,7 @@ packages:
       - supports-color
     dev: false
 
-  /l1-lottery-contracts@0.7.14(o1js@1.3.1):
+  /l1-lottery-contracts@0.7.14(o1js@1.6.0):
     resolution: {integrity: sha512-lijV0SmV+RbDFSkeq5Jz8KmWcRWDdarQ2BmZmYwYLKxVvKGzYn0GyTp9IwXkY7P2ysIQgHuUX2iTXnpZAXGCEA==}
     engines: {node: '>=18.14.0'}
     peerDependencies:
@@ -7953,7 +7835,7 @@ packages:
       axios: 1.7.3
       esbuild: 0.21.5
       minimist: 1.2.8
-      o1js: 1.3.1
+      o1js: 1.6.0
       zkapp-cli: 0.21.5
     transitivePeerDependencies:
       - debug
@@ -8529,21 +8411,6 @@ packages:
       nodemon: 2.0.22
       through2: 4.0.2
     dev: true
-
-  /o1js@1.3.1:
-    resolution: {integrity: sha512-FOhkN0/byoWm/Q0F+2y1eHTeKYy22Lcx1oIn4xITLWPsEX6s01B79qP0pJQBPKZW+ev0xmmY/8Jf2pBuWA53fQ==}
-    engines: {node: '>=18.14.0'}
-    hasBin: true
-    dependencies:
-      blakejs: 1.2.1
-      cachedir: 2.4.0
-      isomorphic-fetch: 3.0.0
-      js-sha256: 0.9.0
-      reflect-metadata: 0.1.14
-      tslib: 2.6.3
-    transitivePeerDependencies:
-      - encoding
-    dev: false
 
   /o1js@1.6.0:
     resolution: {integrity: sha512-5pHCM0qIHG+MhLlcRJZRK8YFC7MOCjlxwSYbmrLDKER267eUip7JRDtWATytIRxtCPqOBvqKeJb0hR/mvjWxqg==}

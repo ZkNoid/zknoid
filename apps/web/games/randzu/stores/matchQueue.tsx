@@ -22,6 +22,13 @@ export const useObserveRandzuMatchQueue = () => {
   const matchQueue = useRandzuMatchQueueStore();
   const { client } = useContext(ZkNoidGameContext);
 
+  const client_ = client as ClientAppChain<
+    typeof randzuConfig.runtimeModules,
+    any,
+    any,
+    any
+  >;
+
   useEffect(() => {
     if (
       !network.walletConnected ||
@@ -37,11 +44,11 @@ export const useObserveRandzuMatchQueue = () => {
     }
 
     matchQueue.loadMatchQueue(
-      client.query.runtime.RandzuLogic,
+      client_.query.runtime.RandzuLogic,
       chain.block?.height
     );
     matchQueue.loadActiveGame(
-      client.query.runtime.RandzuLogic,
+      client_.query.runtime.RandzuLogic,
       chain.block?.height,
       PublicKey.fromBase58(network.address!)
     );

@@ -88,9 +88,14 @@ export default class ZknoidWorkerClient {
       seedJson: seed.toJSON(),
       inputs: JSON.stringify(inputs.map((elem) => GameInputs.toJSON(elem))),
       debug: Bool.toJSON(debug),
-    });
+    }) as any;
     console.log('Restoring', result);
-    const restoredProof = GameRecordProof.fromJSON(result);
+    const restoredProof = new GameRecordProof({
+      proof: result.proof,
+      publicInput: result.publicInput,
+      publicOutput: result.publicOutput,
+      maxProofsVerified: result.maxProofsVerified
+    });
 
     return restoredProof;
   }

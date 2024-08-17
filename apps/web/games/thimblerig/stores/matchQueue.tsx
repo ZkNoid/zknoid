@@ -22,6 +22,13 @@ export const useObserveThimblerigMatchQueue = () => {
   const matchQueue = useThimblerigMatchQueueStore();
   const { client } = useContext(ZkNoidGameContext);
 
+  const client_ = client as ClientAppChain<
+    typeof thimblerigConfig.runtimeModules,
+    any,
+    any,
+    any
+  >;
+
   useEffect(() => {
     if (!network.walletConnected || !network.address || !chain.block?.height) {
       return;
@@ -32,11 +39,11 @@ export const useObserveThimblerigMatchQueue = () => {
     }
 
     matchQueue.loadMatchQueue(
-      client.query.runtime.ThimblerigLogic,
+      client_.query.runtime.ThimblerigLogic,
       chain.block?.height
     );
     matchQueue.loadActiveGame(
-      client.query.runtime.ThimblerigLogic,
+      client_.query.runtime.ThimblerigLogic,
       chain.block?.height,
       PublicKey.fromBase58(network.address!)
     );

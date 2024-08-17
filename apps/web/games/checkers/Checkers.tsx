@@ -47,12 +47,7 @@ export default function RandzuPage({
     { x: number; y: number } | undefined
   >({ x: 0, y: 0 });
 
-  const client = useContext(ZkNoidGameContext) as ClientAppChain<
-    typeof checkersConfig.runtimeModules,
-    any,
-    any,
-    any
-  >;
+  const { client } = useContext(ZkNoidGameContext);
 
   if (!client) {
     throw Error('Context app chain client is not set');
@@ -66,8 +61,16 @@ export default function RandzuPage({
   const sessionPrivateKey = useStore(useSessionKeyStore, (state) =>
     state.getSessionKey()
   );
+
+  const client_ = client as ClientAppChain<
+    typeof checkersConfig.runtimeModules,
+    any,
+    any,
+    any
+  >;
+
   const query = networkStore.protokitClientStarted
-    ? client.query.runtime.CheckersLogic
+    ? client_.query.runtime.CheckersLogic
     : undefined;
 
   useObserveLobbiesStore(query);

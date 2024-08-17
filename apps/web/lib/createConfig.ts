@@ -1,5 +1,5 @@
 import { type RuntimeModulesRecord } from '@proto-kit/module';
-import { type ClientAppChain } from 'zknoid-chain-dev';
+import { type ClientAppChain } from '@proto-kit/sdk';
 import { createStore } from 'zustand';
 import { ZkNoidGameFeature, ZkNoidGameGenre } from './platform/game_tags';
 import { buildClient } from './utils';
@@ -65,7 +65,7 @@ export type ZkNoidConfig<
   ],
 > = {
   readonly games: games;
-  getClient(): ClientAppChain<games[number]['runtimeModules'], any, any, any>;
+  getClient(): ClientAppChain<any, any, any, any>;
 };
 
 export type CreateConfigParameters<

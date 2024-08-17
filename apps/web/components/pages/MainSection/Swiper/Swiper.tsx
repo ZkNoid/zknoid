@@ -12,7 +12,7 @@ export default function Swiper() {
     {
       loop: true,
     },
-    [Autoplay({ playOnInit: true, delay: 8000, isPlaying: true })]
+    [Autoplay({ playOnInit: true, delay: 8000 })]
   );
 
   return (

@@ -21,6 +21,13 @@ export default function ThimblerigLobby({
     throw Error('Context app chain client is not set');
   }
 
+  const client_ = client as ClientAppChain<
+    typeof thimblerigConfig.runtimeModules,
+    any,
+    any,
+    any
+  >;
+
   return (
     <GamePage
       gameConfig={thimblerigConfig}
@@ -32,7 +39,7 @@ export default function ThimblerigLobby({
         lobbyId={params.lobbyId}
         query={
           networkStore.protokitClientStarted
-            ? client.query.runtime.ThimblerigLogic
+            ? client_.query.runtime.ThimblerigLogic
             : undefined
         }
         contractName={'ThimblerigLogic'}
