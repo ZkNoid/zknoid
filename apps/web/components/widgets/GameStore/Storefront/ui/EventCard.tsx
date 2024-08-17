@@ -19,11 +19,13 @@ export default function EventCard({
   image?: string;
 }) {
   const eventCounter = useEventTimer(event);
-  const time = `${eventCounter.startsIn.days}d ${
-    eventCounter.startsIn.hours
-  }:${eventCounter.startsIn.minutes}:${Math.trunc(
-    eventCounter.startsIn.seconds!
-  )}`;
+  const time = eventCounter.startsIn
+    ? `${eventCounter.startsIn.days}d ${
+        eventCounter.startsIn.hours
+      }:${eventCounter.startsIn.minutes}:${Math.trunc(
+        eventCounter.startsIn.seconds!
+      )}`
+    : '';
 
   return (
     <Link

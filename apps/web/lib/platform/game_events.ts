@@ -72,10 +72,16 @@ const getEventTime = (event: ZkNoidEvent) => {
 };
 
 export const useEventTimer = (event: ZkNoidEvent) => {
-  const [type, setType] = useState<ZkNoidEventType>(getEventType(event));
-  const [startsIn, setStartsIn] = useState<DurationObjectUnits>(
-    getEventTime(event)
-  );
+  const [type, setType] = useState<ZkNoidEventType>();
+  const [startsIn, setStartsIn] = useState<DurationObjectUnits>();
+
+  useEffect(() => {
+    const newType = getEventType(event);
+    const newTime = getEventTime(event);
+
+    setType(newType);
+    setStartsIn(newTime);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
