@@ -209,7 +209,7 @@ export default function DesktopNavbar({
         <div className="relative flex gap-5">
           {networkStore.walletConnected && networkStore.address ? (
             <>
-              <Balance network={'protokit'} />
+              <Balance />
               <AccountCard
                 text={formatAddress(networkStore.address)}
                 onClick={() => setIsAccountOpen(true)}
