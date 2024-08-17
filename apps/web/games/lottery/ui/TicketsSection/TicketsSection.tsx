@@ -5,15 +5,19 @@ import { useEffect, useState } from 'react';
 import OwnedTickets from './OwnedTickets';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { AnimatePresence } from 'framer-motion';
-import PreviousRounds from '@/games/lottery/ui/TicketsSection/PreviousRounds';
+import PreviousRounds from './PreviousRounds';
 import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
 import { useRoundsStore } from '@/games/lottery/lib/roundsStore';
-import OwnedGiftCodes from '@/games/lottery/ui/TicketsSection/OwnedGiftCodes';
-import BoughtGiftCodes from '@/games/lottery/ui/TicketsSection/BoughtGiftCodes';
-import UseGiftCodeForm from '@/games/lottery/ui/TicketsSection/UseGiftCodeForm';
-import InvalidGiftCode from '@/games/lottery/ui/TicketsSection/InvalidGiftCode';
-import NoUserGiftCodes from '@/games/lottery/ui/TicketsSection/NoUserGiftCodes';
-import BuyGiftCodesCounter from '@/games/lottery/ui/TicketsSection/BuyGiftCodesCounter';
+import OwnedGiftCodes from './OwnedGiftCodes';
+import BoughtGiftCodes from './BoughtGiftCodes';
+import UseGiftCodeForm from './UseGiftCodeForm';
+import ValidGiftCode from './ValidGiftCode';
+import NoUserGiftCodes from './NoUserGiftCodes';
+import BuyGiftCodesCounter from './BuyGiftCodesCounter';
+import { api } from '@/trpc/react';
+import { useNetworkStore } from '@/lib/stores/network';
+import { VoucherMode } from './lib/voucherMode';
+
 // import GetMoreTicketsButton from './ui/GetMoreTicketsButton';
 
 interface TicketInfo {
@@ -21,20 +25,12 @@ interface TicketInfo {
   numbers: number[];
 }
 
-enum VoucherMode {
-  Buy,
-  BuySuccess,
-  List,
-  Use,
-  UseValid,
-  Closed,
-}
-
 export default function TicketsSection() {
   const workerClientStore = useWorkerClientStore();
   const lotteryStore = useWorkerClientStore();
   const roundsStore = useRoundsStore();
   const notificationStore = useNotificationStore();
+  const networkStore = useNetworkStore();
 
   const [tickets, setTickets] = useState<TicketInfo[]>([]);
   const [blankTicket, setBlankTicket] = useState<boolean>(true);
@@ -45,8 +41,27 @@ export default function TicketsSection() {
   const [giftCodeToBuyAmount, setGiftCodeToBuyAmount] = useState<number>(1);
   const [boughtGiftCodes, setBoughtGiftCodes] = useState<string[]>([]);
   const [userGiftCodes, setUserGiftCodes] = useState<
-    { code: string; used: boolean }[]
+    { code: string; used: boolean; createdAt: string }[]
   >([]);
+  const [hasOwnedTickets, setHasOwnedTickets] = useState<boolean>(false);
+
+  const getUserTicketQuery = api.giftCodes.getUserGiftCodes.useQuery({
+    userAddress: networkStore.address || '',
+  });
+
+  useEffect(() => {
+    if (getUserTicketQuery.data) {
+      if (getUserTicketQuery.data.giftCodes) {
+        setUserGiftCodes(
+          getUserTicketQuery.data.giftCodes.map((item) => ({
+            code: item.code,
+            used: item.used,
+            createdAt: item.createdAt,
+          }))
+        );
+      }
+    }
+  }, [getUserTicketQuery.data]);
 
   useEffect(() => {
     setTickets([]);
@@ -66,8 +81,12 @@ export default function TicketsSection() {
   return (
     <div
       className={cn(
-        'relative rounded-[0.67vw] border border-left-accent bg-bg-grey',
-        'flex flex-col gap-[2.604vw] px-[2vw] py-[2.67vw]'
+        'relative flex flex-col rounded-[0.67vw] border border-left-accent bg-bg-grey px-[2vw] py-[2.67vw]',
+        {
+          'gap-[2.604vw]':
+            hasOwnedTickets ||
+            roundsStore.roundToShowId == lotteryStore.lotteryRoundId,
+        }
       )}
     >
       <div className="">
@@ -79,7 +98,10 @@ export default function TicketsSection() {
               roundsStore.roundToShowId != lotteryStore.lotteryRoundId,
           })}
         >
-          <OwnedTickets />
+          <OwnedTickets
+            hasOwnedTickets={hasOwnedTickets}
+            setHasOwnedTickets={setHasOwnedTickets}
+          />
           {roundsStore.roundToShowId == lotteryStore.lotteryRoundId && (
             <div className={'flex flex-col'}>
               <div className="mb-[1.33vw] text-[2.13vw]">Buy tickets</div>
@@ -135,7 +157,7 @@ export default function TicketsSection() {
                         <UseGiftCodeForm submitForm={submitForm} />
                       )}
                       {voucherMode == VoucherMode.UseValid && (
-                        <InvalidGiftCode giftCode={giftCode} />
+                        <ValidGiftCode giftCode={giftCode} />
                       )}
                     </div>
                   )}
@@ -180,14 +202,13 @@ export default function TicketsSection() {
                           Already bought codes
                         </button>
                       </div>
-                      {voucherMode == VoucherMode.Buy &&
-                        boughtGiftCodes.length == 0 && (
-                          <BuyGiftCodesCounter
-                            giftCodeToBuyAmount={giftCodeToBuyAmount}
-                            setGiftCodeToBuyAmount={setGiftCodeToBuyAmount}
-                          />
-                        )}
-                      {voucherMode == VoucherMode.Buy &&
+                      {voucherMode == VoucherMode.Buy && (
+                        <BuyGiftCodesCounter
+                          giftCodeToBuyAmount={giftCodeToBuyAmount}
+                          setGiftCodeToBuyAmount={setGiftCodeToBuyAmount}
+                        />
+                      )}
+                      {voucherMode == VoucherMode.BuySuccess &&
                         boughtGiftCodes.length != 0 && (
                           <BoughtGiftCodes giftCodes={boughtGiftCodes} />
                         )}
@@ -214,6 +235,7 @@ export default function TicketsSection() {
                             key={index}
                             index={index}
                             ticketsAmount={tickets.length}
+                            voucherMode={voucherMode}
                             addTicket={(ticket) => {
                               if (tickets.length == index) {
                                 setTickets([...tickets, ticket]);
@@ -235,7 +257,6 @@ export default function TicketsSection() {
                                 } else {
                                   tickets.splice(index, 1);
                                 }
-
                                 notificationStore.create({
                                   type: 'success',
                                   message: 'Ticket removed',
@@ -291,7 +312,11 @@ export default function TicketsSection() {
                       className={
                         'mb-[0.521vw] flex h-[1.354vw] w-[3.802vw] flex-row items-center justify-center rounded-[0.144vw] border border-foreground hover:opacity-80'
                       }
-                      onClick={() => setVoucherMode(VoucherMode.Closed)}
+                      onClick={() => {
+                        if (voucherMode == VoucherMode.BuySuccess)
+                          setBoughtGiftCodes([]);
+                        setVoucherMode(VoucherMode.Closed);
+                      }}
                     >
                       <svg
                         width="0.378vw"
@@ -323,17 +348,23 @@ export default function TicketsSection() {
                       buttonActive={
                         workerClientStore.lotteryCompiled &&
                         !workerClientStore.isActiveTx &&
-                        tickets.length > 0 &&
-                        tickets[0].amount != 0
+                        ((tickets.length > 0 && tickets[0].amount != 0) ||
+                          voucherMode == VoucherMode.Buy)
                       }
                       ticketsInfo={tickets}
                       loaderActive={
                         workerClientStore.lotteryCompiled &&
                         workerClientStore.isActiveTx
                       }
-                      onFinally={() => {
+                      clearTickets={() => {
                         setTickets([]);
                       }}
+                      voucherMode={voucherMode}
+                      setVoucherMode={setVoucherMode}
+                      giftCodeToBuyAmount={giftCodeToBuyAmount}
+                      setGiftCodeToBuyAmount={setGiftCodeToBuyAmount}
+                      setBoughtGiftCodes={setBoughtGiftCodes}
+                      giftCode={giftCode}
                     />
                     {/*<GetMoreTicketsButton*/}
                     {/*  disabled={blankTicket}*/}

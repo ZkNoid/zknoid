@@ -35,7 +35,7 @@ export default function DepositMenuItem() {
   const protokitBalancesStore = useProtokitBalancesStore();
   const toasterStore = useToasterStore();
   const networkStore = useNetworkStore();
-  const {client: contextAppChainClient} = useContext(ZkNoidGameContext);
+  const { client: contextAppChainClient } = useContext(ZkNoidGameContext);
   const progress = api.progress.setSolvedQuests.useMutation();
   // const testBalanceGetter = useTestBalanceGetter();
   // const balancesStore = useProtokitBalancesStore();
@@ -174,23 +174,16 @@ export default function DepositMenuItem() {
     });
   };
 
-  const workerStore = useWorkerClientStore();
+  const { appchainSupported } = useContext(ZkNoidGameContext);
 
   return (
     <>
-      <TopUpCard
-        text="Top up"
-        onClick={() => bridgeStore.setOpen(10n * 10n ** 9n)}
-      />
-      {workerStore.status}
-      {/* {contextAppChainClient &&
-        network.address &&
-        balancesStore.balances[network.address] < 100 * 10 ** 9 && (
-          <TopUpCard
-            text="Get test balance"
-            onClick={() => testBalanceGetter()}
-          />
-        )} */}
+      {appchainSupported && (
+        <TopUpCard
+          text="Top up"
+          onClick={() => bridgeStore.setOpen(10n * 10n ** 9n)}
+        />
+      )}
       <BridgeModal
         isOpen={bridgeStore.open}
         onClose={() => bridgeStore.close()}
