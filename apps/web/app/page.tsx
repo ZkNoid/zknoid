@@ -1,21 +1,12 @@
 'use client';
 
 import 'reflect-metadata';
-import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import Footer from '@/components/widgets/Footer/Footer';
 import MainSection from '@/components/pages/MainSection';
 import { IGame, announcedGames, defaultGames } from './constants/games';
 import Header from '@/components/widgets/Header';
 import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
-// import { ToastContainer } from '@/components/ui/games-store/shared/Toast';
-
-const StoreProtokitUpdater = dynamic(
-  () => import('@/components/pages/lib/StoreProtokitUpdater'),
-  {
-    ssr: false,
-  }
-);
 
 export default function Home() {
   const [games, setGames] = useState<IGame[]>(
@@ -60,7 +51,7 @@ export default function Home() {
     <ZkNoidGameContext.Provider
       value={{
         client: undefined,
-        appchainSupported: true,
+        appchainSupported: false,
         buildLocalClient: true,
       }}
     >

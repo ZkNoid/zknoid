@@ -8,6 +8,7 @@ import { useChainStore } from './minaChain';
 import { useNetworkStore } from './network';
 
 import ZkNoidGameContext from '../contexts/ZkNoidGameContext';
+import { fetchAccount } from 'o1js';
 
 export interface BalancesState {
   loading: boolean;
@@ -42,34 +43,11 @@ export const useMinaBalancesStore = create<
         state.loading = true;
       });
 
-      const response = await fetch(
-        ALL_NETWORKS.find((x) => x.networkID == networkID)?.graphql!,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'Cookie',
-          },
-          body: JSON.stringify({
-            query: `
-            query {
-              account(publicKey: "${address}") {
-                balance {
-                  total
-                }
-                delegate
-                nonce
-              }
-            }
-          `,
-          }),
-        }
-      );
+      const account = await fetchAccount({ publicKey: address });
 
-      const { data } = (await response.json()) as BalanceQueryResponse;
-      const balance = BigInt(data.account?.balance.total ?? '0');
+      const balance = BigInt(account.account?.balance.toBigInt() ?? 0n);
 
-      console.log('Balance fetching', data);
+      console.log('Balance fetching', balance);
 
       set((state) => {
         state.loading = false;

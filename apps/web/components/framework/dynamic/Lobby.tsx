@@ -18,20 +18,26 @@ export default function Page({
     []
   );
   const client = useMemo(() => zkNoidConfig.getClient(), []);
+  const appchainSupported = Object.keys(config.runtimeModules).length > 0;
+
   const networkStore = useNetworkStore();
 
   const Lobby = config.lobby!;
 
   useEffect(() => {
-    client.start().then(() => networkStore.onProtokitClientStarted());
+    if (appchainSupported) {
+      client.start().then(() => networkStore.onProtokitClientStarted());
+    }
   }, [client]);
 
   return (
-    <ZkNoidGameContext.Provider value={{
-      client,
-      appchainSupported: !!config.runtimeModules,
-      buildLocalClient: false
-    }}>
+    <ZkNoidGameContext.Provider
+      value={{
+        client,
+        appchainSupported,
+        buildLocalClient: false,
+      }}
+    >
       <Lobby params={{ lobbyId: lobbyId }} />
     </ZkNoidGameContext.Provider>
   );

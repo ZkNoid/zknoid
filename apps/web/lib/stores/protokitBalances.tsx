@@ -110,7 +110,7 @@ export const useObserveProtokitBalance = () => {
     if (!network.protokitClientStarted) return;
     if (!network.walletConnected) return;
     if (!network.address) return;
-    if (!client) throw Error('Client is not set');
+    if (!client) return;
 
     balances.loadBalance(client, network.address!);
   }, [
@@ -143,8 +143,6 @@ export const useTestBalanceGetter = () => {
   const defaultBalance = 100 * 10 ** 9;
   const balancesStore = useProtokitBalancesStore();
   const network = useNetworkStore();
-
-  
 
   const {client: contextAppChainClient} = useContext(ZkNoidGameContext);
 

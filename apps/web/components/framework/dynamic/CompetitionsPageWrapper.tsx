@@ -12,10 +12,15 @@ export default function Page({ gameId }: { gameId: string }) {
     []
   );
   const client = useMemo(() => zkNoidConfig.getClient(), []);
+
+  const appchainSupported = Object.keys(config.runtimeModules).length > 0;
+
   const networkStore = useNetworkStore();
 
   useEffect(() => {
-    client.start().then(() => networkStore.onProtokitClientStarted());
+    if (appchainSupported) {
+      client.start().then(() => networkStore.onProtokitClientStarted());
+    }
   }, [client]);
 
   const CompetitionsPage = config.pageCompetitionsList!;
@@ -24,7 +29,7 @@ export default function Page({ gameId }: { gameId: string }) {
     <ZkNoidGameContext.Provider
       value={{
         client,
-        appchainSupported: !!config.runtimeModules,
+        appchainSupported,
         buildLocalClient: false,
       }}
     >

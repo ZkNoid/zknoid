@@ -22,9 +22,12 @@ export default function GamePageWrapper({
   const client = useMemo(() => zkNoidConfig.getClient(), []);
   const networkStore = useNetworkStore();
   const logGameOpenedMutation = api.logging.logGameOpened.useMutation();
+  const appchainSupported = Object.keys(config.runtimeModules).length > 0;
 
   useEffect(() => {
-    client.start().then(() => networkStore.onProtokitClientStarted());
+    if (appchainSupported) {
+      client.start().then(() => networkStore.onProtokitClientStarted());
+    }
   }, [client]);
 
   useEffect(() => {
@@ -38,11 +41,13 @@ export default function GamePageWrapper({
   }, [networkStore.address]);
 
   return (
-    <ZkNoidGameContext.Provider value={{
-      client,
-      appchainSupported: !!config.runtimeModules,
-      buildLocalClient: false
-    }}>
+    <ZkNoidGameContext.Provider
+      value={{
+        client,
+        appchainSupported,
+        buildLocalClient: false,
+      }}
+    >
       <config.page
         params={{
           competitionId: competitionId,
