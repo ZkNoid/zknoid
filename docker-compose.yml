@@ -1,40 +1,6 @@
-version: "3"
-services:
-  api_server:
-    build: .
-
-    environment:
-      TZ: Europe/Moscow
-      POSTGRES_URL: postgres
-      REDIS_URL: redis
-
-    command: sh -c "PERSISTENT=true pnpm start-server"
-    ports:
-      - "38080:8080"
-    restart: unless-stopped
-    depends_on:
-      - postgres
-      - redis
-
-  postgres:
-    image: postgres:14-alpine
-    container_name: protokit-db
-    ports:
-      - 5432:5432
-    volumes:
-      - ./postgres:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_USER=admin
-      - POSTGRES_DB=protokit
-
-  redis:
-    image: redis:6.2-alpine
-    container_name: protokit-redis
-    restart: unless-stopped
-    ports:
-      - '6379:6379'
-    command: redis-server /redis.conf --requirepass password
-    volumes:
-      - ./redis:/data
-      - ./redis.conf:/redis.conf
+  
+include:
+- ./docker/persistence/docker-compose.yml
+- ./docker/sequencer/docker-compose.yml
+- ./docker/proxy/docker-compose.yml
+- ./docker/web/docker-compose.yml
