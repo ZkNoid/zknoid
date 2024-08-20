@@ -24,7 +24,7 @@ export const arkanoidConfig = createZkNoidGameConfig({
   name: 'Arkanoid game',
   description: description,
   image: '/image/games/arkanoid.svg',
-  logoMode: LogoMode.FULL_WIDTH,
+  logoMode: LogoMode.CENTER,
   genre: ZkNoidGameGenre.Arcade,
   features: [ZkNoidGameFeature.SinglePlayer],
   isReleased: true,
@@ -58,5 +58,5 @@ export const arkanoidRedirectConfig = createZkNoidGameConfig({
   page: undefined as any,
   pageCompetitionsList: ArkanoidCompetitionsListPage,
   pageNewCompetition: NewArkanoidCompetitionPage,
-  externalUrl: 'https://proto.zknoid.io/games/arkanoid/global'
+  externalUrl: 'https://proto.zknoid.io/games/arkanoid/global',
 });

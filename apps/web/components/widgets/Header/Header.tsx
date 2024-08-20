@@ -1,5 +1,5 @@
-import MobileNavbar from '@/components/widgets/Header/MobileNavbar';
-import DesktopNavbar from '@/components/widgets/Header/DesktopNavbar';
+import MobileNavbar from './MobileNavbar';
+import DesktopNavbar from './DesktopNavbar';
 
 export default function Header() {
   return (
