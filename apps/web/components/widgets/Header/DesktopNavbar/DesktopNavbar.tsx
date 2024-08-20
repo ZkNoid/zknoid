@@ -121,7 +121,7 @@ export default function DesktopNavbar({
         >
           <Tab
             title={'Games'}
-            link={'/#games'}
+            link={'/'}
             items={[
               {
                 icon: (
@@ -132,7 +132,7 @@ export default function DesktopNavbar({
                   />
                 ),
                 text: 'Arkanoid',
-                link: 'https://proto.zknoid.io/games/arkanoid/global',
+                link: '/games/arkanoid/global',
               },
               {
                 icon: (
@@ -143,7 +143,7 @@ export default function DesktopNavbar({
                   />
                 ),
                 text: 'Randzu',
-                link: 'https://proto.zknoid.io/games/randzu/global',
+                link: '/games/randzu/global',
               },
               {
                 icon: (
@@ -154,7 +154,7 @@ export default function DesktopNavbar({
                   />
                 ),
                 text: 'Thimblerig',
-                link: 'https://proto.zknoid.io/games/thimblerig/global',
+                link: '/games/thimblerig/global',
               },
               {
                 icon: (
@@ -165,7 +165,7 @@ export default function DesktopNavbar({
                   />
                 ),
                 text: 'Checkers',
-                link: 'https://proto.zknoid.io/games/checkers/global',
+                link: '/games/checkers/global',
               },
               {
                 icon: (
@@ -192,10 +192,10 @@ export default function DesktopNavbar({
             ]}
           />
           <Tab title={'Events'} link={'/#events'} />
-          <Tab title={'FAQ & Support'} link={'/#faq'} />
+          <Tab title={'FAQ & Support'} link={'/?widget=faq'} />
           <Tab
             title={'Media'}
-            link={'/#faq'}
+            link={'/?widget=faq'}
             items={Array.from(
               SOCIALS.map((item) => ({
                 icon: (
