@@ -4,6 +4,6 @@ export const LOTTERY_ADDRESS: {
   readonly [networkId: string]: string | 'not-deployed';
 } = {
   [NetworkIds.MINA_DEVNET]:
-    'B62qqieAv9AQCsLHfinPESXB9exSJBpTVLpgkjqWT9cSGBc67pBkNxs',
+    'B62qrrQ7HNEehSKYwuuApu8DNrCMjDi18UjQYs7nEGRvo3cA1zcMG8U',
   [NetworkIds.ZEKO_TESTNET]: 'not-deployed',
 };
