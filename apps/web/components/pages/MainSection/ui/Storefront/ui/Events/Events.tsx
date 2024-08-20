@@ -25,6 +25,9 @@ export default function Events({
 
   return (
     <div className="flex flex-col gap-[0.833vw]">
+      <span className={'font-museo text-[1.667vw] font-bold text-foreground'}>
+        Events & Competitions
+      </span>
       <div className={'flex flex-row gap-[0.781vw]'}>
         {ALL_GAME_EVENT_TYPES.map((eventType) => (
           <EventFilter

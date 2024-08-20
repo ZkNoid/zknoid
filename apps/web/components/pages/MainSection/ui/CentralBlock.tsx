@@ -2,8 +2,12 @@ import { SOCIALS } from '@/constants/socials';
 import Link from 'next/link';
 import Image from 'next/image';
 import centralBlockImg from '@/public/image/central-block.svg';
+import { useSearchParams } from 'next/navigation';
+import { cn } from '@/lib/helpers';
 
 export default function CentralBlock() {
+  const searchParams = useSearchParams();
+  const widget = searchParams.get('widget');
   return (
     <div className={'flex w-full items-center justify-end'}>
       <div
@@ -21,9 +25,13 @@ export default function CentralBlock() {
         >
           <Link
             href={'/?widget=faq'}
-            className={
-              'flex cursor-pointer flex-row items-center justify-center gap-[0.781vw] hover:opacity-80'
-            }
+            className={cn(
+              'flex cursor-pointer flex-row items-center justify-center gap-[0.781vw] hover:opacity-80',
+              {
+                'underline decoration-left-accent underline-offset-8':
+                  widget == 'faq',
+              }
+            )}
           >
             <svg
               width="24"

@@ -17,6 +17,7 @@ import { GameCard } from '../../../../entities/GameCard';
 import GameStoreFilters from './ui/GameStoreFilters';
 
 export default function GameStore({
+  games,
   sortBy,
   setSortBy,
   genresSelected,
@@ -26,6 +27,7 @@ export default function GameStore({
   eventTypesSelected,
   setEventTypesSelected,
 }: {
+  games: IGame[];
   sortBy: GameStoreSortBy;
   setSortBy: (sortBy: GameStoreSortBy) => void;
   genresSelected: ZkNoidGameGenre[];
@@ -36,9 +38,6 @@ export default function GameStore({
   setEventTypesSelected: (eventTypesSelected: ZkNoidEventType[]) => void;
 }) {
   const PAGINATION_LIMIT = 9;
-  const [games, setGames] = useState<IGame[]>(
-    defaultGames.concat(announcedGames)
-  );
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const filteredGames = games.filter((x) => {
@@ -53,39 +52,6 @@ export default function GameStore({
     currentPage * PAGINATION_LIMIT
   );
 
-  useEffect(() => {
-    const zkNoidConfig = import('@/games/config');
-
-    zkNoidConfig.then((zkNoidGames) => {
-      setGames(
-        (
-          zkNoidGames.zkNoidConfig.games.map((x) => ({
-            id: x.id,
-            logo: x.image,
-            logoMode: x.logoMode,
-            name: x.name,
-            description: x.description,
-            genre: x.genre,
-            features: x.features,
-            tags: [],
-            defaultPage: x.pageCompetitionsList
-              ? 'competitions-list'
-              : x.lobby
-                ? 'lobby/undefined'
-                : 'global',
-            active: true,
-            isReleased: x.isReleased,
-            releaseDate: x.releaseDate,
-            popularity: x.popularity,
-            author: x.author,
-            rules: x.rules,
-            rating: 0,
-            externalUrl: x.externalUrl,
-          })) as IGame[]
-        ).concat(announcedGames)
-      );
-    });
-  }, []);
   return (
     <div className={'mt-[3.646vw] flex h-full w-full flex-row gap-[0.625vw]'}>
       <GameStoreFilters
