@@ -13,7 +13,7 @@ export const checkersConfig = createZkNoidGameConfig({
   description:
     "Checkers is a two-player game played on an 8x8 board. The objective is to capture all of your opponent's pieces jumping diagonally over them",
   image: '/image/games/checkers.svg',
-  logoMode: LogoMode.FULL_WIDTH,
+  logoMode: LogoMode.BOTTOM_RIGHT,
   genre: ZkNoidGameGenre.BoardGames,
   features: [ZkNoidGameFeature.Multiplayer],
   isReleased: true,

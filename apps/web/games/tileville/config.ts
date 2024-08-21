@@ -10,7 +10,7 @@ export const tileVilleConfig = createZkNoidGameConfig({
   description:
     'TileVille is a strategic city-building game on the Mina blockchain, where players construct and manage their own cities on the island of Nicobar using hexagonal tiles.',
   image: '/image/games/tileville.png',
-  logoMode: LogoMode.CONTAIN,
+  logoMode: LogoMode.CENTER,
   genre: ZkNoidGameGenre.Arcade,
   features: [ZkNoidGameFeature.SinglePlayer],
   isReleased: true,
