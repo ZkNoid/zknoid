@@ -24,7 +24,7 @@ export default function Events({
   );
 
   return (
-    <div id={'events'} className="flex flex-col gap-[0.833vw]">
+    <div className="flex flex-col gap-[0.833vw]">
       <span className={'font-museo text-[1.667vw] font-bold text-foreground'}>
         Events & Competitions
       </span>
