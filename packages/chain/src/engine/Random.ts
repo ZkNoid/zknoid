@@ -1,4 +1,13 @@
-import { Field, Gadgets, Int64, Poseidon, Struct } from 'o1js';
+import {
+  Field,
+  Gadgets,
+  Int64,
+  Poseidon,
+  Provable,
+  Sign,
+  Struct,
+  UInt8,
+} from 'o1js';
 
 const shift64divisor = `0b` + `1${'0'.repeat(64)}`;
 
@@ -38,15 +47,14 @@ export class RandomGenerator extends Struct({
       Int64.from(0),
     ];
 
-    for (let i = 0; i < 4; i++) {
-      let val = Gadgets.and(
-        this.curValue,
-        Field.from(shift64divisor).sub(1),
-        254,
-      );
-      result[i] = Int64.fromField(val).mod(maxValues[i]);
+    let bytes = this.curValue.toBits();
 
-      this.curValue = this.curValue.div(shift64divisor); // Check if its ok
+    for (let i = 0; i < 4; i++) {
+      result[i].magnitude.value = Field.fromBits(
+        bytes.slice(i * 32 + 1, (i + 1) * 32),
+      );
+      result[i] = result[i].modV2(maxValues[i]);
+      result[i].sgn.value = Field.fromBits(bytes.slice(i * 32, i * 32 + 1));
     }
 
     return result;
