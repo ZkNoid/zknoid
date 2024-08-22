@@ -1,12 +1,9 @@
 import { RuntimeModule, runtimeModule } from '@proto-kit/module';
 import {
   Field,
-  MerkleMap,
-  MerkleMapWitness,
   Poseidon,
   PublicKey,
   UInt64,
-  method,
 } from 'o1js';
 
 import { state, runtimeMethod } from '@proto-kit/module';

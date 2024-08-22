@@ -8,9 +8,8 @@ import GamePage from '@/components/framework/GamePage';
 import { numberGuessingConfig } from './config';
 import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
-import RandzuCoverSVG from './assets/game-cover.svg';
+import CoverSVG from './assets/game-cover.svg';
 import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
-import RandzuCoverMobileSVG from './assets/game-cover-mobile.svg';
 import { motion } from 'framer-motion';
 import Button from '@/components/shared/Button';
 import toast from '@/components/shared/Toast';
@@ -112,8 +111,8 @@ export default function NumberGuessing({
   return (
     <GamePage
       gameConfig={numberGuessingConfig}
-      image={RandzuCoverSVG}
-      mobileImage={RandzuCoverMobileSVG}
+      image={CoverSVG}
+      mobileImage={CoverSVG}
       defaultPage={'Game'}
     >
       <motion.div

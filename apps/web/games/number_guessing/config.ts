@@ -11,7 +11,7 @@ export const numberGuessingConfig = createZkNoidGameConfig({
   type: ZkNoidGameType.PVP,
   name: 'Number guessing [single]',
   description: 'Player hides a number. Other player tries to guess it',
-  image: '/image/games/randzu.svg',
+  image: '/image/games/soon.svg',
   logoMode: LogoMode.CENTER,
   genre: ZkNoidGameGenre.BoardGames,
   features: [ZkNoidGameFeature.Multiplayer],
