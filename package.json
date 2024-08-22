@@ -16,14 +16,15 @@
     "env:sovereign": "dotenv -e ./packages/chain/src/environments/sovereign/.env -- pnpm"
   },
   "devDependencies": {
+    "dotenv-cli": "^7.4.2",
     "prettier": "^3.1.0",
-    "turbo": "^v1.12.2",
-    "dotenv-cli": "^7.4.2"
+    "turbo": "^v1.12.2"
   },
   "packageManager": "pnpm@8.6.10",
   "name": "starter-kit",
   "pnpm": {
     "patchedDependencies": {
+      "@proto-kit/library@0.1.1-develop.833": "patches/@proto-kit__library@0.1.1-develop.833.patch"
     }
   }
 }

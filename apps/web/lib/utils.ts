@@ -2,9 +2,7 @@ import { type RuntimeModulesRecord } from '@proto-kit/module';
 import { GameRecordProof } from 'zknoid-chain-dev';
 import { client } from 'zknoid-chain-dev';
 // import { ModulesConfig } from '@proto-kit/common';
-import { dummyProofBase64 } from '@/app/constants/dummyProofBase64';
 import { PublicKey } from 'o1js';
-
 
 export async function mockProof<O, P>(
   publicOutput: O,
