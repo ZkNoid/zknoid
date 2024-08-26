@@ -1,5 +1,3 @@
-'use client';
-
 import { useContext, useEffect, useState } from 'react';
 import { Field, Poseidon, PublicKey, UInt64 } from 'o1js';
 import { useNetworkStore } from '@/lib/stores/network';
@@ -9,18 +7,10 @@ import { numberGuessingConfig } from './config';
 import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import CoverSVG from './assets/game-cover.svg';
-import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
 import { motion } from 'framer-motion';
 import Button from '@/components/shared/Button';
 import toast from '@/components/shared/Toast';
 import { useToasterStore } from '@/lib/stores/toasterStore';
-
-const competition = {
-  id: 'global',
-  name: 'Global competition',
-  enteringPrice: BigInt(+DEFAULT_PARTICIPATION_FEE.toString()),
-  prizeFund: 0n,
-};
 
 export default function NumberGuessing({
   params,
@@ -155,7 +145,6 @@ export default function NumberGuessing({
                 value={inputNumber}
                 onChange={(v) => setInputNumber(parseInt(v.target.value))}
               />
-              {}
               <Button
                 label={hiddenNumberHash ? 'Guess number' : 'Hide number'}
                 onClick={() =>
