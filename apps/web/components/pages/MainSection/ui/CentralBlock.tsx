@@ -1,3 +1,5 @@
+'use client';
+
 import { SOCIALS } from '@/constants/socials';
 import Link from 'next/link';
 import Image from 'next/image';

@@ -1,10 +1,13 @@
+'use client';
+
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import { cn } from '@/lib/helpers';
+import { useSearchParams } from 'next/navigation';
 
 export function WidgetsSwitch() {
   const searchParams = useSearchParams();
   const widget = searchParams.get('widget');
+
   return (
     <div
       className={'absolute -left-[0.052vw] -top-[4vw] flex w-[40vw] flex-row'}

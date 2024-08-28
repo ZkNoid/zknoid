@@ -65,7 +65,7 @@ export function GameStoreFilter<T extends string>({
       </AnimatePresence>
       <div
         className={
-          'absolute -right-[0.104vw] -top-[0.104vw] bg-bg-grey pb-[0.26vw] pl-[0.26vw]'
+          'absolute -right-[2px] -top-[2px] bg-bg-grey pb-[0.26vw] pl-[0.26vw]'
         }
       >
         <svg
