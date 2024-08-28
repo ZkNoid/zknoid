@@ -9,9 +9,7 @@ export function WidgetsSwitch() {
   const widget = searchParams.get('widget');
 
   return (
-    <div
-      className={'absolute -left-[0.052vw] -top-[4vw] flex w-[40vw] flex-row'}
-    >
+    <div className={'absolute -left-[2px] -top-[4vw] flex w-[40vw] flex-row'}>
       <div className={'relative w-[20vw]'}>
         <svg
           width="307"
