@@ -9,7 +9,6 @@ index ac07534fef9e1ab0031ca555ed2a7972c4cb3ce9..3f480b581fffdb39049bda8c0fccaa33
 -        this.persistedFeeAnalyzer = new RuntimeFeeAnalyzerService(this.runtime);
 -        this.persistedFeeAnalyzer.config = this.config;
 -        await this.persistedFeeAnalyzer.initializeFeeTree();
-+        console.log('Hook start', typeof window === 'undefined', typeof process === 'object') 
 +        if (typeof window == 'undefined') {
 +            this.persistedFeeAnalyzer = new RuntimeFeeAnalyzerService(this.runtime);
 +            this.persistedFeeAnalyzer.config = this.config;
@@ -30,7 +29,6 @@ index d22b2fc9dfe283480365c69d1ec16b472e5d5f71..b591147e5b5af155eb04b9cffeb3b70f
 -    this.persistedFeeAnalyzer.config = this.config;
 -    await this.persistedFeeAnalyzer.initializeFeeTree();
 -  }
-+    console.log('Hook start', typeof window === 'undefined', typeof process === 'object') 
 +    if (typeof window == 'undefined') {
 +        this.persistedFeeAnalyzer = new RuntimeFeeAnalyzerService(this.runtime);
 +        this.persistedFeeAnalyzer.config = this.config;
