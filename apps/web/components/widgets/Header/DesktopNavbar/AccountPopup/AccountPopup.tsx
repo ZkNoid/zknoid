@@ -305,9 +305,7 @@ export default function AccountPopup({
             <Image
               src={avatarId !== undefined ? avatars[avatarId] : avatars[0]}
               alt={'User Avatar'}
-              className={
-                'h-[4.01vw] w-[4.01vw]  cursor-pointer hover:opacity-80'
-              }
+              className={'h-[5vw] w-[5vw] cursor-pointer hover:opacity-80'}
               onClick={() => (avatarMode ? undefined : setAvatarMode(true))}
             />
             <div className={'flex w-full flex-col gap-4'}>
