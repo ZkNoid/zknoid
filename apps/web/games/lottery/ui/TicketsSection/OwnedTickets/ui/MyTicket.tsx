@@ -11,11 +11,13 @@ import TicketBG8 from '../assets/ticket-bg-8.svg';
 import TicketBG9 from '../assets/ticket-bg-9.svg';
 import TicketBG10 from '../assets/ticket-bg-10.svg';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
 import Link from 'next/link';
+import { getZkAppTxByHash } from '@/lib/helpers/getZkAppTxByHash';
+import { useChainStore } from '@/lib/stores/minaChain';
 
 const ticketsImages = [
   TicketBG1,
@@ -207,21 +209,19 @@ export default function MyTicket({
   roundId: number;
   hash: string;
 }) {
-  const [isHovered, setIsHovered] = useState<boolean>(false);
   const workerStore = useWorkerClientStore();
   const networkStore = useNetworkStore();
   const notificationStore = useNotificationStore();
+  const chainStore = useChainStore();
+
   const [isPending, setIsPending] = useState<boolean>(true);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
 
-  // console.log('PENDING::::', isPending);
-
-  // const getPendingState = () => {
-  //   isPendingTicket(hash).then((isPending) => setIsPending(isPending));
-  // };
-  //
-  // useEffect(() => {
-  //   getPendingState();
-  // }, []);
+  useEffect(() => {
+    getZkAppTxByHash(hash).then((data) => {
+      if (data.blockConfirmationsCount >= 20) setIsPending(false);
+    });
+  }, [hash, chainStore.block?.slotSinceGenesis]);
 
   const claimTicket = async (numbers: number[], amount: number) => {
     let txJson = await workerStore.getReward(
