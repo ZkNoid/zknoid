@@ -16,4 +16,6 @@ import * as ProtoO1js from 'o1js';
 export * from "./environments/client.config";
 export { Balances } from './framework';
 
+export { GuessGame } from './number_guessing';
+
 export { ClientAppChain, ProtokitLibrary, UInt64 as ProtoUInt64 };

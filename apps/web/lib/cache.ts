@@ -1,5 +1,4 @@
 export interface ContractCache {
-  cachePath: string;
   files: string[];
   urls: string[];
 }

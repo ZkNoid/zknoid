@@ -13,17 +13,19 @@ const db = client.db(process.env.MONGODB_DB);
 const EnvContext = z.record(z.string(), z.string());
 
 const settings = process.env.NOTIFICATIONS_VERSION
-  ? (
+  ? ((
       await db.collection('notifications').findOne({
         version: process.env.NOTIFICATIONS_VERSION,
       })
-    )?.settings ?? {}
+    )?.settings ?? {})
   : {};
 
 export const loggingRouter = createTRPCRouter({
   logWalletConnected: publicProcedure
     .input(z.object({ envContext: EnvContext, userAddress: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      if (process.env.NODE_ENV != 'production') return;
+
       const event = 'wallet_connected';
 
       const savedLog = await db.collection('logs').findOne(
@@ -69,6 +71,8 @@ export const loggingRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      if (process.env.NODE_ENV != 'production') return;
+
       const event = 'test_balance_received';
       if (settings?.[event] && process.env.MAIN_CHAT_ID) {
         if (
@@ -102,6 +106,8 @@ export const loggingRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      if (process.env.NODE_ENV != 'production') return;
+
       const event = 'tokens_bridged';
       if (settings?.[event] && process.env.MAIN_CHAT_ID) {
         if (
@@ -140,6 +146,8 @@ export const loggingRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      if (process.env.NODE_ENV != 'production') return;
+
       const event = 'matchmaking_entered';
       if (settings?.[event] && process.env.MAIN_CHAT_ID) {
         if (
@@ -174,6 +182,8 @@ export const loggingRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      if (process.env.NODE_ENV != 'production') return;
+
       const event = 'game_opened';
 
       const savedLog = await db.collection('logs').findOne(
@@ -226,6 +236,8 @@ export const loggingRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      if (process.env.NODE_ENV != 'production') return;
+
       const event = 'game_started';
 
       if (settings?.[event] && process.env.MAIN_CHAT_ID) {

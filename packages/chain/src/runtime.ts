@@ -5,13 +5,15 @@ import { ThimblerigLogic } from './thimblerig/ThimblerigLogic';
 import { Balances } from './framework';
 import { ModulesConfig } from '@proto-kit/common';
 import { CheckersLogic } from './checkers';
+import { GuessGame } from './number_guessing';
 
 const modules = {
   ArkanoidGameHub,
   ThimblerigLogic,
   Balances,
   RandzuLogic,
-  CheckersLogic
+  CheckersLogic,
+  GuessGame
 };
 
 const config: ModulesConfig<typeof modules> = {
@@ -21,7 +23,8 @@ const config: ModulesConfig<typeof modules> = {
     totalSupply: UInt64.from(10000),
   },
   RandzuLogic: {},
-  CheckersLogic: {}
+  CheckersLogic: {},
+  GuessGame: {}
 };
 
 export default {

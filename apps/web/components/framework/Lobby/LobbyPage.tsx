@@ -65,8 +65,6 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
 
   const { client } = useContext(ZkNoidGameContext);
 
-  // const query = client.query.runtime[params.contractName];
-
   const sessionPrivateKey = useStore(useSessionKeyStore, (state) =>
     state.getSessionKey()
   );

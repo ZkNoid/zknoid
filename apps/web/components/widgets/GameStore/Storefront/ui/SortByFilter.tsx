@@ -17,7 +17,7 @@ export function SortByFilter<T extends string>({
     <div className={`relative ${className}`} onClick={() => setIsOpen(!isOpen)}>
       <motion.span
         className={
-          'group flex h-full cursor-pointer flex-row items-center justify-between gap-[0.417vw] rounded-[0.26vw] border px-[0.833vw] py-[0.208vw]'
+          'group flex h-full min-w-[300px] cursor-pointer flex-row items-center justify-between gap-2 rounded-[5px] border px-4 py-1'
         }
         variants={{
           open: {
@@ -40,16 +40,13 @@ export function SortByFilter<T extends string>({
           color: '#D2FF00',
         }}
       >
-        <span className={'font-plexsans text-[0.833vw]'}>
-          Sort By: {sortBy}
-        </span>
+        <span className={'font-plexsans text-main'}>Sort By: {sortBy}</span>
         <motion.svg
           width="16"
           height="10"
           viewBox="0 0 16 10"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className={'h-[0.521vw] w-[0.833vw]'}
           variants={{
             open: { rotate: 180 },
             closed: { rotate: 0 },
@@ -70,7 +67,7 @@ export function SortByFilter<T extends string>({
         {isOpen && (
           <motion.div
             className={
-              'absolute top-full z-30 flex w-full flex-col items-center justify-start overflow-hidden rounded-[0.26vw] rounded-t-none border border-t-0 bg-bg-dark'
+              'absolute top-full z-30 flex w-full min-w-[300px] flex-col items-center justify-start overflow-hidden rounded-[5px] rounded-t-none border border-t-0 bg-bg-dark'
             }
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
@@ -85,7 +82,7 @@ export function SortByFilter<T extends string>({
                   setIsOpen(false);
                 }}
                 className={
-                  'h-full w-full cursor-pointer bg-bg-grey px-[0.833vw] py-[0.417vw] font-plexsans text-[0.833vw] last:pb-[0.833vw] hover:bg-[#252525] hover:text-left-accent'
+                  'bg-bg-grey h-full w-full cursor-pointer px-4 py-2 font-plexsans text-main last:pb-4 hover:bg-[#252525] hover:text-left-accent'
                 }
               >
                 {value}

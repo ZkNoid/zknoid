@@ -65,7 +65,6 @@ const LOTTERY_CACHE_LIST = [
 ];
 
 export const LOTTERY_CACHE: ContractCache = {
-  cachePath: '/dummy_bridge_cache',
   files: LOTTERY_CACHE_LIST,
   urls: LOTTERY_CACHE_LIST.map((x) => `/lottery_cache/${x}`),
 };
