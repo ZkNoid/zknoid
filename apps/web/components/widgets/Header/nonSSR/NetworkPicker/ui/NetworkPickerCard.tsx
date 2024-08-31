@@ -17,16 +17,14 @@ export default function NetworkPickerCard({
   return (
     <div
       className={
-        'group relative z-10 flex cursor-pointer items-center justify-center gap-[10px] rounded border border-left-accent bg-left-accent px-2 py-1 text-header-menu text-bg-dark hover:bg-bg-dark hover:text-left-accent'
+        'group relative z-10 flex cursor-pointer items-center justify-center gap-[0.521vw] rounded border border-left-accent bg-left-accent px-[0.417vw] py-[0.208vw] font-museo text-[0.833vw] font-medium text-bg-dark hover:bg-bg-dark hover:text-left-accent'
       }
       onClick={() => onClick?.()}
     >
       <Image
         src={image}
         alt=""
-        width={26}
-        height={26}
-        className={'rounded-[5px]'}
+        className={'h-[1.354vw] w-[1.354vw] rounded-[0.26vw]'}
       />
       {text}
       {toggle && (
@@ -42,6 +40,7 @@ export default function NetworkPickerCard({
           }}
           transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
           animate={expanded ? 'open' : 'closed'}
+          className={'h-[0.521vw] w-[0.833vw]'}
         >
           <path
             d="M15 1.5L8 8.5L1 1.5"

@@ -36,12 +36,11 @@ export default function DesktopBalanceInfo() {
   const { appchainSupported } = useContext(ZkNoidGameContext);
 
   return (
-    <div className="flex items-center gap-[10px]">
+    <div className="flex items-center gap-[0.521vw]">
       <Image
         alt=""
         src={!appchainSupported ? MinaCoinImg : CoinImg}
-        width={26}
-        height={26}
+        className={'h-[1.354vw] w-[1.354vw]'}
       />
       <div
         className={
@@ -50,9 +49,15 @@ export default function DesktopBalanceInfo() {
             : 'w-full text-start lg:w-auto'
         }
       >
-        {!appchainSupported && <>Wallet balance {minaDeposit}</>}
+        {!appchainSupported && (
+          <div className={'font-museo text-[0.833vw] font-medium'}>
+            Wallet balance: {minaDeposit}
+          </div>
+        )}
         {appchainSupported && (
-          <div className="w-full text-start lg:w-auto">Deposit: {deposit}</div>
+          <div className="w-full text-start font-museo text-[0.833vw] font-medium lg:w-auto">
+            Deposit: {deposit}
+          </div>
         )}
       </div>
       {appchainSupported && <DepositMenuItem />}

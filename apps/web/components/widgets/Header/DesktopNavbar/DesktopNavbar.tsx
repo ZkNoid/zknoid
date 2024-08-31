@@ -23,6 +23,7 @@ import boardGameIcon from '@/public/image/misc/board-game-icon.svg';
 import arcadeGameIcon from '@/public/image/misc/arcade-game-icon.svg';
 import luckyGameIcon from '@/public/image/misc/lucky-game-icon.svg';
 import { SOCIALS } from '@/constants/socials';
+import ZknoidLogo from '@/public/image/zknoid-logo.svg'
 
 const Balance = dynamic(() => import('./nonSSR/DesktopBalanceInfo'), {
   ssr: false,
@@ -110,10 +111,9 @@ export default function DesktopNavbar({
           className={'cursor-pointer ease-in-out hover:opacity-80'}
         >
           <Image
-            src={'/image/zknoid-logo.svg'}
+            src={ZknoidLogo}
             alt={'ZkNoid logo'}
-            width={219}
-            height={47}
+            className={'h-full w-[11.458vw]'}
           />
         </Link>
         <div
@@ -212,7 +212,7 @@ export default function DesktopNavbar({
           />
         </div>
 
-        <div className="relative flex gap-5">
+        <div className="relative flex gap-[1.042vw]">
           {networkStore.walletConnected && networkStore.address ? (
             <>
               <Balance />
