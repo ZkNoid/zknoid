@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { INotification } from '../types/INotification';
-import { ReactNode } from 'react';
 
 export interface NotificationStore {
   notifications: INotification[];
@@ -48,9 +47,6 @@ export const useNotificationStore = create<
       if (!id) {
         id = `${type}-${Date.now()}`;
       }
-      // if (!notification.dismissDelay) {
-      //   notification.dismissDelay = 5000;
-      // }
       set((state) => ({
         notifications: [
           ...state.notifications,

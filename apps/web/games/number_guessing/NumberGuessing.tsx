@@ -9,8 +9,7 @@ import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import CoverSVG from './assets/game-cover.svg';
 import { motion } from 'framer-motion';
 import Button from '@/components/shared/Button';
-import toast from '@/components/shared/Toast';
-import { useToasterStore } from '@/lib/stores/toasterStore';
+import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
 
 export default function NumberGuessing({
   params,
@@ -19,7 +18,6 @@ export default function NumberGuessing({
 }) {
   const [hiddenNumberHash, setHiddenNumberHash] = useState(0n);
   const [userScore, setUserScore] = useState(0n);
-
   const [inputNumber, setInputNumber] = useState(1);
 
   const { client } = useContext(ZkNoidGameContext);
@@ -30,7 +28,7 @@ export default function NumberGuessing({
 
   const networkStore = useNetworkStore();
   const protokitChain = useProtokitChainStore();
-  const toasterStore = useToasterStore();
+  const notificationStore = useNotificationStore();
 
   const client_ = client as ClientAppChain<
     typeof numberGuessingConfig.runtimeModules,
@@ -63,7 +61,10 @@ export default function NumberGuessing({
     const hash = Poseidon.hash(UInt64.from(number).toFields());
 
     if (hash.equals(Field.from(hiddenNumberHash)).toBoolean()) {
-      toast.success(toasterStore, `Guessed correctly!`, true);
+      notificationStore.create({
+        type: 'success',
+        message: 'Guessed correctly',
+      });
 
       const tx = await client.transaction(
         PublicKey.fromBase58(networkStore.address!),
@@ -75,7 +76,10 @@ export default function NumberGuessing({
       await tx.sign();
       await tx.send();
     } else {
-      toast.error(toasterStore, `Guessed incorrectly!`, true);
+      notificationStore.create({
+        type: 'error',
+        message: 'Guessed incorrectly!',
+      });
     }
   };
 
