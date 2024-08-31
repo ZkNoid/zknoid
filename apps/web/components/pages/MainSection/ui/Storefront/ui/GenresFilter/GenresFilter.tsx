@@ -1,9 +1,9 @@
 import { ZkNoidGameGenre } from '@/lib/platform/game_tags';
-import { GameStoreSortBy } from '@/components/widgets/GameStore/lib/sortBy';
-import GamepadIllustration from '@/components/widgets/GameStore/Storefront/assets/Gamepad_Illustration_01_01.json';
-import ChessIllustration from '@/components/widgets/GameStore/Storefront/assets/Chess_Illustration.json';
-import CubesIllustration from '@/components/widgets/GameStore/Storefront/assets/Cubes_Illustration.json';
-import EyesIllustration from '@/components/widgets/GameStore/Storefront/assets/Eyes_Illustration_01_01.json';
+import { GameStoreSortBy } from '@/components/pages/MainSection/lib/sortBy';
+import GamepadIllustration from './assets/Gamepad_Illustration_01_01.json';
+import ChessIllustration from './assets/Chess_Illustration.json';
+import CubesIllustration from './assets/Cubes_Illustration.json';
+import EyesIllustration from './assets/Eyes_Illustration_01_01.json';
 import { GenresItem } from './ui/GenresItem';
 
 export default function GenresFilter({

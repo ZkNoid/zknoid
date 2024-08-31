@@ -1,18 +1,18 @@
 import { ALL_GAME_TAGS, ZkNoidGameGenre } from '@/lib/platform/game_tags';
 import { cn } from '@/lib/helpers';
 import { useState } from 'react';
-import { SortByFilter } from '@/components/widgets/GameStore/Storefront/ui/SortByFilter';
+import { SortByFilter } from './ui/SortByFilter';
 import {
   GAME_STORE_SORT_METHODS,
   GameStoreSortBy,
   sortByFilter,
-} from '@/components/widgets/GameStore/lib/sortBy';
+} from '@/components/pages/MainSection/lib/sortBy';
 import { useNetworkStore } from '@/lib/stores/network';
 import { api } from '@/trpc/react';
 import { IGame } from '@/app/constants/games';
 import { GameCard } from '../../../../entities/GameCard';
 import Lottie from 'react-lottie';
-import SnakeNoEvents from '@/components/widgets/GameStore/FavoriteGames/assets/ZKNoid_Snake_Intro_03_05.json';
+import SnakeNoEvents from './assets/ZKNoid_Snake_Intro_03_05.json';
 
 export default function Favorites({ games }: { games: IGame[] }) {
   const PAGINATION_LIMIT = 8;

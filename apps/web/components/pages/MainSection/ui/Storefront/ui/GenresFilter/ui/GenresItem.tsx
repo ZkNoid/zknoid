@@ -1,5 +1,5 @@
 import { ZkNoidGameGenre } from '@/lib/platform/game_tags';
-import { GameStoreSortBy } from '@/components/widgets/GameStore/lib/sortBy';
+import { GameStoreSortBy } from '@/components/pages/MainSection/lib/sortBy';
 import { useRef, useState } from 'react';
 import Lottie from 'react-lottie';
 

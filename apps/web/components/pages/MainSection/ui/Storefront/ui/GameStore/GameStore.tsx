@@ -2,7 +2,7 @@ import {
   GAME_STORE_SORT_METHODS,
   GameStoreSortBy,
   sortByFilter,
-} from '@/components/widgets/GameStore/lib/sortBy';
+} from '@/components/pages/MainSection/lib/sortBy';
 import {
   ALL_GAME_TAGS,
   ZkNoidGameFeature,
@@ -11,7 +11,7 @@ import {
 import { ZkNoidEventType } from '@/lib/platform/game_events';
 import { useEffect, useState } from 'react';
 import { announcedGames, defaultGames, IGame } from '@/app/constants/games';
-import { SortByFilter } from '@/components/widgets/GameStore/Storefront/ui/SortByFilter';
+import { SortByFilter } from '@/components/pages/MainSection/ui/Storefront/ui/Favorites/ui/SortByFilter';
 import { cn } from '@/lib/helpers';
 import { GameCard } from '../../../../entities/GameCard';
 import GameStoreFilters from './ui/GameStoreFilters';

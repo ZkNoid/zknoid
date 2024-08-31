@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { GameStoreSortBy } from '@/components/widgets/GameStore/lib/sortBy';
+import { GameStoreSortBy } from '@/components/pages/MainSection/lib/sortBy';
 import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
 import { ZkNoidEventType } from '@/lib/platform/game_events';
 import Events from './ui/Events';

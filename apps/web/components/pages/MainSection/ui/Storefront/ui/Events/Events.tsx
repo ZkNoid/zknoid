@@ -5,7 +5,7 @@ import {
   ZkNoidEventType,
 } from '@/lib/platform/game_events';
 import Lottie from 'react-lottie';
-import SnakeNoEvents from '@/components/widgets/GameStore/FavoriteGames/assets/ZKNoid_Snake_Intro_03_05.json';
+import SnakeNoEvents from '@/components/pages/MainSection/ui/Storefront/ui/Favorites/assets/ZKNoid_Snake_Intro_03_05.json';
 import { EventFilter } from './ui/EventFilter';
 import { EventItem } from './ui/EventItem';
 
