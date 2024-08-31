@@ -15,6 +15,22 @@ export default function Swiper() {
     [Autoplay({ playOnInit: true, delay: 8000 })]
   );
 
+  const slides: { image: any; link?: string; openAsNewTab?: boolean }[] = [
+    {
+      image: defaultSlide,
+    },
+    {
+      image: lotterySlide,
+      link: 'https://forums.minaprotocol.com/t/zknoid-l1-lottery/6269',
+      openAsNewTab: true,
+    },
+    {
+      image: tileVilleSlide,
+      link: 'https://www.tileville.xyz',
+      openAsNewTab: true,
+    },
+  ];
+
   return (
     <>
       <div className="banner-mask relative">
@@ -44,47 +60,39 @@ export default function Swiper() {
         <div className="absolute left-0 top-0 hidden h-full w-full lg:block">
           <div className="h-full w-full overflow-hidden" ref={emblaRef}>
             <div className="flex h-full w-full">
-              <div key={0} className="min-w-0 flex-[0_0_100%]">
-                <div className="flex h-full w-full items-center justify-center">
-                  <Image src={defaultSlide} alt="Slide" className="w-full" />
-                </div>
-              </div>
-              <Link
-                key={1}
-                href={
-                  'https://forums.minaprotocol.com/t/zknoid-l1-lottery/6269'
-                }
-                target={'_blank'}
-                rel={'noopener noreferrer'}
-                className="min-w-0 flex-[0_0_100%]"
-              >
-                <div className="flex h-full w-full items-center justify-center">
-                  <Image src={lotterySlide} alt="Slide" className="w-full" />
-                </div>
-              </Link>
-              <Link
-                key={2}
-                href={'https://www.tileville.xyz'}
-                target={'_blank'}
-                rel={'noopener noreferrer'}
-                className="min-w-0 flex-[0_0_100%]"
-              >
-                <div className="flex h-full w-full items-center justify-center">
-                  <Image src={tileVilleSlide} alt="Slide" className="w-full" />
-                </div>
-              </Link>
+              {slides.map((slide, index) =>
+                slide.link ? (
+                  <Link
+                    key={index}
+                    href={slide.link}
+                    target={slide.openAsNewTab ? '_blank' : undefined}
+                    rel={slide.openAsNewTab ? 'noopener noreferrer' : undefined}
+                    className="min-w-0 flex-[0_0_100%]"
+                  >
+                    <div className="flex h-full w-full items-center justify-center">
+                      <Image src={slide.image} alt="Slide" className="w-full" />
+                    </div>
+                  </Link>
+                ) : (
+                  <div key={index} className="min-w-0 flex-[0_0_100%]">
+                    <div className="flex h-full w-full items-center justify-center">
+                      <Image src={slide.image} alt="Slide" className="w-full" />
+                    </div>
+                  </div>
+                )
+              )}
             </div>
           </div>
         </div>
 
         <div
           className={
-            'block h-full w-full rounded-[10px] border border-left-accent lg:hidden'
+            'block h-full w-full rounded-[0.521vw] border border-left-accent lg:hidden'
           }
         >
           <div
             className={
-              'relative flex flex-col items-center justify-center bg-[url("/image/grid.svg")] bg-center p-4'
+              'relative flex flex-col items-center justify-center bg-[url("/image/grid.svg")] bg-center p-[0.833vw]'
             }
           >
             <Image
@@ -94,7 +102,7 @@ export default function Swiper() {
             />
             <div
               className={
-                'absolute bottom-[18%] px-[2%] text-center text-[20px]/[20px] font-medium text-left-accent'
+                'absolute bottom-[18%] px-[2%] text-center text-[1.042vw] font-medium text-left-accent'
               }
             >
               This is just a preview page. If you want to play games or take a
