@@ -2,7 +2,10 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 export interface RateGameStore {
-  ratedGamesIds: string[];
+  ratedGames: {
+    gameId: string;
+    updatedAt: string;
+  }[];
   addRatedGame: (gameId: string) => void;
   clear: () => void;
 }
@@ -13,15 +16,18 @@ export const useRateGameStore = create<
 >(
   persist(
     (set) => ({
-      ratedGamesIds: [],
+      ratedGames: [],
       addRatedGame: (gameId) => {
         set((state) => ({
-          ratedGamesIds: [...state.ratedGamesIds, gameId],
+          ratedGames: [
+            ...state.ratedGames,
+            { gameId: gameId, updatedAt: new Date().toISOString() },
+          ],
         }));
       },
       clear: () => {
         set({
-          ratedGamesIds: [],
+          ratedGames: [],
         });
       },
     }),

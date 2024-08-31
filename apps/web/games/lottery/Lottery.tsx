@@ -17,6 +17,9 @@ import { BLOCK_PER_ROUND } from 'l1-lottery-contracts';
 import StateManager from '@/games/lottery/ui/StateManager';
 import ConnectWalletModal from '@/components/shared/ConnectWalletModal';
 import TicketsStorage from '@/games/lottery/ui/TicketsStorage';
+import RateGameModal from '@/components/shared/RateGameModal';
+import lotteryImage from '@/public/image/games/lottery.svg';
+import { useRateGameStore } from '@/lib/stores/rateGameStore';
 
 export enum Pages {
   Main,
@@ -32,6 +35,7 @@ export default function Lottery({}: { params: { competitionId: string } }) {
 
   const workerClientStore = useWorkerClientStore();
   const chainStore = useChainStore();
+  const rateGameStore = useRateGameStore();
   const events = api.lotteryBackend.getMinaEvents.useQuery({});
 
   useEffect(() => {
@@ -172,6 +176,15 @@ export default function Lottery({}: { params: { competitionId: string } }) {
           NETWORKS[NetworkIds.MINA_DEVNET].networkID && <WrongNetworkModal />
       ) : (
         <ConnectWalletModal />
+      )}
+      {(!rateGameStore.ratedGames.find(
+        (game) =>
+          game.gameId == lotteryConfig.id &&
+          Date.parse(game.updatedAt) >=
+            new Date().setMonth(new Date().getMonth() - 1)
+      ) ||
+        rateGameStore.ratedGames.length == 0) && (
+        <RateGameModal gameId={lotteryConfig.id} gameImage={lotteryImage} />
       )}
     </GamePage>
   );
