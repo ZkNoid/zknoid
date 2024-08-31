@@ -70,9 +70,11 @@ export default function Storefront() {
       }
     >
       <WidgetsSwitch />
-      {widget == 'favorites' && <Favorites games={games} />}
-      {widget == 'faq' && <Faq />}
-      {!widget && (
+      {widget == 'favorites' ? (
+        <Favorites games={games} />
+      ) : widget == 'faq' ? (
+        <Faq />
+      ) : (
         <>
           <Events
             eventTypesSelected={eventTypesSelected}
@@ -96,6 +98,11 @@ export default function Storefront() {
           />
         </>
       )}
+      {/*{widget == 'favorites' && <Favorites games={games} />}*/}
+      {/*{widget == 'faq' && <Faq />}*/}
+      {/*{!widget && (*/}
+      {/*  */}
+      {/*)}*/}
     </div>
   );
 }
