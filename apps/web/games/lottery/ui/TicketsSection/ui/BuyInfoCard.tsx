@@ -203,39 +203,42 @@ export default function BuyInfoCard({
           {Currency.MINA}
         </div>
       </div>
-      {Number(balance) < Number(formatUnits(totalPrice)) && (
-        <div
-          className={'mt-[1vw] flex w-full flex-row items-center gap-[0.26vw]'}
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 14 14"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className={'h-[0.729vw] w-[0.729vw]'}
+      {voucherMode != VoucherMode.UseValid &&
+        Number(balance) < Number(formatUnits(totalPrice)) && (
+          <div
+            className={
+              'mt-[1vw] flex w-full flex-row items-center gap-[0.26vw]'
+            }
           >
-            <circle
-              cx="7"
-              cy="7"
-              r="6"
-              fill="#FF0000"
-              stroke="#FF0000"
-              strokeWidth="0.500035"
-            />
-            <path
-              d="M6.72053 8.68987L6.30053 5.10187V2.71387H7.71653V5.10187L7.32053 8.68987H6.72053ZM7.02053 11.2339C6.71653 11.2339 6.49253 11.1619 6.34853 11.0179C6.21253 10.8659 6.14453 10.6739 6.14453 10.4419V10.2379C6.14453 10.0059 6.21253 9.81787 6.34853 9.67387C6.49253 9.52187 6.71653 9.44587 7.02053 9.44587C7.32453 9.44587 7.54453 9.52187 7.68053 9.67387C7.82453 9.81787 7.89653 10.0059 7.89653 10.2379V10.4419C7.89653 10.6739 7.82453 10.8659 7.68053 11.0179C7.54453 11.1619 7.32453 11.2339 7.02053 11.2339Z"
-              fill="#F9F8F4"
-            />
-          </svg>
-          <span className={'font-plexsans text-[0.625vw] text-[#FF0000]'}>
-            There are not enough funds in your wallet
-          </span>
-        </div>
-      )}
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className={'h-[0.729vw] w-[0.729vw]'}
+            >
+              <circle
+                cx="7"
+                cy="7"
+                r="6"
+                fill="#FF0000"
+                stroke="#FF0000"
+                strokeWidth="0.500035"
+              />
+              <path
+                d="M6.72053 8.68987L6.30053 5.10187V2.71387H7.71653V5.10187L7.32053 8.68987H6.72053ZM7.02053 11.2339C6.71653 11.2339 6.49253 11.1619 6.34853 11.0179C6.21253 10.8659 6.14453 10.6739 6.14453 10.4419V10.2379C6.14453 10.0059 6.21253 9.81787 6.34853 9.67387C6.49253 9.52187 6.71653 9.44587 7.02053 9.44587C7.32453 9.44587 7.54453 9.52187 7.68053 9.67387C7.82453 9.81787 7.89653 10.0059 7.89653 10.2379V10.4419C7.89653 10.6739 7.82453 10.8659 7.68053 11.0179C7.54453 11.1619 7.32453 11.2339 7.02053 11.2339Z"
+                fill="#F9F8F4"
+              />
+            </svg>
+            <span className={'font-plexsans text-[0.625vw] text-[#FF0000]'}>
+              There are not enough funds in your wallet
+            </span>
+          </div>
+        )}
       <button
         className={cn(
-          'mb-[1vw] flex h-[2.13vw] cursor-pointer items-center justify-center rounded-[0.33vw] border-bg-dark bg-right-accent px-[1vw] text-[1.07vw] text-bg-dark hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:opacity-60',
+          'mb-0 mt-auto flex h-[2.13vw] cursor-pointer items-center justify-center rounded-[0.33vw] border-bg-dark bg-right-accent px-[1vw] text-[1.07vw] text-bg-dark hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:opacity-60',
           {
             'cursor-progress': loaderActive,
             'mt-[0.25vw]': Number(balance) < Number(formatUnits(totalPrice)),
@@ -243,9 +246,11 @@ export default function BuyInfoCard({
           }
         )}
         disabled={
-          Number(balance) < Number(formatUnits(totalPrice)) ||
-          !buttonActive ||
-          (voucherMode != VoucherMode.Buy && !ticketsInfo.length)
+          voucherMode != VoucherMode.UseValid
+            ? Number(balance) < Number(formatUnits(totalPrice)) ||
+              !buttonActive ||
+              (voucherMode != VoucherMode.Buy && !ticketsInfo.length)
+            : !ticketsInfo.length && !buttonActive
         }
         onClick={async () => {
           voucherMode == VoucherMode.UseValid
