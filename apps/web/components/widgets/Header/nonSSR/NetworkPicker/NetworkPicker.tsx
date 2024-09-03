@@ -118,7 +118,7 @@ export default function NetworkPicker({
             {ALL_NETWORKS.map((network) => (
               <div
                 key={network.networkID}
-                className="group flex h-full w-full cursor-pointer flex-row items-center gap-2 py-3 pl-2 text-header-menu text-foreground last:rounded-b hover:text-left-accent"
+                className="group flex h-full w-full cursor-pointer flex-row items-center gap-[0.417vw] py-[0.625vw] pl-[0.417vw] last:rounded-b"
                 onClick={() => switchNetwork(network)}
               >
                 <Image
@@ -130,13 +130,17 @@ export default function NetworkPicker({
                         : minaLogo
                   }
                   className={
-                    'rounded-[5px] border border-foreground group-hover:border-left-accent'
+                    'h-[1.25vw] w-[1.25vw] rounded-[0.26vw] border border-foreground group-hover:border-left-accent'
                   }
                   alt={''}
-                  width={24}
-                  height={24}
                 />
-                <span>{network.name}</span>
+                <span
+                  className={
+                    'font-museo text-[0.833vw] font-medium text-foreground group-hover:text-left-accent'
+                  }
+                >
+                  {network.name}
+                </span>
               </div>
             ))}
           </motion.div>

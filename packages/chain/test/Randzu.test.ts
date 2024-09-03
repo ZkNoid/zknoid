@@ -2,8 +2,9 @@ import { AppChain, TestingAppChain } from '@proto-kit/sdk';
 import { Field, Int64, PrivateKey, PublicKey, UInt64 } from 'o1js';
 import { log } from '@proto-kit/common';
 import { Pickles } from 'o1js/dist/node/snarky';
-import { dummyBase64Proof } from 'o1js/dist/node/lib/proof_system';
 import { Balances, RandzuLogic } from '../src';
+import { dummyBase64Proof } from 'o1js/dist/node/lib/proof-system/zkprogram';
+import { UInt64 as ProtoUInt64 } from '@proto-kit/library';
 
 log.setLevel('ERROR');
 
@@ -60,12 +61,24 @@ describe('game hub', () => {
 
     const randzu = appChain.runtime.resolve('RandzuLogic');
 
+    {
+      appChain.setSigner(alicePrivateKey);
+      const tx0 = await appChain.transaction(alice, async () => {
+        await randzu.addDefaultLobby(ProtoUInt64.from(0));
+      });
+      await tx0.sign();
+      await tx0.send();
+
+      let block = await appChain.produceBlock();
+      expect(block?.transactions[0].status.toBoolean()).toBeTruthy();
+    }
+
     console.log('Finding match');
     // Find match
     {
       appChain.setSigner(alicePrivateKey);
-      const tx1 = await appChain.transaction(alice, () => {
-        randzu.register(alice, UInt64.zero);
+      const tx1 = await appChain.transaction(alice, async () => {
+        await randzu.register(alice, UInt64.zero);
       });
       await tx1.sign();
       await tx1.send();
@@ -74,8 +87,8 @@ describe('game hub', () => {
       expect(block?.transactions[0].status.toBoolean()).toBeTruthy();
 
       appChain.setSigner(bobPrivateKey);
-      const tx2 = await appChain.transaction(bob, () => {
-        randzu.register(bob, UInt64.zero);
+      const tx2 = await appChain.transaction(bob, async () => {
+        await randzu.register(bob, UInt64.zero);
       });
       await tx2.sign();
       await tx2.send();
