@@ -37,6 +37,7 @@ services:
     ports:
       - "38080:8080"
     command: ["./packages/chain/dist/src/start.js start ./environments/${PROTOKIT_ENV_FOLDER}/chain.config.js"]
+  restart: unless-stopped
 
 networks:
   chain-net:

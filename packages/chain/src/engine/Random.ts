@@ -1,4 +1,5 @@
 import {
+  Bool,
   Field,
   Gadgets,
   Int64,
@@ -10,6 +11,18 @@ import {
 } from 'o1js';
 
 const shift64divisor = `0b` + `1${'0'.repeat(64)}`;
+
+const bitsToInt64 = (bits: Bool[], maxValue: number): Int64 => {
+  if (bits.length > 64) {
+    throw Error(`Wrong bits length. Expected  <= 64, got ${bits.length}`);
+  }
+  let result = Int64.from(0);
+  result.magnitude.value = Field.fromBits(bits.slice(1, 64));
+  result = result.modV2(maxValue);
+  result.sgn.value = Field.fromBits(bits.slice(0, 1));
+
+  return result;
+};
 
 // TODO: Optimize
 // Now only 64 fits of 256 bits of field used. So can be 4x optimized
@@ -33,7 +46,7 @@ export class RandomGenerator extends Struct({
     this.source = Poseidon.hash([this.source]);
     this.curValue = this.source;
 
-    return Int64.from(this.curValue).mod(maxValue);
+    return bitsToInt64(this.curValue.toBits().slice(0, 64), maxValue);
   }
 
   // Get 4 number
@@ -47,14 +60,10 @@ export class RandomGenerator extends Struct({
       Int64.from(0),
     ];
 
-    let bytes = this.curValue.toBits();
+    let bits = this.curValue.toBits();
 
     for (let i = 0; i < 4; i++) {
-      result[i].magnitude.value = Field.fromBits(
-        bytes.slice(i * 32 + 1, (i + 1) * 32),
-      );
-      result[i] = result[i].modV2(maxValues[i]);
-      result[i].sgn.value = Field.fromBits(bytes.slice(i * 32, i * 32 + 1));
+      result[i] = bitsToInt64(bits.slice(i * 64, (i + 1) * 64), maxValues[i]);
     }
 
     return result;
