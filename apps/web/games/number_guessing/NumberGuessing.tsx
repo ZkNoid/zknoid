@@ -47,7 +47,7 @@ export default function NumberGuessing({
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
       async () => {
-        await guessLogic.hideNumber(UInt64.from(number));
+        await guessLogic.hideNumber(Field.from(number));
       }
     );
 
@@ -69,7 +69,7 @@ export default function NumberGuessing({
       const tx = await client.transaction(
         PublicKey.fromBase58(networkStore.address!),
         async () => {
-          await guessLogic.guessNumber(UInt64.from(number));
+          await guessLogic.guessNumber(Field.from(number));
         }
       );
 
@@ -96,7 +96,7 @@ export default function NumberGuessing({
     if (networkStore.address) {
       const userWallet = PublicKey.fromBase58(networkStore.address);
 
-      query?.scores.get(userWallet).then((n) => {
+      query?.score.get(userWallet).then((n) => {
         if (n) setUserScore(n.toBigInt());
       });
     }
