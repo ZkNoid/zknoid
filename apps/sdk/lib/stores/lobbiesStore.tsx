@@ -1,16 +1,16 @@
-import { immer } from 'zustand/middleware/immer';
-import { Bool, PublicKey, UInt64 } from 'o1js';
-import { type ModuleQuery } from '@proto-kit/sequencer';
-import { LobbyManager } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
-import { ILobby } from '../types';
-import { Currency } from '@/constants/currency';
-import { ClientAppChain, MatchMaker } from 'zknoid-chain-dev';
-import { create } from 'zustand';
-import { useProtokitChainStore } from './protokitChain';
-import { useNetworkStore } from './network';
-import { useContext, useEffect } from 'react';
-import ZkNoidGameContext from '../contexts/ZkNoidGameContext';
-import { PendingLobbyIndex } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
+import { immer } from "zustand/middleware/immer";
+import { Bool, PublicKey, UInt64 } from "o1js";
+import { type ModuleQuery } from "@proto-kit/sequencer";
+import { LobbyManager } from "zknoid-chain-dev/dist/src/engine/LobbyManager";
+import { ILobby } from "../types";
+import { Currency } from "@sdk/constants/currency";
+import { ClientAppChain, MatchMaker } from "zknoid-chain-dev";
+import { create } from "zustand";
+import { useProtokitChainStore } from "./protokitChain";
+import { useNetworkStore } from "./network";
+import { useContext, useEffect } from "react";
+import ZkNoidGameContext from "../contexts/ZkNoidGameContext";
+import { PendingLobbyIndex } from "zknoid-chain-dev/dist/src/engine/MatchMaker";
 
 export interface IMatchamkingOption {
   id: number;
@@ -83,7 +83,7 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
       });
     }
 
-    console.log('New matchmaking options', matchmakingOptions);
+    console.log("New matchmaking options", matchmakingOptions);
 
     set((state) => {
       state.matchmakingOptions = matchmakingOptions;
@@ -113,14 +113,14 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
       ? +contractActiveGameId
       : contractActiveGameId;
 
-    console.log('contractActiveGameId', contractActiveGameId);
+    console.log("contractActiveGameId", contractActiveGameId);
 
     if (contractActiveGameId) {
       const contractActiveLobby =
         await query.activeLobby.get(contractActiveGameId);
       if (contractActiveLobby) {
         const curLobby = contractActiveLobby!;
-        console.log('CurrLobby', curLobby);
+        console.log("CurrLobby", curLobby);
         const players = +curLobby.curAmount;
 
         activeLobby = {
@@ -198,7 +198,7 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
       }
     }
 
-    console.log('Active lobby', activeLobby);
+    console.log("Active lobby", activeLobby);
 
     set((state) => {
       // @ts-ignore
@@ -212,7 +212,7 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
   },
 
   async loadmatchmakingOptions(query: ModuleQuery<MatchMaker>) {
-    console.log('Options loading');
+    console.log("Options loading");
     let lastDefaultLobbyId = await query.lastDefaultLobby.get();
     let matchmakingOptions: IMatchamkingOption[] = [];
 
@@ -234,7 +234,7 @@ export const lobbyInitializer = immer<LobbiesState>((set) => ({
   },
 }));
 
-export const useLobbiesStore = create<LobbiesState, [['zustand/immer', never]]>(
+export const useLobbiesStore = create<LobbiesState, [["zustand/immer", never]]>(
   lobbyInitializer
 );
 
@@ -253,7 +253,7 @@ export const useObserveLobbiesStore = (
     }
 
     if (!client) {
-      throw Error('Context app chain client is not set');
+      throw Error("Context app chain client is not set");
     }
 
     if (network.address) {
@@ -262,9 +262,9 @@ export const useObserveLobbiesStore = (
         PublicKey.fromBase58(network.address),
         rewardCoeff
       );
-      console.log('bcl', chain.block?.height);
+      console.log("bcl", chain.block?.height);
       if (chain.block?.height) {
-        console.log('Loading..');
+        console.log("Loading..");
 
         lobbiesStore.loadPendingmatchmakingStatus(
           query!,
@@ -282,7 +282,7 @@ export const useObserveLobbiesStore = (
     }
 
     if (!client) {
-      throw Error('Context app chain client is not set');
+      throw Error("Context app chain client is not set");
     }
 
     lobbiesStore.clearStore();

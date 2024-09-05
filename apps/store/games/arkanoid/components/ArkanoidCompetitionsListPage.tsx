@@ -2,16 +2,16 @@
 
 import { PublicKey, UInt64 } from 'o1js';
 import { useContext } from 'react';
-import { useNetworkStore } from '@/lib/stores/network';
+import { useNetworkStore } from '@sdk/lib/stores/network';
 import {
   useArkanoidCompetitionsStore,
   useObserveArkanoidCompetitions,
-} from '@/games/arkanoid/stores/arkanoidCompetitions';
-import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
-import GamePage from '@/components/framework/GamePage';
+} from '../stores/arkanoidCompetitions';
+import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
+import GamePage from '@sdk/components/framework/GamePage';
 import { arkanoidConfig } from '../config';
-import CompetitionWidget from '@/components/framework/CompetitionWidget';
-import { ICompetition } from '@/lib/types';
+import CompetitionWidget from '@sdk/components/framework/CompetitionWidget';
+import { ICompetition } from '@sdk/lib/types';
 import ArkanoidCoverSVG from '../assets/game-cover.svg';
 import ArkanoidCoverMobileSVG from '../assets/game-cover-mobile.svg';
 

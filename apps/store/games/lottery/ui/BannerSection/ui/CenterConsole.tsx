@@ -2,12 +2,12 @@ import { cn, formatAddress } from '@/lib/helpers';
 import { useRoundTimer } from '@/games/lottery/features/useRoundTimer';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { DateTime } from 'luxon';
-import BouncyLoader from 'sdk/components/shared/BouncyLoader';
-import Skeleton from 'sdk/components/shared/Skeleton';
+import BouncyLoader from '@sdk/components/shared/BouncyLoader';
+import Skeleton from '@sdk/components/shared/Skeleton';
 import { formatUnits } from '@/lib/unit';
 import { Currency } from '@/constants/currency';
 import { Pages } from '@/games/lottery/Lottery';
-import { api } from '@/trpc/react';
+import { api } from '@sdk/trpc/react';
 import { useEffect, useState } from 'react';
 
 export default function CenterConsole({

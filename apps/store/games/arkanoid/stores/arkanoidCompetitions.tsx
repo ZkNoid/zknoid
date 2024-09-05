@@ -5,11 +5,11 @@ import { useContext, useEffect } from 'react';
 import { useProtokitChainStore } from '../../../lib/stores/protokitChain';
 import { useNetworkStore } from '../../../lib/stores/network';
 import { GameRecordKey } from 'zknoid-chain-dev';
-import { ICompetition } from '@/lib/types';
-import { fromContractCompetition } from '@/lib/typesConverter';
+import { ICompetition } from '@sdk/lib/types';
+import { fromContractCompetition } from '@sdk/lib/typesConverter';
 import { type ClientAppChain } from '@proto-kit/sdk';
 import { arkanoidConfig } from '../config';
-import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
+import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
 
 export interface CompetitionsState {
   loading: boolean;

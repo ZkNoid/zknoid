@@ -1,7 +1,7 @@
 import { Field, Form, Formik } from 'formik';
 import { AnimatePresence, motion } from 'framer-motion';
 import * as Yup from 'yup';
-import { api } from '@/trpc/react';
+import { api } from '@sdk/trpc/react';
 import { useState } from 'react';
 
 export default function UseGiftCodeForm({

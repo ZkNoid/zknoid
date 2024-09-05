@@ -1,10 +1,10 @@
-import BaseModal from 'sdk/components/shared/Modal/BaseModal';
-import Button from 'sdk/components/shared/Button';
-import LoadSpinner from 'sdk/components/shared/LoadSpinner';
-import Image from 'next/image';
-import znakesImg from '@/public/image/tokens/znakes.svg';
-import { Currency } from '@/constants/currency';
-import { formatUnits } from '@/lib/unit';
+import BaseModal from "@sdk/components/shared/Modal/BaseModal";
+import Button from "@sdk/components/shared/Button";
+import LoadSpinner from "@sdk/components/shared/LoadSpinner";
+import Image from "next/image";
+import znakesImg from "@sdk/public/image/tokens/znakes.svg";
+import { Currency } from "@sdk/constants/currency";
+import { formatUnits } from "@sdk/lib/unit";
 
 export const MatchmakingModal = ({
   isLongSearch,
@@ -25,15 +25,15 @@ export const MatchmakingModal = ({
 }) => {
   return (
     <BaseModal isOpen={isOpen} setIsOpen={setIsOpen} isDismissible={false}>
-      <div className={'flex flex-col items-center justify-center gap-4'}>
+      <div className={"flex flex-col items-center justify-center gap-4"}>
         <span
-          className={'text-headline-2 font-medium uppercase text-left-accent'}
+          className={"text-headline-2 font-medium uppercase text-left-accent"}
         >
           Matchmaking in process!
         </span>
         <div
           className={
-            'flex flex-row gap-2 font-plexsans text-[16px]/[16px] font-medium text-foreground'
+            "flex flex-row gap-2 font-plexsans text-[16px]/[16px] font-medium text-foreground"
           }
         >
           <svg
@@ -52,9 +52,9 @@ export const MatchmakingModal = ({
           <span>{blockNumber % 20}/20</span>
         </div>
         <LoadSpinner width={50} height={50} />
-        <div className={'flex flex-row gap-8'}>
-          <div className={'flex flex-col gap-4'}>
-            <div className={'flex flex-row gap-2'}>
+        <div className={"flex flex-row gap-8"}>
+          <div className={"flex flex-col gap-4"}>
+            <div className={"flex flex-row gap-2"}>
               <svg
                 width="23"
                 height="19"
@@ -69,13 +69,13 @@ export const MatchmakingModal = ({
               </svg>
               <span
                 className={
-                  'font-plexsans text-[14px]/[14px] font-medium uppercase'
+                  "font-plexsans text-[14px]/[14px] font-medium uppercase"
                 }
               >
                 Players in queue: 0
               </span>
             </div>
-            <div className={'flex flex-row gap-2'}>
+            <div className={"flex flex-row gap-2"}>
               <svg
                 width="20"
                 height="20"
@@ -90,57 +90,57 @@ export const MatchmakingModal = ({
               </svg>
               <span
                 className={
-                  'font-plexsans text-[14px]/[14px] font-medium uppercase'
+                  "font-plexsans text-[14px]/[14px] font-medium uppercase"
                 }
               >
                 Average waiting time: 10 minutes
               </span>
             </div>
           </div>
-          <div className={'flex flex-col gap-2'}>
-            <div className={'flex flex-row gap-2'}>
+          <div className={"flex flex-col gap-2"}>
+            <div className={"flex flex-row gap-2"}>
               <span
                 className={
-                  'font-plexsans text-[14px]/[14px] font-medium uppercase text-left-accent'
+                  "font-plexsans text-[14px]/[14px] font-medium uppercase text-left-accent"
                 }
               >
                 You Pay:
               </span>
               <Image
                 src={znakesImg}
-                alt={'Znakes token'}
-                className={'h-[20px] w-[20px]'}
+                alt={"Znakes token"}
+                className={"h-[20px] w-[20px]"}
               />
               <span>
-                {' '}
+                {" "}
                 {formatUnits(pay)} {Currency.ZNAKES}
               </span>
             </div>
-            <div className={'flex flex-row gap-2'}>
+            <div className={"flex flex-row gap-2"}>
               <span
                 className={
-                  'font-plexsans text-[14px]/[14px] font-medium uppercase text-left-accent'
+                  "font-plexsans text-[14px]/[14px] font-medium uppercase text-left-accent"
                 }
               >
                 You max recive:
               </span>
               <Image
                 src={znakesImg}
-                alt={'Znakes token'}
-                className={'h-[20px] w-[20px]'}
+                alt={"Znakes token"}
+                className={"h-[20px] w-[20px]"}
               />
               <span>
-                {' '}
+                {" "}
                 {formatUnits(receive)} {Currency.ZNAKES}
               </span>
             </div>
           </div>
         </div>
-        <div className={'flex w-full items-end justify-between'}>
+        <div className={"flex w-full items-end justify-between"}>
           {isLongSearch ? (
             <div
               className={
-                'font-plexsans text-[14px]/[14px] font-medium text-right-accent'
+                "font-plexsans text-[14px]/[14px] font-medium text-right-accent"
               }
             >
               Searching is taking too long...
@@ -149,9 +149,9 @@ export const MatchmakingModal = ({
             <div />
           )}
           <Button
-            label={'Cancel'}
-            color={'tertiary'}
-            className={'max-w-[20%]'}
+            label={"Cancel"}
+            color={"tertiary"}
+            className={"max-w-[20%]"}
             onClick={async () => {
               await leave();
               setIsOpen(false);

@@ -3,38 +3,38 @@
 import { useContext, useEffect, useState } from 'react';
 import { GameView } from './components/GameView';
 import { PublicKey, UInt64 } from 'o1js';
-import { useNetworkStore } from '@/lib/stores/network';
+import { useNetworkStore } from '@sdk/lib/stores/network';
 import {
   useObserveCheckersMatchQueue,
   useCheckersMatchQueueStore,
-} from '@/games/checkers/stores/matchQueue';
-import { walletInstalled } from '@/lib/helpers';
+} from './stores/matchQueue';
+import { walletInstalled } from '@sdk/lib/helpers';
 import { useStore } from 'zustand';
-import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
+import { useSessionKeyStore } from '@sdk/lib/stores/sessionKeyStorage';
 import { ClientAppChain, PENDING_BLOCKS_NUM_CONST } from 'zknoid-chain-dev';
-import GamePage from '@/components/framework/GamePage';
+import GamePage from '@sdk/components/framework/GamePage';
 import { checkersConfig } from './config';
-import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
-import { useProtokitChainStore } from '@/lib/stores/protokitChain';
+import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
+import { useProtokitChainStore } from '@sdk/lib/stores/protokitChain';
 import { MOVE_TIMEOUT_IN_BLOCKS } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
 import {
   MainButtonState,
   PvPGameView,
-} from '@/components/framework/GamePage/PvPGameView';
+} from '@sdk/components/framework/GamePage/PvPGameView';
 import CheckersCoverSVG from './assets/game-cover.svg';
 import CheckersCoverMobileSVG from './assets/game-cover-mobile.svg';
-import { getRandomEmoji } from '@/lib/emoji';
-import toast from 'sdk/components/shared/Toast';
-import { formatUnits } from '@/lib/unit';
-import { Currency } from '@/constants/currency';
-import { useToasterStore } from '@/lib/stores/toasterStore';
+import { getRandomEmoji } from '@sdk/lib/emoji';
+import toast from '@sdk/components/shared/Toast';
+import { formatUnits } from '@sdk/lib/unit';
+import { Currency } from '@sdk/constants/currency';
+import { useToasterStore } from '@sdk/lib/stores/toasterStore';
 import { GameState } from './lib/gameState';
 import { useStartGame } from './features/useStartGame';
-import { useOnMoveChosen } from '@/games/checkers/features/useOnMoveChosen';
+import { useOnMoveChosen } from './features/useOnMoveChosen';
 import {
   useLobbiesStore,
   useObserveLobbiesStore,
-} from '@/lib/stores/lobbiesStore';
+} from '@sdk/lib/stores/lobbiesStore';
 
 export default function RandzuPage({
   params,

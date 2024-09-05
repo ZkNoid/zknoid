@@ -1,5 +1,5 @@
-import { ZkNoidAsset } from '@/constants/assets';
-import { formatUnits } from '@/lib/unit';
+import { ZkNoidAsset } from '../../../../../../constants/assets';
+import { formatUnits } from '../../../../../../lib/unit';
 import Image from 'next/image';
 
 export default function BridgeInput({

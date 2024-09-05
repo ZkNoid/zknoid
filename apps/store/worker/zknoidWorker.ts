@@ -51,8 +51,8 @@ import {
 } from 'l1-lottery-contracts';
 import { NETWORKS } from '@/app/constants/networks';
 import { number } from 'zod';
-import { lotteryBackendRouter } from '@/server/api/routers/lottery-backend';
-import { api } from '@/trpc/vanilla';
+import { lotteryBackendRouter } from '@sdk/server/api/routers/lottery-backend';
+import { api } from '@sdk/trpc/vanilla';
 // import { DummyBridge } from 'zknoidcontractsl1';
 
 // ---------------------------------------------------------------------------------------

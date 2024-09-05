@@ -1,4 +1,4 @@
-import { cn } from '@/lib/helpers';
+import { cn } from '../../../../../../lib/helpers';
 
 const TopUpSVG = ({ className }: { className?: string }) => {
   return (

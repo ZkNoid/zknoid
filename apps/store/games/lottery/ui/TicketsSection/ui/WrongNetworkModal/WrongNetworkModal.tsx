@@ -1,8 +1,8 @@
-import BaseModal from 'sdk/components/shared/Modal/BaseModal';
+import BaseModal from '@sdk/components/shared/Modal/BaseModal';
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import catWifeIMG from '@/public/image/games/lottery/cat-wife.svg';
+import catWifeIMG from '@sdk/public/image/games/lottery/cat-wife.svg';
 import Image from 'next/image';
 
 const NetworkSwitchButton = dynamic(

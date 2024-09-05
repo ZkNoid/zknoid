@@ -17,7 +17,7 @@ import { DefaultRuntimeModules } from '../runtimeModules';
 import { Balances, ProtoUInt64, ZNAKE_TOKEN_ID } from 'zknoid-chain-dev';
 
 import { BalancesKey, TokenId } from '@proto-kit/library';
-import { api } from '@/trpc/react';
+import { api } from '@sdk/trpc/react';
 import { getEnvContext } from '../envContext';
 import { useBridgeStore } from '@/lib/stores/bridgeStore';
 
@@ -144,7 +144,7 @@ export const useTestBalanceGetter = () => {
   const balancesStore = useProtokitBalancesStore();
   const network = useNetworkStore();
 
-  const {client: contextAppChainClient} = useContext(ZkNoidGameContext);
+  const { client: contextAppChainClient } = useContext(ZkNoidGameContext);
 
   const client_ = contextAppChainClient as ClientAppChain<
     typeof DefaultRuntimeModules,
@@ -159,9 +159,7 @@ export const useTestBalanceGetter = () => {
     if (!network.address) return;
     if (balancesStore.balances[network.address] >= 100 * 10 ** 9) return;
 
-    const balances = client_.runtime.resolve(
-      'Balances'
-    ) as Balances;
+    const balances = client_.runtime.resolve('Balances') as Balances;
     const sender = PublicKey.fromBase58(network.address!);
 
     console.log(balances);

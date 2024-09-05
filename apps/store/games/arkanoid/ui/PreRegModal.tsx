@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { arkanoidConfig } from '@/games/arkanoid/config';
-import StatefulModal from 'sdk/components/shared/Modal/StatefulModal';
-import { ICompetition } from '@/lib/types';
+import { arkanoidConfig } from '../config';
+import StatefulModal from '@sdk/components/shared/Modal/StatefulModal';
+import { ICompetition } from '@sdk/lib/types';
 
 export const PreRegModal = ({ competition }: { competition: ICompetition }) => {
   const formatDate = (item: string | undefined) => {

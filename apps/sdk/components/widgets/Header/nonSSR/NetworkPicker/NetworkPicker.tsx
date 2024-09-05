@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react';
-import { ALL_NETWORKS, Network } from '@/app/constants/networks';
-import { requestAccounts, walletInstalled } from '@/lib/helpers';
-import { useNetworkStore } from '../../../../../lib/stores/network';
-import { useRegisterWorkerClient } from '@/lib/stores/workerClient';
-import { AnimatePresence, motion } from 'framer-motion';
-import NetworkPickerCard from './ui/NetworkPickerCard';
-import zekoLogo from '@/public/image/cards/zekoLogo.svg';
-import berkleyLogo from '@/public/image/cards/berkleyLogo.svg';
-import minaLogo from '@/public/image/cards/minaLogo.svg';
-import Image from 'next/image';
+import { useEffect, useState } from "react";
+import { ALL_NETWORKS, Network } from "../../../../../constants/networks";
+import { requestAccounts, walletInstalled } from "../../../../../lib/helpers";
+import { useNetworkStore } from "../../../../../lib/stores/network";
+import { useRegisterWorkerClient } from "../../../../../lib/stores/workerClient";
+import { AnimatePresence, motion } from "framer-motion";
+import NetworkPickerCard from "./ui/NetworkPickerCard";
+import zekoLogo from "@sdk/public/image/cards/zekoLogo.svg";
+import berkleyLogo from "@sdk/public/image/cards/berkleyLogo.svg";
+import minaLogo from "@sdk/public/image/cards/minaLogo.svg";
+import Image from "next/image";
 
 export default function NetworkPicker({
   expanded,
@@ -21,10 +21,10 @@ export default function NetworkPicker({
   useRegisterWorkerClient();
 
   const switchNetwork = async (network: Network) => {
-    console.log('Switching to', network);
+    console.log("Switching to", network);
     if (window.mina?.isPallad) {
       await window.mina.request({
-        method: 'mina_switchChain',
+        method: "mina_switchChain",
         params: {
           chainId: network.palladNetworkID,
         },
@@ -58,12 +58,12 @@ export default function NetworkPicker({
         name: string;
       }) => {
         const minaNetwork = ALL_NETWORKS.find((x) =>
-          networkID != 'unknown' ? x.networkID == networkID : x.name == name
+          networkID != "unknown" ? x.networkID == networkID : x.name == name
         );
         networkStore.setNetwork(minaNetwork);
       };
 
-      (window.mina as any).on('chainChanged', listener);
+      (window.mina as any).on("chainChanged", listener);
 
       return () => {
         (window.mina as any).removeListener(listener);
@@ -76,14 +76,14 @@ export default function NetworkPicker({
 
     (async () => {
       const listener = (accounts: string[]) => {
-        console.log('Accounts changed', accounts);
+        console.log("Accounts changed", accounts);
         const [account] = accounts;
         if (networkStore.minaNetwork?.networkID)
           networkStore.setNetwork(networkStore.minaNetwork);
         networkStore.onWalletConnected(account);
       };
 
-      (window.mina as any).on('accountsChanged', listener);
+      (window.mina as any).on("accountsChanged", listener);
 
       return () => {
         (window.mina as any).removeListener(listener);
@@ -94,11 +94,11 @@ export default function NetworkPicker({
   return (
     <div className="relative">
       <NetworkPickerCard
-        text={networkStore.minaNetwork?.name || 'Unsupported network'}
+        text={networkStore.minaNetwork?.name || "Unsupported network"}
         image={
-          networkStore.minaNetwork?.networkID === 'zeko:testnet'
+          networkStore.minaNetwork?.networkID === "zeko:testnet"
             ? zekoLogo
-            : networkStore.minaNetwork?.networkID === 'mina:berkeley'
+            : networkStore.minaNetwork?.networkID === "mina:berkeley"
               ? berkleyLogo
               : minaLogo
         }
@@ -106,13 +106,13 @@ export default function NetworkPicker({
         toggle={true}
         expanded={expanded}
       />
-      <AnimatePresence initial={false} mode={'wait'}>
+      <AnimatePresence initial={false} mode={"wait"}>
         {expanded && (
           <motion.div
             initial={{ height: 0 }}
-            animate={{ height: 'auto' }}
+            animate={{ height: "auto" }}
             exit={{ height: 0 }}
-            transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
+            transition={{ type: "spring", duration: 0.4, bounce: 0 }}
             className="absolute top-[90%] flex w-full flex-col items-center overflow-hidden rounded-b border border-left-accent bg-bg-dark"
           >
             {ALL_NETWORKS.map((network) => (
@@ -123,20 +123,20 @@ export default function NetworkPicker({
               >
                 <Image
                   src={
-                    network.networkID === 'zeko:testnet'
+                    network.networkID === "zeko:testnet"
                       ? zekoLogo
-                      : network.networkID === 'mina:berkeley'
+                      : network.networkID === "mina:berkeley"
                         ? berkleyLogo
                         : minaLogo
                   }
                   className={
-                    'h-[1.25vw] w-[1.25vw] rounded-[0.26vw] border border-foreground group-hover:border-left-accent'
+                    "h-[1.25vw] w-[1.25vw] rounded-[0.26vw] border border-foreground group-hover:border-left-accent"
                   }
-                  alt={''}
+                  alt={""}
                 />
                 <span
                   className={
-                    'font-museo text-[0.833vw] font-medium text-foreground group-hover:text-left-accent'
+                    "font-museo text-[0.833vw] font-medium text-foreground group-hover:text-left-accent"
                   }
                 >
                   {network.name}

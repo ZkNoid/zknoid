@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { clsx } from 'clsx';
-import { AnimatePresence, motion } from 'framer-motion';
-import { PublicKey, UInt64 } from 'o1js';
-import { useNetworkStore } from '@/lib/stores/network';
-import { formatPubkey } from '@/lib/utils';
+import { useState } from "react";
+import { clsx } from "clsx";
+import { AnimatePresence, motion } from "framer-motion";
+import { PublicKey, UInt64 } from "o1js";
+import { useNetworkStore } from "@sdk/lib/stores/network";
+import { formatPubkey } from "@sdk/lib/utils";
 
 export const Leaderboard = ({
   leaderboard,
@@ -27,21 +27,21 @@ export const Leaderboard = ({
   }) => {
     return (
       <div
-        className={clsx('border-b border-left-accent py-4 last:border-t', {
-          'h-full': leaderboard.length >= 7 || leaderboard.length === 0,
+        className={clsx("border-b border-left-accent py-4 last:border-t", {
+          "h-full": leaderboard.length >= 7 || leaderboard.length === 0,
         })}
       >
         <div
           className={clsx(
-            'flex h-full flex-row items-center justify-between font-plexsans text-header-menu',
+            "flex h-full flex-row items-center justify-between font-plexsans text-header-menu",
             {
-              'text-left-accent':
+              "text-left-accent":
                 index === 0 || index === 1 || (index === 2 && !highlight),
-              'text-right-accent': highlight,
+              "text-right-accent": highlight,
             }
           )}
         >
-          <span className={'flex flex-row gap-4'}>
+          <span className={"flex flex-row gap-4"}>
             {index === 0 ? (
               <svg
                 width="24"
@@ -76,7 +76,7 @@ export const Leaderboard = ({
           </span>
           <span
             className={clsx({
-              'text-left-accent': index === 0 || index === 1 || index === 2,
+              "text-left-accent": index === 0 || index === 1 || index === 2,
             })}
           >
             {score}
@@ -111,7 +111,7 @@ export const Leaderboard = ({
     >
       <div
         className={clsx(
-          'relative flex min-h-[120px] w-full flex-col overflow-hidden'
+          "relative flex min-h-[120px] w-full flex-col overflow-hidden"
         )}
       >
         <div
@@ -123,24 +123,24 @@ export const Leaderboard = ({
         <div className="z-10 block px-0 pb-10 pt-5 text-headline-2 font-bold hover:opacity-80 lg:hidden lg:px-5">
           Leaderboard
         </div>
-        <AnimatePresence initial={false} mode={'wait'}>
+        <AnimatePresence initial={false} mode={"wait"}>
           {isExpanded && (
             <motion.div
               initial={{ height: 0 }}
-              animate={{ height: 'auto' }}
+              animate={{ height: "auto" }}
               exit={{ height: 0 }}
-              transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
+              transition={{ type: "spring", duration: 0.4, bounce: 0 }}
               className={
-                'relative z-0 flex flex-col overflow-hidden px-0 lg:px-5'
+                "relative z-0 flex flex-col overflow-hidden px-0 lg:px-5"
               }
             >
               <div
                 className={
-                  'flex flex-row justify-between border-b border-left-accent pb-4 font-plexsans text-header-menu'
+                  "flex flex-row justify-between border-b border-left-accent pb-4 font-plexsans text-header-menu"
                 }
               >
-                <span className={'uppercase'}>Nickname/address</span>
-                <span className={'uppercase'}>Score</span>
+                <span className={"uppercase"}>Nickname/address</span>
+                <span className={"uppercase"}>Score</span>
               </div>
 
               {/* {leaderboard.length != 0 ? (
@@ -168,7 +168,7 @@ export const Leaderboard = ({
               ))}
               {/* </>
               )} */}
-              <div className={'flex-grow pt-4'} />
+              <div className={"flex-grow pt-4"} />
               {/*{leaderboard.find(*/}
               {/*  (item) => item.player.toBase58() === networkStore.address*/}
               {/*) && (*/}
@@ -205,25 +205,25 @@ export const Leaderboard = ({
           </svg>
           <motion.div
             className={
-              'absolute right-0 top-0 flex flex-col items-center justify-center max-[1850px]:h-[24px] max-[1850px]:w-[24px] min-[1850px]:h-[34px] min-[1850px]:w-[34px]'
+              "absolute right-0 top-0 flex flex-col items-center justify-center max-[1850px]:h-[24px] max-[1850px]:w-[24px] min-[1850px]:h-[34px] min-[1850px]:w-[34px]"
             }
-            animate={isExpanded ? 'open' : 'close'}
+            animate={isExpanded ? "open" : "close"}
           >
             <motion.div
               variants={{
                 open: { rotate: 45, y: 1 },
                 close: { rotate: 0 },
               }}
-              transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
-              className={'h-[3px] w-3/4 rotate-45 bg-bg-dark'}
+              transition={{ type: "spring", duration: 0.4, bounce: 0 }}
+              className={"h-[3px] w-3/4 rotate-45 bg-bg-dark"}
             />
             <motion.div
               variants={{
                 open: { rotate: -45, y: -1 },
                 close: { rotate: 90 },
               }}
-              transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
-              className={'h-[3px] w-3/4 -rotate-45 bg-bg-dark'}
+              transition={{ type: "spring", duration: 0.4, bounce: 0 }}
+              className={"h-[3px] w-3/4 -rotate-45 bg-bg-dark"}
             />
           </motion.div>
         </div>

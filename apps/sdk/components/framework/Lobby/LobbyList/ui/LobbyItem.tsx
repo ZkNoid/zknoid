@@ -1,7 +1,7 @@
-import { usePvpLobbyStorage } from '@/lib/stores/pvpLobbyStore';
-import { Currency } from '@/constants/currency';
-import { ILobby } from '@/lib/types';
-import { formatUnits } from '@/lib/unit';
+import { usePvpLobbyStorage } from "@sdk/lib/stores/pvpLobbyStore";
+import { Currency } from "@sdk/constants/currency";
+import { ILobby } from "@sdk/lib/types";
+import { formatUnits } from "@sdk/lib/unit";
 
 export const LobbyItem = ({
   id,
@@ -21,7 +21,7 @@ export const LobbyItem = ({
     >
       <span
         className={
-          'flex flex-row items-center gap-2 text-[20px]/[20px] font-medium uppercase text-left-accent'
+          "flex flex-row items-center gap-2 text-[20px]/[20px] font-medium uppercase text-left-accent"
         }
       >
         <span>[{id}]</span>
@@ -35,19 +35,19 @@ export const LobbyItem = ({
       </div>
       <div
         className={
-          'col-start-2 col-end-2 row-start-2 flex flex-row gap-2 text-left-accent'
+          "col-start-2 col-end-2 row-start-2 flex flex-row gap-2 text-left-accent"
         }
       >
-        <span className={'uppercase'}>Max participants:</span>
+        <span className={"uppercase"}>Max participants:</span>
         <span>{maxPlayers} players</span>
       </div>
-      <div className={'col-start-3 col-end-3 row-start-2 flex flex-row gap-2'}>
-        <span className={'uppercase'}>Players in Lobby:</span>
+      <div className={"col-start-3 col-end-3 row-start-2 flex flex-row gap-2"}>
+        <span className={"uppercase"}>Players in Lobby:</span>
         <span>{players} players</span>
       </div>
       <div
         className={
-          'invisible col-start-4 col-end-5 row-start-1 row-end-3 flex h-full w-full flex-col items-end justify-center group-hover:visible'
+          "invisible col-start-4 col-end-5 row-start-1 row-end-3 flex h-full w-full flex-col items-end justify-center group-hover:visible"
         }
       >
         <svg

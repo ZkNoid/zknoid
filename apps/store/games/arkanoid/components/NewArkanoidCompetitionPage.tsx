@@ -17,35 +17,35 @@ import {
   FIELD_WIDTH,
   Competition,
 } from 'zknoid-chain-dev';
-import { useNetworkStore } from '@/lib/stores/network';
+import { useNetworkStore } from '@sdk/lib/stores/network';
 import {
   useMinaBridge,
   useProtokitBalancesStore,
-} from '@/lib/stores/protokitBalances';
-import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
+} from '@sdk/lib/stores/protokitBalances';
+import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
 import { arkanoidConfig } from '../config';
-import GamePage from '@/components/framework/GamePage';
-import Input from 'sdk/components/shared/Input';
-import Textarea from 'sdk/components/shared/Textarea';
-import Button from 'sdk/components/shared/Button';
-import Checkbox from 'sdk/components/shared/Checkbox';
-import Popover from 'sdk/components/shared/Popover';
-import DatePicker from 'sdk/components/shared/DatePicker';
+import GamePage from '@sdk/components/framework/GamePage';
+import Input from '@sdk/components/shared/Input';
+import Textarea from '@sdk/components/shared/Textarea';
+import Button from '@sdk/components/shared/Button';
+import Checkbox from '@sdk/components/shared/Checkbox';
+import Popover from '@sdk/components/shared/Popover';
+import DatePicker from '@sdk/components/shared/DatePicker';
 import { AnimatePresence, motion } from 'framer-motion';
-import znakesImg from '@/public/image/tokens/znakes.svg';
+import znakesImg from '@sdk/public/image/tokens/znakes.svg';
 import { clsx } from 'clsx';
-import { Currency } from '@/constants/currency';
-import BaseModal from 'sdk/components/shared/Modal/BaseModal';
+import { Currency } from '@sdk/constants/currency';
+import BaseModal from '@sdk/components/shared/Modal/BaseModal';
 import ArkanoidCoverSVG from '../assets/game-cover.svg';
 import ArkanoidCoverMobileSVG from '../assets/game-cover-mobile.svg';
-import { DropdownListField } from 'sdk/components/shared/DropdownList';
+import { DropdownListField } from '@sdk/components/shared/DropdownList';
 import { default as ReactImage } from 'next/image';
-import { api } from '@/trpc/react';
-import { getEnvContext } from '@/lib/envContext';
+import { api } from '@sdk/trpc/react';
+import { getEnvContext } from '@sdk/lib/envContext';
 import { PendingTransaction } from '@proto-kit/sequencer';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
-import { snakeNames } from '@/constants/snakeNames';
+import { snakeNames } from '@sdk/constants/snakeNames';
 
 interface IBrick {
   pos: [number, number];

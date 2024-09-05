@@ -1,21 +1,21 @@
-'use client';
-import { useCallback, useEffect, useMemo } from 'react';
-import { create } from 'zustand';
-import { immer } from 'zustand/middleware/immer';
-import { performance } from 'perf_hooks';
+"use client";
+import { useCallback, useEffect, useMemo } from "react";
+import { create } from "zustand";
+import { immer } from "zustand/middleware/immer";
+import { performance } from "perf_hooks";
 
-import ZknoidWorkerClient from '@/worker/zknoidWorkerClient';
+import ZknoidWorkerClient from "@sdk/worker/zknoidWorkerClient";
 import {
   BLOCK_PER_ROUND,
   PLottery,
   NumberPacked,
   TICKET_PRICE,
   getNullifierId,
-} from 'l1-lottery-contracts';
-import { NetworkIds } from '@/app/constants/networks';
-import { LOTTERY_ADDRESS } from '@/app/constants/addresses';
-import { Field, PublicKey, UInt32, type JsonProof } from 'o1js';
-import { DateTime, Duration } from 'luxon';
+} from "l1-lottery-contracts";
+import { NetworkIds } from "@sdk/constants/networks";
+import { LOTTERY_ADDRESS } from "@sdk/constants/addresses";
+import { Field, PublicKey, UInt32, type JsonProof } from "o1js";
+import { DateTime, Duration } from "luxon";
 
 export interface ClientState {
   status: string;
@@ -67,10 +67,10 @@ export interface ClientState {
 
 export const useWorkerClientStore = create<
   ClientState,
-  [['zustand/immer', never]]
+  [["zustand/immer", never]]
 >(
   immer((set) => ({
-    status: 'Not loaded',
+    status: "Not loaded",
     client: undefined,
     onchainStateInitialized: false,
     lotteryCompiled: false,
@@ -88,7 +88,7 @@ export const useWorkerClientStore = create<
     lotteryGame: undefined as PLottery | undefined,
     async start() {
       set((state) => {
-        state.status = 'Loading worker';
+        state.status = "Loading worker";
       });
 
       const zkappWorkerClient = new ZknoidWorkerClient();
@@ -96,27 +96,27 @@ export const useWorkerClientStore = create<
       await zkappWorkerClient.waitFor();
 
       set((state) => {
-        state.status = 'Loading contracts';
+        state.status = "Loading contracts";
       });
 
       await zkappWorkerClient.loadContracts();
 
       set((state) => {
-        state.status = 'Compiling contracts';
+        state.status = "Compiling contracts";
       });
 
       // await zkappWorkerClient.compileContracts();
 
       set((state) => {
-        state.status = 'Initializing zkapp';
+        state.status = "Initializing zkapp";
       });
 
       await zkappWorkerClient.initZkappInstance(
-        'B62qjTmjVvvXnYCWSiEc1eVAz8vWVzJUK4xtBu7oq5ZuNT7aqAnAVub'
+        "B62qjTmjVvvXnYCWSiEc1eVAz8vWVzJUK4xtBu7oq5ZuNT7aqAnAVub"
       );
 
       set((state) => {
-        state.status = 'Initialized';
+        state.status = "Initialized";
         state.client = zkappWorkerClient;
       });
 
@@ -136,25 +136,25 @@ export const useWorkerClientStore = create<
     },
     async startLottery(networkId, currBlock, events) {
       set((state) => {
-        state.status = 'Lottery loading';
+        state.status = "Lottery loading";
       });
 
       await this.client!.waitFor();
       const lotteryPublicKey58 = LOTTERY_ADDRESS[networkId];
 
       set((state) => {
-        state.status = 'Lottery state fetching';
+        state.status = "Lottery state fetching";
       });
 
       await this.client?.initLotteryInstance(lotteryPublicKey58, networkId);
 
       const onchainState = this.onchainState!;
-      
+
       set((state) => {
         state.onchainStateInitialized = true;
       });
 
-      console.log('Fetched state', this.onchainState);
+      console.log("Fetched state", this.onchainState);
 
       const roundId = Math.floor(
         (currBlock - Number(onchainState.startBlock)) / BLOCK_PER_ROUND
@@ -162,25 +162,25 @@ export const useWorkerClientStore = create<
 
       set((state) => {
         state.lotteryRoundId = roundId;
-        state.status = 'State manager loading';
+        state.status = "State manager loading";
       });
 
       const publicKey = PublicKey.fromBase58(lotteryPublicKey58);
       const lotteryGame = new PLottery(publicKey);
 
       set((state) => {
-        state.status = 'Sync with events';
+        state.status = "Sync with events";
         state.lotteryGame = lotteryGame;
       });
 
       set((state) => {
-        state.status = 'Lottery prover cache downloading';
+        state.status = "Lottery prover cache downloading";
       });
 
       await this.client?.downloadLotteryCache();
 
       set((state) => {
-        state.status = 'Reduce contracts compiling';
+        state.status = "Reduce contracts compiling";
       });
 
       const t1 = Date.now() / 1000;
@@ -188,7 +188,7 @@ export const useWorkerClientStore = create<
       await this.client?.compileReduceProof();
 
       set((state) => {
-        state.status = 'Distribution contracts compiling';
+        state.status = "Distribution contracts compiling";
       });
 
       const t2 = Date.now() / 1000;
@@ -196,7 +196,7 @@ export const useWorkerClientStore = create<
       await this.client?.compileDistributionProof();
 
       set((state) => {
-        state.status = 'Lottery contracts compiling';
+        state.status = "Lottery contracts compiling";
       });
 
       const t3 = Date.now() / 1000;
@@ -224,14 +224,14 @@ export const useWorkerClientStore = create<
     },
     async updateOnchainState() {
       set((state) => {
-        state.status = 'Onchain state update';
+        state.status = "Onchain state update";
       });
 
       this.client?.fetchOnchainState();
 
       set((state) => {
         state.onchainStateInitialized = true;
-        state.status = 'Onchain state fetched';
+        state.status = "Onchain state fetched";
       });
     },
     async buyTicket(
@@ -241,7 +241,7 @@ export const useWorkerClientStore = create<
       amount: number
     ) {
       set((state) => {
-        state.status = 'Ticket buy tx prepare';
+        state.status = "Ticket buy tx prepare";
         state.isActiveTx = true;
       });
 
@@ -249,7 +249,7 @@ export const useWorkerClientStore = create<
         (currBlock - Number(this.onchainState?.startBlock!)) / BLOCK_PER_ROUND
       );
 
-      await this.client?._call('buyTicket', {
+      await this.client?._call("buyTicket", {
         senderAccount,
         startBlock: this.onchainState?.startBlock,
         roundId,
@@ -258,13 +258,13 @@ export const useWorkerClientStore = create<
       });
 
       set((state) => {
-        state.status = 'Ticket buy tx proving';
+        state.status = "Ticket buy tx proving";
       });
 
-      const txJson = await this.client?._call('proveBuyTicketTransaction', {});
+      const txJson = await this.client?._call("proveBuyTicketTransaction", {});
 
       set((state) => {
-        state.status = 'Ticket buy tx proved';
+        state.status = "Ticket buy tx proved";
         state.isActiveTx = false;
       });
 
@@ -278,11 +278,11 @@ export const useWorkerClientStore = create<
       amount: number
     ) {
       set((state) => {
-        state.status = 'Get reward tx prepare';
+        state.status = "Get reward tx prepare";
         state.isActiveTx = true;
       });
 
-      await this.client?._call('getReward', {
+      await this.client?._call("getReward", {
         networkId,
         senderAccount,
         startBlock: this.onchainState?.startBlock,
@@ -292,13 +292,13 @@ export const useWorkerClientStore = create<
       });
 
       set((state) => {
-        state.status = 'Get reward tx proving';
+        state.status = "Get reward tx proving";
       });
 
-      const txJson = await this.client?._call('proveGetRewardTransaction', {});
+      const txJson = await this.client?._call("proveGetRewardTransaction", {});
 
       set((state) => {
-        state.status = 'Get reward tx proved';
+        state.status = "Get reward tx proved";
         state.isActiveTx = false;
       });
 
@@ -311,6 +311,6 @@ export const useRegisterWorkerClient = () => {
   const workerClientStore = useWorkerClientStore();
 
   useEffect(() => {
-    if (workerClientStore.status == 'Not loaded') workerClientStore.start();
+    if (workerClientStore.status == "Not loaded") workerClientStore.start();
   }, []);
 };

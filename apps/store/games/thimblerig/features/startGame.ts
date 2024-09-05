@@ -6,7 +6,7 @@ import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
 import { useMinaBridge } from '@/lib/stores/protokitBalances';
 import { client } from 'zknoid-chain-dev';
-import { api } from '@/trpc/react';
+import { api } from '@sdk/trpc/react';
 import { useNetworkStore } from '@/lib/stores/network';
 
 export const useStartGame = (setGameState: (state: GameState) => void) => {

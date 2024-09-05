@@ -1,16 +1,16 @@
-import { Pages } from '@/games/lottery/Lottery';
+import { Pages } from '../../Lottery';
 import { useEffect, useRef, useState } from 'react';
-import { cn } from '@/lib/helpers';
+import { cn } from '@sdk/lib/helpers';
 import { AnimatePresence, useScroll } from 'framer-motion';
-import CustomScrollbar from 'sdk/components/shared/CustomScrollbar';
-import { useWorkerClientStore } from '@/lib/stores/workerClient';
-import { useNetworkStore } from '@/lib/stores/network';
-import { formatUnits } from '@/lib/unit';
-import { useChainStore } from '@/lib/stores/minaChain';
-import { api } from '@/trpc/react';
+import CustomScrollbar from '@sdk/components/shared/CustomScrollbar';
+import { useWorkerClientStore } from '@sdk/lib/stores/workerClient';
+import { useNetworkStore } from '@sdk/lib/stores/network';
+import { formatUnits } from '@sdk/lib/unit';
+import { useChainStore } from '@sdk/lib/stores/minaChain';
+import { api } from '@sdk/trpc/react';
 import { RoundsDropdown } from './ui/RoundsDropdown';
 import { TicketItem } from './ui/TicketItem';
-import { ILotteryRound } from '@/games/lottery/lib/types';
+import { ILotteryRound } from '../../lib/types';
 
 const CheckboxButton = ({
   text,

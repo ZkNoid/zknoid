@@ -8,7 +8,7 @@ import CenterConsole from '@/games/lottery/ui/BannerSection/ui/CenterConsole';
 import CurrentRoundInfo from '@/games/lottery/ui/BannerSection/ui/CurrentRoundInfo';
 import PrevRoundInfo from '@/games/lottery/ui/BannerSection/ui/PrevRoundInfo';
 import { Pages } from '../../Lottery';
-import { api } from '@/trpc/react';
+import { api } from '@sdk/trpc/react';
 import { ILotteryRound } from '@/games/lottery/lib/types';
 import { useRoundsStore } from '@/games/lottery/lib/roundsStore';
 

@@ -1,17 +1,17 @@
-import Input from 'sdk/components/shared/Input';
-import { useState } from 'react';
-import Image from 'next/image';
-import znakesImg from '@/public/image/tokens/znakes.svg';
-import Popover from 'sdk/components/shared/Popover';
-import Checkbox from 'sdk/components/shared/Checkbox';
-import Button from 'sdk/components/shared/Button';
-import BaseModal from 'sdk/components/shared/Modal/BaseModal';
-import { motion } from 'framer-motion';
-import { Currency } from '@/constants/currency';
-import { useNetworkStore } from '@/lib/stores/network';
-import { useProtokitBalancesStore } from '@/lib/stores/protokitBalances';
-import { Form, Formik } from 'formik';
-import * as Yup from 'yup';
+import Input from "@sdk/components/shared/Input";
+import { useState } from "react";
+import Image from "next/image";
+import znakesImg from "@sdk/public/image/tokens/znakes.svg";
+import Popover from "@sdk/components/shared/Popover";
+import Checkbox from "@sdk/components/shared/Checkbox";
+import Button from "@sdk/components/shared/Button";
+import BaseModal from "@sdk/components/shared/Modal/BaseModal";
+import { motion } from "framer-motion";
+import { Currency } from "@sdk/constants/currency";
+import { useNetworkStore } from "@sdk/lib/stores/network";
+import { useProtokitBalancesStore } from "@sdk/lib/stores/protokitBalances";
+import { Form, Formik } from "formik";
+import * as Yup from "yup";
 
 export const CreateNewLobby = ({
   createLobby,
@@ -36,7 +36,7 @@ export const CreateNewLobby = ({
   ).toFixed(2);
 
   const randomInt = () => {
-    let number = '';
+    let number = "";
     for (let i = 0; i < 10; i++) {
       number += Math.ceil(Math.random() * 10);
     }
@@ -44,18 +44,18 @@ export const CreateNewLobby = ({
   };
 
   const initialValues = {
-    name: '',
+    name: "",
     participationFee: 0,
     isPrivateGame: false,
   };
 
   const validateSchema = Yup.object().shape({
     name: Yup.string()
-      .matches(/^(?![\d+_@.-]+$)[a-zA-Z0-9+_@.-]*$/, 'Invalid name')
-      .required('This field required'),
+      .matches(/^(?![\d+_@.-]+$)[a-zA-Z0-9+_@.-]*$/, "Invalid name")
+      .required("This field required"),
     participationFee: Yup.number()
-      .typeError('Invalid participationFee')
-      .required('This field required')
+      .typeError("Invalid participationFee")
+      .required("This field required")
       .min(0)
       .max(Number(balance), `Participation fee can't be bigger than deposit`),
     isPrivateGame: Yup.boolean().optional(),
@@ -63,11 +63,11 @@ export const CreateNewLobby = ({
 
   return (
     <motion.div
-      className={'col-start-4 col-end-6 row-span-4 w-full'}
+      className={"col-start-4 col-end-6 row-span-4 w-full"}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ type: 'spring', duration: 0.8, bounce: 0 }}
+      transition={{ type: "spring", duration: 0.8, bounce: 0 }}
     >
       <Formik
         initialValues={initialValues}
@@ -88,14 +88,14 @@ export const CreateNewLobby = ({
           <Form>
             <div
               className={
-                'flex h-full w-full flex-col rounded-[5px] border border-foreground bg-[#252525] p-2'
+                "flex h-full w-full flex-col rounded-[5px] border border-foreground bg-[#252525] p-2"
               }
             >
-              <div className={'flex flex-col gap-4 pb-4'}>
-                <div className={'flex flex-row'}>
+              <div className={"flex flex-col gap-4 pb-4"}>
+                <div className={"flex flex-row"}>
                   <div
                     className={
-                      'flex w-full flex-row items-start justify-start gap-1'
+                      "flex w-full flex-row items-start justify-start gap-1"
                     }
                   >
                     <svg
@@ -115,12 +115,12 @@ export const CreateNewLobby = ({
                       />
                     </svg>
                     <span
-                      className={'text-headline-3 uppercase text-left-accent'}
+                      className={"text-headline-3 uppercase text-left-accent"}
                     >
                       Lobby Creation
                     </span>
                   </div>
-                  <div className={'flex w-[30%] items-center justify-end'}>
+                  <div className={"flex w-[30%] items-center justify-end"}>
                     <svg
                       width="53"
                       height="64"
@@ -128,7 +128,7 @@ export const CreateNewLobby = ({
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                       className={
-                        'h-[50px] w-[50px] cursor-pointer hover:opacity-80'
+                        "h-[50px] w-[50px] cursor-pointer hover:opacity-80"
                       }
                       onClick={() => setIsCreationMode(false)}
                     >
@@ -153,31 +153,31 @@ export const CreateNewLobby = ({
                 </div>
 
                 <Input
-                  name={'name'}
-                  type={'text'}
-                  title={'Enter The Name of Lobby'}
-                  placeholder={'Type name here...'}
+                  name={"name"}
+                  type={"text"}
+                  title={"Enter The Name of Lobby"}
+                  placeholder={"Type name here..."}
                   required
                 />
-                <div className={'flex w-full flex-row gap-4'}>
+                <div className={"flex w-full flex-row gap-4"}>
                   <Input
-                    name={'participationFee'}
-                    type={'number'}
-                    title={'Participant fee'}
-                    placeholder={'Type participant fee here...'}
+                    name={"participationFee"}
+                    type={"number"}
+                    title={"Participant fee"}
+                    placeholder={"Type participant fee here..."}
                     endContent={
                       <div
                         className={
-                          'flex h-[28px] w-[28px] items-center justify-center rounded-full'
+                          "flex h-[28px] w-[28px] items-center justify-center rounded-full"
                         }
                       >
-                        <Image src={znakesImg} alt={'Znakes Tokens'} />
+                        <Image src={znakesImg} alt={"Znakes Tokens"} />
                       </div>
                     }
                   />
                   <div
                     className={
-                      'flex w-[60%] items-center justify-start gap-2 font-plexsans text-left-accent'
+                      "flex w-[60%] items-center justify-start gap-2 font-plexsans text-left-accent"
                     }
                   >
                     <span>Balance:</span>
@@ -185,11 +185,11 @@ export const CreateNewLobby = ({
                     <span>{Currency.ZNAKES}</span>
                   </div>
                 </div>
-                <div className={'flex max-w-[35%] flex-row justify-between'}>
-                  <div className={'flex flex-row gap-1'}>
+                <div className={"flex max-w-[35%] flex-row justify-between"}>
+                  <div className={"flex flex-row gap-1"}>
                     <span
                       className={
-                        'font-plexsans text-main font-medium uppercase text-left-accent'
+                        "font-plexsans text-main font-medium uppercase text-left-accent"
                       }
                     >
                       Private game
@@ -197,17 +197,17 @@ export const CreateNewLobby = ({
                     <Popover>
                       <div
                         className={
-                          'flex min-w-[250px] flex-col items-center justify-center gap-2 font-plexsans'
+                          "flex min-w-[250px] flex-col items-center justify-center gap-2 font-plexsans"
                         }
                       >
                         <span
-                          className={'w-full self-start text-[14px]/[14px]'}
+                          className={"w-full self-start text-[14px]/[14px]"}
                         >
                           Private game
                         </span>
                         <div
                           className={
-                            'w-full text-[12px]/[12px] font-light opacity-70'
+                            "w-full text-[12px]/[12px] font-light opacity-70"
                           }
                         >
                           If you want to play with your friend and not run into
@@ -217,11 +217,11 @@ export const CreateNewLobby = ({
                       </div>
                     </Popover>
                   </div>
-                  <Checkbox name={'isPrivateGame'} />
+                  <Checkbox name={"isPrivateGame"} />
                 </div>
               </div>
-              <div className={'flex-grow'} />
-              <Button label={'Create lobby'} type={'submit'} />
+              <div className={"flex-grow"} />
+              <Button label={"Create lobby"} type={"submit"} />
               <BaseModal
                 isOpen={isSuccessModalOpen}
                 setIsOpen={() => {
@@ -231,7 +231,7 @@ export const CreateNewLobby = ({
               >
                 <div
                   className={
-                    'flex flex-col items-center justify-center gap-8 p-4'
+                    "flex flex-col items-center justify-center gap-8 p-4"
                   }
                 >
                   <svg
@@ -382,7 +382,7 @@ export const CreateNewLobby = ({
                   </svg>
                   <span
                     className={
-                      'max-w-[60%] text-center text-headline-1 uppercase text-left-accent'
+                      "max-w-[60%] text-center text-headline-1 uppercase text-left-accent"
                     }
                   >
                     Congratulations! Your lobby created!

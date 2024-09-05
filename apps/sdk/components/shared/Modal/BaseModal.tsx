@@ -1,6 +1,6 @@
-import { cn } from '@/lib/helpers';
-import { AnimatePresence, motion } from 'framer-motion';
-import { ReactNode } from 'react';
+import { cn } from "@sdk/lib/helpers";
+import { AnimatePresence, motion } from "framer-motion";
+import { ReactNode } from "react";
 
 export default function BaseModal({
   children,
@@ -24,9 +24,9 @@ export default function BaseModal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
+          transition={{ type: "spring", duration: 0.4, bounce: 0 }}
           className={
-            'fixed left-0 top-0 z-50 flex h-full w-full flex-col items-center justify-center backdrop-blur-md'
+            "fixed left-0 top-0 z-50 flex h-full w-full flex-col items-center justify-center backdrop-blur-md"
           }
           onClick={() => {
             if (!isDismissible) return;
@@ -35,7 +35,7 @@ export default function BaseModal({
         >
           <div
             className={cn(
-              'relative flex flex-col rounded-[5px] border border-right-accent bg-bg-dark p-4',
+              "relative flex flex-col rounded-[5px] border border-right-accent bg-bg-dark p-4",
               border
             )}
             onClick={(e) => e.stopPropagation()}
@@ -44,7 +44,7 @@ export default function BaseModal({
             {isDismissible && (
               <div
                 className={
-                  'absolute right-0 top-0 z-50 cursor-pointer hover:opacity-80'
+                  "absolute right-0 top-0 z-50 cursor-pointer hover:opacity-80"
                 }
                 onClick={() => {
                   setIsOpen?.(false);

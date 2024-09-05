@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from "react";
 
-import ZkNoidGameContext from '../../../lib/contexts/ZkNoidGameContext';
-// import { api } from '@/trpc/react';
-import { useNetworkStore } from '../../../lib/stores/network';
-import { getEnvContext } from '../../../lib/envContext';
-import { ZkNoidConfig } from '../../../lib/createConfig';
+import ZkNoidGameContext from "../../../lib/contexts/ZkNoidGameContext";
+// import { api } from  '@sdk/trpc/react';
+import { useNetworkStore } from "../../../lib/stores/network";
+import { getEnvContext } from "../../../lib/envContext";
+import { ZkNoidConfig } from "../../../lib/createConfig";
 
 export default function GamePageWrapper({
   gameId,
   competitionId,
-  zkNoidConfig
+  zkNoidConfig,
 }: {
   gameId: string;
   competitionId: string;
-  zkNoidConfig: ZkNoidConfig
+  zkNoidConfig: ZkNoidConfig;
 }) {
   const config = useMemo(
     () => zkNoidConfig.games.find((game) => game.id == gameId)!,
@@ -42,7 +42,7 @@ export default function GamePageWrapper({
   //   }
   // }, [networkStore.address]);
 
-  console.log('Providing client context', zkNoidConfig, config, client)
+  console.log("Providing client context", zkNoidConfig, config, client);
 
   return (
     <ZkNoidGameContext.Provider

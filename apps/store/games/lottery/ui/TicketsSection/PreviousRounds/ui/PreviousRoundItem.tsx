@@ -4,7 +4,7 @@ import { Currency } from '@/constants/currency';
 import { TicketItem } from './TicketItem';
 import { formatUnits } from '@/lib/unit';
 import { cn } from '@/lib/helpers';
-import CustomScrollbar from 'sdk/components/shared/CustomScrollbar';
+import CustomScrollbar from '@sdk/components/shared/CustomScrollbar';
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, useScroll } from 'framer-motion';
 import { ILotteryRound } from '@/games/lottery/lib/types';

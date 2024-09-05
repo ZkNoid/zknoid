@@ -1,9 +1,9 @@
-import { cn } from '@/lib/helpers';
-import { TicketBlockButton } from '@/games/lottery/ui/buttons/TicketBlockButton';
+import { cn } from '@sdk/lib/helpers';
+import { TicketBlockButton } from '../../../ui/buttons/TicketBlockButton';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { useWorkerClientStore } from '@/lib/stores/workerClient';
-import { VoucherMode } from '@/games/lottery/ui/TicketsSection/lib/voucherMode';
+import { useWorkerClientStore } from '@sdk/lib/stores/workerClient';
+import { VoucherMode } from '../../../ui/TicketsSection/lib/voucherMode';
 
 const TicketsNumPicker = ({
   amount,

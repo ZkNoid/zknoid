@@ -1,12 +1,12 @@
-import { useNetworkStore } from '@/lib/stores/network';
-import { formatUnits } from '@/lib/unit';
-import { formatPubkey } from '@/lib/utils';
-// import { api } from '@/trpc/react';
-import Link from 'next/link';
-import { PublicKey } from 'o1js';
-import { ReactNode } from 'react';
-import Image from 'next/image';
-import znakesImg from '@/public/image/tokens/znakes.svg';
+import { useNetworkStore } from "@sdk/lib/stores/network";
+import { formatUnits } from "@sdk/lib/unit";
+import { formatPubkey } from "@sdk/lib/utils";
+// import { api } from  '@sdk/trpc/react';
+import Link from "next/link";
+import { PublicKey } from "o1js";
+import { ReactNode } from "react";
+import Image from "next/image";
+import znakesImg from "@sdk/public/image/tokens/znakes.svg";
 
 export enum MainButtonState {
   WalletNotInstalled,
@@ -80,8 +80,8 @@ export const PvPGameView = (props: PvPGameViewProps) => {
               START FOR {formatUnits(props.startPrice)}
               <Image
                 src={znakesImg}
-                alt={'Znakes token'}
-                className={'h-[24px] w-[24px] pl-2'}
+                alt={"Znakes token"}
+                className={"h-[24px] w-[24px] pl-2"}
               />
             </div>
           )}
@@ -110,7 +110,7 @@ export const PvPGameView = (props: PvPGameViewProps) => {
         </div>
         <div className="flex flex-grow flex-col justify-center font-plexsans font-medium">
           <div className="flex flex-row gap-2 text-[16px]/[16px]">
-            <div className="text-left-accent">GAME RATING:</div>{' '}
+            <div className="text-left-accent">GAME RATING:</div>{" "}
             {/* {(getRatingQuery.data?.rating || 0).toFixed(1)} */}
             <svg
               width="19"

@@ -1,36 +1,36 @@
-'use client';
+"use client";
 
-import dynamic from 'next/dynamic';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { formatAddress, walletInstalled } from '@/lib/helpers';
-import { useNetworkStore } from '@/lib/stores/network';
-import HeaderCard from '../entities/HeaderCard/HeaderCard';
-import { api } from '@/trpc/react';
-import { getEnvContext } from '@/lib/envContext';
-import AccountCard from './ui/AccountCard';
-import AccountPopup from './AccountPopup';
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { formatAddress, walletInstalled } from "@sdk/lib/helpers";
+import { useNetworkStore } from "@sdk/lib/stores/network";
+import HeaderCard from "../entities/HeaderCard/HeaderCard";
+import { api } from "@sdk/trpc/react";
+import { getEnvContext } from "@sdk/lib/envContext";
+import AccountCard from "./ui/AccountCard";
+import AccountPopup from "./AccountPopup";
 import {
   AnimatePresence,
   motion,
   useCycle,
   useMotionValueEvent,
   useScroll,
-} from 'framer-motion';
-import Tab from './ui/Tab';
-import boardGameIcon from '@/public/image/misc/board-game-icon.svg';
-import arcadeGameIcon from '@/public/image/misc/arcade-game-icon.svg';
-import luckyGameIcon from '@/public/image/misc/lucky-game-icon.svg';
-import { SOCIALS } from '@/constants/socials';
-import ZknoidLogo from '@/public/image/zknoid-logo.svg';
+} from "framer-motion";
+import Tab from "./ui/Tab";
+import boardGameIcon from "@sdk/public/image/misc/board-game-icon.svg";
+import arcadeGameIcon from "@sdk/public/image/misc/arcade-game-icon.svg";
+import luckyGameIcon from "@sdk/public/image/misc/lucky-game-icon.svg";
+import { SOCIALS } from "@sdk/constants/socials";
+import ZknoidLogo from "@sdk/public/image/zknoid-logo.svg";
 
-const Balance = dynamic(() => import('./nonSSR/DesktopBalanceInfo'), {
+const Balance = dynamic(() => import("./nonSSR/DesktopBalanceInfo"), {
   ssr: false,
 });
 
 const NetworkPicker = dynamic(
-  () => import('../nonSSR/NetworkPicker/NetworkPicker'),
+  () => import("../nonSSR/NetworkPicker/NetworkPicker"),
   {
     ssr: false,
   }
@@ -47,7 +47,7 @@ export default function DesktopNavbar({
   const networkStore = useNetworkStore();
   const { scrollY } = useScroll();
 
-  useMotionValueEvent(scrollY, 'change', (latest) => {
+  useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious();
     // @ts-ignore
     if (latest > previous && latest > 200 && !isOpen) {
@@ -76,7 +76,7 @@ export default function DesktopNavbar({
   useEffect(() => {
     if (networkStore.walletConnected) {
       logWalletConnectedMutation.mutate({
-        userAddress: networkStore.address ?? '',
+        userAddress: networkStore.address ?? "",
         envContext: getEnvContext(),
       });
     }
@@ -99,110 +99,110 @@ export default function DesktopNavbar({
     <motion.header
       variants={{
         visible: { y: 0 },
-        hidden: { y: '-300%' },
+        hidden: { y: "-300%" },
       }}
-      animate={hidden ? 'hidden' : 'visible'}
-      transition={{ duration: 0.35, ease: 'easeInOut', type: 'just' }}
+      animate={hidden ? "hidden" : "visible"}
+      transition={{ duration: 0.35, ease: "easeInOut", type: "just" }}
       className="sticky top-0 z-50 hidden h-[91px] w-full items-center bg-bg-dark px-3 lg:flex lg:px-[50px]"
     >
-      <div className={'flex w-full items-center justify-between'}>
+      <div className={"flex w-full items-center justify-between"}>
         <Link
-          href={'/'}
-          className={'cursor-pointer ease-in-out hover:opacity-80'}
+          href={"/"}
+          className={"cursor-pointer ease-in-out hover:opacity-80"}
         >
           <Image
             src={ZknoidLogo}
-            alt={'ZkNoid logo'}
-            className={'h-full w-[11.458vw]'}
+            alt={"ZkNoid logo"}
+            className={"h-full w-[11.458vw]"}
           />
         </Link>
         <div
-          className={'flex flex-row items-center justify-between py-[0.33vw]'}
+          className={"flex flex-row items-center justify-between py-[0.33vw]"}
         >
           <Tab
-            title={'Games'}
-            link={'/'}
+            title={"Games"}
+            link={"/"}
             items={[
               {
                 icon: (
                   <Image
                     src={arcadeGameIcon}
-                    alt={'arcade'}
-                    className={'my-[0.208vw] h-[0.938vw] w-[0.938vw]'}
+                    alt={"arcade"}
+                    className={"my-[0.208vw] h-[0.938vw] w-[0.938vw]"}
                   />
                 ),
-                text: 'Arkanoid',
-                link: '/games/arkanoid/global',
+                text: "Arkanoid",
+                link: "/games/arkanoid/global",
               },
               {
                 icon: (
                   <Image
                     src={boardGameIcon}
-                    alt={'board'}
-                    className={'my-[0.208vw] h-[0.938vw] w-[0.938vw]'}
+                    alt={"board"}
+                    className={"my-[0.208vw] h-[0.938vw] w-[0.938vw]"}
                   />
                 ),
-                text: 'Randzu',
-                link: '/games/randzu/global',
+                text: "Randzu",
+                link: "/games/randzu/global",
               },
               {
                 icon: (
                   <Image
                     src={luckyGameIcon}
-                    alt={'lucky'}
-                    className={'my-[0.208vw] h-[0.938vw] w-[0.938vw]'}
+                    alt={"lucky"}
+                    className={"my-[0.208vw] h-[0.938vw] w-[0.938vw]"}
                   />
                 ),
-                text: 'Thimblerig',
-                link: '/games/thimblerig/global',
+                text: "Thimblerig",
+                link: "/games/thimblerig/global",
               },
               {
                 icon: (
                   <Image
                     src={boardGameIcon}
-                    alt={'board'}
-                    className={'my-[0.208vw] h-[0.938vw] w-[0.938vw]'}
+                    alt={"board"}
+                    className={"my-[0.208vw] h-[0.938vw] w-[0.938vw]"}
                   />
                 ),
-                text: 'Checkers',
-                link: '/games/checkers/global',
+                text: "Checkers",
+                link: "/games/checkers/global",
               },
               {
                 icon: (
                   <Image
                     src={arcadeGameIcon}
-                    alt={'arcade'}
-                    className={'my-[0.208vw] h-[0.938vw] w-[0.938vw]'}
+                    alt={"arcade"}
+                    className={"my-[0.208vw] h-[0.938vw] w-[0.938vw]"}
                   />
                 ),
-                text: 'TileVille',
-                link: 'https://www.tileville.xyz/',
+                text: "TileVille",
+                link: "https://www.tileville.xyz/",
               },
               {
                 icon: (
                   <Image
                     src={luckyGameIcon}
-                    alt={'lucky'}
-                    className={'my-[0.208vw] h-[0.938vw] w-[0.938vw]'}
+                    alt={"lucky"}
+                    className={"my-[0.208vw] h-[0.938vw] w-[0.938vw]"}
                   />
                 ),
-                text: 'Lottery',
-                link: '/games/lottery/global',
+                text: "Lottery",
+                link: "/games/lottery/global",
               },
             ]}
           />
-          <Tab title={'Events'} link={'/#events'} />
-          <Tab title={'FAQ & Support'} link={'/?widget=faq'} />
+          <Tab title={"Events"} link={"/#events"} />
+          <Tab title={"FAQ & Support"} link={"/?widget=faq"} />
           <Tab
-            title={'Media'}
-            link={'/?widget=faq'}
+            title={"Media"}
+            link={"/?widget=faq"}
             items={Array.from(
               SOCIALS.map((item) => ({
                 icon: (
                   <Image
                     src={item.image}
                     alt={item.name}
-                    className={'my-[0.208vw] h-[1.2vw] w-[1.2vw]'}
+                    className={"my-[0.208vw] h-[1.2vw] w-[1.2vw]"}
                   />
                 ),
                 link: item.link,
@@ -232,7 +232,7 @@ export default function DesktopNavbar({
             </>
           ) : isWalletInstalled ? (
             <HeaderCard
-              svg={'account'}
+              svg={"account"}
               text="Connect wallet"
               isMiddle={true}
               onClick={() => {
@@ -246,7 +246,7 @@ export default function DesktopNavbar({
               target="_blank"
             >
               <HeaderCard
-                svg={'account'}
+                svg={"account"}
                 text="Install wallet"
                 isMiddle={true}
               />

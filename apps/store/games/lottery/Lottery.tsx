@@ -1,22 +1,22 @@
-import GamePage from '@/components/framework/GamePage';
+import GamePage from '@sdk/components/framework/GamePage';
 import { lotteryConfig } from './config';
-import { useNetworkStore } from '@/lib/stores/network';
+import { useNetworkStore } from '@sdk/lib/stores/network';
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import BannerSection from './ui/BannerSection';
 import TicketsSection from './ui/TicketsSection';
-import { useWorkerClientStore } from '@/lib/stores/workerClient';
-import { useChainStore } from '@/lib/stores/minaChain';
+import { useWorkerClientStore } from '@sdk/lib/stores/workerClient';
+import { useChainStore } from '@sdk/lib/stores/minaChain';
 import { DateTime, Duration } from 'luxon';
-import { NetworkIds, NETWORKS } from '@/app/constants/networks';
-import WrongNetworkModal from '@/games/lottery/ui/TicketsSection/ui/WrongNetworkModal';
-import { api } from '@/trpc/react';
+import { NetworkIds, NETWORKS } from '@sdk/constants/networks';
+import WrongNetworkModal from './ui/TicketsSection/ui/WrongNetworkModal';
+import { api } from '@sdk/trpc/react';
 import { fetchAccount } from 'o1js';
-import { LOTTERY_ADDRESS } from '@/app/constants/addresses';
+import { LOTTERY_ADDRESS } from '@sdk/constants/addresses';
 import { BLOCK_PER_ROUND } from 'l1-lottery-contracts';
-import StateManager from '@/games/lottery/ui/StateManager';
-import ConnectWalletModal from 'sdk/components/shared/ConnectWalletModal';
-import TicketsStorage from '@/games/lottery/ui/TicketsStorage';
+import StateManager from './ui/StateManager';
+import ConnectWalletModal from '@sdk/components/shared/ConnectWalletModal';
+import TicketsStorage from './ui/TicketsStorage';
 
 export enum Pages {
   Main,

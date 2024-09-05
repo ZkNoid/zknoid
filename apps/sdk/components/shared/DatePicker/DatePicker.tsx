@@ -1,9 +1,9 @@
-import { ReactNode, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import Button from '../../../components/shared/Button/index';
-import DateItem from './ui/DateItem';
-import { clsx } from 'clsx';
-import { cn } from '@/lib/helpers';
+import { ReactNode, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import Button from "../../../components/shared/Button/index";
+import DateItem from "./ui/DateItem";
+import { clsx } from "clsx";
+import { cn } from "@sdk/lib/helpers";
 
 export default function DatePicker({
   trigger,
@@ -11,14 +11,14 @@ export default function DatePicker({
   setDateTo,
   isOpen,
   setIsOpen,
-  openSide = 'bottom',
+  openSide = "bottom",
 }: {
   trigger: ReactNode;
   setDateFrom: (date: string) => void;
   setDateTo: (date: string) => void;
   isOpen?: boolean;
   setIsOpen?: (isOpen: boolean) => void;
-  openSide?: 'top' | 'bottom';
+  openSide?: "top" | "bottom";
 }) {
   const [currentDate, _setCurrentDate] = useState<Date>(new Date());
   const [isOpenUncontrolled, setIsOpenUncontrolled] = useState<boolean>(false);
@@ -39,18 +39,18 @@ export default function DatePicker({
   // };
 
   const clearDates = () => {
-    setDateTo('');
-    setDateFrom('');
+    setDateTo("");
+    setDateFrom("");
     setActiveDate(undefined);
     setPossibleDate(undefined);
     setPickedDate(undefined);
   };
 
   return (
-    <div className={'relative flex flex-col'}>
+    <div className={"relative flex flex-col"}>
       <button
-        type={'button'}
-        className={'cursor-pointer'}
+        type={"button"}
+        className={"cursor-pointer"}
         onClick={() =>
           setIsOpen ? setIsOpen(true) : setIsOpenUncontrolled(true)
         }
@@ -63,10 +63,10 @@ export default function DatePicker({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
-            className={cn('absolute left-0 z-20', {
-              'top-[110%]': openSide === 'bottom',
-              'bottom-full': openSide === 'top',
+            transition={{ type: "spring", duration: 0.4, bounce: 0 }}
+            className={cn("absolute left-0 z-20", {
+              "top-[110%]": openSide === "bottom",
+              "bottom-full": openSide === "top",
             })}
             onClick={() =>
               setIsOpen ? setIsOpen(false) : setIsOpenUncontrolled(false)
@@ -74,18 +74,18 @@ export default function DatePicker({
           >
             <div
               className={
-                'flex flex-col gap-8 rounded-[10px] border border-left-accent bg-bg-dark px-20 py-12'
+                "flex flex-col gap-8 rounded-[10px] border border-left-accent bg-bg-dark px-20 py-12"
               }
               onClick={(e) => e.stopPropagation()}
             >
-              <div className={'flex w-full flex-row justify-between'}>
+              <div className={"flex w-full flex-row justify-between"}>
                 <div
                   className={clsx(
-                    'flex w-full max-w-[30%] cursor-pointer items-center justify-end',
+                    "flex w-full max-w-[30%] cursor-pointer items-center justify-end",
                     {
-                      'cursor-not-allowed opacity-50':
+                      "cursor-not-allowed opacity-50":
                         currentDate.getMonth() == new Date().getMonth(),
-                      'hover:opacity-80':
+                      "hover:opacity-80":
                         currentDate.getMonth() != new Date().getMonth(),
                     }
                   )}
@@ -118,19 +118,19 @@ export default function DatePicker({
                 </div>
                 <div
                   className={
-                    'w-full px-4 text-center text-[18px]/[18px] font-medium'
+                    "w-full px-4 text-center text-[18px]/[18px] font-medium"
                   }
                 >
                   {currentDate
-                    .toLocaleDateString('en-US', {
-                      dateStyle: 'long',
+                    .toLocaleDateString("en-US", {
+                      dateStyle: "long",
                     })
-                    .split(' ')
-                    .map((item, index) => (index === 1 ? ' ' : item))}
+                    .split(" ")
+                    .map((item, index) => (index === 1 ? " " : item))}
                 </div>
                 <div
                   className={
-                    'flex w-full max-w-[30%] cursor-pointer items-center justify-start hover:opacity-80'
+                    "flex w-full max-w-[30%] cursor-pointer items-center justify-start hover:opacity-80"
                   }
                   onClick={() => {
                     clearDates();
@@ -157,7 +157,7 @@ export default function DatePicker({
                 </div>
               </div>
               <div
-                className={'grid h-full w-full grid-cols-7 grid-rows-5 gap-y-1'}
+                className={"grid h-full w-full grid-cols-7 grid-rows-5 gap-y-1"}
               >
                 <span className="rounded-[5px] p-4 text-center font-plexsans text-[15px]/[15px] font-[900] text-left-accent">
                   S
@@ -210,20 +210,20 @@ export default function DatePicker({
                   />
                 ))}
               </div>
-              <div className={'flex w-full flex-row justify-between'}>
+              <div className={"flex w-full flex-row justify-between"}>
                 <Button
-                  type={'button'}
-                  label={'Cancel'}
+                  type={"button"}
+                  label={"Cancel"}
                   onClick={() =>
                     setIsOpen ? setIsOpen(false) : setIsOpenUncontrolled(false)
                   }
                   isFilled={false}
                   isBordered={false}
                 />
-                <div className={'w-full'} />
+                <div className={"w-full"} />
                 <Button
-                  type={'button'}
-                  label={'Done'}
+                  type={"button"}
+                  label={"Done"}
                   onClick={() =>
                     setIsOpen ? setIsOpen(false) : setIsOpenUncontrolled(false)
                   }

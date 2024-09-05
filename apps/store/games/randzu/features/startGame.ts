@@ -2,7 +2,7 @@ import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/Lobb
 import { getEnvContext } from '@/lib/envContext';
 import { PublicKey, UInt64 } from 'o1js';
 import { GameState } from '../lib/gameState';
-import { api } from '@/trpc/react';
+import { api } from '@sdk/trpc/react';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
 import { useMinaBridge } from '@/lib/stores/protokitBalances';

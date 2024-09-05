@@ -1,5 +1,5 @@
 import CompetitionBlock from './ui/CompetitionBlock';
-import { SortByFilter } from '../components/pages/MainSection/ui/Storefront/ui/Favorites/ui/SortByFilter';
+import { SortByFilter } from '../../../components/framework/Storefront/ui/Favorites/ui/SortByFilter';
 import { COMPETITIONS_SORT_METHODS, CompetitionsSortBy } from '../../../lib/stores/competition/sortBy';
 import CompetitionListItem from './ui/CompetitionListItem';
 import { ICompetition } from '../../../lib/types';

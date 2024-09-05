@@ -6,7 +6,7 @@ import OwnedTickets from './OwnedTickets';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { AnimatePresence } from 'framer-motion';
 import PreviousRounds from './PreviousRounds';
-import { useNotificationStore } from 'sdk/components/shared/Notification/lib/notificationStore';
+import { useNotificationStore } from '@sdk/components/shared/Notification/lib/notificationStore';
 import { useRoundsStore } from '@/games/lottery/lib/roundsStore';
 import OwnedGiftCodes from './GiftCodes/OwnedGiftCodes';
 import BoughtGiftCodes from './GiftCodes/BoughtGiftCodes';
@@ -14,7 +14,7 @@ import UseGiftCodeForm from './GiftCodes/UseGiftCodeForm';
 import ValidGiftCode from './GiftCodes/ValidGiftCode';
 import NoUserGiftCodes from './GiftCodes/NoUserGiftCodes';
 import BuyGiftCodesCounter from './GiftCodes/BuyGiftCodesCounter';
-import { api } from '@/trpc/react';
+import { api } from '@sdk/trpc/react';
 import { useNetworkStore } from '@/lib/stores/network';
 import { VoucherMode } from './lib/voucherMode';
 

@@ -1,4 +1,4 @@
-import { ICompetition } from '@/lib/types';
+import { ICompetition } from '../../../lib/types';
 
 export enum CompetitionsSortBy {
   LowFunds = 'From High to Low Funds',

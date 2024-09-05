@@ -1,6 +1,6 @@
 import { cn } from '@/lib/helpers';
-import { useNotificationStore } from 'sdk/components/shared/Notification/lib/notificationStore';
-import { api } from '@/trpc/react';
+import { useNotificationStore } from '@sdk/components/shared/Notification/lib/notificationStore';
+import { api } from '@sdk/trpc/react';
 import { useNetworkStore } from '@/lib/stores/network';
 
 export default function OwnedGiftCodes({

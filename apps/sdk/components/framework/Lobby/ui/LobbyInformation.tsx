@@ -1,17 +1,17 @@
 import { clsx } from 'clsx';
-import Button from 'sdk/components/shared/Button';
-import BaseModal from 'sdk/components/shared/Modal/BaseModal';
-import { ILobby } from '@/lib/types';
+import Button from '../../../../components/shared/Button';
+import BaseModal from '../../../../components/shared/Modal/BaseModal';
+import { ILobby } from '../../../../lib/types';
 import { AnimatePresence, motion } from 'framer-motion';
 import { type RuntimeModulesRecord } from '@proto-kit/module';
-import { ZkNoidGameConfig } from '@/lib/createConfig';
-import { useNetworkStore } from '@/lib/stores/network';
+import { ZkNoidGameConfig } from '../../../../lib/createConfig';
+import { useNetworkStore } from '../../../../lib/stores/network';
 import { useState } from 'react';
-import { formatUnits } from '@/lib/unit';
-import { cn, walletInstalled } from '@/lib/helpers';
-import { useLobbiesStore } from '@/lib/stores/lobbiesStore';
-import { useToasterStore } from '@/lib/stores/toasterStore';
-import toast from 'sdk/components/shared/Toast';
+import { formatUnits } from '../../../../lib/unit';
+import { cn, walletInstalled } from '../../../../lib/helpers';
+import { useLobbiesStore } from '../../../../lib/stores/lobbiesStore';
+import { useToasterStore } from '../../../../lib/stores/toasterStore';
+import toast from '../../../../components/shared/Toast';
 import Link from 'next/link';
 
 enum PlayerStates {

@@ -20,7 +20,7 @@ import {
 } from 'zknoid-chain-dev';
 import { useEffect, useRef, useState } from 'react';
 import { Int64, UInt64, Bool } from 'o1js';
-import { Ball, Cart, IBrick } from '@/lib/types';
+import { Ball, Cart, IBrick } from '@sdk/lib/types';
 import { PLATFORM_WIDTH } from 'zknoid-chain-dev/dist/src/arkanoid/constants';
 
 export interface ITick {

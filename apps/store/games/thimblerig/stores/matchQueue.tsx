@@ -1,15 +1,15 @@
 import { PublicKey } from 'o1js';
 import { useContext, useEffect } from 'react';
-import { useProtokitChainStore } from '@/lib/stores/protokitChain';
-import { useNetworkStore } from '@/lib/stores/network';
-import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
+import { useProtokitChainStore } from '@sdk/lib/stores/protokitChain';
+import { useNetworkStore } from '@sdk/lib/stores/network';
+import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
 import { thimblerigConfig } from '../config';
 import { type ClientAppChain } from '@proto-kit/sdk';
 import { create } from 'zustand';
 import {
   MatchQueueState,
   matchQueueInitializer,
-} from '@/lib/stores/matchQueue';
+} from '@sdk/lib/stores/matchQueue';
 
 export const useThimblerigMatchQueueStore = create<
   MatchQueueState,

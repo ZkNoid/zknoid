@@ -1,10 +1,10 @@
-'use client';
-import { type PendingTransaction } from '@proto-kit/sequencer';
-import { create } from 'zustand';
-import { immer } from 'zustand/middleware/immer';
+"use client";
+import { type PendingTransaction } from "@proto-kit/sequencer";
+import { create } from "zustand";
+import { immer } from "zustand/middleware/immer";
 
-import { ALL_NETWORKS, Network } from '@/app/constants/networks';
-import { requestAccounts } from '../helpers';
+import { ALL_NETWORKS, Network } from "@sdk/constants/networks";
+import { requestAccounts } from "../helpers";
 
 export interface NetworkState {
   minaNetwork: Network | undefined;
@@ -21,7 +21,7 @@ export interface NetworkState {
   removePendingL2Transaction: (pendingTransaction: PendingTransaction) => void;
 }
 
-export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
+export const useNetworkStore = create<NetworkState, [["zustand/immer", never]]>(
   immer((set) => ({
     walletConnected: false,
     protokitClientStarted: false,
@@ -32,10 +32,10 @@ export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
       });
     },
     async setNetwork(network: Network | undefined) {
-      const O1js = await import('o1js');
+      const O1js = await import("o1js");
 
       set((state) => {
-        console.log('Target network', network);
+        console.log("Target network", network);
         state.minaNetwork = network;
         if (network) {
           const Network = O1js.Mina.Network({
@@ -53,25 +53,25 @@ export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
         let minaNetwork;
         if (window.mina?.isPallad) {
           try {
-            console.log('Fetching chain id');
+            console.log("Fetching chain id");
 
             const network = await window.mina.request({
-              method: 'mina_chainId',
+              method: "mina_chainId",
             });
-            console.log('Wallet network', network);
+            console.log("Wallet network", network);
 
             minaNetwork = ALL_NETWORKS.find(
               (x) => x.palladNetworkID == network.result
             );
-            console.log('Connecting to mina network', minaNetwork);
+            console.log("Connecting to mina network", minaNetwork);
           } catch (e) {
-            console.log('Error while wallet connect');
-            console.log('Error while wallet connect', e);
+            console.log("Error while wallet connect");
+            console.log("Error while wallet connect", e);
           }
         } else {
           const network = await (window as any).mina.requestNetwork();
           minaNetwork = ALL_NETWORKS.find((x) =>
-            network.networkID != 'unknown'
+            network.networkID != "unknown"
               ? x.networkID == network.networkID
               : x.name == network.name
           );
@@ -79,7 +79,7 @@ export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
 
         this.setNetwork(minaNetwork);
       } else {
-        localStorage.minaAdderess = '';
+        localStorage.minaAdderess = "";
       }
       set((state) => {
         state.address = address;
@@ -98,7 +98,7 @@ export const useNetworkStore = create<NetworkState, [['zustand/immer', never]]>(
       }
     },
     walletInstalled() {
-      return typeof mina !== 'undefined';
+      return typeof mina !== "undefined";
     },
     pendingL2Transactions: [],
     addPendingL2Transaction(pendingTransaction) {

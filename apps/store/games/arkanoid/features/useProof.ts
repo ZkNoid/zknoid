@@ -1,13 +1,13 @@
 import { CHUNK_LENGTH, GameInputs, Tick } from 'zknoid-chain-dev';
 import { Bool, Field, Int64, PublicKey, UInt64 } from 'o1js';
-import { getEnvContext } from '@/lib/envContext';
-import { ITick } from '@/games/arkanoid/components/GameView';
-import { useWorkerClientStore } from '@/lib/stores/workerClient';
-import { ICompetition } from '@/lib/types';
+import { getEnvContext } from '@sdk/lib/envContext';
+import { ITick } from '../components/GameView';
+import { useWorkerClientStore } from '@sdk/lib/stores/workerClient';
+import { ICompetition } from '@sdk/lib/types';
 import { useContext } from 'react';
-import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
-import { useNetworkStore } from '@/lib/stores/network';
-import { api } from '@/trpc/react';
+import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
+import { useNetworkStore } from '@sdk/lib/stores/network';
+import { api } from '@sdk/trpc/react';
 import { type PendingTransaction } from '@proto-kit/sequencer';
 
 export const useProof = (

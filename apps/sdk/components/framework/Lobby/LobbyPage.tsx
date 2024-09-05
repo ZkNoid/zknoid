@@ -1,37 +1,37 @@
-import { LobbyWrap } from '@/components/framework/Lobby/ui/LobbyWrap';
-import { FastMatchmaking } from '@/components/framework/Lobby/ui/FastMatchmaking';
-import LobbyList from '@/components/framework/Lobby/LobbyList';
-import Popover from '@/components/shared/Popover';
-import { LobbyInformation } from '@/components/framework/Lobby/ui/LobbyInformation';
-import { CreateNewLobbyBtn } from '@/components/framework/Lobby/ui/CreateNewLobbyBtn';
-import { usePvpLobbyStorage } from '@/lib/stores/pvpLobbyStore';
-import { ILobby } from '@/lib/types';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useContext, useEffect, useRef, useState } from 'react';
-import { CreateNewLobby } from '@/components/framework/Lobby/ui/CreateNewLobby';
-import { AnimatePresence, motion } from 'framer-motion';
-import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
-import { ClientAppChain, MatchMaker, ProtoUInt64 } from 'zknoid-chain-dev';
-import { Field, Bool, CircuitString, PublicKey, UInt64 } from 'o1js';
-import { useNetworkStore } from '@/lib/stores/network';
+import { LobbyWrap } from "../../../components/framework/Lobby/ui/LobbyWrap";
+import { FastMatchmaking } from "../../../components/framework/Lobby/ui/FastMatchmaking";
+import LobbyList from "../../../components/framework/Lobby/LobbyList";
+import Popover from "../../../components/shared/Popover";
+import { LobbyInformation } from "../../../components/framework/Lobby/ui/LobbyInformation";
+import { CreateNewLobbyBtn } from "../../../components/framework/Lobby/ui/CreateNewLobbyBtn";
+import { usePvpLobbyStorage } from "../../../lib/stores/pvpLobbyStore";
+import { ILobby } from "../../../lib/types";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useContext, useEffect, useRef, useState } from "react";
+import { CreateNewLobby } from "../../../components/framework/Lobby/ui/CreateNewLobby";
+import { AnimatePresence, motion } from "framer-motion";
+import ZkNoidGameContext from "../../../lib/contexts/ZkNoidGameContext";
+import { ClientAppChain, MatchMaker, ProtoUInt64 } from "zknoid-chain-dev";
+import { Field, Bool, CircuitString, PublicKey, UInt64 } from "o1js";
+import { useNetworkStore } from "../../../lib/stores/network";
 import {
   type PendingTransaction,
   type ModuleQuery,
-} from '@proto-kit/sequencer';
-import { useStore } from 'zustand';
-import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
-import BaseModal from '@/components/shared/Modal/BaseModal';
-import Button from '@/components/shared/Button';
+} from "@proto-kit/sequencer";
+import { useStore } from "zustand";
+import { useSessionKeyStore } from "../../../lib/stores/sessionKeyStorage";
+import BaseModal from "../../../components/shared/Modal/BaseModal";
+import Button from "../../../components/shared/Button";
 import {
   useLobbiesStore,
   useObserveLobbiesStore,
-} from '@/lib/stores/lobbiesStore';
-import { ZkNoidGameConfig } from '@/lib/createConfig';
-import { RuntimeModulesRecord } from '@proto-kit/module';
-import { AlreadyInLobbyModal } from '@/components/framework/Lobby/ui/modals/AlreadyInLobbyModal';
-import { useAlreadyInLobbyModalStore } from '@/lib/stores/alreadyInLobbyModalStore';
-// import { api } from '@/trpc/react';
-import { getEnvContext } from '@/lib/envContext';
+} from "../../../lib/stores/lobbiesStore";
+import { ZkNoidGameConfig } from "../../../lib/createConfig";
+import { RuntimeModulesRecord } from "@proto-kit/module";
+import { AlreadyInLobbyModal } from "../../../components/framework/Lobby/ui/modals/AlreadyInLobbyModal";
+import { useAlreadyInLobbyModalStore } from "../../../lib/stores/alreadyInLobbyModalStore";
+// import { api } from  '@sdk/trpc/react';
+import { getEnvContext } from "../../../lib/envContext";
 
 export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   lobbyId,
@@ -73,7 +73,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   );
 
   if (!client) {
-    throw Error('Context app chain client is not set');
+    throw Error("Context app chain client is not set");
   }
 
   useObserveLobbiesStore(params.query, rewardCoeff);
@@ -86,7 +86,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
       return;
     }
 
-    const lobbyKey = searchParams.get('key');
+    const lobbyKey = searchParams.get("key");
 
     if (lobbiesStore.loading) {
       return;
@@ -94,7 +94,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
 
     if (
       lobbyKey &&
-      params.lobbyId !== 'undefined' &&
+      params.lobbyId !== "undefined" &&
       (lobbiesStore.currentLobby
         ? parseInt(params.lobbyId) !== lobbiesStore.currentLobby.id
         : true)
@@ -174,7 +174,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
     await tx.sign();
     await tx.send();
 
-    if (contractName == 'ThimblerigLogic') {
+    if (contractName == "ThimblerigLogic") {
       // await progress.mutateAsync({
       //   userAddress: networkStore.address!,
       //   section: 'THIMBLERIG',
@@ -192,7 +192,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   const joinLobby = async (lobbyId: number) => {
     if (lobbiesStore.currentLobby) {
       alreadyInLobbyModalStore.setIsOpen(true);
-      throw new Error('Already in lobby');
+      throw new Error("Already in lobby");
     }
 
     const lobbyManager = await client.runtime.resolve(params.contractName);
@@ -261,7 +261,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
 
   const register = async (id: number) => {
     if (!networkStore.walletConnected) await networkStore.connectWallet(false);
-    if (!networkStore.address) throw Error('Not connected');
+    if (!networkStore.address) throw Error("Not connected");
 
     const lobbyManager = await client.runtime.resolve(params.contractName);
 
@@ -289,20 +289,20 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
       >
         <div
           className={
-            'flex min-w-[400px] flex-col items-center justify-center gap-4 px-16'
+            "flex min-w-[400px] flex-col items-center justify-center gap-4 px-16"
           }
         >
-          <span className={'text-[100px]/[100px] font-medium text-left-accent'}>
+          <span className={"text-[100px]/[100px] font-medium text-left-accent"}>
             404
           </span>
-          <span className={'text-headline-1 uppercase text-left-accent'}>
+          <span className={"text-headline-1 uppercase text-left-accent"}>
             Lobby is not found
           </span>
           <span>
             Maybe the owner of this lobby deleted it or it is outdated
           </span>
           <Button
-            label={'To lobbies'}
+            label={"To lobbies"}
             asLink
             href={`/games/${params.config.id}/lobby/undefined`}
           />
@@ -315,24 +315,24 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
           register={register}
           leave={leaveMatchmaking}
         />
-        <div className={'col-start-4 col-end-6 row-start-1'}>
+        <div className={"col-start-4 col-end-6 row-start-1"}>
           {isCreationMode ? (
-            <span className={'mt-2 text-headline-1'}>Lobby creation</span>
+            <span className={"mt-2 text-headline-1"}>Lobby creation</span>
           ) : currentLobby ? (
-            <div className={'flex flex-row gap-1'}>
-              <span className={'text-headline-1'}>Lobby Information</span>
+            <div className={"flex flex-row gap-1"}>
+              <span className={"text-headline-1"}>Lobby Information</span>
               <Popover>
                 <div
                   className={
-                    'flex min-w-[250px] flex-col items-center justify-center gap-2 font-plexsans'
+                    "flex min-w-[250px] flex-col items-center justify-center gap-2 font-plexsans"
                   }
                 >
-                  <span className={'w-full self-start text-[14px]/[14px]'}>
+                  <span className={"w-full self-start text-[14px]/[14px]"}>
                     Lobby information
                   </span>
                   <div
                     className={
-                      'w-full text-[12px]/[12px] font-light opacity-70'
+                      "w-full text-[12px]/[12px] font-light opacity-70"
                     }
                   >
                     When you select the lobby, full information about the
@@ -344,7 +344,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
             </div>
           ) : undefined}
         </div>
-        <AnimatePresence mode={'wait'} initial={false}>
+        <AnimatePresence mode={"wait"} initial={false}>
           {isCreationMode ? (
             <CreateNewLobby
               createLobby={createNewLobby}
@@ -368,12 +368,12 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
               />
               <motion.span
                 className={
-                  'col-start-4 col-end-6 row-span-1 mt-6 text-headline-1'
+                  "col-start-4 col-end-6 row-span-1 mt-6 text-headline-1"
                 }
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ type: 'spring', duration: 0.8, bounce: 0 }}
+                transition={{ type: "spring", duration: 0.8, bounce: 0 }}
               >
                 Lobby creation
               </motion.span>
@@ -386,12 +386,12 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
             <>
               <motion.span
                 className={
-                  'col-start-4 col-end-6 row-span-1 row-start-1 text-headline-1'
+                  "col-start-4 col-end-6 row-span-1 row-start-1 text-headline-1"
                 }
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ type: 'spring', duration: 0.8, bounce: 0 }}
+                transition={{ type: "spring", duration: 0.8, bounce: 0 }}
               >
                 Lobby creation
               </motion.span>

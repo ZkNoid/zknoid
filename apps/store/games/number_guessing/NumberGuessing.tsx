@@ -1,15 +1,15 @@
 import { useContext, useEffect, useState } from 'react';
 import { Field, Poseidon, PublicKey, UInt64 } from 'o1js';
-import { useNetworkStore } from '@/lib/stores/network';
+import { useNetworkStore } from '@sdk/lib/stores/network';
 import { ClientAppChain } from 'zknoid-chain-dev';
-import GamePage from '@/components/framework/GamePage';
+import GamePage from '@sdk/components/framework/GamePage';
 import { numberGuessingConfig } from './config';
-import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
-import { useProtokitChainStore } from '@/lib/stores/protokitChain';
+import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
+import { useProtokitChainStore } from '@sdk/lib/stores/protokitChain';
 import CoverSVG from './assets/game-cover.svg';
 import { motion } from 'framer-motion';
-import Button from 'sdk/components/shared/Button';
-import { useNotificationStore } from 'sdk/components/shared/Notification/lib/notificationStore';
+import Button from '@sdk/components/shared/Button';
+import { useNotificationStore } from '@sdk/components/shared/Notification/lib/notificationStore';
 
 export default function NumberGuessing({
   params,

@@ -1,12 +1,18 @@
-'use client';
+"use client";
 
-import { useEffect, useMemo } from 'react';
-// import { zkNoidConfig } from '@/games/config';
-import ZkNoidGameContext from '../../../lib/contexts/ZkNoidGameContext';
-import { useNetworkStore } from '../../../lib/stores/network';
-import { ZkNoidConfig } from '../../../lib/createConfig';
+import { useEffect, useMemo } from "react";
+// import { zkNoidConfig } from  '@sdk/games/config';
+import ZkNoidGameContext from "../../../lib/contexts/ZkNoidGameContext";
+import { useNetworkStore } from "../../../lib/stores/network";
+import { ZkNoidConfig } from "../../../lib/createConfig";
 
-export default function Page({ gameId, zkNoidConfig }: { gameId: string, zkNoidConfig: ZkNoidConfig }) {
+export default function Page({
+  gameId,
+  zkNoidConfig,
+}: {
+  gameId: string;
+  zkNoidConfig: ZkNoidConfig;
+}) {
   const config = useMemo(
     () => zkNoidConfig.games.find((game) => game.id == gameId)!,
     []
@@ -25,11 +31,13 @@ export default function Page({ gameId, zkNoidConfig }: { gameId: string, zkNoidC
   const NewCompetitionPage = config.pageNewCompetition!;
 
   return (
-    <ZkNoidGameContext.Provider value={{
-      client,
-      appchainSupported: !!config.runtimeModules,
-      buildLocalClient: false
-    }}>
+    <ZkNoidGameContext.Provider
+      value={{
+        client,
+        appchainSupported: !!config.runtimeModules,
+        buildLocalClient: false,
+      }}
+    >
       <NewCompetitionPage />
     </ZkNoidGameContext.Provider>
   );

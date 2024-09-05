@@ -1,10 +1,10 @@
 import { Field, PublicKey, UInt64 } from 'o1js';
-import { fromContractCompetition } from '@/lib/typesConverter';
+import { fromContractCompetition } from '@sdk/lib/typesConverter';
 import { Bricks, createBricksBySeed } from 'zknoid-chain-dev';
 import { ClientAppChain } from '@proto-kit/sdk';
 import { useContext } from 'react';
-import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
-import { ICompetition } from '@/lib/types';
+import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
+import { ICompetition } from '@sdk/lib/types';
 import { arkanoidConfig } from '../config';
 
 export const useGetCompetition = (

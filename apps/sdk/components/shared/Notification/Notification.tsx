@@ -1,9 +1,9 @@
-import { cn } from '@/lib/helpers';
-import { motion } from 'framer-motion';
-import { INotification } from './types/INotification';
-import { useNotificationStore } from '../../shared/Notification/lib/notificationStore';
-import Loader from '../Loader';
-import Image from 'next/image';
+import { cn } from "@sdk/lib/helpers";
+import { motion } from "framer-motion";
+import { INotification } from "./types/INotification";
+import { useNotificationStore } from "../../shared/Notification/lib/notificationStore";
+import Loader from "../Loader";
+import Image from "next/image";
 
 export default function Notification({
   notification,
@@ -24,10 +24,10 @@ export default function Notification({
       initial={{ opacity: 0, x: 1000 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 1000 }}
-      layout={'position'}
+      layout={"position"}
       className={cn(
-        'relative flex items-center justify-center rounded-[0.521vw] bg-[#323232] p-[1.042vw] shadow-2xl',
-        { 'cursor-pointer hover:bg-[#3f3f3f]': notification.isDismissible }
+        "relative flex items-center justify-center rounded-[0.521vw] bg-[#323232] p-[1.042vw] shadow-2xl",
+        { "cursor-pointer hover:bg-[#3f3f3f]": notification.isDismissible }
       )}
       onClick={() => {
         notification.isDismissible
@@ -35,42 +35,42 @@ export default function Notification({
           : undefined;
       }}
     >
-      <span className={'flex w-full flex-row items-center gap-[0.521vw]'}>
+      <span className={"flex w-full flex-row items-center gap-[0.521vw]"}>
         {notification.customIcon ? (
           <Image
             src={notification.customIcon}
-            alt={'notificationIcon'}
-            className={'h-[1vw] w-[1vw]'}
+            alt={"notificationIcon"}
+            className={"h-[1vw] w-[1vw]"}
           />
         ) : (
           <>
-            {notification.type === 'loader' && (
-              <Loader size={19} color={'#D2FF00'} />
+            {notification.type === "loader" && (
+              <Loader size={19} color={"#D2FF00"} />
             )}
-            {notification.type === 'success' && (
+            {notification.type === "success" && (
               <motion.div
                 className={
-                  'relative cursor-pointer rounded-[5px] border p-1 hover:opacity-80'
+                  "relative cursor-pointer rounded-[5px] border p-1 hover:opacity-80"
                 }
                 variants={{
                   default: {
-                    borderColor: '#F9F8F4',
-                    backgroundColor: '#212121',
+                    borderColor: "#F9F8F4",
+                    backgroundColor: "#212121",
                   },
                   active: {
-                    borderColor: '#D2FF00',
-                    backgroundColor: '#D2FF00',
+                    borderColor: "#D2FF00",
+                    backgroundColor: "#D2FF00",
                   },
-                  error: { borderColor: '#FF0000' },
+                  error: { borderColor: "#FF0000" },
                 }}
-                animate={'active'}
-                transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
+                animate={"active"}
+                transition={{ type: "spring", duration: 0.4, bounce: 0 }}
               >
                 <svg
                   aria-hidden="true"
                   role="presentation"
                   viewBox="0 0 17 18"
-                  className={'h-[0.729vw] w-[0.729vw]'}
+                  className={"h-[0.729vw] w-[0.729vw]"}
                 >
                   <polyline
                     fill="none"
@@ -85,24 +85,24 @@ export default function Notification({
                 </svg>
               </motion.div>
             )}
-            {notification.type === 'error' && (
+            {notification.type === "error" && (
               <motion.div
                 className={
-                  'relative cursor-pointer rounded-[5px] border p-1 hover:opacity-80'
+                  "relative cursor-pointer rounded-[5px] border p-1 hover:opacity-80"
                 }
                 variants={{
                   default: {
-                    borderColor: '#F9F8F4',
-                    backgroundColor: '#212121',
+                    borderColor: "#F9F8F4",
+                    backgroundColor: "#212121",
                   },
                   active: {
-                    borderColor: '#D2FF00',
-                    backgroundColor: '#D2FF00',
+                    borderColor: "#D2FF00",
+                    backgroundColor: "#D2FF00",
                   },
-                  error: { borderColor: '#FF0000', backgroundColor: '#FF0000' },
+                  error: { borderColor: "#FF0000", backgroundColor: "#FF0000" },
                 }}
-                animate={'error'}
-                transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
+                animate={"error"}
+                transition={{ type: "spring", duration: 0.4, bounce: 0 }}
               >
                 <svg
                   width="0.625vw"
@@ -110,7 +110,7 @@ export default function Notification({
                   viewBox="0 0 12 12"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                  className={'h-[0.729vw] w-[0.729vw]'}
+                  className={"h-[0.729vw] w-[0.729vw]"}
                 >
                   <path
                     fillRule="evenodd"
@@ -125,7 +125,7 @@ export default function Notification({
         )}
         <div
           className={
-            'h-full w-full font-plexsans text-[0.938vw] font-medium text-foreground'
+            "h-full w-full font-plexsans text-[0.938vw] font-medium text-foreground"
           }
         >
           {notification.message}
@@ -138,7 +138,7 @@ export default function Notification({
           viewBox="0 0 12 12"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className={'absolute right-[3%] top-[10%] h-[0.625vw] w-[0.625vw]'}
+          className={"absolute right-[3%] top-[10%] h-[0.625vw] w-[0.625vw]"}
         >
           <path
             fillRule="evenodd"

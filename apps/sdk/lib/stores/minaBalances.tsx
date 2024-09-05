@@ -1,14 +1,14 @@
-import { useContext, useEffect } from 'react';
-import { create } from 'zustand';
-import { immer } from 'zustand/middleware/immer';
+import { useContext, useEffect } from "react";
+import { create } from "zustand";
+import { immer } from "zustand/middleware/immer";
 
-import { ALL_NETWORKS, NETWORKS } from '@/app/constants/networks';
+import { ALL_NETWORKS, NETWORKS } from "@sdk/constants/networks";
 
-import { useChainStore } from './minaChain';
-import { useNetworkStore } from './network';
+import { useChainStore } from "./minaChain";
+import { useNetworkStore } from "./network";
 
-import ZkNoidGameContext from '../contexts/ZkNoidGameContext';
-import { fetchAccount } from 'o1js';
+import ZkNoidGameContext from "../contexts/ZkNoidGameContext";
+import { fetchAccount } from "o1js";
 
 export interface BalancesState {
   loading: boolean;
@@ -33,7 +33,7 @@ export interface BalanceQueryResponse {
 
 export const useMinaBalancesStore = create<
   BalancesState,
-  [['zustand/immer', never]]
+  [["zustand/immer", never]]
 >(
   immer((set) => ({
     loading: Boolean(false),
@@ -47,7 +47,7 @@ export const useMinaBalancesStore = create<
 
       const balance = BigInt(account.account?.balance.toBigInt() ?? 0n);
 
-      console.log('Balance fetching', balance);
+      console.log("Balance fetching", balance);
 
       set((state) => {
         state.loading = false;

@@ -1,8 +1,8 @@
-import { createZkNoidGameConfig } from 'sdk/lib/createConfig';
-import { ZkNoidGameType } from 'sdk/lib/platform/game_types';
+import { createZkNoidGameConfig } from '@sdk/lib/createConfig';
+import { ZkNoidGameType } from '@sdk/lib/platform/game_types';
 import { GuessGame } from 'zknoid-chain-dev';
-import { ZkNoidGameFeature, ZkNoidGameGenre } from 'sdk/lib/platform/game_tags';
-import { LogoMode } from 'sdk/constants/games';
+import { ZkNoidGameFeature, ZkNoidGameGenre } from '@sdk/lib/platform/game_tags';
+import { LogoMode } from '@sdk/constants/games';
 import NumberGuessing from './NumberGuessing';
 
 export const numberGuessingConfig = createZkNoidGameConfig({

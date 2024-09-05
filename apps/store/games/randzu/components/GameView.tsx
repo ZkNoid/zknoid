@@ -1,6 +1,6 @@
 'use client';
 
-import { IGameInfo } from '@/lib/stores/matchQueue';
+import { IGameInfo } from '@sdk/lib/stores/matchQueue';
 import { RandzuField } from 'zknoid-chain-dev';
 import { useEffect, useRef, useState } from 'react';
 

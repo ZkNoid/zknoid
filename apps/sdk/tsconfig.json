@@ -16,8 +16,9 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "plugins": [],
+    "baseUrl": ".",
     "paths": {
-      "~/*": ["./*"]
+      "@sdk/*": ["./*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "assets/*", "custom.d.ts"],

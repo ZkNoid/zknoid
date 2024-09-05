@@ -1,17 +1,17 @@
-import { motion } from 'framer-motion';
-import { useLobbiesStore } from '@/lib/stores/lobbiesStore';
-import { useAlreadyInLobbyModalStore } from '@/lib/stores/alreadyInLobbyModalStore';
+import { motion } from "framer-motion";
+import { useLobbiesStore } from "@sdk/lib/stores/lobbiesStore";
+import { useAlreadyInLobbyModalStore } from "@sdk/lib/stores/alreadyInLobbyModalStore";
 
 export const CreateNewLobbyBtn = ({ onClick }: { onClick: () => void }) => {
   const lobbiesStore = useLobbiesStore();
   const alreadyInLobbyModalStore = useAlreadyInLobbyModalStore();
   return (
     <motion.div
-      className={'col-start-4 col-end-6 row-span-1 h-full w-full'}
-      initial={'hidden'}
-      animate={'visible'}
-      exit={'hidden'}
-      transition={{ type: 'spring', duration: 0.8, bounce: 0 }}
+      className={"col-start-4 col-end-6 row-span-1 h-full w-full"}
+      initial={"hidden"}
+      animate={"visible"}
+      exit={"hidden"}
+      transition={{ type: "spring", duration: 0.8, bounce: 0 }}
       variants={{
         visible: { opacity: 1 },
         hidden: { opacity: 0 },
@@ -24,12 +24,12 @@ export const CreateNewLobbyBtn = ({ onClick }: { onClick: () => void }) => {
     >
       <div
         className={
-          'flex h-full w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-[5px] border border-foreground bg-bg-dark p-2 hover:bg-[#464646]'
+          "flex h-full w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-[5px] border border-foreground bg-bg-dark p-2 hover:bg-[#464646]"
         }
       >
         <span
           className={
-            'text-[20px]/[20px] font-medium uppercase text-left-accent'
+            "text-[20px]/[20px] font-medium uppercase text-left-accent"
           }
         >
           Create new lobby
@@ -52,7 +52,7 @@ export const CreateNewLobbyBtn = ({ onClick }: { onClick: () => void }) => {
         </svg>
         <span
           className={
-            'text-center font-plexsans text-[12px]/[12px] text-left-accent'
+            "text-center font-plexsans text-[12px]/[12px] text-left-accent"
           }
         >
           If you don&apos;t find any of the existing lobbies to your liking, you

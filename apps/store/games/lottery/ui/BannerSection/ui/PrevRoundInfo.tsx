@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import minaImg from '@/public/image/tokens/mina.svg';
-import Skeleton from 'sdk/components/shared/Skeleton';
+import Skeleton from '@sdk/components/shared/Skeleton';
 import { formatUnits } from '@/lib/unit';
 import { TICKET_PRICE } from 'l1-lottery-contracts';
 import { Currency } from '@/constants/currency';

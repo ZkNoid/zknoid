@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from "react";
 
-// import { zkNoidConfig } from '@/games/config';
-import ZkNoidGameContext from '../../../lib/contexts/ZkNoidGameContext';
-import { useNetworkStore } from '../../../lib/stores/network';
-import { ZkNoidConfig } from '../../../lib/createConfig';
+// import { zkNoidConfig } from  '@sdk/games/config';
+import ZkNoidGameContext from "../../../lib/contexts/ZkNoidGameContext";
+import { useNetworkStore } from "../../../lib/stores/network";
+import { ZkNoidConfig } from "../../../lib/createConfig";
 
 export default function Page({
   gameId,
@@ -14,7 +14,7 @@ export default function Page({
 }: {
   gameId: string;
   lobbyId: string;
-  zkNoidConfig: ZkNoidConfig
+  zkNoidConfig: ZkNoidConfig;
 }) {
   const config = useMemo(
     () => zkNoidConfig.games.find((game) => game.id == gameId)!,

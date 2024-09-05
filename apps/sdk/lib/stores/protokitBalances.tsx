@@ -17,7 +17,7 @@ import { DefaultRuntimeModules } from '../runtimeModules';
 import { Balances, ProtoUInt64, ZNAKE_TOKEN_ID } from 'zknoid-chain-dev';
 
 import { BalancesKey, TokenId } from '@proto-kit/library';
-import { api } from '@/trpc/react';
+import { api } from '@sdk/trpc/react';
 import { getEnvContext } from '../envContext';
 import { useBridgeStore } from '../../lib/stores/bridgeStore';
 

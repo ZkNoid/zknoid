@@ -1,18 +1,21 @@
-import Image from 'next/image';
-import znakesImg from '@/public/image/tokens/znakes.svg';
-import { Currency } from '@/constants/currency';
-import Popover from 'sdk/components/shared/Popover';
-import { IMatchamkingOption, useLobbiesStore } from '@/lib/stores/lobbiesStore';
-import { MatchmakingModal } from '@/components/framework/Lobby/ui/modals/MatchmakingModal';
-import { useEffect, useState } from 'react';
-import { useAlreadyInLobbyModalStore } from '@/lib/stores/alreadyInLobbyModalStore';
-import { api } from '@/trpc/react';
-import { getEnvContext } from '@/lib/envContext';
-import { useNetworkStore } from '@/lib/stores/network';
-import { MatchmakingFailModal } from './modals/MatchmakingFailModal';
-import { useProtokitChainStore } from '@/lib/stores/protokitChain';
-import { useMinaBridge } from '@/lib/stores/protokitBalances';
-import { formatUnits } from '@/lib/unit';
+import Image from "next/image";
+import znakesImg from "@sdk/public/image/tokens/znakes.svg";
+import { Currency } from "../../../../constants/currency";
+import Popover from "../../../../components/shared/Popover";
+import {
+  IMatchamkingOption,
+  useLobbiesStore,
+} from "../../../../lib/stores/lobbiesStore";
+import { MatchmakingModal } from "../../../../components/framework/Lobby/ui/modals/MatchmakingModal";
+import { useEffect, useState } from "react";
+import { useAlreadyInLobbyModalStore } from "../../../../lib/stores/alreadyInLobbyModalStore";
+import { api } from "../../../../trpc/react";
+import { getEnvContext } from "../../../../lib/envContext";
+import { useNetworkStore } from "../../../../lib/stores/network";
+import { MatchmakingFailModal } from "./modals/MatchmakingFailModal";
+import { useProtokitChainStore } from "../../../../lib/stores/protokitChain";
+import { useMinaBridge } from "../../../../lib/stores/protokitBalances";
+import { formatUnits } from "../../../../lib/unit";
 
 const OpponentItem = ({
   option,
@@ -39,7 +42,7 @@ const OpponentItem = ({
   return (
     <div
       className={
-        'group flex cursor-pointer flex-col justify-between rounded-[5px] border border-left-accent bg-left-accent p-2 hover:bg-[#464646]'
+        "group flex cursor-pointer flex-col justify-between rounded-[5px] border border-left-accent bg-left-accent p-2 hover:bg-[#464646]"
       }
       onClick={async () => {
         if (lobbiesStore.currentLobby) alreadyInLobbyModalStore.setIsOpen(true);
@@ -47,12 +50,12 @@ const OpponentItem = ({
           try {
             await register(option.id);
           } catch (e) {
-            console.log('Registration error', e);
+            console.log("Registration error", e);
             return;
           }
           matchmakingMutation.mutate({
-            gameId: 'arkanoid',
-            userAddress: networkStore.address ?? '',
+            gameId: "arkanoid",
+            userAddress: networkStore.address ?? "",
             type: option.id,
             envContext: getEnvContext(),
           });
@@ -64,34 +67,34 @@ const OpponentItem = ({
     >
       <span
         className={
-          'text-center text-[16px]/[16px] font-medium uppercase text-bg-dark group-hover:text-left-accent'
+          "text-center text-[16px]/[16px] font-medium uppercase text-bg-dark group-hover:text-left-accent"
         }
       >
         Random opponent
       </span>
       <div
         className={
-          'flex flex-row gap-2 pb-2 text-left-accent group-hover:text-bg-dark'
+          "flex flex-row gap-2 pb-2 text-left-accent group-hover:text-bg-dark"
         }
       >
         <div
           className={
-            'flex w-full flex-col gap-1 rounded-[5px] bg-bg-dark p-2 group-hover:bg-left-accent'
+            "flex w-full flex-col gap-1 rounded-[5px] bg-bg-dark p-2 group-hover:bg-left-accent"
           }
         >
           <span
-            className={'font-plexsans text-[16px]/[16px] font-medium uppercase'}
+            className={"font-plexsans text-[16px]/[16px] font-medium uppercase"}
           >
             You pay
           </span>
           <span
             className={
-              'flex flex-row items-center gap-2 font-plexsans text-[14px]/[14px]'
+              "flex flex-row items-center gap-2 font-plexsans text-[14px]/[14px]"
             }
           >
             <Image
               src={znakesImg}
-              alt={'Znakes token'}
+              alt={"Znakes token"}
               width={25}
               height={25}
             />
@@ -101,22 +104,22 @@ const OpponentItem = ({
         </div>
         <div
           className={
-            'flex w-full flex-col gap-1 rounded-[5px] bg-bg-dark p-2 group-hover:bg-left-accent'
+            "flex w-full flex-col gap-1 rounded-[5px] bg-bg-dark p-2 group-hover:bg-left-accent"
           }
         >
           <span
-            className={'font-plexsans text-[16px]/[16px] font-medium uppercase'}
+            className={"font-plexsans text-[16px]/[16px] font-medium uppercase"}
           >
             You max receive
           </span>
           <span
             className={
-              'flex flex-row items-center gap-2 font-plexsans text-[14px]/[14px]'
+              "flex flex-row items-center gap-2 font-plexsans text-[14px]/[14px]"
             }
           >
             <Image
               src={znakesImg}
-              alt={'Znakes token'}
+              alt={"Znakes token"}
               width={25}
               height={25}
             />
@@ -176,18 +179,18 @@ export const FastMatchmaking = ({
 
   return (
     <>
-      <div className={'col-start-1 col-end-4 row-start-1 flex flex-row gap-1'}>
-        <div className={'text-headline-1'}>Fast Matchmaking</div>
+      <div className={"col-start-1 col-end-4 row-start-1 flex flex-row gap-1"}>
+        <div className={"text-headline-1"}>Fast Matchmaking</div>
         <Popover>
           <div
             className={
-              'flex min-w-[250px] flex-col items-center justify-center gap-2 font-plexsans'
+              "flex min-w-[250px] flex-col items-center justify-center gap-2 font-plexsans"
             }
           >
-            <span className={'w-full self-start text-[14px]/[14px]'}>
+            <span className={"w-full self-start text-[14px]/[14px]"}>
               Fast Matchmaking
             </span>
-            <div className={'w-full text-[12px]/[12px] font-light opacity-70'}>
+            <div className={"w-full text-[12px]/[12px] font-light opacity-70"}>
               If you want to play with your friend and not run into random
               players during the game, check the box. After creating a lobby,
               you can invite you friend to join
@@ -197,7 +200,7 @@ export const FastMatchmaking = ({
       </div>
       <div
         className={
-          'col-start-1 col-end-4 row-start-2 row-end-2 grid grid-cols-3 gap-4'
+          "col-start-1 col-end-4 row-start-2 row-end-2 grid grid-cols-3 gap-4"
         }
       >
         {options.map((option) => (
@@ -207,7 +210,7 @@ export const FastMatchmaking = ({
             winCoef={winCoef}
             register={async (id: number) => {
               if (await bridge(BigInt(option.pay)))
-                throw Error('Not enough funds');
+                throw Error("Not enough funds");
 
               await registerAndRecord(id);
               setCurType(id);
@@ -220,13 +223,13 @@ export const FastMatchmaking = ({
         ))}
         <div
           className={
-            'flex flex-col gap-2 rounded-[5px] border border-foreground bg-[#252525] p-2 opacity-50'
+            "flex flex-col gap-2 rounded-[5px] border border-foreground bg-[#252525] p-2 opacity-50"
           }
         >
-          <div className={'flex flex-row items-center justify-center gap-1'}>
+          <div className={"flex flex-row items-center justify-center gap-1"}>
             <span
               className={
-                'text-center text-[16px]/[16px] font-medium uppercase text-left-accent'
+                "text-center text-[16px]/[16px] font-medium uppercase text-left-accent"
               }
             >
               Match against platform
@@ -239,7 +242,7 @@ export const FastMatchmaking = ({
                   viewBox="0 0 16 16"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                  className={'pb-1 hover:opacity-80'}
+                  className={"pb-1 hover:opacity-80"}
                 >
                   <g opacity="1">
                     <circle
@@ -260,14 +263,14 @@ export const FastMatchmaking = ({
             >
               <div
                 className={
-                  'flex min-w-[250px] flex-col items-center justify-center gap-2 font-plexsans'
+                  "flex min-w-[250px] flex-col items-center justify-center gap-2 font-plexsans"
                 }
               >
-                <span className={'w-full self-start text-[14px]/[14px]'}>
+                <span className={"w-full self-start text-[14px]/[14px]"}>
                   Match against platform
                 </span>
                 <div
-                  className={'w-full text-[12px]/[12px] font-light opacity-70'}
+                  className={"w-full text-[12px]/[12px] font-light opacity-70"}
                 >
                   Playing against a platform, not a live opponent
                 </div>
@@ -276,13 +279,13 @@ export const FastMatchmaking = ({
           </div>
           <span
             className={
-              'flex flex-row items-center gap-1 font-plexsans text-[14px]/[14px]'
+              "flex flex-row items-center gap-1 font-plexsans text-[14px]/[14px]"
             }
           >
-            <span className={'pr-1 uppercase text-left-accent'}>You pay</span>
+            <span className={"pr-1 uppercase text-left-accent"}>You pay</span>
             <Image
               src={znakesImg}
-              alt={'Znakes token'}
+              alt={"Znakes token"}
               width={25}
               height={25}
             />
@@ -291,15 +294,15 @@ export const FastMatchmaking = ({
           </span>
           <span
             className={
-              'flex flex-row items-center gap-1 font-plexsans text-[14px]/[14px]'
+              "flex flex-row items-center gap-1 font-plexsans text-[14px]/[14px]"
             }
           >
-            <span className={'pr-1 uppercase text-left-accent'}>
+            <span className={"pr-1 uppercase text-left-accent"}>
               You max receive
             </span>
             <Image
               src={znakesImg}
-              alt={'Znakes token'}
+              alt={"Znakes token"}
               width={25}
               height={25}
             />
@@ -308,10 +311,10 @@ export const FastMatchmaking = ({
           </span>
           <span
             className={
-              'flex flex-row items-center gap-1 font-plexsans text-[14px]/[14px]'
+              "flex flex-row items-center gap-1 font-plexsans text-[14px]/[14px]"
             }
           >
-            <span className={'pr-1 uppercase text-left-accent'}>
+            <span className={"pr-1 uppercase text-left-accent"}>
               Average playing time
             </span>
             <svg

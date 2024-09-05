@@ -1,9 +1,9 @@
-import { SortByFilter } from '@/components/pages/MainSection/ui/Storefront/ui/Favorites/ui/SortByFilter';
+import { SortByFilter } from '../../../../components/framework/Storefront/ui/Favorites/ui/SortByFilter';
 import { useEffect, useRef, useState } from 'react';
-import { ILobby } from '@/lib/types';
-import { LobbyItem } from '@/components/framework/Lobby/LobbyList/ui/LobbyItem';
+import { ILobby } from '../../../../lib/types';
+import { LobbyItem } from '../../../../components/framework/Lobby/LobbyList/ui/LobbyItem';
 import { LOBBYS_SORT_METHODS, LobbiesSortBy } from './lib/sortBy';
-import Popover from 'sdk/components/shared/Popover';
+import Popover from '../../../../components/shared/Popover';
 import { sortByFilter } from './lib/sortBy';
 
 export default function LobbyList({ lobbies }: { lobbies: ILobby[] }) {

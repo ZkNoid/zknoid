@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { cn } from '@/lib/helpers';
+import { cn } from '@sdk/lib/helpers';
 
 export const RoundsDropdown = ({
   currentRoundId,

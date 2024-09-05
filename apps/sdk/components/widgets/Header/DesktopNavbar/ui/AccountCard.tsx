@@ -1,4 +1,4 @@
-import { cn } from '@/lib/helpers';
+import { cn } from "@sdk/lib/helpers";
 
 const AccountSVG = ({ className }: { className?: string }) => {
   return (
@@ -46,20 +46,20 @@ export default function AccountCard({
   return (
     <div
       className={cn(
-        'group flex cursor-pointer items-center justify-center gap-[0.521vw] rounded border',
-        'border-right-accent p-[0.208vw] px-[0.417vw] font-museo text-[0.833vw] font-medium text-bg-dark transition duration-75 ease-in',
-        'hover:bg-bg-dark hover:text-right-accent lg:justify-normal',
+        "group flex cursor-pointer items-center justify-center gap-[0.521vw] rounded border",
+        "border-right-accent p-[0.208vw] px-[0.417vw] font-museo text-[0.833vw] font-medium text-bg-dark transition duration-75 ease-in",
+        "hover:bg-bg-dark hover:text-right-accent lg:justify-normal",
         expanded
-          ? 'rounded-b-none border-right-accent bg-bg-dark text-right-accent hover:bg-right-accent/20'
-          : 'bg-right-accent',
+          ? "rounded-b-none border-right-accent bg-bg-dark text-right-accent hover:bg-right-accent/20"
+          : "bg-right-accent",
         className
       )}
       onClick={() => onClick?.()}
     >
       <AccountSVG
         className={cn(
-          'h-[1.25vw] w-[1.25vw] stroke-black group-hover:stroke-right-accent',
-          expanded && 'stroke-right-accent'
+          "h-[1.25vw] w-[1.25vw] stroke-black group-hover:stroke-right-accent",
+          expanded && "stroke-right-accent"
         )}
       />
       {text}

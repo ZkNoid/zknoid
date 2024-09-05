@@ -1,8 +1,8 @@
-import GamePage from '@/components/framework/GamePage';
+import GamePage from '@sdk/components/framework/GamePage';
 import { thimblerigConfig } from './config';
-import { useNetworkStore } from '@/lib/stores/network';
+import { useNetworkStore } from '@sdk/lib/stores/network';
 import { useContext, useEffect, useRef, useState } from 'react';
-import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
+import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
 import {
   type ClientAppChain,
   MOVE_TIMEOUT_IN_BLOCKS,
@@ -10,14 +10,14 @@ import {
 } from 'zknoid-chain-dev';
 import { Poseidon, PublicKey, UInt64 } from 'o1js';
 import { useStore } from 'zustand';
-import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
-import { walletInstalled } from '@/lib/helpers';
+import { useSessionKeyStore } from '@sdk/lib/stores/sessionKeyStorage';
+import { walletInstalled } from '@sdk/lib/helpers';
 import {
   useObserveThimblerigMatchQueue,
   useThimblerigMatchQueueStore,
 } from './stores/matchQueue';
-import { useCommitmentStore } from '@/lib/stores/commitmentStorage';
-import { useProtokitChainStore } from '@/lib/stores/protokitChain';
+import { useCommitmentStore } from '@sdk/lib/stores/commitmentStorage';
+import { useProtokitChainStore } from '@sdk/lib/stores/protokitChain';
 import ThimbleSVG from './assets/thimble.svg';
 import ThimbleOpenedCorrectSVG from './assets/thimble_opened_correct.svg';
 import BallSVG from './assets/ball.svg';
@@ -28,41 +28,41 @@ import ThimblerigBallInsideLifting from './assets/thimblerig_ball_lifting.json';
 import ThimblerigGuessedBallInsideLifting from './assets/thimblerig_dashed_ball_lifting.json';
 import ThimblerigNoBallInsideLifting from './assets/thimblerig_noball_lifting.json';
 import ThimblerigCoverSVG from './assets/game-cover.svg';
-import ThimblerigCoverMobileSVG from '@/public/image/game-page/game-title-mobile-template.svg';
+import ThimblerigCoverMobileSVG from '@sdk/public/image/game-page/game-title-mobile-template.svg';
 import Image from 'next/image';
 import Lottie from 'react-lottie';
-import { MainButtonState } from '@/components/framework/GamePage/PvPGameView';
-import { api } from '@/trpc/react';
-import { getEnvContext } from '@/lib/envContext';
-import { getRandomEmoji } from '@/lib/emoji';
+import { MainButtonState } from '@sdk/components/framework/GamePage/PvPGameView';
+import { api } from '@sdk/trpc/react';
+import { getEnvContext } from '@sdk/lib/envContext';
+import { getRandomEmoji } from '@sdk/lib/emoji';
 import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
-import { cn } from '@/lib/helpers';
+import { cn } from '@sdk/lib/helpers';
 import AnimatedThimble from './components/AnimatedThimble';
-import Button from 'sdk/components/shared/Button';
-import GameWidget from '@/components/framework/GameWidget';
-import { UnsetCompetitionPopup } from '@/components/framework/GameWidget/ui/popups/UnsetCompetitionPopup';
-import { formatUnits } from '@/lib/unit';
-import znakesImg from '@/public/image/tokens/znakes.svg';
-import { ConnectWallet } from '@/components/framework/GameWidget/ui/popups/ConnectWallet';
-import { InstallWallet } from '@/components/framework/GameWidget/ui/popups/InstallWallet';
-import { Competition } from '@/components/framework/GameWidget/ui/Competition';
-import { Currency } from '@/constants/currency';
+import Button from '@sdk/components/shared/Button';
+import GameWidget from '@sdk/components/framework/GameWidget';
+import { UnsetCompetitionPopup } from '@sdk/components/framework/GameWidget/ui/popups/UnsetCompetitionPopup';
+import { formatUnits } from '@sdk/lib/unit';
+import znakesImg from '@sdk/public/image/tokens/znakes.svg';
+import { ConnectWallet } from '@sdk/components/framework/GameWidget/ui/popups/ConnectWallet';
+import { InstallWallet } from '@sdk/components/framework/GameWidget/ui/popups/InstallWallet';
+import { Competition } from '@sdk/components/framework/GameWidget/ui/Competition';
+import { Currency } from '@sdk/constants/currency';
 import { motion, useAnimationControls } from 'framer-motion';
-import { ICompetitionPVP } from '@/lib/types';
-import { GameWrap } from '@/components/framework/GamePage/GameWrap';
-import { RateGame } from '@/components/framework/GameWidget/ui/popups/RateGame';
-import { SadSmileSVG } from 'sdk/components/shared/misc/svg';
-import toast from 'sdk/components/shared/Toast';
-import { useToasterStore } from '@/lib/stores/toasterStore';
-import { useRateGameStore } from '@/lib/stores/rateGameStore';
-import { formatPubkey } from '@/lib/utils';
-import StatefulModal from 'sdk/components/shared/Modal/StatefulModal';
+import { ICompetitionPVP } from '@sdk/lib/types';
+import { GameWrap } from '@sdk/components/framework/GamePage/GameWrap';
+import { RateGame } from '@sdk/components/framework/GameWidget/ui/popups/RateGame';
+import { SadSmileSVG } from '@sdk/components/shared/misc/svg';
+import toast from '@sdk/components/shared/Toast';
+import { useToasterStore } from '@sdk/lib/stores/toasterStore';
+import { useRateGameStore } from '@sdk/lib/stores/rateGameStore';
+import { formatPubkey } from '@sdk/lib/utils';
+import StatefulModal from '@sdk/components/shared/Modal/StatefulModal';
 import { GameState } from './lib/gameState';
 import { useStartGame } from './features/startGame';
 import {
   useLobbiesStore,
   useObserveLobbiesStore,
-} from '@/lib/stores/lobbiesStore';
+} from '@sdk/lib/stores/lobbiesStore';
 import { PendingTransaction } from '@proto-kit/sequencer';
 
 export default function Thimblerig({}: { params: { competitionId: string } }) {

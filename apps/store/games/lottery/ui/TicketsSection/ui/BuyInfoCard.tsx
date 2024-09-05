@@ -1,18 +1,18 @@
 import { ReactNode } from 'react';
-import { cn, requestAccounts, sendTransaction } from '@/lib/helpers';
-import { useWorkerClientStore } from '@/lib/stores/workerClient';
-import { useNetworkStore } from '@/lib/stores/network';
-import { useChainStore } from '@/lib/stores/minaChain';
+import { cn, requestAccounts, sendTransaction } from '@sdk/lib/helpers';
+import { useWorkerClientStore } from '@sdk/lib/stores/workerClient';
+import { useNetworkStore } from '@sdk/lib/stores/network';
+import { useChainStore } from '@sdk/lib/stores/minaChain';
 import { TICKET_PRICE } from 'l1-lottery-contracts';
-import { formatUnits } from '@/lib/unit';
-import Loader from 'sdk/components/shared/Loader';
-import { Currency } from '@/constants/currency';
-import { useNotificationStore } from 'sdk/components/shared/Notification/lib/notificationStore';
-import { useMinaBalancesStore } from '@/lib/stores/minaBalances';
-import { VoucherMode } from '@/games/lottery/ui/TicketsSection/lib/voucherMode';
-import { BRIDGE_ADDR } from '@/app/constants';
-import { api } from '@/trpc/react';
+import { formatUnits } from '@sdk/lib/unit';
+import Loader from '@sdk/components/shared/Loader';
+import { Currency } from '@sdk/constants/currency';
+import { useNotificationStore } from '@sdk/components/shared/Notification/lib/notificationStore';
+import { useMinaBalancesStore } from '@sdk/lib/stores/minaBalances';
+import { VoucherMode } from '../../../ui/TicketsSection/lib/voucherMode';
+import { api } from '@sdk/trpc/react';
 import * as crypto from 'crypto';
+import { PublicKey } from 'o1js';
 
 export default function BuyInfoCard({
   buttonActive,
@@ -105,7 +105,7 @@ export default function BuyInfoCard({
     try {
       const tx = await (window as any).mina.sendPayment({
         memo: `zknoid.io game bridging #${process.env.BRIDGE_ID ?? 100}`,
-        to: BRIDGE_ADDR,
+        to: PublicKey.empty(),
         amount: formatUnits(totalPrice),
       });
       if (numberOfTickets > 1) {

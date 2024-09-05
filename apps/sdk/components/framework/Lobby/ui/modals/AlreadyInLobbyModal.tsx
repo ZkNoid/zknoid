@@ -1,5 +1,5 @@
-import BaseModal from 'sdk/components/shared/Modal/BaseModal';
-import Button from 'sdk/components/shared/Button';
+import BaseModal from "@sdk/components/shared/Modal/BaseModal";
+import Button from "@sdk/components/shared/Button";
 
 export const AlreadyInLobbyModal = ({
   isOpen,
@@ -14,33 +14,33 @@ export const AlreadyInLobbyModal = ({
     <BaseModal isOpen={isOpen} setIsOpen={setIsOpen}>
       <div
         className={
-          'flex max-w-[650px] flex-col items-center justify-center gap-4'
+          "flex max-w-[650px] flex-col items-center justify-center gap-4"
         }
       >
         <span
           className={
-            'text-center text-headline-1 font-medium uppercase text-left-accent'
+            "text-center text-headline-1 font-medium uppercase text-left-accent"
           }
         >
           You should leave current lobby first
         </span>
         <span
-          className={'max-w-[80%] text-center font-plexsans text-[16px]/[16px]'}
+          className={"max-w-[80%] text-center font-plexsans text-[16px]/[16px]"}
         >
           If you choose &quot;Leave lobby&quot; your automatically disconnect.
           Are you sure you want to disconnect from current lobby?
         </span>
-        <div className={'flex w-full flex-row justify-between'}>
+        <div className={"flex w-full flex-row justify-between"}>
           <Button
-            label={'Leave lobby'}
+            label={"Leave lobby"}
             onClick={() => leaveLobby()}
-            className={'max-w-[30%]'}
+            className={"max-w-[30%]"}
           />
           <Button
-            label={'Close'}
+            label={"Close"}
             onClick={() => setIsOpen(false)}
-            color={'tertiary'}
-            className={'max-w-[30%]'}
+            color={"tertiary"}
+            className={"max-w-[30%]"}
           />
         </div>
       </div>

@@ -1,12 +1,12 @@
-import { useNetworkStore } from '@/lib/stores/network';
-import { useRegisterWorkerClient } from '@/lib/stores/workerClient';
+import { useNetworkStore } from '@sdk/lib/stores/network';
+import { useRegisterWorkerClient } from '@sdk/lib/stores/workerClient';
 import {
   ALL_NETWORKS,
   Network,
   NetworkIds,
   NETWORKS,
-} from '@/app/constants/networks';
-import { requestAccounts, walletInstalled } from '@/lib/helpers';
+} from '@sdk/constants/networks';
+import { requestAccounts, walletInstalled } from '@sdk/lib/helpers';
 import { useEffect } from 'react';
 
 export default function NetworkSwitchButton() {

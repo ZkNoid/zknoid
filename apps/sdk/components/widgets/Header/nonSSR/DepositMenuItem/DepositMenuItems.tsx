@@ -1,32 +1,32 @@
-import { useContext, useState } from 'react';
+import { useContext, useState } from "react";
 import {
   useProtokitBalancesStore,
   // useTestBalanceGetter,
-} from '../../../../../lib/stores/protokitBalances';
-import ChangeSvg from '@/public/image/bridge/change.svg';
-import Image from 'next/image';
-import { L1_ASSETS, L2_ASSET } from '../../../../../constants/assets';
-import { useNetworkStore } from '../../../../../lib/stores/network';
-import { useMinaBalancesStore } from '../../../../../lib/stores/minaBalances';
-import { motion } from 'framer-motion';
-import ZkNoidGameContext from '../../../../../lib/contexts/ZkNoidGameContext';
-import 'reflect-metadata';
-import { AccountUpdate, Mina, PublicKey } from 'o1js';
-import { useEffect } from 'react';
-import { ProtokitLibrary, ZNAKE_TOKEN_ID } from 'zknoid-chain-dev';
-import { formatUnits } from '../../../../../lib/unit';
-// import { api } from '@/trpc/react';
-import { getEnvContext } from '../../../../../lib/envContext';
-import { type PendingTransaction } from '@proto-kit/sequencer';
-import toast from '../../../../../components/shared/Toast';
-import { useToasterStore } from '../../../../../lib/stores/toasterStore';
-import TopUpCard from './ui/TopUpCard';
-import BridgeModal from '../../../../../components/shared/Modal/BridgeModal';
-import Popover from '../../../../../components/shared/Popover';
-import { useBridgeStore } from '../../../../../lib/stores/bridgeStore';
-import BridgeInput from './ui/BridgeInput';
-import { useWorkerClientStore } from '../../../../../lib/stores/workerClient';
-import { requestAccounts } from '../../../../../lib/helpers';
+} from "../../../../../lib/stores/protokitBalances";
+import ChangeSvg from "@sdk/public/image/bridge/change.svg";
+import Image from "next/image";
+import { L1_ASSETS, L2_ASSET } from "../../../../../constants/assets";
+import { useNetworkStore } from "../../../../../lib/stores/network";
+import { useMinaBalancesStore } from "../../../../../lib/stores/minaBalances";
+import { motion } from "framer-motion";
+import ZkNoidGameContext from "../../../../../lib/contexts/ZkNoidGameContext";
+import "reflect-metadata";
+import { AccountUpdate, Mina, PublicKey } from "o1js";
+import { useEffect } from "react";
+import { ProtokitLibrary, ZNAKE_TOKEN_ID } from "zknoid-chain-dev";
+import { formatUnits } from "../../../../../lib/unit";
+// import { api } from  '@sdk/trpc/react';
+import { getEnvContext } from "../../../../../lib/envContext";
+import { type PendingTransaction } from "@proto-kit/sequencer";
+import toast from "../../../../../components/shared/Toast";
+import { useToasterStore } from "../../../../../lib/stores/toasterStore";
+import TopUpCard from "./ui/TopUpCard";
+import BridgeModal from "../../../../../components/shared/Modal/BridgeModal";
+import Popover from "../../../../../components/shared/Popover";
+import { useBridgeStore } from "../../../../../lib/stores/bridgeStore";
+import BridgeInput from "./ui/BridgeInput";
+import { useWorkerClientStore } from "../../../../../lib/stores/workerClient";
+import { requestAccounts } from "../../../../../lib/helpers";
 
 export default function DepositMenuItem() {
   const bridgeStore = useBridgeStore();
@@ -59,16 +59,16 @@ export default function DepositMenuItem() {
   useEffect(() => {
     const newBalance = protokitBalancesStore.balances[networkStore.address!];
     if (bridgeStore.amount > 0 && newBalance >= bridgeStore.amount) {
-      console.log('[Balance update finished!]');
+      console.log("[Balance update finished!]");
       bridgeStore.close();
     }
-    console.log('Balance update');
+    console.log("Balance update");
   }, [protokitBalancesStore.balances[networkStore.address!]]);
 
   // const logBridged = api.logging.logBridged.useMutation();
 
   const bridge = async (amount: bigint) => {
-    console.log('Bridging', amount);
+    console.log("Bridging", amount);
     try {
       const l1tx = await Mina.transaction(async () => {
         const senderUpdate = AccountUpdate.create(
@@ -102,7 +102,7 @@ export default function DepositMenuItem() {
     }
 
     const balances = (contextAppChainClient!.runtime as any).resolve(
-      'Balances'
+      "Balances"
     );
     const sender = PublicKey.fromBase58(networkStore.address!);
 
@@ -137,11 +137,11 @@ export default function DepositMenuItem() {
   };
 
   const unbridge = async (amount: bigint) => {
-    console.log('Burning', amount);
+    console.log("Burning", amount);
 
     try {
       const balances = (contextAppChainClient!.runtime as any).resolve(
-        'Balances'
+        "Balances"
       );
       const sender = PublicKey.fromBase58(networkStore.address!);
 
@@ -187,11 +187,11 @@ export default function DepositMenuItem() {
         isOpen={bridgeStore.open}
         onClose={() => bridgeStore.close()}
       >
-        <div className={'flex w-full flex-row justify-between'}>
+        <div className={"flex w-full flex-row justify-between"}>
           <div />
-          <div className={'hidden w-full flex-row lg:flex'}>
+          <div className={"hidden w-full flex-row lg:flex"}>
             <div className="font-museo text-headline-1 text-bg-dark">
-              {!isUnbridge ? 'Bridge' : 'Unbridge'}
+              {!isUnbridge ? "Bridge" : "Unbridge"}
             </div>
             <Popover
               trigger={
@@ -201,7 +201,7 @@ export default function DepositMenuItem() {
                   viewBox="0 0 16 16"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                  className={'hover:opacity-80'}
+                  className={"hover:opacity-80"}
                 >
                   <g opacity="0.5">
                     <circle
@@ -220,7 +220,7 @@ export default function DepositMenuItem() {
                 </svg>
               }
             >
-              <div className={'min-w-[200px]'}>
+              <div className={"min-w-[200px]"}>
                 Bridge your Mina tokens to the platform balance. You can use the
                 bridged tokens in games or unbridge them back to Mina network
               </div>
@@ -232,7 +232,7 @@ export default function DepositMenuItem() {
             viewBox="0 0 22 22"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className={'cursor-pointer hover:opacity-80'}
+            className={"cursor-pointer hover:opacity-80"}
             onClick={() => bridgeStore.close()}
           >
             <path
@@ -243,9 +243,9 @@ export default function DepositMenuItem() {
             />
           </svg>
         </div>
-        <div className={'flex w-full flex-row lg:hidden'}>
+        <div className={"flex w-full flex-row lg:hidden"}>
           <div className="font-museo text-headline-1 text-bg-dark">
-            {!isUnbridge ? 'Bridge' : 'Unbridge'}
+            {!isUnbridge ? "Bridge" : "Unbridge"}
           </div>
           <Popover
             trigger={
@@ -255,7 +255,7 @@ export default function DepositMenuItem() {
                 viewBox="0 0 16 16"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                className={'hover:opacity-80'}
+                className={"hover:opacity-80"}
               >
                 <g opacity="0.5">
                   <circle
@@ -274,7 +274,7 @@ export default function DepositMenuItem() {
               </svg>
             }
           >
-            <div className={'min-w-[100px]'}>
+            <div className={"min-w-[100px]"}>
               Bridge your Mina tokens to the platform balance. You can use the
               bridged tokens in games or unbridge them back to Mina network
             </div>
@@ -326,29 +326,29 @@ export default function DepositMenuItem() {
         </div>
         <button
           className={
-            'w-full rounded-[5px] border border-bg-dark bg-bg-dark py-2 text-center text-[16px]/[16px] font-medium text-foreground hover:bg-right-accent hover:text-bg-dark lg:text-[20px]/[20px]'
+            "w-full rounded-[5px] border border-bg-dark bg-bg-dark py-2 text-center text-[16px]/[16px] font-medium text-foreground hover:bg-right-accent hover:text-bg-dark lg:text-[20px]/[20px]"
           }
           onClick={() =>
             isUnbridge
               ? unbridge(amountIn)
                   .then(() =>
-                    toast.success(toasterStore, 'Unbridge success', true)
+                    toast.success(toasterStore, "Unbridge success", true)
                   )
                   .catch((error) => {
                     console.log(error);
-                    toast.error(toasterStore, 'Unbridge error', true);
+                    toast.error(toasterStore, "Unbridge error", true);
                   })
               : bridge(amountIn)
                   .then(() =>
-                    toast.success(toasterStore, 'Bridge success', true)
+                    toast.success(toasterStore, "Bridge success", true)
                   )
                   .catch((error) => {
                     console.log(error);
-                    toast.error(toasterStore, 'Bridge error', true);
+                    toast.error(toasterStore, "Bridge error", true);
                   })
           }
         >
-          {isUnbridge ? 'Unbridge' : 'Bridge'}
+          {isUnbridge ? "Unbridge" : "Bridge"}
         </button>
       </BridgeModal>
     </>

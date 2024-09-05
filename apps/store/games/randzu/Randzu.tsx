@@ -3,56 +3,56 @@
 import { useContext, useEffect, useState } from 'react';
 import { GameView } from './components/GameView';
 import { Int64, PublicKey, UInt32, UInt64 } from 'o1js';
-import { useNetworkStore } from '@/lib/stores/network';
+import { useNetworkStore } from '@sdk/lib/stores/network';
 import {
   useObserveRandzuMatchQueue,
   useRandzuMatchQueueStore,
-} from '@/games/randzu/stores/matchQueue';
+} from './stores/matchQueue';
 import { useStore } from 'zustand';
-import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
+import { useSessionKeyStore } from '@sdk/lib/stores/sessionKeyStorage';
 import {
   ClientAppChain,
   PENDING_BLOCKS_NUM_CONST,
   RandzuField,
   WinWitness,
 } from 'zknoid-chain-dev';
-import GamePage from '@/components/framework/GamePage';
+import GamePage from '@sdk/components/framework/GamePage';
 import { randzuConfig } from './config';
-import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
-import { useProtokitChainStore } from '@/lib/stores/protokitChain';
-import { MainButtonState } from '@/components/framework/GamePage/PvPGameView';
+import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
+import { useProtokitChainStore } from '@sdk/lib/stores/protokitChain';
+import { MainButtonState } from '@sdk/components/framework/GamePage/PvPGameView';
 import RandzuCoverSVG from './assets/game-cover.svg';
-import { api } from '@/trpc/react';
-import { getEnvContext } from '@/lib/envContext';
+import { api } from '@sdk/trpc/react';
+import { getEnvContext } from '@sdk/lib/envContext';
 import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
 import { MOVE_TIMEOUT_IN_BLOCKS } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
 import RandzuCoverMobileSVG from './assets/game-cover-mobile.svg';
-import GameWidget from '@/components/framework/GameWidget';
+import GameWidget from '@sdk/components/framework/GameWidget';
 import { motion } from 'framer-motion';
-import { formatPubkey } from '@/lib/utils';
-import Button from 'sdk/components/shared/Button';
-import { Competition } from '@/components/framework/GameWidget/ui/Competition';
-import { Currency } from '@/constants/currency';
-import { formatUnits } from '@/lib/unit';
-import znakesImg from '@/public/image/tokens/znakes.svg';
+import { formatPubkey } from '@sdk/lib/utils';
+import Button from '@sdk/components/shared/Button';
+import { Competition } from '@sdk/components/framework/GameWidget/ui/Competition';
+import { Currency } from '@sdk/constants/currency';
+import { formatUnits } from '@sdk/lib/unit';
+import znakesImg from '@sdk/public/image/tokens/znakes.svg';
 import Image from 'next/image';
-import { UnsetCompetitionPopup } from '@/components/framework/GameWidget/ui/popups/UnsetCompetitionPopup';
-import { Win } from '@/components/framework/GameWidget/ui/popups/Win';
-import { Lost } from '@/components/framework/GameWidget/ui/popups/Lost';
-import { walletInstalled } from '@/lib/helpers';
-import { ConnectWallet } from '@/components/framework/GameWidget/ui/popups/ConnectWallet';
-import { InstallWallet } from '@/components/framework/GameWidget/ui/popups/InstallWallet';
-import { GameWrap } from '@/components/framework/GamePage/GameWrap';
-import { RateGame } from '@/components/framework/GameWidget/ui/popups/RateGame';
-import toast from 'sdk/components/shared/Toast';
-import { useToasterStore } from '@/lib/stores/toasterStore';
-import { useRateGameStore } from '@/lib/stores/rateGameStore';
+import { UnsetCompetitionPopup } from '@sdk/components/framework/GameWidget/ui/popups/UnsetCompetitionPopup';
+import { Win } from '@sdk/components/framework/GameWidget/ui/popups/Win';
+import { Lost } from '@sdk/components/framework/GameWidget/ui/popups/Lost';
+import { walletInstalled } from '@sdk/lib/helpers';
+import { ConnectWallet } from '@sdk/components/framework/GameWidget/ui/popups/ConnectWallet';
+import { InstallWallet } from '@sdk/components/framework/GameWidget/ui/popups/InstallWallet';
+import { GameWrap } from '@sdk/components/framework/GamePage/GameWrap';
+import { RateGame } from '@sdk/components/framework/GameWidget/ui/popups/RateGame';
+import toast from '@sdk/components/shared/Toast';
+import { useToasterStore } from '@sdk/lib/stores/toasterStore';
+import { useRateGameStore } from '@sdk/lib/stores/rateGameStore';
 import { GameState } from './lib/gameState';
-import { useStartGame } from '@/games/randzu/features/startGame';
+import { useStartGame } from './features/startGame';
 import {
   useLobbiesStore,
   useObserveLobbiesStore,
-} from '@/lib/stores/lobbiesStore';
+} from '@sdk/lib/stores/lobbiesStore';
 import { type PendingTransaction } from '@proto-kit/sequencer';
 
 const competition = {

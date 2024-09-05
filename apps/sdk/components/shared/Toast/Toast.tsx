@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
-import { ToasterStore } from '@/lib/stores/toasterStore';
-import { AnimatePresence, motion } from 'framer-motion';
-import { ToastTypes } from './types/IToast';
-import ToastWrap from './ui/ToastWrap';
+import { ReactNode } from "react";
+import { ToasterStore } from "@sdk/lib/stores/toasterStore";
+import { AnimatePresence, motion } from "framer-motion";
+import { ToastTypes } from "./types/IToast";
+import ToastWrap from "./ui/ToastWrap";
 
 export default function toast(
   toasterStore: ToasterStore,
@@ -19,7 +19,7 @@ export default function toast(
         {isClearable && (
           <div
             className={
-              'flex cursor-pointer items-center justify-center opacity-60 transition-opacity ease-in-out hover:opacity-100'
+              "flex cursor-pointer items-center justify-center opacity-60 transition-opacity ease-in-out hover:opacity-100"
             }
             onClick={() => toasterStore.removeToast(toastId)}
           >
@@ -60,7 +60,7 @@ toast.success = (
             aria-hidden="true"
             role="presentation"
             viewBox="0 0 17 18"
-            className={'h-[24px] w-[24px]'}
+            className={"h-[24px] w-[24px]"}
           >
             <motion.polyline
               fill="none"
@@ -78,11 +78,11 @@ toast.success = (
             />
           </motion.svg>
         </AnimatePresence>
-        <div className={'w-full pt-1 text-[14px]/[14px]'}>{text}</div>
+        <div className={"w-full pt-1 text-[14px]/[14px]"}>{text}</div>
         {isClearable && (
           <div
             className={
-              'flex cursor-pointer items-center justify-center opacity-60 transition-opacity ease-in-out hover:opacity-100'
+              "flex cursor-pointer items-center justify-center opacity-60 transition-opacity ease-in-out hover:opacity-100"
             }
             onClick={() => toasterStore.removeToast(toastId)}
           >
@@ -125,7 +125,7 @@ toast.error = (
             viewBox="0 0 17 17"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className={'h-[24px] w-[24px]'}
+            className={"h-[24px] w-[24px]"}
           >
             <motion.path
               fill-rule="evenodd"
@@ -139,11 +139,11 @@ toast.error = (
             />
           </motion.svg>
         </AnimatePresence>
-        <div className={'w-full pt-1 text-[14px]/[14px]'}>{text}</div>
+        <div className={"w-full pt-1 text-[14px]/[14px]"}>{text}</div>
         {isClearable && (
           <div
             className={
-              'flex cursor-pointer items-center justify-center opacity-60 transition-opacity ease-in-out hover:opacity-100'
+              "flex cursor-pointer items-center justify-center opacity-60 transition-opacity ease-in-out hover:opacity-100"
             }
             onClick={() => toasterStore.removeToast(toastId)}
           >

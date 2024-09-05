@@ -4,8 +4,8 @@ import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { useChainStore } from '@/lib/stores/minaChain';
 import { useEffect, useState } from 'react';
 import { ILotteryRound } from '@/games/lottery/lib/types';
-import { api } from '@/trpc/react';
-import Skeleton from 'sdk/components/shared/Skeleton';
+import { api } from '@sdk/trpc/react';
+import Skeleton from '@sdk/components/shared/Skeleton';
 
 export default function PreviousRounds() {
   const ROUNDS_PER_PAGE = 2;

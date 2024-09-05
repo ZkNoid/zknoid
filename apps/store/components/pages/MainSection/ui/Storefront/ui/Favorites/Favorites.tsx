@@ -8,7 +8,7 @@ import {
   sortByFilter,
 } from '@/components/pages/MainSection/lib/sortBy';
 import { useNetworkStore } from '@/lib/stores/network';
-import { api } from '@/trpc/react';
+import { api } from '@sdk/trpc/react';
 import { IGame } from '@/app/constants/games';
 import { GameCard } from '../../../../entities/GameCard';
 import Lottie from 'react-lottie';

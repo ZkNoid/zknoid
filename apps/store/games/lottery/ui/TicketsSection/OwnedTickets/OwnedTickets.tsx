@@ -6,7 +6,7 @@ import { cn } from '@/lib/helpers';
 import PageButton from './ui/PageButton';
 import { formatUnits } from '@/lib/unit';
 import { Currency } from '@/constants/currency';
-import { api } from '@/trpc/react';
+import { api } from '@sdk/trpc/react';
 import { useRoundsStore } from '@/games/lottery/lib/roundsStore';
 import { ILotteryTicket } from '@/games/lottery/lib/types';
 

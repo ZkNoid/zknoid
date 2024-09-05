@@ -1,11 +1,11 @@
-import GamePage from '@/components/framework/GamePage';
+import GamePage from '@sdk/components/framework/GamePage';
 import { useContext, useState } from 'react';
-import ThimblerigCoverSVG from '@/games/thimblerig/assets/game-cover.svg';
-import ThimblerigCoverMobileSVG from '@/games/thimblerig/assets/game-cover.svg';
-import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
+import ThimblerigCoverSVG from './assets/game-cover.svg';
+import ThimblerigCoverMobileSVG from './assets/game-cover.svg';
+import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
 import { ClientAppChain, ProtoUInt64 } from 'zknoid-chain-dev';
-import { useNetworkStore } from '@/lib/stores/network';
-import LobbyPage from '@/components/framework/Lobby/LobbyPage';
+import { useNetworkStore } from '@sdk/lib/stores/network';
+import LobbyPage from '@sdk/components/framework/Lobby/LobbyPage';
 import { thimblerigConfig } from '../config';
 
 export default function ThimblerigLobby({

@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
-import { create } from 'zustand';
-import { immer } from 'zustand/middleware/immer';
+import { useEffect, useState } from "react";
+import { create } from "zustand";
+import { immer } from "zustand/middleware/immer";
 
-import { ALL_NETWORKS } from '@/app/constants/networks';
+import { ALL_NETWORKS } from "@sdk/constants/networks";
 
-import { useNetworkStore } from './network';
+import { useNetworkStore } from "./network";
 
 export interface ComputedTransactionJSON {
   argsFields: string[];
@@ -49,7 +49,7 @@ export interface BlockQueryResponse {
   };
 }
 
-export const useChainStore = create<ChainState, [['zustand/immer', never]]>(
+export const useChainStore = create<ChainState, [["zustand/immer", never]]>(
   immer((set) => ({
     loading: Boolean(false),
     async loadBlock(networkID: string) {
@@ -62,9 +62,9 @@ export const useChainStore = create<ChainState, [['zustand/immer', never]]>(
       const response = await fetch(
         ALL_NETWORKS.find((x) => x.networkID == networkID)?.graphql!,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             query: `
@@ -106,7 +106,7 @@ export const usePollMinaBlockHeight = () => {
   const network = useNetworkStore();
 
   useEffect(() => {
-    console.log('Poll chain id', network.minaNetwork?.networkID);
+    console.log("Poll chain id", network.minaNetwork?.networkID);
 
     if (!network.minaNetwork?.networkID) return;
 
