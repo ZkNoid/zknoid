@@ -35,7 +35,6 @@ import { MainButtonState } from '@/components/framework/GamePage/PvPGameView';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '@/lib/envContext';
 import { getRandomEmoji } from '@/lib/emoji';
-import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
 import { cn } from '@/lib/helpers';
 import AnimatedThimble from './components/AnimatedThimble';
 import Button from '@/components/shared/Button';
@@ -98,7 +97,12 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   useObserveThimblerigMatchQueue();
   const startGame = useStartGame(setGameState);
 
-  const client_ = client as ClientAppChain<typeof thimblerigConfig.runtimeModules, any, any, any>;
+  const client_ = client as ClientAppChain<
+    typeof thimblerigConfig.runtimeModules,
+    any,
+    any,
+    any
+  >;
 
   const query = networkStore.protokitClientStarted
     ? client_.query.runtime.ThimblerigLogic
@@ -596,8 +600,8 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
               ) : (
                 <>
                   {isRateGame &&
-                    !rateGameStore.ratedGamesIds.includes(
-                      thimblerigConfig.id
+                    !rateGameStore.ratedGames.find(
+                      (game) => game.gameId == thimblerigConfig.id
                     ) && (
                       <StatefulModal isOpen={true} isDismissible={false}>
                         <RateGame
