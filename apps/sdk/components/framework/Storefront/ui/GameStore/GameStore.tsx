@@ -1,8 +1,8 @@
 import {
   GAME_STORE_SORT_METHODS,
-  GameStoreSortBy,
+  GameComparisonType,
   sortByFilter,
-} from "@sdk/components/pages/MainSection/lib/sortBy";
+} from "@sdk/lib/sortBy";
 import {
   ALL_GAME_TAGS,
   ZkNoidGameFeature,
@@ -10,8 +10,8 @@ import {
 } from "@sdk/lib/platform/game_tags";
 import { ZkNoidEventType } from "@sdk/lib/platform/game_events";
 import { useEffect, useState } from "react";
-import { announcedGames, defaultGames, IGame } from "@sdk/app/constants/games";
-import { SortByFilter } from "@sdk/components/pages/MainSection/ui/Storefront/ui/Favorites/ui/SortByFilter";
+import { announcedGames, defaultGames, IGame } from "@sdk/constants/games";
+import { SortByFilter } from "@sdk/components/framework/Storefront/ui/Favorites/ui/SortByFilter";
 import { cn } from "@sdk/lib/helpers";
 import { GameCard } from "../../../../entities/GameCard";
 import GameStoreFilters from "./ui/GameStoreFilters";
@@ -28,8 +28,8 @@ export default function GameStore({
   setEventTypesSelected,
 }: {
   games: IGame[];
-  sortBy: GameStoreSortBy;
-  setSortBy: (sortBy: GameStoreSortBy) => void;
+  sortBy: GameComparisonType;
+  setSortBy: (sortBy: GameComparisonType) => void;
   genresSelected: ZkNoidGameGenre[];
   setGenresSelected: (genresSelected: ZkNoidGameGenre[]) => void;
   featuresSelected: ZkNoidGameFeature[];

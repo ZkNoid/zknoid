@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { GameStoreSortBy } from '@/components/pages/MainSection/lib/sortBy';
+import { GameComparisonType } from '@sdk/lib/comparators/gameComparator';
 import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
 import { ZkNoidEventType } from '@/lib/platform/game_events';
 import Events from './ui/Events';
@@ -20,8 +20,8 @@ export default function Storefront() {
   const [games, setGames] = useState<IGame[]>(
     defaultGames.concat(announcedGames)
   );
-  const [sortBy, setSortBy] = useState<GameStoreSortBy>(
-    GameStoreSortBy.RatingLow
+  const [sortBy, setSortBy] = useState<GameComparisonType>(
+    GameComparisonType.RatingLow
   );
   const [genresSelected, setGenresSelected] = useState<ZkNoidGameGenre[]>([]);
   const [eventTypesSelected, setEventTypesSelected] = useState<

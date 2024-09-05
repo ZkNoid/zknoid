@@ -4,9 +4,9 @@ import { useState } from 'react';
 import { SortByFilter } from './ui/SortByFilter';
 import {
   GAME_STORE_SORT_METHODS,
-  GameStoreSortBy,
-  sortByFilter,
-} from '@/components/pages/MainSection/lib/sortBy';
+  GameComparisonType,
+  compare
+} from '@sdk/lib/comparators/gameComparator';
 import { useNetworkStore } from '@/lib/stores/network';
 import { api } from '@sdk/trpc/react';
 import { IGame } from '@/app/constants/games';
@@ -23,8 +23,8 @@ export default function Favorites({ games }: { games: IGame[] }) {
   });
 
   const [genresSelected, setGenresSelected] = useState<ZkNoidGameGenre[]>([]);
-  const [sortBy, setSortBy] = useState<GameStoreSortBy>(
-    GameStoreSortBy.RatingLow
+  const [sortBy, setSortBy] = useState<GameComparisonType>(
+    GameComparisonType.RatingLow
   );
   const [currentPage, setCurrentPage] = useState<number>(1);
 
@@ -83,7 +83,7 @@ export default function Favorites({ games }: { games: IGame[] }) {
       </div>
       <div className={'mt-[0.781vw] grid w-full grid-cols-4 gap-[0.781vw]'}>
         {renderGames
-          .sort((a, b) => sortByFilter(a, b, sortBy))
+          .sort((a, b) => compare(a, b, sortBy))
           .map((game) => (
             <GameCard
               game={game}

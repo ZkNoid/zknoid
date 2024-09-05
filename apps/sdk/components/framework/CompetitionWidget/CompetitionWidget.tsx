@@ -1,13 +1,16 @@
-import CompetitionBlock from './ui/CompetitionBlock';
-import { SortByFilter } from '../../../components/framework/Storefront/ui/Favorites/ui/SortByFilter';
-import { COMPETITIONS_SORT_METHODS, CompetitionsSortBy } from '../../../lib/stores/competition/sortBy';
-import CompetitionListItem from './ui/CompetitionListItem';
-import { ICompetition } from '../../../lib/types';
-import { useEffect, useRef, useState } from 'react';
-import Button from '../../../components/shared/Button';
-import CustomScrollbar from '../../../components/shared/CustomScrollbar';
-import { AnimatePresence, useScroll } from 'framer-motion';
-import { sortByFilter } from '../../../lib/stores/competition/sortBy';
+import CompetitionBlock from "./ui/CompetitionBlock";
+import { SortByFilter } from "../../../components/framework/Storefront/ui/Favorites/ui/SortByFilter";
+import {
+  COMPETITIONS_SORT_METHODS,
+  CompetitionComparisonType,
+} from "@sdk/lib/comparators/competitionComparator";
+import CompetitionListItem from "./ui/CompetitionListItem";
+import { ICompetition } from "../../../lib/types";
+import { useEffect, useRef, useState } from "react";
+import Button from "../../../components/shared/Button";
+import CustomScrollbar from "../../../components/shared/CustomScrollbar";
+import { AnimatePresence, useScroll } from "framer-motion";
+import { compare } from "@sdk/lib/comparators/competitionComparator";
 
 export default function CompetitionWidget({
   competitionBlocks,
@@ -22,8 +25,8 @@ export default function CompetitionWidget({
 }) {
   const PAGINATION_LIMIT = 5;
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [sortBy, setSortBy] = useState<CompetitionsSortBy>(
-    CompetitionsSortBy.LowFunds
+  const [sortBy, setSortBy] = useState<CompetitionComparisonType>(
+    CompetitionComparisonType.LowFunds
   );
   const [containerHeight, setContainerHeight] = useState<number>(0);
   const competitionsListRef = useRef<HTMLDivElement | null>(null);
@@ -41,9 +44,9 @@ export default function CompetitionWidget({
         setCurrentPage((prevState) => prevState + 1);
       }
     };
-    refObj?.addEventListener('scroll', scrollHandler);
+    refObj?.addEventListener("scroll", scrollHandler);
     return () => {
-      refObj?.removeEventListener('scroll', scrollHandler);
+      refObj?.removeEventListener("scroll", scrollHandler);
     };
   });
 
@@ -56,20 +59,20 @@ export default function CompetitionWidget({
       }
     };
     resizeHandler();
-    refObj?.addEventListener('resize', resizeHandler);
+    refObj?.addEventListener("resize", resizeHandler);
     return () => {
-      refObj?.removeEventListener('resize', resizeHandler);
+      refObj?.removeEventListener("resize", resizeHandler);
     };
   });
   const { scrollYProgress } = useScroll({ container: competitionsListRef });
 
   return (
     <>
-      <div className={'mb-4 flex flex-col gap-4'}>
-        <div className={'w-full text-left text-headline-1'}>
+      <div className={"mb-4 flex flex-col gap-4"}>
+        <div className={"w-full text-left text-headline-1"}>
           The most interesting competitions
         </div>
-        <div className={'flex flex-row gap-4'}>
+        <div className={"flex flex-row gap-4"}>
           {competitionBlocks.map((item, index) => (
             <CompetitionBlock
               key={index}
@@ -80,9 +83,9 @@ export default function CompetitionWidget({
           ))}
         </div>
       </div>
-      <div className={'mb-4 flex max-w-[90%] flex-col gap-8'}>
-        <div className={'flex w-full flex-row justify-between'}>
-          <div className={'text-left text-headline-1'}>
+      <div className={"mb-4 flex max-w-[90%] flex-col gap-8"}>
+        <div className={"flex w-full flex-row justify-between"}>
+          <div className={"text-left text-headline-1"}>
             Full competition list
           </div>
           <SortByFilter
@@ -91,15 +94,15 @@ export default function CompetitionWidget({
             setSortBy={setSortBy}
           />
         </div>
-        <div className={'flex w-full flex-row gap-4'}>
+        <div className={"flex w-full flex-row gap-4"}>
           <div
             ref={competitionsListRef}
             className={
-              'flex max-h-[400px] w-full flex-col gap-4 overflow-y-scroll no-scrollbar'
+              "flex max-h-[400px] w-full flex-col gap-4 overflow-y-scroll no-scrollbar"
             }
           >
             {renderCompetitionsList
-              .toSorted((a, b) => sortByFilter(a, b, sortBy))
+              .toSorted((a, b) => compare(a, b, sortBy))
               .map((item, index) => (
                 <CompetitionListItem
                   key={index}
@@ -109,17 +112,17 @@ export default function CompetitionWidget({
                 />
               ))}
           </div>
-          <AnimatePresence initial={false} mode={'wait'}>
+          <AnimatePresence initial={false} mode={"wait"}>
             {containerHeight === 400 && (
               <CustomScrollbar scrollYProgress={scrollYProgress} />
             )}
           </AnimatePresence>
         </div>
         <Button
-          label={'Create new competition'}
+          label={"Create new competition"}
           asLink
           href={`/games/${gameId}/new-competition`}
-          className={'max-[2000px]:max-w-[40%] min-[2000px]:max-w-[30%]'}
+          className={"max-[2000px]:max-w-[40%] min-[2000px]:max-w-[30%]"}
         />
       </div>
     </>

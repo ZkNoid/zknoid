@@ -1,10 +1,10 @@
-import { createZkNoidGameConfig } from '@/lib/createConfig';
-import { ZkNoidGameType } from '@/lib/platform/game_types';
+import { createZkNoidGameConfig } from '@sdk/lib/createConfig';
+import { ZkNoidGameType } from '@sdk/lib/platform/game_types';
 import { RandzuLogic } from 'zknoid-chain-dev';
 import Randzu from './Randzu';
-import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
-import RandzuLobby from '@/games/randzu/components/RandzuLobby';
-import { LogoMode } from '@/app/constants/games';
+import { ZkNoidGameFeature, ZkNoidGameGenre } from '@sdk/lib/platform/game_tags';
+import RandzuLobby from './components/RandzuLobby';
+import { LogoMode } from '@sdk/constants/games';
 
 export const randzuConfig = createZkNoidGameConfig({
   id: 'randzu',

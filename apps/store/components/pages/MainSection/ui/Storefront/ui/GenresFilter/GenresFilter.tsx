@@ -1,5 +1,5 @@
 import { ZkNoidGameGenre } from '@/lib/platform/game_tags';
-import { GameStoreSortBy } from '@/components/pages/MainSection/lib/sortBy';
+import { GameComparisonType } from '@sdk/lib/comparators/gameComparator';
 import GamepadIllustration from './assets/Gamepad_Illustration_01_01.json';
 import ChessIllustration from './assets/Chess_Illustration.json';
 import CubesIllustration from './assets/Cubes_Illustration.json';
@@ -13,7 +13,7 @@ export default function GenresFilter({
 }: {
   genresSelected: ZkNoidGameGenre[];
   setGenresSelected: (genresSelected: ZkNoidGameGenre[]) => void;
-  setSortBy: (sortBy: GameStoreSortBy) => void;
+  setSortBy: (sortBy: GameComparisonType) => void;
 }) {
   return (
     <div className={'flex w-full flex-col gap-[0.781vw] lg:flex-row'}>
@@ -40,7 +40,7 @@ export default function GenresFilter({
       />
       <GenresItem
         animation={EyesIllustration}
-        sortBy={GameStoreSortBy.ComingSoon}
+        sortBy={GameComparisonType.ComingSoon}
         genresSelected={[]}
         setSortBy={setSortBy}
       />

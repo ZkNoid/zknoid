@@ -1,11 +1,11 @@
-import { createZkNoidGameConfig } from '@/lib/createConfig';
-import { ZkNoidGameType } from '@/lib/platform/game_types';
+import { createZkNoidGameConfig } from '@sdk/lib/createConfig';
+import { ZkNoidGameType } from '@sdk/lib/platform/game_types';
 import { ArkanoidGameHub } from 'zknoid-chain-dev';
 import Arkanoid from './Arkanoid';
 import NewArkanoidCompetitionPage from './components/NewArkanoidCompetitionPage';
 import ArkanoidCompetitionsListPage from './components/ArkanoidCompetitionsListPage';
-import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
-import { LogoMode } from '@/app/constants/games';
+import { ZkNoidGameFeature, ZkNoidGameGenre } from '@sdk/lib/platform/game_tags';
+import { LogoMode } from '@sdk/constants/games';
 
 const description =
   'Old but gold game. Beat all the bricks and protect the ball from falling';

@@ -1,8 +1,8 @@
 import { Competition } from 'zknoid-chain-dev';
 
-import { ICompetition } from './types';
-import { Currency } from '@/constants/currency';
-import { arkanoidConfig } from '@/games/arkanoid/config';
+import { ICompetition } from '@sdk/lib/types';
+import { Currency } from '@sdk/constants/currency';
+import { arkanoidConfig } from '../config';
 
 // Converts contract competition to ICompetition
 export function fromContractCompetition(

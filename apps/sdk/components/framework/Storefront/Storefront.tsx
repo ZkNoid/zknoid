@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { GameStoreSortBy } from "@sdk/components/pages/MainSection/lib/sortBy";
+import { GameComparisonType } from "@sdk/lib/comparators/gameComparator";
 import {
   ZkNoidGameFeature,
   ZkNoidGameGenre,
@@ -14,7 +14,7 @@ import { WidgetsSwitch } from "./ui/WidgetsSwitch";
 import { useSearchParams } from "next/navigation";
 import Faq from "./ui/Faq";
 import Favorites from "./ui/Favorites";
-import { announcedGames, defaultGames, IGame } from "@sdk/app/constants/games";
+import { announcedGames, defaultGames, IGame } from "@sdk/constants/games";
 
 export default function Storefront() {
   const searchParams = useSearchParams();
@@ -23,8 +23,8 @@ export default function Storefront() {
   const [games, setGames] = useState<IGame[]>(
     defaultGames.concat(announcedGames)
   );
-  const [sortBy, setSortBy] = useState<GameStoreSortBy>(
-    GameStoreSortBy.RatingLow
+  const [sortBy, setSortBy] = useState<GameComparisonType>(
+    GameComparisonType.RatingLow
   );
   const [genresSelected, setGenresSelected] = useState<ZkNoidGameGenre[]>([]);
   const [eventTypesSelected, setEventTypesSelected] = useState<

@@ -1,7 +1,7 @@
 import GamePage from '@sdk/components/framework/GamePage';
 import { randzuConfig } from '../config';
-import RandzuCoverSVG from './assets/game-cover.svg';
-import RandzuCoverMobileSVG from './assets/game-cover-mobile.svg';
+import RandzuCoverSVG from '../assets/game-cover.svg';
+import RandzuCoverMobileSVG from '../assets/game-cover-mobile.svg';
 import { useContext, useState } from 'react';
 import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
 import { ClientAppChain, ProtoUInt64 } from 'zknoid-chain-dev';

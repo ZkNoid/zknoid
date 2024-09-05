@@ -1,8 +1,8 @@
 import {
   GAME_STORE_SORT_METHODS,
-  GameStoreSortBy,
-  sortByFilter,
-} from '@/components/pages/MainSection/lib/sortBy';
+  GameComparisonType,
+  compare,
+} from '@sdk/lib/comparators/gameComparator';
 import {
   ALL_GAME_TAGS,
   ZkNoidGameFeature,
@@ -28,8 +28,8 @@ export default function GameStore({
   setEventTypesSelected,
 }: {
   games: IGame[];
-  sortBy: GameStoreSortBy;
-  setSortBy: (sortBy: GameStoreSortBy) => void;
+  sortBy: GameComparisonType;
+  setSortBy: (sortBy: GameComparisonType) => void;
   genresSelected: ZkNoidGameGenre[];
   setGenresSelected: (genresSelected: ZkNoidGameGenre[]) => void;
   featuresSelected: ZkNoidGameFeature[];
@@ -105,7 +105,7 @@ export default function GameStore({
         </div>
         <div className={'mt-[1.302vw] grid w-full grid-cols-3 gap-[0.781vw]'}>
           {renderGames
-            .sort((a, b) => sortByFilter(a, b, sortBy))
+            .sort((a, b) => compare(a, b, sortBy))
             .map((game) => (
               <GameCard
                 game={game}

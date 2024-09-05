@@ -1,5 +1,5 @@
 import { ZkNoidGameGenre } from "@sdk/lib/platform/game_tags";
-import { GameStoreSortBy } from "@sdk/components/pages/MainSection/lib/sortBy";
+import { GameComparisonType } from "@sdk/lib/sortBy";
 import { useRef, useState } from "react";
 import Lottie from "react-lottie";
 
@@ -13,10 +13,10 @@ export function GenresItem({
 }: {
   animation: object;
   genre?: ZkNoidGameGenre;
-  sortBy?: GameStoreSortBy;
+  sortBy?: GameComparisonType;
   genresSelected: ZkNoidGameGenre[];
   setGenresSelected?: (genres: ZkNoidGameGenre[]) => void;
-  setSortBy: (sortBy: GameStoreSortBy) => void;
+  setSortBy: (sortBy: GameComparisonType) => void;
 }) {
   const [visible, setVisible] = useState(false);
   const nodeRef = useRef(null);
@@ -36,7 +36,7 @@ export function GenresItem({
             setGenresSelected?.([genre]);
           }
 
-          setSortBy(GameStoreSortBy.RatingLow);
+          setSortBy(GameComparisonType.RatingLow);
         } else {
           setSortBy!(sortBy!);
         }

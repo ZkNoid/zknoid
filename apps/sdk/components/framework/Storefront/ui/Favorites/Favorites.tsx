@@ -7,7 +7,7 @@ import { useState } from "react";
 import { SortByFilter } from "./ui/SortByFilter";
 import {
   GAME_STORE_SORT_METHODS,
-  GameStoreSortBy,
+  GameComparisonType,
   sortByFilter,
 } from "../../../../../stores/competitions/sortBy";
 import { useNetworkStore } from "@sdk/lib/stores/network";
@@ -26,8 +26,8 @@ export default function Favorites({ games }: { games: IGame[] }) {
   });
 
   const [genresSelected, setGenresSelected] = useState<ZkNoidGameGenre[]>([]);
-  const [sortBy, setSortBy] = useState<GameStoreSortBy>(
-    GameStoreSortBy.RatingLow
+  const [sortBy, setSortBy] = useState<GameComparisonType>(
+    GameComparisonType.RatingLow
   );
   const [currentPage, setCurrentPage] = useState<number>(1);
 
