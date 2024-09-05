@@ -23,6 +23,241 @@ importers:
         specifier: ^v1.12.2
         version: 1.13.4
 
+  apps/games:
+    dependencies:
+      '@hookform/resolvers':
+        specifier: ^3.3.4
+        version: 3.9.0(react-hook-form@7.52.1)
+      '@next/bundle-analyzer':
+        specifier: ^14.1.4
+        version: 14.2.5
+      '@proto-kit/common':
+        specifier: 0.1.1-develop.833
+        version: 0.1.1-develop.833(o1js@1.6.0)(tsyringe@4.8.0)
+      '@proto-kit/library':
+        specifier: 0.1.1-develop.833
+        version: 0.1.1-develop.833(patch_hash=l4nw35jyuqbcpqce4frw6uerfu)(@proto-kit/common@0.1.1-develop.833)(@proto-kit/module@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(@proto-kit/sequencer@0.1.1-develop.833)(o1js@1.6.0)(tsyringe@4.8.0)
+      '@proto-kit/module':
+        specifier: 0.1.1-develop.833
+        version: 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(o1js@1.6.0)(tsyringe@4.8.0)
+      '@proto-kit/protocol':
+        specifier: 0.1.1-develop.833
+        version: 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(o1js@1.6.0)(ts-pattern@4.3.0)(tsyringe@4.8.0)
+      '@proto-kit/sdk':
+        specifier: 0.1.1-develop.833
+        version: 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(@proto-kit/library@0.1.1-develop.833)(@proto-kit/module@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(@proto-kit/sequencer@0.1.1-develop.833)(graphql@16.6.0)(o1js@1.6.0)(tsyringe@4.8.0)
+      '@proto-kit/sequencer':
+        specifier: 0.1.1-develop.833
+        version: 0.1.1-develop.833(@proto-kit/common@0.1.1-develop.833)(@proto-kit/module@0.1.1-develop.833)(@proto-kit/protocol@0.1.1-develop.833)(o1js@1.6.0)(tsyringe@4.8.0)
+      '@radix-ui/react-label':
+        specifier: ^2.0.2
+        version: 2.1.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
+      '@radix-ui/react-separator':
+        specifier: ^1.0.3
+        version: 1.1.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
+      '@radix-ui/react-slot':
+        specifier: ^1.0.2
+        version: 1.1.0(@types/react@18.3.3)(react@19.0.0-rc-4c2e457c7c-20240522)
+      '@radix-ui/react-tabs':
+        specifier: ^1.0.4
+        version: 1.1.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
+      '@radix-ui/react-toast':
+        specifier: ^1.1.5
+        version: 1.2.1(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
+      '@radix-ui/react-tooltip':
+        specifier: ^1.0.7
+        version: 1.1.2(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
+      '@sentry/nextjs':
+        specifier: ^7.109.0
+        version: 7.118.0(next@15.0.0-canary.106)(react@19.0.0-rc-4c2e457c7c-20240522)(webpack@5.93.0)
+      '@tailwindcss/typography':
+        specifier: ^0.5.12
+        version: 0.5.13(tailwindcss@3.4.7)
+      '@tanstack/react-query':
+        specifier: ^5.29.2
+        version: 5.51.18(react@19.0.0-rc-4c2e457c7c-20240522)
+      '@trpc/client':
+        specifier: 11.0.0-rc.332
+        version: 11.0.0-rc.332(@trpc/server@11.0.0-rc.332)
+      '@trpc/next':
+        specifier: 11.0.0-rc.332
+        version: 11.0.0-rc.332(@tanstack/react-query@5.51.18)(@trpc/client@11.0.0-rc.332)(@trpc/react-query@11.0.0-rc.332)(@trpc/server@11.0.0-rc.332)(next@15.0.0-canary.106)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
+      '@trpc/react-query':
+        specifier: 11.0.0-rc.332
+        version: 11.0.0-rc.332(@tanstack/react-query@5.51.18)(@trpc/client@11.0.0-rc.332)(@trpc/server@11.0.0-rc.332)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
+      '@trpc/server':
+        specifier: 11.0.0-rc.332
+        version: 11.0.0-rc.332
+      '@uidotdev/usehooks':
+        specifier: ^2.4.1
+        version: 2.4.1(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
+      '@vercel/analytics':
+        specifier: ^1.2.2
+        version: 1.3.1(next@15.0.0-canary.106)(react@19.0.0-rc-4c2e457c7c-20240522)
+      '@vercel/blob':
+        specifier: ^0.23.3
+        version: 0.23.4
+      '@vercel/speed-insights':
+        specifier: ^1.0.10
+        version: 1.0.12(next@15.0.0-canary.106)(react@19.0.0-rc-4c2e457c7c-20240522)
+      babel-plugin-react-compiler:
+        specifier: 0.0.0-experimental-592953e-20240517
+        version: 0.0.0-experimental-592953e-20240517
+      class-variance-authority:
+        specifier: ^0.7.0
+        version: 0.7.0
+      clsx:
+        specifier: ^2.1.0
+        version: 2.1.1
+      embla-carousel:
+        specifier: ^8.0.2
+        version: 8.1.8
+      embla-carousel-autoplay:
+        specifier: ^8.0.2
+        version: 8.1.8(embla-carousel@8.1.8)
+      embla-carousel-react:
+        specifier: ^8.0.2
+        version: 8.1.8(react@19.0.0-rc-4c2e457c7c-20240522)
+      eslint-plugin-prettier:
+        specifier: ^5.1.3
+        version: 5.2.1(eslint-config-prettier@9.1.0)(eslint@8.57.0)(prettier@3.3.3)
+      formik:
+        specifier: ^2.4.6
+        version: 2.4.6(react@19.0.0-rc-4c2e457c7c-20240522)
+      framer-motion:
+        specifier: ^11.0.10
+        version: 11.3.21(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
+      immer:
+        specifier: ^10.0.4
+        version: 10.1.1
+      l1-lottery-contracts:
+        specifier: 0.7.15
+        version: 0.7.15(o1js@1.6.0)
+      ldrs:
+        specifier: ^1.0.2
+        version: 1.0.2
+      lottie-react:
+        specifier: ^2.4.0
+        version: 2.4.0(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
+      lucide-react:
+        specifier: ^0.292.0
+        version: 0.292.0(react@19.0.0-rc-4c2e457c7c-20240522)
+      luxon:
+        specifier: ^3.4.4
+        version: 3.4.4
+      mongodb:
+        specifier: ^6.5.0
+        version: 6.8.0
+      next:
+        specifier: v15.0.0-canary.106
+        version: 15.0.0-canary.106(@babel/core@7.25.2)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
+      node-telegram-bot-api:
+        specifier: ^0.65.1
+        version: 0.65.1(request@2.88.2)
+      o1js:
+        specifier: npm:o1js@1.6.0
+        version: 1.6.0
+      react:
+        specifier: 19.0.0-rc-4c2e457c7c-20240522
+        version: 19.0.0-rc-4c2e457c7c-20240522
+      react-dom:
+        specifier: 19.0.0-rc-4c2e457c7c-20240522
+        version: 19.0.0-rc-4c2e457c7c-20240522(react@19.0.0-rc-4c2e457c7c-20240522)
+      react-hook-form:
+        specifier: ^7.51.2
+        version: 7.52.1(react@19.0.0-rc-4c2e457c7c-20240522)
+      react-lottie:
+        specifier: ^1.2.4
+        version: 1.2.4(react@19.0.0-rc-4c2e457c7c-20240522)
+      reflect-metadata:
+        specifier: ^0.2.2
+        version: 0.2.2
+      sdk:
+        specifier: workspace:*
+        version: link:../sdk
+      superjson:
+        specifier: ^2.2.1
+        version: 2.2.1
+      tailwind-merge:
+        specifier: ^2.2.2
+        version: 2.4.0
+      tailwindcss-animate:
+        specifier: ^1.0.7
+        version: 1.0.7(tailwindcss@3.4.7)
+      terser-webpack-plugin:
+        specifier: ^5.3.10
+        version: 5.3.10(webpack@5.93.0)
+      truncate-middle:
+        specifier: ^1.0.6
+        version: 1.0.6
+      yup:
+        specifier: ^1.4.0
+        version: 1.4.0
+      zknoid-chain-dev:
+        specifier: workspace:*
+        version: link:../../packages/chain
+      zod:
+        specifier: ^3.22.4
+        version: 3.23.8
+      zustand:
+        specifier: ^4.5.2
+        version: 4.5.4(@types/react@18.3.3)(immer@10.1.1)(react@19.0.0-rc-4c2e457c7c-20240522)
+    devDependencies:
+      '@babel/core':
+        specifier: ^7.24.4
+        version: 7.25.2
+      '@babel/plugin-proposal-class-properties':
+        specifier: ^7.18.6
+        version: 7.18.6(@babel/core@7.25.2)
+      '@babel/plugin-proposal-decorators':
+        specifier: ^7.24.1
+        version: 7.24.7(@babel/core@7.25.2)
+      '@types/luxon':
+        specifier: ^3.4.2
+        version: 3.4.2
+      '@types/node':
+        specifier: ^20.12.7
+        version: 20.14.13
+      '@types/node-telegram-bot-api':
+        specifier: ^0.64.6
+        version: 0.64.7
+      '@types/react':
+        specifier: ^18.2.75
+        version: 18.3.3
+      '@types/react-dom':
+        specifier: ^18.2.24
+        version: 18.3.0
+      '@types/react-lottie':
+        specifier: ^1.2.10
+        version: 1.2.10
+      autoprefixer:
+        specifier: ^10.4.19
+        version: 10.4.19(postcss@8.4.40)
+      babel-plugin-transform-typescript-metadata:
+        specifier: ^0.3.2
+        version: 0.3.2(@babel/core@7.25.2)
+      eslint:
+        specifier: ^8.57.0
+        version: 8.57.0
+      eslint-config-next:
+        specifier: 14.0.1
+        version: 14.0.1(eslint@8.57.0)(typescript@5.5.4)
+      eslint-config-prettier:
+        specifier: ^9.1.0
+        version: 9.1.0(eslint@8.57.0)
+      postcss:
+        specifier: ^8.4.38
+        version: 8.4.40
+      prettier-plugin-tailwindcss:
+        specifier: ^0.5.13
+        version: 0.5.14(prettier@3.3.3)
+      tailwindcss:
+        specifier: ^3.4.3
+        version: 3.4.7
+      typescript:
+        specifier: ^5.4.5
+        version: 5.5.4
+
   apps/sdk:
     dependencies:
       '@hookform/resolvers':
@@ -255,7 +490,7 @@ importers:
         specifier: ^5.4.5
         version: 5.5.4
 
-  apps/web:
+  apps/store:
     dependencies:
       '@hookform/resolvers':
         specifier: ^3.3.4
@@ -359,6 +594,9 @@ importers:
       framer-motion:
         specifier: ^11.0.10
         version: 11.3.21(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
+      games:
+        specifier: workspace:*
+        version: link:../games
       immer:
         specifier: ^10.0.4
         version: 10.1.1

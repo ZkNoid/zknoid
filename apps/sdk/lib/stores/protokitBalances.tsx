@@ -19,7 +19,7 @@ import { Balances, ProtoUInt64, ZNAKE_TOKEN_ID } from 'zknoid-chain-dev';
 import { BalancesKey, TokenId } from '@proto-kit/library';
 import { api } from '@/trpc/react';
 import { getEnvContext } from '../envContext';
-import { useBridgeStore } from '@/lib/stores/bridgeStore';
+import { useBridgeStore } from '../../lib/stores/bridgeStore';
 
 class Point extends Struct({ x: Field, y: Field }) {
   static add(a: Point, b: Point) {

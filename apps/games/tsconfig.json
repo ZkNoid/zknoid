@@ -17,7 +17,7 @@
     "emitDecoratorMetadata": true,
     "plugins": [],
     "paths": {
-      "~/*": ["./*"]
+      "@/*": ["./*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "assets/*", "custom.d.ts"],
