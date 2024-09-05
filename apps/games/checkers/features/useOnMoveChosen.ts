@@ -10,10 +10,10 @@ import {
   MOVE_KING_BOTTOM_RIGHT,
   MOVE_TOP_LEFT,
   MOVE_TOP_RIGHT,
-} from '@/games/checkers/components/GameView';
-import { MatchQueueState } from '@/lib/stores/matchQueue';
+} from '../components/GameView';
+import { MatchQueueState } from '@sdk/lib/stores/matchQueue';
 import { useStore } from 'zustand';
-import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
+import { useSessionKeyStore } from '@sdk/lib/stores/sessionKeyStorage';
 
 export const useOnMoveChosen = (
   matchQueue: MatchQueueState,
