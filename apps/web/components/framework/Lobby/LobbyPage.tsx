@@ -1,7 +1,7 @@
 import { LobbyWrap } from '@/components/framework/Lobby/ui/LobbyWrap';
 import { FastMatchmaking } from '@/components/framework/Lobby/ui/FastMatchmaking';
 import LobbyList from '@/components/framework/Lobby/LobbyList';
-import Popover from '@/components/shared/Popover';
+import Popover from 'sdk/components/shared/Popover';
 import { LobbyInformation } from '@/components/framework/Lobby/ui/LobbyInformation';
 import { CreateNewLobbyBtn } from '@/components/framework/Lobby/ui/CreateNewLobbyBtn';
 import { usePvpLobbyStorage } from '@/lib/stores/pvpLobbyStore';
@@ -14,11 +14,14 @@ import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import { ClientAppChain, MatchMaker, ProtoUInt64 } from 'zknoid-chain-dev';
 import { Field, Bool, CircuitString, PublicKey, UInt64 } from 'o1js';
 import { useNetworkStore } from '@/lib/stores/network';
-import { type PendingTransaction, type ModuleQuery } from '@proto-kit/sequencer';
+import {
+  type PendingTransaction,
+  type ModuleQuery,
+} from '@proto-kit/sequencer';
 import { useStore } from 'zustand';
 import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
-import BaseModal from '@/components/shared/Modal/BaseModal';
-import Button from '@/components/shared/Button';
+import BaseModal from 'sdk/components/shared/Modal/BaseModal';
+import Button from 'sdk/components/shared/Button';
 import {
   useLobbiesStore,
   useObserveLobbiesStore,

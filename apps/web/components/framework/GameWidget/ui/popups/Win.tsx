@@ -1,5 +1,5 @@
-import GradientButton from '@/components/shared/GradientButton';
-import { HappySmileSVG } from '@/components/shared/misc/svg';
+import GradientButton from 'sdk/components/shared/GradientButton';
+import { HappySmileSVG } from 'sdk/components/shared/misc/svg';
 
 export const Win = ({
   onBtnClick,

@@ -4,8 +4,8 @@ import { COMPETITIONS_SORT_METHODS, CompetitionsSortBy } from './lib/sortBy';
 import CompetitionListItem from './ui/CompetitionListItem';
 import { ICompetition } from '@/lib/types';
 import { useEffect, useRef, useState } from 'react';
-import Button from '@/components/shared/Button';
-import CustomScrollbar from '@/components/shared/CustomScrollbar';
+import Button from 'sdk/components/shared/Button';
+import CustomScrollbar from 'sdk/components/shared/CustomScrollbar';
 import { AnimatePresence, useScroll } from 'framer-motion';
 import { sortByFilter } from './lib/sortBy';
 

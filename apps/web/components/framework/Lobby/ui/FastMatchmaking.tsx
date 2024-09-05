@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import znakesImg from '@/public/image/tokens/znakes.svg';
 import { Currency } from '@/constants/currency';
-import Popover from '@/components/shared/Popover';
+import Popover from 'sdk/components/shared/Popover';
 import { IMatchamkingOption, useLobbiesStore } from '@/lib/stores/lobbiesStore';
 import { MatchmakingModal } from '@/components/framework/Lobby/ui/modals/MatchmakingModal';
 import { useEffect, useState } from 'react';

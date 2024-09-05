@@ -6,7 +6,7 @@ import OwnedTickets from './OwnedTickets';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { AnimatePresence } from 'framer-motion';
 import PreviousRounds from './PreviousRounds';
-import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
+import { useNotificationStore } from 'sdk/components/shared/Notification/lib/notificationStore';
 import { useRoundsStore } from '@/games/lottery/lib/roundsStore';
 import OwnedGiftCodes from './GiftCodes/OwnedGiftCodes';
 import BoughtGiftCodes from './GiftCodes/BoughtGiftCodes';

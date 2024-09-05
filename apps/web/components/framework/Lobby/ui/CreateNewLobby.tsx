@@ -1,11 +1,11 @@
-import Input from '@/components/shared/Input';
+import Input from 'sdk/components/shared/Input';
 import { useState } from 'react';
 import Image from 'next/image';
 import znakesImg from '@/public/image/tokens/znakes.svg';
-import Popover from '@/components/shared/Popover';
-import Checkbox from '@/components/shared/Checkbox';
-import Button from '@/components/shared/Button';
-import BaseModal from '@/components/shared/Modal/BaseModal';
+import Popover from 'sdk/components/shared/Popover';
+import Checkbox from 'sdk/components/shared/Checkbox';
+import Button from 'sdk/components/shared/Button';
+import BaseModal from 'sdk/components/shared/Modal/BaseModal';
 import { motion } from 'framer-motion';
 import { Currency } from '@/constants/currency';
 import { useNetworkStore } from '@/lib/stores/network';

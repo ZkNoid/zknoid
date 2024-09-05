@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { ReactNode, useState } from 'react';
-import LoadSpinner from '@/components/shared/LoadSpinner';
+import LoadSpinner from 'sdk/components/shared/LoadSpinner';
 
 export const FullscreenWrap = ({
   isFullscreen,

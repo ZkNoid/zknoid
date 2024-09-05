@@ -14,7 +14,7 @@ import Image from 'next/image';
 import { clsx } from 'clsx';
 import Link from 'next/link';
 import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
-import ToastContainer from '@/components/shared/Toast/ui/ToastContainer';
+import ToastContainer from 'sdk/components/shared/Toast/ui/ToastContainer';
 import { cn } from '@/lib/helpers';
 import Header from '@/components/widgets/Header';
 import Footer from '@/components/widgets/Footer';

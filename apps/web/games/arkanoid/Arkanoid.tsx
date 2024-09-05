@@ -30,7 +30,7 @@ import { UnsetCompetitionPopup } from '@/components/framework/GameWidget/ui/popu
 import { FullscreenButton } from '@/components/framework/GameWidget/ui/FullscreenButton';
 import { FullscreenWrap } from '@/components/framework/GameWidget/ui/FullscreenWrap';
 import { PreRegModal } from './ui/PreRegModal';
-import Button from '@/components/shared/Button';
+import Button from 'sdk/components/shared/Button';
 import ArkanoidCoverSVG from './assets/game-cover.svg';
 import ArkanoidMobileCoverSVG from './assets/game-cover-mobile.svg';
 import { GameState } from './lib/gameState';

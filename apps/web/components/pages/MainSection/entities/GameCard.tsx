@@ -1,6 +1,6 @@
 import { IGame, LogoMode } from '@/app/constants/games';
 import { useNetworkStore } from '@/lib/stores/network';
-import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
+import { useNotificationStore } from 'sdk/components/shared/Notification/lib/notificationStore';
 import { useEffect, useState } from 'react';
 import { api } from '@/trpc/react';
 import heart_2 from '@/public/image/misc/heart-2.svg';

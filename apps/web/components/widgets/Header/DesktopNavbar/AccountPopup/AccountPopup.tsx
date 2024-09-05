@@ -7,7 +7,7 @@ import * as Yup from 'yup';
 import { Field, Form, Formik } from 'formik';
 import dynamic from 'next/dynamic';
 import { api } from '@/trpc/react';
-import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
+import { useNotificationStore } from 'sdk/components/shared/Notification/lib/notificationStore';
 import handEmojiImg from '@/public/image/misc/handEmoji.svg';
 import avatarUnset from '@/public/image/avatars/avatar-unset.svg';
 import avatar1 from '@/public/image/avatars/avatar-1.svg';

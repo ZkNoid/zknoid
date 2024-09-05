@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { IToast } from '@/components/shared/Toast/types/IToast';
+import { IToast } from 'sdk/components/shared/Toast/types/IToast';
 import { immer } from 'zustand/middleware/immer';
 
 export interface ToasterStore {

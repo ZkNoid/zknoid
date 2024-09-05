@@ -1,5 +1,5 @@
-import BaseModal from '@/components/shared/Modal/BaseModal';
-import Button from '@/components/shared/Button';
+import BaseModal from 'sdk/components/shared/Modal/BaseModal';
+import Button from 'sdk/components/shared/Button';
 
 export const AlreadyInLobbyModal = ({
   isOpen,

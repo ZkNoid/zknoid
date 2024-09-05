@@ -15,7 +15,7 @@ import { fetchAccount } from 'o1js';
 import { LOTTERY_ADDRESS } from '@/app/constants/addresses';
 import { BLOCK_PER_ROUND } from 'l1-lottery-contracts';
 import StateManager from '@/games/lottery/ui/StateManager';
-import ConnectWalletModal from '@/components/shared/ConnectWalletModal';
+import ConnectWalletModal from 'sdk/components/shared/ConnectWalletModal';
 import TicketsStorage from '@/games/lottery/ui/TicketsStorage';
 
 export enum Pages {

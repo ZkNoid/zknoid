@@ -1,4 +1,4 @@
-import BaseModal from '@/components/shared/Modal/BaseModal';
+import BaseModal from 'sdk/components/shared/Modal/BaseModal';
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';

@@ -38,7 +38,7 @@ import { getRandomEmoji } from '@/lib/emoji';
 import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
 import { cn } from '@/lib/helpers';
 import AnimatedThimble from './components/AnimatedThimble';
-import Button from '@/components/shared/Button';
+import Button from 'sdk/components/shared/Button';
 import GameWidget from '@/components/framework/GameWidget';
 import { UnsetCompetitionPopup } from '@/components/framework/GameWidget/ui/popups/UnsetCompetitionPopup';
 import { formatUnits } from '@/lib/unit';
@@ -51,12 +51,12 @@ import { motion, useAnimationControls } from 'framer-motion';
 import { ICompetitionPVP } from '@/lib/types';
 import { GameWrap } from '@/components/framework/GamePage/GameWrap';
 import { RateGame } from '@/components/framework/GameWidget/ui/popups/RateGame';
-import { SadSmileSVG } from '@/components/shared/misc/svg';
-import toast from '@/components/shared/Toast';
+import { SadSmileSVG } from 'sdk/components/shared/misc/svg';
+import toast from 'sdk/components/shared/Toast';
 import { useToasterStore } from '@/lib/stores/toasterStore';
 import { useRateGameStore } from '@/lib/stores/rateGameStore';
 import { formatPubkey } from '@/lib/utils';
-import StatefulModal from '@/components/shared/Modal/StatefulModal';
+import StatefulModal from 'sdk/components/shared/Modal/StatefulModal';
 import { GameState } from './lib/gameState';
 import { useStartGame } from './features/startGame';
 import {
@@ -98,7 +98,12 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   useObserveThimblerigMatchQueue();
   const startGame = useStartGame(setGameState);
 
-  const client_ = client as ClientAppChain<typeof thimblerigConfig.runtimeModules, any, any, any>;
+  const client_ = client as ClientAppChain<
+    typeof thimblerigConfig.runtimeModules,
+    any,
+    any,
+    any
+  >;
 
   const query = networkStore.protokitClientStarted
     ? client_.query.runtime.ThimblerigLogic

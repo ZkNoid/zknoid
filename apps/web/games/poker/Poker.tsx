@@ -1,11 +1,11 @@
 import PokerCoverSVG from '@/games/poker/assets/game-cover.svg';
 import GamePage from '@/components/framework/GamePage';
 import { pokerConfig } from '@/games/poker/config';
-import Button from '@/components/shared/Button';
+import Button from 'sdk/components/shared/Button';
 import { Currency } from '@/constants/currency';
 import Image from 'next/image';
 import defaultAvatar from './assets/avatars/defaultAvatar.svg';
-import StatefulModal from '@/components/shared/Modal/StatefulModal';
+import StatefulModal from 'sdk/components/shared/Modal/StatefulModal';
 import ChatMessage from './ui/ChatMessage';
 import LogsMessage from './ui/LogsMessage';
 import PlayerListItem from './ui/PlayerListItem';

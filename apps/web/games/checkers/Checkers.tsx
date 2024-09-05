@@ -24,7 +24,7 @@ import {
 import CheckersCoverSVG from './assets/game-cover.svg';
 import CheckersCoverMobileSVG from './assets/game-cover-mobile.svg';
 import { getRandomEmoji } from '@/lib/emoji';
-import toast from '@/components/shared/Toast';
+import toast from 'sdk/components/shared/Toast';
 import { formatUnits } from '@/lib/unit';
 import { Currency } from '@/constants/currency';
 import { useToasterStore } from '@/lib/stores/toasterStore';

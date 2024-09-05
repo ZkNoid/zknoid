@@ -14,7 +14,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
-import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
+import { useNotificationStore } from 'sdk/components/shared/Notification/lib/notificationStore';
 import Link from 'next/link';
 
 const ticketsImages = [

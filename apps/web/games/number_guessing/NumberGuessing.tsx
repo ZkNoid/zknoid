@@ -8,8 +8,8 @@ import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import { useProtokitChainStore } from '@/lib/stores/protokitChain';
 import CoverSVG from './assets/game-cover.svg';
 import { motion } from 'framer-motion';
-import Button from '@/components/shared/Button';
-import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
+import Button from 'sdk/components/shared/Button';
+import { useNotificationStore } from 'sdk/components/shared/Notification/lib/notificationStore';
 
 export default function NumberGuessing({
   params,

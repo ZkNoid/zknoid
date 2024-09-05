@@ -1,5 +1,5 @@
 import { cn } from '@/lib/helpers';
-import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
+import { useNotificationStore } from 'sdk/components/shared/Notification/lib/notificationStore';
 import { api } from '@/trpc/react';
 import { useNetworkStore } from '@/lib/stores/network';
 

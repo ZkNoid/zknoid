@@ -5,7 +5,7 @@ import './globals.css';
 import { plexMono, museoSlab, plexSans } from './fonts';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import NotificationsContainer from '@/components/shared/Notification/NotificationsContainer';
+import NotificationsContainer from 'sdk/components/shared/Notification/NotificationsContainer';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://app.zknoid.io'),

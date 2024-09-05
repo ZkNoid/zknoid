@@ -2,7 +2,7 @@ import { cn, sendTransaction } from '@/lib/helpers';
 import { Currency } from '@/constants/currency';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { useNetworkStore } from '@/lib/stores/network';
-import Loader from '@/components/shared/Loader';
+import Loader from 'sdk/components/shared/Loader';
 import { formatUnits } from '@/lib/unit';
 import { useState } from 'react';
 import Link from 'next/link';

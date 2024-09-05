@@ -5,7 +5,7 @@ import { useChainStore } from '@/lib/stores/minaChain';
 import { useEffect, useState } from 'react';
 import { ILotteryRound } from '@/games/lottery/lib/types';
 import { api } from '@/trpc/react';
-import Skeleton from '@/components/shared/Skeleton';
+import Skeleton from 'sdk/components/shared/Skeleton';
 
 export default function PreviousRounds() {
   const ROUNDS_PER_PAGE = 2;

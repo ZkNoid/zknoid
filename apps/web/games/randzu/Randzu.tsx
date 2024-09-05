@@ -30,7 +30,7 @@ import RandzuCoverMobileSVG from './assets/game-cover-mobile.svg';
 import GameWidget from '@/components/framework/GameWidget';
 import { motion } from 'framer-motion';
 import { formatPubkey } from '@/lib/utils';
-import Button from '@/components/shared/Button';
+import Button from 'sdk/components/shared/Button';
 import { Competition } from '@/components/framework/GameWidget/ui/Competition';
 import { Currency } from '@/constants/currency';
 import { formatUnits } from '@/lib/unit';
@@ -44,7 +44,7 @@ import { ConnectWallet } from '@/components/framework/GameWidget/ui/popups/Conne
 import { InstallWallet } from '@/components/framework/GameWidget/ui/popups/InstallWallet';
 import { GameWrap } from '@/components/framework/GamePage/GameWrap';
 import { RateGame } from '@/components/framework/GameWidget/ui/popups/RateGame';
-import toast from '@/components/shared/Toast';
+import toast from 'sdk/components/shared/Toast';
 import { useToasterStore } from '@/lib/stores/toasterStore';
 import { useRateGameStore } from '@/lib/stores/rateGameStore';
 import { GameState } from './lib/gameState';

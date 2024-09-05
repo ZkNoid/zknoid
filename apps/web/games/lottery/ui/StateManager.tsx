@@ -1,5 +1,5 @@
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
-import Loader from '@/components/shared/Loader';
+import Loader from 'sdk/components/shared/Loader';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/helpers';

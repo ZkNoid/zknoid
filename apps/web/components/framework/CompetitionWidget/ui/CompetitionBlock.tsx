@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { ICompetition } from '@/lib/types';
 import { useSwitchWidgetStorage } from '@/lib/stores/switchWidgetStorage';
 import { formatUnits } from '@/lib/unit';
-import Button from '@/components/shared/Button';
+import Button from 'sdk/components/shared/Button';
 
 export default function CompetitionBlock({
   competition,

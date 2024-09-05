@@ -2,7 +2,7 @@ import { Pages } from '@/games/lottery/Lottery';
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/helpers';
 import { AnimatePresence, useScroll } from 'framer-motion';
-import CustomScrollbar from '@/components/shared/CustomScrollbar';
+import CustomScrollbar from 'sdk/components/shared/CustomScrollbar';
 import { useWorkerClientStore } from '@/lib/stores/workerClient';
 import { useNetworkStore } from '@/lib/stores/network';
 import { formatUnits } from '@/lib/unit';

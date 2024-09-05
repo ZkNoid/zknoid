@@ -1,4 +1,4 @@
-import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
+import { useNotificationStore } from 'sdk/components/shared/Notification/lib/notificationStore';
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 

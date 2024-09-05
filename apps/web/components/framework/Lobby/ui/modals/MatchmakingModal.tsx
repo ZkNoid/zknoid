@@ -1,6 +1,6 @@
-import BaseModal from '@/components/shared/Modal/BaseModal';
-import Button from '@/components/shared/Button';
-import LoadSpinner from '@/components/shared/LoadSpinner';
+import BaseModal from 'sdk/components/shared/Modal/BaseModal';
+import Button from 'sdk/components/shared/Button';
+import LoadSpinner from 'sdk/components/shared/LoadSpinner';
 import Image from 'next/image';
 import znakesImg from '@/public/image/tokens/znakes.svg';
 import { Currency } from '@/constants/currency';

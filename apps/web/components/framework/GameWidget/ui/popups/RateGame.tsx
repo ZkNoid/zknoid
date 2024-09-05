@@ -5,7 +5,7 @@ import { useNetworkStore } from '@/lib/stores/network';
 import { getEnvContext } from '@/lib/envContext';
 import { useToasterStore } from '@/lib/stores/toasterStore';
 import { useRateGameStore } from '@/lib/stores/rateGameStore';
-import toast from '@/components/shared/Toast';
+import toast from 'sdk/components/shared/Toast';
 
 export const RateGame = ({
   gameId,

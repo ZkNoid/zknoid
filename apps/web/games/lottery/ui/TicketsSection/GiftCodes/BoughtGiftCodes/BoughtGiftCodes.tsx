@@ -1,5 +1,5 @@
 import BoughtGiftCodeItem from './ui/BoughtGiftCodeItem';
-import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
+import { useNotificationStore } from 'sdk/components/shared/Notification/lib/notificationStore';
 
 export default function BoughtGiftCodes({
   giftCodes,

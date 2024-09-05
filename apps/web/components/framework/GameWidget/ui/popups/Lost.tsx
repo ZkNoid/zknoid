@@ -1,5 +1,5 @@
-import { SadSmileSVG } from '@/components/shared/misc/svg';
-import GradientButton from '@/components/shared/GradientButton';
+import { SadSmileSVG } from 'sdk/components/shared/misc/svg';
+import GradientButton from 'sdk/components/shared/GradientButton';
 
 export const Lost = ({ startGame }: { startGame: () => void }) => {
   return (

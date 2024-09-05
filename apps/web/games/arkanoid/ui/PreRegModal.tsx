@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { arkanoidConfig } from '@/games/arkanoid/config';
-import StatefulModal from '@/components/shared/Modal/StatefulModal';
+import StatefulModal from 'sdk/components/shared/Modal/StatefulModal';
 import { ICompetition } from '@/lib/types';
 
 export const PreRegModal = ({ competition }: { competition: ICompetition }) => {
