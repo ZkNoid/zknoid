@@ -1,4 +1,4 @@
-import { ILobby } from '@/lib/types';
+import { ILobby } from '@sdk/lib/types';
 
 export enum LobbiesSortBy {
   LowFunds = 'From High to Low Funds',

@@ -1,5 +1,5 @@
-import { Currency } from '@/constants/currency';
-import { ZkNoidGameGenre } from '@/lib/platform/game_tags';
+import { Currency } from '@sdk/constants/currency';
+import { ZkNoidGameGenre } from '@sdk/lib/platform/game_tags';
 import { PublicKey } from 'o1js';
 
 export interface Ball {

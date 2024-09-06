@@ -1,5 +1,5 @@
-import { ALL_GAME_TAGS, ZkNoidGameGenre } from '@/lib/platform/game_tags';
-import { cn } from '@/lib/helpers';
+import { ALL_GAME_TAGS, ZkNoidGameGenre } from '@sdk/lib/platform/game_tags';
+import { cn } from '@sdk/lib/helpers';
 import { useState } from 'react';
 import { SortByFilter } from './ui/SortByFilter';
 import {
@@ -7,7 +7,7 @@ import {
   GameComparisonType,
   compare
 } from '@sdk/lib/comparators/gameComparator';
-import { useNetworkStore } from '@/lib/stores/network';
+import { useNetworkStore } from '@sdk/lib/stores/network';
 import { api } from '@sdk/trpc/react';
 import { IGame } from '@/app/constants/games';
 import { GameCard } from '../../../../entities/GameCard';

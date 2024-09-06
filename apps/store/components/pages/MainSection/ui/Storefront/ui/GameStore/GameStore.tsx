@@ -7,12 +7,12 @@ import {
   ALL_GAME_TAGS,
   ZkNoidGameFeature,
   ZkNoidGameGenre,
-} from '@/lib/platform/game_tags';
-import { ZkNoidEventType } from '@/lib/platform/game_events';
+} from '@sdk/lib/platform/game_tags';
+import { ZkNoidEventType } from '@sdk/lib/platform/game_events';
 import { useEffect, useState } from 'react';
 import { announcedGames, defaultGames, IGame } from '@/app/constants/games';
 import { SortByFilter } from '@/components/pages/MainSection/ui/Storefront/ui/Favorites/ui/SortByFilter';
-import { cn } from '@/lib/helpers';
+import { cn } from '@sdk/lib/helpers';
 import { GameCard } from '../../../../entities/GameCard';
 import GameStoreFilters from './ui/GameStoreFilters';
 

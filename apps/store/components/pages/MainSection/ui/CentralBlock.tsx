@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import centralBlockImg from '@/public/image/central-block.svg';
 import { useSearchParams } from 'next/navigation';
-import { cn } from '@/lib/helpers';
+import { cn } from '@sdk/lib/helpers';
 
 export default function CentralBlock() {
   const searchParams = useSearchParams();

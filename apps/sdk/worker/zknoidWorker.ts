@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 
-import { LOTTERY_CACHE } from '@/constants/contracts_cache';
-import { FetchedCache, WebFileSystem, fetchCache } from '@/lib/cache';
-import { mockProof } from '@/lib/utils';
+import { LOTTERY_CACHE } from '@sdk/constants/contracts_cache';
+import { FetchedCache, WebFileSystem, fetchCache } from '@sdk/lib/cache';
+import { mockProof } from '@sdk/lib/utils';
 
 import {
   Field as Field014,

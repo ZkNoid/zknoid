@@ -1,5 +1,5 @@
 import { IGame, LogoMode } from '@/app/constants/games';
-import { useNetworkStore } from '@/lib/stores/network';
+import { useNetworkStore } from '@sdk/lib/stores/network';
 import { useNotificationStore } from '@sdk/components/shared/Notification/lib/notificationStore';
 import { useEffect, useState } from 'react';
 import { api } from '@sdk/trpc/react';
@@ -9,10 +9,10 @@ import heart_3 from '@/public/image/misc/heart-3.svg';
 import heart_2_filled from '@/public/image/misc/heart-2-filled.svg';
 import heart_1_filled from '@/public/image/misc/heart-1-filled.svg';
 import heart_3_filled from '@/public/image/misc/heart-3-filled.svg';
-import { cn } from '@/lib/helpers';
+import { cn } from '@sdk/lib/helpers';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getEnvContext } from '@/lib/envContext';
+import { getEnvContext } from '@sdk/lib/envContext';
 
 export function GameCard({
   game,

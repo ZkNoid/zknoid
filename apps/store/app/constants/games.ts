@@ -1,4 +1,4 @@
-import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
+import { ZkNoidGameFeature, ZkNoidGameGenre } from '@sdk/lib/platform/game_tags';
 
 export enum LogoMode {
   CENTER = 0,

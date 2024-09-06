@@ -1,4 +1,4 @@
-import { ZkNoidGameGenre } from '@/lib/platform/game_tags';
+import { ZkNoidGameGenre } from '@sdk/lib/platform/game_tags';
 import { GameComparisonType } from '@sdk/lib/comparators/gameComparator';
 import { useRef, useState } from 'react';
 import Lottie from 'react-lottie';

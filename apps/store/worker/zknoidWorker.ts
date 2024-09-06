@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 
 import { LOTTERY_CACHE } from '@/constants/contracts_cache';
-import { FetchedCache, WebFileSystem, fetchCache } from '@/lib/cache';
-import { mockProof } from '@/lib/utils';
+import { FetchedCache, WebFileSystem, fetchCache } from '@sdk/lib/cache';
+import { mockProof } from '@sdk/lib/utils';
 
 import {
   Field as Field014,
@@ -49,7 +49,7 @@ import {
   GetRewardEvent,
   ProduceResultEvent,
 } from 'l1-lottery-contracts';
-import { NETWORKS } from '@/app/constants/networks';
+import { NETWORKS } from '@sdk/constants/networks';
 import { number } from 'zod';
 import { lotteryBackendRouter } from '@sdk/server/api/routers/lottery-backend';
 import { api } from '@sdk/trpc/vanilla';

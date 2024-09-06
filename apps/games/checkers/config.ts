@@ -1,10 +1,10 @@
-import { createZkNoidGameConfig } from '@/lib/createConfig';
-import { ZkNoidGameType } from '@/lib/platform/game_types';
+import { createZkNoidGameConfig } from '@sdk/lib/createConfig';
+import { ZkNoidGameType } from '@sdk/lib/platform/game_types';
 import { CheckersLogic } from 'zknoid-chain-dev';
 import CheckersPage from './Checkers';
-import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
+import { ZkNoidGameFeature, ZkNoidGameGenre } from '@sdk/lib/platform/game_tags';
 import CheckersLobby from './components/CheckersLobby';
-import { LogoMode } from '@/app/constants/games';
+import { LogoMode } from '@sdk/constants/games';
 
 export const checkersConfig = createZkNoidGameConfig({
   id: 'checkers',

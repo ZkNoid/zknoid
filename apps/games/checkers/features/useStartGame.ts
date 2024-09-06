@@ -1,12 +1,12 @@
 import { api } from '@sdk/trpc/react';
 import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
-import { getEnvContext } from '@/lib/envContext';
+import { getEnvContext } from '@sdk/lib/envContext';
 import { PublicKey, UInt64 } from 'o1js';
 import { useStore } from 'zustand';
-import { useSessionKeyStore } from '@/lib/stores/sessionKeyStorage';
-import { useMinaBridge } from '@/lib/stores/protokitBalances';
+import { useSessionKeyStore } from '@sdk/lib/stores/sessionKeyStorage';
+import { useMinaBridge } from '@sdk/lib/stores/protokitBalances';
 import { client } from 'zknoid-chain-dev';
-import { useNetworkStore } from '@/lib/stores/network';
+import { useNetworkStore } from '@sdk/lib/stores/network';
 import { GameState } from '../lib/gameState';
 
 export const useStartGame = (setGameState: (state: GameState) => void) => {

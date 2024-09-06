@@ -3,8 +3,8 @@ import { type ClientAppChain } from '@proto-kit/sdk';
 import { createStore } from 'zustand';
 import { ZkNoidGameFeature, ZkNoidGameGenre } from './platform/game_tags';
 import { buildClient } from './utils';
-import { ZkNoidGameType } from '@/lib/platform/game_types';
-import { LogoMode } from '@/app/constants/games';
+import { ZkNoidGameType } from '@sdk/lib/platform/game_types';
+import { LogoMode } from '@sdk/constants/games';
 
 export type ZkNoidGameConfig<
   RuntimeModules extends RuntimeModulesRecord = RuntimeModulesRecord,

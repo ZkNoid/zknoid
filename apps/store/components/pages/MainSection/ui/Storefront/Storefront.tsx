@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { GameComparisonType } from '@sdk/lib/comparators/gameComparator';
-import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
-import { ZkNoidEventType } from '@/lib/platform/game_events';
+import { ZkNoidGameFeature, ZkNoidGameGenre } from '@sdk/lib/platform/game_tags';
+import { ZkNoidEventType } from '@sdk/lib/platform/game_events';
 import Events from './ui/Events';
 import GenresFilter from './ui/GenresFilter';
 import GameStore from './ui/GameStore';

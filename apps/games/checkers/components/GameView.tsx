@@ -1,6 +1,6 @@
 'use client';
 
-import { IGameInfo } from '@/lib/stores/matchQueue';
+import { IGameInfo } from '@sdk/lib/stores/matchQueue';
 import { Bool, UInt32 } from 'o1js';
 import { useEffect, useState } from 'react';
 import { CheckersField } from 'zknoid-chain-dev';

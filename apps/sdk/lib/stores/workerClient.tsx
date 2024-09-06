@@ -13,7 +13,6 @@ import {
   getNullifierId,
 } from "l1-lottery-contracts";
 import { NetworkIds } from "@sdk/constants/networks";
-import { LOTTERY_ADDRESS } from "@sdk/constants/addresses";
 import { Field, PublicKey, UInt32, type JsonProof } from "o1js";
 import { DateTime, Duration } from "luxon";
 
@@ -39,7 +38,7 @@ export interface ClientState {
   startLottery: (
     networkId: string,
     currBlock: number,
-    events: object[]
+    lotteryAddress: string
   ) => Promise<ZknoidWorkerClient>;
   updateOnchainState: () => Promise<void>;
   setOnchainState: (onchainState: {
@@ -134,19 +133,18 @@ export const useWorkerClientStore = create<
         state.lotteryRoundId = roundId;
       });
     },
-    async startLottery(networkId, currBlock, events) {
+    async startLottery(networkId, currBlock, lotteryAddress) {
       set((state) => {
         state.status = "Lottery loading";
       });
 
       await this.client!.waitFor();
-      const lotteryPublicKey58 = LOTTERY_ADDRESS[networkId];
 
       set((state) => {
         state.status = "Lottery state fetching";
       });
 
-      await this.client?.initLotteryInstance(lotteryPublicKey58, networkId);
+      await this.client?.initLotteryInstance(lotteryAddress, networkId);
 
       const onchainState = this.onchainState!;
 
@@ -165,7 +163,7 @@ export const useWorkerClientStore = create<
         state.status = "State manager loading";
       });
 
-      const publicKey = PublicKey.fromBase58(lotteryPublicKey58);
+      const publicKey = PublicKey.fromBase58(lotteryAddress);
       const lotteryGame = new PLottery(publicKey);
 
       set((state) => {

@@ -3,8 +3,8 @@ import {
   ALL_GAME_GENRES,
   ZkNoidGameFeature,
   ZkNoidGameGenre,
-} from '@/lib/platform/game_tags';
-import { ZkNoidEventType } from '@/lib/platform/game_events';
+} from '@sdk/lib/platform/game_tags';
+import { ZkNoidEventType } from '@sdk/lib/platform/game_events';
 import { AnimatePresence, motion } from 'framer-motion';
 import { GameStoreFilter } from './ui/GameStoreFilter';
 

@@ -3,7 +3,7 @@ import {
   GAME_EVENTS,
   getEventType,
   ZkNoidEventType,
-} from '@/lib/platform/game_events';
+} from '@sdk/lib/platform/game_events';
 import Lottie from 'react-lottie';
 import SnakeNoEvents from '@/components/pages/MainSection/ui/Storefront/ui/Favorites/assets/ZKNoid_Snake_Intro_03_05.json';
 import { EventFilter } from './ui/EventFilter';

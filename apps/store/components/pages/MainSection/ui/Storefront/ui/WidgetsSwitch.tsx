@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { cn } from '@/lib/helpers';
+import { cn } from '@sdk/lib/helpers';
 import { useSearchParams } from 'next/navigation';
 
 export function WidgetsSwitch() {

@@ -1,9 +1,9 @@
-import { getEnvContext } from '@/lib/envContext';
-import { useMinaBridge } from '@/lib/stores/protokitBalances';
+import { getEnvContext } from '@sdk/lib/envContext';
+import { useMinaBridge } from '@sdk/lib/stores/protokitBalances';
 import { api } from '@sdk/trpc/react';
 import { GameState } from '../lib/gameState';
-import { ICompetition } from '@/lib/types';
-import { useNetworkStore } from '@/lib/stores/network';
+import { ICompetition } from '@sdk/lib/types';
+import { useNetworkStore } from '@sdk/lib/stores/network';
 
 export const useStartGame = (
   setGameState: (state: GameState) => void,

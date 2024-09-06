@@ -1,5 +1,5 @@
-import { ZkNoidEventType } from '@/lib/platform/game_events';
-import { cn } from '@/lib/helpers';
+import { ZkNoidEventType } from '@sdk/lib/platform/game_events';
+import { cn } from '@sdk/lib/helpers';
 
 export function EventFilter({
   eventType,
