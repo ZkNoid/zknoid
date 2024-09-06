@@ -1,22 +1,22 @@
-import GamePage from '@sdk/components/framework/GamePage';
-import { lotteryConfig } from './config';
-import { useNetworkStore } from '@sdk/lib/stores/network';
-import { useEffect, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import BannerSection from './ui/BannerSection';
-import TicketsSection from './ui/TicketsSection';
-import { useWorkerClientStore } from '@sdk/lib/stores/workerClient';
-import { useChainStore } from '@sdk/lib/stores/minaChain';
-import { DateTime, Duration } from 'luxon';
-import { NetworkIds, NETWORKS } from '@sdk/constants/networks';
-import WrongNetworkModal from './ui/TicketsSection/ui/WrongNetworkModal';
-import { api } from '@sdk/trpc/react';
-import { fetchAccount } from 'o1js';
-import { LOTTERY_ADDRESS } from './constants/addresses';
-import { BLOCK_PER_ROUND } from 'l1-lottery-contracts';
-import StateManager from './ui/StateManager';
-import ConnectWalletModal from '@sdk/components/shared/ConnectWalletModal';
-import TicketsStorage from './ui/TicketsStorage';
+import GamePage from "@sdk/components/framework/GamePage";
+import { lotteryConfig } from "../config";
+import { useNetworkStore } from "@sdk/lib/stores/network";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import BannerSection from "./BannerSection";
+import TicketsSection from "./TicketsSection";
+import { useWorkerClientStore } from "@sdk/lib/stores/workerClient";
+import { useChainStore } from "@sdk/lib/stores/minaChain";
+import { DateTime, Duration } from "luxon";
+import { NetworkIds, NETWORKS } from "@sdk/constants/networks";
+import WrongNetworkModal from "./TicketsSection/ui/WrongNetworkModal";
+import { api } from "@sdk/trpc/react";
+import { fetchAccount } from "o1js";
+import { LOTTERY_ADDRESS } from "../constants/addresses";
+import { BLOCK_PER_ROUND } from "l1-lottery-contracts";
+import StateManager from "./StateManager";
+import ConnectWalletModal from "@sdk/components/shared/ConnectWalletModal";
+import TicketsStorage from "./TicketsStorage";
 
 export enum Pages {
   Main,
@@ -80,7 +80,7 @@ export default function Lottery({}: { params: { competitionId: string } }) {
       !workerClientStore.lotteryGame &&
       workerClientStore.onchainState
     ) {
-      console.log('Starting lottery');
+      console.log("Starting lottery");
       workerClientStore.startLottery(
         networkStore.minaNetwork?.networkID!,
         Number(chainStore.block?.slotSinceGenesis),
@@ -133,12 +133,12 @@ export default function Lottery({}: { params: { competitionId: string } }) {
       gameConfig={lotteryConfig}
       image={undefined}
       mobileImage={undefined}
-      defaultPage={'Game'}
+      defaultPage={"Game"}
       customDesign={true}
     >
       <StateManager />
 
-      <AnimatePresence mode={'wait'}>
+      <AnimatePresence mode={"wait"}>
         {page == Pages.Main && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -162,9 +162,9 @@ export default function Lottery({}: { params: { competitionId: string } }) {
 
       <motion.div
         className={
-          'flex grid-cols-4 flex-col-reverse gap-4 pt-10 lg:grid lg:pt-0'
+          "flex grid-cols-4 flex-col-reverse gap-4 pt-10 lg:grid lg:pt-0"
         }
-        animate={'windowed'}
+        animate={"windowed"}
       ></motion.div>
 
       {networkStore.address && networkStore.walletConnected ? (

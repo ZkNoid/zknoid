@@ -1,4 +1,4 @@
-import { Pages } from '../../Lottery';
+import { Pages } from '../Lottery';
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '@sdk/lib/helpers';
 import { AnimatePresence, useScroll } from 'framer-motion';

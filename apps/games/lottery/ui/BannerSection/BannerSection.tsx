@@ -7,7 +7,7 @@ import BannerButton from './ui/BannerButton';
 import CenterConsole from '../../ui/BannerSection/ui/CenterConsole';
 import CurrentRoundInfo from '../../ui/BannerSection/ui/CurrentRoundInfo';
 import PrevRoundInfo from '../../ui/BannerSection/ui/PrevRoundInfo';
-import { Pages } from '../../Lottery';
+import { Pages } from '../Lottery';
 import { api } from '@sdk/trpc/react';
 import { ILotteryRound } from '../../lib/types';
 import { useRoundsStore } from '../../lib/roundsStore';

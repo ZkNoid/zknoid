@@ -6,7 +6,7 @@ import BouncyLoader from '@sdk/components/shared/BouncyLoader';
 import Skeleton from '@sdk/components/shared/Skeleton';
 import { formatUnits } from '@sdk/lib/unit';
 import { Currency } from '@sdk/constants/currency';
-import { Pages } from '../../../Lottery';
+import { Pages } from '../../Lottery';
 import { api } from '@sdk/trpc/react';
 import { useEffect, useState } from 'react';
 

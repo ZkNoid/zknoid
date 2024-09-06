@@ -11,9 +11,7 @@ module.exports = {
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
     './node_modules/sdk/components/**/*.{vue,js,ts,jsx,tsx}',
-    './node_modules/games/components/**/*.{vue,js,ts,jsx,tsx}',
-
-    './games/**/*.{ts,tsx}',
+    './node_modules/games/*/{ui,components}/**/*.{vue,js,ts,jsx,tsx}',
   ],
   theme: {
     container: {
