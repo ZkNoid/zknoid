@@ -16,7 +16,7 @@ import { useNetworkStore } from '@sdk/lib/stores/network';
 import { useWorkerClientStore } from '@sdk/lib/stores/workerClient';
 import { useNotificationStore } from '@sdk/components/shared/Notification/lib/notificationStore';
 import Link from 'next/link';
-import { getZkAppTxByHash } from '@sdk/lib/helpers/getZkAppTxByHash';
+import { getZkAppTxByHash } from '@sdk/lib/api/getZkAppTxByHash';
 import { useChainStore } from '@sdk/lib/stores/minaChain';
 
 const ticketsImages = [

@@ -1,11 +1,11 @@
 import CompetitionBlock from "./ui/CompetitionBlock";
-import { SortByFilter } from "../../../components/framework/Storefront/ui/Favorites/ui/SortByFilter";
+import { SortByFilter } from "@sdk/components/framework/Storefront/ui/Favorites/ui/SortByFilter";
 import {
   COMPETITIONS_SORT_METHODS,
   CompetitionComparisonType,
 } from "@sdk/lib/comparators/competitionComparator";
 import CompetitionListItem from "./ui/CompetitionListItem";
-import { ICompetition } from "../../../lib/types";
+import { ICompetition } from "@sdk/lib/types";
 import { useEffect, useRef, useState } from "react";
 import Button from "../../../components/shared/Button";
 import CustomScrollbar from "../../../components/shared/CustomScrollbar";
@@ -26,7 +26,7 @@ export default function CompetitionWidget({
   const PAGINATION_LIMIT = 5;
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [sortBy, setSortBy] = useState<CompetitionComparisonType>(
-    CompetitionComparisonType.LowFunds
+    CompetitionComparisonType.LowFunds,
   );
   const [containerHeight, setContainerHeight] = useState<number>(0);
   const competitionsListRef = useRef<HTMLDivElement | null>(null);
