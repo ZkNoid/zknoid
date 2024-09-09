@@ -420,7 +420,9 @@ export default function Randzu({
                 <>
                   {gameState == GameState.Won &&
                     (isRateGame &&
-                    !rateGameStore.ratedGamesIds.includes(randzuConfig.id) ? (
+                    !rateGameStore.ratedGames.find(
+                      (game) => game.gameId == randzuConfig.id
+                    ) ? (
                       <GameWrap>
                         <RateGame
                           gameId={randzuConfig.id}

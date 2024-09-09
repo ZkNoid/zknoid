@@ -35,7 +35,6 @@ import { MainButtonState } from '@sdk/components/framework/GamePage/PvPGameView'
 import { api } from '@sdk/trpc/react';
 import { getEnvContext } from '@sdk/lib/envContext';
 import { getRandomEmoji } from '@sdk/lib/emoji';
-import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
 import { cn } from '@sdk/lib/helpers';
 import AnimatedThimble from './components/AnimatedThimble';
 import Button from '@sdk/components/shared/Button';
@@ -601,8 +600,8 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
               ) : (
                 <>
                   {isRateGame &&
-                    !rateGameStore.ratedGamesIds.includes(
-                      thimblerigConfig.id
+                    !rateGameStore.ratedGames.find(
+                      (game) => game.gameId == thimblerigConfig.id
                     ) && (
                       <StatefulModal isOpen={true} isDismissible={false}>
                         <RateGame
