@@ -61,6 +61,7 @@ const nextConfig = {
   },
   experimental: {
     reactCompiler: true,
+    optimizePackageImports: ['sdk', 'games', 'zknoid-chain-dev'],
   },
 };
 
