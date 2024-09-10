@@ -62,7 +62,7 @@ import {
   useLobbiesStore,
   useObserveLobbiesStore,
 } from '@sdk/lib/stores/lobbiesStore';
-import { PendingTransaction } from '@proto-kit/sequencer';
+// import * as sequencer from '@proto-kit/sequencer';
 
 export default function Thimblerig({}: { params: { competitionId: string } }) {
   const [gameState, setGameState] = useState(GameState.NotStarted);
@@ -189,7 +189,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
         section: 'THIMBLERIG',
         id: 0,
         txHash: JSON.stringify(
-          (tx.transaction! as PendingTransaction).toJSON()
+          (tx.transaction! as any).toJSON()
         ),
         roomId: competition.id.toString(),
         envContext: getEnvContext(),
@@ -222,7 +222,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       userAddress: networkStore.address!,
       section: 'THIMBLERIG',
       id: 0,
-      txHash: JSON.stringify((tx.transaction! as PendingTransaction).toJSON()),
+      txHash: JSON.stringify((tx.transaction! as any).toJSON()),
       roomId: competition.id.toString(),
       envContext: getEnvContext(),
     });

@@ -42,7 +42,7 @@ import { DropdownListField } from "@sdk/components/shared/DropdownList";
 import { default as ReactImage } from "next/image";
 import { api } from "@sdk/trpc/react";
 import { getEnvContext } from "@sdk/lib/envContext";
-import { PendingTransaction } from "@proto-kit/sequencer";
+// import { type PendingTransaction } from "@proto-kit/sequencer";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { snakeNames } from "@sdk/constants/snakeNames";
@@ -216,7 +216,7 @@ export default function NewCompetitionPage() {
         section: "ARKANOID",
         id: 1,
         txHash: JSON.stringify(
-          (tx.transaction! as PendingTransaction).toJSON(),
+          (tx.transaction! as any).toJSON(),
         ),
         envContext: getEnvContext(),
       });

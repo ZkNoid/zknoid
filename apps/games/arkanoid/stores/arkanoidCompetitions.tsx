@@ -7,7 +7,7 @@ import { useNetworkStore } from '@sdk/lib/stores/network';
 import { GameRecordKey } from 'zknoid-chain-dev';
 import { ICompetition } from '@sdk/lib/types';
 import { fromContractCompetition } from '../lib/typesConverter';
-import { type ClientAppChain } from '@proto-kit/sdk';
+import { type ClientAppChain } from 'zknoid-chain-dev';
 import { arkanoidConfig } from '../config';
 import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
 

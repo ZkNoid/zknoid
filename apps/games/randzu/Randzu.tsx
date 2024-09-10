@@ -53,7 +53,7 @@ import {
   useLobbiesStore,
   useObserveLobbiesStore,
 } from '@sdk/lib/stores/lobbiesStore';
-import { type PendingTransaction } from '@proto-kit/sequencer';
+// import { type PendingTransaction } from '@proto-kit/sequencer';
 
 const competition = {
   id: 'global',
@@ -210,7 +210,7 @@ export default function Randzu({
         section: 'RANDZU',
         id: 2,
         txHash: JSON.stringify(
-          (tx.transaction! as PendingTransaction).toJSON()
+          (tx.transaction! as any).toJSON()
         ),
         roomId: competition.id,
         envContext: getEnvContext(),

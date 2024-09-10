@@ -4,7 +4,7 @@ import { useProtokitChainStore } from '@sdk/lib/stores/protokitChain';
 import { useNetworkStore } from '@sdk/lib/stores/network';
 import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
 import { checkersConfig } from '../config';
-import { type ClientAppChain } from '@proto-kit/sdk';
+import { type ClientAppChain } from 'zknoid-chain-dev';
 import {
   MatchQueueState,
   matchQueueInitializer,
