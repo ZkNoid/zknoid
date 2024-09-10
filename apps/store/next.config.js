@@ -39,7 +39,7 @@ const nextConfig = {
       ...config,
       // productionBrowserSourceMaps: false,
       optimization: {
-        minimize: process.env.ANALYZE === 'true',
+        minimize: true,
         minimizer: [
           new TerserPlugin({
             terserOptions: {
@@ -67,7 +67,7 @@ const nextConfig = {
 };
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: true,
+  enabled: process.env.ANALYZE === 'true',
 });
 
 module.exports = withBundleAnalyzer(nextConfig);
