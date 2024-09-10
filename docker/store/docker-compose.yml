@@ -1,16 +1,16 @@
 services:
-  web:
-    image: starterkit-web
+  store:
+    image: starterkit-store
     build:
-      dockerfile: ./docker/web/Dockerfile
+      dockerfile: ./docker/store/Dockerfile
       context: ../..
       args:
         - NEXT_PUBLIC_PROTOKIT_GRAPHQL_URL=${NEXT_PUBLIC_PROTOKIT_GRAPHQL_URL}
-    container_name: starterkit-web
+    container_name: starterkit-store
     environment:
       - NEXT_PUBLIC_PROTOKIT_GRAPHQL_URL=${NEXT_PUBLIC_PROTOKIT_GRAPHQL_URL}
     profiles:
-      - web
+      - store
     depends_on:
       - sequencer
     networks:
