@@ -11,5 +11,7 @@ const NewCompetitionPage = dynamic(
 );
 
 export default function Home({ params }: { params: { gameId: string } }) {
-  return <NewCompetitionPage gameId={params.gameId} zkNoidConfig={zkNoidConfig} />;
+  return (
+    <NewCompetitionPage gameId={params.gameId} zkNoidConfig={zkNoidConfig} />
+  );
 }

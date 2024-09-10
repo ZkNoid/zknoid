@@ -13,5 +13,11 @@ export default function Home({
 }: {
   params: { gameId: string; lobbyId: string };
 }) {
-  return <Lobby gameId={params.gameId} lobbyId={params.lobbyId} zkNoidConfig={zkNoidConfig}/>;
+  return (
+    <Lobby
+      gameId={params.gameId}
+      lobbyId={params.lobbyId}
+      zkNoidConfig={zkNoidConfig}
+    />
+  );
 }

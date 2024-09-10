@@ -12,5 +12,7 @@ const CompetitionsListPage = dynamic(
 );
 
 export default function Home({ params }: { params: { gameId: string } }) {
-  return <CompetitionsListPage gameId={params.gameId} zkNoidConfig={zkNoidConfig}/>;
+  return (
+    <CompetitionsListPage gameId={params.gameId} zkNoidConfig={zkNoidConfig} />
+  );
 }
