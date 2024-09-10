@@ -37,7 +37,6 @@ const nextConfig = {
     config.experiments = { ...config.experiments, topLevelAwait: true };
     return {
       ...config,
-      productionBrowserSourceMaps: false,
       optimization: {
         minimize: true,
         minimizer: [
@@ -61,6 +60,7 @@ const nextConfig = {
     dirs: ['app', 'components', 'constants', 'containers', 'games', 'lib'],
   },
   experimental: {
+    productionBrowserSourceMaps: false,
     reactCompiler: true,
     optimizePackageImports: ['sdk', 'games', 'zknoid-chain-dev'],
   },
