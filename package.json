@@ -19,7 +19,7 @@
     "dotenv-cli": "^7.4.2",
     "prettier": "^3.1.0",
     "turbo": "^v1.12.2",
-    "next": "v15.0.0-canary.106"
+    "next": "v15.0.0-canary.148"
   },
   "packageManager": "pnpm@8.6.10",
   "name": "starter-kit",
