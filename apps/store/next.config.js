@@ -26,7 +26,7 @@ const nextConfig = {
       config.optimization.splitChunks.cacheGroups = {
         ...config.optimization.splitChunks.cacheGroups,
         victory: {
-          test: /o1js@1.3.1/,
+          test: /o1js@1.6.0/,
           name: 'o1js',
           priority: 50,
           reuseExistingChunk: true,
@@ -37,8 +37,9 @@ const nextConfig = {
     config.experiments = { ...config.experiments, topLevelAwait: true };
     return {
       ...config,
+      // productionBrowserSourceMaps: false,
       optimization: {
-        minimize: true,
+        minimize: process.env.ANALYZE === 'true',
         minimizer: [
           new TerserPlugin({
             terserOptions: {
@@ -66,7 +67,7 @@ const nextConfig = {
 };
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
+  enabled: true,
 });
 
 module.exports = withBundleAnalyzer(nextConfig);

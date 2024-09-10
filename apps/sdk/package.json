@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@next/bundle-analyzer": "^14.1.4",
     "@proto-kit/common": "0.1.1-develop.833",
     "@proto-kit/protocol": "0.1.1-develop.833",
     "@proto-kit/module": "0.1.1-develop.833",
