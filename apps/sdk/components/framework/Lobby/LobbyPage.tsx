@@ -1,37 +1,32 @@
-import { LobbyWrap } from "../../../components/framework/Lobby/ui/LobbyWrap";
-import { FastMatchmaking } from "../../../components/framework/Lobby/ui/FastMatchmaking";
-import LobbyList from "../../../components/framework/Lobby/LobbyList";
-import Popover from "../../../components/shared/Popover";
-import { LobbyInformation } from "../../../components/framework/Lobby/ui/LobbyInformation";
-import { CreateNewLobbyBtn } from "../../../components/framework/Lobby/ui/CreateNewLobbyBtn";
-import { usePvpLobbyStorage } from "../../../lib/stores/pvpLobbyStore";
-import { ILobby } from "../../../lib/types";
+import { LobbyWrap } from "@sdk/components/framework/Lobby/ui/LobbyWrap";
+import { FastMatchmaking } from "@sdk/components/framework/Lobby/ui/FastMatchmaking";
+import LobbyList from "@sdk/components/framework/Lobby/LobbyList";
+import Popover from "@sdk/components/shared/Popover";
+import { LobbyInformation } from "@sdk/components/framework/Lobby/ui/LobbyInformation";
+import { CreateNewLobbyBtn } from "@sdk/components/framework/Lobby/ui/CreateNewLobbyBtn";
+import { usePvpLobbyStorage } from "@sdk/lib/stores/pvpLobbyStore";
+import { ILobby } from "@sdk/lib/types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
-import { CreateNewLobby } from "../../../components/framework/Lobby/ui/CreateNewLobby";
+import { CreateNewLobby } from "@sdk/components/framework/Lobby/ui/CreateNewLobby";
 import { AnimatePresence, motion } from "framer-motion";
-import ZkNoidGameContext from "../../../lib/contexts/ZkNoidGameContext";
-import { ClientAppChain, MatchMaker, ProtoUInt64 } from "zknoid-chain-dev";
+import ZkNoidGameContext from "@sdk/lib/contexts/ZkNoidGameContext";
+import { MatchMaker, ProtoUInt64 } from "zknoid-chain-dev";
 import { Field, Bool, CircuitString, PublicKey, UInt64 } from "o1js";
-import { useNetworkStore } from "../../../lib/stores/network";
-import {
-  type PendingTransaction,
-  type ModuleQuery,
-} from "@proto-kit/sequencer";
+import { useNetworkStore } from "@sdk/lib/stores/network";
+import { type ModuleQuery } from "@proto-kit/sequencer";
 import { useStore } from "zustand";
-import { useSessionKeyStore } from "../../../lib/stores/sessionKeyStorage";
-import BaseModal from "../../../components/shared/Modal/BaseModal";
-import Button from "../../../components/shared/Button";
+import { useSessionKeyStore } from "@sdk/lib/stores/sessionKeyStorage";
+import BaseModal from "@sdk/components/shared/Modal/BaseModal";
+import Button from "@sdk/components/shared/Button";
 import {
   useLobbiesStore,
   useObserveLobbiesStore,
-} from "../../../lib/stores/lobbiesStore";
-import { ZkNoidGameConfig } from "../../../lib/createConfig";
+} from "@sdk/lib/stores/lobbiesStore";
+import { ZkNoidGameConfig } from "@sdk/lib/createConfig";
 import { RuntimeModulesRecord } from "@proto-kit/module";
-import { AlreadyInLobbyModal } from "../../../components/framework/Lobby/ui/modals/AlreadyInLobbyModal";
-import { useAlreadyInLobbyModalStore } from "../../../lib/stores/alreadyInLobbyModalStore";
-// import { api } from  '@sdk/trpc/react';
-import { getEnvContext } from "../../../lib/envContext";
+import { AlreadyInLobbyModal } from "@sdk/components/framework/Lobby/ui/modals/AlreadyInLobbyModal";
+import { useAlreadyInLobbyModalStore } from "@sdk/lib/stores/alreadyInLobbyModalStore";
 
 export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   lobbyId,
@@ -59,7 +54,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   const searchParams = useSearchParams();
   const networkStore = useNetworkStore();
   const [currentLobby, setCurrentLobby] = useState<ILobby | undefined>(
-    undefined
+    undefined,
   );
   const [isCreationMode, setIsCreationMode] = useState<boolean>(false);
   const [isLobbyNotFoundModalOpen, setIsLobbyNotFoundModalOpen] =
@@ -69,7 +64,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
   const { client } = useContext(ZkNoidGameContext);
 
   const sessionPrivateKey = useStore(useSessionKeyStore, (state) =>
-    state.getSessionKey()
+    state.getSessionKey(),
   );
 
   if (!client) {
@@ -135,7 +130,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
 
   useEffect(() => {
     const lobby = lobbiesStore.lobbies.find(
-      (lobby) => lobby.id === pvpLobbyStorage.lastLobbyId
+      (lobby) => lobby.id === pvpLobbyStorage.lastLobbyId,
     );
     setCurrentLobby(lobby);
   }, [lobbiesStore.lobbies, params.lobbyId, pvpLobbyStorage.lastLobbyId]);
@@ -154,7 +149,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
     name: string,
     participationFee: number,
     privateLobby: boolean,
-    accessKey: number
+    accessKey: number,
   ) => {
     const lobbyManager = await client.runtime.resolve(params.contractName);
 
@@ -166,9 +161,9 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
           ProtoUInt64.from(participationFee).mul(10 ** 9),
           Bool(privateLobby),
           sessionPrivateKey.toPublicKey(),
-          Field.from(accessKey)
+          Field.from(accessKey),
         );
-      }
+      },
     );
 
     await tx.sign();
@@ -202,9 +197,9 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
       async () => {
         lobbyManager.joinLobbyWithSessionKey(
           UInt64.from(lobbyId),
-          sessionPrivateKey.toPublicKey()
+          sessionPrivateKey.toPublicKey(),
         );
-      }
+      },
     );
 
     await tx.sign();
@@ -218,7 +213,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
       PublicKey.fromBase58(networkStore.address!),
       async () => {
         lobbyManager.ready();
-      }
+      },
     );
 
     await tx.sign();
@@ -232,7 +227,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
       PublicKey.fromBase58(networkStore.address!),
       async () => {
         lobbyManager.leaveLobby();
-      }
+      },
     );
 
     await tx.sign();
@@ -252,7 +247,7 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
       PublicKey.fromBase58(networkStore.address!),
       async () => {
         lobbyManager.leaveMatchmaking(UInt64.from(type));
-      }
+      },
     );
 
     await tx.sign();
@@ -271,9 +266,9 @@ export default function LobbyPage<RuntimeModules extends RuntimeModulesRecord>({
         lobbyManager.registerWithType(
           sessionPrivateKey.toPublicKey(),
           UInt64.from(id),
-          UInt64.zero
+          UInt64.zero,
         );
-      }
+      },
     );
 
     await tx.sign();

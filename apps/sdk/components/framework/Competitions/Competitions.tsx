@@ -1,5 +1,5 @@
 import CompetitionBlock from "./ui/CompetitionBlock";
-import { SortByFilter } from "@sdk/components/framework/Storefront/ui/Favorites/ui/SortByFilter";
+import SortByFilter from "@sdk/components/shared/SortByFilter/SortByFilter";
 import {
   COMPETITIONS_SORT_METHODS,
   CompetitionComparisonType,
@@ -7,12 +7,12 @@ import {
 import CompetitionListItem from "./ui/CompetitionListItem";
 import { ICompetition } from "@sdk/lib/types";
 import { useEffect, useRef, useState } from "react";
-import Button from "../../../components/shared/Button";
-import CustomScrollbar from "../../../components/shared/CustomScrollbar";
+import Button from "@sdk/components/shared/Button";
+import CustomScrollbar from "@sdk/components/shared/CustomScrollbar";
 import { AnimatePresence, useScroll } from "framer-motion";
 import { compare } from "@sdk/lib/comparators/competitionComparator";
 
-export default function CompetitionWidget({
+export default function Competitions({
   competitionBlocks,
   competitionList,
   gameId,

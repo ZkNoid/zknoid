@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Dispatch,
@@ -8,44 +8,44 @@ import {
   useEffect,
   useRef,
   useState,
-} from 'react';
-import { CircuitString, PublicKey, UInt64 } from 'o1js';
+} from "react";
+import { CircuitString, PublicKey, UInt64 } from "o1js";
 import {
   BRICK_HALF_WIDTH,
   IntPoint,
   createBricksBySeed,
   FIELD_WIDTH,
   Competition,
-} from 'zknoid-chain-dev';
-import { useNetworkStore } from '@sdk/lib/stores/network';
+} from "zknoid-chain-dev";
+import { useNetworkStore } from "@sdk/lib/stores/network";
 import {
   useMinaBridge,
   useProtokitBalancesStore,
-} from '@sdk/lib/stores/protokitBalances';
-import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
-import { arkanoidConfig } from '../config';
-import GamePage from '@sdk/components/framework/GamePage';
-import Input from '@sdk/components/shared/Input';
-import Textarea from '@sdk/components/shared/Textarea';
-import Button from '@sdk/components/shared/Button';
-import Checkbox from '@sdk/components/shared/Checkbox';
-import Popover from '@sdk/components/shared/Popover';
-import DatePicker from '@sdk/components/shared/DatePicker';
-import { AnimatePresence, motion } from 'framer-motion';
-import znakesImg from '@sdk/public/image/tokens/znakes.svg';
-import { clsx } from 'clsx';
-import { Currency } from '@sdk/constants/currency';
-import BaseModal from '@sdk/components/shared/Modal/BaseModal';
-import ArkanoidCoverSVG from '../assets/game-cover.svg';
-import ArkanoidCoverMobileSVG from '../assets/game-cover-mobile.svg';
-import { DropdownListField } from '@sdk/components/shared/DropdownList';
-import { default as ReactImage } from 'next/image';
-import { api } from '@sdk/trpc/react';
-import { getEnvContext } from '@sdk/lib/envContext';
-import { PendingTransaction } from '@proto-kit/sequencer';
-import { Form, Formik } from 'formik';
-import * as Yup from 'yup';
-import { snakeNames } from '@sdk/constants/snakeNames';
+} from "@sdk/lib/stores/protokitBalances";
+import ZkNoidGameContext from "@sdk/lib/contexts/ZkNoidGameContext";
+import { arkanoidConfig } from "../config";
+import GamePage from "@sdk/components/framework/GamePage";
+import Input from "@sdk/components/shared/Input";
+import Textarea from "@sdk/components/shared/Textarea";
+import Button from "@sdk/components/shared/Button";
+import Checkbox from "@sdk/components/shared/Checkbox";
+import Popover from "@sdk/components/shared/Popover";
+import DatePicker from "@sdk/components/shared/DatePicker";
+import { AnimatePresence, motion } from "framer-motion";
+import znakesImg from "@sdk/public/image/tokens/znakes.svg";
+import { clsx } from "clsx";
+import { Currency } from "@sdk/constants/currency";
+import BaseModal from "@sdk/components/shared/Modal/BaseModal";
+import ArkanoidCoverSVG from "../assets/game-cover.svg";
+import ArkanoidCoverMobileSVG from "../assets/game-cover-mobile.svg";
+import { DropdownListField } from "@sdk/components/shared/DropdownList";
+import { default as ReactImage } from "next/image";
+import { api } from "@sdk/trpc/react";
+import { getEnvContext } from "@sdk/lib/envContext";
+import { PendingTransaction } from "@proto-kit/sequencer";
+import { Form, Formik } from "formik";
+import * as Yup from "yup";
+import { snakeNames } from "@sdk/constants/snakeNames";
 
 interface IBrick {
   pos: [number, number];
@@ -58,12 +58,12 @@ interface IContractBrick {
 }
 
 let brickImages: HTMLImageElement[] = [new Image(), new Image(), new Image()];
-brickImages[0].src = '/sprite/brick/1.png';
-brickImages[1].src = '/sprite/brick/2.png';
-brickImages[2].src = '/sprite/brick/3.png';
+brickImages[0].src = "/sprite/brick/1.png";
+brickImages[1].src = "/sprite/brick/2.png";
+brickImages[2].src = "/sprite/brick/3.png";
 
 function useStateRef<T>(
-  initialValue: T
+  initialValue: T,
 ): [T, Dispatch<SetStateAction<T>>, MutableRefObject<T>] {
   const [value, setValue] = useState(initialValue);
 
@@ -76,7 +76,7 @@ function useStateRef<T>(
   return [value, setValue, ref];
 }
 
-export default function NewArkanoidCompetitionPage() {
+export default function NewCompetitionPage() {
   const [seed, setSeed] = useState<string>(snakeNames[0]);
   const canvas = useRef<HTMLCanvasElement>(null);
   const [ctx, setContext] = useState<
@@ -94,11 +94,11 @@ export default function NewArkanoidCompetitionPage() {
   const progress = api.progress.setSolvedQuests.useMutation();
 
   if (!client) {
-    throw Error('Context app chain client is not set');
+    throw Error("Context app chain client is not set");
   }
 
   useEffect(() => {
-    const ctx = canvas!.current?.getContext('2d');
+    const ctx = canvas!.current?.getContext("2d");
     setContext(ctx);
 
     if (ctx) {
@@ -111,15 +111,15 @@ export default function NewArkanoidCompetitionPage() {
       };
 
       handleResize();
-      window.addEventListener('resize', handleResize);
+      window.addEventListener("resize", handleResize);
 
-      return () => window.removeEventListener('resize', handleResize);
+      return () => window.removeEventListener("resize", handleResize);
     }
   }, [canvas]);
 
   useEffect(() => {
     let contractBricks = createBricksBySeed(
-      CircuitString.fromString(seed).hash()
+      CircuitString.fromString(seed).hash(),
     ).bricks;
     setBricks(
       contractBricks.map((brick: IContractBrick) => {
@@ -127,7 +127,7 @@ export default function NewArkanoidCompetitionPage() {
           pos: [(brick.pos.x as any) ^ 1, (brick.pos.y as any) ^ 1],
           value: +brick.value.toString(),
         } as IBrick;
-      })
+      }),
     );
   }, [seed]);
 
@@ -141,14 +141,14 @@ export default function NewArkanoidCompetitionPage() {
       return;
     }
     ctx!.rect(0, 0, canvas.current!.width, canvas.current!.width);
-    ctx!.fillStyle = '#212121';
+    ctx!.fillStyle = "#212121";
     ctx!.fill();
   };
 
   const drawBricks = () => {
-    let ctx = canvas.current?.getContext('2d');
+    let ctx = canvas.current?.getContext("2d");
     for (let brick of brickRef.current!.filter(
-      (brick) => +brick.value.toString() > 1
+      (brick) => +brick.value.toString() > 1,
     )) {
       const x = resizeToConvasSize(brick.pos[0]);
       const y = resizeToConvasSize(brick.pos[1]);
@@ -163,9 +163,9 @@ export default function NewArkanoidCompetitionPage() {
   };
 
   const createCompetition = async (values: typeof initialValues) => {
-    const gameHub = client.runtime.resolve('ArkanoidGameHub');
+    const gameHub = client.runtime.resolve("ArkanoidGameHub");
     if (await bridge(BigInt(values.funding) * 10n ** 9n))
-      throw Error('Not enough funds');
+      throw Error("Not enough funds");
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
@@ -199,11 +199,11 @@ export default function NewArkanoidCompetitionPage() {
             ? new Date(values.competitionTo).getTime()
             : 0, // competitionEndTime
           values.funding,
-          values.participationFee || 0
+          values.participationFee || 0,
         );
 
         gameHub.createCompetition(competition);
-      }
+      },
     );
 
     await tx.sign();
@@ -213,10 +213,10 @@ export default function NewArkanoidCompetitionPage() {
       tx.transaction?.hash;
       await progress.mutateAsync({
         userAddress: networkStore.address!,
-        section: 'ARKANOID',
+        section: "ARKANOID",
         id: 1,
         txHash: JSON.stringify(
-          (tx.transaction! as PendingTransaction).toJSON()
+          (tx.transaction! as PendingTransaction).toJSON(),
         ),
         envContext: getEnvContext(),
       });
@@ -241,23 +241,23 @@ export default function NewArkanoidCompetitionPage() {
   };
 
   const generateNewWord = () => {
-    const word1 = getRandomElement(snakeNames).replace(' ', '');
-    const word2 = getRandomElement(snakeNames).replace(' ', '');
+    const word1 = getRandomElement(snakeNames).replace(" ", "");
+    const word2 = getRandomElement(snakeNames).replace(" ", "");
     const part1 = getRandomPart(word1);
     const part2 = getRandomPart(word2);
     return part1 + part2;
   };
 
   const initialValues = {
-    name: '',
-    description: '',
+    name: "",
+    description: "",
     game: arkanoidConfig.name,
     seed: seed,
     preregistrationEnabled: true,
-    preregistrationFrom: '',
-    preregistrationTo: '',
-    competitionFrom: '',
-    competitionTo: '',
+    preregistrationFrom: "",
+    preregistrationTo: "",
+    competitionFrom: "",
+    competitionTo: "",
     funding: 0,
     participationFee: 0,
     policy: false,
@@ -265,90 +265,90 @@ export default function NewArkanoidCompetitionPage() {
 
   const validateSchema = Yup.object().shape({
     name: Yup.string()
-      .matches(/^(?![\d+_@.-]+$)[a-zA-Z0-9+_@.-]*$/, 'Invalid name')
-      .required('This field required'),
+      .matches(/^(?![\d+_@.-]+$)[a-zA-Z0-9+_@.-]*$/, "Invalid name")
+      .required("This field required"),
 
     description: Yup.string()
-      .matches(/^(?![\d+_@.-]+$)[a-zA-Z0-9+_@.-]*$/, 'Invalid description')
+      .matches(/^(?![\d+_@.-]+$)[a-zA-Z0-9+_@.-]*$/, "Invalid description")
       .optional(),
 
     game: Yup.string()
-      .required('This field required')
+      .required("This field required")
       .oneOf([arkanoidConfig.name]),
 
     seed: Yup.string()
-      .matches(/^(?![\d+_@.-]+$)[a-zA-Z0-9+_@.-]*$/, 'Invalid seed')
-      .typeError('Invalid seed')
-      .required('This field required'),
+      .matches(/^(?![\d+_@.-]+$)[a-zA-Z0-9+_@.-]*$/, "Invalid seed")
+      .typeError("Invalid seed")
+      .required("This field required"),
 
     preregistrationEnabled: Yup.boolean(),
 
     preregistrationFrom: Yup.date()
-      .typeError('Invalid Date')
-      .when('preregistrationEnabled', {
+      .typeError("Invalid Date")
+      .when("preregistrationEnabled", {
         is: true,
-        then: (schema) => schema.required('This field required'),
+        then: (schema) => schema.required("This field required"),
         otherwise: (schema) => schema.optional(),
       })
       .max(
-        Yup.ref('preregistrationTo'),
-        `Preregistration start can't be later than preregistration end`
+        Yup.ref("preregistrationTo"),
+        `Preregistration start can't be later than preregistration end`,
       ),
 
     preregistrationTo: Yup.date()
-      .typeError('Invalid Date')
-      .when('preregistrationEnabled', {
+      .typeError("Invalid Date")
+      .when("preregistrationEnabled", {
         is: true,
-        then: (schema) => schema.required('This field required'),
+        then: (schema) => schema.required("This field required"),
         otherwise: (schema) => schema.optional(),
       })
       .min(
-        Yup.ref('preregistrationFrom'),
-        `Preregistration end can't be earlier than preregistration start`
+        Yup.ref("preregistrationFrom"),
+        `Preregistration end can't be earlier than preregistration start`,
       )
       .max(
-        Yup.ref('competitionFrom'),
-        `Preregistration end can't be later than preregistration start`
+        Yup.ref("competitionFrom"),
+        `Preregistration end can't be later than preregistration start`,
       ),
 
     competitionFrom: Yup.date()
-      .typeError('Invalid Date')
-      .required('This field required')
+      .typeError("Invalid Date")
+      .required("This field required")
       .max(
-        Yup.ref('competitionTo'),
-        `Competition start can't be later than competition end`
+        Yup.ref("competitionTo"),
+        `Competition start can't be later than competition end`,
       )
-      .when('preregistrationEnabled', {
+      .when("preregistrationEnabled", {
         is: true,
         then: (schema) =>
           schema.min(
-            Yup.ref('preregistrationTo'),
-            `Competition start can't be earlier than competition end`
+            Yup.ref("preregistrationTo"),
+            `Competition start can't be earlier than competition end`,
           ),
       }),
 
     competitionTo: Yup.date()
-      .typeError('Invalid Date')
-      .required('This field required')
+      .typeError("Invalid Date")
+      .required("This field required")
       .min(
-        Yup.ref('competitionFrom'),
-        `Competition end can't be earlier than competition start`
+        Yup.ref("competitionFrom"),
+        `Competition end can't be earlier than competition start`,
       ),
 
     funding: Yup.number()
-      .typeError('Invalid funding')
-      .required('This field required')
+      .typeError("Invalid funding")
+      .required("This field required")
       .min(0),
 
     participationFee: Yup.number()
-      .typeError('Invalid participationFee')
-      .when('preregistrationEnabled', {
+      .typeError("Invalid participationFee")
+      .when("preregistrationEnabled", {
         is: true,
-        then: (schema) => schema.required('This field required').min(0),
+        then: (schema) => schema.required("This field required").min(0),
         otherwise: (schema) => schema.optional(),
       }),
 
-    policy: Yup.boolean().isTrue('Please indicate that you understood that'),
+    policy: Yup.boolean().isTrue("Please indicate that you understood that"),
   });
 
   return (
@@ -356,10 +356,10 @@ export default function NewArkanoidCompetitionPage() {
       gameConfig={arkanoidConfig}
       image={ArkanoidCoverSVG}
       mobileImage={ArkanoidCoverMobileSVG}
-      defaultPage={'New Competition'}
+      defaultPage={"New Competition"}
     >
-      <div className={'flex w-full flex-col gap-8'}>
-        <div className={'w-full text-left text-headline-1'}>
+      <div className={"flex w-full flex-col gap-8"}>
+        <div className={"w-full text-left text-headline-1"}>
           Create competition
         </div>
 
@@ -372,83 +372,83 @@ export default function NewArkanoidCompetitionPage() {
         >
           {({ values, errors, touched, getFieldHelpers }) => (
             <Form>
-              <div className={'grid grid-cols-3 gap-5'}>
-                <div className={'flex w-full flex-col gap-4'}>
-                  <div className={'text-[20px]/[20px] font-bold'}>
+              <div className={"grid grid-cols-3 gap-5"}>
+                <div className={"flex w-full flex-col gap-4"}>
+                  <div className={"text-[20px]/[20px] font-bold"}>
                     Description information
                   </div>
-                  <div className={'w-full'}>
+                  <div className={"w-full"}>
                     <Input
-                      title={'Enter the name of the competition'}
-                      name={'name'}
-                      type={'text'}
-                      placeholder={'Type competition name here...'}
+                      title={"Enter the name of the competition"}
+                      name={"name"}
+                      type={"text"}
+                      placeholder={"Type competition name here..."}
                       required
                     />
                   </div>
-                  <div className={'w-full'}>
+                  <div className={"w-full"}>
                     <DropdownListField
-                      name={'game'}
-                      title={'Select the game'}
+                      name={"game"}
+                      title={"Select the game"}
                       items={[arkanoidConfig.name]}
                       required
                     />
                   </div>
-                  <div className={'h-full w-full'}>
+                  <div className={"h-full w-full"}>
                     <Textarea
-                      title={'Enter the description of the competition'}
-                      name={'description'}
-                      placeholder={'Type description here...'}
+                      title={"Enter the description of the competition"}
+                      name={"description"}
+                      placeholder={"Type description here..."}
                     />
                   </div>
                 </div>
-                <div className={'flex w-full flex-col gap-4'}>
-                  <div className={'text-[20px]/[20px] font-bold'}>
+                <div className={"flex w-full flex-col gap-4"}>
+                  <div className={"text-[20px]/[20px] font-bold"}>
                     Competition parameters
                   </div>
-                  <div className={'flex w-full flex-col gap-2'}>
-                    <div className={'flex flex-row justify-between'}>
-                      <div className={'flex min-w-[40%] flex-col gap-2'}>
+                  <div className={"flex w-full flex-col gap-2"}>
+                    <div className={"flex flex-row justify-between"}>
+                      <div className={"flex min-w-[40%] flex-col gap-2"}>
                         <span
                           className={
-                            'font-plexsans text-main font-medium uppercase text-left-accent'
+                            "font-plexsans text-main font-medium uppercase text-left-accent"
                           }
                         >
                           Map seed Generation
                         </span>
                         <Button
-                          label={'Randomize'}
+                          label={"Randomize"}
                           onClick={() => {
                             if (!isRandomSeed) setIsRandomSeed(true);
                             const randomSeed = generateNewWord();
-                            getFieldHelpers('seed').setValue(randomSeed);
+                            getFieldHelpers("seed").setValue(randomSeed);
                             setSeed(randomSeed);
                           }}
                         />
                       </div>
-                      <div className={'flex w-[260px] flex-col gap-2'}>
+                      <div className={"flex w-[260px] flex-col gap-2"}>
                         <span
                           className={
-                            'font-plexsans text-main font-medium uppercase text-left-accent'
+                            "font-plexsans text-main font-medium uppercase text-left-accent"
                           }
                         >
                           Map seed*
                         </span>
                         <Input
-                          name={'seed'}
-                          type={'text'}
-                          placeholder={'Type seed here...'}
+                          name={"seed"}
+                          type={"text"}
+                          placeholder={"Type seed here..."}
                           onChange={() => setSeed(values.seed)}
                           isClearable={false}
                         />
                       </div>
                     </div>
                   </div>
-                  <div className={'flex w-full flex-row justify-between gap-2'}>
-                    <div className={'flex flex-row gap-4'}>
+                  <div className={"flex w-full flex-row justify-between gap-2"}>
+                    <div className={"flex flex-row gap-4"}>
                       <span
                         className={
-                          'font-plexsans text-main font-medium uppercase text-left-accent'
+                          "font-plexsans text-main font-medium uppercase text-left-accent"
                         }
                       >
                         Preregiatration
@@ -456,17 +456,17 @@ export default function NewArkanoidCompetitionPage() {
                       <Popover>
                         <div
                           className={
-                            'flex min-w-[250px] flex-col items-center justify-center gap-2 font-plexsans'
+                            "flex min-w-[250px] flex-col items-center justify-center gap-2 font-plexsans"
                           }
                         >
                           <span
-                            className={'w-full self-start text-[14px]/[14px]'}
+                            className={"w-full self-start text-[14px]/[14px]"}
                           >
                             Preregistration
                           </span>
                           <div
                             className={
-                              'w-full text-[12px]/[12px] font-light opacity-70'
+                              "w-full text-[12px]/[12px] font-light opacity-70"
                             }
                           >
                             Preregistration allows to enable dates when users
@@ -475,18 +475,18 @@ export default function NewArkanoidCompetitionPage() {
                         </div>
                       </Popover>
                     </div>
-                    <Checkbox name={'preregistrationEnabled'} />
+                    <Checkbox name={"preregistrationEnabled"} />
                   </div>
                   {values.preregistrationEnabled && (
-                    <div className={'flex w-full flex-col gap-2'}>
+                    <div className={"flex w-full flex-col gap-2"}>
                       <span
                         className={
-                          'font-plexsans text-main font-medium uppercase text-left-accent'
+                          "font-plexsans text-main font-medium uppercase text-left-accent"
                         }
                       >
                         Preregiatration dates*
                       </span>
-                      <div className={'flex w-full flex-col'}>
+                      <div className={"flex w-full flex-col"}>
                         <DatePicker
                           isOpen={isPreregistrationPickerOpen}
                           setIsOpen={
@@ -498,23 +498,23 @@ export default function NewArkanoidCompetitionPage() {
                                 }
                           }
                           setDateTo={
-                            getFieldHelpers('preregistrationTo').setValue
+                            getFieldHelpers("preregistrationTo").setValue
                           }
                           setDateFrom={
-                            getFieldHelpers('preregistrationFrom').setValue
+                            getFieldHelpers("preregistrationFrom").setValue
                           }
                           trigger={
                             <div
                               className={
-                                'flex w-full flex-row justify-between gap-8'
+                                "flex w-full flex-row justify-between gap-8"
                               }
                             >
-                              <div className={'flex w-full flex-col'}>
-                                <span className={'text-start'}>From</span>
+                              <div className={"flex w-full flex-col"}>
+                                <span className={"text-start"}>From</span>
                                 <Input
-                                  name={'preregistrationFrom'}
-                                  type={'text'}
-                                  placeholder={'MM/DD/YYYY'}
+                                  name={"preregistrationFrom"}
+                                  type={"text"}
+                                  placeholder={"MM/DD/YYYY"}
                                   readOnly={true}
                                   endContent={
                                     <svg
@@ -528,19 +528,19 @@ export default function NewArkanoidCompetitionPage() {
                                         d="M16 18H2V7H16M13 0V2H5V0H3V2H2C0.89 2 0 2.89 0 4V18C0 18.5304 0.210714 19.0391 0.585786 19.4142C0.960859 19.7893 1.46957 20 2 20H16C16.5304 20 17.0391 19.7893 17.4142 19.4142C17.7893 19.0391 18 18.5304 18 18V4C18 3.46957 17.7893 2.96086 17.4142 2.58579C17.0391 2.21071 16.5304 2 16 2H15V0M14 11H9V16H14V11Z"
                                         fill="#F9F8F4"
                                         className={
-                                          'group-hover:fill-[#D2FF00] group-data-[error=true]:fill-[#FF0000] group-data-[error=true]:group-hover:fill-[#FF00009C]'
+                                          "group-hover:fill-[#D2FF00] group-data-[error=true]:fill-[#FF0000] group-data-[error=true]:group-hover:fill-[#FF00009C]"
                                         }
                                       />
                                     </svg>
                                   }
                                 />
                               </div>
-                              <div className={'flex w-full flex-col'}>
-                                <span className={'text-start'}>To</span>
+                              <div className={"flex w-full flex-col"}>
+                                <span className={"text-start"}>To</span>
                                 <Input
-                                  name={'preregistrationTo'}
-                                  type={'text'}
-                                  placeholder={'MM/DD/YYYY'}
+                                  name={"preregistrationTo"}
+                                  type={"text"}
+                                  placeholder={"MM/DD/YYYY"}
                                   readOnly={true}
                                   endContent={
                                     <svg
@@ -554,7 +554,7 @@ export default function NewArkanoidCompetitionPage() {
                                         d="M16 18H2V7H16M13 0V2H5V0H3V2H2C0.89 2 0 2.89 0 4V18C0 18.5304 0.210714 19.0391 0.585786 19.4142C0.960859 19.7893 1.46957 20 2 20H16C16.5304 20 17.0391 19.7893 17.4142 19.4142C17.7893 19.0391 18 18.5304 18 18V4C18 3.46957 17.7893 2.96086 17.4142 2.58579C17.0391 2.21071 16.5304 2 16 2H15V0M14 11H9V16H14V11Z"
                                         fill="#F9F8F4"
                                         className={
-                                          'group-hover:fill-[#D2FF00] group-data-[error=true]:fill-[#FF0000] group-data-[error=true]:group-hover:fill-[#FF00009C]'
+                                          "group-hover:fill-[#D2FF00] group-data-[error=true]:fill-[#FF0000] group-data-[error=true]:group-hover:fill-[#FF00009C]"
                                         }
                                       />
                                     </svg>
@@ -567,15 +567,15 @@ export default function NewArkanoidCompetitionPage() {
                       </div>
                     </div>
                   )}
-                  <div className={'flex w-full flex-col gap-2'}>
+                  <div className={"flex w-full flex-col gap-2"}>
                     <span
                       className={
-                        'font-plexsans text-main font-medium uppercase text-left-accent'
+                        "font-plexsans text-main font-medium uppercase text-left-accent"
                       }
                     >
                       Competitions date*
                     </span>
-                    <div className={'flex w-full flex-col'}>
+                    <div className={"flex w-full flex-col"}>
                       <DatePicker
                         isOpen={isCompetitionPickerOpen}
                         setIsOpen={
@@ -586,22 +586,22 @@ export default function NewArkanoidCompetitionPage() {
                                 setIsCompetitionPickerOpen(value);
                               }
                         }
-                        setDateTo={getFieldHelpers('competitionTo').setValue}
+                        setDateTo={getFieldHelpers("competitionTo").setValue}
                         setDateFrom={
-                          getFieldHelpers('competitionFrom').setValue
+                          getFieldHelpers("competitionFrom").setValue
                         }
                         trigger={
                           <div
                             className={
-                              'flex w-full flex-row justify-between gap-8'
+                              "flex w-full flex-row justify-between gap-8"
                             }
                           >
-                            <div className={'flex w-full flex-col'}>
-                              <span className={'text-start'}>From</span>
+                            <div className={"flex w-full flex-col"}>
+                              <span className={"text-start"}>From</span>
                               <Input
-                                name={'competitionFrom'}
-                                type={'text'}
-                                placeholder={'MM/DD/YYYY'}
+                                name={"competitionFrom"}
+                                type={"text"}
+                                placeholder={"MM/DD/YYYY"}
                                 readOnly={true}
                                 endContent={
                                   <svg
@@ -615,19 +615,19 @@ export default function NewArkanoidCompetitionPage() {
                                       d="M16 18H2V7H16M13 0V2H5V0H3V2H2C0.89 2 0 2.89 0 4V18C0 18.5304 0.210714 19.0391 0.585786 19.4142C0.960859 19.7893 1.46957 20 2 20H16C16.5304 20 17.0391 19.7893 17.4142 19.4142C17.7893 19.0391 18 18.5304 18 18V4C18 3.46957 17.7893 2.96086 17.4142 2.58579C17.0391 2.21071 16.5304 2 16 2H15V0M14 11H9V16H14V11Z"
                                       fill="#F9F8F4"
                                       className={
-                                        'group-hover:fill-[#D2FF00] group-data-[error=true]:fill-[#FF0000] group-data-[error=true]:group-hover:fill-[#FF00009C]'
+                                        "group-hover:fill-[#D2FF00] group-data-[error=true]:fill-[#FF0000] group-data-[error=true]:group-hover:fill-[#FF00009C]"
                                       }
                                     />
                                   </svg>
                                 }
                               />
                             </div>
-                            <div className={'flex w-full flex-col'}>
-                              <span className={'text-start'}>To</span>
+                            <div className={"flex w-full flex-col"}>
+                              <span className={"text-start"}>To</span>
                               <Input
-                                name={'competitionTo'}
-                                type={'text'}
-                                placeholder={'MM/DD/YYYY'}
+                                name={"competitionTo"}
+                                type={"text"}
+                                placeholder={"MM/DD/YYYY"}
                                 readOnly={true}
                                 endContent={
                                   <svg
@@ -641,7 +641,7 @@ export default function NewArkanoidCompetitionPage() {
                                       d="M16 18H2V7H16M13 0V2H5V0H3V2H2C0.89 2 0 2.89 0 4V18C0 18.5304 0.210714 19.0391 0.585786 19.4142C0.960859 19.7893 1.46957 20 2 20H16C16.5304 20 17.0391 19.7893 17.4142 19.4142C17.7893 19.0391 18 18.5304 18 18V4C18 3.46957 17.7893 2.96086 17.4142 2.58579C17.0391 2.21071 16.5304 2 16 2H15V0M14 11H9V16H14V11Z"
                                       fill="#F9F8F4"
                                       className={
-                                        'group-hover:fill-[#D2FF00] group-data-[error=true]:fill-[#FF0000] group-data-[error=true]:group-hover:fill-[#FF00009C]'
+                                        "group-hover:fill-[#D2FF00] group-data-[error=true]:fill-[#FF0000] group-data-[error=true]:group-hover:fill-[#FF00009C]"
                                       }
                                     />
                                   </svg>
@@ -653,24 +653,24 @@ export default function NewArkanoidCompetitionPage() {
                       />
                     </div>
                   </div>
-                  <div className={'flex w-full flex-col gap-1'}>
-                    <div className={'flex w-full flex-row gap-4'}>
+                  <div className={"flex w-full flex-col gap-1"}>
+                    <div className={"flex w-full flex-row gap-4"}>
                       {values.preregistrationEnabled && (
-                        <div className={'w-full'}>
+                        <div className={"w-full"}>
                           <Input
-                            name={'participationFee'}
-                            type={'text'}
-                            title={'Participant fee'}
-                            placeholder={'Type participant fee here...'}
+                            name={"participationFee"}
+                            type={"text"}
+                            title={"Participant fee"}
+                            placeholder={"Type participant fee here..."}
                             endContent={
                               <div
                                 className={
-                                  'flex h-[28px] w-[28px] items-center justify-center rounded-full'
+                                  "flex h-[28px] w-[28px] items-center justify-center rounded-full"
                                 }
                               >
                                 <ReactImage
                                   src={znakesImg}
-                                  alt={'Znakes Tokens'}
+                                  alt={"Znakes Tokens"}
                                 />
                               </div>
                             }
@@ -678,21 +678,21 @@ export default function NewArkanoidCompetitionPage() {
                           />
                         </div>
                       )}
-                      <div className={'w-full'}>
+                      <div className={"w-full"}>
                         <Input
-                          name={'funding'}
-                          type={'text'}
-                          title={'Funds'}
-                          placeholder={'Type funds here...'}
+                          name={"funding"}
+                          type={"text"}
+                          title={"Funds"}
+                          placeholder={"Type funds here..."}
                           endContent={
                             <div
                               className={
-                                'flex h-[28px] w-[28px] items-center justify-center rounded-full'
+                                "flex h-[28px] w-[28px] items-center justify-center rounded-full"
                               }
                             >
                               <ReactImage
                                 src={znakesImg}
-                                alt={'Znakes Tokens'}
+                                alt={"Znakes Tokens"}
                               />
                             </div>
                           }
@@ -700,9 +700,9 @@ export default function NewArkanoidCompetitionPage() {
                         />
                       </div>
                     </div>
-                    <div className={'flex w-full flex-col gap-2'}>
+                    <div className={"flex w-full flex-col gap-2"}>
                       <div
-                        className={'flex gap-2 font-plexsans text-left-accent'}
+                        className={"flex gap-2 font-plexsans text-left-accent"}
                       >
                         <span>Balance:</span>
                         <span>
@@ -710,7 +710,7 @@ export default function NewArkanoidCompetitionPage() {
                             Number(
                               protokitBalances.balances[
                                 networkStore.address!
-                              ] ?? 0n
+                              ] ?? 0n,
                             ) /
                             10 ** 9
                           ).toFixed(2)}
@@ -718,21 +718,21 @@ export default function NewArkanoidCompetitionPage() {
                         <span>{Currency.ZNAKES}</span>
                       </div>
                       <div
-                        className={'flex flex-row items-center justify-between'}
+                        className={"flex flex-row items-center justify-between"}
                       >
                         <span
                           className={clsx(
-                            'font-plexsans text-[12px]/[12px] font-normal',
+                            "font-plexsans text-[12px]/[12px] font-normal",
                             {
-                              'underline decoration-[#FF0000] underline-offset-4':
+                              "underline decoration-[#FF0000] underline-offset-4":
                                 errors.policy && touched.policy,
-                            }
+                            },
                           )}
                         >
                           I understand that this amount will be deducted from my
                           account for hosting the competition.
                         </span>
-                        <Checkbox name={'policy'} />
+                        <Checkbox name={"policy"} />
                       </div>
                       <AnimatePresence>
                         {errors.policy && touched.policy && (
@@ -741,11 +741,11 @@ export default function NewArkanoidCompetitionPage() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{
-                              type: 'spring',
+                              type: "spring",
                               duration: 0.8,
                               bounce: 0,
                             }}
-                            className={'flex w-full flex-row gap-2'}
+                            className={"flex w-full flex-row gap-2"}
                           >
                             <svg
                               width="18"
@@ -769,7 +769,7 @@ export default function NewArkanoidCompetitionPage() {
                             </svg>
                             <span
                               className={
-                                'font-plexsans text-[14px]/[14px] text-[#FF0000]'
+                                "font-plexsans text-[14px]/[14px] text-[#FF0000]"
                               }
                             >
                               {errors.policy}
@@ -777,7 +777,7 @@ export default function NewArkanoidCompetitionPage() {
                           </motion.div>
                         )}
                       </AnimatePresence>
-                      <Button label={'Create competition'} type={'submit'} />
+                      <Button label={"Create competition"} type={"submit"} />
                       <BaseModal
                         isOpen={isSuccessModalOpen}
                         setIsOpen={setIsSuccessModalOpen}
@@ -785,7 +785,7 @@ export default function NewArkanoidCompetitionPage() {
                       >
                         <div
                           className={
-                            'flex flex-col items-center justify-center gap-8 px-4 py-6'
+                            "flex flex-col items-center justify-center gap-8 px-4 py-6"
                           }
                         >
                           <svg
@@ -828,13 +828,13 @@ export default function NewArkanoidCompetitionPage() {
                               strokeMiterlimit="10"
                             />
                           </svg>
-                          <span className={'text-headline-1'}>
+                          <span className={"text-headline-1"}>
                             Successfully created!
                           </span>
                           <Button
                             asLink={true}
                             href={`/games/${arkanoidConfig.id}/competitions-list`}
-                            label={'To competitions page'}
+                            label={"To competitions page"}
                           />
                         </div>
                       </BaseModal>
@@ -843,7 +843,7 @@ export default function NewArkanoidCompetitionPage() {
                 </div>
                 <div
                   className={
-                    'flex h-full w-full items-center justify-center rounded-[5px]'
+                    "flex h-full w-full items-center justify-center rounded-[5px]"
                   }
                 >
                   <canvas

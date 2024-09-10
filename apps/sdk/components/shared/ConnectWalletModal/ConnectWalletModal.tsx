@@ -4,7 +4,7 @@ import cubes from "./assets/Cubes.svg";
 import Link from "next/link";
 import { walletInstalled } from "@sdk/lib/helpers";
 import { useNetworkStore } from "@sdk/lib/stores/network";
-import BaseModal from "../../../components/shared/Modal/BaseModal";
+import BaseModal from "@sdk/components/shared/Modal/BaseModal";
 
 export default function ConnectWalletModal() {
   const [isOpen, setIsOpen] = useState<boolean>(true);

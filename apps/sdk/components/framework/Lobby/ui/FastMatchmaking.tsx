@@ -1,21 +1,21 @@
 import Image from "next/image";
 import znakesImg from "@sdk/public/image/tokens/znakes.svg";
-import { Currency } from "../../../../constants/currency";
-import Popover from "../../../../components/shared/Popover";
+import { Currency } from "@sdk/constants/currency";
+import Popover from "@sdk/components/shared/Popover";
 import {
   IMatchamkingOption,
   useLobbiesStore,
-} from "../../../../lib/stores/lobbiesStore";
-import { MatchmakingModal } from "../../../../components/framework/Lobby/ui/modals/MatchmakingModal";
+} from "@sdk/lib/stores/lobbiesStore";
+import { MatchmakingModal } from "@sdk/components/framework/Lobby/ui/modals/MatchmakingModal";
 import { useEffect, useState } from "react";
-import { useAlreadyInLobbyModalStore } from "../../../../lib/stores/alreadyInLobbyModalStore";
-import { api } from "../../../../trpc/react";
-import { getEnvContext } from "../../../../lib/envContext";
-import { useNetworkStore } from "../../../../lib/stores/network";
+import { useAlreadyInLobbyModalStore } from "@sdk/lib/stores/alreadyInLobbyModalStore";
+import { api } from "@sdk/trpc/react";
+import { getEnvContext } from "@sdk/lib/envContext";
+import { useNetworkStore } from "@sdk/lib/stores/network";
 import { MatchmakingFailModal } from "./modals/MatchmakingFailModal";
-import { useProtokitChainStore } from "../../../../lib/stores/protokitChain";
-import { useMinaBridge } from "../../../../lib/stores/protokitBalances";
-import { formatUnits } from "../../../../lib/unit";
+import { useProtokitChainStore } from "@sdk/lib/stores/protokitChain";
+import { useMinaBridge } from "@sdk/lib/stores/protokitBalances";
+import { formatUnits } from "@sdk/lib/unit";
 
 const OpponentItem = ({
   option,

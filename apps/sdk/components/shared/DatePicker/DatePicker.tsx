@@ -1,6 +1,6 @@
 import { ReactNode, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import Button from "../../../components/shared/Button/index";
+import Button from "@sdk/components/shared/Button/index";
 import DateItem from "./ui/DateItem";
 import { clsx } from "clsx";
 import { cn } from "@sdk/lib/helpers";
@@ -27,7 +27,7 @@ export default function DatePicker({
   const [possibleDate, setPossibleDate] = useState<Date | undefined>(undefined);
   const [pickedDate, setPickedDate] = useState<Date | undefined>(undefined);
   const [_currentMonth, setCurrentMonth] = useState<number>(
-    currentDate.getMonth()
+    currentDate.getMonth(),
   );
 
   const getDaysInMonth = (year: number, month: number) => {
@@ -87,14 +87,14 @@ export default function DatePicker({
                         currentDate.getMonth() == new Date().getMonth(),
                       "hover:opacity-80":
                         currentDate.getMonth() != new Date().getMonth(),
-                    }
+                    },
                   )}
                   onClick={
                     currentDate.getMonth() != new Date().getMonth()
                       ? () => {
                           clearDates();
                           setCurrentMonth(
-                            currentDate.setMonth(currentDate.getMonth() - 1)
+                            currentDate.setMonth(currentDate.getMonth() - 1),
                           );
                         }
                       : undefined
@@ -135,7 +135,7 @@ export default function DatePicker({
                   onClick={() => {
                     clearDates();
                     setCurrentMonth(
-                      currentDate.setMonth(currentDate.getMonth() + 1)
+                      currentDate.setMonth(currentDate.getMonth() + 1),
                     );
                   }}
                 >
@@ -184,8 +184,8 @@ export default function DatePicker({
                   ...Array(
                     getDaysInMonth(
                       currentDate.getFullYear(),
-                      currentDate.getMonth() + 1
-                    )
+                      currentDate.getMonth() + 1,
+                    ),
                   ),
                 ].map((_, index) => (
                   <DateItem
@@ -194,7 +194,7 @@ export default function DatePicker({
                       new Date(
                         currentDate.getFullYear(),
                         currentDate.getMonth(),
-                        index + 1
+                        index + 1,
                       )
                     }
                     activeDateTime={activeDate?.getTime()}

@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useNotificationStore } from '../../shared/Notification/lib/notificationStore';
-import Notification from '../../shared/Notification/Notification';
-import { AnimatePresence } from 'framer-motion';
+import { useNotificationStore } from "./lib/notificationStore";
+import Notification from "./Notification";
+import { AnimatePresence } from "framer-motion";
 
 export default function NotificationsContainer() {
   const notificationStore = useNotificationStore();
