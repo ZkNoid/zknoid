@@ -28,45 +28,9 @@ importers:
 
   apps/games:
     dependencies:
-      '@next/bundle-analyzer':
-        specifier: ^14.1.4
-        version: 14.2.5
-      '@tanstack/react-query':
-        specifier: ^5.29.2
-        version: 5.51.18(react@19.0.0-rc-4c2e457c7c-20240522)
-      '@trpc/client':
-        specifier: 11.0.0-rc.332
-        version: 11.0.0-rc.332(@trpc/server@11.0.0-rc.332)
-      '@trpc/next':
-        specifier: 11.0.0-rc.332
-        version: 11.0.0-rc.332(@tanstack/react-query@5.51.18)(@trpc/client@11.0.0-rc.332)(@trpc/react-query@11.0.0-rc.332)(@trpc/server@11.0.0-rc.332)(next@15.0.0-canary.148)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
-      '@trpc/react-query':
-        specifier: 11.0.0-rc.332
-        version: 11.0.0-rc.332(@tanstack/react-query@5.51.18)(@trpc/client@11.0.0-rc.332)(@trpc/server@11.0.0-rc.332)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
-      '@trpc/server':
-        specifier: 11.0.0-rc.332
-        version: 11.0.0-rc.332
-      '@vercel/analytics':
-        specifier: ^1.2.2
-        version: 1.3.1(next@15.0.0-canary.148)(react@19.0.0-rc-4c2e457c7c-20240522)
-      '@vercel/blob':
-        specifier: ^0.23.3
-        version: 0.23.4
-      '@vercel/speed-insights':
-        specifier: ^1.0.10
-        version: 1.0.12(next@15.0.0-canary.148)(react@19.0.0-rc-4c2e457c7c-20240522)
       clsx:
         specifier: ^2.1.0
         version: 2.1.1
-      embla-carousel:
-        specifier: ^8.0.2
-        version: 8.1.8
-      embla-carousel-autoplay:
-        specifier: ^8.0.2
-        version: 8.1.8(embla-carousel@8.1.8)
-      embla-carousel-react:
-        specifier: ^8.0.2
-        version: 8.1.8(react@19.0.0-rc-4c2e457c7c-20240522)
       eslint-plugin-prettier:
         specifier: ^5.1.3
         version: 5.2.1(eslint-config-prettier@9.1.0)(eslint@8.57.0)(prettier@3.3.3)
@@ -88,9 +52,6 @@ importers:
       lottie-react:
         specifier: ^2.4.0
         version: 2.4.0(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
-      lucide-react:
-        specifier: ^0.292.0
-        version: 0.292.0(react@19.0.0-rc-4c2e457c7c-20240522)
       luxon:
         specifier: ^3.4.4
         version: 3.4.4
@@ -100,9 +61,6 @@ importers:
       next:
         specifier: v15.0.0-canary.148
         version: 15.0.0-canary.148(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240909)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
-      node-telegram-bot-api:
-        specifier: ^0.65.1
-        version: 0.65.1(request@2.88.2)
       o1js:
         specifier: npm:o1js@1.6.0
         version: 1.6.0
@@ -115,24 +73,15 @@ importers:
       react-lottie:
         specifier: ^1.2.4
         version: 1.2.4(react@19.0.0-rc-4c2e457c7c-20240522)
-      reflect-metadata:
-        specifier: ^0.2.2
-        version: 0.2.2
       sdk:
         specifier: workspace:*
         version: link:../sdk
-      superjson:
-        specifier: ^2.2.1
-        version: 2.2.1
       tailwind-merge:
         specifier: ^2.2.2
         version: 2.4.0
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.7)
-      terser-webpack-plugin:
-        specifier: ^5.3.10
-        version: 5.3.10(webpack@5.93.0)
       truncate-middle:
         specifier: ^1.0.6
         version: 1.0.6
@@ -155,9 +104,6 @@ importers:
       '@types/node':
         specifier: ^20.12.7
         version: 20.14.13
-      '@types/node-telegram-bot-api':
-        specifier: ^0.64.6
-        version: 0.64.7
       '@types/react':
         specifier: ^18.2.75
         version: 18.3.3
@@ -248,15 +194,6 @@ importers:
       clsx:
         specifier: ^2.1.0
         version: 2.1.1
-      embla-carousel:
-        specifier: ^8.0.2
-        version: 8.1.8
-      embla-carousel-autoplay:
-        specifier: ^8.0.2
-        version: 8.1.8(embla-carousel@8.1.8)
-      embla-carousel-react:
-        specifier: ^8.0.2
-        version: 8.1.8(react@19.0.0-rc-4c2e457c7c-20240522)
       eslint-plugin-prettier:
         specifier: ^5.1.3
         version: 5.2.1(eslint-config-prettier@9.1.0)(eslint@8.57.0)(prettier@3.3.3)
@@ -278,9 +215,6 @@ importers:
       lottie-react:
         specifier: ^2.4.0
         version: 2.4.0(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
-      lucide-react:
-        specifier: ^0.292.0
-        version: 0.292.0(react@19.0.0-rc-4c2e457c7c-20240522)
       luxon:
         specifier: ^3.4.4
         version: 3.4.4
@@ -290,9 +224,6 @@ importers:
       next:
         specifier: v15.0.0-canary.148
         version: 15.0.0-canary.148(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240909)(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
-      node-telegram-bot-api:
-        specifier: ^0.65.1
-        version: 0.65.1(request@2.88.2)
       o1js:
         specifier: npm:o1js@1.6.0
         version: 1.6.0
@@ -474,9 +405,6 @@ importers:
       lottie-react:
         specifier: ^2.4.0
         version: 2.4.0(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
-      lucide-react:
-        specifier: ^0.292.0
-        version: 0.292.0(react@19.0.0-rc-4c2e457c7c-20240522)
       luxon:
         specifier: ^3.4.4
         version: 3.4.4
@@ -7646,14 +7574,6 @@ packages:
     dependencies:
       yallist: 3.1.1
     dev: true
-
-  /lucide-react@0.292.0(react@19.0.0-rc-4c2e457c7c-20240522):
-    resolution: {integrity: sha512-rRgUkpEHWpa5VCT66YscInCQmQuPCB1RFRzkkxMxg4b+jaL0V12E3riWWR2Sh5OIiUhCwGW/ZExuEO4Az32E6Q==}
-    peerDependencies:
-      react: ^16.5.1 || ^17.0.0 || ^18.0.0
-    dependencies:
-      react: 19.0.0-rc-4c2e457c7c-20240522
-    dev: false
 
   /luxon@3.4.4:
     resolution: {integrity: sha512-zobTr7akeGHnv7eBOXcRgMeCP6+uyYsczwmeRCauvpvaAltgNyTbLH/+VaEAPUeWBT+1GuNmz4wC/6jtQzbbVA==}
