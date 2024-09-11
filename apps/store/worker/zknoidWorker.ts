@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 
 import { LOTTERY_CACHE } from '@/constants/contracts_cache';
-import { FetchedCache, WebFileSystem, fetchCache } from '@sdk/lib/cache';
-import { mockProof } from '@sdk/lib/utils';
+import { FetchedCache, WebFileSystem, fetchCache } from '@zknoid/sdk/lib/cache';
+import { mockProof } from '@zknoid/sdk/lib/utils';
 
 import {
   Field as Field014,
@@ -49,10 +49,10 @@ import {
   GetRewardEvent,
   ProduceResultEvent,
 } from 'l1-lottery-contracts';
-import { NETWORKS } from '@sdk/constants/networks';
+import { NETWORKS } from '@zknoid/sdk/constants/networks';
 import { number } from 'zod';
-import { lotteryBackendRouter } from '@sdk/server/api/routers/lottery-backend';
-import { api } from '@sdk/trpc/vanilla';
+import { lotteryBackendRouter } from '@zknoid/sdk/server/api/routers/lottery-backend';
+import { api } from '@zknoid/sdk/trpc/vanilla';
 // import { DummyBridge } from 'zknoidcontractsl1';
 
 // ---------------------------------------------------------------------------------------
@@ -188,12 +188,14 @@ const functions = {
     console.log('Received rp', rp);
 
     const ticket = Ticket.from(args.ticketNums, senderAccount, args.amount);
-    
+
     let tx = await Mina.transaction(senderAccount, async () => {
       await state.lotteryGame!.getReward(
         ticket,
         MerkleMap20Witness.fromJSON(rp.roundWitness) as MerkleMap20Witness,
-        MerkleMap20Witness.fromJSON(rp.roundTicketWitness) as MerkleMap20Witness,
+        MerkleMap20Witness.fromJSON(
+          rp.roundTicketWitness
+        ) as MerkleMap20Witness,
         //@ts-ignore
         await DistributionProof.fromJSON(rp.dp),
         Field.fromJSON(rp.winningNumbers),

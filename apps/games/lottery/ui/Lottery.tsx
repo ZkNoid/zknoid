@@ -1,25 +1,25 @@
-import GamePage from "@sdk/components/framework/GamePage";
+import GamePage from "@zknoid/sdk/components/framework/GamePage";
 import { lotteryConfig } from "../config";
-import { useNetworkStore } from "@sdk/lib/stores/network";
+import { useNetworkStore } from "@zknoid/sdk/lib/stores/network";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import BannerSection from "./BannerSection";
 import TicketsSection from "./TicketsSection";
-import { useWorkerClientStore } from "@sdk/lib/stores/workerClient";
-import { useChainStore } from "@sdk/lib/stores/minaChain";
+import { useWorkerClientStore } from "@zknoid/sdk/lib/stores/workerClient";
+import { useChainStore } from "@zknoid/sdk/lib/stores/minaChain";
 import { DateTime, Duration } from "luxon";
-import { NetworkIds, NETWORKS } from "@sdk/constants/networks";
+import { NetworkIds, NETWORKS } from "@zknoid/sdk/constants/networks";
 import WrongNetworkModal from "./TicketsSection/ui/WrongNetworkModal";
-import { api } from "@sdk/trpc/react";
+import { api } from "@zknoid/sdk/trpc/react";
 import { fetchAccount } from "o1js";
 import { LOTTERY_ADDRESS } from "../constants/addresses";
 import { BLOCK_PER_ROUND } from "l1-lottery-contracts";
 import StateManager from "./StateManager";
-import ConnectWalletModal from "@sdk/components/shared/ConnectWalletModal";
+import ConnectWalletModal from "@zknoid/sdk/components/shared/ConnectWalletModal";
 import TicketsStorage from "./TicketsStorage";
-import RateGameModal from '@sdk/components/shared/RateGameModal';
-import lotteryImage from '@/public/image/games/lottery.svg';
-import { useRateGameStore } from '@sdk/lib/stores/rateGameStore';
+import RateGameModal from "@zknoid/sdk/components/shared/RateGameModal";
+import lotteryImage from "@/public/image/games/lottery.svg";
+import { useRateGameStore } from "@zknoid/sdk/lib/stores/rateGameStore";
 
 export enum Pages {
   Main,

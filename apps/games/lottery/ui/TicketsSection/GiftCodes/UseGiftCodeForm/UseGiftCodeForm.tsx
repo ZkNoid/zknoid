@@ -1,24 +1,24 @@
-import { Field, Form, Formik } from 'formik';
-import { AnimatePresence, motion } from 'framer-motion';
-import * as Yup from 'yup';
-import { api } from '@sdk/trpc/react';
-import { useState } from 'react';
+import { Field, Form, Formik } from "formik";
+import { AnimatePresence, motion } from "framer-motion";
+import * as Yup from "yup";
+import { api } from "@zknoid/sdk/trpc/react";
+import { useState } from "react";
 
 export default function UseGiftCodeForm({
   submitForm,
 }: {
   submitForm: (giftCode: string) => void;
 }) {
-  const [code, setCode] = useState<string>('');
+  const [code, setCode] = useState<string>("");
   const getCodeQuery = api.giftCodes.checkGiftCodeValidity.useQuery({
     code: code,
   });
   const validateSchema = Yup.object().shape({
     giftCode: Yup.string()
-      .required('This field required')
+      .required("This field required")
       .test(
-        'Check giftCode validity',
-        'Gift code invalid',
+        "Check giftCode validity",
+        "Gift code invalid",
         () => getCodeQuery.data === true
       ),
   });
@@ -26,35 +26,35 @@ export default function UseGiftCodeForm({
   return (
     <div
       className={
-        'flex w-[22.5vw] flex-col gap-[0.521vw] rounded-b-[0.521vw] bg-[#252525] p-[0.521vw]'
+        "flex w-[22.5vw] flex-col gap-[0.521vw] rounded-b-[0.521vw] bg-[#252525] p-[0.521vw]"
       }
     >
-      <span className={'font-plexsans text-[0.729vw] text-foreground'}>
+      <span className={"font-plexsans text-[0.729vw] text-foreground"}>
         Enter your gift code here
       </span>
       <Formik
-        initialValues={{ giftCode: '' }}
+        initialValues={{ giftCode: "" }}
         onSubmit={({ giftCode }) => submitForm(giftCode)}
         validationSchema={validateSchema}
       >
         {({ errors, touched }) => (
           <Form
             className={
-              'flex w-[80%] flex-row items-center justify-start gap-[0.521vw]'
+              "flex w-[80%] flex-row items-center justify-start gap-[0.521vw]"
             }
             onChange={(event) => {
               // @ts-ignore
               setCode(event.target.value);
             }}
           >
-            <div className={'flex w-full flex-col gap-[0.521vw]'}>
+            <div className={"flex w-full flex-col gap-[0.521vw]"}>
               <Field
-                name={'giftCode'}
-                type={'text'}
+                name={"giftCode"}
+                type={"text"}
                 className={
-                  'w-full rounded-[0.26vw] border border-foreground bg-[#252525] p-[0.208vw] font-plexsans text-[0.729vw] text-foreground placeholder:opacity-60'
+                  "w-full rounded-[0.26vw] border border-foreground bg-[#252525] p-[0.208vw] font-plexsans text-[0.729vw] text-foreground placeholder:opacity-60"
                 }
-                placeholder={'Type your gift code...'}
+                placeholder={"Type your gift code..."}
               />
               <AnimatePresence>
                 {errors.giftCode && touched.giftCode && (
@@ -63,12 +63,12 @@ export default function UseGiftCodeForm({
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{
-                      type: 'spring',
+                      type: "spring",
                       duration: 0.8,
                       bounce: 0,
                     }}
                     className={
-                      'flex w-full flex-row items-center gap-[0.417vw]'
+                      "flex w-full flex-row items-center gap-[0.417vw]"
                     }
                   >
                     <svg
@@ -92,7 +92,7 @@ export default function UseGiftCodeForm({
                       />
                     </svg>
                     <span
-                      className={'font-plexsans text-[0.729vw] text-[#FF0000]'}
+                      className={"font-plexsans text-[0.729vw] text-[#FF0000]"}
                     >
                       {errors.giftCode}
                     </span>
@@ -106,12 +106,12 @@ export default function UseGiftCodeForm({
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       transition={{
-                        type: 'spring',
+                        type: "spring",
                         duration: 0.8,
                         bounce: 0,
                       }}
                       className={
-                        'flex w-full flex-row items-center gap-[0.417vw]'
+                        "flex w-full flex-row items-center gap-[0.417vw]"
                       }
                     >
                       <svg
@@ -136,7 +136,7 @@ export default function UseGiftCodeForm({
                       </svg>
                       <span
                         className={
-                          'font-plexsans text-[0.729vw] text-[#22c55e]'
+                          "font-plexsans text-[0.729vw] text-[#22c55e]"
                         }
                       >
                         Gift code valid!
@@ -146,9 +146,9 @@ export default function UseGiftCodeForm({
               </AnimatePresence>
             </div>
             <button
-              type={'submit'}
+              type={"submit"}
               className={
-                'mb-auto w-[3.646vw] rounded-[0.26vw] bg-middle-accent p-[0.313vw] text-center font-museo text-[0.729vw] font-medium hover:opacity-80'
+                "mb-auto w-[3.646vw] rounded-[0.26vw] bg-middle-accent p-[0.313vw] text-center font-museo text-[0.729vw] font-medium hover:opacity-80"
               }
             >
               Submit

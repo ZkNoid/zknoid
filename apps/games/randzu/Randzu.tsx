@@ -1,63 +1,63 @@
-'use client';
+"use client";
 
-import { useContext, useEffect, useState } from 'react';
-import { GameView } from './components/GameView';
-import { Int64, PublicKey, UInt32, UInt64 } from 'o1js';
-import { useNetworkStore } from '@sdk/lib/stores/network';
+import { useContext, useEffect, useState } from "react";
+import { GameView } from "./components/GameView";
+import { Int64, PublicKey, UInt32, UInt64 } from "o1js";
+import { useNetworkStore } from "@zknoid/sdk/lib/stores/network";
 import {
   useObserveRandzuMatchQueue,
   useRandzuMatchQueueStore,
-} from './stores/matchQueue';
-import { useStore } from 'zustand';
-import { useSessionKeyStore } from '@sdk/lib/stores/sessionKeyStorage';
+} from "./stores/matchQueue";
+import { useStore } from "zustand";
+import { useSessionKeyStore } from "@zknoid/sdk/lib/stores/sessionKeyStorage";
 import {
   ClientAppChain,
   PENDING_BLOCKS_NUM_CONST,
   RandzuField,
   WinWitness,
-} from 'zknoid-chain-dev';
-import GamePage from '@sdk/components/framework/GamePage';
-import { randzuConfig } from './config';
-import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
-import { useProtokitChainStore } from '@sdk/lib/stores/protokitChain';
-import { MainButtonState } from '@sdk/components/framework/GamePage/PvPGameView';
-import RandzuCoverSVG from './assets/game-cover.svg';
-import { api } from '@sdk/trpc/react';
-import { getEnvContext } from '@sdk/lib/envContext';
-import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
-import { MOVE_TIMEOUT_IN_BLOCKS } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
-import RandzuCoverMobileSVG from './assets/game-cover-mobile.svg';
-import GameWidget from '@sdk/components/framework/GameWidget';
-import { motion } from 'framer-motion';
-import { formatPubkey } from '@sdk/lib/utils';
-import Button from '@sdk/components/shared/Button';
-import { Competition } from '@sdk/components/framework/GameWidget/ui/Competition';
-import { Currency } from '@sdk/constants/currency';
-import { formatUnits } from '@sdk/lib/unit';
-import znakesImg from '@sdk/public/image/tokens/znakes.svg';
-import Image from 'next/image';
-import { UnsetCompetitionPopup } from '@sdk/components/framework/GameWidget/ui/popups/UnsetCompetitionPopup';
-import { Win } from '@sdk/components/framework/GameWidget/ui/popups/Win';
-import { Lost } from '@sdk/components/framework/GameWidget/ui/popups/Lost';
-import { walletInstalled } from '@sdk/lib/helpers';
-import { ConnectWallet } from '@sdk/components/framework/GameWidget/ui/popups/ConnectWallet';
-import { InstallWallet } from '@sdk/components/framework/GameWidget/ui/popups/InstallWallet';
-import { GameWrap } from '@sdk/components/framework/GamePage/GameWrap';
-import { RateGame } from '@sdk/components/framework/GameWidget/ui/popups/RateGame';
-import toast from '@sdk/components/shared/Toast';
-import { useToasterStore } from '@sdk/lib/stores/toasterStore';
-import { useRateGameStore } from '@sdk/lib/stores/rateGameStore';
-import { GameState } from './lib/gameState';
-import { useStartGame } from './features/startGame';
+} from "zknoid-chain-dev";
+import GamePage from "@zknoid/sdk/components/framework/GamePage";
+import { randzuConfig } from "./config";
+import ZkNoidGameContext from "@zknoid/sdk/lib/contexts/ZkNoidGameContext";
+import { useProtokitChainStore } from "@zknoid/sdk/lib/stores/protokitChain";
+import { MainButtonState } from "@zknoid/sdk/components/framework/GamePage/PvPGameView";
+import RandzuCoverSVG from "./assets/game-cover.svg";
+import { api } from "@zknoid/sdk/trpc/react";
+import { getEnvContext } from "@zknoid/sdk/lib/envContext";
+import { DEFAULT_PARTICIPATION_FEE } from "zknoid-chain-dev/dist/src/engine/LobbyManager";
+import { MOVE_TIMEOUT_IN_BLOCKS } from "zknoid-chain-dev/dist/src/engine/MatchMaker";
+import RandzuCoverMobileSVG from "./assets/game-cover-mobile.svg";
+import GameWidget from "@zknoid/sdk/components/framework/GameWidget";
+import { motion } from "framer-motion";
+import { formatPubkey } from "@zknoid/sdk/lib/utils";
+import Button from "@zknoid/sdk/components/shared/Button";
+import { Competition } from "@zknoid/sdk/components/framework/GameWidget/ui/Competition";
+import { Currency } from "@zknoid/sdk/constants/currency";
+import { formatUnits } from "@zknoid/sdk/lib/unit";
+import znakesImg from "@zknoid/sdk/public/image/tokens/znakes.svg";
+import Image from "next/image";
+import { UnsetCompetitionPopup } from "@zknoid/sdk/components/framework/GameWidget/ui/popups/UnsetCompetitionPopup";
+import { Win } from "@zknoid/sdk/components/framework/GameWidget/ui/popups/Win";
+import { Lost } from "@zknoid/sdk/components/framework/GameWidget/ui/popups/Lost";
+import { walletInstalled } from "@zknoid/sdk/lib/helpers";
+import { ConnectWallet } from "@zknoid/sdk/components/framework/GameWidget/ui/popups/ConnectWallet";
+import { InstallWallet } from "@zknoid/sdk/components/framework/GameWidget/ui/popups/InstallWallet";
+import { GameWrap } from "@zknoid/sdk/components/framework/GamePage/GameWrap";
+import { RateGame } from "@zknoid/sdk/components/framework/GameWidget/ui/popups/RateGame";
+import toast from "@zknoid/sdk/components/shared/Toast";
+import { useToasterStore } from "@zknoid/sdk/lib/stores/toasterStore";
+import { useRateGameStore } from "@zknoid/sdk/lib/stores/rateGameStore";
+import { GameState } from "./lib/gameState";
+import { useStartGame } from "./features/startGame";
 import {
   useLobbiesStore,
   useObserveLobbiesStore,
-} from '@sdk/lib/stores/lobbiesStore';
+} from "@zknoid/sdk/lib/stores/lobbiesStore";
 // import { type PendingTransaction } from '@proto-kit/sequencer';
 
 const competition = {
-  id: 'global',
-  name: 'Global competition',
+  id: "global",
+  name: "Global competition",
   enteringPrice: BigInt(+DEFAULT_PARTICIPATION_FEE.toString()),
   prizeFund: 0n,
 };
@@ -76,7 +76,7 @@ export default function Randzu({
   const { client } = useContext(ZkNoidGameContext);
 
   if (!client) {
-    throw Error('Context app chain client is not set');
+    throw Error("Context app chain client is not set");
   }
 
   const networkStore = useNetworkStore();
@@ -91,7 +91,7 @@ export default function Randzu({
   const progress = api.progress.setSolvedQuests.useMutation();
   const startGame = useStartGame(competition.id, setGameState);
   const getRatingQuery = api.ratings.getGameRating.useQuery({
-    gameId: 'randzu',
+    gameId: "randzu",
   });
 
   const client_ = client as ClientAppChain<
@@ -108,7 +108,7 @@ export default function Randzu({
   useObserveLobbiesStore(query);
   const lobbiesStore = useLobbiesStore();
 
-  console.log('Active lobby', lobbiesStore.activeLobby);
+  console.log("Active lobby", lobbiesStore.activeLobby);
 
   const restart = () => {
     matchQueue.resetLastGameState();
@@ -117,7 +117,7 @@ export default function Randzu({
 
   // nonSSR
   const collectPending = async () => {
-    const randzuLogic = client.runtime.resolve('RandzuLogic');
+    const randzuLogic = client.runtime.resolve("RandzuLogic");
 
     const tx = await client.transaction(
       sessionPrivateKey.toPublicKey(),
@@ -126,20 +126,20 @@ export default function Randzu({
       }
     );
 
-    console.log('Collect tx', tx);
+    console.log("Collect tx", tx);
 
     tx.transaction = tx.transaction?.sign(sessionPrivateKey);
 
-    console.log('Sending tx', tx);
+    console.log("Sending tx", tx);
 
     await tx.send();
 
-    console.log('Tx sent', tx);
+    console.log("Tx sent", tx);
   };
 
   // nonSSR
   const proveOpponentTimeout = async () => {
-    const randzuLogic = client.runtime.resolve('RandzuLogic');
+    const randzuLogic = client.runtime.resolve("RandzuLogic");
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
@@ -158,7 +158,7 @@ export default function Randzu({
   const onCellClicked = async (x: number, y: number) => {
     if (!matchQueue.gameInfo?.isCurrentUserMove) return;
     if (matchQueue.gameInfo.field.value[y][x] != 0) return;
-    console.log('After checks');
+    console.log("After checks");
 
     const currentUserId = matchQueue.gameInfo.currentUserIndex + 1;
 
@@ -169,7 +169,7 @@ export default function Randzu({
     updatedField[y][x] = matchQueue.gameInfo.currentUserIndex + 1;
     // updatedField[x][y] = matchQueue.gameInfo.currentUserIndex + 1;
 
-    const randzuLogic = client.runtime.resolve('RandzuLogic');
+    const randzuLogic = client.runtime.resolve("RandzuLogic");
 
     const updatedRandzuField = RandzuField.from(updatedField);
 
@@ -207,11 +207,9 @@ export default function Randzu({
     if (winWitness1) {
       await progress.mutateAsync({
         userAddress: networkStore.address!,
-        section: 'RANDZU',
+        section: "RANDZU",
         id: 2,
-        txHash: JSON.stringify(
-          (tx.transaction! as any).toJSON()
-        ),
+        txHash: JSON.stringify((tx.transaction! as any).toJSON()),
         roomId: competition.id,
         envContext: getEnvContext(),
       });
@@ -225,7 +223,7 @@ export default function Randzu({
 
   useEffect(() => {
     if (matchQueue.pendingBalance && !matchQueue.inQueue) {
-      console.log('Collecting pending balance', matchQueue.pendingBalance);
+      console.log("Collecting pending balance", matchQueue.pendingBalance);
       collectPending();
     }
     if (!walletInstalled()) {
@@ -242,7 +240,7 @@ export default function Randzu({
     } else if (
       matchQueue.gameInfo &&
       !matchQueue.gameInfo?.isCurrentUserMove &&
-      BigInt(protokitChain?.block?.height || '0') -
+      BigInt(protokitChain?.block?.height || "0") -
         matchQueue.gameInfo?.lastMoveBlockHeight >
         MOVE_TIMEOUT_IN_BLOCKS
     ) {
@@ -253,8 +251,8 @@ export default function Randzu({
     ) {
       setGameState(GameState.OpponentTurn);
     } else {
-      if (matchQueue.lastGameState == 'win') setGameState(GameState.Won);
-      else if (matchQueue.lastGameState == 'lost') setGameState(GameState.Lost);
+      if (matchQueue.lastGameState == "win") setGameState(GameState.Won);
+      else if (matchQueue.lastGameState == "lost") setGameState(GameState.Lost);
       else setGameState(GameState.NotStarted);
     }
   }, [
@@ -279,10 +277,10 @@ export default function Randzu({
       )[gameState] || MainButtonState.None;
 
   const statuses = {
-    [GameState.WalletNotInstalled]: 'WALLET NOT INSTALLED',
-    [GameState.WalletNotConnected]: 'WALLET NOT CONNECTED',
-    [GameState.NotStarted]: 'NOT STARTED',
-    [GameState.MatchRegistration]: 'MATCH REGISTRATION',
+    [GameState.WalletNotInstalled]: "WALLET NOT INSTALLED",
+    [GameState.WalletNotConnected]: "WALLET NOT CONNECTED",
+    [GameState.NotStarted]: "NOT STARTED",
+    [GameState.MatchRegistration]: "MATCH REGISTRATION",
     [GameState.Matchmaking]: `MATCHMAKING ${
       (protokitChain.block?.height ?? 0) % PENDING_BLOCKS_NUM_CONST
     }  / ${PENDING_BLOCKS_NUM_CONST} 🔍`,
@@ -292,8 +290,8 @@ export default function Randzu({
       Number(protokitChain?.block?.height) -
       Number(matchQueue.gameInfo?.lastMoveBlockHeight)
     }`,
-    [GameState.Won]: 'YOU WON',
-    [GameState.Lost]: 'YOU LOST',
+    [GameState.Won]: "YOU WON",
+    [GameState.Lost]: "YOU LOST",
   } as Record<GameState, string>;
 
   useEffect(() => {
@@ -310,24 +308,24 @@ export default function Randzu({
       gameConfig={randzuConfig}
       image={RandzuCoverSVG}
       mobileImage={RandzuCoverMobileSVG}
-      defaultPage={'Game'}
+      defaultPage={"Game"}
     >
       <motion.div
         className={
-          'flex grid-cols-4 flex-col-reverse gap-4 pt-10 lg:grid lg:pt-0'
+          "flex grid-cols-4 flex-col-reverse gap-4 pt-10 lg:grid lg:pt-0"
         }
-        animate={'windowed'}
+        animate={"windowed"}
       >
-        <div className={'flex flex-col gap-4 lg:hidden'}>
-          <span className={'w-full text-headline-2 font-bold'}>Rules</span>
-          <span className={'font-plexsans text-buttons-menu font-normal'}>
+        <div className={"flex flex-col gap-4 lg:hidden"}>
+          <span className={"w-full text-headline-2 font-bold"}>Rules</span>
+          <span className={"font-plexsans text-buttons-menu font-normal"}>
             {randzuConfig.rules}
           </span>
         </div>
-        <div className={'hidden h-full w-full flex-col gap-4 lg:flex'}>
+        <div className={"hidden h-full w-full flex-col gap-4 lg:flex"}>
           <div
             className={
-              'flex w-full gap-2 font-plexsans text-[20px]/[20px] uppercase text-left-accent'
+              "flex w-full gap-2 font-plexsans text-[20px]/[20px] uppercase text-left-accent"
             }
           >
             <span>Game status:</span>
@@ -335,7 +333,7 @@ export default function Randzu({
           </div>
           <div
             className={
-              'flex w-full gap-2 font-plexsans text-[20px]/[20px] text-foreground'
+              "flex w-full gap-2 font-plexsans text-[20px]/[20px] text-foreground"
             }
           >
             <span>Your opponent:</span>
@@ -354,7 +352,7 @@ export default function Randzu({
                   <path d="M1 7L10 16L25 1" stroke="#252525" strokeWidth="2" />
                 </svg>
               }
-              label={'YOUR TURN'}
+              label={"YOUR TURN"}
               isReadonly
             />
           )}
@@ -381,7 +379,7 @@ export default function Randzu({
             />
           )}
           {mainButtonState == MainButtonState.OpponentTimeOut && (
-            <Button label={'OPPONENT TIMED OUT'} isReadonly />
+            <Button label={"OPPONENT TIMED OUT"} isReadonly />
           )}
           {mainButtonState == MainButtonState.TransactionExecution && (
             <Button
@@ -399,7 +397,7 @@ export default function Randzu({
                   />
                 </svg>
               }
-              label={'TRANSACTION EXECUTION'}
+              label={"TRANSACTION EXECUTION"}
               isReadonly
             />
           )}
@@ -433,8 +431,8 @@ export default function Randzu({
                       <GameWrap>
                         <Win
                           onBtnClick={restart}
-                          title={'You won! Congratulations!'}
-                          btnText={'Find new game'}
+                          title={"You won! Congratulations!"}
+                          btnText={"Find new game"}
                         />
                       </GameWrap>
                     ))}
@@ -450,12 +448,12 @@ export default function Randzu({
                           competition.enteringPrice
                         )}`}
                         onClick={startGame}
-                        className={'max-w-[40%]'}
+                        className={"max-w-[40%]"}
                         endContent={
                           <Image
                             src={znakesImg}
-                            alt={'Znakes token'}
-                            className={'h-[24px] w-[24px] pb-0.5'}
+                            alt={"Znakes token"}
+                            className={"h-[24px] w-[24px] pb-0.5"}
                           />
                         }
                       />
@@ -465,7 +463,7 @@ export default function Randzu({
                     <GameWrap>
                       <div
                         className={
-                          'flex max-w-[60%] flex-col items-center justify-center gap-6'
+                          "flex max-w-[60%] flex-col items-center justify-center gap-6"
                         }
                       >
                         <svg
@@ -510,7 +508,7 @@ export default function Randzu({
                         </svg>
                         <span>Opponent timeout</span>
                         <Button
-                          label={'Prove Opponent timeout'}
+                          label={"Prove Opponent timeout"}
                           onClick={() =>
                             proveOpponentTimeout()
                               .then(restart)
@@ -518,7 +516,7 @@ export default function Randzu({
                                 console.log(error);
                               })
                           }
-                          className={'px-4'}
+                          className={"px-4"}
                         />
                       </div>
                     </GameWrap>
@@ -549,7 +547,7 @@ export default function Randzu({
             />
           )}
         </GameWidget>
-        <div className={'flex flex-col lg:hidden'}>
+        <div className={"flex flex-col lg:hidden"}>
           {mainButtonState == MainButtonState.YourTurn && (
             <Button
               startContent={
@@ -564,7 +562,7 @@ export default function Randzu({
                 </svg>
               }
               className="uppercase"
-              label={'YOUR TURN'}
+              label={"YOUR TURN"}
               isReadonly
             />
           )}
@@ -594,7 +592,7 @@ export default function Randzu({
           {mainButtonState == MainButtonState.OpponentTimeOut && (
             <Button
               className="uppercase"
-              label={'OPPONENT TIMED OUT'}
+              label={"OPPONENT TIMED OUT"}
               isReadonly
             />
           )}
@@ -615,23 +613,23 @@ export default function Randzu({
                 </svg>
               }
               className="uppercase"
-              label={'TRANSACTION EXECUTION'}
+              label={"TRANSACTION EXECUTION"}
               isReadonly
             />
           )}
         </div>
         <div
           className={
-            'flex flex-row gap-4 font-plexsans text-[14px]/[14px] text-left-accent lg:hidden lg:text-[20px]/[20px]'
+            "flex flex-row gap-4 font-plexsans text-[14px]/[14px] text-left-accent lg:hidden lg:text-[20px]/[20px]"
           }
         >
-          <span className={'uppercase'}>Players in queue: {2}</span>
+          <span className={"uppercase"}>Players in queue: {2}</span>
         </div>
-        <div className={'flex h-full w-full flex-col gap-4 lg:hidden'}>
-          <span className={'w-full text-headline-2 font-bold'}>Game</span>
+        <div className={"flex h-full w-full flex-col gap-4 lg:hidden"}>
+          <span className={"w-full text-headline-2 font-bold"}>Game</span>
           <div
             className={
-              'flex w-full gap-2 font-plexsans text-[16px]/[16px] uppercase text-left-accent lg:text-[20px]/[20px]'
+              "flex w-full gap-2 font-plexsans text-[16px]/[16px] uppercase text-left-accent lg:text-[20px]/[20px]"
             }
           >
             <span>Game status:</span>
@@ -639,7 +637,7 @@ export default function Randzu({
           </div>
           <div
             className={
-              'flex w-full items-center gap-2 font-plexsans text-[14px]/[14px] text-foreground lg:text-[20px]/[20px]'
+              "flex w-full items-center gap-2 font-plexsans text-[14px]/[14px] text-foreground lg:text-[20px]/[20px]"
             }
           >
             <span>Your opponent:</span>
@@ -664,7 +662,7 @@ export default function Randzu({
                 rating: getRatingQuery.data?.rating,
                 author: randzuConfig.author,
               },
-              title: lobbiesStore.activeLobby?.name || 'Unknown',
+              title: lobbiesStore.activeLobby?.name || "Unknown",
               reward: lobbiesStore.activeLobby?.reward || 0n,
               currency: Currency.MINA,
               startPrice: lobbiesStore.lobbies?.[0]?.fee || 0n,

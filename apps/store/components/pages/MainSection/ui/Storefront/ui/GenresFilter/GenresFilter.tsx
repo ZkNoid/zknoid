@@ -1,5 +1,5 @@
-import { ZkNoidGameGenre } from '@sdk/lib/platform/game_tags';
-import { GameComparisonType } from '@sdk/lib/comparators/gameComparator';
+import { ZkNoidGameGenre } from '@zknoid/sdk/lib/platform/game_tags';
+import { GameComparisonType } from '@zknoid/sdk/lib/comparators/gameComparator';
 import GamepadIllustration from './assets/Gamepad_Illustration_01_01.json';
 import ChessIllustration from './assets/Chess_Illustration.json';
 import CubesIllustration from './assets/Cubes_Illustration.json';

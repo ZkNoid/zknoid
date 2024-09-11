@@ -1,5 +1,5 @@
-import { CheckersField, client } from 'zknoid-chain-dev';
-import { Bool, UInt32, UInt64 } from 'o1js';
+import { CheckersField, client } from "zknoid-chain-dev";
+import { Bool, UInt32, UInt64 } from "o1js";
 import {
   CAPTURE_KING_BOTTOM_LEFT,
   CAPTURE_KING_BOTTOM_RIGHT,
@@ -10,10 +10,10 @@ import {
   MOVE_KING_BOTTOM_RIGHT,
   MOVE_TOP_LEFT,
   MOVE_TOP_RIGHT,
-} from '../components/GameView';
-import { MatchQueueState } from '@sdk/lib/stores/matchQueue';
-import { useStore } from 'zustand';
-import { useSessionKeyStore } from '@sdk/lib/stores/sessionKeyStorage';
+} from "../components/GameView";
+import { MatchQueueState } from "@zknoid/sdk/lib/stores/matchQueue";
+import { useStore } from "zustand";
+import { useSessionKeyStore } from "@zknoid/sdk/lib/stores/sessionKeyStorage";
 
 export const useOnMoveChosen = (
   matchQueue: MatchQueueState,
@@ -27,7 +27,7 @@ export const useOnMoveChosen = (
     matchQueue.gameInfo?.opponent == matchQueue.gameInfo?.player2;
   return async (moveId: number, x: number, y: number) => {
     if (!matchQueue.gameInfo?.isCurrentUserMove) return;
-    console.log('After checks');
+    console.log("After checks");
 
     const currentUserId = matchQueue.gameInfo.currentUserIndex + 1;
 
@@ -37,9 +37,9 @@ export const useOnMoveChosen = (
 
     const isKing = updatedField[x][y] > 2n;
 
-    console.log('On move chosen', moveId, x, y);
+    console.log("On move chosen", moveId, x, y);
 
-    console.log('On move chosen', updatedField);
+    console.log("On move chosen", updatedField);
 
     updatedField[x][y] = 0;
 
@@ -85,12 +85,12 @@ export const useOnMoveChosen = (
           : currentUserId;
     }
 
-    console.log('On move chosen', updatedField);
+    console.log("On move chosen", updatedField);
 
-    const randzuLogic = client.runtime.resolve('CheckersLogic');
+    const randzuLogic = client.runtime.resolve("CheckersLogic");
     const updatedCheckersField = CheckersField.from(updatedField);
 
-    console.log('Proposed is king', isKing);
+    console.log("Proposed is king", isKing);
 
     const tx =
       moveId == MOVE_TOP_LEFT ||
@@ -129,7 +129,7 @@ export const useOnMoveChosen = (
       x,
       y,
     });
-    console.log('Sending tx');
+    console.log("Sending tx");
     tx.transaction = tx.transaction?.sign(sessionPrivateKey);
     await tx.send();
   };

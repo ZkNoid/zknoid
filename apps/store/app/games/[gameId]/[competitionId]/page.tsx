@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import { zkNoidConfig } from '@/games/config';
 
 const GamePageWrapper = dynamic(
-  () => import('sdk/components/framework/dynamic/GamePageWrapper'),
+  () => import('@zknoid/sdk/components/framework/dynamic/GamePageWrapper'),
   {
     ssr: false,
   }

@@ -1,19 +1,19 @@
-import { PublicKey, UInt64 } from 'o1js';
-import { useContext, useEffect } from 'react';
-import { useProtokitChainStore } from '@sdk/lib/stores/protokitChain';
-import { useNetworkStore } from '@sdk/lib/stores/network';
-import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
-import { randzuConfig } from '../config';
-import { type ClientAppChain } from 'zknoid-chain-dev';
+import { PublicKey, UInt64 } from "o1js";
+import { useContext, useEffect } from "react";
+import { useProtokitChainStore } from "@zknoid/sdk/lib/stores/protokitChain";
+import { useNetworkStore } from "@zknoid/sdk/lib/stores/network";
+import ZkNoidGameContext from "@zknoid/sdk/lib/contexts/ZkNoidGameContext";
+import { randzuConfig } from "../config";
+import { type ClientAppChain } from "zknoid-chain-dev";
 import {
   MatchQueueState,
   matchQueueInitializer,
-} from '@sdk/lib/stores/matchQueue';
-import { create } from 'zustand';
+} from "@zknoid/sdk/lib/stores/matchQueue";
+import { create } from "zustand";
 
 export const useRandzuMatchQueueStore = create<
   MatchQueueState,
-  [['zustand/immer', never]]
+  [["zustand/immer", never]]
 >(matchQueueInitializer);
 
 export const useObserveRandzuMatchQueue = () => {
@@ -40,7 +40,7 @@ export const useObserveRandzuMatchQueue = () => {
     }
 
     if (!client) {
-      throw Error('Context app chain client is not set');
+      throw Error("Context app chain client is not set");
     }
 
     matchQueue.loadMatchQueue(

@@ -2,16 +2,16 @@
 
 import { PublicKey, UInt64 } from "o1js";
 import { useContext } from "react";
-import { useNetworkStore } from "@sdk/lib/stores/network";
+import { useNetworkStore } from "@zknoid/sdk/lib/stores/network";
 import {
   useArkanoidCompetitionsStore,
   useObserveArkanoidCompetitions,
 } from "../stores/arkanoidCompetitions";
-import ZkNoidGameContext from "@sdk/lib/contexts/ZkNoidGameContext";
-import GamePage from "@sdk/components/framework/GamePage";
+import ZkNoidGameContext from "@zknoid/sdk/lib/contexts/ZkNoidGameContext";
+import GamePage from "@zknoid/sdk/components/framework/GamePage";
 import { arkanoidConfig } from "../config";
-import Competitions from "../../../sdk/components/framework/Competitions";
-import { ICompetition } from "@sdk/lib/types";
+import Competitions from "@zknoid/sdk/components/framework/Competitions";
+import { ICompetition } from "@zknoid/sdk/lib/types";
 import ArkanoidCoverSVG from "../assets/game-cover.svg";
 import ArkanoidCoverMobileSVG from "../assets/game-cover-mobile.svg";
 
@@ -34,7 +34,7 @@ export default function CompetitionsPage() {
       PublicKey.fromBase58(networkStore.address!),
       async () => {
         gameHub.register(UInt64.from(competitionId));
-      },
+      }
     );
 
     await tx.sign();
@@ -48,7 +48,7 @@ export default function CompetitionsPage() {
       PublicKey.fromBase58(networkStore.address!),
       async () => {
         gameHub.getReward(UInt64.from(competitionId));
-      },
+      }
     );
 
     await tx.sign();

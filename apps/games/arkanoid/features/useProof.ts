@@ -1,13 +1,13 @@
-import { CHUNK_LENGTH, GameInputs, Tick } from 'zknoid-chain-dev';
-import { Bool, Field, Int64, PublicKey, UInt64 } from 'o1js';
-import { getEnvContext } from '@sdk/lib/envContext';
-import { ITick } from '../components/GameView';
-import { useWorkerClientStore } from '@sdk/lib/stores/workerClient';
-import { ICompetition } from '@sdk/lib/types';
-import { useContext } from 'react';
-import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
-import { useNetworkStore } from '@sdk/lib/stores/network';
-import { api } from '@sdk/trpc/react';
+import { CHUNK_LENGTH, GameInputs, Tick } from "zknoid-chain-dev";
+import { Bool, Field, Int64, PublicKey, UInt64 } from "o1js";
+import { getEnvContext } from "@zknoid/sdk/lib/envContext";
+import { ITick } from "../components/GameView";
+import { useWorkerClientStore } from "@zknoid/sdk/lib/stores/workerClient";
+import { ICompetition } from "@zknoid/sdk/lib/types";
+import { useContext } from "react";
+import ZkNoidGameContext from "@zknoid/sdk/lib/contexts/ZkNoidGameContext";
+import { useNetworkStore } from "@zknoid/sdk/lib/stores/network";
+import { api } from "@zknoid/sdk/trpc/react";
 // import { type PendingTransaction } from '@proto-kit/sequencer';
 
 export const useProof = (
@@ -21,11 +21,11 @@ export const useProof = (
   const progress = api.progress.setSolvedQuests.useMutation();
 
   if (!client) {
-    throw Error('Context app chain client is not set');
+    throw Error("Context app chain client is not set");
   }
 
   return async () => {
-    console.log('Ticks', lastTicks);
+    console.log("Ticks", lastTicks);
 
     const chunkenize = (arr: any[], size: number) =>
       Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
@@ -54,9 +54,9 @@ export const useProof = (
         debug: Bool(false),
       });
 
-      console.log('Level proof', proof);
+      console.log("Level proof", proof);
 
-      const gameHub = client!.runtime.resolve('ArkanoidGameHub');
+      const gameHub = client!.runtime.resolve("ArkanoidGameHub");
 
       const tx = await client!.transaction(
         PublicKey.fromBase58(networkStore.address!),
@@ -71,36 +71,30 @@ export const useProof = (
       if (score > 90000) {
         await progress.mutateAsync({
           userAddress: networkStore.address!,
-          section: 'ARKANOID',
+          section: "ARKANOID",
           roomId: competition?.id.toString(),
           id: 0,
-          txHash: JSON.stringify(
-            (tx.transaction! as any).toJSON()
-          ),
+          txHash: JSON.stringify((tx.transaction! as any).toJSON()),
           envContext: getEnvContext(),
         });
       }
 
       await progress.mutateAsync({
-        userAddress: competition?.creator?.toBase58() || '',
-        section: 'ARKANOID',
+        userAddress: competition?.creator?.toBase58() || "",
+        section: "ARKANOID",
         roomId: competition?.id.toString(),
         id: 2,
-        txHash: JSON.stringify(
-          (tx.transaction! as any).toJSON()
-        ),
+        txHash: JSON.stringify((tx.transaction! as any).toJSON()),
         envContext: getEnvContext(),
       });
 
       if ((competition?.id || 0) > 2) {
         await progress.mutateAsync({
           userAddress: networkStore.address!,
-          section: 'ARKANOID',
+          section: "ARKANOID",
           roomId: competition?.id.toString(),
           id: 3,
-          txHash: JSON.stringify(
-            (tx.transaction! as any).toJSON()
-          ),
+          txHash: JSON.stringify((tx.transaction! as any).toJSON()),
           envContext: getEnvContext(),
         });
       }
@@ -108,17 +102,15 @@ export const useProof = (
       if (score > 90000 && (competition?.id || 0) > 2) {
         await progress.mutateAsync({
           userAddress: networkStore.address!,
-          section: 'ARKANOID',
+          section: "ARKANOID",
           roomId: competition?.id.toString(),
           id: 4,
-          txHash: JSON.stringify(
-            (tx.transaction! as any).toJSON()
-          ),
+          txHash: JSON.stringify((tx.transaction! as any).toJSON()),
           envContext: getEnvContext(),
         });
       }
     } catch (e) {
-      console.log('Error while generating ZK proof');
+      console.log("Error while generating ZK proof");
       console.log(e);
     }
   };

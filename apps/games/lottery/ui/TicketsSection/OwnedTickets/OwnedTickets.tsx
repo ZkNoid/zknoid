@@ -1,14 +1,14 @@
-import { useWorkerClientStore } from '@sdk/lib/stores/workerClient';
-import MyTicket from './ui/MyTicket';
-import { useEffect, useState } from 'react';
-import { useNetworkStore } from '@sdk/lib/stores/network';
-import { cn } from '@sdk/lib/helpers';
-import PageButton from './ui/PageButton';
-import { formatUnits } from '@sdk/lib/unit';
-import { Currency } from '@sdk/constants/currency';
-import { api } from '@sdk/trpc/react';
-import { useRoundsStore } from '../../../lib/roundsStore';
-import { ILotteryTicket } from '../../../lib/types';
+import { useWorkerClientStore } from "@zknoid/sdk/lib/stores/workerClient";
+import MyTicket from "./ui/MyTicket";
+import { useEffect, useState } from "react";
+import { useNetworkStore } from "@zknoid/sdk/lib/stores/network";
+import { cn } from "@zknoid/sdk/lib/helpers";
+import PageButton from "./ui/PageButton";
+import { formatUnits } from "@zknoid/sdk/lib/unit";
+import { Currency } from "@zknoid/sdk/constants/currency";
+import { api } from "@zknoid/sdk/trpc/react";
+import { useRoundsStore } from "../../../lib/roundsStore";
+import { ILotteryTicket } from "../../../lib/types";
 
 interface ITicket extends ILotteryTicket {
   id: string;
@@ -86,20 +86,20 @@ export default function OwnedTickets({
 
   return (
     <div
-      className={cn('flex w-full flex-col', tickets.length == 0 && 'hidden')}
+      className={cn("flex w-full flex-col", tickets.length == 0 && "hidden")}
     >
       <div
         className={
-          'mb-[1.33vw] flex flex-row items-center justify-start gap-[1vw]'
+          "mb-[1.33vw] flex flex-row items-center justify-start gap-[1vw]"
         }
       >
         <div className="text-[2.13vw]">Your tickets</div>
         {roundsStore.roundToShowId != workerStore.lotteryRoundId &&
           tickets.length > TICKETS_PER_PAGE && (
-            <div className={'flex flex-row gap-[0.5vw]'}>
+            <div className={"flex flex-row gap-[0.5vw]"}>
               <button
                 className={
-                  'flex h-[1.82vw] w-[1.82vw] items-center justify-center rounded-[0.26vw] border border-foreground hover:opacity-80 disabled:opacity-60'
+                  "flex h-[1.82vw] w-[1.82vw] items-center justify-center rounded-[0.26vw] border border-foreground hover:opacity-80 disabled:opacity-60"
                 }
                 onClick={() => setPage((prevState) => prevState - 1)}
                 disabled={page - 1 < 1}
@@ -121,7 +121,7 @@ export default function OwnedTickets({
 
               <button
                 className={
-                  'flex h-[1.82vw] w-[1.82vw] items-center justify-center rounded-[0.26vw] border border-foreground hover:opacity-80 disabled:opacity-60'
+                  "flex h-[1.82vw] w-[1.82vw] items-center justify-center rounded-[0.26vw] border border-foreground hover:opacity-80 disabled:opacity-60"
                 }
                 onClick={() => setPage((prevState) => prevState + 1)}
                 disabled={page + 1 > pagesAmount}
@@ -145,8 +145,8 @@ export default function OwnedTickets({
       </div>
 
       <div
-        className={cn('flex w-full flex-row gap-[0.3vw]', {
-          'flex-wrap gap-[1.042vw]':
+        className={cn("flex w-full flex-row gap-[0.3vw]", {
+          "flex-wrap gap-[1.042vw]":
             roundsStore.roundToShowId != workerStore.lotteryRoundId,
         })}
       >
@@ -154,8 +154,8 @@ export default function OwnedTickets({
           page != 1 &&
           roundsStore.roundToShowId == workerStore.lotteryRoundId && (
             <PageButton
-              text={'Previous page'}
-              symbol={'←'}
+              text={"Previous page"}
+              symbol={"←"}
               onClick={() => {
                 setPage((prevState) => prevState - 1);
                 setCurrentTicket(undefined);
@@ -196,8 +196,8 @@ export default function OwnedTickets({
           page + 1 <= pagesAmount &&
           roundsStore.roundToShowId == workerStore.lotteryRoundId && (
             <PageButton
-              text={'Next page'}
-              symbol={'→'}
+              text={"Next page"}
+              symbol={"→"}
               onClick={() => {
                 setPage((prevState) => prevState + 1);
                 setCurrentTicket(undefined);

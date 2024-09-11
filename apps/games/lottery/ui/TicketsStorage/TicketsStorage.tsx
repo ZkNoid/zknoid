@@ -1,16 +1,16 @@
-import { Pages } from '../Lottery';
-import { useEffect, useRef, useState } from 'react';
-import { cn } from '@sdk/lib/helpers';
-import { AnimatePresence, useScroll } from 'framer-motion';
-import CustomScrollbar from '@sdk/components/shared/CustomScrollbar';
-import { useWorkerClientStore } from '@sdk/lib/stores/workerClient';
-import { useNetworkStore } from '@sdk/lib/stores/network';
-import { formatUnits } from '@sdk/lib/unit';
-import { useChainStore } from '@sdk/lib/stores/minaChain';
-import { api } from '@sdk/trpc/react';
-import { RoundsDropdown } from './ui/RoundsDropdown';
-import { TicketItem } from './ui/TicketItem';
-import { ILotteryRound } from '../../lib/types';
+import { Pages } from "../Lottery";
+import { useEffect, useRef, useState } from "react";
+import { cn } from "@zknoid/sdk/lib/helpers";
+import { AnimatePresence, useScroll } from "framer-motion";
+import CustomScrollbar from "@zknoid/sdk/components/shared/CustomScrollbar";
+import { useWorkerClientStore } from "@zknoid/sdk/lib/stores/workerClient";
+import { useNetworkStore } from "@zknoid/sdk/lib/stores/network";
+import { formatUnits } from "@zknoid/sdk/lib/unit";
+import { useChainStore } from "@zknoid/sdk/lib/stores/minaChain";
+import { api } from "@zknoid/sdk/trpc/react";
+import { RoundsDropdown } from "./ui/RoundsDropdown";
+import { TicketItem } from "./ui/TicketItem";
+import { ILotteryRound } from "../../lib/types";
 
 const CheckboxButton = ({
   text,
@@ -24,16 +24,16 @@ const CheckboxButton = ({
   return (
     <button
       className={
-        'flex flex-row items-center justify-center gap-[0.26vw] hover:opacity-80'
+        "flex flex-row items-center justify-center gap-[0.26vw] hover:opacity-80"
       }
       onClick={() => setIsActive(!isActive)}
     >
       <div
         className={cn(
-          'flex h-[0.938vw] w-[0.938vw] flex-col items-center justify-center rounded-[0.104vw] border',
+          "flex h-[0.938vw] w-[0.938vw] flex-col items-center justify-center rounded-[0.104vw] border",
           {
-            'border-foreground': !isActive,
-            'border-left-accent bg-left-accent': isActive,
+            "border-foreground": !isActive,
+            "border-left-accent bg-left-accent": isActive,
           }
         )}
       >
@@ -43,12 +43,12 @@ const CheckboxButton = ({
           viewBox="0 0 14 10"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className={cn('h-[0.417vw] w-[0.625vw]', { 'opacity-0': !isActive })}
+          className={cn("h-[0.417vw] w-[0.625vw]", { "opacity-0": !isActive })}
         >
           <path d="M1 4L5.5 8.5L13 1" stroke="#252525" />
         </svg>
       </div>
-      <span className={'font-plexsans text-[0.833vw] text-foreground'}>
+      <span className={"font-plexsans text-[0.833vw] text-foreground"}>
         {text}
       </span>
     </button>
@@ -165,9 +165,9 @@ export default function TicketsStorage({
         setCurrentPage((prevState) => prevState + 1);
       }
     };
-    refObj?.addEventListener('scroll', scrollHandler);
+    refObj?.addEventListener("scroll", scrollHandler);
     return () => {
-      refObj?.removeEventListener('scroll', scrollHandler);
+      refObj?.removeEventListener("scroll", scrollHandler);
     };
   });
 
@@ -180,9 +180,9 @@ export default function TicketsStorage({
       }
     };
     resizeHandler();
-    refObj?.addEventListener('resize', resizeHandler);
+    refObj?.addEventListener("resize", resizeHandler);
     return () => {
-      refObj?.removeEventListener('resize', resizeHandler);
+      refObj?.removeEventListener("resize", resizeHandler);
     };
   });
   const { scrollYProgress } = useScroll({ container: containerRef });
@@ -190,24 +190,24 @@ export default function TicketsStorage({
   return (
     <div
       className={
-        'relative flex flex-col rounded-[0.67vw] border border-left-accent bg-bg-grey px-[2vw] py-[2.67vw]'
+        "relative flex flex-col rounded-[0.67vw] border border-left-accent bg-bg-grey px-[2vw] py-[2.67vw]"
       }
     >
       <span
         className={
-          'mb-[1.042vw] max-w-[85%] font-museo text-[1.667vw] font-bold text-foreground'
+          "mb-[1.042vw] max-w-[85%] font-museo text-[1.667vw] font-bold text-foreground"
         }
       >
         Tickets storage
       </span>
       <div
         className={
-          'mb-[1.563vw] flex w-full max-w-[85%] flex-row justify-between'
+          "mb-[1.563vw] flex w-full max-w-[85%] flex-row justify-between"
         }
       >
         <button
           className={
-            'flex h-[1.354vw] w-[3.802vw] flex-row items-center justify-center rounded-[0.144vw] border border-foreground hover:opacity-80'
+            "flex h-[1.354vw] w-[3.802vw] flex-row items-center justify-center rounded-[0.144vw] border border-foreground hover:opacity-80"
           }
           onClick={() => setPage(Pages.Main)}
         >
@@ -217,26 +217,26 @@ export default function TicketsStorage({
             viewBox="0 0 9 16"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className={'mr-[0.26vw] h-[0.781vw] w-[0.378vw]'}
+            className={"mr-[0.26vw] h-[0.781vw] w-[0.378vw]"}
           >
             <path d="M8.36328 0.5L1.10522 8L8.36328 15.5" stroke="#F9F8F4" />
           </svg>
           <span
             className={
-              'pt-px font-museo text-[0.729vw] font-medium text-foreground'
+              "pt-px font-museo text-[0.729vw] font-medium text-foreground"
             }
           >
             Back
           </span>
         </button>
-        <div className={'flex flex-row items-center gap-[2.344vw]'}>
+        <div className={"flex flex-row items-center gap-[2.344vw]"}>
           <CheckboxButton
-            text={'Only losing'}
+            text={"Only losing"}
             isActive={onlyLoosing}
             setIsActive={setOnlyLoosing}
           />
           <CheckboxButton
-            text={'Only claimable'}
+            text={"Only claimable"}
             isActive={onlyClaimable}
             setIsActive={setOnlyClaimable}
           />
@@ -248,53 +248,53 @@ export default function TicketsStorage({
         </div>
       </div>
 
-      <div className={'flex w-full max-w-[85%] flex-col  gap-0'}>
+      <div className={"flex w-full max-w-[85%] flex-col  gap-0"}>
         <div
-          className={cn('grid w-full grid-cols-6 pb-[0.781vw]', {
-            'pr-[1.875vw]': containerHeight == 400,
+          className={cn("grid w-full grid-cols-6 pb-[0.781vw]", {
+            "pr-[1.875vw]": containerHeight == 400,
           })}
         >
           <span
             className={
-              'pr-[50%] text-left font-plexsans text-[0.833vw] font-medium text-foreground'
+              "pr-[50%] text-left font-plexsans text-[0.833vw] font-medium text-foreground"
             }
           >
             Round
           </span>
           <span
             className={
-              'pr-[50%] text-center font-plexsans text-[0.833vw] font-medium  text-foreground'
+              "pr-[50%] text-center font-plexsans text-[0.833vw] font-medium  text-foreground"
             }
           >
             Win combination
           </span>
           <span
             className={
-              'text-center font-plexsans text-[0.833vw] font-medium text-foreground'
+              "text-center font-plexsans text-[0.833vw] font-medium text-foreground"
             }
           >
             Ticket Number
           </span>
           <span
             className={
-              'text-center font-plexsans text-[0.833vw] font-medium text-foreground'
+              "text-center font-plexsans text-[0.833vw] font-medium text-foreground"
             }
           >
             Quantity
           </span>
           <span
             className={
-              'text-center font-plexsans text-[0.833vw] font-medium text-foreground'
+              "text-center font-plexsans text-[0.833vw] font-medium text-foreground"
             }
           >
             Accessible rewards
           </span>
         </div>
-        <div className={'flex w-full flex-row gap-[1.042vw]'}>
+        <div className={"flex w-full flex-row gap-[1.042vw]"}>
           <div
             ref={containerRef}
             className={
-              'flex max-h-[400px] w-full flex-col gap-0 overflow-y-scroll no-scrollbar'
+              "flex max-h-[400px] w-full flex-col gap-0 overflow-y-scroll no-scrollbar"
             }
           >
             {renderRounds.length != 0 ? (
@@ -324,18 +324,18 @@ export default function TicketsStorage({
             ) : (
               <div
                 className={
-                  'flex w-full items-center justify-center border-y border-foreground py-[1.42vw]'
+                  "flex w-full items-center justify-center border-y border-foreground py-[1.42vw]"
                 }
               >
                 <span
-                  className={'font-plexsans text-[0.833vw] text-foreground'}
+                  className={"font-plexsans text-[0.833vw] text-foreground"}
                 >
                   No result
                 </span>
               </div>
             )}
           </div>
-          <AnimatePresence initial={false} mode={'wait'}>
+          <AnimatePresence initial={false} mode={"wait"}>
             {containerHeight === 400 && (
               <CustomScrollbar scrollYProgress={scrollYProgress} />
             )}

@@ -1,4 +1,4 @@
-import { ContractCache } from '@sdk/lib/cache';
+import { ContractCache } from '@zknoid/sdk/lib/cache';
 
 const LOTTERY_CACHE_LIST = [
   'lagrange-basis-fp-1024',

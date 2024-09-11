@@ -1,19 +1,19 @@
-import { PublicKey } from 'o1js';
-import { useContext, useEffect } from 'react';
-import { useProtokitChainStore } from '@sdk/lib/stores/protokitChain';
-import { useNetworkStore } from '@sdk/lib/stores/network';
-import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
-import { thimblerigConfig } from '../config';
-import { type ClientAppChain } from 'zknoid-chain-dev';
-import { create } from 'zustand';
+import { PublicKey } from "o1js";
+import { useContext, useEffect } from "react";
+import { useProtokitChainStore } from "@zknoid/sdk/lib/stores/protokitChain";
+import { useNetworkStore } from "@zknoid/sdk/lib/stores/network";
+import ZkNoidGameContext from "@zknoid/sdk/lib/contexts/ZkNoidGameContext";
+import { thimblerigConfig } from "../config";
+import { type ClientAppChain } from "zknoid-chain-dev";
+import { create } from "zustand";
 import {
   MatchQueueState,
   matchQueueInitializer,
-} from '@sdk/lib/stores/matchQueue';
+} from "@zknoid/sdk/lib/stores/matchQueue";
 
 export const useThimblerigMatchQueueStore = create<
   MatchQueueState,
-  [['zustand/immer', never]]
+  [["zustand/immer", never]]
 >(matchQueueInitializer);
 
 export const useObserveThimblerigMatchQueue = () => {
@@ -35,7 +35,7 @@ export const useObserveThimblerigMatchQueue = () => {
     }
 
     if (!client) {
-      throw Error('Context app chain client is not set');
+      throw Error("Context app chain client is not set");
     }
 
     matchQueue.loadMatchQueue(

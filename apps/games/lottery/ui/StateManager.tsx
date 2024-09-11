@@ -1,8 +1,8 @@
-import { useWorkerClientStore } from '@sdk/lib/stores/workerClient';
-import Loader from '@sdk/components/shared/Loader';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
-import { cn } from '@sdk/lib/helpers';
+import { useWorkerClientStore } from "@zknoid/sdk/lib/stores/workerClient";
+import Loader from "@zknoid/sdk/components/shared/Loader";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { cn } from "@zknoid/sdk/lib/helpers";
 
 export default function StateManager() {
   const workerClientStore = useWorkerClientStore();
@@ -26,35 +26,35 @@ export default function StateManager() {
   return (
     <div
       className={cn(
-        'fixed bottom-[2.5%] left-[38%] right-[38%] z-30 flex cursor-pointer items-center justify-center rounded-[0.521vw] bg-[#323232] p-[1.042vw] shadow-2xl hover:bg-[#3f3f3f]',
+        "fixed bottom-[2.5%] left-[38%] right-[38%] z-30 flex cursor-pointer items-center justify-center rounded-[0.521vw] bg-[#323232] p-[1.042vw] shadow-2xl hover:bg-[#3f3f3f]",
         { hidden: !isOpen }
       )}
       onClick={() => setIsOpen(false)}
     >
       <span
-        className={'flex flex-row items-center justify-center gap-[0.521vw]'}
+        className={"flex flex-row items-center justify-center gap-[0.521vw]"}
       >
         <AnimatePresence>
           {isLoading ? (
-            <Loader size={19} color={'#D2FF00'} />
+            <Loader size={19} color={"#D2FF00"} />
           ) : (
             <motion.div
               className={
-                'relative cursor-pointer rounded-[5px] border p-1 hover:opacity-80'
+                "relative cursor-pointer rounded-[5px] border p-1 hover:opacity-80"
               }
               variants={{
-                default: { borderColor: '#F9F8F4', backgroundColor: '#212121' },
-                active: { borderColor: '#D2FF00', backgroundColor: '#D2FF00' },
-                error: { borderColor: '#FF0000' },
+                default: { borderColor: "#F9F8F4", backgroundColor: "#212121" },
+                active: { borderColor: "#D2FF00", backgroundColor: "#D2FF00" },
+                error: { borderColor: "#FF0000" },
               }}
-              animate={'active'}
-              transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
+              animate={"active"}
+              transition={{ type: "spring", duration: 0.4, bounce: 0 }}
             >
               <motion.svg
                 aria-hidden="true"
                 role="presentation"
                 viewBox="0 0 17 18"
-                className={'h-3.5 w-3.5'}
+                className={"h-3.5 w-3.5"}
               >
                 <motion.polyline
                   fill="none"
@@ -75,7 +75,7 @@ export default function StateManager() {
         </AnimatePresence>
         <span
           className={
-            'text-pretty text-center font-plexsans text-[0.938vw] font-medium text-foreground'
+            "text-pretty text-center font-plexsans text-[0.938vw] font-medium text-foreground"
           }
         >
           {loadedMsg || workerClientStore.status}
@@ -87,7 +87,7 @@ export default function StateManager() {
         viewBox="0 0 12 12"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className={'absolute right-[3%] top-[10%] h-[0.625vw] w-[0.625vw]'}
+        className={"absolute right-[3%] top-[10%] h-[0.625vw] w-[0.625vw]"}
       >
         <path
           fillRule="evenodd"

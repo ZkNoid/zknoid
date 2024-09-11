@@ -1,9 +1,9 @@
-import { cn } from '@sdk/lib/helpers';
-import { TicketBlockButton } from '../../../ui/buttons/TicketBlockButton';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
-import { useWorkerClientStore } from '@sdk/lib/stores/workerClient';
-import { VoucherMode } from '../../../ui/TicketsSection/lib/voucherMode';
+import { cn } from "@zknoid/sdk/lib/helpers";
+import { TicketBlockButton } from "../../../ui/buttons/TicketBlockButton";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { useWorkerClientStore } from "@zknoid/sdk/lib/stores/workerClient";
+import { VoucherMode } from "../../../ui/TicketsSection/lib/voucherMode";
 
 const TicketsNumPicker = ({
   amount,
@@ -17,8 +17,8 @@ const TicketsNumPicker = ({
   return (
     <div
       className={cn(
-        'flex h-[1.6vw] items-center justify-between rounded-[0.33vw]',
-        'border border-bg-dark border-opacity-50 text-[1.07vw] text-[#252525]'
+        "flex h-[1.6vw] items-center justify-between rounded-[0.33vw]",
+        "border border-bg-dark border-opacity-50 text-[1.07vw] text-[#252525]"
       )}
     >
       <div
@@ -83,7 +83,7 @@ const ClearTicketButton = ({ onClick }: { onClick: () => void }) => {
         viewBox="0 0 17 18"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className={'h-[0.885vw] w-[0.885vw]'}
+        className={"h-[0.885vw] w-[0.885vw]"}
       >
         <path
           fillRule="evenodd"
@@ -109,7 +109,7 @@ export default function TicketCard({
   removeTicketByIdx: (index: number) => void;
   voucherMode: VoucherMode;
 }) {
-  const [symbols, setSymbols] = useState<string>('');
+  const [symbols, setSymbols] = useState<string>("");
   const [amount, setAmount] = useState<number>(0);
   const [finalized, setFinalized] = useState<boolean>(false);
   const [finalAmount, setFinalAmount] = useState<number | undefined>(undefined);
@@ -117,7 +117,7 @@ export default function TicketCard({
   const workerClientStore = useWorkerClientStore();
 
   const generateRandomNumbers = () => {
-    let numbers = '';
+    let numbers = "";
     for (let i = 0; i < 6; i++) {
       numbers += Math.ceil(Math.random() * 9);
     }
@@ -135,7 +135,7 @@ export default function TicketCard({
   };
 
   const clearStates = () => {
-    setSymbols('');
+    setSymbols("");
     if (voucherMode !== VoucherMode.UseValid) setAmount(0);
     setFinalized(false);
   };
@@ -170,21 +170,21 @@ export default function TicketCard({
   return (
     <motion.div
       className={cn(
-        'relative -mt-[25%] w-[22.5vw] rounded-[1.33vw] bg-right-accent p-[0.33vw] first:mt-0',
-        { 'h-[13.53vw]': !finalized, 'h-fit': finalized }
+        "relative -mt-[25%] w-[22.5vw] rounded-[1.33vw] bg-right-accent p-[0.33vw] first:mt-0",
+        { "h-[13.53vw]": !finalized, "h-fit": finalized }
       )}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       whileHover={
-        finalized && index != ticketsAmount - 1 ? { y: '-35%' } : undefined
+        finalized && index != ticketsAmount - 1 ? { y: "-35%" } : undefined
       }
       transition={{ damping: 0, stiffness: 0 }}
     >
       <div
         className={cn(
-          'flex w-full flex-col rounded-[1.042vw] border border-bg-dark p-[0.781vw]',
-          { 'h-full': !finalized }
+          "flex w-full flex-col rounded-[1.042vw] border border-bg-dark p-[0.781vw]",
+          { "h-full": !finalized }
         )}
       >
         <div className="flex flex-row items-center">
@@ -195,22 +195,22 @@ export default function TicketCard({
                 Get ticket
               </TicketBlockButton>
             ) : finalized ? (
-              <div className={'flex flex-row gap-[0.26vw]'}>
+              <div className={"flex flex-row gap-[0.26vw]"}>
                 {!workerClientStore.isActiveTx && (
                   <ClearTicketButton onClick={removeTicket} />
                 )}
                 <div
                   className={
-                    'h-[1.6vw] rounded-[0.33vw] border border-bg-dark px-[0.3vw] pb-[0.3vw] pt-[0.15vw] font-plexsans text-[0.833vw] font-medium text-bg-dark'
+                    "h-[1.6vw] rounded-[0.33vw] border border-bg-dark px-[0.3vw] pb-[0.3vw] pt-[0.15vw] font-plexsans text-[0.833vw] font-medium text-bg-dark"
                   }
                 >
                   {finalAmount
-                    ? `${finalAmount} ${finalAmount == 1 ? 'Ticket' : 'Tickets'}`
-                    : `${amount} ${amount == 1 ? 'Ticket' : 'Tickets'}`}
+                    ? `${finalAmount} ${finalAmount == 1 ? "Ticket" : "Tickets"}`
+                    : `${amount} ${amount == 1 ? "Ticket" : "Tickets"}`}
                 </div>
               </div>
             ) : (
-              <div className={'flex flex-row gap-[0.26vw]'}>
+              <div className={"flex flex-row gap-[0.26vw]"}>
                 <ClearTicketButton onClick={removeTicket} />
                 {voucherMode !== VoucherMode.UseValid && (
                   <TicketsNumPicker
@@ -228,11 +228,11 @@ export default function TicketCard({
             <div
               key={fieldId}
               className={cn(
-                'h-[2.67vw] w-[2.67vw] rounded-[0.33vw] border-[0.07vw] border-bg-dark shadow-[inset_5px_5px_5px_#C89EF1,inset_-5px_-5px_5px_rgba(200,158,241,0.5)]',
-                'flex items-center justify-center font-museo text-[2.13vw] font-bold text-black'
+                "h-[2.67vw] w-[2.67vw] rounded-[0.33vw] border-[0.07vw] border-bg-dark shadow-[inset_5px_5px_5px_#C89EF1,inset_-5px_-5px_5px_rgba(200,158,241,0.5)]",
+                "flex items-center justify-center font-museo text-[2.13vw] font-bold text-black"
               )}
             >
-              {symbols?.[fieldId] || '_'}
+              {symbols?.[fieldId] || "_"}
             </div>
           ))}
         </div>
@@ -240,27 +240,27 @@ export default function TicketCard({
           <AnimatePresence>
             {!finalized &&
               amount > 0 &&
-              [1, 2, 3, 4, 5, 6, 7, 8, 9, '←'].map((fieldId, index) => (
+              [1, 2, 3, 4, 5, 6, 7, 8, 9, "←"].map((fieldId, index) => (
                 <motion.button
                   key={index}
                   initial={{ opacity: 0 }}
                   animate={
                     index != 9 && symbols.length == 6
-                      ? { opacity: 0.6, cursor: 'not-allowed' }
+                      ? { opacity: 0.6, cursor: "not-allowed" }
                       : { opacity: 1 }
                   }
                   exit={{ opacity: 0 }}
                   whileHover={
                     symbols.length != 6 || index == 9
-                      ? { opacity: 0.6, cursor: 'pointer' }
+                      ? { opacity: 0.6, cursor: "pointer" }
                       : undefined
                   }
                   className={
-                    'relative flex h-[1.6vw] w-[1.6vw] flex-col items-center justify-center'
+                    "relative flex h-[1.6vw] w-[1.6vw] flex-col items-center justify-center"
                   }
                   onClick={() => {
                     setSymbols(
-                      fieldId == '←'
+                      fieldId == "←"
                         ? symbols.slice(0, -1)
                         : `${symbols}${fieldId}`
                     );
@@ -273,7 +273,7 @@ export default function TicketCard({
                     viewBox="0 0 28 28"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                    className={'h-[1.6vw] w-[1.6vw]'}
+                    className={"h-[1.6vw] w-[1.6vw]"}
                   >
                     <g opacity="1">
                       <rect
@@ -291,28 +291,28 @@ export default function TicketCard({
                   </svg>
                   <div
                     className={
-                      'absolute bottom-px right-px z-[1] flex h-full w-full items-center justify-center '
+                      "absolute bottom-px right-px z-[1] flex h-full w-full items-center justify-center "
                     }
                   >
-                    <span className={'text-[1vw] text-bg-dark'}>{fieldId}</span>
+                    <span className={"text-[1vw] text-bg-dark"}>{fieldId}</span>
                   </div>
                 </motion.button>
               ))}
           </AnimatePresence>
         </div>
-        <AnimatePresence mode={'wait'}>
+        <AnimatePresence mode={"wait"}>
           {!finalized && amount != 0 && (
             <motion.button
               initial={{ opacity: 0 }}
               animate={
                 symbols.length != 0 && symbols.length != 6
-                  ? { opacity: 0.6, cursor: 'not-allowed' }
+                  ? { opacity: 0.6, cursor: "not-allowed" }
                   : { opacity: 1 }
               }
               exit={{ opacity: 0 }}
               whileHover={{ opacity: 0.8 }}
               className={
-                'mb-auto mt-[0.26vw] w-full rounded-[0.26vw] bg-bg-dark py-[0.417vw] text-center font-museo text-[0.833vw] text-foreground'
+                "mb-auto mt-[0.26vw] w-full rounded-[0.26vw] bg-bg-dark py-[0.417vw] text-center font-museo text-[0.833vw] text-foreground"
               }
               disabled={symbols.length != 0 && symbols.length != 6}
               onClick={() => {
@@ -324,7 +324,7 @@ export default function TicketCard({
                 }
               }}
             >
-              {symbols.length == 0 ? 'Random numbers' : 'Submit ticket number'}
+              {symbols.length == 0 ? "Random numbers" : "Submit ticket number"}
             </motion.button>
           )}
         </AnimatePresence>

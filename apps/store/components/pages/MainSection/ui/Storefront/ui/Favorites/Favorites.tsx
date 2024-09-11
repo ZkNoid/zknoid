@@ -1,14 +1,17 @@
-import { ALL_GAME_TAGS, ZkNoidGameGenre } from '@sdk/lib/platform/game_tags';
-import { cn } from '@sdk/lib/helpers';
+import {
+  ALL_GAME_TAGS,
+  ZkNoidGameGenre,
+} from '@zknoid/sdk/lib/platform/game_tags';
+import { cn } from '@zknoid/sdk/lib/helpers';
 import { useState } from 'react';
 import { SortByFilter } from './ui/SortByFilter';
 import {
   GAME_STORE_SORT_METHODS,
   GameComparisonType,
-  compare
-} from '@sdk/lib/comparators/gameComparator';
-import { useNetworkStore } from '@sdk/lib/stores/network';
-import { api } from '@sdk/trpc/react';
+  compare,
+} from '@zknoid/sdk/lib/comparators/gameComparator';
+import { useNetworkStore } from '@zknoid/sdk/lib/stores/network';
+import { api } from '@zknoid/sdk/trpc/react';
 import { IGame } from '@/app/constants/games';
 import { GameCard } from '../../../../entities/GameCard';
 import Lottie from 'react-lottie';

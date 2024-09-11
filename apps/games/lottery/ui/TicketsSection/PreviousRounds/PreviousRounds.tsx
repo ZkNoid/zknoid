@@ -1,11 +1,11 @@
-import PreviousRoundItem from './ui/PreviousRoundItem';
-import { BLOCK_PER_ROUND } from 'l1-lottery-contracts';
-import { useWorkerClientStore } from '@sdk/lib/stores/workerClient';
-import { useChainStore } from '@sdk/lib/stores/minaChain';
-import { useEffect, useState } from 'react';
-import { ILotteryRound } from '../../../lib/types';
-import { api } from '@sdk/trpc/react';
-import Skeleton from '@sdk/components/shared/Skeleton';
+import PreviousRoundItem from "./ui/PreviousRoundItem";
+import { BLOCK_PER_ROUND } from "l1-lottery-contracts";
+import { useWorkerClientStore } from "@zknoid/sdk/lib/stores/workerClient";
+import { useChainStore } from "@zknoid/sdk/lib/stores/minaChain";
+import { useEffect, useState } from "react";
+import { ILotteryRound } from "../../../lib/types";
+import { api } from "@zknoid/sdk/trpc/react";
+import Skeleton from "@zknoid/sdk/components/shared/Skeleton";
 
 export default function PreviousRounds() {
   const ROUNDS_PER_PAGE = 2;
@@ -44,14 +44,14 @@ export default function PreviousRounds() {
     <div className="">
       <div className="mb-[1.33vw] text-[2.13vw]">Previous Lotteries</div>
       <div
-        className={'flex w-full flex-row gap-[1.042vw]'}
-        id={'previousLotteries'}
+        className={"flex w-full flex-row gap-[1.042vw]"}
+        id={"previousLotteries"}
       >
         {roundInfos !== undefined ? (
-          <div className={'flex w-full flex-row gap-[1.042vw]'}>
+          <div className={"flex w-full flex-row gap-[1.042vw]"}>
             <button
               className={
-                'flex h-[4vw] w-[4vw] items-center justify-center rounded-[0.521vw] border border-left-accent hover:opacity-80 disabled:opacity-60'
+                "flex h-[4vw] w-[4vw] items-center justify-center rounded-[0.521vw] border border-left-accent hover:opacity-80 disabled:opacity-60"
               }
               onClick={() => setPage(page + 1)}
               disabled={
@@ -68,7 +68,7 @@ export default function PreviousRounds() {
                 <path d="M26 46L4 24L26 2" stroke="#D2FF00" strokeWidth="5" />
               </svg>
             </button>
-            <div className={'grid w-full grid-cols-2 gap-[1.042vw]'}>
+            <div className={"grid w-full grid-cols-2 gap-[1.042vw]"}>
               {chainStore.block &&
                 lotteryStore.onchainStateInitialized &&
                 roundInfos.map((round, index) => (
@@ -104,7 +104,7 @@ export default function PreviousRounds() {
             </div>
             <button
               className={
-                'flex h-[4vw] w-[4vw] items-center justify-center rounded-[0.521vw] border border-left-accent hover:opacity-80 disabled:opacity-60'
+                "flex h-[4vw] w-[4vw] items-center justify-center rounded-[0.521vw] border border-left-accent hover:opacity-80 disabled:opacity-60"
               }
               onClick={() => setPage(page - 1)}
               disabled={page - 1 < 0}
@@ -125,16 +125,16 @@ export default function PreviousRounds() {
             </button>
           </div>
         ) : (
-          <div className={'grid w-full grid-cols-2 gap-[1.042vw] p-4'}>
+          <div className={"grid w-full grid-cols-2 gap-[1.042vw] p-4"}>
             <Skeleton
               isLoading={true}
-              className={'h-[15vw] w-full rounded-[0.67vw]'}
+              className={"h-[15vw] w-full rounded-[0.67vw]"}
             >
               <div />
             </Skeleton>
             <Skeleton
               isLoading={true}
-              className={'h-[15vw] w-full rounded-[0.67vw]'}
+              className={"h-[15vw] w-full rounded-[0.67vw]"}
             >
               <div />
             </Skeleton>

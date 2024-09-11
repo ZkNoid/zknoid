@@ -23,7 +23,7 @@
     "truncate-middle": "^1.0.6",
     "yup": "^1.4.0",
     "zknoid-chain-dev": "workspace:*",
-    "sdk": "workspace:*",
+    "@zknoid/sdk": "workspace:*",
     "zod": "^3.22.4",
     "zustand": "^4.5.2"
   },

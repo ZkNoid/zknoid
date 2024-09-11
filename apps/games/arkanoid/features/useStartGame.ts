@@ -1,9 +1,9 @@
-import { getEnvContext } from '@sdk/lib/envContext';
-import { useMinaBridge } from '@sdk/lib/stores/protokitBalances';
-import { api } from '@sdk/trpc/react';
-import { GameState } from '../lib/gameState';
-import { ICompetition } from '@sdk/lib/types';
-import { useNetworkStore } from '@sdk/lib/stores/network';
+import { getEnvContext } from "@zknoid/sdk/lib/envContext";
+import { useMinaBridge } from "@zknoid/sdk/lib/stores/protokitBalances";
+import { api } from "@zknoid/sdk/trpc/react";
+import { GameState } from "../lib/gameState";
+import { ICompetition } from "@zknoid/sdk/lib/types";
+import { useNetworkStore } from "@zknoid/sdk/lib/stores/network";
 
 export const useStartGame = (
   setGameState: (state: GameState) => void,
@@ -21,8 +21,8 @@ export const useStartGame = (
     }
 
     gameStartedMutation.mutate({
-      gameId: 'arkanoid',
-      userAddress: networkStore.address ?? '',
+      gameId: "arkanoid",
+      userAddress: networkStore.address ?? "",
       envContext: getEnvContext(),
     });
 

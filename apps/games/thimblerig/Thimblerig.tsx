@@ -1,67 +1,67 @@
-import GamePage from '@sdk/components/framework/GamePage';
-import { thimblerigConfig } from './config';
-import { useNetworkStore } from '@sdk/lib/stores/network';
-import { useContext, useEffect, useRef, useState } from 'react';
-import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
+import GamePage from "@zknoid/sdk/components/framework/GamePage";
+import { thimblerigConfig } from "./config";
+import { useNetworkStore } from "@zknoid/sdk/lib/stores/network";
+import { useContext, useEffect, useRef, useState } from "react";
+import ZkNoidGameContext from "@zknoid/sdk/lib/contexts/ZkNoidGameContext";
 import {
   type ClientAppChain,
   MOVE_TIMEOUT_IN_BLOCKS,
   PENDING_BLOCKS_NUM_CONST,
-} from 'zknoid-chain-dev';
-import { Poseidon, PublicKey, UInt64 } from 'o1js';
-import { useStore } from 'zustand';
-import { useSessionKeyStore } from '@sdk/lib/stores/sessionKeyStorage';
-import { walletInstalled } from '@sdk/lib/helpers';
+} from "zknoid-chain-dev";
+import { Poseidon, PublicKey, UInt64 } from "o1js";
+import { useStore } from "zustand";
+import { useSessionKeyStore } from "@zknoid/sdk/lib/stores/sessionKeyStorage";
+import { walletInstalled } from "@zknoid/sdk/lib/helpers";
 import {
   useObserveThimblerigMatchQueue,
   useThimblerigMatchQueueStore,
-} from './stores/matchQueue';
-import { useCommitmentStore } from '@sdk/lib/stores/commitmentStorage';
-import { useProtokitChainStore } from '@sdk/lib/stores/protokitChain';
-import ThimbleSVG from './assets/thimble.svg';
-import ThimbleOpenedCorrectSVG from './assets/thimble_opened_correct.svg';
-import BallSVG from './assets/ball.svg';
-import BallDashedSVG from './assets/ball-dashed.svg';
-import ArrowSVG from './assets/arrow.svg';
-import ThimblesMixing from './assets/thimbles_mixing.json';
-import ThimblerigBallInsideLifting from './assets/thimblerig_ball_lifting.json';
-import ThimblerigGuessedBallInsideLifting from './assets/thimblerig_dashed_ball_lifting.json';
-import ThimblerigNoBallInsideLifting from './assets/thimblerig_noball_lifting.json';
-import ThimblerigCoverSVG from './assets/game-cover.svg';
-import ThimblerigCoverMobileSVG from '@sdk/public/image/game-page/game-title-mobile-template.svg';
-import Image from 'next/image';
-import Lottie from 'react-lottie';
-import { MainButtonState } from '@sdk/components/framework/GamePage/PvPGameView';
-import { api } from '@sdk/trpc/react';
-import { getEnvContext } from '@sdk/lib/envContext';
-import { getRandomEmoji } from '@sdk/lib/emoji';
-import { cn } from '@sdk/lib/helpers';
-import AnimatedThimble from './components/AnimatedThimble';
-import Button from '@sdk/components/shared/Button';
-import GameWidget from '@sdk/components/framework/GameWidget';
-import { UnsetCompetitionPopup } from '@sdk/components/framework/GameWidget/ui/popups/UnsetCompetitionPopup';
-import { formatUnits } from '@sdk/lib/unit';
-import znakesImg from '@sdk/public/image/tokens/znakes.svg';
-import { ConnectWallet } from '@sdk/components/framework/GameWidget/ui/popups/ConnectWallet';
-import { InstallWallet } from '@sdk/components/framework/GameWidget/ui/popups/InstallWallet';
-import { Competition } from '@sdk/components/framework/GameWidget/ui/Competition';
-import { Currency } from '@sdk/constants/currency';
-import { motion, useAnimationControls } from 'framer-motion';
-import { ICompetitionPVP } from '@sdk/lib/types';
-import { GameWrap } from '@sdk/components/framework/GamePage/GameWrap';
-import { RateGame } from '@sdk/components/framework/GameWidget/ui/popups/RateGame';
-import { SadSmileSVG } from '@sdk/components/shared/misc/svg';
-import toast from '@sdk/components/shared/Toast';
-import { useToasterStore } from '@sdk/lib/stores/toasterStore';
-import { useRateGameStore } from '@sdk/lib/stores/rateGameStore';
-import { formatPubkey } from '@sdk/lib/utils';
-import StatefulModal from '@sdk/components/shared/Modal/StatefulModal';
-import { GameState } from './lib/gameState';
-import { useStartGame } from './features/startGame';
+} from "./stores/matchQueue";
+import { useCommitmentStore } from "@zknoid/sdk/lib/stores/commitmentStorage";
+import { useProtokitChainStore } from "@zknoid/sdk/lib/stores/protokitChain";
+import ThimbleSVG from "./assets/thimble.svg";
+import ThimbleOpenedCorrectSVG from "./assets/thimble_opened_correct.svg";
+import BallSVG from "./assets/ball.svg";
+import BallDashedSVG from "./assets/ball-dashed.svg";
+import ArrowSVG from "./assets/arrow.svg";
+import ThimblesMixing from "./assets/thimbles_mixing.json";
+import ThimblerigBallInsideLifting from "./assets/thimblerig_ball_lifting.json";
+import ThimblerigGuessedBallInsideLifting from "./assets/thimblerig_dashed_ball_lifting.json";
+import ThimblerigNoBallInsideLifting from "./assets/thimblerig_noball_lifting.json";
+import ThimblerigCoverSVG from "./assets/game-cover.svg";
+import ThimblerigCoverMobileSVG from "@zknoid/sdk/public/image/game-page/game-title-mobile-template.svg";
+import Image from "next/image";
+import Lottie from "react-lottie";
+import { MainButtonState } from "@zknoid/sdk/components/framework/GamePage/PvPGameView";
+import { api } from "@zknoid/sdk/trpc/react";
+import { getEnvContext } from "@zknoid/sdk/lib/envContext";
+import { getRandomEmoji } from "@zknoid/sdk/lib/emoji";
+import { cn } from "@zknoid/sdk/lib/helpers";
+import AnimatedThimble from "./components/AnimatedThimble";
+import Button from "@zknoid/sdk/components/shared/Button";
+import GameWidget from "@zknoid/sdk/components/framework/GameWidget";
+import { UnsetCompetitionPopup } from "@zknoid/sdk/components/framework/GameWidget/ui/popups/UnsetCompetitionPopup";
+import { formatUnits } from "@zknoid/sdk/lib/unit";
+import znakesImg from "@zknoid/sdk/public/image/tokens/znakes.svg";
+import { ConnectWallet } from "@zknoid/sdk/components/framework/GameWidget/ui/popups/ConnectWallet";
+import { InstallWallet } from "@zknoid/sdk/components/framework/GameWidget/ui/popups/InstallWallet";
+import { Competition } from "@zknoid/sdk/components/framework/GameWidget/ui/Competition";
+import { Currency } from "@zknoid/sdk/constants/currency";
+import { motion, useAnimationControls } from "framer-motion";
+import { ICompetitionPVP } from "@zknoid/sdk/lib/types";
+import { GameWrap } from "@zknoid/sdk/components/framework/GamePage/GameWrap";
+import { RateGame } from "@zknoid/sdk/components/framework/GameWidget/ui/popups/RateGame";
+import { SadSmileSVG } from "@zknoid/sdk/components/shared/misc/svg";
+import toast from "@zknoid/sdk/components/shared/Toast";
+import { useToasterStore } from "@zknoid/sdk/lib/stores/toasterStore";
+import { useRateGameStore } from "@zknoid/sdk/lib/stores/rateGameStore";
+import { formatPubkey } from "@zknoid/sdk/lib/utils";
+import StatefulModal from "@zknoid/sdk/components/shared/Modal/StatefulModal";
+import { GameState } from "./lib/gameState";
+import { useStartGame } from "./features/startGame";
 import {
   useLobbiesStore,
   useObserveLobbiesStore,
-} from '@sdk/lib/stores/lobbiesStore';
+} from "@zknoid/sdk/lib/stores/lobbiesStore";
 // import * as sequencer from '@proto-kit/sequencer';
 
 export default function Thimblerig({}: { params: { competitionId: string } }) {
@@ -111,7 +111,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   useObserveLobbiesStore(query);
   const lobbiesStore = useLobbiesStore();
 
-  console.log('Active lobby', lobbiesStore.activeLobby);
+  console.log("Active lobby", lobbiesStore.activeLobby);
 
   const restart = () => {
     matchQueue.resetLastGameState();
@@ -120,7 +120,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   };
 
   const collectPending = async () => {
-    const randzuLogic = client_.runtime.resolve('ThimblerigLogic');
+    const randzuLogic = client_.runtime.resolve("ThimblerigLogic");
 
     const tx = await client_.transaction(
       sessionPrivateKey.toPublicKey(),
@@ -129,15 +129,15 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       }
     );
 
-    console.log('Collect tx', tx);
+    console.log("Collect tx", tx);
 
     tx.transaction = tx.transaction?.sign(sessionPrivateKey);
 
-    console.log('Sending tx', tx);
+    console.log("Sending tx", tx);
 
     await tx.send();
 
-    console.log('Tx sent', tx);
+    console.log("Tx sent", tx);
   };
 
   /**
@@ -147,7 +147,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   const commitThumblerig = async (id: number) => {
     const salt = commitmentStore.commit(id);
 
-    const thimblerigLogic = client_.runtime.resolve('ThimblerigLogic');
+    const thimblerigLogic = client_.runtime.resolve("ThimblerigLogic");
 
     const commitment = Poseidon.hash([...UInt64.from(id).toFields(), salt]);
     const tx = await client_.transaction(
@@ -171,7 +171,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   const chooseThumblerig = async (choice: number) => {
     setPendingChoosing(true);
     try {
-      const thimblerigLogic = client_.runtime.resolve('ThimblerigLogic');
+      const thimblerigLogic = client_.runtime.resolve("ThimblerigLogic");
       const tx = await client_.transaction(
         PublicKey.fromBase58(networkStore.address!),
         async () => {
@@ -186,11 +186,9 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
       await progress.mutateAsync({
         userAddress: networkStore.address!,
-        section: 'THIMBLERIG',
+        section: "THIMBLERIG",
         id: 0,
-        txHash: JSON.stringify(
-          (tx.transaction! as any).toJSON()
-        ),
+        txHash: JSON.stringify((tx.transaction! as any).toJSON()),
         roomId: competition.id.toString(),
         envContext: getEnvContext(),
       });
@@ -201,7 +199,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   };
 
   const revealThumblerig = async () => {
-    const thimblerigLogic = client_.runtime.resolve('ThimblerigLogic');
+    const thimblerigLogic = client_.runtime.resolve("ThimblerigLogic");
     const commitment = commitmentStore.getCommitment();
 
     const tx = await client_.transaction(
@@ -220,7 +218,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
     await progress.mutateAsync({
       userAddress: networkStore.address!,
-      section: 'THIMBLERIG',
+      section: "THIMBLERIG",
       id: 0,
       txHash: JSON.stringify((tx.transaction! as any).toJSON()),
       roomId: competition.id.toString(),
@@ -229,7 +227,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   };
 
   const proveOpponentTimeout = async () => {
-    const thibmerigLogic = client_.runtime.resolve('ThimblerigLogic');
+    const thibmerigLogic = client_.runtime.resolve("ThimblerigLogic");
 
     const tx = await client_.transaction(
       PublicKey.fromBase58(networkStore.address!),
@@ -246,7 +244,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
 
   useEffect(() => {
     if (matchQueue.pendingBalance && !matchQueue.inQueue) {
-      console.log('Collecting pending balance', matchQueue.pendingBalance);
+      console.log("Collecting pending balance", matchQueue.pendingBalance);
       collectPending();
     }
 
@@ -315,13 +313,13 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
     ) {
       setGameState(GameState.WaitingForReveal);
     } else {
-      if (matchQueue.lastGameState == 'win') {
+      if (matchQueue.lastGameState == "win") {
         console.log(
-          'Win, value:',
+          "Win, value:",
           Number(matchQueue.gameInfo.field.value.toBigInt())
         );
         console.log(
-          'Win, salt:',
+          "Win, salt:",
           Number(matchQueue.gameInfo.field.choice.toBigInt())
         );
 
@@ -338,7 +336,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
         setGameState(GameState.Won);
         progress.mutate({
           userAddress: networkStore.address!,
-          section: 'THIMBLERIG',
+          section: "THIMBLERIG",
           id: 1,
           txHash: JSON.stringify({
             value: Number(matchQueue.gameInfo.field.value.toBigInt()),
@@ -347,13 +345,13 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
           roomId: competition.id.toString(),
           envContext: getEnvContext(),
         });
-      } else if (matchQueue.lastGameState == 'lost') {
+      } else if (matchQueue.lastGameState == "lost") {
         console.log(
-          'Lost, value:',
+          "Lost, value:",
           Number(matchQueue.gameInfo.field.value.toBigInt())
         );
         console.log(
-          'Lost, salt:',
+          "Lost, salt:",
           Number(matchQueue.gameInfo.field.choice.toBigInt())
         );
 
@@ -380,37 +378,37 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   ]);
 
   const statuses = {
-    [GameState.WalletNotInstalled]: 'WALLET NOT INSTALLED',
-    [GameState.WalletNotConnected]: 'WALLET NOT CONNECTED',
-    [GameState.NotStarted]: 'NOT STARTED',
-    [GameState.OpponentTimeout]: 'OPPONENT TIMEOUT',
-    [GameState.MatchRegistration]: 'MATCH REGISTRATION',
+    [GameState.WalletNotInstalled]: "WALLET NOT INSTALLED",
+    [GameState.WalletNotConnected]: "WALLET NOT CONNECTED",
+    [GameState.NotStarted]: "NOT STARTED",
+    [GameState.OpponentTimeout]: "OPPONENT TIMEOUT",
+    [GameState.MatchRegistration]: "MATCH REGISTRATION",
     [GameState.Matchmaking]: `MATCHMAKING ${
       (protokitChain.block?.height || 0) % PENDING_BLOCKS_NUM_CONST
     }  / ${PENDING_BLOCKS_NUM_CONST} 🔍`,
     [GameState.CurrentPlayerHiding]: `HIDING BALL`,
     [GameState.WaitingForHiding]: `OPPONENT HIDING BALL`,
-    [GameState.CurrentPlayerGuessing]: 'YOUR GUESS',
-    [GameState.WaitingForGuessing]: 'OPPONENT GUESSES',
-    [GameState.CurrentPlayerRevealing]: 'YOUR REVEAL',
-    [GameState.WaitingForReveal]: 'OPPONENT REVEAL',
-    [GameState.Won]: 'YOU WON',
-    [GameState.Lost]: 'YOU LOST',
+    [GameState.CurrentPlayerGuessing]: "YOUR GUESS",
+    [GameState.WaitingForGuessing]: "OPPONENT GUESSES",
+    [GameState.CurrentPlayerRevealing]: "YOUR REVEAL",
+    [GameState.WaitingForReveal]: "OPPONENT REVEAL",
+    [GameState.Won]: "YOU WON",
+    [GameState.Lost]: "YOU LOST",
   } as Record<GameState, string>;
 
   const mainText = {
-    [GameState.OpponentTimeout]: 'Opponent timed out. Prove to win',
-    [GameState.CurrentPlayerHiding]: 'Choose thimble to hide ball behind',
+    [GameState.OpponentTimeout]: "Opponent timed out. Prove to win",
+    [GameState.CurrentPlayerHiding]: "Choose thimble to hide ball behind",
     [GameState.WaitingForHiding]:
-      'Your opponent hides the ball, wait for your turn',
+      "Your opponent hides the ball, wait for your turn",
     [GameState.CurrentPlayerGuessing]:
-      'Guess under what thimble ball is hidden by opponent',
-    [GameState.WaitingForGuessing]: 'Wait for opponent to guess',
-    [GameState.CurrentPlayerRevealing]: 'Revealing position',
+      "Guess under what thimble ball is hidden by opponent",
+    [GameState.WaitingForGuessing]: "Wait for opponent to guess",
+    [GameState.CurrentPlayerRevealing]: "Revealing position",
     [GameState.WaitingForReveal]:
-      'Your opponent reveals position of the ball, wait for your turn',
-    [GameState.Won]: `${getRandomEmoji('happy')}You won! Congratulations!`,
-    [GameState.Lost]: `${getRandomEmoji('sad')} You've lost...`,
+      "Your opponent reveals position of the ball, wait for your turn",
+    [GameState.Won]: `${getRandomEmoji("happy")}You won! Congratulations!`,
+    [GameState.Lost]: `${getRandomEmoji("sad")} You've lost...`,
   } as Record<GameState, string>;
 
   const mainButtonState =
@@ -442,7 +440,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   };
 
   const getRatingQuery = api.ratings.getGameRating.useQuery({
-    gameId: 'thimblerig',
+    gameId: "thimblerig",
   });
 
   const competition: ICompetitionPVP = {
@@ -454,7 +452,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       rating: getRatingQuery.data?.rating,
       author: thimblerigConfig.author,
     },
-    title: lobbiesStore.activeLobby?.name || 'Unknown',
+    title: lobbiesStore.activeLobby?.name || "Unknown",
     reward: (lobbiesStore.activeLobby?.reward || 0n) / 2n,
     currency: Currency.MINA,
     startPrice: lobbiesStore.lobbies?.[0]?.fee || 0n,
@@ -484,24 +482,24 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       gameConfig={thimblerigConfig}
       image={ThimblerigCoverSVG}
       mobileImage={ThimblerigCoverMobileSVG}
-      defaultPage={'Game'}
+      defaultPage={"Game"}
     >
       <motion.div
         className={
-          'flex grid-cols-4 flex-col-reverse gap-4 pt-10 lg:grid lg:pt-0'
+          "flex grid-cols-4 flex-col-reverse gap-4 pt-10 lg:grid lg:pt-0"
         }
-        animate={'windowed'}
+        animate={"windowed"}
       >
-        <div className={'flex flex-col gap-4 lg:hidden'}>
-          <span className={'w-full text-headline-2 font-bold'}>Rules</span>
-          <span className={'font-plexsans text-buttons-menu font-normal'}>
+        <div className={"flex flex-col gap-4 lg:hidden"}>
+          <span className={"w-full text-headline-2 font-bold"}>Rules</span>
+          <span className={"font-plexsans text-buttons-menu font-normal"}>
             {thimblerigConfig.rules}
           </span>
         </div>
-        <div className={'hidden h-full w-full flex-col gap-4 lg:flex'}>
+        <div className={"hidden h-full w-full flex-col gap-4 lg:flex"}>
           <div
             className={
-              'flex w-full gap-2 font-plexsans text-[20px]/[20px] uppercase text-left-accent'
+              "flex w-full gap-2 font-plexsans text-[20px]/[20px] uppercase text-left-accent"
             }
           >
             <span>Game status:</span>
@@ -509,7 +507,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
           </div>
           <div
             className={
-              'flex w-full gap-2 font-plexsans text-[20px]/[20px] text-foreground'
+              "flex w-full gap-2 font-plexsans text-[20px]/[20px] text-foreground"
             }
           >
             <span>Your opponent:</span>
@@ -528,7 +526,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                   <path d="M1 7L10 16L25 1" stroke="#252525" strokeWidth="2" />
                 </svg>
               }
-              label={'YOUR TURN'}
+              label={"YOUR TURN"}
               isReadonly
             />
           )}
@@ -552,13 +550,13 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
               }
               label={"OPPONENT'S TURN"}
               isReadonly
-              color={'foreground'}
+              color={"foreground"}
               isFilled={false}
               isBordered={true}
             />
           )}
           {mainButtonState == MainButtonState.OpponentTimeOut && (
-            <Button label={'OPPONENT TIMED OUT'} isReadonly />
+            <Button label={"OPPONENT TIMED OUT"} isReadonly />
           )}
           {mainButtonState == MainButtonState.TransactionExecution && (
             <Button
@@ -576,12 +574,12 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                   />
                 </svg>
               }
-              label={'TRANSACTION EXECUTION'}
+              label={"TRANSACTION EXECUTION"}
               isReadonly
-              color={'foreground'}
+              color={"foreground"}
               isFilled={false}
               isBordered={true}
-              className={'border-left-accent'}
+              className={"border-left-accent"}
             />
           )}
         </div>
@@ -618,12 +616,12 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                           competition.startPrice
                         )}`}
                         onClick={startGame}
-                        className={'max-w-[40%]'}
+                        className={"max-w-[40%]"}
                         endContent={
                           <Image
                             src={znakesImg}
-                            alt={'Znakes token'}
-                            className={'h-[24px] w-[24px] pb-0.5'}
+                            alt={"Znakes token"}
+                            className={"h-[24px] w-[24px] pb-0.5"}
                           />
                         }
                       />
@@ -633,13 +631,13 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                     <GameWrap>
                       <div
                         className={
-                          'flex max-w-[60%] flex-col items-center justify-center gap-6'
+                          "flex max-w-[60%] flex-col items-center justify-center gap-6"
                         }
                       >
                         <SadSmileSVG />
                         <span>Opponent timeout</span>
                         <Button
-                          label={'Prove Opponent timeout'}
+                          label={"Prove Opponent timeout"}
                           onClick={() =>
                             proveOpponentTimeout()
                               .then(restart)
@@ -647,7 +645,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                                 console.log(error);
                               })
                           }
-                          className={'px-4'}
+                          className={"px-4"}
                         />
                       </div>
                     </GameWrap>
@@ -673,10 +671,10 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                 {gameState === GameState.Won && (
                   <div
                     className={
-                      'flex h-full w-full flex-col items-center justify-center pb-20'
+                      "flex h-full w-full flex-col items-center justify-center pb-20"
                     }
                   >
-                    <div className={'text-headline-1'}>
+                    <div className={"text-headline-1"}>
                       You won! Congratulations!
                     </div>
                   </div>
@@ -684,10 +682,10 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                 {gameState == GameState.Lost && (
                   <div
                     className={
-                      'flex h-full w-full flex-col items-center justify-center pb-20'
+                      "flex h-full w-full flex-col items-center justify-center pb-20"
                     }
                   >
-                    <div className={'text-headline-1'}>
+                    <div className={"text-headline-1"}>
                       You’ve lost! Please try again
                     </div>
                   </div>
@@ -721,8 +719,8 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                         <div
                           key={i}
                           className={cn(
-                            'p-5',
-                            isAnimated && 'mx-[-20px] mt-[-55px]'
+                            "p-5",
+                            isAnimated && "mx-[-20px] mt-[-55px]"
                           )}
                           onDrop={() => {
                             gameState == GameState.CurrentPlayerHiding &&
@@ -744,7 +742,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                               gameState == GameState.CurrentPlayerGuessing &&
                               thimbleGuessed != i + 1
                             ) {
-                              console.log('Revealing', i);
+                              console.log("Revealing", i);
                               setThimbleGuessed((i + 1) as 1 | 2 | 3);
                             }
                           }}
@@ -765,7 +763,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                           {!isAnimated ? (
                             <Image
                               src={getThimbleImage(i)}
-                              alt={'Thimble'}
+                              alt={"Thimble"}
                               className={
                                 (gameState == GameState.CurrentPlayerHiding &&
                                   thimbleOpened &&
@@ -778,8 +776,8 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                                 (gameState ==
                                   GameState.CurrentPlayerRevealing &&
                                   Number(commitmentStore.value) != i + 1)
-                                  ? 'pointer-events-none opacity-50'
-                                  : 'pointer-events-none'
+                                  ? "pointer-events-none opacity-50"
+                                  : "pointer-events-none"
                               }
                             />
                           ) : (
@@ -835,16 +833,16 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                           setBallDragged(true);
                         }}
                         onDragEnd={() => {
-                          draggableBallControls.start('play');
+                          draggableBallControls.start("play");
                           setBallDragged(false);
                         }}
-                        whileInView={'play'}
+                        whileInView={"play"}
                         variants={{
                           play: {
                             scale: 1.2,
                             transition: {
                               repeat: Infinity,
-                              repeatType: 'reverse',
+                              repeatType: "reverse",
                               duration: 0.4,
                             },
                           },
@@ -878,25 +876,25 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                 {gameState === GameState.Won && (
                   <div
                     className={
-                      'flex h-full w-full flex-col items-center justify-center pt-20'
+                      "flex h-full w-full flex-col items-center justify-center pt-20"
                     }
                   >
-                    <Button label={'Find new game'} onClick={restart} />
+                    <Button label={"Find new game"} onClick={restart} />
                   </div>
                 )}
                 {gameState == GameState.Lost && (
                   <div
                     className={
-                      'flex h-full w-full flex-col items-center justify-center pt-20'
+                      "flex h-full w-full flex-col items-center justify-center pt-20"
                     }
                   >
-                    <Button label={'Restart game'} onClick={restart} />
+                    <Button label={"Restart game"} onClick={restart} />
                   </div>
                 )}
                 {gameState == GameState.CurrentPlayerRevealing && (
                   <div
                     className={
-                      'flex h-full w-full flex-col items-center justify-center pt-20'
+                      "flex h-full w-full flex-col items-center justify-center pt-20"
                     }
                   >
                     <motion.div
@@ -904,14 +902,14 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                         scale: 1.05,
                         transition: {
                           repeat: Infinity,
-                          repeatType: 'reverse',
+                          repeatType: "reverse",
                           duration: 0.6,
                         },
                       }}
-                      className={'w-full max-w-[648px]'}
+                      className={"w-full max-w-[648px]"}
                     >
                       <Button
-                        label={'REVEAL POSITION'}
+                        label={"REVEAL POSITION"}
                         onClick={revealThumblerig}
                       />
                     </motion.div>
@@ -920,7 +918,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
               </GameWrap>
             )}
         </GameWidget>
-        <div className={'flex flex-col lg:hidden'}>
+        <div className={"flex flex-col lg:hidden"}>
           {mainButtonState == MainButtonState.YourTurn && (
             <Button
               startContent={
@@ -935,7 +933,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                 </svg>
               }
               className="uppercase"
-              label={'YOUR TURN'}
+              label={"YOUR TURN"}
               isReadonly
             />
           )}
@@ -960,7 +958,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
               className="uppercase"
               label={"OPPONENT'S TURN"}
               isReadonly
-              color={'foreground'}
+              color={"foreground"}
               isFilled={false}
               isBordered={true}
             />
@@ -968,7 +966,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
           {mainButtonState == MainButtonState.OpponentTimeOut && (
             <Button
               className="uppercase"
-              label={'OPPONENT TIMED OUT'}
+              label={"OPPONENT TIMED OUT"}
               isReadonly
             />
           )}
@@ -989,9 +987,9 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                 </svg>
               }
               className="border-left-accent uppercase"
-              label={'TRANSACTION EXECUTION'}
+              label={"TRANSACTION EXECUTION"}
               isReadonly
-              color={'foreground'}
+              color={"foreground"}
               isFilled={false}
               isBordered={true}
             />
@@ -999,16 +997,16 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
         </div>
         <div
           className={
-            'flex flex-row gap-4 font-plexsans text-[14px]/[14px] text-left-accent lg:hidden lg:text-[20px]/[20px]'
+            "flex flex-row gap-4 font-plexsans text-[14px]/[14px] text-left-accent lg:hidden lg:text-[20px]/[20px]"
           }
         >
-          <span className={'uppercase'}>Players in queue: {2}</span>
+          <span className={"uppercase"}>Players in queue: {2}</span>
         </div>
-        <div className={'flex h-full w-full flex-col gap-4 lg:hidden'}>
-          <span className={'w-full text-headline-2 font-bold'}>Game</span>
+        <div className={"flex h-full w-full flex-col gap-4 lg:hidden"}>
+          <span className={"w-full text-headline-2 font-bold"}>Game</span>
           <div
             className={
-              'flex w-full gap-2 font-plexsans text-[16px]/[16px] uppercase text-left-accent lg:text-[20px]/[20px]'
+              "flex w-full gap-2 font-plexsans text-[16px]/[16px] uppercase text-left-accent lg:text-[20px]/[20px]"
             }
           >
             <span>Game status:</span>
@@ -1016,7 +1014,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
           </div>
           <div
             className={
-              'flex w-full items-center gap-2 font-plexsans text-[14px]/[14px] text-foreground lg:text-[20px]/[20px]'
+              "flex w-full items-center gap-2 font-plexsans text-[14px]/[14px] text-foreground lg:text-[20px]/[20px]"
             }
           >
             <span>Your opponent:</span>

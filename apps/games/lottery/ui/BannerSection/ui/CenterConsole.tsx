@@ -1,14 +1,14 @@
-import { cn, formatAddress } from '@sdk/lib/helpers';
-import { useRoundTimer } from '../../../features/useRoundTimer';
-import { useWorkerClientStore } from '@sdk/lib/stores/workerClient';
-import { DateTime } from 'luxon';
-import BouncyLoader from '@sdk/components/shared/BouncyLoader';
-import Skeleton from '@sdk/components/shared/Skeleton';
-import { formatUnits } from '@sdk/lib/unit';
-import { Currency } from '@sdk/constants/currency';
-import { Pages } from '../../Lottery';
-import { api } from '@sdk/trpc/react';
-import { useEffect, useState } from 'react';
+import { cn, formatAddress } from "@zknoid/sdk/lib/helpers";
+import { useRoundTimer } from "../../../features/useRoundTimer";
+import { useWorkerClientStore } from "@zknoid/sdk/lib/stores/workerClient";
+import { DateTime } from "luxon";
+import BouncyLoader from "@zknoid/sdk/components/shared/BouncyLoader";
+import Skeleton from "@zknoid/sdk/components/shared/Skeleton";
+import { formatUnits } from "@zknoid/sdk/lib/unit";
+import { Currency } from "@zknoid/sdk/constants/currency";
+import { Pages } from "../../Lottery";
+import { api } from "@zknoid/sdk/trpc/react";
+import { useEffect, useState } from "react";
 
 export default function CenterConsole({
   roundToShow,
@@ -72,8 +72,8 @@ export default function CenterConsole({
   return (
     <div className="absolute bottom-0 left-0 right-0 top-0 mx-auto h-[13vw] w-[19.4vw]">
       <div
-        className={cn('mt-[1vw] flex h-full w-[17.969vw] flex-col', {
-          'items-center justify-center':
+        className={cn("mt-[1vw] flex h-full w-[17.969vw] flex-col", {
+          "items-center justify-center":
             roundToShow == lotteryStore.lotteryRoundId ||
             (roundToShow != lotteryStore.lotteryRoundId &&
               !roundInfo?.winningCombination),
@@ -81,7 +81,7 @@ export default function CenterConsole({
       >
         <div
           className={
-            'w-full text-center font-museo text-[1.45vw] font-bold uppercase'
+            "w-full text-center font-museo text-[1.45vw] font-bold uppercase"
           }
         >
           {roundToShow != lotteryStore.lotteryRoundId
@@ -89,66 +89,66 @@ export default function CenterConsole({
             : `Lottery Round ${roundToShow}`}
         </div>
         <div
-          className={cn('flex h-full flex-row gap-[0.781vw]', {
-            'mt-[0.938vw]':
+          className={cn("flex h-full flex-row gap-[0.781vw]", {
+            "mt-[0.938vw]":
               roundToShow == lotteryStore.lotteryRoundId ||
               (roundToShow != lotteryStore.lotteryRoundId &&
                 !roundInfo?.winningCombination),
-            'w-full':
+            "w-full":
               roundInfo?.winningCombination &&
               roundToShow != lotteryStore.lotteryRoundId,
           })}
         >
           {roundToShow == lotteryStore.lotteryRoundId ? (
             <>
-              <div className={'flex flex-col gap-0'}>
+              <div className={"flex flex-col gap-0"}>
                 <div className="flex h-[5.469vw] w-[5.469vw] items-center justify-center rounded-[0.67vw] bg-white text-center font-museo text-[4.219vw] font-bold text-bg-dark">
                   {!!roundTimer.startsIn.hours
                     ? roundTimer.startsIn.hours < 10
-                      ? '0' + roundTimer.startsIn.hours
+                      ? "0" + roundTimer.startsIn.hours
                       : roundTimer.startsIn.hours
-                    : '00'}
+                    : "00"}
                 </div>
-                <span className={'text-center font-plexsans text-[0.625vw]'}>
+                <span className={"text-center font-plexsans text-[0.625vw]"}>
                   Hours
                 </span>
               </div>
-              <div className={'flex flex-col gap-0'}>
+              <div className={"flex flex-col gap-0"}>
                 <div className="flex h-[5.469vw] w-[5.469vw] items-center justify-center rounded-[0.67vw] bg-white text-center font-museo text-[4.219vw] font-bold text-bg-dark">
                   {!!roundTimer.startsIn.minutes
                     ? roundTimer.startsIn.minutes < 10
-                      ? '0' + roundTimer.startsIn.minutes
+                      ? "0" + roundTimer.startsIn.minutes
                       : roundTimer.startsIn.minutes
-                    : '00'}
+                    : "00"}
                 </div>
-                <span className={'text-center font-plexsans text-[0.625vw]'}>
+                <span className={"text-center font-plexsans text-[0.625vw]"}>
                   Minutes
                 </span>
               </div>
-              <div className={'flex flex-col gap-0'}>
+              <div className={"flex flex-col gap-0"}>
                 <div className="flex h-[5.469vw] w-[5.469vw] items-center justify-center rounded-[0.67vw] bg-white text-center font-museo text-[4.219vw] font-bold text-bg-dark">
                   {!!roundTimer.startsIn.seconds
                     ? Math.trunc(roundTimer.startsIn.seconds) < 10
-                      ? '0' + Math.trunc(roundTimer.startsIn.seconds)
+                      ? "0" + Math.trunc(roundTimer.startsIn.seconds)
                       : Math.trunc(roundTimer.startsIn.seconds)
-                    : '00'}
+                    : "00"}
                 </div>
-                <span className={'text-center font-plexsans text-[0.625vw]'}>
+                <span className={"text-center font-plexsans text-[0.625vw]"}>
                   Seconds
                 </span>
               </div>
             </>
           ) : roundInfo?.winningCombination ? (
             <div
-              className={cn('flex w-full flex-col items-center gap-[0.26vw]', {
-                'justify-start': roundInfo.tickets.length != 0,
-                'justify-center': roundInfo.tickets.length == 0,
+              className={cn("flex w-full flex-col items-center gap-[0.26vw]", {
+                "justify-start": roundInfo.tickets.length != 0,
+                "justify-center": roundInfo.tickets.length == 0,
               })}
             >
-              <span className={'font-museo text-[1.042vw] font-bold'}>
+              <span className={"font-museo text-[1.042vw] font-bold"}>
                 {roundInfo.tickets.length != 0
-                  ? 'Top 3 winners in this round'
-                  : 'This round has no tickets'}
+                  ? "Top 3 winners in this round"
+                  : "This round has no tickets"}
               </span>
               {roundInfo.tickets.length != 0 && (
                 <>
@@ -158,7 +158,7 @@ export default function CenterConsole({
                         <div
                           key={index}
                           className={
-                            'flex w-full flex-row items-center justify-start gap-[0.625vw] rounded-[0.26vw] bg-[#252525]'
+                            "flex w-full flex-row items-center justify-start gap-[0.625vw] rounded-[0.26vw] bg-[#252525]"
                           }
                         >
                           {index == 0 ? (
@@ -168,7 +168,7 @@ export default function CenterConsole({
                               viewBox="0 0 18 24"
                               fill="none"
                               xmlns="http://www.w3.org/2000/svg"
-                              className={'h-[1.25vw] w-[1.25vw]'}
+                              className={"h-[1.25vw] w-[1.25vw]"}
                             >
                               <path
                                 fillRule="evenodd"
@@ -184,7 +184,7 @@ export default function CenterConsole({
                               viewBox="0 0 18 24"
                               fill="none"
                               xmlns="http://www.w3.org/2000/svg"
-                              className={'h-[1.25vw] w-[1.25vw]'}
+                              className={"h-[1.25vw] w-[1.25vw]"}
                             >
                               <path
                                 fillRule="evenodd"
@@ -200,7 +200,7 @@ export default function CenterConsole({
                               viewBox="0 0 18 24"
                               fill="none"
                               xmlns="http://www.w3.org/2000/svg"
-                              className={'h-[1.25vw] w-[1.25vw]'}
+                              className={"h-[1.25vw] w-[1.25vw]"}
                             >
                               <path
                                 fillRule="evenodd"
@@ -212,7 +212,7 @@ export default function CenterConsole({
                           )}
                           <span
                             className={
-                              'py-[0.25vw] font-museo text-[0.833vw] font-medium text-foreground'
+                              "py-[0.25vw] font-museo text-[0.833vw] font-medium text-foreground"
                             }
                           >
                             {accounts.find(
@@ -221,12 +221,12 @@ export default function CenterConsole({
                           </span>
                           <span
                             className={
-                              'ml-auto py-[0.25vw] font-museo text-[0.833vw] font-medium text-foreground'
+                              "ml-auto py-[0.25vw] font-museo text-[0.833vw] font-medium text-foreground"
                             }
                           >
                             {item.funds
                               ? Number(formatUnits(item.funds)).toFixed(2)
-                              : 0}{' '}
+                              : 0}{" "}
                             {Currency.MINA}
                           </span>
                         </div>
@@ -236,7 +236,7 @@ export default function CenterConsole({
                           <div
                             key={i}
                             className={
-                              'flex w-full flex-row items-center justify-start gap-[0.625vw] rounded-[0.26vw] bg-[#252525]'
+                              "flex w-full flex-row items-center justify-start gap-[0.625vw] rounded-[0.26vw] bg-[#252525]"
                             }
                           >
                             {i + leaderboard.length == 0 ? (
@@ -246,7 +246,7 @@ export default function CenterConsole({
                                 viewBox="0 0 18 24"
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
-                                className={'h-[1.25vw] w-[1.25vw]'}
+                                className={"h-[1.25vw] w-[1.25vw]"}
                               >
                                 <path
                                   fillRule="evenodd"
@@ -262,7 +262,7 @@ export default function CenterConsole({
                                 viewBox="0 0 18 24"
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
-                                className={'h-[1.25vw] w-[1.25vw]'}
+                                className={"h-[1.25vw] w-[1.25vw]"}
                               >
                                 <path
                                   fillRule="evenodd"
@@ -278,7 +278,7 @@ export default function CenterConsole({
                                 viewBox="0 0 18 24"
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
-                                className={'h-[1.25vw] w-[1.25vw]'}
+                                className={"h-[1.25vw] w-[1.25vw]"}
                               >
                                 <path
                                   fillRule="evenodd"
@@ -290,14 +290,14 @@ export default function CenterConsole({
                             )}
                             <span
                               className={
-                                'py-[0.25vw] font-museo text-[0.833vw] font-medium text-foreground'
+                                "py-[0.25vw] font-museo text-[0.833vw] font-medium text-foreground"
                               }
                             >
                               -
                             </span>
                             <span
                               className={
-                                'ml-auto py-[0.25vw] font-museo text-[0.833vw] font-medium text-foreground'
+                                "ml-auto py-[0.25vw] font-museo text-[0.833vw] font-medium text-foreground"
                               }
                             >
                               0 {Currency.MINA}
@@ -308,7 +308,7 @@ export default function CenterConsole({
                   ) : (
                     <Skeleton
                       isLoading={true}
-                      className={'h-[5.7vw] w-full rounded-[0.33vw]'}
+                      className={"h-[5.7vw] w-full rounded-[0.33vw]"}
                     >
                       <div />
                     </Skeleton>
@@ -319,11 +319,11 @@ export default function CenterConsole({
           ) : (
             <div
               className={
-                'flex h-[5.5vw] flex-col items-center justify-center gap-[0.729vw]'
+                "flex h-[5.5vw] flex-col items-center justify-center gap-[0.729vw]"
               }
             >
               <BouncyLoader />
-              <span className={'font-plexsans text-[0.729vw] font-light'}>
+              <span className={"font-plexsans text-[0.729vw] font-light"}>
                 The process of calculating the winning number...
               </span>
             </div>
@@ -331,14 +331,14 @@ export default function CenterConsole({
         </div>
         <button
           className={cn(
-            'mt-[0.8vw] flex w-full cursor-pointer items-center justify-center rounded-[0.67vw] border-bg-dark px-[1vw] font-museo text-[1.6vw] font-bold uppercase text-bg-dark hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60',
+            "mt-[0.8vw] flex w-full cursor-pointer items-center justify-center rounded-[0.67vw] border-bg-dark px-[1vw] font-museo text-[1.6vw] font-bold uppercase text-bg-dark hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60",
             {
-              'bg-right-accent': roundToShow == lotteryStore.lotteryRoundId,
-              'bg-left-accent': roundToShow != lotteryStore.lotteryRoundId,
-              'mt-[1.6vw]':
+              "bg-right-accent": roundToShow == lotteryStore.lotteryRoundId,
+              "bg-left-accent": roundToShow != lotteryStore.lotteryRoundId,
+              "mt-[1.6vw]":
                 roundToShow != lotteryStore.lotteryRoundId &&
                 !roundInfo?.winningCombination,
-              'mt-[0.4vw]':
+              "mt-[0.4vw]":
                 roundToShow != lotteryStore.lotteryRoundId &&
                 roundInfo?.winningCombination,
             }
@@ -362,21 +362,21 @@ export default function CenterConsole({
             if (roundToShow != lotteryStore.lotteryRoundId) {
               setPage(Pages.Storage);
             } else {
-              const element = document.getElementById('ticketsToBuy');
+              const element = document.getElementById("ticketsToBuy");
               if (element) {
                 const offset = element.offsetTop + element.offsetHeight;
                 window.scrollTo({
                   top: offset,
                   left: 0,
-                  behavior: 'smooth',
+                  behavior: "smooth",
                 });
               }
             }
           }}
         >
           {roundToShow != lotteryStore.lotteryRoundId
-            ? 'Claim rewards'
-            : 'Buy Tickets'}
+            ? "Claim rewards"
+            : "Buy Tickets"}
         </button>
       </div>
     </div>

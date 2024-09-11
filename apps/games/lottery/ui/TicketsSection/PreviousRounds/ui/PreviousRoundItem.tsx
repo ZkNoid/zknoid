@@ -1,15 +1,15 @@
-import Image from 'next/image';
-import minaImg from '@/public/image/tokens/mina.svg';
-import { Currency } from '@sdk/constants/currency';
-import { TicketItem } from './TicketItem';
-import { formatUnits } from '@sdk/lib/unit';
-import { cn } from '@sdk/lib/helpers';
-import CustomScrollbar from '@sdk/components/shared/CustomScrollbar';
-import { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, useScroll } from 'framer-motion';
-import { ILotteryRound } from '../../../../lib/types';
-import { TICKET_PRICE } from 'l1-lottery-contracts';
-import { useNetworkStore } from '@sdk/lib/stores/network';
+import Image from "next/image";
+import minaImg from "@/public/image/tokens/mina.svg";
+import { Currency } from "@zknoid/sdk/constants/currency";
+import { TicketItem } from "./TicketItem";
+import { formatUnits } from "@zknoid/sdk/lib/unit";
+import { cn } from "@zknoid/sdk/lib/helpers";
+import CustomScrollbar from "@zknoid/sdk/components/shared/CustomScrollbar";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, useScroll } from "framer-motion";
+import { ILotteryRound } from "../../../../lib/types";
+import { TICKET_PRICE } from "l1-lottery-contracts";
+import { useNetworkStore } from "@zknoid/sdk/lib/stores/network";
 
 export default function PreviousRoundItem({
   round,
@@ -32,9 +32,9 @@ export default function PreviousRoundItem({
       }
     };
     resizeHandler();
-    refObj?.addEventListener('resize', resizeHandler);
+    refObj?.addEventListener("resize", resizeHandler);
     return () => {
-      refObj?.removeEventListener('resize', resizeHandler);
+      refObj?.removeEventListener("resize", resizeHandler);
     };
   });
 
@@ -71,35 +71,35 @@ export default function PreviousRoundItem({
   return (
     <div
       className={
-        'flex w-full flex-col gap-[1vw] rounded-[0.67vw] bg-[#252525] p-[1.33vw] text-[1.07vw] shadow-2xl'
+        "flex w-full flex-col gap-[1vw] rounded-[0.67vw] bg-[#252525] p-[1.33vw] text-[1.07vw] shadow-2xl"
       }
     >
       <div
         className={
-          'flex w-full flex-row justify-between font-plexsans text-[1.25vw] font-medium uppercase text-foreground'
+          "flex w-full flex-row justify-between font-plexsans text-[1.25vw] font-medium uppercase text-foreground"
         }
       >
         <span className="text-nowrap">Lottery round {round.id}</span>
         <span>
-          {roundDates.start.toLocaleString('en-US', { dateStyle: 'medium' })} -{' '}
-          {roundDates.end.toLocaleString('en-US', { dateStyle: 'medium' })}
+          {roundDates.start.toLocaleString("en-US", { dateStyle: "medium" })} -{" "}
+          {roundDates.end.toLocaleString("en-US", { dateStyle: "medium" })}
         </span>
       </div>
-      <div className={'flex flex-col'}>
+      <div className={"flex flex-col"}>
         <span
           className={
-            'mb-[0.521vw] font-plexsans text-[0.938vw] font-medium text-foreground'
+            "mb-[0.521vw] font-plexsans text-[0.938vw] font-medium text-foreground"
           }
         >
           Win combination
         </span>
-        <div className={'mb-[1.094vw] flex flex-row gap-[0.5vw]'}>
+        <div className={"mb-[1.094vw] flex flex-row gap-[0.5vw]"}>
           {round.winningCombination
             ? round.winningCombination.map((item, index) => (
                 <div
                   key={index}
                   className={
-                    'flex h-[2.67vw] w-[2.67vw] justify-center rounded-[0.33vw] bg-left-accent text-[2.13vw] text-black'
+                    "flex h-[2.67vw] w-[2.67vw] justify-center rounded-[0.33vw] bg-left-accent text-[2.13vw] text-black"
                   }
                 >
                   {item}
@@ -109,7 +109,7 @@ export default function PreviousRoundItem({
                 <div
                   key={index}
                   className={
-                    'flex h-[2.67vw] w-[2.67vw] justify-center rounded-[0.33vw] bg-left-accent text-[2.13vw] text-black'
+                    "flex h-[2.67vw] w-[2.67vw] justify-center rounded-[0.33vw] bg-left-accent text-[2.13vw] text-black"
                   }
                 >
                   _
@@ -118,30 +118,30 @@ export default function PreviousRoundItem({
         </div>
         <div
           className={cn(
-            ' flex flex-col gap-[0.5vw] font-plexsans text-[0.7vw] font-medium text-foreground',
-            { 'mb-[1.563vw]': userTickets?.length !== 0 }
+            " flex flex-col gap-[0.5vw] font-plexsans text-[0.7vw] font-medium text-foreground",
+            { "mb-[1.563vw]": userTickets?.length !== 0 }
           )}
         >
           <div
             className={
-              'flex w-[18.52vw] flex-row items-center justify-between font-plexsans text-[0.938vw] font-medium'
+              "flex w-[18.52vw] flex-row items-center justify-between font-plexsans text-[0.938vw] font-medium"
             }
           >
             <div
               className={
-                'flex w-full flex-row items-center justify-start gap-[0.5vw]'
+                "flex w-full flex-row items-center justify-start gap-[0.5vw]"
               }
             >
               <Image
                 src={minaImg}
-                alt={'mina'}
-                className={'h-[1.042vw] w-[1.042vw]'}
+                alt={"mina"}
+                className={"h-[1.042vw] w-[1.042vw]"}
               />
               <span>Bank</span>
             </div>
             <div
               className={
-                'flex w-full flex-row items-center justify-end gap-[0.5vw]'
+                "flex w-full flex-row items-center justify-end gap-[0.5vw]"
               }
             >
               <span>
@@ -152,12 +152,12 @@ export default function PreviousRoundItem({
           </div>
           <div
             className={
-              'flex w-[18.52vw] flex-row items-center justify-between font-plexsans text-[0.938vw] font-medium'
+              "flex w-[18.52vw] flex-row items-center justify-between font-plexsans text-[0.938vw] font-medium"
             }
           >
             <div
               className={
-                'flex w-full flex-row items-center justify-start gap-[0.5vw]'
+                "flex w-full flex-row items-center justify-start gap-[0.5vw]"
               }
             >
               <svg
@@ -166,18 +166,18 @@ export default function PreviousRoundItem({
                 viewBox="0 0 20 12"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                className={'h-[1.042vw] w-[1.042vw]'}
+                className={"h-[1.042vw] w-[1.042vw]"}
               >
                 <path
                   d="M19.999 0.00164355L16.3705 0L16.3712 1.07129L15.5307 1.06997L15.533 0.00230102L0.000986328 0.00164355L0 2.99947C1.4172 3.45653 2.23333 4.46337 2.23333 5.53531C2.23333 6.60726 1.41786 7.61344 0.000657963 8.0705L0.000656976 11.0693H15.5274L15.5307 10.0007L16.3725 10.0007L16.3758 11.0693H19.9993L19.9993 8.0705C18.5821 7.61344 17.7667 6.60726 17.7667 5.53531C17.7667 4.46337 18.5828 3.45653 20 2.99947L19.999 0.00164355ZM16.3758 2.55952L16.3725 4.79219L15.5307 4.79219L15.534 2.55951L16.3758 2.55952ZM14.1365 1.39879V9.67184L3.6308 9.67513L3.62949 1.39419L13.7189 1.3955L14.1365 1.39879ZM13.3013 2.23399L4.466 2.2307V8.83993L13.3013 8.83664V2.23399ZM16.3725 6.27844L16.3758 8.51111L15.534 8.51111L15.5307 6.27844L16.3725 6.27844Z"
                   fill="#D2FF00"
                 />
               </svg>
-              <span className={'mb-0.5 '}>Tickets</span>
+              <span className={"mb-0.5 "}>Tickets</span>
             </div>
             <div
               className={
-                'mb-0.5 flex w-full flex-row items-center justify-end gap-[0.5vw] '
+                "mb-0.5 flex w-full flex-row items-center justify-end gap-[0.5vw] "
               }
             >
               <span>{ticketsAmount}</span>
@@ -185,27 +185,27 @@ export default function PreviousRoundItem({
           </div>
         </div>
         {userTickets && userTickets.length != 0 && (
-          <div className={'flex flex-col'}>
+          <div className={"flex flex-col"}>
             <span
               className={
-                'mb-[0.781vw] font-plexsans text-[1.25vw] font-medium uppercase text-foreground'
+                "mb-[0.781vw] font-plexsans text-[1.25vw] font-medium uppercase text-foreground"
               }
             >
               Your tickets
             </span>
             <div
               className={
-                'mb-[0.521vw] grid w-full grid-cols-4 font-plexsans text-[0.938vw] font-medium'
+                "mb-[0.521vw] grid w-full grid-cols-4 font-plexsans text-[0.938vw] font-medium"
               }
             >
               <span>Ticket Number</span>
-              <span className={'text-center'}>Amount</span>
+              <span className={"text-center"}>Amount</span>
               <span>Funds</span>
             </div>
-            <div className={'flex w-full flex-row gap-[0.5vw]'}>
+            <div className={"flex w-full flex-row gap-[0.5vw]"}>
               <div
                 className={
-                  'flex max-h-[200px] w-full flex-col overflow-y-scroll no-scrollbar'
+                  "flex max-h-[200px] w-full flex-col overflow-y-scroll no-scrollbar"
                 }
                 ref={ticketsListRef}
               >

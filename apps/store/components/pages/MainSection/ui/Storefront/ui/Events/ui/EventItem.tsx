@@ -2,7 +2,7 @@ import {
   useEventTimer,
   ZkNoidEvent,
   ZkNoidEventType,
-} from '@sdk/lib/platform/game_events';
+} from '@zknoid/sdk/lib/platform/game_events';
 import Link from 'next/link';
 import Image from 'next/image';
 

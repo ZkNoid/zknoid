@@ -1,15 +1,15 @@
-import { create } from 'zustand';
-import { immer } from 'zustand/middleware/immer';
-import { Bool, PublicKey, UInt64 } from 'o1js';
-import { useContext, useEffect } from 'react';
-import { useProtokitChainStore } from '@sdk/lib/stores/protokitChain';
-import { useNetworkStore } from '@sdk/lib/stores/network';
-import { GameRecordKey } from 'zknoid-chain-dev';
-import { ICompetition } from '@sdk/lib/types';
-import { fromContractCompetition } from '../lib/typesConverter';
-import { type ClientAppChain } from 'zknoid-chain-dev';
-import { arkanoidConfig } from '../config';
-import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
+import { create } from "zustand";
+import { immer } from "zustand/middleware/immer";
+import { Bool, PublicKey, UInt64 } from "o1js";
+import { useContext, useEffect } from "react";
+import { useProtokitChainStore } from "@zknoid/sdk/lib/stores/protokitChain";
+import { useNetworkStore } from "@zknoid/sdk/lib/stores/network";
+import { GameRecordKey } from "zknoid-chain-dev";
+import { ICompetition } from "@zknoid/sdk/lib/types";
+import { fromContractCompetition } from "../lib/typesConverter";
+import { type ClientAppChain } from "zknoid-chain-dev";
+import { arkanoidConfig } from "../config";
+import ZkNoidGameContext from "@zknoid/sdk/lib/contexts/ZkNoidGameContext";
 
 export interface CompetitionsState {
   loading: boolean;
@@ -22,7 +22,7 @@ export interface CompetitionsState {
 
 export const useArkanoidCompetitionsStore = create<
   CompetitionsState,
-  [['zustand/immer', never]]
+  [["zustand/immer", never]]
 >(
   immer((set) => ({
     loading: false,
@@ -79,13 +79,13 @@ export const useArkanoidCompetitionsStore = create<
 
 export const useObserveArkanoidCompetitions = () => {
   const { client } = useContext(ZkNoidGameContext);
-  console.log('Client', client);
+  console.log("Client", client);
   const chain = useProtokitChainStore();
   const network = useNetworkStore();
   const competitions = useArkanoidCompetitionsStore();
 
   useEffect(() => {
-    if (!client) throw Error('Client not set in context');
+    if (!client) throw Error("Client not set in context");
     if (!network.protokitClientStarted) return;
 
     competitions.loadCompetitions(

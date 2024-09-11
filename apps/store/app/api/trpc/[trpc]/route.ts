@@ -1,8 +1,8 @@
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import { type NextRequest } from 'next/server';
 
-import { appRouter } from '@sdk/server/api/root';
-import { createTRPCContext } from '@sdk/server/api/trpc';
+import { appRouter } from '@zknoid/sdk/server/api/root';
+import { createTRPCContext } from '@zknoid/sdk/server/api/trpc';
 import { env } from 'process';
 
 /**

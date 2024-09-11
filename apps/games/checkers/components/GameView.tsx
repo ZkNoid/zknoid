@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { IGameInfo } from '@sdk/lib/stores/matchQueue';
-import { Bool, UInt32 } from 'o1js';
-import { useEffect, useState } from 'react';
-import { CheckersField } from 'zknoid-chain-dev';
+import { IGameInfo } from "@zknoid/sdk/lib/stores/matchQueue";
+import { Bool, UInt32 } from "o1js";
+import { useEffect, useState } from "react";
+import { CheckersField } from "zknoid-chain-dev";
 
 interface IGameViewProps {
   gameInfo: IGameInfo<CheckersField> | undefined;
@@ -84,7 +84,7 @@ export const GameView = (props: IGameViewProps) => {
     )
       return [];
 
-    console.log('Passed', isPlayer1);
+    console.log("Passed", isPlayer1);
 
     if (
       x >= 2 &&
@@ -209,12 +209,12 @@ export const GameView = (props: IGameViewProps) => {
 
     return moves;
   };
-  console.log('Possible moves', possibleMoves);
+  console.log("Possible moves", possibleMoves);
 
   return (
     <div
       className={`grid grid-cols-8 gap-px rounded-[5px] bg-foreground/50 ${
-        fieldActive ? 'border-4 border-left-accent p-0' : 'p-1'
+        fieldActive ? "border-4 border-left-accent p-0" : "p-1"
       }`}
     >
       {[...Array(8).keys()]
@@ -233,7 +233,7 @@ export const GameView = (props: IGameViewProps) => {
                 }
               }}
               onClick={() => {
-                console.log('MOVE CHOOSING', moveChoosing);
+                console.log("MOVE CHOOSING", moveChoosing);
                 if (moveChoosing) {
                   if (
                     possibleMoves.moves.includes(MOVE_TOP_RIGHT) &&
@@ -327,32 +327,32 @@ export const GameView = (props: IGameViewProps) => {
                 }
               }}
               className={`
-              bg-bg-dark ${highlightCells ? '' : ''} h-14 w-14
+              bg-bg-dark ${highlightCells ? "" : ""} h-14 w-14
               bg-[length:40px_40px] bg-center bg-no-repeat p-5 
               ${
                 isCurrentRedBall
-                  ? ' hover:bg-bg-dark/50'
-                  : ' hover:bg-bg-dark/50'
+                  ? " hover:bg-bg-dark/50"
+                  : " hover:bg-bg-dark/50"
               }
               ${
                 props.gameInfo && +props.gameInfo.field.value[j][i] == 1
                   ? "bg-[url('/ball_green.svg')]"
-                  : ''
+                  : ""
               }
               ${
                 props.gameInfo && +props.gameInfo.field.value[j][i] == 2
                   ? "bg-[url('/ball_blue.svg')]"
-                  : ''
+                  : ""
               }
               ${
                 props.gameInfo && +props.gameInfo.field.value[j][i] == 3
                   ? "bg-[url('/ball_green_adv.svg')]"
-                  : ''
+                  : ""
               }
               ${
                 props.gameInfo && +props.gameInfo.field.value[j][i] == 4
                   ? "bg-[url('/ball_blue_adv.svg')]"
-                  : ''
+                  : ""
               }
               ${
                 ((possibleMoves.moves.includes(MOVE_TOP_RIGHT) &&
@@ -379,10 +379,10 @@ export const GameView = (props: IGameViewProps) => {
                   (possibleMoves.moves.includes(CAPTURE_KING_BOTTOM_RIGHT) &&
                     j == possibleMoves.fromCellX + 2 &&
                     i == possibleMoves.fromCellY + (isPlayer1 ? -2 : 2))) &&
-                'bg-bg-dark/50'
+                "bg-bg-dark/50"
               }
             `}
-              style={{ imageRendering: 'pixelated' }}
+              style={{ imageRendering: "pixelated" }}
               id={`${i}_${j}`}
               // onClick={() => props.onCellClicked(i, j)}
             ></div>

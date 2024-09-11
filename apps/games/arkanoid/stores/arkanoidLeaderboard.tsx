@@ -1,13 +1,13 @@
-import { create } from 'zustand';
-import { immer } from 'zustand/middleware/immer';
-import { PublicKey, UInt64 } from 'o1js';
-import { MutableRefObject, useContext, useEffect } from 'react';
-import { useProtokitChainStore } from '@sdk/lib/stores/protokitChain';
-import { useNetworkStore } from '@sdk/lib/stores/network';
-import { LeaderboardIndex } from 'zknoid-chain-dev';
-import { type ClientAppChain } from 'zknoid-chain-dev';
-import { arkanoidConfig } from '../config';
-import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
+import { create } from "zustand";
+import { immer } from "zustand/middleware/immer";
+import { PublicKey, UInt64 } from "o1js";
+import { MutableRefObject, useContext, useEffect } from "react";
+import { useProtokitChainStore } from "@zknoid/sdk/lib/stores/protokitChain";
+import { useNetworkStore } from "@zknoid/sdk/lib/stores/network";
+import { LeaderboardIndex } from "zknoid-chain-dev";
+import { type ClientAppChain } from "zknoid-chain-dev";
+import { arkanoidConfig } from "../config";
+import ZkNoidGameContext from "@zknoid/sdk/lib/contexts/ZkNoidGameContext";
 
 interface ILeaderboardInfo {
   score: UInt64;
@@ -30,7 +30,7 @@ export interface LeaderboardState {
 
 export const useArkanoidLeaderboardStore = create<
   LeaderboardState,
-  [['zustand/immer', never]]
+  [["zustand/immer", never]]
 >(
   immer((set) => ({
     loading: Boolean(false),
@@ -95,9 +95,9 @@ export const useObserveArkanoidLeaderboard = (
   const leaderboard = useArkanoidLeaderboardStore();
 
   useEffect(() => {
-    console.log('Block id', chain.block?.height);
+    console.log("Block id", chain.block?.height);
     if (!client) {
-      throw Error('Client is not set in context');
+      throw Error("Client is not set in context");
     }
     if (!network.protokitClientStarted) return;
 

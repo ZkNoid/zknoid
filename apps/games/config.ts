@@ -1,4 +1,4 @@
-import { createConfig } from "@sdk/lib/createConfig";
+import { createConfig } from "@zknoid/sdk/lib/createConfig";
 import { numberGuessingConfig } from "./number_guessing/config";
 import { randzuConfig } from "./randzu/config";
 import { arkanoidConfig } from "./arkanoid/config";
@@ -17,6 +17,6 @@ export const zkNoidConfig = createConfig({
     thimblerigConfig,
     pokerConfig,
     arkanoidConfig,
-    numberGuessingConfig
+    numberGuessingConfig,
   ],
 });

@@ -1,4 +1,4 @@
-import { cn } from '@sdk/lib/helpers';
+import { cn } from "@zknoid/sdk/lib/helpers";
 
 export default function BuyGiftCodesCounter({
   giftCodeToBuyAmount,
@@ -10,23 +10,23 @@ export default function BuyGiftCodesCounter({
   return (
     <div
       className={
-        'flex flex-col rounded-b-[0.521vw] bg-[#252525] px-[0.521vw] pb-[0.521vw] pt-[1.25vw]'
+        "flex flex-col rounded-b-[0.521vw] bg-[#252525] px-[0.521vw] pb-[0.521vw] pt-[1.25vw]"
       }
     >
       <div
         className={
-          'flex w-[90%] flex-row items-center justify-between border-b border-foreground pb-[0.729vw]'
+          "flex w-[90%] flex-row items-center justify-between border-b border-foreground pb-[0.729vw]"
         }
       >
         <span
-          className={'font-plexsans text-[0.833vw] font-medium text-foreground'}
+          className={"font-plexsans text-[0.833vw] font-medium text-foreground"}
         >
           Add codes to cart
         </span>
         <div
           className={cn(
-            'flex h-[1.6vw] items-center justify-between rounded-[0.33vw]',
-            'text-[1.07vw] text-[#252525]'
+            "flex h-[1.6vw] items-center justify-between rounded-[0.33vw]",
+            "text-[1.07vw] text-[#252525]"
           )}
         >
           <button
@@ -79,7 +79,7 @@ export default function BuyGiftCodesCounter({
       </div>
       <span
         className={
-          'w-[90%] pt-[0.521vw] font-plexsans text-[0.729vw] text-foreground'
+          "w-[90%] pt-[0.521vw] font-plexsans text-[0.729vw] text-foreground"
         }
       >
         After paying for the gift codes, you can copy them in this window and

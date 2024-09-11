@@ -17,35 +17,35 @@ import {
   FIELD_WIDTH,
   Competition,
 } from "zknoid-chain-dev";
-import { useNetworkStore } from "@sdk/lib/stores/network";
+import { useNetworkStore } from "@zknoid/sdk/lib/stores/network";
 import {
   useMinaBridge,
   useProtokitBalancesStore,
-} from "@sdk/lib/stores/protokitBalances";
-import ZkNoidGameContext from "@sdk/lib/contexts/ZkNoidGameContext";
+} from "@zknoid/sdk/lib/stores/protokitBalances";
+import ZkNoidGameContext from "@zknoid/sdk/lib/contexts/ZkNoidGameContext";
 import { arkanoidConfig } from "../config";
-import GamePage from "@sdk/components/framework/GamePage";
-import Input from "@sdk/components/shared/Input";
-import Textarea from "@sdk/components/shared/Textarea";
-import Button from "@sdk/components/shared/Button";
-import Checkbox from "@sdk/components/shared/Checkbox";
-import Popover from "@sdk/components/shared/Popover";
-import DatePicker from "@sdk/components/shared/DatePicker";
+import GamePage from "@zknoid/sdk/components/framework/GamePage";
+import Input from "@zknoid/sdk/components/shared/Input";
+import Textarea from "@zknoid/sdk/components/shared/Textarea";
+import Button from "@zknoid/sdk/components/shared/Button";
+import Checkbox from "@zknoid/sdk/components/shared/Checkbox";
+import Popover from "@zknoid/sdk/components/shared/Popover";
+import DatePicker from "@zknoid/sdk/components/shared/DatePicker";
 import { AnimatePresence, motion } from "framer-motion";
-import znakesImg from "@sdk/public/image/tokens/znakes.svg";
+import znakesImg from "@zknoid/sdk/public/image/tokens/znakes.svg";
 import { clsx } from "clsx";
-import { Currency } from "@sdk/constants/currency";
-import BaseModal from "@sdk/components/shared/Modal/BaseModal";
+import { Currency } from "@zknoid/sdk/constants/currency";
+import BaseModal from "@zknoid/sdk/components/shared/Modal/BaseModal";
 import ArkanoidCoverSVG from "../assets/game-cover.svg";
 import ArkanoidCoverMobileSVG from "../assets/game-cover-mobile.svg";
-import { DropdownListField } from "@sdk/components/shared/DropdownList";
+import { DropdownListField } from "@zknoid/sdk/components/shared/DropdownList";
 import { default as ReactImage } from "next/image";
-import { api } from "@sdk/trpc/react";
-import { getEnvContext } from "@sdk/lib/envContext";
+import { api } from "@zknoid/sdk/trpc/react";
+import { getEnvContext } from "@zknoid/sdk/lib/envContext";
 // import { type PendingTransaction } from "@proto-kit/sequencer";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { snakeNames } from "@sdk/constants/snakeNames";
+import { snakeNames } from "@zknoid/sdk/constants/snakeNames";
 
 interface IBrick {
   pos: [number, number];
@@ -63,7 +63,7 @@ brickImages[1].src = "/sprite/brick/2.png";
 brickImages[2].src = "/sprite/brick/3.png";
 
 function useStateRef<T>(
-  initialValue: T,
+  initialValue: T
 ): [T, Dispatch<SetStateAction<T>>, MutableRefObject<T>] {
   const [value, setValue] = useState(initialValue);
 
@@ -119,7 +119,7 @@ export default function NewCompetitionPage() {
 
   useEffect(() => {
     let contractBricks = createBricksBySeed(
-      CircuitString.fromString(seed).hash(),
+      CircuitString.fromString(seed).hash()
     ).bricks;
     setBricks(
       contractBricks.map((brick: IContractBrick) => {
@@ -127,7 +127,7 @@ export default function NewCompetitionPage() {
           pos: [(brick.pos.x as any) ^ 1, (brick.pos.y as any) ^ 1],
           value: +brick.value.toString(),
         } as IBrick;
-      }),
+      })
     );
   }, [seed]);
 
@@ -148,7 +148,7 @@ export default function NewCompetitionPage() {
   const drawBricks = () => {
     let ctx = canvas.current?.getContext("2d");
     for (let brick of brickRef.current!.filter(
-      (brick) => +brick.value.toString() > 1,
+      (brick) => +brick.value.toString() > 1
     )) {
       const x = resizeToConvasSize(brick.pos[0]);
       const y = resizeToConvasSize(brick.pos[1]);
@@ -199,11 +199,11 @@ export default function NewCompetitionPage() {
             ? new Date(values.competitionTo).getTime()
             : 0, // competitionEndTime
           values.funding,
-          values.participationFee || 0,
+          values.participationFee || 0
         );
 
         gameHub.createCompetition(competition);
-      },
+      }
     );
 
     await tx.sign();
@@ -215,9 +215,7 @@ export default function NewCompetitionPage() {
         userAddress: networkStore.address!,
         section: "ARKANOID",
         id: 1,
-        txHash: JSON.stringify(
-          (tx.transaction! as any).toJSON(),
-        ),
+        txHash: JSON.stringify((tx.transaction! as any).toJSON()),
         envContext: getEnvContext(),
       });
     }
@@ -292,7 +290,7 @@ export default function NewCompetitionPage() {
       })
       .max(
         Yup.ref("preregistrationTo"),
-        `Preregistration start can't be later than preregistration end`,
+        `Preregistration start can't be later than preregistration end`
       ),
 
     preregistrationTo: Yup.date()
@@ -304,11 +302,11 @@ export default function NewCompetitionPage() {
       })
       .min(
         Yup.ref("preregistrationFrom"),
-        `Preregistration end can't be earlier than preregistration start`,
+        `Preregistration end can't be earlier than preregistration start`
       )
       .max(
         Yup.ref("competitionFrom"),
-        `Preregistration end can't be later than preregistration start`,
+        `Preregistration end can't be later than preregistration start`
       ),
 
     competitionFrom: Yup.date()
@@ -316,14 +314,14 @@ export default function NewCompetitionPage() {
       .required("This field required")
       .max(
         Yup.ref("competitionTo"),
-        `Competition start can't be later than competition end`,
+        `Competition start can't be later than competition end`
       )
       .when("preregistrationEnabled", {
         is: true,
         then: (schema) =>
           schema.min(
             Yup.ref("preregistrationTo"),
-            `Competition start can't be earlier than competition end`,
+            `Competition start can't be earlier than competition end`
           ),
       }),
 
@@ -332,7 +330,7 @@ export default function NewCompetitionPage() {
       .required("This field required")
       .min(
         Yup.ref("competitionFrom"),
-        `Competition end can't be earlier than competition start`,
+        `Competition end can't be earlier than competition start`
       ),
 
     funding: Yup.number()
@@ -710,7 +708,7 @@ export default function NewCompetitionPage() {
                             Number(
                               protokitBalances.balances[
                                 networkStore.address!
-                              ] ?? 0n,
+                              ] ?? 0n
                             ) /
                             10 ** 9
                           ).toFixed(2)}
@@ -726,7 +724,7 @@ export default function NewCompetitionPage() {
                             {
                               "underline decoration-[#FF0000] underline-offset-4":
                                 errors.policy && touched.policy,
-                            },
+                            }
                           )}
                         >
                           I understand that this amount will be deducted from my

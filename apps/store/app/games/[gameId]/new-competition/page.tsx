@@ -4,7 +4,10 @@ import dynamic from 'next/dynamic';
 import { zkNoidConfig } from '@/games/config';
 
 const NewCompetitionPage = dynamic(
-  () => import('sdk/components/framework/dynamic/NewCompetitionPageWrapper'),
+  () =>
+    import(
+      '@zknoid/sdk/components/framework/dynamic/NewCompetitionPageWrapper'
+    ),
   {
     ssr: false,
   }

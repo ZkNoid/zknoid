@@ -1,13 +1,13 @@
-import { api } from '@sdk/trpc/react';
-import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
-import { getEnvContext } from '@sdk/lib/envContext';
-import { PublicKey, UInt64 } from 'o1js';
-import { useStore } from 'zustand';
-import { useSessionKeyStore } from '@sdk/lib/stores/sessionKeyStorage';
-import { useMinaBridge } from '@sdk/lib/stores/protokitBalances';
-import { client } from 'zknoid-chain-dev';
-import { useNetworkStore } from '@sdk/lib/stores/network';
-import { GameState } from '../lib/gameState';
+import { api } from "@zknoid/sdk/trpc/react";
+import { DEFAULT_PARTICIPATION_FEE } from "zknoid-chain-dev/dist/src/engine/LobbyManager";
+import { getEnvContext } from "@zknoid/sdk/lib/envContext";
+import { PublicKey, UInt64 } from "o1js";
+import { useStore } from "zustand";
+import { useSessionKeyStore } from "@zknoid/sdk/lib/stores/sessionKeyStorage";
+import { useMinaBridge } from "@zknoid/sdk/lib/stores/protokitBalances";
+import { client } from "zknoid-chain-dev";
+import { useNetworkStore } from "@zknoid/sdk/lib/stores/network";
+import { GameState } from "../lib/gameState";
 
 export const useStartGame = (setGameState: (state: GameState) => void) => {
   const gameStartedMutation = api.logging.logGameStarted.useMutation();
@@ -20,12 +20,12 @@ export const useStartGame = (setGameState: (state: GameState) => void) => {
     if (await bridge(DEFAULT_PARTICIPATION_FEE.toBigInt())) return;
 
     gameStartedMutation.mutate({
-      gameId: 'checkers',
-      userAddress: networkStore.address ?? '',
+      gameId: "checkers",
+      userAddress: networkStore.address ?? "",
       envContext: getEnvContext(),
     });
 
-    const randzuLogic = client.runtime.resolve('CheckersLogic');
+    const randzuLogic = client.runtime.resolve("CheckersLogic");
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),

@@ -64,6 +64,7 @@ const nextConfig = {
     optimizePackageImports: ['sdk', 'games', 'zknoid-chain-dev'],
   },
   productionBrowserSourceMaps: false,
+  transpilePackages: ['sdk', 'games', 'zknoid-chain-dev'],
 };
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({

@@ -1,11 +1,11 @@
-import { Field, PublicKey, UInt64 } from 'o1js';
-import { fromContractCompetition } from '../lib/typesConverter';
-import { Bricks, createBricksBySeed } from 'zknoid-chain-dev';
-import { ClientAppChain } from 'zknoid-chain-dev';
-import { useContext } from 'react';
-import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
-import { ICompetition } from '@sdk/lib/types';
-import { arkanoidConfig } from '../config';
+import { Field, PublicKey, UInt64 } from "o1js";
+import { fromContractCompetition } from "../lib/typesConverter";
+import { Bricks, createBricksBySeed } from "zknoid-chain-dev";
+import { ClientAppChain } from "zknoid-chain-dev";
+import { useContext } from "react";
+import ZkNoidGameContext from "@zknoid/sdk/lib/contexts/ZkNoidGameContext";
+import { ICompetition } from "@zknoid/sdk/lib/types";
+import { arkanoidConfig } from "../config";
 
 export const useGetCompetition = (
   competitionId: number,
@@ -14,7 +14,7 @@ export const useGetCompetition = (
 ) => {
   const { client } = useContext(ZkNoidGameContext);
   if (!client) {
-    throw Error('Context app chain client is not set');
+    throw Error("Context app chain client is not set");
   }
 
   const client_ = client as ClientAppChain<

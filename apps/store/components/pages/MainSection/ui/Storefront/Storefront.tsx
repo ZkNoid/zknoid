@@ -1,9 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { GameComparisonType } from '@sdk/lib/comparators/gameComparator';
-import { ZkNoidGameFeature, ZkNoidGameGenre } from '@sdk/lib/platform/game_tags';
-import { ZkNoidEventType } from '@sdk/lib/platform/game_events';
+import { GameComparisonType } from '@zknoid/sdk/lib/comparators/gameComparator';
+import {
+  ZkNoidGameFeature,
+  ZkNoidGameGenre,
+} from '@zknoid/sdk/lib/platform/game_tags';
+import { ZkNoidEventType } from '@zknoid/sdk/lib/platform/game_events';
 import Events from './ui/Events';
 import GenresFilter from './ui/GenresFilter';
 import GameStore from './ui/GameStore';

@@ -1,7 +1,7 @@
-import { cn } from '@sdk/lib/helpers';
-import { useNotificationStore } from '@sdk/components/shared/Notification/lib/notificationStore';
-import { api } from '@sdk/trpc/react';
-import { useNetworkStore } from '@sdk/lib/stores/network';
+import { cn } from "@zknoid/sdk/lib/helpers";
+import { useNotificationStore } from "@zknoid/sdk/components/shared/Notification/lib/notificationStore";
+import { api } from "@zknoid/sdk/trpc/react";
+import { useNetworkStore } from "@zknoid/sdk/lib/stores/network";
 
 export default function OwnedGiftCodes({
   userGiftCodes,
@@ -14,75 +14,75 @@ export default function OwnedGiftCodes({
   const notificationStore = useNotificationStore();
   const networkStore = useNetworkStore();
   const copyCodes = (giftCode: string | string[]) => {
-    const codes = giftCode.toString().replaceAll(',', ', ');
+    const codes = giftCode.toString().replaceAll(",", ", ");
     navigator.clipboard.writeText(codes);
     notificationStore.create({
-      type: 'success',
-      message: 'Copied!',
+      type: "success",
+      message: "Copied!",
     });
   };
   return (
-    <div className={'flex h-full flex-col gap-[0.521vw] p-[0.521vw]'}>
-      <span className={'w-full font-plexsans text-[0.729vw] text-foreground'}>
+    <div className={"flex h-full flex-col gap-[0.521vw] p-[0.521vw]"}>
+      <span className={"w-full font-plexsans text-[0.729vw] text-foreground"}>
         The codes you already bought previously
       </span>
-      <div className={'flex flex-col'}>
-        <div className={'grid grid-cols-5 pt-[0.521vw]'}>
+      <div className={"flex flex-col"}>
+        <div className={"grid grid-cols-5 pt-[0.521vw]"}>
           <span
-            className={'my-auto font-plexsans text-[0.729vw] text-foreground'}
+            className={"my-auto font-plexsans text-[0.729vw] text-foreground"}
           >
             #
           </span>
           <span
             className={
-              'col-span-2 my-auto font-plexsans text-[0.729vw] text-foreground'
+              "col-span-2 my-auto font-plexsans text-[0.729vw] text-foreground"
             }
           >
             Code
           </span>
           <span
-            className={'my-auto font-plexsans text-[0.729vw] text-foreground'}
+            className={"my-auto font-plexsans text-[0.729vw] text-foreground"}
           >
             Status
           </span>
         </div>
       </div>
       <div
-        className={'flex max-h-[12vw] flex-col overflow-y-scroll pr-[0.5vw]'}
+        className={"flex max-h-[12vw] flex-col overflow-y-scroll pr-[0.5vw]"}
       >
         {userGiftCodes.map((item, index) => (
           <div
             key={index}
             className={
-              'grid grid-cols-5 border-b border-foreground py-[0.521vw] first:border-t'
+              "grid grid-cols-5 border-b border-foreground py-[0.521vw] first:border-t"
             }
           >
             <span
-              className={'my-auto font-plexsans text-[0.729vw] text-foreground'}
+              className={"my-auto font-plexsans text-[0.729vw] text-foreground"}
             >
               {index + 1}
             </span>
             <span
               className={
-                'col-span-2 my-auto font-plexsans text-[0.729vw] text-foreground'
+                "col-span-2 my-auto font-plexsans text-[0.729vw] text-foreground"
               }
             >
               {item.code}
             </span>
             <span
               className={cn(
-                'my-auto font-plexsans text-[0.729vw] text-foreground',
+                "my-auto font-plexsans text-[0.729vw] text-foreground",
                 {
-                  'text-[#FF5B23]': item.used,
+                  "text-[#FF5B23]": item.used,
                 }
               )}
             >
-              {item.used ? 'Used' : 'Available'}
+              {item.used ? "Used" : "Available"}
             </span>
             {!item.used && (
               <button
                 className={
-                  'cursor-pointer rounded-[0.26vw] bg-right-accent text-center text-bg-dark hover:opacity-80'
+                  "cursor-pointer rounded-[0.26vw] bg-right-accent text-center text-bg-dark hover:opacity-80"
                 }
                 onClick={() => copyCodes(item.code)}
               >
@@ -92,19 +92,19 @@ export default function OwnedGiftCodes({
           </div>
         ))}
       </div>
-      <div className={'mt-auto flex w-full flex-row gap-[0.521vw]'}>
+      <div className={"mt-auto flex w-full flex-row gap-[0.521vw]"}>
         <button
           className={
-            'w-full cursor-pointer rounded-[0.26vw] bg-middle-accent py-[0.26vw] font-museo text-[0.625vw] font-medium text-foreground hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:opacity-60'
+            "w-full cursor-pointer rounded-[0.26vw] bg-middle-accent py-[0.26vw] font-museo text-[0.625vw] font-medium text-foreground hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:opacity-60"
           }
           disabled={!userGiftCodes.find((item) => item.used)}
           onClick={() => {
             removeUsedGiftCodesMutation.mutate({
-              userAddress: networkStore.address || '',
+              userAddress: networkStore.address || "",
             });
             notificationStore.create({
-              type: 'success',
-              message: 'Successfully deleted used codes',
+              type: "success",
+              message: "Successfully deleted used codes",
             });
           }}
         >
@@ -112,7 +112,7 @@ export default function OwnedGiftCodes({
         </button>
         <button
           className={
-            'w-full cursor-pointer rounded-[0.26vw] bg-right-accent py-[0.26vw] font-museo text-[0.625vw] font-medium text-bg-dark hover:opacity-80'
+            "w-full cursor-pointer rounded-[0.26vw] bg-right-accent py-[0.26vw] font-museo text-[0.625vw] font-medium text-bg-dark hover:opacity-80"
           }
           onClick={() => copyCodes(userGiftCodes.map((item) => item.code))}
         >

@@ -4,9 +4,12 @@ import 'reflect-metadata';
 import dynamic from 'next/dynamic';
 import { zkNoidConfig } from '@/games/config';
 
-const Lobby = dynamic(() => import('sdk/components/framework/dynamic/Lobby'), {
-  ssr: false,
-});
+const Lobby = dynamic(
+  () => import('@zknoid/sdk/components/framework/dynamic/Lobby'),
+  {
+    ssr: false,
+  }
+);
 
 export default function Home({
   params,

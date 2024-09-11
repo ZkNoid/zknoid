@@ -1,8 +1,8 @@
-import { Competition } from 'zknoid-chain-dev';
+import { Competition } from "zknoid-chain-dev";
 
-import { ICompetition } from '@sdk/lib/types';
-import { Currency } from '@sdk/constants/currency';
-import { arkanoidConfig } from '../config';
+import { ICompetition } from "@zknoid/sdk/lib/types";
+import { Currency } from "@zknoid/sdk/constants/currency";
+import { arkanoidConfig } from "../config";
 
 // Converts contract competition to ICompetition
 export function fromContractCompetition(
@@ -11,7 +11,7 @@ export function fromContractCompetition(
 ): ICompetition {
   return {
     id: competitionId,
-    seed: competition.seed.toString(),
+    seed: Number(competition.seed.toString()),
     game: {
       id: arkanoidConfig.id,
       genre: arkanoidConfig.genre,

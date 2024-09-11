@@ -1,40 +1,40 @@
-'use client';
+"use client";
 
-import { useContext, useEffect, useState } from 'react';
-import { GameView } from './components/GameView';
-import { PublicKey, UInt64 } from 'o1js';
-import { useNetworkStore } from '@sdk/lib/stores/network';
+import { useContext, useEffect, useState } from "react";
+import { GameView } from "./components/GameView";
+import { PublicKey, UInt64 } from "o1js";
+import { useNetworkStore } from "@zknoid/sdk/lib/stores/network";
 import {
   useObserveCheckersMatchQueue,
   useCheckersMatchQueueStore,
-} from './stores/matchQueue';
-import { walletInstalled } from '@sdk/lib/helpers';
-import { useStore } from 'zustand';
-import { useSessionKeyStore } from '@sdk/lib/stores/sessionKeyStorage';
-import { ClientAppChain, PENDING_BLOCKS_NUM_CONST } from 'zknoid-chain-dev';
-import GamePage from '@sdk/components/framework/GamePage';
-import { checkersConfig } from './config';
-import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
-import { useProtokitChainStore } from '@sdk/lib/stores/protokitChain';
-import { MOVE_TIMEOUT_IN_BLOCKS } from 'zknoid-chain-dev/dist/src/engine/MatchMaker';
+} from "./stores/matchQueue";
+import { walletInstalled } from "@zknoid/sdk/lib/helpers";
+import { useStore } from "zustand";
+import { useSessionKeyStore } from "@zknoid/sdk/lib/stores/sessionKeyStorage";
+import { ClientAppChain, PENDING_BLOCKS_NUM_CONST } from "zknoid-chain-dev";
+import GamePage from "@zknoid/sdk/components/framework/GamePage";
+import { checkersConfig } from "./config";
+import ZkNoidGameContext from "@zknoid/sdk/lib/contexts/ZkNoidGameContext";
+import { useProtokitChainStore } from "@zknoid/sdk/lib/stores/protokitChain";
+import { MOVE_TIMEOUT_IN_BLOCKS } from "zknoid-chain-dev/dist/src/engine/MatchMaker";
 import {
   MainButtonState,
   PvPGameView,
-} from '@sdk/components/framework/GamePage/PvPGameView';
-import CheckersCoverSVG from './assets/game-cover.svg';
-import CheckersCoverMobileSVG from './assets/game-cover-mobile.svg';
-import { getRandomEmoji } from '@sdk/lib/emoji';
-import toast from '@sdk/components/shared/Toast';
-import { formatUnits } from '@sdk/lib/unit';
-import { Currency } from '@sdk/constants/currency';
-import { useToasterStore } from '@sdk/lib/stores/toasterStore';
-import { GameState } from './lib/gameState';
-import { useStartGame } from './features/useStartGame';
-import { useOnMoveChosen } from './features/useOnMoveChosen';
+} from "@zknoid/sdk/components/framework/GamePage/PvPGameView";
+import CheckersCoverSVG from "./assets/game-cover.svg";
+import CheckersCoverMobileSVG from "./assets/game-cover-mobile.svg";
+import { getRandomEmoji } from "@zknoid/sdk/lib/emoji";
+import toast from "@zknoid/sdk/components/shared/Toast";
+import { formatUnits } from "@zknoid/sdk/lib/unit";
+import { Currency } from "@zknoid/sdk/constants/currency";
+import { useToasterStore } from "@zknoid/sdk/lib/stores/toasterStore";
+import { GameState } from "./lib/gameState";
+import { useStartGame } from "./features/useStartGame";
+import { useOnMoveChosen } from "./features/useOnMoveChosen";
 import {
   useLobbiesStore,
   useObserveLobbiesStore,
-} from '@sdk/lib/stores/lobbiesStore';
+} from "@zknoid/sdk/lib/stores/lobbiesStore";
 
 export default function RandzuPage({
   params,
@@ -50,7 +50,7 @@ export default function RandzuPage({
   const { client } = useContext(ZkNoidGameContext);
 
   if (!client) {
-    throw Error('Context app chain client is not set');
+    throw Error("Context app chain client is not set");
   }
 
   const networkStore = useNetworkStore();
@@ -76,7 +76,7 @@ export default function RandzuPage({
   useObserveLobbiesStore(query);
   const lobbiesStore = useLobbiesStore();
 
-  console.log('Active lobby', lobbiesStore.activeLobby);
+  console.log("Active lobby", lobbiesStore.activeLobby);
 
   const startGame = useStartGame(setGameState);
   const onMoveChosen = useOnMoveChosen(
@@ -92,7 +92,7 @@ export default function RandzuPage({
 
   // nonSSR
   const collectPending = async () => {
-    const logic = client.runtime.resolve('CheckersLogic');
+    const logic = client.runtime.resolve("CheckersLogic");
     const tx = await client.transaction(
       sessionPrivateKey.toPublicKey(),
       async () => {
@@ -100,20 +100,20 @@ export default function RandzuPage({
       }
     );
 
-    console.log('Collect tx', tx);
+    console.log("Collect tx", tx);
 
     tx.transaction = tx.transaction?.sign(sessionPrivateKey);
 
-    console.log('Sending tx', tx);
+    console.log("Sending tx", tx);
 
     await tx.send();
 
-    console.log('Tx sent', tx);
+    console.log("Tx sent", tx);
   };
 
   // nonSSR
   const proveOpponentTimeout = async () => {
-    const randzuLogic = client.runtime.resolve('CheckersLogic');
+    const randzuLogic = client.runtime.resolve("CheckersLogic");
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),
       async () => {
@@ -134,7 +134,7 @@ export default function RandzuPage({
 
   useEffect(() => {
     if (matchQueue.pendingBalance && !matchQueue.inQueue) {
-      console.log('Collecting pending balance', matchQueue.pendingBalance);
+      console.log("Collecting pending balance", matchQueue.pendingBalance);
       collectPending();
     }
     if (!walletInstalled()) {
@@ -151,7 +151,7 @@ export default function RandzuPage({
     } else if (
       matchQueue.gameInfo &&
       !matchQueue.gameInfo?.isCurrentUserMove &&
-      BigInt(protokitChain?.block?.height || '0') -
+      BigInt(protokitChain?.block?.height || "0") -
         matchQueue.gameInfo?.lastMoveBlockHeight >
         MOVE_TIMEOUT_IN_BLOCKS
     ) {
@@ -162,8 +162,8 @@ export default function RandzuPage({
     ) {
       setGameState(GameState.OpponentTurn);
     } else {
-      if (matchQueue.lastGameState == 'win') setGameState(GameState.Won);
-      else if (matchQueue.lastGameState == 'lost') setGameState(GameState.Lost);
+      if (matchQueue.lastGameState == "win") setGameState(GameState.Won);
+      else if (matchQueue.lastGameState == "lost") setGameState(GameState.Lost);
       else setGameState(GameState.NotStarted);
     }
   }, [
@@ -188,10 +188,10 @@ export default function RandzuPage({
       )[gameState] || MainButtonState.None;
 
   const statuses = {
-    [GameState.WalletNotInstalled]: 'WALLET NOT INSTALLED',
-    [GameState.WalletNotConnected]: 'WALLET NOT CONNECTED',
-    [GameState.NotStarted]: 'NOT STARTED',
-    [GameState.MatchRegistration]: 'MATCH REGISTRATION',
+    [GameState.WalletNotInstalled]: "WALLET NOT INSTALLED",
+    [GameState.WalletNotConnected]: "WALLET NOT CONNECTED",
+    [GameState.NotStarted]: "NOT STARTED",
+    [GameState.MatchRegistration]: "MATCH REGISTRATION",
     [GameState.Matchmaking]: `MATCHMAKING ${
       (protokitChain.block?.height ?? 0) % PENDING_BLOCKS_NUM_CONST
     }  / ${PENDING_BLOCKS_NUM_CONST} 🔍`,
@@ -201,8 +201,8 @@ export default function RandzuPage({
       Number(protokitChain?.block?.height) -
       Number(matchQueue.gameInfo?.lastMoveBlockHeight)
     }`,
-    [GameState.Won]: 'YOU WON',
-    [GameState.Lost]: 'YOU LOST',
+    [GameState.Won]: "YOU WON",
+    [GameState.Lost]: "YOU LOST",
   } as Record<GameState, string>;
 
   const bottomButtonState = {
@@ -213,13 +213,13 @@ export default function RandzuPage({
       },
     },
     [GameState.Lost]: {
-      text: 'RESTART',
+      text: "RESTART",
       handler: () => {
         restart();
       },
     },
     [GameState.Won]: {
-      text: 'RESTART',
+      text: "RESTART",
       handler: () => {
         restart();
       },
@@ -227,11 +227,11 @@ export default function RandzuPage({
   } as Record<GameState, { text: string; handler: () => void }>;
 
   const mainText = {
-    [GameState.CurrentPlayerTurn]: 'Make your move',
-    [GameState.OpponentTimeout]: 'Opponent timed out. Prove it to get turn',
-    [GameState.OpponentTurn]: 'Wait for opponent to make a turn',
-    [GameState.Won]: `${getRandomEmoji('happy')}You won! Congratulations!`,
-    [GameState.Lost]: `${getRandomEmoji('sad')} You've lost...`,
+    [GameState.CurrentPlayerTurn]: "Make your move",
+    [GameState.OpponentTimeout]: "Opponent timed out. Prove it to get turn",
+    [GameState.OpponentTurn]: "Wait for opponent to make a turn",
+    [GameState.Won]: `${getRandomEmoji("happy")}You won! Congratulations!`,
+    [GameState.Lost]: `${getRandomEmoji("sad")} You've lost...`,
   } as Record<GameState, string>;
 
   useEffect(() => {
@@ -248,7 +248,7 @@ export default function RandzuPage({
       gameConfig={checkersConfig}
       image={CheckersCoverSVG}
       mobileImage={CheckersCoverMobileSVG}
-      defaultPage={'Game'}
+      defaultPage={"Game"}
     >
       <PvPGameView
         status={statuses[gameState]}
@@ -257,12 +257,12 @@ export default function RandzuPage({
         mainButtonState={mainButtonState}
         startGame={() => startGame()}
         queueSize={matchQueue.getQueueLength()}
-        gameAuthor={'zkNoid team'}
+        gameAuthor={"zkNoid team"}
         mainText={mainText[gameState]}
         bottomButtonText={bottomButtonState[gameState]?.text}
         bottomButtonHandler={bottomButtonState[gameState]?.handler}
-        competitionName={lobbiesStore.activeLobby?.name || 'Unknown'}
-        gameName={'Checkers'}
+        competitionName={lobbiesStore.activeLobby?.name || "Unknown"}
+        gameName={"Checkers"}
         gameRules={`Checkers is a two-player game played on an 8x8 board. Players take turns moving their pieces diagonally forward, capturing opponent's pieces by jumping over them. A piece reaching the opponent's back row becomes a king and can move backward. 
         
         The game is won by capturing all of the opponent's pieces or by blocking them from moving

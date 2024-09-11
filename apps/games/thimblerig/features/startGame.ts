@@ -1,13 +1,13 @@
-import { DEFAULT_PARTICIPATION_FEE } from 'zknoid-chain-dev/dist/src/engine/LobbyManager';
-import { getEnvContext } from '@sdk/lib/envContext';
-import { PublicKey, UInt64 } from 'o1js';
-import { GameState } from '../lib/gameState';
-import { useStore } from 'zustand';
-import { useSessionKeyStore } from '@sdk/lib/stores/sessionKeyStorage';
-import { useMinaBridge } from '@sdk/lib/stores/protokitBalances';
-import { client } from 'zknoid-chain-dev';
-import { api } from '@sdk/trpc/react';
-import { useNetworkStore } from '@sdk/lib/stores/network';
+import { DEFAULT_PARTICIPATION_FEE } from "zknoid-chain-dev/dist/src/engine/LobbyManager";
+import { getEnvContext } from "@zknoid/sdk/lib/envContext";
+import { PublicKey, UInt64 } from "o1js";
+import { GameState } from "../lib/gameState";
+import { useStore } from "zustand";
+import { useSessionKeyStore } from "@zknoid/sdk/lib/stores/sessionKeyStorage";
+import { useMinaBridge } from "@zknoid/sdk/lib/stores/protokitBalances";
+import { client } from "zknoid-chain-dev";
+import { api } from "@zknoid/sdk/trpc/react";
+import { useNetworkStore } from "@zknoid/sdk/lib/stores/network";
 
 export const useStartGame = (setGameState: (state: GameState) => void) => {
   const sessionPublicKey = useStore(useSessionKeyStore, (state) =>
@@ -21,12 +21,12 @@ export const useStartGame = (setGameState: (state: GameState) => void) => {
     if (await bridge(DEFAULT_PARTICIPATION_FEE.toBigInt())) return;
 
     gameStartedMutation.mutate({
-      gameId: 'thimblerig',
-      userAddress: networkStore.address ?? '',
+      gameId: "thimblerig",
+      userAddress: networkStore.address ?? "",
       envContext: getEnvContext(),
     });
 
-    const thimblerigLogic = client.runtime.resolve('ThimblerigLogic');
+    const thimblerigLogic = client.runtime.resolve("ThimblerigLogic");
 
     const tx = await client.transaction(
       PublicKey.fromBase58(networkStore.address!),

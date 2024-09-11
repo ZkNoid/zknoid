@@ -1,10 +1,10 @@
 'use client';
 
 import 'reflect-metadata';
-import Footer from '@sdk/components/widgets/Footer/Footer';
+import Footer from '@zknoid/sdk/components/widgets/Footer/Footer';
 import MainSection from '@/components/pages/MainSection';
-import Header from '@sdk/components/widgets/Header';
-import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
+import Header from '@zknoid/sdk/components/widgets/Header';
+import ZkNoidGameContext from '@zknoid/sdk/lib/contexts/ZkNoidGameContext';
 
 export default function Home() {
   return (

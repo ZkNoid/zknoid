@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import {
   Brick,
   Bricks,
@@ -17,11 +17,11 @@ import {
   DEFAULT_PLATFORM_SPEED,
   GameContext,
   ACCELERATION,
-} from 'zknoid-chain-dev';
-import { useEffect, useRef, useState } from 'react';
-import { Int64, UInt64, Bool } from 'o1js';
-import { Ball, Cart, IBrick } from '@sdk/lib/types';
-import { PLATFORM_WIDTH } from 'zknoid-chain-dev/dist/src/arkanoid/constants';
+} from "zknoid-chain-dev";
+import { useEffect, useRef, useState } from "react";
+import { Int64, UInt64, Bool } from "o1js";
+import { Ball, Cart, IBrick } from "@zknoid/sdk/lib/types";
+import { PLATFORM_WIDTH } from "zknoid-chain-dev/dist/src/arkanoid/constants";
 
 export interface ITick {
   action: number;
@@ -67,33 +67,33 @@ export const GameView = (props: IGameViewProps) => {
   let bricksLeft: number = 0;
 
   let brickImages: HTMLImageElement[] = [new Image(), new Image(), new Image()];
-  brickImages[0].src = '/sprite/brick/1.png';
-  brickImages[1].src = '/sprite/brick/2.png';
-  brickImages[2].src = '/sprite/brick/3.png';
+  brickImages[0].src = "/sprite/brick/1.png";
+  brickImages[1].src = "/sprite/brick/2.png";
+  brickImages[2].src = "/sprite/brick/3.png";
 
   let crack1Images: HTMLImageElement[] = [
     new Image(),
     new Image(),
     new Image(),
   ];
-  crack1Images[0].src = '/sprite/brick/1_crack1.png';
-  crack1Images[1].src = '/sprite/brick/2_crack1.png';
-  crack1Images[2].src = '/sprite/brick/3_crack1.png';
+  crack1Images[0].src = "/sprite/brick/1_crack1.png";
+  crack1Images[1].src = "/sprite/brick/2_crack1.png";
+  crack1Images[2].src = "/sprite/brick/3_crack1.png";
 
   let crack2Images: HTMLImageElement[] = [
     new Image(),
     new Image(),
     new Image(),
   ];
-  crack2Images[0].src = '/sprite/brick/1_crack2.png';
-  crack2Images[1].src = '/sprite/brick/2_crack2.png';
-  crack2Images[2].src = '/sprite/brick/3_crack2.png';
+  crack2Images[0].src = "/sprite/brick/1_crack2.png";
+  crack2Images[1].src = "/sprite/brick/2_crack2.png";
+  crack2Images[2].src = "/sprite/brick/3_crack2.png";
 
   let cartImage = new Image();
-  cartImage.src = '/sprite/cart.png';
+  cartImage.src = "/sprite/cart.png";
 
   let ballImage = new Image();
-  ballImage.src = '/sprite/ball.png';
+  ballImage.src = "/sprite/ball.png";
 
   // const [ticks, setTicks] = useState<number[]>([]);
 
@@ -120,8 +120,8 @@ export const GameView = (props: IGameViewProps) => {
   let contractBallTrace: [number, number][] = [];
 
   useEffect(() => {
-    const ctx = canvas!.current?.getContext('2d');
-    console.log('Setting canvas', ctx);
+    const ctx = canvas!.current?.getContext("2d");
+    console.log("Setting canvas", ctx);
     setContext(ctx);
 
     if (ctx) {
@@ -131,14 +131,14 @@ export const GameView = (props: IGameViewProps) => {
       };
 
       handleResize();
-      window.addEventListener('resize', handleResize);
+      window.addEventListener("resize", handleResize);
 
-      return () => window.removeEventListener('resize', handleResize);
+      return () => window.removeEventListener("resize", handleResize);
     }
   }, [canvas]);
 
   useEffect(() => {
-    console.log('Setting game', ctx);
+    console.log("Setting game", ctx);
     if (props.gameId > 0 && ctx) startGame();
   }, [props.gameId, ctx]);
 
@@ -319,7 +319,7 @@ export const GameView = (props: IGameViewProps) => {
   const drawBall = () => {
     ctx!.beginPath();
     ctx!.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-    ctx!.fillStyle = 'black';
+    ctx!.fillStyle = "black";
     // ctx!.fill();
     ctx?.drawImage(
       ballImage,
@@ -340,7 +340,7 @@ export const GameView = (props: IGameViewProps) => {
       0,
       Math.PI * 2
     );
-    ctx!.strokeStyle = 'red';
+    ctx!.strokeStyle = "red";
     ctx!.stroke();
     ctx!.closePath();
   };
@@ -368,7 +368,7 @@ export const GameView = (props: IGameViewProps) => {
   };
 
   const drawContractBricks = () => {
-    ctx!.strokeStyle = '#4DC7D7';
+    ctx!.strokeStyle = "#4DC7D7";
     ctx!.setLineDash([5, 5]);
 
     contractBricks
@@ -388,7 +388,7 @@ export const GameView = (props: IGameViewProps) => {
   };
 
   const drawContractNearestBricks = () => {
-    ctx!.strokeStyle = 'orange';
+    ctx!.strokeStyle = "orange";
     ctx!.setLineDash([]);
 
     contractNearestBricks.forEach((brick) => {
@@ -430,7 +430,7 @@ export const GameView = (props: IGameViewProps) => {
       resizeToConvasSize(contractCart.w),
       resizeToConvasSize(contractCart.h)
     );
-    ctx!.strokeStyle = 'green';
+    ctx!.strokeStyle = "green";
     ctx!.stroke();
     ctx!.closePath();
     ctx!.setLineDash([]);
@@ -443,7 +443,7 @@ export const GameView = (props: IGameViewProps) => {
 
     // Ball trace
     ctx!.beginPath();
-    ctx!.strokeStyle = '#D2FF00';
+    ctx!.strokeStyle = "#D2FF00";
     if (ballTrace.length > 0) {
       ctx!.moveTo(
         resizeToConvasSize(ballTrace[0][0]),
@@ -458,7 +458,7 @@ export const GameView = (props: IGameViewProps) => {
 
     // Contract ball trace line
     ctx!.beginPath();
-    ctx!.strokeStyle = '#4DC7D7';
+    ctx!.strokeStyle = "#4DC7D7";
     if (contractBallTrace.length > 0) {
       ctx!.moveTo(
         resizeToConvasSize(contractBallTrace[0][0]),
@@ -488,7 +488,7 @@ export const GameView = (props: IGameViewProps) => {
   };
 
   const keyDown = (e: KeyboardEvent) => {
-    if (e.key === 'Right' || e.key === 'ArrowRight') {
+    if (e.key === "Right" || e.key === "ArrowRight") {
       // if (
       //   Date.now() - lastUpdateTime >
       //   tickPeriod
@@ -501,7 +501,7 @@ export const GameView = (props: IGameViewProps) => {
       // }
 
       cart.ddx = ACCELERATION;
-    } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
+    } else if (e.key === "Left" || e.key === "ArrowLeft") {
       // if (
       //   Date.now() - lastUpdateTime >
       //   tickPeriod
@@ -516,23 +516,23 @@ export const GameView = (props: IGameViewProps) => {
       cart.ddx = -ACCELERATION;
     }
 
-    if (e.key.toLowerCase() === 'r') {
+    if (e.key.toLowerCase() === "r") {
       // #TODO restarts. Now starts to freeze after several restarts
       // onRestart();
     }
 
-    if (e.key.toLowerCase() === 'p') {
-      console.log('Paused');
+    if (e.key.toLowerCase() === "p") {
+      console.log("Paused");
       paused.current = !paused.current;
     }
   };
 
   const keyUp = (e: KeyboardEvent) => {
     if (
-      e.key === 'Right' ||
-      e.key === 'ArrowRight' ||
-      e.key === 'Left' ||
-      e.key === 'ArrowLeft'
+      e.key === "Right" ||
+      e.key === "ArrowRight" ||
+      e.key === "Left" ||
+      e.key === "ArrowLeft"
     ) {
       cart.ddx = 0;
       cart.dx = 0;
@@ -576,7 +576,7 @@ export const GameView = (props: IGameViewProps) => {
 
     for (let i = 0; i < bricks.length; i++) {}
 
-    console.log('Level bricks', props.level.bricks);
+    console.log("Level bricks", props.level.bricks);
 
     for (let i = 0; i < props.level.bricks.length; i++) {
       const brickValue = Number(props.level.bricks[i].value.toBigInt());
@@ -589,7 +589,7 @@ export const GameView = (props: IGameViewProps) => {
       initialBrickValues[i] = brickValue;
     }
 
-    console.log(' bricks', bricks);
+    console.log(" bricks", bricks);
 
     /// Contract context init
     //@ts-ignore
@@ -644,8 +644,8 @@ export const GameView = (props: IGameViewProps) => {
 
     requestAnimationFrame(gameLoop);
 
-    document.addEventListener('keydown', keyDown);
-    document.addEventListener('keyup', keyUp);
+    document.addEventListener("keydown", keyDown);
+    document.addEventListener("keyup", keyUp);
   };
   const onWin = async () => {
     stopped = true;
@@ -813,7 +813,7 @@ export const GameView = (props: IGameViewProps) => {
       // height={`${FIELD_HEIGHT + 10}`}
       ref={canvas}
       className={`aspect-square w-full rounded-[5px] lg:rounded-none ${
-        winable ? 'border border-[#D2FF00]' : 'border border-red-500'
+        winable ? "border border-[#D2FF00]" : "border border-red-500"
       }`}
     ></canvas>
   );

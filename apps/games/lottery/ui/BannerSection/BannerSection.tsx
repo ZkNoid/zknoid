@@ -1,16 +1,16 @@
-import { DateTime } from 'luxon';
-import { cn } from '@sdk/lib/helpers';
-import { useEffect, useState } from 'react';
-import { useWorkerClientStore } from '@sdk/lib/stores/workerClient';
-import Rules from './ui/Rules';
-import BannerButton from './ui/BannerButton';
-import CenterConsole from '../../ui/BannerSection/ui/CenterConsole';
-import CurrentRoundInfo from '../../ui/BannerSection/ui/CurrentRoundInfo';
-import PrevRoundInfo from '../../ui/BannerSection/ui/PrevRoundInfo';
-import { Pages } from '../Lottery';
-import { api } from '@sdk/trpc/react';
-import { ILotteryRound } from '../../lib/types';
-import { useRoundsStore } from '../../lib/roundsStore';
+import { DateTime } from "luxon";
+import { cn } from "@zknoid/sdk/lib/helpers";
+import { useEffect, useState } from "react";
+import { useWorkerClientStore } from "@zknoid/sdk/lib/stores/workerClient";
+import Rules from "./ui/Rules";
+import BannerButton from "./ui/BannerButton";
+import CenterConsole from "../../ui/BannerSection/ui/CenterConsole";
+import CurrentRoundInfo from "../../ui/BannerSection/ui/CurrentRoundInfo";
+import PrevRoundInfo from "../../ui/BannerSection/ui/PrevRoundInfo";
+import { Pages } from "../Lottery";
+import { api } from "@zknoid/sdk/trpc/react";
+import { ILotteryRound } from "../../lib/types";
+import { useRoundsStore } from "../../lib/roundsStore";
 
 export default function BannerSection({
   roundEndsIn,
@@ -50,7 +50,7 @@ export default function BannerSection({
   return (
     <div
       className={cn(
-        'relative mb-[2.083vw] h-[17.969vw] items-center justify-center rounded-[0.67vw] border border-left-accent',
+        "relative mb-[2.083vw] h-[17.969vw] items-center justify-center rounded-[0.67vw] border border-left-accent",
         {
           "bg-[url('/image/games/lottery/TopBanner-1.svg')] bg-contain bg-center bg-no-repeat":
             roundsStore.roundToShowId == lotteryStore.lotteryRoundId,
@@ -118,7 +118,7 @@ export default function BannerSection({
           }
           disabled={roundsStore.roundToShowId == lotteryStore.lotteryRoundId}
           className={
-            'absolute right-[1vw] top-[1vw] flex cursor-pointer flex-row items-center justify-center gap-[0.26vw] hover:opacity-80 disabled:opacity-60'
+            "absolute right-[1vw] top-[1vw] flex cursor-pointer flex-row items-center justify-center gap-[0.26vw] hover:opacity-80 disabled:opacity-60"
           }
         >
           <div className="flex h-[2.448vw] items-center justify-center rounded-[0.33vw] border border-right-accent px-[1vw] text-center text-[1.25vw] text-right-accent">
@@ -126,7 +126,7 @@ export default function BannerSection({
           </div>
           <div
             className={
-              'flex h-[2.448vw] w-[2.448vw] items-center justify-center rounded-[0.33vw] border border-right-accent'
+              "flex h-[2.448vw] w-[2.448vw] items-center justify-center rounded-[0.33vw] border border-right-accent"
             }
           >
             <svg
