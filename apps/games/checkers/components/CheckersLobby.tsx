@@ -1,12 +1,12 @@
-import GamePage from '@sdk/components/framework/GamePage';
-import { useContext } from 'react';
-import CheckersCoverSVG from '../assets/game-cover.svg';
-import CheckersCoverMobileSVG from '../assets/game-cover-mobile.svg';
-import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
-import { ClientAppChain } from 'zknoid-chain-dev';
-import LobbyPage from '@sdk/components/framework/Lobby/LobbyPage';
-import { checkersConfig } from '../config';
-import { useNetworkStore } from '@sdk/lib/stores/network';
+import { useContext } from "react";
+import CheckersCoverSVG from "../assets/game-cover.svg";
+import CheckersCoverMobileSVG from "../assets/game-cover-mobile.svg";
+import ZkNoidGameContext from "@sdk/lib/contexts/ZkNoidGameContext";
+import { ClientAppChain } from "zknoid-chain-dev";
+import LobbyPage from "@sdk/components/framework/Lobby/LobbyPage";
+import { checkersConfig } from "../config";
+import { useNetworkStore } from "@sdk/lib/stores/network";
+import GamePage from "@sdk/components/framework/GamePage";
 
 export default function CheckersLobby({
   params,
@@ -18,7 +18,7 @@ export default function CheckersLobby({
   const { client } = useContext(ZkNoidGameContext);
 
   if (!client) {
-    throw Error('Context app chain client is not set');
+    throw Error("Context app chain client is not set");
   }
 
   const client_ = client as ClientAppChain<
@@ -29,12 +29,7 @@ export default function CheckersLobby({
   >;
 
   return (
-    <GamePage
-      gameConfig={checkersConfig}
-      image={CheckersCoverSVG}
-      mobileImage={CheckersCoverMobileSVG}
-      defaultPage={'Lobby list'}
-    >
+    <GamePage gameConfig={checkersConfig} gameTitleImage={CheckersCoverSVG}>
       <LobbyPage
         lobbyId={params.lobbyId}
         query={
@@ -42,7 +37,7 @@ export default function CheckersLobby({
             ? client_.query.runtime.CheckersLogic
             : undefined
         }
-        contractName={'CheckersLogic'}
+        contractName={"CheckersLogic"}
         config={checkersConfig}
       />
     </GamePage>

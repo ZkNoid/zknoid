@@ -1,19 +1,327 @@
-"use client";
-
-import { type RuntimeModulesRecord } from "@proto-kit/module";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
+import Image from "next/image";
+import gameTitleTemplate from "@sdk/public/image/game-page/game-title-template.svg";
+import Link from "next/link";
+import { cn } from "@sdk/lib/helpers";
+import { usePathname, useSearchParams } from "next/navigation";
 import { ZkNoidGameConfig } from "@sdk/lib/createConfig";
-import { useObserveMinaBalance } from "@sdk/lib/stores/minaBalances";
 import { usePollMinaBlockHeight } from "@sdk/lib/stores/minaChain";
 import { usePollProtokitBlockHeight } from "@sdk/lib/stores/protokitChain";
-import Image from "next/image";
-import { clsx } from "clsx";
-import Link from "next/link";
-import { useSwitchWidgetStorage } from "@sdk/lib/stores/switchWidgetStorage";
-import ToastContainer from "@sdk/components/shared/Toast/ui/ToastContainer";
-import { cn } from "@sdk/lib/helpers";
-import Header from "@sdk/components/widgets/Header";
-import Footer from "@sdk/components/widgets/Footer";
+import { useObserveMinaBalance } from "@sdk/lib/stores/minaBalances";
+import type { RuntimeModulesRecord } from "@proto-kit/module";
+
+export function TabsSwitch({
+  gameName,
+  gameId,
+  competitionsSupported,
+  lobbiesSupported,
+  tabs,
+}: {
+  gameName: string;
+  gameId: string;
+  competitionsSupported: boolean;
+  lobbiesSupported: boolean;
+  tabs?: { name: string; tab: string; icon?: ReactNode }[];
+}) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const currentTab = searchParams.get("tab");
+
+  return (
+    <div className={"absolute -left-[2px] -top-[4vw] flex w-fit flex-row"}>
+      <div className={"relative w-[20vw]"} key={"gameTab"}>
+        <svg
+          width="307"
+          height="191"
+          viewBox="0 0 307 191"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className={"absolute left-0 top-0 -z-[1] h-fit w-[20vw]"}
+        >
+          <path
+            d="M1 31.5859V111.086V159.086C1 175.654 14.4315 189.086 31 189.086H276C292.569 189.086 306 175.654 306 159.086V63.5123C306 55.5559 302.839 47.9252 297.213 42.2991L265.287 10.3727C259.661 4.74664 252.03 1.58594 244.074 1.58594H31C14.4315 1.58594 1 15.0174 1 31.5859Z"
+            fill="#252525"
+            stroke="#D2FF00"
+            stroke-width="2"
+          />
+        </svg>
+        <Link
+          href={`/games/${gameId}/undefined`}
+          className={cn(
+            "absolute top-0 flex h-[4vw] w-[18vw] cursor-pointer flex-row items-center justify-center gap-[0.781vw] hover:opacity-80",
+            !tabs && !competitionsSupported && !lobbiesSupported
+              ? "left-0"
+              : "-left-[1vw]",
+          )}
+        >
+          <svg
+            width="33"
+            height="25"
+            viewBox="0 0 33 25"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className={"mb-[0.313vw] h-[1.5vw] w-[1.5vw]"}
+          >
+            <path
+              d="M22.9073 10.4041H19.6346C19.3452 10.4041 19.0677 10.2892 18.8632 10.0846C18.6586 9.88001 18.5436 9.60254 18.5436 9.31321C18.5436 9.02388 18.6586 8.74641 18.8632 8.54182C19.0677 8.33724 19.3452 8.2223 19.6346 8.2223H22.9073C23.1966 8.2223 23.4741 8.33724 23.6787 8.54182C23.8833 8.74641 23.9982 9.02388 23.9982 9.31321C23.9982 9.60254 23.8833 9.88001 23.6787 10.0846C23.4741 10.2892 23.1966 10.4041 22.9073 10.4041ZM13.0891 8.2223H11.9982V7.13139C11.9982 6.84207 11.8833 6.56459 11.6787 6.36C11.4741 6.15542 11.1966 6.04048 10.9073 6.04048C10.6179 6.04048 10.3405 6.15542 10.1359 6.36C9.9313 6.56459 9.81637 6.84207 9.81637 7.13139V8.2223H8.72546C8.43613 8.2223 8.15865 8.33724 7.95407 8.54182C7.74948 8.74641 7.63455 9.02388 7.63455 9.31321C7.63455 9.60254 7.74948 9.88001 7.95407 10.0846C8.15865 10.2892 8.43613 10.4041 8.72546 10.4041H9.81637V11.495C9.81637 11.7844 9.9313 12.0618 10.1359 12.2664C10.3405 12.471 10.6179 12.5859 10.9073 12.5859C11.1966 12.5859 11.4741 12.471 11.6787 12.2664C11.8833 12.0618 11.9982 11.7844 11.9982 11.495V10.4041H13.0891C13.3784 10.4041 13.6559 10.2892 13.8605 10.0846C14.0651 9.88001 14.18 9.60254 14.18 9.31321C14.18 9.02388 14.0651 8.74641 13.8605 8.54182C13.6559 8.33724 13.3784 8.2223 13.0891 8.2223ZM31.8364 22.4928C31.4252 23.0799 30.8905 23.5698 30.2698 23.9282C29.6491 24.2866 28.9574 24.5047 28.2434 24.5672C27.5293 24.6297 26.8103 24.5351 26.1367 24.2901C25.4632 24.045 24.8515 23.6554 24.3445 23.1487C24.3282 23.1323 24.3118 23.1159 24.2968 23.0982L18.8818 16.9496H13.8364L8.42682 23.0982L8.37909 23.1487C7.45755 24.0682 6.20912 24.585 4.90728 24.5859C4.1906 24.5857 3.48267 24.4285 2.83323 24.1254C2.18378 23.8224 1.60856 23.3808 1.14798 22.8317C0.687406 22.2826 0.352636 21.6394 0.167192 20.9471C-0.018253 20.2548 -0.0498746 19.5304 0.0745483 18.8246C0.0738914 18.8182 0.0738914 18.8118 0.0745483 18.8055L2.30682 7.33866C2.63904 5.44739 3.62717 3.73371 5.09758 2.49873C6.56799 1.26375 8.42659 0.586482 10.3468 0.585938H22.3618C24.2763 0.588992 26.1292 1.26238 27.5989 2.4892C29.0685 3.71601 30.0622 5.41877 30.4073 7.30185V7.32639L32.6395 18.8041C32.6402 18.8105 32.6402 18.8169 32.6395 18.8232C32.7551 19.4576 32.7436 20.1086 32.6057 20.7385C32.4678 21.3684 32.2063 21.9646 31.8364 22.4928ZM22.3618 14.7678C23.9531 14.7678 25.4792 14.1356 26.6045 13.0104C27.7297 11.8852 28.3618 10.3591 28.3618 8.76776C28.3618 7.17646 27.7297 5.65033 26.6045 4.52511C25.4792 3.3999 23.9531 2.76776 22.3618 2.76776H10.3468C8.93812 2.76902 7.57499 3.26703 6.49724 4.17417C5.41949 5.08132 4.69618 6.33948 4.45455 7.7273V7.74503L2.22091 19.2118C2.12218 19.7803 2.2063 20.3655 2.46115 20.8831C2.71601 21.4008 3.12849 21.8243 3.63925 22.0927C4.15001 22.3611 4.73275 22.4606 5.30364 22.3769C5.87453 22.2932 6.40417 22.0306 6.81637 21.6268L12.5327 15.1373C12.6351 15.0212 12.761 14.9282 12.902 14.8645C13.0431 14.8007 13.1961 14.7678 13.3509 14.7678H22.3618ZM30.5027 19.2118L29.3109 13.0755C28.5779 14.2591 27.555 15.2361 26.339 15.9141C25.1229 16.592 23.754 16.9484 22.3618 16.9496H21.7891L25.9073 21.6282C26.2178 21.9302 26.5955 22.1543 27.0093 22.2821C27.4232 22.4098 27.8615 22.4376 28.2882 22.3632C28.999 22.2377 29.6311 21.8356 30.046 21.2449C30.4608 20.6542 30.6246 19.9231 30.5014 19.2118H30.5027Z"
+              fill="#D2FF00"
+              className={cn(
+                !currentTab &&
+                  !pathname.includes("lobby") &&
+                  !pathname.includes("competitions-list")
+                  ? "fill-left-accent"
+                  : "fill-foreground",
+              )}
+            />
+          </svg>
+          <span
+            className={cn(
+              "font-museo text-[1.25vw] font-medium",
+              !currentTab &&
+                !pathname.includes("lobby") &&
+                !pathname.includes("competitions-list")
+                ? "text-left-accent"
+                : "text-foreground",
+            )}
+          >
+            {gameName}
+          </span>
+        </Link>
+      </div>
+      {competitionsSupported && (
+        <div
+          className={"relative w-[20vw] first:ml-0 -ml-[4.167vw]"}
+          key={"gameTabCompetitions"}
+        >
+          <svg
+            width="307"
+            height="191"
+            viewBox="0 0 307 191"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className={"absolute left-0 top-0 -z-[1] h-fit w-[20vw]"}
+          >
+            <path
+              d="M1 31.5859V111.086V159.086C1 175.654 14.4315 189.086 31 189.086H276C292.569 189.086 306 175.654 306 159.086V63.5123C306 55.5559 302.839 47.9252 297.213 42.2991L265.287 10.3727C259.661 4.74664 252.03 1.58594 244.074 1.58594H31C14.4315 1.58594 1 15.0174 1 31.5859Z"
+              fill="#252525"
+              stroke="#D2FF00"
+              stroke-width="2"
+            />
+          </svg>
+          <Link
+            href={`/games/${gameId}/competitions-list`}
+            className={cn(
+              "absolute top-0 flex h-[4vw] w-[18vw] cursor-pointer flex-row items-center justify-center gap-[0.781vw] hover:opacity-80",
+              !tabs ? "left-0" : "-left-[1vw]",
+            )}
+          >
+            <svg
+              width="36"
+              height="36"
+              viewBox="0 0 36 36"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className={"mb-[0.313vw] h-[1.5vw] w-[1.5vw]"}
+            >
+              <g clip-path="url(#clip0_6759_63686)">
+                <path
+                  d="M15 8.99999H34.5C34.8978 8.99999 35.2794 8.84196 35.5607 8.56066C35.842 8.27935 36 7.89782 36 7.5C36 7.10217 35.842 6.72064 35.5607 6.43934C35.2794 6.15804 34.8978 6 34.5 6H15C14.6022 6 14.2206 6.15804 13.9393 6.43934C13.658 6.72064 13.5 7.10217 13.5 7.5C13.5 7.89782 13.658 8.27935 13.9393 8.56066C14.2206 8.84196 14.6022 8.99999 15 8.99999Z"
+                  fill="#D2FF00"
+                  className={cn(
+                    pathname.includes("competitions-list")
+                      ? "fill-left-accent"
+                      : "fill-foreground",
+                  )}
+                />
+                <path
+                  d="M34.5 16.5H15C14.6022 16.5 14.2206 16.658 13.9393 16.9393C13.658 17.2206 13.5 17.6022 13.5 18C13.5 18.3978 13.658 18.7794 13.9393 19.0607C14.2206 19.342 14.6022 19.5 15 19.5H34.5C34.8978 19.5 35.2794 19.342 35.5607 19.0607C35.842 18.7794 36 18.3978 36 18C36 17.6022 35.842 17.2206 35.5607 16.9393C35.2794 16.658 34.8978 16.5 34.5 16.5Z"
+                  fill="#D2FF00"
+                  className={cn(
+                    pathname.includes("competitions-list")
+                      ? "fill-left-accent"
+                      : "fill-foreground",
+                  )}
+                />
+                <path
+                  d="M34.5 27H15C14.6022 27 14.2206 27.158 13.9393 27.4393C13.658 27.7206 13.5 28.1022 13.5 28.5C13.5 28.8978 13.658 29.2794 13.9393 29.5607C14.2206 29.842 14.6022 30 15 30H34.5C34.8978 30 35.2794 29.842 35.5607 29.5607C35.842 29.2794 36 28.8978 36 28.5C36 28.1022 35.842 27.7206 35.5607 27.4393C35.2794 27.158 34.8978 27 34.5 27Z"
+                  fill="#D2FF00"
+                  className={cn(
+                    pathname.includes("competitions-list")
+                      ? "fill-left-accent"
+                      : "fill-foreground",
+                  )}
+                />
+                <path
+                  d="M9.12989 9.00075C9.27829 9.00072 9.42335 8.95666 9.5467 8.87415C9.67006 8.79165 9.76616 8.6744 9.82285 8.53725C9.87954 8.4001 9.89427 8.24922 9.86517 8.1037C9.83607 7.95817 9.76446 7.82455 9.65939 7.71975L5.99939 4.06125C5.7181 3.78004 5.33664 3.62207 4.93889 3.62207C4.54114 3.62207 4.15968 3.78004 3.87839 4.06125L0.219889 7.71975C0.11482 7.82455 0.043204 7.95817 0.0141063 8.1037C-0.0149914 8.24922 -0.000263143 8.4001 0.0564271 8.53725C0.113117 8.6744 0.209221 8.79165 0.332574 8.87415C0.455928 8.95666 0.600986 9.00072 0.749389 9.00075H3.44039V27.0008H0.749389C0.600858 27.0005 0.455593 27.0443 0.332009 27.1267C0.208425 27.2091 0.112089 27.3263 0.0552126 27.4636C-0.00166366 27.6008 -0.0165183 27.7518 0.0125319 27.8974C0.041582 28.0431 0.113229 28.1769 0.218389 28.2818L3.87839 31.9403C4.15968 32.2215 4.54114 32.3794 4.93889 32.3794C5.33664 32.3794 5.7181 32.2215 5.99939 31.9403L9.65939 28.2818C9.76446 28.1769 9.83607 28.0433 9.86517 27.8978C9.89427 27.7523 9.87954 27.6014 9.82285 27.4643C9.76616 27.3271 9.67006 27.2099 9.5467 27.1273C9.42335 27.0448 9.27829 27.0008 9.12989 27.0008H6.44039V9.00075H9.12989Z"
+                  fill="#D2FF00"
+                  className={cn(
+                    pathname.includes("competitions-list")
+                      ? "fill-left-accent"
+                      : "fill-foreground",
+                  )}
+                />
+              </g>
+              <defs>
+                <clipPath id="clip0_6759_63686">
+                  <rect width="36" height="36" fill="white" />
+                </clipPath>
+              </defs>
+            </svg>
+            <span
+              className={cn(
+                "font-museo text-[1.25vw] font-medium",
+                pathname.includes("competitions-list")
+                  ? "text-left-accent"
+                  : "text-foreground",
+              )}
+            >
+              Competitions list
+            </span>
+          </Link>
+        </div>
+      )}
+      {lobbiesSupported && (
+        <div
+          className={"relative w-[20vw] first:ml-0 -ml-[4.167vw]"}
+          key={"gameTabLobby"}
+        >
+          <svg
+            width="307"
+            height="191"
+            viewBox="0 0 307 191"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className={"absolute left-0 top-0 -z-[1] h-fit w-[20vw]"}
+          >
+            <path
+              d="M1 31.5859V111.086V159.086C1 175.654 14.4315 189.086 31 189.086H276C292.569 189.086 306 175.654 306 159.086V63.5123C306 55.5559 302.839 47.9252 297.213 42.2991L265.287 10.3727C259.661 4.74664 252.03 1.58594 244.074 1.58594H31C14.4315 1.58594 1 15.0174 1 31.5859Z"
+              fill="#252525"
+              stroke="#D2FF00"
+              stroke-width="2"
+            />
+          </svg>
+          <Link
+            href={`/games/${gameId}/lobby/undefined`}
+            className={cn(
+              "absolute top-0 flex h-[4vw] w-[18vw] cursor-pointer flex-row items-center justify-center gap-[0.781vw] hover:opacity-80",
+              !tabs ? "left-0" : "-left-[1vw]",
+            )}
+          >
+            <svg
+              width="36"
+              height="36"
+              viewBox="0 0 36 36"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className={"mb-[0.313vw] h-[1.5vw] w-[1.5vw]"}
+            >
+              <g clip-path="url(#clip0_6759_63686)">
+                <path
+                  d="M15 8.99999H34.5C34.8978 8.99999 35.2794 8.84196 35.5607 8.56066C35.842 8.27935 36 7.89782 36 7.5C36 7.10217 35.842 6.72064 35.5607 6.43934C35.2794 6.15804 34.8978 6 34.5 6H15C14.6022 6 14.2206 6.15804 13.9393 6.43934C13.658 6.72064 13.5 7.10217 13.5 7.5C13.5 7.89782 13.658 8.27935 13.9393 8.56066C14.2206 8.84196 14.6022 8.99999 15 8.99999Z"
+                  fill="#D2FF00"
+                  className={cn(
+                    pathname.includes("lobby")
+                      ? "fill-left-accent"
+                      : "fill-foreground",
+                  )}
+                />
+                <path
+                  d="M34.5 16.5H15C14.6022 16.5 14.2206 16.658 13.9393 16.9393C13.658 17.2206 13.5 17.6022 13.5 18C13.5 18.3978 13.658 18.7794 13.9393 19.0607C14.2206 19.342 14.6022 19.5 15 19.5H34.5C34.8978 19.5 35.2794 19.342 35.5607 19.0607C35.842 18.7794 36 18.3978 36 18C36 17.6022 35.842 17.2206 35.5607 16.9393C35.2794 16.658 34.8978 16.5 34.5 16.5Z"
+                  fill="#D2FF00"
+                  className={cn(
+                    pathname.includes("lobby")
+                      ? "fill-left-accent"
+                      : "fill-foreground",
+                  )}
+                />
+                <path
+                  d="M34.5 27H15C14.6022 27 14.2206 27.158 13.9393 27.4393C13.658 27.7206 13.5 28.1022 13.5 28.5C13.5 28.8978 13.658 29.2794 13.9393 29.5607C14.2206 29.842 14.6022 30 15 30H34.5C34.8978 30 35.2794 29.842 35.5607 29.5607C35.842 29.2794 36 28.8978 36 28.5C36 28.1022 35.842 27.7206 35.5607 27.4393C35.2794 27.158 34.8978 27 34.5 27Z"
+                  fill="#D2FF00"
+                  className={cn(
+                    pathname.includes("lobby")
+                      ? "fill-left-accent"
+                      : "fill-foreground",
+                  )}
+                />
+                <path
+                  d="M9.12989 9.00075C9.27829 9.00072 9.42335 8.95666 9.5467 8.87415C9.67006 8.79165 9.76616 8.6744 9.82285 8.53725C9.87954 8.4001 9.89427 8.24922 9.86517 8.1037C9.83607 7.95817 9.76446 7.82455 9.65939 7.71975L5.99939 4.06125C5.7181 3.78004 5.33664 3.62207 4.93889 3.62207C4.54114 3.62207 4.15968 3.78004 3.87839 4.06125L0.219889 7.71975C0.11482 7.82455 0.043204 7.95817 0.0141063 8.1037C-0.0149914 8.24922 -0.000263143 8.4001 0.0564271 8.53725C0.113117 8.6744 0.209221 8.79165 0.332574 8.87415C0.455928 8.95666 0.600986 9.00072 0.749389 9.00075H3.44039V27.0008H0.749389C0.600858 27.0005 0.455593 27.0443 0.332009 27.1267C0.208425 27.2091 0.112089 27.3263 0.0552126 27.4636C-0.00166366 27.6008 -0.0165183 27.7518 0.0125319 27.8974C0.041582 28.0431 0.113229 28.1769 0.218389 28.2818L3.87839 31.9403C4.15968 32.2215 4.54114 32.3794 4.93889 32.3794C5.33664 32.3794 5.7181 32.2215 5.99939 31.9403L9.65939 28.2818C9.76446 28.1769 9.83607 28.0433 9.86517 27.8978C9.89427 27.7523 9.87954 27.6014 9.82285 27.4643C9.76616 27.3271 9.67006 27.2099 9.5467 27.1273C9.42335 27.0448 9.27829 27.0008 9.12989 27.0008H6.44039V9.00075H9.12989Z"
+                  fill="#D2FF00"
+                  className={cn(
+                    pathname.includes("lobby")
+                      ? "fill-left-accent"
+                      : "fill-foreground",
+                  )}
+                />
+              </g>
+              <defs>
+                <clipPath id="clip0_6759_63686">
+                  <rect width="36" height="36" fill="white" />
+                </clipPath>
+              </defs>
+            </svg>
+            <span
+              className={cn(
+                "font-museo text-[1.25vw] font-medium",
+                pathname.includes("lobby")
+                  ? "text-left-accent"
+                  : "text-foreground",
+              )}
+            >
+              Lobby list
+            </span>
+          </Link>
+        </div>
+      )}
+      {tabs &&
+        tabs.map((tab, index) => (
+          <div
+            className={"relative w-[20vw] first:ml-0 -ml-[4.167vw]"}
+            key={index}
+          >
+            <svg
+              width="307"
+              height="191"
+              viewBox="0 0 307 191"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className={"absolute left-0 top-0 -z-[1] h-fit w-[20vw]"}
+            >
+              <path
+                d="M1 31.5859V111.086V159.086C1 175.654 14.4315 189.086 31 189.086H276C292.569 189.086 306 175.654 306 159.086V63.5123C306 55.5559 302.839 47.9252 297.213 42.2991L265.287 10.3727C259.661 4.74664 252.03 1.58594 244.074 1.58594H31C14.4315 1.58594 1 15.0174 1 31.5859Z"
+                fill="#252525"
+                stroke="#D2FF00"
+                stroke-width="2"
+              />
+            </svg>
+            <Link
+              href={`/games/${gameId}/undefined?tab=${tab.tab}`}
+              className={cn(
+                "absolute  top-0 flex h-[4vw] w-[18vw] cursor-pointer flex-row items-center justify-center gap-[0.781vw] hover:opacity-80",
+                tabs.length == index + 1 ? "left-0" : "-left-[1vw]",
+              )}
+            >
+              {tab.icon && (
+                <div className={"mb-[0.313vw] h-[1.5vw] w-[1.5vw]"}>
+                  {tab.icon}
+                </div>
+              )}
+
+              <span
+                className={cn(
+                  "font-museo text-[1.25vw] font-medium",
+                  currentTab == tab.tab
+                    ? "text-left-accent"
+                    : "text-foreground",
+                )}
+              >
+                {tab.name}
+              </span>
+            </Link>
+          </div>
+        ))}
+    </div>
+  );
+}
 
 const Updater = () => {
   usePollMinaBlockHeight();
@@ -23,265 +331,67 @@ const Updater = () => {
   return <></>;
 };
 
-enum Pages {
-  CompetitionsList = "Competitions List",
-  Game = "Game",
-  NewCompetition = "New Competition",
-  Lobby = "Lobby list",
-}
-
-const SwitchBtn = ({
-  gameId,
-  title,
-  switchPage,
-  startContent,
-  className,
-  defaultPage,
-}: {
-  gameId: string;
-  title: string;
-  switchPage: Pages;
-  startContent?: (selected: boolean) => ReactNode;
-  className?: string;
-  defaultPage: string;
-}) => {
-  const switchStore = useSwitchWidgetStorage();
-  const [page, _setPage] = useState<string>(defaultPage);
-
-  return (
-    <Link
-      className={clsx(
-        "group relative -mt-2 flex h-[50px] w-full flex-col items-start justify-center rounded-t-[10px] border-x border-t border-left-accent py-2 pl-2 pr-12 first:pb-4 lg:-mr-[70px] lg:-mt-0 lg:w-[420px] lg:items-center lg:rounded-none lg:border-none lg:py-0 lg:pl-0 lg:first:pb-0 lg:last:pr-12",
-        className,
-      )}
-      href={
-        switchPage === Pages.CompetitionsList
-          ? `/games/${gameId}/competitions-list`
-          : switchPage === Pages.NewCompetition
-            ? `/games/${gameId}/new-competition`
-            : switchPage == Pages.Lobby
-              ? `/games/${gameId}/lobby/undefined`
-              : `/games/${gameId}/${switchStore.competitionId}`
-      }
-    >
-      <Updater />
-      <div className={"flex items-center justify-center gap-2"}>
-        {startContent?.(page === switchPage)}
-        <span
-          className={cn(
-            "text-[20px]/[20px] group-hover:opacity-80 lg:text-headline-3",
-            page === switchPage && "text-left-accent",
-          )}
-        >
-          {title}
-        </span>
-      </div>
-      <div className={"absolute left-0 top-0 -z-20 hidden h-full lg:block"}>
-        <svg
-          width="422"
-          height="186"
-          viewBox="0 0 422 186"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M1 31V108.456V155C1 171.569 14.4315 185 31 185H391C407.569 185 421 171.569 421 155V65.0353C421 55.3352 416.31 46.2337 408.41 40.6042L360.651 6.56893C355.568 2.9467 349.482 1 343.24 1H31C14.4315 1 1 14.4314 1 31Z"
-            fill="#252525"
-            stroke="#D2FF00"
-            strokeWidth="2"
-          />
-        </svg>
-      </div>
-    </Link>
-  );
-};
-
-const WidgetsSwitch = (props: {
-  competitionsSupported: boolean;
-  lobbiesSupported: boolean;
-  defaultPage: string;
-  gameId: string;
-  gameName: string;
-}) => {
-  return (
-    <div className={"-mb-4 flex flex-col lg:-mb-0 lg:flex-row"}>
-      {props.competitionsSupported &&
-        props.defaultPage !== Pages.NewCompetition && (
-          <SwitchBtn
-            gameId={props.gameId}
-            defaultPage={props.defaultPage}
-            title={Pages.CompetitionsList}
-            switchPage={Pages.CompetitionsList}
-            startContent={(selected) => (
-              <svg
-                width="36"
-                height="36"
-                viewBox="0 0 36 36"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className={selected ? "fill-left-accent" : "fill-[#F9F8F4]"}
-              >
-                <g clipPath="url(#clip0_3204_7476)">
-                  <path
-                    d="M15 9.00048H34.5C34.8978 9.00048 35.2794 8.84245 35.5607 8.56114C35.842 8.27984 36 7.89831 36 7.50049C36 7.10266 35.842 6.72113 35.5607 6.43983C35.2794 6.15852 34.8978 6.00049 34.5 6.00049H15C14.6022 6.00049 14.2206 6.15852 13.9393 6.43983C13.658 6.72113 13.5 7.10266 13.5 7.50049C13.5 7.89831 13.658 8.27984 13.9393 8.56114C14.2206 8.84245 14.6022 9.00048 15 9.00048Z"
-                    className={"group-hover:opacity-80"}
-                  />
-                  <path
-                    d="M34.5 16.4995H15C14.6022 16.4995 14.2206 16.6576 13.9393 16.9389C13.658 17.2202 13.5 17.6017 13.5 17.9996C13.5 18.3974 13.658 18.7789 13.9393 19.0602C14.2206 19.3415 14.6022 19.4996 15 19.4996H34.5C34.8978 19.4996 35.2794 19.3415 35.5607 19.0602C35.842 18.7789 36 18.3974 36 17.9996C36 17.6017 35.842 17.2202 35.5607 16.9389C35.2794 16.6576 34.8978 16.4995 34.5 16.4995Z"
-                    className={"group-hover:opacity-80"}
-                  />
-                  <path
-                    d="M34.5 27H15C14.6022 27 14.2206 27.158 13.9393 27.4393C13.658 27.7206 13.5 28.1022 13.5 28.5C13.5 28.8978 13.658 29.2794 13.9393 29.5607C14.2206 29.842 14.6022 30 15 30H34.5C34.8978 30 35.2794 29.842 35.5607 29.5607C35.842 29.2794 36 28.8978 36 28.5C36 28.1022 35.842 27.7206 35.5607 27.4393C35.2794 27.158 34.8978 27 34.5 27Z"
-                    className={"group-hover:opacity-80"}
-                  />
-                  <path
-                    d="M9.13087 9.00038C9.27927 9.00035 9.42433 8.9563 9.54768 8.87379C9.67103 8.79128 9.76714 8.67403 9.82383 8.53688C9.88052 8.39974 9.89525 8.24885 9.86615 8.10333C9.83705 7.95781 9.76544 7.82419 9.66037 7.71938L6.00037 4.06088C5.71907 3.77968 5.33761 3.6217 4.93987 3.6217C4.54212 3.6217 4.16066 3.77968 3.87937 4.06088L0.220866 7.71938C0.115796 7.82419 0.0441806 7.95781 0.0150829 8.10333C-0.0140149 8.24885 0.000713419 8.39974 0.0574036 8.53688C0.114094 8.67403 0.210197 8.79128 0.333551 8.87379C0.456905 8.9563 0.601963 9.00035 0.750366 9.00038H3.44137V27.0004H0.750366C0.601835 27.0001 0.456569 27.044 0.332986 27.1264C0.209402 27.2087 0.113065 27.326 0.0561892 27.4632C-0.000687102 27.6004 -0.0155418 27.7514 0.0135084 27.8971C0.0425586 28.0427 0.114205 28.1765 0.219366 28.2814L3.87937 31.9399C4.16066 32.2211 4.54212 32.3791 4.93987 32.3791C5.33761 32.3791 5.71907 32.2211 6.00037 31.9399L9.66037 28.2814C9.76544 28.1766 9.83705 28.043 9.86615 27.8974C9.89525 27.7519 9.88052 27.601 9.82383 27.4639C9.76714 27.3267 9.67103 27.2095 9.54768 27.127C9.42433 27.0445 9.27927 27.0004 9.13087 27.0004H6.44137V9.00038H9.13087Z"
-                    className={"group-hover:opacity-80"}
-                  />
-                </g>
-                <defs>
-                  <clipPath id="clip0_3204_7476">
-                    <rect width="36" height="36" />
-                  </clipPath>
-                </defs>
-              </svg>
-            )}
-          />
-        )}
-      {props.lobbiesSupported && (
-        <SwitchBtn
-          gameId={props.gameId}
-          defaultPage={props.defaultPage}
-          title={Pages.Lobby}
-          switchPage={Pages.Lobby}
-          startContent={(selected) => (
-            <svg
-              width="36"
-              height="36"
-              viewBox="0 0 36 36"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className={cn(
-                "group-hover:opacity-80",
-                selected ? "fill-left-accent" : "fill-[#F9F8F4]",
-              )}
-            >
-              <g clipPath="url(#clip0_3204_7476)">
-                <path d="M15 9.00048H34.5C34.8978 9.00048 35.2794 8.84245 35.5607 8.56114C35.842 8.27984 36 7.89831 36 7.50049C36 7.10266 35.842 6.72113 35.5607 6.43983C35.2794 6.15852 34.8978 6.00049 34.5 6.00049H15C14.6022 6.00049 14.2206 6.15852 13.9393 6.43983C13.658 6.72113 13.5 7.10266 13.5 7.50049C13.5 7.89831 13.658 8.27984 13.9393 8.56114C14.2206 8.84245 14.6022 9.00048 15 9.00048Z" />
-                <path d="M34.5 16.4995H15C14.6022 16.4995 14.2206 16.6576 13.9393 16.9389C13.658 17.2202 13.5 17.6017 13.5 17.9996C13.5 18.3974 13.658 18.7789 13.9393 19.0602C14.2206 19.3415 14.6022 19.4996 15 19.4996H34.5C34.8978 19.4996 35.2794 19.3415 35.5607 19.0602C35.842 18.7789 36 18.3974 36 17.9996C36 17.6017 35.842 17.2202 35.5607 16.9389C35.2794 16.6576 34.8978 16.4995 34.5 16.4995Z" />
-                <path d="M34.5 27H15C14.6022 27 14.2206 27.158 13.9393 27.4393C13.658 27.7206 13.5 28.1022 13.5 28.5C13.5 28.8978 13.658 29.2794 13.9393 29.5607C14.2206 29.842 14.6022 30 15 30H34.5C34.8978 30 35.2794 29.842 35.5607 29.5607C35.842 29.2794 36 28.8978 36 28.5C36 28.1022 35.842 27.7206 35.5607 27.4393C35.2794 27.158 34.8978 27 34.5 27Z" />
-                <path d="M9.13087 9.00038C9.27927 9.00035 9.42433 8.9563 9.54768 8.87379C9.67103 8.79128 9.76714 8.67403 9.82383 8.53688C9.88052 8.39974 9.89525 8.24885 9.86615 8.10333C9.83705 7.95781 9.76544 7.82419 9.66037 7.71938L6.00037 4.06088C5.71907 3.77968 5.33761 3.6217 4.93987 3.6217C4.54212 3.6217 4.16066 3.77968 3.87937 4.06088L0.220866 7.71938C0.115796 7.82419 0.0441806 7.95781 0.0150829 8.10333C-0.0140149 8.24885 0.000713419 8.39974 0.0574036 8.53688C0.114094 8.67403 0.210197 8.79128 0.333551 8.87379C0.456905 8.9563 0.601963 9.00035 0.750366 9.00038H3.44137V27.0004H0.750366C0.601835 27.0001 0.456569 27.044 0.332986 27.1264C0.209402 27.2087 0.113065 27.326 0.0561892 27.4632C-0.000687102 27.6004 -0.0155418 27.7514 0.0135084 27.8971C0.0425586 28.0427 0.114205 28.1765 0.219366 28.2814L3.87937 31.9399C4.16066 32.2211 4.54212 32.3791 4.93987 32.3791C5.33761 32.3791 5.71907 32.2211 6.00037 31.9399L9.66037 28.2814C9.76544 28.1766 9.83705 28.043 9.86615 27.8974C9.89525 27.7519 9.88052 27.601 9.82383 27.4639C9.76714 27.3267 9.67103 27.2095 9.54768 27.127C9.42433 27.0445 9.27927 27.0004 9.13087 27.0004H6.44137V9.00038H9.13087Z" />
-              </g>
-              <defs>
-                <clipPath id="clip0_3204_7476">
-                  <rect width="36" height="36" fill="white" />
-                </clipPath>
-              </defs>
-            </svg>
-          )}
-        />
-      )}
-      {props.defaultPage === "New Competition" ? (
-        <></>
-      ) : (
-        <SwitchBtn
-          title={props.gameName}
-          switchPage={Pages.Game}
-          gameId={props.gameId}
-          defaultPage={props.defaultPage}
-          startContent={(selected) => (
-            <svg
-              width="32"
-              height="36"
-              viewBox="0 0 32 36"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className={cn(
-                "group-hover:opacity-80",
-                selected ? "fill-left-accent" : "fill-[#F9F8F4]",
-              )}
-            >
-              <path d="M28.5817 19.0502L26.8868 18.0003L28.5832 16.9503C29.7612 16.2499 30.6733 15.1784 31.1767 13.9038C31.4918 13.0611 31.6093 12.1572 31.52 11.2619C31.4307 10.3666 31.1371 9.50369 30.6618 8.73972C30.1865 7.97576 29.5422 7.33109 28.7785 6.8554C28.0148 6.3797 27.152 6.08566 26.2568 5.99594C24.8908 5.88421 23.5264 6.22926 22.3778 6.97693L21.7763 7.35042V6.25844C21.8017 4.73559 21.2633 3.25712 20.2645 2.10722C19.2658 0.957323 17.8773 0.217165 16.3659 0.0290296C15.5323 -0.0532721 14.6907 0.0398967 13.8952 0.302538C13.0998 0.56518 12.3682 0.991474 11.7475 1.55398C11.1267 2.11648 10.6307 2.80273 10.2912 3.56854C9.95177 4.33436 9.77644 5.16277 9.77651 6.00044V7.35042L9.17652 6.97543C8.02814 6.22565 6.66306 5.87897 5.29608 5.98994C4.40065 6.07888 3.53761 6.37224 2.77347 6.84741C2.00934 7.32259 1.36452 7.96689 0.888734 8.73064C0.412945 9.4944 0.118892 10.3572 0.0292415 11.2526C-0.060409 12.1479 0.056738 13.0519 0.371652 13.8948C0.875101 15.1698 1.7879 16.2415 2.96661 16.9413L4.66609 18.0003L2.96961 19.0502C1.79168 19.7506 0.87951 20.8221 0.376152 22.0967C0.0606217 22.9401 -0.0568659 23.8448 0.0327594 24.7408C0.122385 25.6369 0.416725 26.5003 0.893058 27.2645C1.36939 28.0288 2.01497 28.6733 2.77996 29.1484C3.54496 29.6235 4.40889 29.9164 5.30508 30.0046C6.66802 30.116 8.02945 29.7726 9.17652 29.0281L9.77651 28.6501V30.0001C9.77651 31.5914 10.4086 33.1175 11.5338 34.2427C12.659 35.3679 14.1851 36 15.7764 36C17.3677 36 18.8938 35.3679 20.019 34.2427C21.1442 33.1175 21.7763 31.5914 21.7763 30.0001V28.6501L22.3763 29.0266C23.5227 29.7716 24.8835 30.116 26.2463 30.0061C27.1422 29.9175 28.0058 29.6243 28.7704 29.149C29.535 28.6737 30.1802 28.0291 30.6562 27.265C31.1323 26.5008 31.4263 25.6375 31.5158 24.7417C31.6052 23.8458 31.4877 22.9414 31.1722 22.0982C30.6697 20.8236 29.7586 19.7517 28.5817 19.0502ZM28.1152 25.6772C27.7122 26.3239 27.0687 26.7841 26.3264 26.9566C25.5841 27.129 24.8037 26.9995 24.1568 26.5966L21.0683 24.6737C20.841 24.5323 20.58 24.4544 20.3124 24.448C20.0448 24.4415 19.7804 24.5068 19.5465 24.6371C19.3127 24.7673 19.1179 24.9578 18.9825 25.1887C18.8471 25.4195 18.7759 25.6825 18.7764 25.9501V30.0001C18.7764 30.7957 18.4603 31.5588 17.8977 32.1214C17.3351 32.684 16.5721 33 15.7764 33C14.9808 33 14.2177 32.684 13.6551 32.1214C13.0925 31.5588 12.7765 30.7957 12.7765 30.0001V25.9501C12.7764 25.6827 12.7048 25.4202 12.5692 25.1897C12.4336 24.9592 12.2388 24.7692 12.005 24.6393C11.7713 24.5095 11.507 24.4444 11.2397 24.451C10.9723 24.4576 10.7116 24.5355 10.4845 24.6767L7.39605 26.6026C7.07576 26.8021 6.71932 26.9365 6.34709 26.9982C5.97486 27.0599 5.59412 27.0476 5.22661 26.9622C4.85911 26.8767 4.51203 26.7197 4.2052 26.5001C3.89837 26.2806 3.6378 26.0027 3.43836 25.6824C3.23891 25.3621 3.10451 25.0057 3.04282 24.6334C2.98113 24.2612 2.99336 23.8805 3.07881 23.513C3.16426 23.1455 3.32126 22.7984 3.54085 22.4916C3.76043 22.1847 4.0383 21.9242 4.35859 21.7247L8.29603 19.2737C8.5131 19.1392 8.69222 18.9515 8.81644 18.7284C8.94065 18.5053 9.00585 18.2541 9.00585 17.9988C9.00585 17.7434 8.94065 17.4923 8.81644 17.2691C8.69222 17.046 8.5131 16.8583 8.29603 16.7238L4.35859 14.2743C3.71174 13.8715 3.25139 13.2283 3.07881 12.4861C2.90623 11.7438 3.03556 10.9635 3.43836 10.3166C3.84115 9.66978 4.4844 9.20942 5.22661 9.03685C5.96883 8.86427 6.74919 8.9936 7.39605 9.39639L10.4845 11.3194C10.7113 11.4604 10.9716 11.5383 11.2386 11.545C11.5055 11.5518 11.7694 11.4871 12.0031 11.3578C12.2367 11.2284 12.4315 11.0391 12.5675 10.8092C12.7035 10.5794 12.7756 10.3174 12.7765 10.0504V6.16094C12.7603 5.43067 13.0014 4.71798 13.4577 4.14759C13.914 3.57721 14.5564 3.18549 15.2724 3.04099C15.703 2.9676 16.1444 2.98913 16.5658 3.10407C16.9872 3.21901 17.3785 3.42459 17.7122 3.70643C18.0459 3.98827 18.314 4.33959 18.4978 4.73582C18.6816 5.13205 18.7767 5.56365 18.7764 6.00044V10.0504C18.7767 10.3177 18.8485 10.58 18.9842 10.8103C19.12 11.0405 19.3148 11.2304 19.5485 11.3601C19.7822 11.4898 20.0463 11.5547 20.3135 11.548C20.5808 11.5414 20.8413 11.4635 21.0683 11.3224L24.1568 9.40089C24.4771 9.20145 24.8335 9.06705 25.2058 9.00535C25.578 8.94366 25.9587 8.95589 26.3262 9.04135C26.6937 9.1268 27.0408 9.2838 27.3476 9.50338C27.6545 9.72297 27.915 10.0008 28.1145 10.3211C28.3139 10.6414 28.4483 10.9979 28.51 11.3701C28.5717 11.7423 28.5595 12.1231 28.474 12.4906C28.3886 12.8581 28.2316 13.2051 28.012 13.512C27.7924 13.8188 27.5145 14.0794 27.1943 14.2788L23.2568 16.7298C23.0398 16.8643 22.8606 17.052 22.7364 17.2751C22.6122 17.4983 22.547 17.7494 22.547 18.0048C22.547 18.2601 22.6122 18.5113 22.7364 18.7344C22.8606 18.9575 23.0398 19.1452 23.2568 19.2797L27.1943 21.7307C27.5147 21.9299 27.7928 22.1903 28.0126 22.497C28.2323 22.8037 28.3895 23.1508 28.475 23.5183C28.5605 23.8858 28.5728 24.2665 28.5111 24.6388C28.4493 25.011 28.3148 25.3674 28.1152 25.6877V25.6772Z" />
-            </svg>
-          )}
-        />
-      )}
-    </div>
-  );
-};
-
 export default function GamePage<RuntimeModules extends RuntimeModulesRecord>({
   children,
   gameConfig,
-  image = "/image/game-page/game-title-template.svg",
-  mobileImage = "/image/game-page/game-title-mobile-template.svg",
-  defaultPage,
-  customDesign = false,
+  useTitle = true,
+  gameTitleImage = gameTitleTemplate,
+  customGameTitle,
+  useTabs = true,
+  tabs,
+  useLayout = true,
 }: {
   children: ReactNode;
   gameConfig: ZkNoidGameConfig<RuntimeModules>;
-  image: any;
-  mobileImage: any;
-  defaultPage: "Competitions List" | "Game" | "New Competition" | "Lobby list";
-  customDesign?: boolean;
+  useTitle?: boolean;
+  gameTitleImage?: any;
+  customGameTitle?: ReactNode;
+  useTabs?: boolean;
+  tabs?: { name: string; tab: string; icon?: ReactNode }[];
+  useLayout?: boolean;
 }) {
   return (
-    <>
-      <Header />
-
-      <div className={"flex flex-col px-5"}>
-        {!customDesign ? (
-          <>
-            <div
+    <div className={"px-[2.604vw]"}>
+      {useTitle &&
+        (customGameTitle ? (
+          customGameTitle
+        ) : (
+          <div
+            className={cn(
+              "w-full border-2 rounded-[1.042vw] border-left-accent h-[15.625vw] overflow-hidden",
+              useTabs ? "mb-[7.813vw]" : "mb-[5.208vw]",
+            )}
+          >
+            <Image
+              src={gameTitleImage}
+              alt={"gameImage"}
               className={
-                "mb-12 w-full rounded-[10px] border border-left-accent lg:rounded-[20px] lg:border-2"
+                "w-full h-full object-center object-cover rounded-[0.781vw]"
               }
-            >
-              <Image
-                src={image}
-                alt={"Game"}
-                width={1500}
-                height={30}
-                className={
-                  "hidden w-full rounded-[10px] object-contain object-center lg:block"
-                }
-              />
-              <Image
-                src={mobileImage}
-                alt={"Game"}
-                width={1500}
-                height={30}
-                className={
-                  "block w-full rounded-[10px] object-contain object-center lg:hidden"
-                }
-              />
-            </div>
-            <WidgetsSwitch
+            />
+          </div>
+        ))}
+      {useLayout ? (
+        <div
+          className={
+            "relative mt-[3.646vw] h-full w-full rounded-[2.604vw] border-2 border-left-accent bg-bg-grey p-[2.083vw]"
+          }
+        >
+          {useTabs && (
+            <TabsSwitch
+              gameName={gameConfig.name}
+              gameId={gameConfig.id}
               competitionsSupported={!!gameConfig.pageCompetitionsList}
               lobbiesSupported={!!gameConfig.lobby}
-              defaultPage={defaultPage}
-              gameId={gameConfig.id}
-              gameName={gameConfig.name}
+              tabs={tabs}
             />
-            <div
-              className={
-                "relative flex w-full flex-col gap-20 rounded-b-[10px] border-x border-b border-left-accent p-4 lg:rounded-2xl lg:border-2 lg:p-10 "
-              }
-            >
-              <div
-                className={
-                  "absolute left-0 top-0 -z-10 h-[200px] w-full bg-bg-dark"
-                }
-              />
-              {children}
-            </div>
-          </>
-        ) : (
-          <div className={"flex flex-col px-5"}>{children}</div>
-        )}
-      </div>
-      <Footer />
-      <ToastContainer />
-    </>
+          )}
+          {children}
+        </div>
+      ) : (
+        <>{children}</>
+      )}
+      <Updater />
+    </div>
   );
 }

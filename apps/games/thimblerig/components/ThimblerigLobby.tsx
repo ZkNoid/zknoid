@@ -1,12 +1,12 @@
-import GamePage from '@sdk/components/framework/GamePage';
-import { useContext, useState } from 'react';
-import ThimblerigCoverSVG from '../assets/game-cover.svg';
-import ThimblerigCoverMobileSVG from '../assets/game-cover.svg';
-import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
-import { ClientAppChain, ProtoUInt64 } from 'zknoid-chain-dev';
-import { useNetworkStore } from '@sdk/lib/stores/network';
-import LobbyPage from '@sdk/components/framework/Lobby/LobbyPage';
-import { thimblerigConfig } from '../config';
+import { useContext } from "react";
+import ThimblerigCoverSVG from "../assets/game-cover.svg";
+import ThimblerigCoverMobileSVG from "../assets/game-cover.svg";
+import ZkNoidGameContext from "@sdk/lib/contexts/ZkNoidGameContext";
+import { ClientAppChain } from "zknoid-chain-dev";
+import { useNetworkStore } from "@sdk/lib/stores/network";
+import LobbyPage from "@sdk/components/framework/Lobby/LobbyPage";
+import { thimblerigConfig } from "../config";
+import GamePage from "@sdk/components/framework/GamePage";
 
 export default function ThimblerigLobby({
   params,
@@ -18,7 +18,7 @@ export default function ThimblerigLobby({
   const { client } = useContext(ZkNoidGameContext);
 
   if (!client) {
-    throw Error('Context app chain client is not set');
+    throw Error("Context app chain client is not set");
   }
 
   const client_ = client as ClientAppChain<
@@ -29,12 +29,7 @@ export default function ThimblerigLobby({
   >;
 
   return (
-    <GamePage
-      gameConfig={thimblerigConfig}
-      image={ThimblerigCoverSVG}
-      mobileImage={ThimblerigCoverMobileSVG}
-      defaultPage={'Lobby list'}
-    >
+    <GamePage gameConfig={thimblerigConfig} gameTitleImage={ThimblerigCoverSVG}>
       <LobbyPage
         lobbyId={params.lobbyId}
         query={
@@ -42,7 +37,7 @@ export default function ThimblerigLobby({
             ? client_.query.runtime.ThimblerigLogic
             : undefined
         }
-        contractName={'ThimblerigLogic'}
+        contractName={"ThimblerigLogic"}
         config={thimblerigConfig}
         rewardCoeff={1.67}
       />

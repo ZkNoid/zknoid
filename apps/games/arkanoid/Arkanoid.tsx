@@ -1,39 +1,39 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
-import { GameView, ITick } from './components/GameView';
-import { Bricks } from 'zknoid-chain-dev';
-import { useNetworkStore } from '@sdk/lib/stores/network';
-import { useSwitchWidgetStorage } from '@sdk/lib/stores/switchWidgetStorage';
-import { useWorkerClientStore } from '@sdk/lib/stores/workerClient';
+import { useEffect, useRef, useState } from "react";
+import { GameView, ITick } from "./components/GameView";
+import { Bricks } from "zknoid-chain-dev";
+import { useNetworkStore } from "@sdk/lib/stores/network";
+import { useSwitchWidgetStorage } from "@sdk/lib/stores/switchWidgetStorage";
+import { useWorkerClientStore } from "@sdk/lib/stores/workerClient";
 import {
   useArkanoidLeaderboardStore,
   useObserveArkanoidLeaderboard,
-} from './stores/arkanoidLeaderboard';
-import { useStartGame } from './features/useStartGame';
-import { useProof } from './features/useProof';
-import { useGetCompetition } from './features/useGetCompetition';
-import { arkanoidConfig } from './config';
-import { walletInstalled } from '@sdk/lib/helpers';
-import { ICompetition } from '@sdk/lib/types';
-import GamePage from '@sdk/components/framework/GamePage';
-import GameWidget from '@sdk/components/framework/GameWidget';
-import { Leaderboard } from '@sdk/components/framework/GameWidget/ui/Leaderboard';
-import { Competition } from '@sdk/components/framework/GameWidget/ui/Competition';
-import { ConnectWallet } from '@sdk/components/framework/GameWidget/ui/popups/ConnectWallet';
-import { RateGame } from '@sdk/components/framework/GameWidget/ui/popups/RateGame';
-import { Lost } from '@sdk/components/framework/GameWidget/ui/popups/Lost';
-import { Win } from '@sdk/components/framework/GameWidget/ui/popups/Win';
-import { InstallWallet } from '@sdk/components/framework/GameWidget/ui/popups/InstallWallet';
-import { DebugCheckbox } from '@sdk/components/framework/GameWidget/ui/DebugCheckbox';
-import { UnsetCompetitionPopup } from '@sdk/components/framework/GameWidget/ui/popups/UnsetCompetitionPopup';
-import { FullscreenButton } from '@sdk/components/framework/GameWidget/ui/FullscreenButton';
-import { FullscreenWrap } from '@sdk/components/framework/GameWidget/ui/FullscreenWrap';
-import { PreRegModal } from './ui/PreRegModal';
-import Button from '@sdk/components/shared/Button';
-import ArkanoidCoverSVG from './assets/game-cover.svg';
-import ArkanoidMobileCoverSVG from './assets/game-cover-mobile.svg';
-import { GameState } from './lib/gameState';
+} from "./stores/arkanoidLeaderboard";
+import { useStartGame } from "./features/useStartGame";
+import { useProof } from "./features/useProof";
+import { useGetCompetition } from "./features/useGetCompetition";
+import { arkanoidConfig } from "./config";
+import { walletInstalled } from "@sdk/lib/helpers";
+import { ICompetition } from "@sdk/lib/types";
+import GameWidget from "@sdk/components/framework/GameWidget";
+import { Leaderboard } from "@sdk/components/framework/GameWidget/ui/Leaderboard";
+import { Competition } from "@sdk/components/framework/GameWidget/ui/Competition";
+import { ConnectWallet } from "@sdk/components/framework/GameWidget/ui/popups/ConnectWallet";
+import { RateGame } from "@sdk/components/framework/GameWidget/ui/popups/RateGame";
+import { Lost } from "@sdk/components/framework/GameWidget/ui/popups/Lost";
+import { Win } from "@sdk/components/framework/GameWidget/ui/popups/Win";
+import { InstallWallet } from "@sdk/components/framework/GameWidget/ui/popups/InstallWallet";
+import { DebugCheckbox } from "@sdk/components/framework/GameWidget/ui/DebugCheckbox";
+import { UnsetCompetitionPopup } from "@sdk/components/framework/GameWidget/ui/popups/UnsetCompetitionPopup";
+import { FullscreenButton } from "@sdk/components/framework/GameWidget/ui/FullscreenButton";
+import { FullscreenWrap } from "@sdk/components/framework/GameWidget/ui/FullscreenWrap";
+import { PreRegModal } from "./ui/PreRegModal";
+import Button from "@sdk/components/shared/Button";
+import ArkanoidCoverSVG from "./assets/game-cover.svg";
+import ArkanoidMobileCoverSVG from "./assets/game-cover-mobile.svg";
+import { GameState } from "./lib/gameState";
+import GamePage from "@sdk/components/framework/GamePage";
 
 export default function Arkanoid({
   params,
@@ -63,7 +63,7 @@ export default function Arkanoid({
   const getCompetition = useGetCompetition(
     +params.competitionId,
     setCompetition,
-    setLevel
+    setLevel,
   );
 
   const isRestartButton =
@@ -98,25 +98,20 @@ export default function Arkanoid({
   }, [competition]);
 
   return (
-    <GamePage
-      gameConfig={arkanoidConfig}
-      image={ArkanoidCoverSVG}
-      mobileImage={ArkanoidMobileCoverSVG}
-      defaultPage={'Game'}
-    >
+    <GamePage gameConfig={arkanoidConfig} gameTitleImage={ArkanoidCoverSVG}>
       <FullscreenWrap isFullscreen={isFullscreen}>
         {competition && (
           <>
             <Leaderboard
               leaderboard={leaderboardStore.getLeaderboard(
-                params.competitionId
+                params.competitionId,
               )}
             />
-            <div className={'flex flex-col gap-4 lg:hidden'}>
-              <span className={'w-full text-headline-2 font-bold'}>Rules</span>
+            <div className={"flex flex-col gap-4 lg:hidden"}>
+              <span className={"w-full text-headline-2 font-bold"}>Rules</span>
               <span
                 className={
-                  'whitespace-pre-line font-plexsans text-buttons-menu font-normal'
+                  "whitespace-pre-line font-plexsans text-buttons-menu font-normal"
                 }
               >
                 {competition ? competition.game.rules : <> - </>}
@@ -146,30 +141,30 @@ export default function Arkanoid({
                             console.log(error);
                           });
                       }}
-                      title={'You won! Congratulations!'}
+                      title={"You won! Congratulations!"}
                       subTitle={
-                        'If you want to see your name in leaderboard you have to send the poof! ;)'
+                        "If you want to see your name in leaderboard you have to send the poof! ;)"
                       }
-                      btnText={'Send proof'}
+                      btnText={"Send proof"}
                     />
                   )}
                   {gameState == GameState.Proofing && (
                     <div
                       className={
-                        'flex h-full w-full flex-col items-center justify-center px-[10%] py-[15%] text-headline-1 text-left-accent lg:p-0'
+                        "flex h-full w-full flex-col items-center justify-center px-[10%] py-[15%] text-headline-1 text-left-accent lg:p-0"
                       }
                     >
                       <div
                         className={
-                          'flex max-w-[60%] flex-col items-center justify-center gap-4'
+                          "flex max-w-[60%] flex-col items-center justify-center gap-4"
                         }
                       >
-                        <span className={'text-center'}>
+                        <span className={"text-center"}>
                           Your Proof was sent - now you can see your name in
                           Leaderboard :)
                         </span>
                         <Button
-                          label={'Close'}
+                          label={"Close"}
                           onClick={() => setGameState(GameState.RateGame)}
                         />
                       </div>
@@ -187,13 +182,13 @@ export default function Arkanoid({
                   {gameState === GameState.NotStarted && (
                     <div
                       className={
-                        'flex min-h-[50vh] w-full items-center justify-center lg:h-full lg:min-h-min'
+                        "flex min-h-[50vh] w-full items-center justify-center lg:h-full lg:min-h-min"
                       }
                     >
-                      {workerClientStore.status == 'Initialized' ? (
+                      {workerClientStore.status == "Initialized" ? (
                         <button
                           className={
-                            'w-full max-w-[80%] rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-[20px]/[20px] font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent lg:max-w-[40%]'
+                            "w-full max-w-[80%] rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-[20px]/[20px] font-medium text-dark-buttons-text hover:border-left-accent hover:bg-bg-dark hover:text-left-accent lg:max-w-[40%]"
                           }
                           onClick={startGame}
                         >
@@ -202,10 +197,10 @@ export default function Arkanoid({
                       ) : (
                         <div
                           className={
-                            'w-full max-w-[80%] rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-[20px]/[20px] font-medium text-dark-buttons-text lg:max-w-[40%]'
+                            "w-full max-w-[80%] rounded-[5px] border border-bg-dark bg-left-accent py-2 text-center text-[20px]/[20px] font-medium text-dark-buttons-text lg:max-w-[40%]"
                           }
                         >
-                          {' '}
+                          {" "}
                           Wait for initialization
                         </div>
                       )}
@@ -224,12 +219,12 @@ export default function Arkanoid({
           {gameState === GameState.Active && (
             <div
               className={
-                'flex h-full w-full items-center justify-center p-[10%] lg:p-0'
+                "flex h-full w-full items-center justify-center p-[10%] lg:p-0"
               }
             >
               <GameView
                 onWin={(ticks) => {
-                  console.log('Ticks', ticks);
+                  console.log("Ticks", ticks);
                   setLastTicks(ticks);
                   setGameState(GameState.Won);
                 }}
@@ -254,7 +249,7 @@ export default function Arkanoid({
             setIsFullscreen={setIsFullscreen}
           />
         </GameWidget>
-        <span className={'block w-full text-headline-2 font-bold lg:hidden'}>
+        <span className={"block w-full text-headline-2 font-bold lg:hidden"}>
           Game
         </span>
         <Competition

@@ -2,14 +2,13 @@ import { useContext, useEffect, useState } from "react";
 import { Field, Poseidon, PublicKey, UInt64 } from "o1js";
 import { useNetworkStore } from "@sdk/lib/stores/network";
 import { ClientAppChain } from "zknoid-chain-dev";
-import GamePage from "@sdk/components/framework/GamePage";
 import { numberGuessingConfig } from "./config";
 import ZkNoidGameContext from "@sdk/lib/contexts/ZkNoidGameContext";
 import { useProtokitChainStore } from "@sdk/lib/stores/protokitChain";
-import CoverSVG from "./assets/game-cover.svg";
 import { motion } from "framer-motion";
 import Button from "@sdk/components/shared/Button";
 import { useNotificationStore } from "@sdk/components/shared/Notification/lib/notificationStore";
+import GamePage from "@sdk/components/framework/GamePage";
 
 export default function NumberGuessing({
   params,
@@ -49,7 +48,7 @@ export default function NumberGuessing({
       PublicKey.fromBase58(networkStore.address!),
       async () => {
         await guessLogic.hideNumber(Field.from(number));
-      }
+      },
     );
 
     await tx.sign();
@@ -71,7 +70,7 @@ export default function NumberGuessing({
         PublicKey.fromBase58(networkStore.address!),
         async () => {
           await guessLogic.guessNumber(Field.from(number));
-        }
+        },
       );
 
       await tx.sign();
@@ -89,7 +88,7 @@ export default function NumberGuessing({
       "Query",
       query,
       "pk started",
-      networkStore.protokitClientStarted
+      networkStore.protokitClientStarted,
     );
 
     query?.hiddenNumber.get().then((n) => {
@@ -112,12 +111,7 @@ export default function NumberGuessing({
   }, [protokitChain.block]);
 
   return (
-    <GamePage
-      gameConfig={numberGuessingConfig}
-      image={CoverSVG}
-      mobileImage={CoverSVG}
-      defaultPage={"Game"}
-    >
+    <GamePage gameConfig={numberGuessingConfig}>
       <motion.div
         className={
           "flex grid-cols-4 flex-col-reverse gap-4 pt-10 lg:grid lg:pt-0"

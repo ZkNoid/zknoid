@@ -7,9 +7,11 @@ import { lotteryConfig } from "./lottery/config";
 import { tileVilleConfig } from "./tileville/config";
 import { pokerConfig } from "./poker/config";
 import { thimblerigConfig } from "./thimblerig/config";
+import { gameTemplateConfig } from "./game-template/config";
 
 export const zkNoidConfig = createConfig({
   games: [
+    // gameTemplateConfig,
     lotteryConfig,
     tileVilleConfig,
     randzuConfig,
@@ -17,6 +19,6 @@ export const zkNoidConfig = createConfig({
     thimblerigConfig,
     pokerConfig,
     arkanoidConfig,
-    numberGuessingConfig
+    numberGuessingConfig,
   ],
 });

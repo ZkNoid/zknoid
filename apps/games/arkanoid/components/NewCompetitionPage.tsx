@@ -24,7 +24,6 @@ import {
 } from "@sdk/lib/stores/protokitBalances";
 import ZkNoidGameContext from "@sdk/lib/contexts/ZkNoidGameContext";
 import { arkanoidConfig } from "../config";
-import GamePage from "@sdk/components/framework/GamePage";
 import Input from "@sdk/components/shared/Input";
 import Textarea from "@sdk/components/shared/Textarea";
 import Button from "@sdk/components/shared/Button";
@@ -46,6 +45,7 @@ import { PendingTransaction } from "@proto-kit/sequencer";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { snakeNames } from "@sdk/constants/snakeNames";
+import GamePage from "@sdk/components/framework/GamePage";
 
 interface IBrick {
   pos: [number, number];
@@ -352,12 +352,7 @@ export default function NewCompetitionPage() {
   });
 
   return (
-    <GamePage
-      gameConfig={arkanoidConfig}
-      image={ArkanoidCoverSVG}
-      mobileImage={ArkanoidCoverMobileSVG}
-      defaultPage={"New Competition"}
-    >
+    <GamePage gameConfig={arkanoidConfig} gameTitleImage={ArkanoidCoverSVG}>
       <div className={"flex w-full flex-col gap-8"}>
         <div className={"w-full text-left text-headline-1"}>
           Create competition
