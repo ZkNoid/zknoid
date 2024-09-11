@@ -11,7 +11,7 @@ import NumberGuessing from "./NumberGuessing";
 export const numberGuessingConfig = createZkNoidGameConfig({
   id: "number-guessing",
   type: ZkNoidGameType.PVP,
-  name: "Number guessing [single]",
+  name: "Number guessing",
   description: "Player hides a number. Other player tries to guess it",
   image: "/image/games/soon.svg",
   logoMode: LogoMode.CENTER,

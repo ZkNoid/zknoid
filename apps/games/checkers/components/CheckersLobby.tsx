@@ -1,4 +1,3 @@
-import GamePage from "@zknoid/sdk/components/framework/GamePage";
 import { useContext } from "react";
 import CheckersCoverSVG from "../assets/game-cover.svg";
 import CheckersCoverMobileSVG from "../assets/game-cover-mobile.svg";
@@ -7,6 +6,7 @@ import { ClientAppChain } from "zknoid-chain-dev";
 import LobbyPage from "@zknoid/sdk/components/framework/Lobby/LobbyPage";
 import { checkersConfig } from "../config";
 import { useNetworkStore } from "@zknoid/sdk/lib/stores/network";
+import GamePage from "@zknoid/sdk/components/framework/GamePage";
 
 export default function CheckersLobby({
   params,
@@ -29,12 +29,7 @@ export default function CheckersLobby({
   >;
 
   return (
-    <GamePage
-      gameConfig={checkersConfig}
-      image={CheckersCoverSVG}
-      mobileImage={CheckersCoverMobileSVG}
-      defaultPage={"Lobby list"}
-    >
+    <GamePage gameConfig={checkersConfig} gameTitleImage={CheckersCoverSVG}>
       <LobbyPage
         lobbyId={params.lobbyId}
         query={

@@ -16,7 +16,6 @@ import { useGetCompetition } from "./features/useGetCompetition";
 import { arkanoidConfig } from "./config";
 import { walletInstalled } from "@zknoid/sdk/lib/helpers";
 import { ICompetition } from "@zknoid/sdk/lib/types";
-import GamePage from "@zknoid/sdk/components/framework/GamePage";
 import GameWidget from "@zknoid/sdk/components/framework/GameWidget";
 import { Leaderboard } from "@zknoid/sdk/components/framework/GameWidget/ui/Leaderboard";
 import { Competition } from "@zknoid/sdk/components/framework/GameWidget/ui/Competition";
@@ -34,6 +33,7 @@ import Button from "@zknoid/sdk/components/shared/Button";
 import ArkanoidCoverSVG from "./assets/game-cover.svg";
 import ArkanoidMobileCoverSVG from "./assets/game-cover-mobile.svg";
 import { GameState } from "./lib/gameState";
+import GamePage from "@zknoid/sdk/components/framework/GamePage";
 
 export default function Arkanoid({
   params,
@@ -63,7 +63,7 @@ export default function Arkanoid({
   const getCompetition = useGetCompetition(
     +params.competitionId,
     setCompetition,
-    setLevel
+    setLevel,
   );
 
   const isRestartButton =
@@ -98,18 +98,13 @@ export default function Arkanoid({
   }, [competition]);
 
   return (
-    <GamePage
-      gameConfig={arkanoidConfig}
-      image={ArkanoidCoverSVG}
-      mobileImage={ArkanoidMobileCoverSVG}
-      defaultPage={"Game"}
-    >
+    <GamePage gameConfig={arkanoidConfig} gameTitleImage={ArkanoidCoverSVG}>
       <FullscreenWrap isFullscreen={isFullscreen}>
         {competition && (
           <>
             <Leaderboard
               leaderboard={leaderboardStore.getLeaderboard(
-                params.competitionId
+                params.competitionId,
               )}
             />
             <div className={"flex flex-col gap-4 lg:hidden"}>

@@ -1,12 +1,12 @@
-import GamePage from "@zknoid/sdk/components/framework/GamePage";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import ThimblerigCoverSVG from "../assets/game-cover.svg";
 import ThimblerigCoverMobileSVG from "../assets/game-cover.svg";
 import ZkNoidGameContext from "@zknoid/sdk/lib/contexts/ZkNoidGameContext";
-import { ClientAppChain, ProtoUInt64 } from "zknoid-chain-dev";
+import { ClientAppChain } from "zknoid-chain-dev";
 import { useNetworkStore } from "@zknoid/sdk/lib/stores/network";
 import LobbyPage from "@zknoid/sdk/components/framework/Lobby/LobbyPage";
 import { thimblerigConfig } from "../config";
+import GamePage from "@zknoid/sdk/components/framework/GamePage";
 
 export default function ThimblerigLobby({
   params,
@@ -29,12 +29,7 @@ export default function ThimblerigLobby({
   >;
 
   return (
-    <GamePage
-      gameConfig={thimblerigConfig}
-      image={ThimblerigCoverSVG}
-      mobileImage={ThimblerigCoverMobileSVG}
-      defaultPage={"Lobby list"}
-    >
+    <GamePage gameConfig={thimblerigConfig} gameTitleImage={ThimblerigCoverSVG}>
       <LobbyPage
         lobbyId={params.lobbyId}
         query={

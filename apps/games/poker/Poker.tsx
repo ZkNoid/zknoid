@@ -1,5 +1,4 @@
 import PokerCoverSVG from "./assets/game-cover.svg";
-import GamePage from "@zknoid/sdk/components/framework/GamePage";
 import { pokerConfig } from "./config";
 import Button from "@zknoid/sdk/components/shared/Button";
 import { Currency } from "@zknoid/sdk/constants/currency";
@@ -10,15 +9,11 @@ import ChatMessage from "./ui/ChatMessage";
 import LogsMessage from "./ui/LogsMessage";
 import PlayerListItem from "./ui/PlayerListItem";
 import RulesAccordion from "./ui/RulesAccordion";
+import GamePage from "@zknoid/sdk/components/framework/GamePage";
 
 export const Poker = () => {
   return (
-    <GamePage
-      gameConfig={pokerConfig}
-      image={PokerCoverSVG}
-      mobileImage={"/image/game-page/game-title-mobile-template.svg"}
-      defaultPage={"Game"}
-    >
+    <GamePage gameConfig={pokerConfig} gameTitleImage={PokerCoverSVG}>
       <StatefulModal isOpen={true}>
         <div className={"flex flex-col items-center justify-center gap-2"}>
           <svg

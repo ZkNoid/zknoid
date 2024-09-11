@@ -1,12 +1,12 @@
-import GamePage from "@zknoid/sdk/components/framework/GamePage";
 import { randzuConfig } from "../config";
 import RandzuCoverSVG from "../assets/game-cover.svg";
 import RandzuCoverMobileSVG from "../assets/game-cover-mobile.svg";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import ZkNoidGameContext from "@zknoid/sdk/lib/contexts/ZkNoidGameContext";
-import { ClientAppChain, ProtoUInt64 } from "zknoid-chain-dev";
+import { ClientAppChain } from "zknoid-chain-dev";
 import { useNetworkStore } from "@zknoid/sdk/lib/stores/network";
 import LobbyPage from "@zknoid/sdk/components/framework/Lobby/LobbyPage";
+import GamePage from "@zknoid/sdk/components/framework/GamePage";
 
 export default function RandzuLobby({
   params,
@@ -29,12 +29,7 @@ export default function RandzuLobby({
   >;
 
   return (
-    <GamePage
-      gameConfig={randzuConfig}
-      image={RandzuCoverSVG}
-      mobileImage={RandzuCoverMobileSVG}
-      defaultPage={"Lobby list"}
-    >
+    <GamePage gameConfig={randzuConfig} gameTitleImage={RandzuCoverSVG}>
       <LobbyPage
         lobbyId={params.lobbyId}
         query={

@@ -16,7 +16,6 @@ import {
   RandzuField,
   WinWitness,
 } from "zknoid-chain-dev";
-import GamePage from "@zknoid/sdk/components/framework/GamePage";
 import { randzuConfig } from "./config";
 import ZkNoidGameContext from "@zknoid/sdk/lib/contexts/ZkNoidGameContext";
 import { useProtokitChainStore } from "@zknoid/sdk/lib/stores/protokitChain";
@@ -34,7 +33,7 @@ import Button from "@zknoid/sdk/components/shared/Button";
 import { Competition } from "@zknoid/sdk/components/framework/GameWidget/ui/Competition";
 import { Currency } from "@zknoid/sdk/constants/currency";
 import { formatUnits } from "@zknoid/sdk/lib/unit";
-import znakesImg from "@zknoid/sdk/public/image/tokens/znakes.svg";
+import znakesImg from "@sdk/public/image/tokens/znakes.svg";
 import Image from "next/image";
 import { UnsetCompetitionPopup } from "@zknoid/sdk/components/framework/GameWidget/ui/popups/UnsetCompetitionPopup";
 import { Win } from "@zknoid/sdk/components/framework/GameWidget/ui/popups/Win";
@@ -53,7 +52,8 @@ import {
   useLobbiesStore,
   useObserveLobbiesStore,
 } from "@zknoid/sdk/lib/stores/lobbiesStore";
-// import { type PendingTransaction } from '@proto-kit/sequencer';
+// import { type PendingTransaction } from "@proto-kit/sequencer";
+import GamePage from "@zknoid/sdk/components/framework/GamePage";
 
 const competition = {
   id: "global",
@@ -86,7 +86,7 @@ export default function Randzu({
   const protokitChain = useProtokitChainStore();
   useObserveRandzuMatchQueue();
   const sessionPrivateKey = useStore(useSessionKeyStore, (state) =>
-    state.getSessionKey()
+    state.getSessionKey(),
   );
   const progress = api.progress.setSolvedQuests.useMutation();
   const startGame = useStartGame(competition.id, setGameState);
@@ -123,7 +123,7 @@ export default function Randzu({
       sessionPrivateKey.toPublicKey(),
       async () => {
         randzuLogic.collectPendingBalance();
-      }
+      },
     );
 
     console.log("Collect tx", tx);
@@ -145,9 +145,9 @@ export default function Randzu({
       PublicKey.fromBase58(networkStore.address!),
       async () => {
         randzuLogic.proveOpponentTimeout(
-          UInt64.from(matchQueue.gameInfo!.gameId)
+          UInt64.from(matchQueue.gameInfo!.gameId),
         );
-      }
+      },
     );
 
     await tx.sign();
@@ -163,7 +163,7 @@ export default function Randzu({
     const currentUserId = matchQueue.gameInfo.currentUserIndex + 1;
 
     const updatedField = (matchQueue.gameInfo.field as RandzuField).value.map(
-      (x: UInt32[]) => x.map((x) => x.toBigint())
+      (x: UInt32[]) => x.map((x) => x.toBigint()),
     );
 
     updatedField[y][x] = matchQueue.gameInfo.currentUserIndex + 1;
@@ -189,10 +189,10 @@ export default function Randzu({
                 y: UInt32.from(0),
                 directionX: Int64.from(0),
                 directionY: Int64.from(0),
-              }
-            )
+              },
+            ),
         );
-      }
+      },
     );
 
     setLoading(true);
@@ -299,17 +299,12 @@ export default function Randzu({
       toast.success(
         toasterStore,
         `You are won! Winnings: ${formatUnits(matchQueue.pendingBalance)} ${Currency.ZNAKES}`,
-        true
+        true,
       );
   }, [gameState]);
 
   return (
-    <GamePage
-      gameConfig={randzuConfig}
-      image={RandzuCoverSVG}
-      mobileImage={RandzuCoverMobileSVG}
-      defaultPage={"Game"}
-    >
+    <GamePage gameConfig={randzuConfig} gameTitleImage={RandzuCoverSVG}>
       <motion.div
         className={
           "flex grid-cols-4 flex-col-reverse gap-4 pt-10 lg:grid lg:pt-0"
@@ -419,7 +414,7 @@ export default function Randzu({
                   {gameState == GameState.Won &&
                     (isRateGame &&
                     !rateGameStore.ratedGames.find(
-                      (game) => game.gameId == randzuConfig.id
+                      (game) => game.gameId == randzuConfig.id,
                     ) ? (
                       <GameWrap>
                         <RateGame
@@ -445,7 +440,7 @@ export default function Randzu({
                     <GameWrap>
                       <Button
                         label={`START FOR ${formatUnits(
-                          competition.enteringPrice
+                          competition.enteringPrice,
                         )}`}
                         onClick={startGame}
                         className={"max-w-[40%]"}

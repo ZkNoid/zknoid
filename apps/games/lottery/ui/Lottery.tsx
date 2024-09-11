@@ -1,4 +1,3 @@
-import GamePage from "@zknoid/sdk/components/framework/GamePage";
 import { lotteryConfig } from "../config";
 import { useNetworkStore } from "@zknoid/sdk/lib/stores/network";
 import { useEffect, useState } from "react";
@@ -20,6 +19,7 @@ import TicketsStorage from "./TicketsStorage";
 import RateGameModal from "@zknoid/sdk/components/shared/RateGameModal";
 import lotteryImage from "@/public/image/games/lottery.svg";
 import { useRateGameStore } from "@zknoid/sdk/lib/stores/rateGameStore";
+import GamePage from "@zknoid/sdk/components/framework/GamePage";
 
 export enum Pages {
   Main,
@@ -29,7 +29,7 @@ export enum Pages {
 export default function Lottery({}: { params: { competitionId: string } }) {
   const networkStore = useNetworkStore();
   const [roundEndsIn, setRoundEndsIn] = useState<DateTime>(
-    DateTime.fromMillis(0)
+    DateTime.fromMillis(0),
   );
   const [page, setPage] = useState<Pages>(Pages.Main);
 
@@ -60,7 +60,7 @@ export default function Lottery({}: { params: { competitionId: string } }) {
       if (chainStore.block?.height) {
         const roundId = Math.floor(
           Number(chainStore.block!.slotSinceGenesis - onchainState.startBlock) /
-            BLOCK_PER_ROUND
+            BLOCK_PER_ROUND,
         );
 
         workerClientStore.setRoundId(roundId);
@@ -88,7 +88,7 @@ export default function Lottery({}: { params: { competitionId: string } }) {
       workerClientStore.startLottery(
         networkStore.minaNetwork?.networkID!,
         Number(chainStore.block?.slotSinceGenesis),
-        LOTTERY_ADDRESS[networkStore.minaNetwork?.networkID!]
+        LOTTERY_ADDRESS[networkStore.minaNetwork?.networkID!],
       );
     }
   }, [
@@ -126,8 +126,8 @@ export default function Lottery({}: { params: { competitionId: string } }) {
                   (Number(blockNum - startBlock) % BLOCK_PER_ROUND)) *
                 3 *
                 60,
-            })
-          )
+            }),
+          ),
         )
       : 0;
   }, [workerClientStore.onchainState, workerClientStore.lotteryRoundId]);
@@ -135,10 +135,9 @@ export default function Lottery({}: { params: { competitionId: string } }) {
   return (
     <GamePage
       gameConfig={lotteryConfig}
-      image={undefined}
-      mobileImage={undefined}
-      defaultPage={"Game"}
-      customDesign={true}
+      useTabs={false}
+      useTitle={false}
+      useLayout={false}
     >
       <StateManager />
 
@@ -181,7 +180,7 @@ export default function Lottery({}: { params: { competitionId: string } }) {
         (game) =>
           game.gameId == lotteryConfig.id &&
           Date.parse(game.updatedAt) >=
-            new Date().setMonth(new Date().getMonth() - 1)
+            new Date().setMonth(new Date().getMonth() - 1),
       ) ||
         rateGameStore.ratedGames.length == 0) && (
         <RateGameModal gameId={lotteryConfig.id} gameImage={lotteryImage} />

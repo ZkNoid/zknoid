@@ -12,7 +12,6 @@ import { walletInstalled } from "@zknoid/sdk/lib/helpers";
 import { useStore } from "zustand";
 import { useSessionKeyStore } from "@zknoid/sdk/lib/stores/sessionKeyStorage";
 import { ClientAppChain, PENDING_BLOCKS_NUM_CONST } from "zknoid-chain-dev";
-import GamePage from "@zknoid/sdk/components/framework/GamePage";
 import { checkersConfig } from "./config";
 import ZkNoidGameContext from "@zknoid/sdk/lib/contexts/ZkNoidGameContext";
 import { useProtokitChainStore } from "@zknoid/sdk/lib/stores/protokitChain";
@@ -35,6 +34,7 @@ import {
   useLobbiesStore,
   useObserveLobbiesStore,
 } from "@zknoid/sdk/lib/stores/lobbiesStore";
+import GamePage from "@zknoid/sdk/components/framework/GamePage";
 
 export default function RandzuPage({
   params,
@@ -59,7 +59,7 @@ export default function RandzuPage({
   useObserveCheckersMatchQueue();
   const protokitChain = useProtokitChainStore();
   const sessionPrivateKey = useStore(useSessionKeyStore, (state) =>
-    state.getSessionKey()
+    state.getSessionKey(),
   );
 
   const client_ = client as ClientAppChain<
@@ -82,7 +82,7 @@ export default function RandzuPage({
   const onMoveChosen = useOnMoveChosen(
     matchQueue,
     setLoading,
-    setLoadingElement
+    setLoadingElement,
   );
 
   const restart = () => {
@@ -97,7 +97,7 @@ export default function RandzuPage({
       sessionPrivateKey.toPublicKey(),
       async () => {
         logic.collectPendingBalance();
-      }
+      },
     );
 
     console.log("Collect tx", tx);
@@ -118,9 +118,9 @@ export default function RandzuPage({
       PublicKey.fromBase58(networkStore.address!),
       async () => {
         randzuLogic.proveOpponentTimeout(
-          UInt64.from(matchQueue.gameInfo!.gameId)
+          UInt64.from(matchQueue.gameInfo!.gameId),
         );
-      }
+      },
     );
 
     await tx.sign();
@@ -239,17 +239,12 @@ export default function RandzuPage({
       toast.success(
         toasterStore,
         `You are won! Winnings: ${formatUnits(matchQueue.pendingBalance)} ${Currency.ZNAKES}`,
-        true
+        true,
       );
   }, [gameState]);
 
   return (
-    <GamePage
-      gameConfig={checkersConfig}
-      image={CheckersCoverSVG}
-      mobileImage={CheckersCoverMobileSVG}
-      defaultPage={"Game"}
-    >
+    <GamePage gameConfig={checkersConfig} gameTitleImage={CheckersCoverSVG}>
       <PvPGameView
         status={statuses[gameState]}
         opponent={matchQueue.gameInfo?.opponent}

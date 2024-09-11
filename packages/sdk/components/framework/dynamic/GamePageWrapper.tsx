@@ -2,11 +2,9 @@
 
 import { useEffect, useMemo } from "react";
 
-import ZkNoidGameContext from "../../../lib/contexts/ZkNoidGameContext";
-// import { api } from  '@sdk/trpc/react';
-import { useNetworkStore } from "../../../lib/stores/network";
-import { getEnvContext } from "../../../lib/envContext";
-import { ZkNoidConfig } from "../../../lib/createConfig";
+import ZkNoidGameContext from "@sdk/lib/contexts/ZkNoidGameContext";
+import { useNetworkStore } from "@sdk/lib/stores/network";
+import { ZkNoidConfig } from "@sdk/lib/createConfig";
 
 export default function GamePageWrapper({
   gameId,
@@ -19,7 +17,7 @@ export default function GamePageWrapper({
 }) {
   const config = useMemo(
     () => zkNoidConfig.games.find((game) => game.id == gameId)!,
-    []
+    [],
   );
   const client = useMemo(() => zkNoidConfig.getClient(), []);
   const networkStore = useNetworkStore();

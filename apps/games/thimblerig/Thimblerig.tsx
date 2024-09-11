@@ -1,4 +1,3 @@
-import GamePage from "@zknoid/sdk/components/framework/GamePage";
 import { thimblerigConfig } from "./config";
 import { useNetworkStore } from "@zknoid/sdk/lib/stores/network";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -62,7 +61,8 @@ import {
   useLobbiesStore,
   useObserveLobbiesStore,
 } from "@zknoid/sdk/lib/stores/lobbiesStore";
-// import * as sequencer from '@proto-kit/sequencer';
+// import { PendingTransaction } from "@proto-kit/sequencer";
+import GamePage from "@zknoid/sdk/components/framework/GamePage";
 
 export default function Thimblerig({}: { params: { competitionId: string } }) {
   const [gameState, setGameState] = useState(GameState.NotStarted);
@@ -76,15 +76,15 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   const [loading, setLoading] = useState(false);
   const [pendingChoosing, setPendingChoosing] = useState(false);
   const [thimbleOpened, setThimbleOpened] = useState<undefined | 1 | 2 | 3>(
-    undefined
+    undefined,
   );
   const thimbleOpenedRef = useRef<undefined | 1 | 2 | 3>(undefined);
   const [thimbleGuessed, setThimbleGuessed] = useState<undefined | 1 | 2 | 3>(
-    undefined
+    undefined,
   );
   const finalAnimationStepRef = useRef<number>(0);
   const sessionPrivateKey = useStore(useSessionKeyStore, (state) =>
-    state.getSessionKey()
+    state.getSessionKey(),
   );
 
   const networkStore = useNetworkStore();
@@ -126,7 +126,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       sessionPrivateKey.toPublicKey(),
       async () => {
         randzuLogic.collectPendingBalance();
-      }
+      },
     );
 
     console.log("Collect tx", tx);
@@ -155,9 +155,9 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       async () => {
         thimblerigLogic.commitValue(
           UInt64.from(matchQueue.activeGameId),
-          commitment
+          commitment,
         );
-      }
+      },
     );
 
     await tx.sign();
@@ -177,9 +177,9 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
         async () => {
           thimblerigLogic.chooseThumble(
             UInt64.from(matchQueue.activeGameId),
-            UInt64.from(choice)
+            UInt64.from(choice),
           );
-        }
+        },
       );
       await tx.sign();
       await tx.send();
@@ -208,9 +208,9 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
         thimblerigLogic.revealCommitment(
           UInt64.from(matchQueue.activeGameId),
           commitment.value,
-          commitment.salt
+          commitment.salt,
         );
-      }
+      },
     );
 
     await tx.sign();
@@ -233,9 +233,9 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       PublicKey.fromBase58(networkStore.address!),
       async () => {
         thibmerigLogic.proveCommitNotRevealed(
-          UInt64.from(matchQueue.gameInfo!.gameId)
+          UInt64.from(matchQueue.gameInfo!.gameId),
         );
-      }
+      },
     );
 
     await tx.sign();
@@ -316,11 +316,11 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       if (matchQueue.lastGameState == "win") {
         console.log(
           "Win, value:",
-          Number(matchQueue.gameInfo.field.value.toBigInt())
+          Number(matchQueue.gameInfo.field.value.toBigInt()),
         );
         console.log(
           "Win, salt:",
-          Number(matchQueue.gameInfo.field.choice.toBigInt())
+          Number(matchQueue.gameInfo.field.choice.toBigInt()),
         );
 
         setRevealedValue({
@@ -348,11 +348,11 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       } else if (matchQueue.lastGameState == "lost") {
         console.log(
           "Lost, value:",
-          Number(matchQueue.gameInfo.field.value.toBigInt())
+          Number(matchQueue.gameInfo.field.value.toBigInt()),
         );
         console.log(
           "Lost, salt:",
-          Number(matchQueue.gameInfo.field.choice.toBigInt())
+          Number(matchQueue.gameInfo.field.choice.toBigInt()),
         );
 
         setRevealedValue({
@@ -473,17 +473,12 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
       toast.success(
         toasterStore,
         `You are won! Winnings: ${formatUnits(matchQueue.pendingBalance)} ${Currency.ZNAKES}`,
-        true
+        true,
       );
   }, [gameState]);
 
   return (
-    <GamePage
-      gameConfig={thimblerigConfig}
-      image={ThimblerigCoverSVG}
-      mobileImage={ThimblerigCoverMobileSVG}
-      defaultPage={"Game"}
-    >
+    <GamePage gameConfig={thimblerigConfig} gameTitleImage={ThimblerigCoverSVG}>
       <motion.div
         className={
           "flex grid-cols-4 flex-col-reverse gap-4 pt-10 lg:grid lg:pt-0"
@@ -599,7 +594,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                 <>
                   {isRateGame &&
                     !rateGameStore.ratedGames.find(
-                      (game) => game.gameId == thimblerigConfig.id
+                      (game) => game.gameId == thimblerigConfig.id,
                     ) && (
                       <StatefulModal isOpen={true} isDismissible={false}>
                         <RateGame
@@ -613,7 +608,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                     <GameWrap>
                       <Button
                         label={`START FOR ${formatUnits(
-                          competition.startPrice
+                          competition.startPrice,
                         )}`}
                         onClick={startGame}
                         className={"max-w-[40%]"}
@@ -720,7 +715,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                           key={i}
                           className={cn(
                             "p-5",
-                            isAnimated && "mx-[-20px] mt-[-55px]"
+                            isAnimated && "mx-[-20px] mt-[-55px]",
                           )}
                           onDrop={() => {
                             gameState == GameState.CurrentPlayerHiding &&
@@ -796,7 +791,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
                                 ) {
                                   finalAnimationStepRef.current = 1;
                                   setFinalAnimationStep(
-                                    finalAnimationStepRef.current
+                                    finalAnimationStepRef.current,
                                   );
                                 }
                               }}

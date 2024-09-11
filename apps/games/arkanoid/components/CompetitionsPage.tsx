@@ -8,12 +8,12 @@ import {
   useObserveArkanoidCompetitions,
 } from "../stores/arkanoidCompetitions";
 import ZkNoidGameContext from "@zknoid/sdk/lib/contexts/ZkNoidGameContext";
-import GamePage from "@zknoid/sdk/components/framework/GamePage";
 import { arkanoidConfig } from "../config";
 import Competitions from "@zknoid/sdk/components/framework/Competitions";
 import { ICompetition } from "@zknoid/sdk/lib/types";
 import ArkanoidCoverSVG from "../assets/game-cover.svg";
 import ArkanoidCoverMobileSVG from "../assets/game-cover-mobile.svg";
+import GamePage from "@sdk/components/framework/GamePage";
 
 export default function CompetitionsPage() {
   const networkStore = useNetworkStore();
@@ -58,12 +58,7 @@ export default function CompetitionsPage() {
   const competitionBlocks: ICompetition[] = compStore.competitions.slice(0, 3);
 
   return (
-    <GamePage
-      gameConfig={arkanoidConfig}
-      image={ArkanoidCoverSVG}
-      mobileImage={ArkanoidCoverMobileSVG}
-      defaultPage={"Competitions List"}
-    >
+    <GamePage gameConfig={arkanoidConfig} gameTitleImage={ArkanoidCoverSVG}>
       <Competitions
         gameId={arkanoidConfig.id}
         competitionBlocks={competitionBlocks}
