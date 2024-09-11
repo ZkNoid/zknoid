@@ -33,7 +33,7 @@ import Button from "@zknoid/sdk/components/shared/Button";
 import { Competition } from "@zknoid/sdk/components/framework/GameWidget/ui/Competition";
 import { Currency } from "@zknoid/sdk/constants/currency";
 import { formatUnits } from "@zknoid/sdk/lib/unit";
-import znakesImg from "@sdk/public/image/tokens/znakes.svg";
+import znakesImg from "@zknoid/sdk/public/image/tokens/znakes.svg";
 import Image from "next/image";
 import { UnsetCompetitionPopup } from "@zknoid/sdk/components/framework/GameWidget/ui/popups/UnsetCompetitionPopup";
 import { Win } from "@zknoid/sdk/components/framework/GameWidget/ui/popups/Win";

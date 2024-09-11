@@ -13,7 +13,7 @@ import Competitions from "@zknoid/sdk/components/framework/Competitions";
 import { ICompetition } from "@zknoid/sdk/lib/types";
 import ArkanoidCoverSVG from "../assets/game-cover.svg";
 import ArkanoidCoverMobileSVG from "../assets/game-cover-mobile.svg";
-import GamePage from "@sdk/components/framework/GamePage";
+import GamePage from "@zknoid/sdk/components/framework/GamePage";
 
 export default function CompetitionsPage() {
   const networkStore = useNetworkStore();

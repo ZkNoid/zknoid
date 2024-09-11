@@ -1,10 +1,10 @@
-import { createZkNoidGameConfig } from "@sdk/lib/createConfig";
-import { ZkNoidGameType } from "@sdk/lib/platform/game_types";
-import { LogoMode } from "@sdk/constants/games";
+import { createZkNoidGameConfig } from "@zknoid/sdk/lib/createConfig";
+import { ZkNoidGameType } from "@zknoid/sdk/lib/platform/game_types";
+import { LogoMode } from "@zknoid/sdk/constants/games";
 import {
   ZkNoidGameFeature,
   ZkNoidGameGenre,
-} from "@sdk/lib/platform/game_tags";
+} from "@zknoid/sdk/lib/platform/game_tags";
 import GameTemplate from "./GameTemplate";
 
 const description = "Template description";

@@ -188,6 +188,9 @@ importers:
       '@vercel/speed-insights':
         specifier: ^1.0.10
         version: 1.0.12(next@15.0.0-canary.148)(react@19.0.0-rc-4c2e457c7c-20240522)
+      '@zknoid/games':
+        specifier: workspace:*
+        version: link:../games
       '@zknoid/sdk':
         specifier: workspace:*
         version: link:../../packages/sdk
@@ -218,9 +221,6 @@ importers:
       framer-motion:
         specifier: ^11.0.10
         version: 11.3.21(react-dom@19.0.0-rc-4c2e457c7c-20240522)(react@19.0.0-rc-4c2e457c7c-20240522)
-      games:
-        specifier: workspace:*
-        version: link:../games
       immer:
         specifier: ^10.0.4
         version: 10.1.1

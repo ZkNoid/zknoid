@@ -1,5 +1,5 @@
 import { gameTemplateConfig } from "./config";
-import GamePage from "@sdk/components/framework/GamePage";
+import GamePage from "@zknoid/sdk/components/framework/GamePage";
 
 export default function GameTemplate() {
   return (

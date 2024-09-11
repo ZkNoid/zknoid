@@ -1,5 +1,5 @@
 {
-  "name": "games",
+  "name": "@zknoid/games",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

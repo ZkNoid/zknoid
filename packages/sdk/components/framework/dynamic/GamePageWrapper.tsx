@@ -2,9 +2,9 @@
 
 import { useEffect, useMemo } from "react";
 
-import ZkNoidGameContext from "@sdk/lib/contexts/ZkNoidGameContext";
-import { useNetworkStore } from "@sdk/lib/stores/network";
-import { ZkNoidConfig } from "@sdk/lib/createConfig";
+import ZkNoidGameContext from "../../../lib/contexts/ZkNoidGameContext";
+import { useNetworkStore } from "../../../lib/stores/network";
+import { ZkNoidConfig } from "../../../lib/createConfig";
 
 export default function GamePageWrapper({
   gameId,

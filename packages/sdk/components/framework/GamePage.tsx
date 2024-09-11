@@ -1,13 +1,13 @@
 import { ReactNode } from "react";
 import Image from "next/image";
-import gameTitleTemplate from "@sdk/public/image/game-page/game-title-template.svg";
+import gameTitleTemplate from "../../public/image/game-page/game-title-template.svg";
 import Link from "next/link";
-import { cn } from "@sdk/lib/helpers";
+import { cn } from "../../lib/helpers";
 import { usePathname, useSearchParams } from "next/navigation";
-import { ZkNoidGameConfig } from "@sdk/lib/createConfig";
-import { usePollMinaBlockHeight } from "@sdk/lib/stores/minaChain";
-import { usePollProtokitBlockHeight } from "@sdk/lib/stores/protokitChain";
-import { useObserveMinaBalance } from "@sdk/lib/stores/minaBalances";
+import { ZkNoidGameConfig } from "../../lib/createConfig";
+import { usePollMinaBlockHeight } from "../../lib/stores/minaChain";
+import { usePollProtokitBlockHeight } from "../../lib/stores/protokitChain";
+import { useObserveMinaBalance } from "../../lib/stores/minaBalances";
 import type { RuntimeModulesRecord } from "@proto-kit/module";
 
 export function TabsSwitch({
