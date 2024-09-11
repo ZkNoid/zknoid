@@ -8,7 +8,7 @@ import { useContext } from 'react';
 import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
 import { useNetworkStore } from '@sdk/lib/stores/network';
 import { api } from '@sdk/trpc/react';
-import { type PendingTransaction } from '@proto-kit/sequencer';
+// import { type PendingTransaction } from '@proto-kit/sequencer';
 
 export const useProof = (
   lastTicks: ITick[],
@@ -75,7 +75,7 @@ export const useProof = (
           roomId: competition?.id.toString(),
           id: 0,
           txHash: JSON.stringify(
-            (tx.transaction! as PendingTransaction).toJSON()
+            (tx.transaction! as any).toJSON()
           ),
           envContext: getEnvContext(),
         });
@@ -87,7 +87,7 @@ export const useProof = (
         roomId: competition?.id.toString(),
         id: 2,
         txHash: JSON.stringify(
-          (tx.transaction! as PendingTransaction).toJSON()
+          (tx.transaction! as any).toJSON()
         ),
         envContext: getEnvContext(),
       });
@@ -99,7 +99,7 @@ export const useProof = (
           roomId: competition?.id.toString(),
           id: 3,
           txHash: JSON.stringify(
-            (tx.transaction! as PendingTransaction).toJSON()
+            (tx.transaction! as any).toJSON()
           ),
           envContext: getEnvContext(),
         });
@@ -112,7 +112,7 @@ export const useProof = (
           roomId: competition?.id.toString(),
           id: 4,
           txHash: JSON.stringify(
-            (tx.transaction! as PendingTransaction).toJSON()
+            (tx.transaction! as any).toJSON()
           ),
           envContext: getEnvContext(),
         });

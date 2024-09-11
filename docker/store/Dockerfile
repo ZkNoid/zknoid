@@ -17,20 +17,20 @@ ENV NEXT_PUBLIC_PROTOKIT_GRAPHQL_URL=$NEXT_PUBLIC_PROTOKIT_GRAPHQL_URL
 
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml turbo.json ./
 COPY ./packages/chain/package.json ./packages/chain/package.json
-COPY ./apps/web/package.json ./apps/web/package.json
+COPY ./apps/store/package.json ./apps/store/package.json
 
 RUN corepack enable pnpm
 
 COPY ./tsconfig.json .
 COPY ./packages/chain/tsconfig.json ./packages/chain/tsconfig.json
-COPY ./apps/web/tsconfig.json ./apps/web/tsconfig.json
+COPY ./apps/store/tsconfig.json ./apps/store/tsconfig.json
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 COPY ./packages ./packages
 COPY ./apps ./apps
 
-RUN pnpm run build --filter=web
+RUN pnpm run build --filter=store
 
 # Production image, copy all the files and run next
 FROM base AS runner
@@ -43,7 +43,7 @@ ENV NODE_ENV production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/apps/web/public ./apps/web/public
+COPY --from=builder /app/apps/store/public ./apps/store/public
 
 # Set the correct permission for prerender cache
 RUN mkdir .next
@@ -51,8 +51,8 @@ RUN chown nextjs:nodejs .next
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/store/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/store/.next/static ./apps/store/.next/static
 
 USER nextjs
 
@@ -63,4 +63,4 @@ ENV HOSTNAME "0.0.0.0"
 
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
-CMD node ./apps/web/server.js
+CMD node ./apps/store/server.js

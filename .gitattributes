@@ -1,2 +1,2 @@
 lottery_cache/* filter=lfs diff=lfs merge=lfs -text
-apps/web/public/lottery_cache/* filter=lfs diff=lfs merge=lfs -text
+apps/store/public/lottery_cache/* filter=lfs diff=lfs merge=lfs -text

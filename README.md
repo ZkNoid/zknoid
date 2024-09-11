@@ -44,7 +44,7 @@ pnpm env:inmemory dev
 
 ### Implementing your own game
 ZkNoid is a modular platform that makes it easy to implement you own game using platform infrastructure. 
-To build a game you need to create a game folder inside [apps/web/games](https://github.com/ZkNoid/zknoid/tree/develop/apps/web/games).
+To build a game you need to create a game folder inside [apps/store/games](https://github.com/ZkNoid/zknoid/tree/develop/apps/store/games).
 Define game config and implement front-end and contracts part in [packages/chain/src/](https://github.com/ZkNoid/zknoid/blob/develop/packages/chain/src/)
 
 - Read more in [hacker's guide](https://zknoid.medium.com/building-a-simple-zknoid-game-from-scratch-hackers-guide-0898bf30fdfb)
@@ -57,6 +57,6 @@ Define game config and implement front-end and contracts part in [packages/chain
 - Competitions and leaderboard system [engine/GameHub.ts](https://github.com/ZkNoid/zknoid/blob/develop/packages/chain/src/engine/GameHub.ts)
 - Matchmaking system – [engine/MatchMaker.ts](https://github.com/ZkNoid/zknoid/blob/develop/packages/chain/src/engine/MatchMaker.ts)
 - Randzu logic implementation – [randzu/RandzuLogic.ts](https://github.com/ZkNoid/zknoid/blob/develop/packages/chain/src/randzu/RandzuLogic.ts)
-- Games frontend implementation [apps/web/games](https://github.com/ZkNoid/zknoid/tree/develop/apps/web/games)
+- Games frontend implementation [apps/store/games](https://github.com/ZkNoid/zknoid/tree/develop/apps/store/games)
 - Games contracts implementation [packages/chain/src/](https://github.com/ZkNoid/zknoid/blob/develop/packages/chain/src/)
 

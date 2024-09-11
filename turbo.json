@@ -17,7 +17,7 @@
         "protokit-framework/**"
       ]
     },
-    "build^web": {
+    "build^store": {
       "dependsOn": [
         "^build"
       ],

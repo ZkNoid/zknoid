@@ -26,7 +26,7 @@ const nextConfig = {
       config.optimization.splitChunks.cacheGroups = {
         ...config.optimization.splitChunks.cacheGroups,
         victory: {
-          test: /o1js@1.3.1/,
+          test: /o1js@1.6.0/,
           name: 'o1js',
           priority: 50,
           reuseExistingChunk: true,
@@ -61,7 +61,9 @@ const nextConfig = {
   },
   experimental: {
     reactCompiler: true,
+    optimizePackageImports: ['sdk', 'games', 'zknoid-chain-dev'],
   },
+  productionBrowserSourceMaps: false,
 };
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({

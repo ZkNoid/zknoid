@@ -1,7 +1,7 @@
 import { Field, PublicKey, UInt64 } from 'o1js';
 import { fromContractCompetition } from '../lib/typesConverter';
 import { Bricks, createBricksBySeed } from 'zknoid-chain-dev';
-import { ClientAppChain } from '@proto-kit/sdk';
+import { ClientAppChain } from 'zknoid-chain-dev';
 import { useContext } from 'react';
 import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
 import { ICompetition } from '@sdk/lib/types';

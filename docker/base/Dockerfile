@@ -14,13 +14,13 @@ COPY pnpm-lock.yaml .
 COPY turbo.json .
 
 COPY ./packages/chain/package.json ./packages/chain/package.json
-COPY ./apps/web/package.json ./apps/web/package.json
+COPY ./apps/store/package.json ./apps/store/package.json
 
 RUN corepack enable pnpm
 
 COPY ./tsconfig.json .
 COPY ./packages/chain/tsconfig.json ./packages/chain/tsconfig.json
-COPY ./apps/web/tsconfig.json ./apps/web/tsconfig.json
+COPY ./apps/store/tsconfig.json ./apps/store/tsconfig.json
 
 RUN pnpm install --frozen-lockfile
 

@@ -5,7 +5,7 @@ import { MutableRefObject, useContext, useEffect } from 'react';
 import { useProtokitChainStore } from '@sdk/lib/stores/protokitChain';
 import { useNetworkStore } from '@sdk/lib/stores/network';
 import { LeaderboardIndex } from 'zknoid-chain-dev';
-import { type ClientAppChain } from '@proto-kit/sdk';
+import { type ClientAppChain } from 'zknoid-chain-dev';
 import { arkanoidConfig } from '../config';
 import ZkNoidGameContext from '@sdk/lib/contexts/ZkNoidGameContext';
 

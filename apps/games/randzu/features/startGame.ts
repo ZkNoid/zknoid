@@ -8,7 +8,7 @@ import { useSessionKeyStore } from '@sdk/lib/stores/sessionKeyStorage';
 import { useMinaBridge } from '@sdk/lib/stores/protokitBalances';
 import { client } from 'zknoid-chain-dev';
 import { useNetworkStore } from '@sdk/lib/stores/network';
-import { type PendingTransaction } from '@proto-kit/sequencer';
+// import { type PendingTransaction } from '@proto-kit/sequencer';
 
 export const useStartGame = (
   competitionID: string,
@@ -50,7 +50,7 @@ export const useStartGame = (
       userAddress: networkStore.address!,
       section: 'RANDZU',
       id: 0,
-      txHash: JSON.stringify((tx.transaction! as PendingTransaction).toJSON()),
+      txHash: JSON.stringify((tx.transaction! as any).toJSON()),
       roomId: competitionID,
       envContext: getEnvContext(),
     });
@@ -59,7 +59,7 @@ export const useStartGame = (
       userAddress: networkStore.address!,
       section: 'RANDZU',
       id: 1,
-      txHash: JSON.stringify((tx.transaction! as PendingTransaction).toJSON()),
+      txHash: JSON.stringify((tx.transaction! as any).toJSON()),
       roomId: competitionID,
       envContext: getEnvContext(),
     });
