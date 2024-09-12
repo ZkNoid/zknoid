@@ -18,7 +18,6 @@ If you want to create your own provable game, please check out the [hacker's gui
 ### Repository
 
 Repository contains ZkNoid game platform monorepo. 
-Monorepo 
 
 ### Deployments
 - Develop branch in deployed to https://dev.zknoid.io/
