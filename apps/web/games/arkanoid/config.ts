@@ -5,7 +5,6 @@ import Arkanoid from './Arkanoid';
 import NewArkanoidCompetitionPage from './components/NewArkanoidCompetitionPage';
 import ArkanoidCompetitionsListPage from './components/ArkanoidCompetitionsListPage';
 import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
-import { LogoMode } from '@/app/constants/games';
 
 const description =
   'Old but gold game. Beat all the bricks and protect the ball from falling';
@@ -24,7 +23,6 @@ export const arkanoidConfig = createZkNoidGameConfig({
   name: 'Arkanoid game',
   description: description,
   image: '/image/games/arkanoid.svg',
-  logoMode: LogoMode.FULL_WIDTH,
   genre: ZkNoidGameGenre.Arcade,
   features: [ZkNoidGameFeature.SinglePlayer],
   isReleased: true,
@@ -46,7 +44,6 @@ export const arkanoidRedirectConfig = createZkNoidGameConfig({
   name: 'Arkanoid game',
   description: description,
   image: '/image/games/arkanoid.svg',
-  logoMode: LogoMode.FULL_WIDTH,
   genre: ZkNoidGameGenre.Arcade,
   features: [ZkNoidGameFeature.SinglePlayer],
   isReleased: true,
@@ -58,5 +55,5 @@ export const arkanoidRedirectConfig = createZkNoidGameConfig({
   page: undefined as any,
   pageCompetitionsList: ArkanoidCompetitionsListPage,
   pageNewCompetition: NewArkanoidCompetitionPage,
-  externalUrl: 'https://proto.zknoid.io/games/arkanoid/global'
+  externalUrl: 'https://proto.zknoid.io/games/arkanoid/global',
 });

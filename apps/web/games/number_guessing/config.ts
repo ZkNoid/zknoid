@@ -2,8 +2,6 @@ import { createZkNoidGameConfig } from '@/lib/createConfig';
 import { ZkNoidGameType } from '@/lib/platform/game_types';
 import { GuessGame } from 'zknoid-chain-dev';
 import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
-
-import { LogoMode } from '@/app/constants/games';
 import NumberGuessing from './NumberGuessing';
 
 export const numberGuessingConfig = createZkNoidGameConfig({
@@ -12,7 +10,6 @@ export const numberGuessingConfig = createZkNoidGameConfig({
   name: 'Number guessing [single]',
   description: 'Player hides a number. Other player tries to guess it',
   image: '/image/games/soon.svg',
-  logoMode: LogoMode.CENTER,
   genre: ZkNoidGameGenre.BoardGames,
   features: [ZkNoidGameFeature.Multiplayer],
   isReleased: true,

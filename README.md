@@ -51,6 +51,8 @@ Define game config and implement front-end and contracts part in [packages/chain
 - Learn more about SDK [here](https://docs.zknoid.io/docs/sdk)
 - Learn more about your game implementation [here](https://docs.zknoid.io/docs/game_building)
 
+### Listing game on ZkNoid store
+Instructions, terms and conditions to list your game on ZkNoid SDK: [Integration guide](https://docs.zknoid.io/docs/zknoid_for_developers/integration_guide)
 
 ### Interesting places
 - Arkanoid game verification – [arkanoid/GameContexts.ts](https://github.com/ZkNoid/zknoid/blob/develop/packages/chain/src/arkanoid/GameContext.ts)

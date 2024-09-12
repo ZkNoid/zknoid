@@ -39,7 +39,6 @@ export default function Storefront() {
           zkNoidGames.zkNoidConfig.games.map((x) => ({
             id: x.id,
             logo: x.image,
-            logoMode: x.logoMode,
             name: x.name,
             description: x.description,
             genre: x.genre,
@@ -98,11 +97,6 @@ export default function Storefront() {
           />
         </>
       )}
-      {/*{widget == 'favorites' && <Favorites games={games} />}*/}
-      {/*{widget == 'faq' && <Faq />}*/}
-      {/*{!widget && (*/}
-      {/*  */}
-      {/*)}*/}
     </div>
   );
 }

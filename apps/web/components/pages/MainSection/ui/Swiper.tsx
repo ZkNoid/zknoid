@@ -4,7 +4,7 @@ import Image from 'next/image';
 import defaultSlide from '@/public/image/slides/slide1.svg';
 import mobileCoverIMG from '@/public/image/section1/mobile-cover.svg';
 import lotterySlide from '@/public/image/slides/lottery.svg';
-import tileVilleSlide from '@/public/image/slides/tileville.svg';
+import ethSingaporeSlide from '@/public/image/slides/eth-singapore.svg';
 import Link from 'next/link';
 
 export default function Swiper() {
@@ -25,8 +25,8 @@ export default function Swiper() {
       openAsNewTab: true,
     },
     {
-      image: tileVilleSlide,
-      link: 'https://www.tileville.xyz',
+      image: ethSingaporeSlide,
+      link: 'https://ethglobal.com/events/singapore2024',
       openAsNewTab: true,
     },
   ];

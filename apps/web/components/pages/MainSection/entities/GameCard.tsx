@@ -1,4 +1,4 @@
-import { IGame, LogoMode } from '@/app/constants/games';
+import { IGame } from '@/app/constants/games';
 import { useNetworkStore } from '@/lib/stores/network';
 import { useNotificationStore } from '@/components/shared/Notification/lib/notificationStore';
 import { useEffect, useState } from 'react';
@@ -109,14 +109,7 @@ export function GameCard({
           width={300}
           height={300}
           alt={game.name}
-          className={cn(
-            'h-full w-full object-center',
-            game.logoMode == LogoMode.FULL_WIDTH
-              ? 'object-cover'
-              : game.logoMode == LogoMode.CONTAIN
-                ? 'object-contain'
-                : 'object-none'
-          )}
+          className={'h-full w-full object-contain'}
         />
       </div>
       {game.isReleased && (

@@ -1,50 +1,43 @@
-import { RuntimeModule, runtimeModule } from '@proto-kit/module';
+import { runtimeModule, RuntimeModule } from '@proto-kit/module';
 import {
   Field,
   Poseidon,
   PublicKey,
-  UInt64,
 } from 'o1js';
-
-import { state, runtimeMethod } from '@proto-kit/module';
 import { State, StateMap, assert } from '@proto-kit/protocol';
+import { state, runtimeMethod } from '@proto-kit/module';
+import { UInt64 } from '@proto-kit/library';
 
-interface NumberGuessingConfig {}
+interface GuessGameConfig {}
 
 @runtimeModule()
-export class GuessGame extends RuntimeModule<NumberGuessingConfig> {
+export class GuessGame extends RuntimeModule<GuessGameConfig> {
   @state() hiddenNumber = State.from<Field>(Field);
-  @state() scores = StateMap.from<PublicKey, UInt64>(PublicKey, UInt64);
+  @state() score = StateMap.from<PublicKey, UInt64>(PublicKey, UInt64);
 
   @runtimeMethod()
-  public async hideNumber(number: UInt64) {
+  async hideNumber(number: Field) {
     let curHiddenNumber = await this.hiddenNumber.get();
 
     assert(curHiddenNumber.value.equals(Field(0)), 'Number is already hidden');
-    assert(
-      curHiddenNumber.value.lessThan(Field(100)),
-      'Value should be less then 100',
-    );
+    assert(number.lessThan(Field(100)), 'Value should be less then 100');
 
-    await this.hiddenNumber.set(Poseidon.hash(number.toFields()));
+    await this.hiddenNumber.set(Poseidon.hash([number]));
   }
 
   @runtimeMethod()
   async guessNumber(
-    number: UInt64,
+    number: Field,
   ) {
     let curHiddenNumber = await this.hiddenNumber.get();
 
-    assert(
-      curHiddenNumber.value.equals(Poseidon.hash(number.toFields())),
-      'Other number was guessed',
-    );
+    assert(curHiddenNumber.value.equals(Poseidon.hash([number])), 'Other numbre was guessed');
 
-    const sender = this.transaction.sender.value;
+    const userScore = await this.score.get(this.transaction.sender.value);
 
-    let prevScores = await this.scores.get(sender);
+    const newUserScore = userScore.value.add(UInt64.from(1));
 
-    await this.scores.set(sender, prevScores.value.add(1));
+    await this.score.set(this.transaction.sender.value, newUserScore);
     await this.hiddenNumber.set(Field(0));
   }
 }

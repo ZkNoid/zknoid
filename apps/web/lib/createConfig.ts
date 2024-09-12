@@ -4,7 +4,6 @@ import { createStore } from 'zustand';
 import { ZkNoidGameFeature, ZkNoidGameGenre } from './platform/game_tags';
 import { buildClient } from './utils';
 import { ZkNoidGameType } from '@/lib/platform/game_types';
-import { LogoMode } from '@/app/constants/games';
 
 export type ZkNoidGameConfig<
   RuntimeModules extends RuntimeModulesRecord = RuntimeModulesRecord,
@@ -16,7 +15,6 @@ export type ZkNoidGameConfig<
   genre: ZkNoidGameGenre;
   features: ZkNoidGameFeature[];
   image: string;
-  logoMode: LogoMode;
   isReleased: boolean;
   releaseDate: Date;
   popularity: number;
@@ -40,7 +38,6 @@ export function createZkNoidGameConfig<
   genre: ZkNoidGameGenre;
   features: ZkNoidGameFeature[];
   image: string;
-  logoMode: LogoMode;
   isReleased: boolean;
   releaseDate: Date;
   popularity: number;
