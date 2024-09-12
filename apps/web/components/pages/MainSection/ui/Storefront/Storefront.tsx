@@ -97,11 +97,6 @@ export default function Storefront() {
           />
         </>
       )}
-      {/*{widget == 'favorites' && <Favorites games={games} />}*/}
-      {/*{widget == 'faq' && <Faq />}*/}
-      {/*{!widget && (*/}
-      {/*  */}
-      {/*)}*/}
     </div>
   );
 }

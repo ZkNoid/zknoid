@@ -5,17 +5,20 @@ import {
 } from '@/lib/platform/game_events';
 import Link from 'next/link';
 import Image from 'next/image';
+import { cn } from '@/lib/helpers';
 
 export function EventItem({
   headText,
   description,
   event,
   image,
+  isCustom,
 }: {
   headText: string;
   description: string;
   event: ZkNoidEvent;
   image?: string;
+  isCustom?: boolean;
 }) {
   const eventCounter = useEventTimer(event);
   const time = eventCounter.startsIn
@@ -37,9 +40,12 @@ export function EventItem({
             width={486}
             height={301}
             alt={'Event image'}
-            className={
-              'h-[15.625vw] w-full object-contain object-right 2xl:block'
-            }
+            className={cn(
+              'h-[15.625vw] w-full object-contain object-right 2xl:block',
+              {
+                'h-full object-center': isCustom,
+              }
+            )}
           />
         </div>
       )}
@@ -50,15 +56,31 @@ export function EventItem({
       >
         <div className={'flex flex-col gap-[0.521vw]'}>
           <span
-            className={'font-museo text-[1.25vw] font-bold text-foreground'}
+            className={cn(
+              'font-museo text-[1.25vw] font-bold text-foreground',
+              {
+                'text-bg-dark': isCustom,
+              }
+            )}
           >
             {headText}
           </span>
-          <span className={'font-plexsans text-[0.833vw] text-foreground'}>
+          <span
+            className={cn(
+              'max-w-[50%] font-plexsans text-[0.833vw] text-foreground',
+              {
+                'text-bg-dark': isCustom,
+              }
+            )}
+          >
             {description}
           </span>
         </div>
-        <div className={'font-museo text-[1.563vw] font-medium'}>
+        <div
+          className={cn('font-museo text-[1.563vw] font-medium', {
+            'text-bg-dark': isCustom,
+          })}
+        >
           {eventCounter.type == ZkNoidEventType.UPCOMING_EVENTS && (
             <>START IN {time}</>
           )}

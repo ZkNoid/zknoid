@@ -52,7 +52,7 @@ export default function Events({
         </div>
       )}
       {filteredEvents.length > 0 && (
-        <div className={'grid w-full grid-cols-1 lg:grid-cols-2'}>
+        <div className={'grid w-full grid-cols-1 gap-[0.938vw] lg:grid-cols-2'}>
           {filteredEvents.map((event) => (
             <EventItem
               key={event.name}
@@ -60,6 +60,7 @@ export default function Events({
               description={event.description}
               event={event}
               image={event.image}
+              isCustom={event.isCustom}
             />
           ))}
         </div>

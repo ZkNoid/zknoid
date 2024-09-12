@@ -22,6 +22,7 @@ export type ZkNoidEvent = {
   eventEnds: number;
   link: string;
   image?: string;
+  isCustom?: boolean;
 };
 
 export const GAME_EVENTS: ZkNoidEvent[] = [
@@ -38,9 +39,29 @@ export const GAME_EVENTS: ZkNoidEvent[] = [
     name: 'Checkers game test',
     description: 'Play chess, find bugs, report bugs and grab reward!',
     eventStarts: new Date('2024-06-30').getTime(),
-    eventEnds: new Date('2024-11-30').getTime(),
+    eventEnds: new Date('2024-09-10').getTime(),
     link: '/games/arkanoid/0',
     image: '/image/events/banner/checkers_banner.svg',
+  },
+  {
+    name: 'ETHGlobal Online Hack',
+    description:
+      'Discover the world of provable, zero-knowledge game development on Mina Protocol! Create your own fair game environment based on the modular “plug and play” SDK From ZkNoid.',
+    eventStarts: new Date('2024-08-23').getTime(),
+    eventEnds: new Date('2024-09-13').getTime(),
+    link: 'https://ethglobal.com/events/ethonline2024',
+    image: '/image/events/eth-online.svg',
+    isCustom: true,
+  },
+  {
+    name: 'ETHGlobal Singapore Hack',
+    description:
+      'Discover the world of provable, zero-knowledge game development on Mina Protocol! Create your own fair game environment based on the modular “plug and play” SDK From ZkNoid.',
+    eventStarts: new Date('2024-09-20').getTime(),
+    eventEnds: new Date('2024-09-22').getTime(),
+    link: 'https://ethglobal.com/events/singapore2024',
+    image: '/image/events/eth-singapore.svg',
+    isCustom: true,
   },
 ];
 
