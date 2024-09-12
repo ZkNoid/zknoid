@@ -1,15 +1,8 @@
 import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
 
-export enum LogoMode {
-  CENTER = 0,
-  FULL_WIDTH = 1,
-  BOTTOM_RIGHT = 2,
-  CONTAIN = 3,
-}
 export interface IGame {
   id: string;
   logo: string;
-  logoMode: number;
   name: string;
   description: string;
   genre: ZkNoidGameGenre;
@@ -47,7 +40,6 @@ export const defaultGames: IGame[] = [
   {
     id: 'lottery',
     logo: '/image/games/lottery.svg',
-    logoMode: LogoMode.FULL_WIDTH,
     name: 'Lottery game',
     description:
       'Ticket based lottery game. Choose lucky numbers, buy tickets, win rewards',
@@ -66,8 +58,7 @@ export const defaultGames: IGame[] = [
     name: 'Tileville game',
     description:
       'TileVille is a strategic city-building game on the Mina blockchain, where players construct and manage their own cities on the island of Nicobar using hexagonal tiles.',
-    logo: '/image/games/tileville.png',
-    logoMode: LogoMode.CENTER,
+    logo: '/image/games/tileville.svg',
     genre: ZkNoidGameGenre.Arcade,
     features: [ZkNoidGameFeature.SinglePlayer],
     isReleased: true,
@@ -82,7 +73,6 @@ export const defaultGames: IGame[] = [
   {
     id: 'arkanoid',
     logo: '/image/games/arkanoid.svg',
-    logoMode: LogoMode.FULL_WIDTH,
     name: 'Arkanoid game',
     description:
       'Old but gold game. Beat all the bricks and protect the ball from falling',
@@ -100,7 +90,6 @@ export const defaultGames: IGame[] = [
   {
     id: 'randzu',
     logo: '/image/games/randzu.svg',
-    logoMode: LogoMode.CENTER,
     name: 'Randzu game',
     description:
       'Two players take turns placing pieces on the board attempting to create lines of 5 of their own color',
@@ -121,7 +110,6 @@ export const defaultGames: IGame[] = [
     description:
       'One player hides a ball behind a thimbler and second player needs to guess which thimbler it was',
     logo: '/image/games/thimblerig.svg',
-    logoMode: LogoMode.CENTER,
     genre: ZkNoidGameGenre.Lucky,
     features: [ZkNoidGameFeature.P2P],
     defaultPage: 'lobby/undefined',
@@ -139,7 +127,6 @@ export const defaultGames: IGame[] = [
     description:
       "Checkers is a two-player game played on an 8x8 board. The objective is to capture all of your opponent's pieces jumping diagonally over them",
     logo: '/image/games/checkers.svg',
-    logoMode: LogoMode.BOTTOM_RIGHT,
     genre: ZkNoidGameGenre.BoardGames,
     features: [ZkNoidGameFeature.Multiplayer],
     defaultPage: 'lobby/undefined',

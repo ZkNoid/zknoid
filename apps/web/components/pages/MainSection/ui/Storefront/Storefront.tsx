@@ -39,7 +39,6 @@ export default function Storefront() {
           zkNoidGames.zkNoidConfig.games.map((x) => ({
             id: x.id,
             logo: x.image,
-            logoMode: x.logoMode,
             name: x.name,
             description: x.description,
             genre: x.genre,

@@ -2,7 +2,6 @@ import { createZkNoidGameConfig } from '@/lib/createConfig';
 import { ZkNoidGameType } from '@/lib/platform/game_types';
 import Lottery from './Lottery';
 import { ZkNoidGameFeature, ZkNoidGameGenre } from '@/lib/platform/game_tags';
-import { LogoMode } from '@/app/constants/games';
 
 export const lotteryConfig = createZkNoidGameConfig({
   id: 'lottery',
@@ -11,7 +10,6 @@ export const lotteryConfig = createZkNoidGameConfig({
   description:
     'Ticket based lottery game. Choose lucky numbers, buy tickets, win rewards',
   image: '/image/games/lottery.svg',
-  logoMode: LogoMode.FULL_WIDTH,
   genre: ZkNoidGameGenre.Lucky,
   features: [ZkNoidGameFeature.SinglePlayer],
   isReleased: true,
