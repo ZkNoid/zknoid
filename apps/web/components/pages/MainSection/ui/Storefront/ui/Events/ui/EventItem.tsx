@@ -12,13 +12,15 @@ export function EventItem({
   description,
   event,
   image,
-  isCustom,
+  imageFullWidth = false,
+  textColor = 'white',
 }: {
   headText: string;
   description: string;
   event: ZkNoidEvent;
   image?: string;
-  isCustom?: boolean;
+  imageFullWidth?: boolean;
+  textColor?: 'white' | 'black';
 }) {
   const eventCounter = useEventTimer(event);
   const time = eventCounter.startsIn
@@ -41,9 +43,9 @@ export function EventItem({
             height={301}
             alt={'Event image'}
             className={cn(
-              'h-[15.625vw] w-full object-contain object-right 2xl:block',
+              'h-[15.625vw] w-full rounded-[0.26vw] object-contain object-right 2xl:block',
               {
-                'h-full object-center': isCustom,
+                'h-full object-center': imageFullWidth,
               }
             )}
           />
@@ -56,29 +58,26 @@ export function EventItem({
       >
         <div className={'flex flex-col gap-[0.521vw]'}>
           <span
-            className={cn(
-              'font-museo text-[1.25vw] font-bold text-foreground',
-              {
-                'text-bg-dark': isCustom,
-              }
-            )}
+            className={cn('font-museo text-[1.25vw] font-bold', {
+              'text-bg-dark': textColor == 'black',
+              'text-foreground': textColor == 'white',
+            })}
           >
             {headText}
           </span>
           <span
-            className={cn(
-              'max-w-[50%] font-plexsans text-[0.833vw] text-foreground',
-              {
-                'text-bg-dark': isCustom,
-              }
-            )}
+            className={cn('max-w-[50%] font-plexsans text-[0.833vw]', {
+              'text-bg-dark': textColor == 'black',
+              'text-foreground': textColor == 'white',
+            })}
           >
             {description}
           </span>
         </div>
         <div
           className={cn('font-museo text-[1.563vw] font-medium', {
-            'text-bg-dark': isCustom,
+            'text-bg-dark': textColor == 'black',
+            'text-foreground': textColor == 'white',
           })}
         >
           {eventCounter.type == ZkNoidEventType.UPCOMING_EVENTS && (

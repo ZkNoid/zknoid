@@ -60,7 +60,8 @@ export default function Events({
               description={event.description}
               event={event}
               image={event.image}
-              isCustom={event.isCustom}
+              imageFullWidth={event.imageFullWidth}
+              textColor={event.textColor}
             />
           ))}
         </div>

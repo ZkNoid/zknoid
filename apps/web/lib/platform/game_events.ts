@@ -22,7 +22,8 @@ export type ZkNoidEvent = {
   eventEnds: number;
   link: string;
   image?: string;
-  isCustom?: boolean;
+  imageFullWidth?: boolean;
+  textColor?: 'white' | 'black';
 };
 
 export const GAME_EVENTS: ZkNoidEvent[] = [
@@ -51,7 +52,8 @@ export const GAME_EVENTS: ZkNoidEvent[] = [
     eventEnds: new Date('2024-09-13').getTime(),
     link: 'https://ethglobal.com/events/ethonline2024',
     image: '/image/events/eth-online.svg',
-    isCustom: true,
+    imageFullWidth: true,
+    textColor: 'black',
   },
   {
     name: 'ETHGlobal Singapore Hack',
@@ -61,7 +63,19 @@ export const GAME_EVENTS: ZkNoidEvent[] = [
     eventEnds: new Date('2024-09-22').getTime(),
     link: 'https://ethglobal.com/events/singapore2024',
     image: '/image/events/eth-singapore.svg',
-    isCustom: true,
+    imageFullWidth: true,
+    textColor: 'black',
+  },
+  {
+    name: 'ZkNoid Bounty for Gamers',
+    description:
+      'To participate in the bounty, simply record your ZkNoid gaming journey with any screen recording software and send it to us. Be creative, using editing software is encouraged! Don’t forget to describe your experience in a comment to the submission.',
+    eventStarts: new Date('2024-09-13').getTime(),
+    eventEnds: new Date('2024-09-26').getTime(),
+    link: 'https://github.com/ZkNoid/zknoid/issues/13',
+    image: '/image/events/astromina.svg',
+    imageFullWidth: true,
+    textColor: 'white',
   },
 ];
 
