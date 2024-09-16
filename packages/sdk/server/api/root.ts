@@ -1,11 +1,12 @@
-import { createCallerFactory, createTRPCRouter } from '../../server/api/trpc';
-import { favoritesRouter } from './routers/favorites';
-import { ratingsRouter } from './routers/rating';
-import { loggingRouter } from './routers/logging';
-import { progressRouter } from './routers/progress';
-import { lotteryBackendRouter } from './routers/lottery-backend';
-import { accountsRouter } from './routers/accounts';
-import { giftCodesRouter } from './routers/gift-codes';
+import { createCallerFactory, createTRPCRouter } from "../../server/api/trpc";
+import { favoritesRouter } from "./routers/favorites";
+import { ratingsRouter } from "./routers/rating";
+import { loggingRouter } from "./routers/logging";
+import { progressRouter } from "./routers/progress";
+import { lotteryBackendRouter } from "./routers/lottery-backend";
+import { accountsRouter } from "./routers/accounts";
+import { giftCodesRouter } from "./routers/gift-codes";
+import { leaderboardRouter } from "./routers/leaderboard";
 
 /**
  * This is the primary router for your server.
@@ -20,6 +21,7 @@ export const appRouter = createTRPCRouter({
   lotteryBackend: lotteryBackendRouter,
   accounts: accountsRouter,
   giftCodes: giftCodesRouter,
+  leaderboard: leaderboardRouter,
 });
 
 // export type definition of API
