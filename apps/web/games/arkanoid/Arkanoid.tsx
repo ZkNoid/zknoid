@@ -98,12 +98,7 @@ export default function Arkanoid({
   }, [competition]);
 
   return (
-    <GamePage
-      gameConfig={arkanoidConfig}
-      image={ArkanoidCoverSVG}
-      mobileImage={ArkanoidMobileCoverSVG}
-      defaultPage={'Game'}
-    >
+    <GamePage gameConfig={arkanoidConfig} gameTitleImage={ArkanoidCoverSVG}>
       <FullscreenWrap isFullscreen={isFullscreen}>
         {competition && (
           <>

@@ -29,12 +29,7 @@ export default function ThimblerigLobby({
   >;
 
   return (
-    <GamePage
-      gameConfig={thimblerigConfig}
-      image={ThimblerigCoverSVG}
-      mobileImage={ThimblerigCoverMobileSVG}
-      defaultPage={'Lobby list'}
-    >
+    <GamePage gameConfig={thimblerigConfig} gameTitleImage={ThimblerigCoverSVG}>
       <LobbyPage
         lobbyId={params.lobbyId}
         query={

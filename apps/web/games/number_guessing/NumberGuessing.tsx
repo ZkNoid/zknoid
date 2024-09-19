@@ -103,12 +103,7 @@ export default function NumberGuessing({
   }, [protokitChain.block]);
 
   return (
-    <GamePage
-      gameConfig={numberGuessingConfig}
-      image={CoverSVG}
-      mobileImage={CoverSVG}
-      defaultPage={'Game'}
-    >
+    <GamePage gameConfig={numberGuessingConfig}>
       <motion.div
         className={
           'flex grid-cols-4 flex-col-reverse gap-4 pt-10 lg:grid lg:pt-0'

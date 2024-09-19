@@ -131,10 +131,9 @@ export default function Lottery({}: { params: { competitionId: string } }) {
   return (
     <GamePage
       gameConfig={lotteryConfig}
-      image={undefined}
-      mobileImage={undefined}
-      defaultPage={'Game'}
-      customDesign={true}
+      useTabs={false}
+      useTitle={false}
+      useLayout={false}
     >
       <StateManager />
 

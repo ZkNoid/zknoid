@@ -13,12 +13,7 @@ import RulesAccordion from './ui/RulesAccordion';
 
 export const Poker = () => {
   return (
-    <GamePage
-      gameConfig={pokerConfig}
-      image={PokerCoverSVG}
-      mobileImage={'/image/game-page/game-title-mobile-template.svg'}
-      defaultPage={'Game'}
-    >
+    <GamePage gameConfig={pokerConfig} gameTitleImage={PokerCoverSVG}>
       <StatefulModal isOpen={true}>
         <div className={'flex flex-col items-center justify-center gap-2'}>
           <svg

@@ -4,6 +4,8 @@ import { useEffect, useMemo } from 'react';
 import { zkNoidConfig } from '@/games/config';
 import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import { useNetworkStore } from '@/lib/stores/network';
+import Header from '@/components/widgets/Header';
+import Footer from '@/components/widgets/Footer';
 
 export default function Page({ gameId }: { gameId: string }) {
   const config = useMemo(
@@ -24,12 +26,16 @@ export default function Page({ gameId }: { gameId: string }) {
   const NewCompetitionPage = config.pageNewCompetition!;
 
   return (
-    <ZkNoidGameContext.Provider value={{
-      client,
-      appchainSupported: !!config.runtimeModules,
-      buildLocalClient: false
-    }}>
+    <ZkNoidGameContext.Provider
+      value={{
+        client,
+        appchainSupported: !!config.runtimeModules,
+        buildLocalClient: false,
+      }}
+    >
+      <Header />
       <NewCompetitionPage />
+      <Footer />
     </ZkNoidGameContext.Provider>
   );
 }

@@ -17,9 +17,7 @@ export default function Home() {
     >
       <div className="flex min-h-screen flex-col">
         <Header />
-
         <MainSection />
-
         <Footer />
       </div>
     </ZkNoidGameContext.Provider>

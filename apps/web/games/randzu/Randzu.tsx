@@ -306,12 +306,7 @@ export default function Randzu({
   }, [gameState]);
 
   return (
-    <GamePage
-      gameConfig={randzuConfig}
-      image={RandzuCoverSVG}
-      mobileImage={RandzuCoverMobileSVG}
-      defaultPage={'Game'}
-    >
+    <GamePage gameConfig={randzuConfig} gameTitleImage={RandzuCoverSVG}>
       <motion.div
         className={
           'flex grid-cols-4 flex-col-reverse gap-4 pt-10 lg:grid lg:pt-0'

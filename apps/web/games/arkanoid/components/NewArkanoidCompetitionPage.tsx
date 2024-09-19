@@ -352,12 +352,7 @@ export default function NewArkanoidCompetitionPage() {
   });
 
   return (
-    <GamePage
-      gameConfig={arkanoidConfig}
-      image={ArkanoidCoverSVG}
-      mobileImage={ArkanoidCoverMobileSVG}
-      defaultPage={'New Competition'}
-    >
+    <GamePage gameConfig={arkanoidConfig} gameTitleImage={ArkanoidCoverSVG}>
       <div className={'flex w-full flex-col gap-8'}>
         <div className={'w-full text-left text-headline-1'}>
           Create competition

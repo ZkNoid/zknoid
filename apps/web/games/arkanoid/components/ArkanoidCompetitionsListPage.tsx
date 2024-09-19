@@ -115,12 +115,7 @@ export default function ArkanoidCompetitionsListPage() {
   const competitionBlocks: ICompetition[] = compStore.competitions.slice(0, 3);
 
   return (
-    <GamePage
-      gameConfig={arkanoidConfig}
-      image={ArkanoidCoverSVG}
-      mobileImage={ArkanoidCoverMobileSVG}
-      defaultPage={'Competitions List'}
-    >
+    <GamePage gameConfig={arkanoidConfig} gameTitleImage={ArkanoidCoverSVG}>
       <CompetitionWidget
         gameId={arkanoidConfig.id}
         competitionBlocks={competitionBlocks}

@@ -98,7 +98,12 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   useObserveThimblerigMatchQueue();
   const startGame = useStartGame(setGameState);
 
-  const client_ = client as ClientAppChain<typeof thimblerigConfig.runtimeModules, any, any, any>;
+  const client_ = client as ClientAppChain<
+    typeof thimblerigConfig.runtimeModules,
+    any,
+    any,
+    any
+  >;
 
   const query = networkStore.protokitClientStarted
     ? client_.query.runtime.ThimblerigLogic
@@ -476,12 +481,7 @@ export default function Thimblerig({}: { params: { competitionId: string } }) {
   }, [gameState]);
 
   return (
-    <GamePage
-      gameConfig={thimblerigConfig}
-      image={ThimblerigCoverSVG}
-      mobileImage={ThimblerigCoverMobileSVG}
-      defaultPage={'Game'}
-    >
+    <GamePage gameConfig={thimblerigConfig} gameTitleImage={ThimblerigCoverSVG}>
       <motion.div
         className={
           'flex grid-cols-4 flex-col-reverse gap-4 pt-10 lg:grid lg:pt-0'

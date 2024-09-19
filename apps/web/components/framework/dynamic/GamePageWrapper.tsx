@@ -7,6 +7,8 @@ import ZkNoidGameContext from '@/lib/contexts/ZkNoidGameContext';
 import { api } from '@/trpc/react';
 import { useNetworkStore } from '@/lib/stores/network';
 import { getEnvContext } from '@/lib/envContext';
+import Header from '@/components/widgets/Header';
+import Footer from '@/components/widgets/Footer';
 
 export default function GamePageWrapper({
   gameId,
@@ -48,11 +50,13 @@ export default function GamePageWrapper({
         buildLocalClient: false,
       }}
     >
+      <Header />
       <config.page
         params={{
           competitionId: competitionId,
         }}
       />
+      <Footer />
     </ZkNoidGameContext.Provider>
   );
 }

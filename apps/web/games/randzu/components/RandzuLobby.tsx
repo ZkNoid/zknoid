@@ -29,12 +29,7 @@ export default function RandzuLobby({
   >;
 
   return (
-    <GamePage
-      gameConfig={randzuConfig}
-      image={RandzuCoverSVG}
-      mobileImage={RandzuCoverMobileSVG}
-      defaultPage={'Lobby list'}
-    >
+    <GamePage gameConfig={randzuConfig} gameTitleImage={RandzuCoverSVG}>
       <LobbyPage
         lobbyId={params.lobbyId}
         query={

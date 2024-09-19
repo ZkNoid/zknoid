@@ -244,12 +244,7 @@ export default function RandzuPage({
   }, [gameState]);
 
   return (
-    <GamePage
-      gameConfig={checkersConfig}
-      image={CheckersCoverSVG}
-      mobileImage={CheckersCoverMobileSVG}
-      defaultPage={'Game'}
-    >
+    <GamePage gameConfig={checkersConfig} gameTitleImage={CheckersCoverSVG}>
       <PvPGameView
         status={statuses[gameState]}
         opponent={matchQueue.gameInfo?.opponent}

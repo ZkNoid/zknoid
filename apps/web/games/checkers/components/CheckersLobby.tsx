@@ -29,12 +29,7 @@ export default function CheckersLobby({
   >;
 
   return (
-    <GamePage
-      gameConfig={checkersConfig}
-      image={CheckersCoverSVG}
-      mobileImage={CheckersCoverMobileSVG}
-      defaultPage={'Lobby list'}
-    >
+    <GamePage gameConfig={checkersConfig} gameTitleImage={CheckersCoverSVG}>
       <LobbyPage
         lobbyId={params.lobbyId}
         query={
