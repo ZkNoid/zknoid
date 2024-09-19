@@ -2,6 +2,12 @@
 
 ZkNoid is a home for ZK games platform on [Mina protocol](https://minaprotocol.com/).
 
+# Warning
+This repo is still maintaned, however the migration to the [repository with the updated architecture](https://github.com/ZkNoid/store) had been started. 
+Please consider to use the new store repo for building with ZkNoid!
+
+The new store hacking guide: https://zknoid.medium.com/zknoid-hackers-guide-v2-try-yourself-the-updated-store-benefits-c736ca1c76e8
+
 🚀 Founded on hackathon in Istanbul with the idea to unify gaming ecosystem in Mina, this project has won the grand prize in Mina Navigators and conducted a testnet event!
 
 ZkNoid is a gaming store for provable games. Modular framework is provided for developers bringing all the infrastructure they need to easily deploy games on Mina Protocol. After Zk Proofs integration to the game process, game is listed on the store becoming a part of the project ecosystem
