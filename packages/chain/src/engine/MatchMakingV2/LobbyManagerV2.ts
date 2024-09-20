@@ -7,14 +7,10 @@ import {
 } from '@proto-kit/module';
 import { State, StateMap, assert } from '@proto-kit/protocol';
 import { Bool, CircuitString, Field, Provable, PublicKey, Struct } from 'o1js';
-import { ZNAKE_TOKEN_ID } from 'src/constants';
+import { ZNAKE_TOKEN_ID } from '../../constants';
 import { inject } from 'tsyringe';
 import { getLobbyV2 } from './LobbyV2';
-
-export class RoundIdxUser extends Struct({
-  roundId: UInt64,
-  userAddress: PublicKey,
-}) {}
+import { RoundIdxUser } from './Structs';
 
 export interface LobbyManagerConfig {}
 

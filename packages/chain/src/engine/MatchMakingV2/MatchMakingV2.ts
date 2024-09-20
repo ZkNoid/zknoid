@@ -8,6 +8,7 @@ import {
 import { UInt64 } from '@proto-kit/library';
 import { State, StateMap, assert } from '@proto-kit/protocol';
 import { PublicKey, Provable, Bool, Struct } from 'o1js';
+import { QueueListItem, RoundIdxIndex, RoundIdxUser } from './Structs';
 
 export const PENDING_BLOCKS_NUM_CONST = 20;
 
@@ -15,26 +16,6 @@ const BLOCK_PRODUCTION_SECONDS = 5;
 export const MOVE_TIMEOUT_IN_BLOCKS = 60 / BLOCK_PRODUCTION_SECONDS;
 
 const PENDING_BLOCKS_NUM = UInt64.from(PENDING_BLOCKS_NUM_CONST);
-
-export class RoundIdxUser extends Struct({
-  roundId: UInt64,
-  userAddress: PublicKey,
-}) {}
-
-export class RoundIdxIndex extends Struct({
-  roundId: UInt64,
-  index: UInt64,
-}) {}
-
-export class AddressxAddress extends Struct({
-  user1: PublicKey,
-  user2: PublicKey,
-}) {}
-
-export class QueueListItem extends Struct({
-  userAddress: PublicKey,
-  registrationTimestamp: UInt64,
-}) {}
 
 export class PendingLobbyIndex extends Struct({
   roundId: UInt64,
