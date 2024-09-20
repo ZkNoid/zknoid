@@ -24,7 +24,8 @@
   "name": "starter-kit",
   "pnpm": {
     "patchedDependencies": {
-      "@proto-kit/library@0.1.1-develop.833": "patches/@proto-kit__library@0.1.1-develop.833.patch"
+      "@proto-kit/library@0.1.1-develop.833": "patches/@proto-kit__library@0.1.1-develop.833.patch",
+      "@proto-kit/common": "patches/@proto-kit__common.patch"
     }
   }
 }
