@@ -1,0 +1,26 @@
+diff --git a/dist/config/ConfigurableModule.d.ts b/dist/config/ConfigurableModule.d.ts
+index cf1ee0b4e9b7cad82d2c984e371e75fd8c64b017..b8f0f5d2172414868b4511af3aed41e85acf1cb5 100644
+--- a/dist/config/ConfigurableModule.d.ts
++++ b/dist/config/ConfigurableModule.d.ts
+@@ -14,7 +14,7 @@ export declare class ConfigurableModule<Config = NoConfig> implements BaseModule
+      * Store the config separately, so that we can apply additional
+      * checks when retrieving it via the getter
+      */
+-    protected currentConfig: Config | undefined;
++    public currentConfig: Config | undefined;
+     get config(): Config;
+     set config(config: Config);
+     create(childContainerProvider: ChildContainerProvider): void;
+diff --git a/src/config/ConfigurableModule.ts b/src/config/ConfigurableModule.ts
+index c8bed569b28126dc5d6c9a6e30c1ef6ae687bb3d..96bb8081864c021772cc057a66699471449d83c8 100644
+--- a/src/config/ConfigurableModule.ts
++++ b/src/config/ConfigurableModule.ts
+@@ -31,7 +31,7 @@ export class ConfigurableModule<Config = NoConfig>
+    * Store the config separately, so that we can apply additional
+    * checks when retrieving it via the getter
+    */
+-  protected currentConfig: Config | undefined;
++  public currentConfig: Config | undefined;
+ 
+   // retrieve the existing config
+   public get config(): Config {
