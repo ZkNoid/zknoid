@@ -71,7 +71,7 @@ export const GAME_EVENTS: ZkNoidEvent[] = [
     description:
       'To participate in the bounty, simply record your ZkNoid gaming journey with any screen recording software and send it to us. Be creative, using editing software is encouraged! Don’t forget to describe your experience in a comment to the submission.',
     eventStarts: new Date('2024-09-13').getTime(),
-    eventEnds: new Date('2024-09-26').getTime(),
+    eventEnds: new Date('2024-09-27').getTime(),
     link: 'https://github.com/ZkNoid/zknoid/issues/13',
     image: '/image/events/astromina.svg',
     imageFullWidth: true,
