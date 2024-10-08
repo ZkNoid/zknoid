@@ -77,6 +77,17 @@ export const GAME_EVENTS: ZkNoidEvent[] = [
     imageFullWidth: true,
     textColor: 'white',
   },
+  {
+    name: 'Lottery L1 Testnet',
+    description:
+      'The long-awaited event: The lottery game testnet is coming. The testnet allows users to test game features, check tasks, do it, help the team fix bugs and get rewards.',
+    eventStarts: new Date('2024-10-14').getTime(),
+    eventEnds: new Date('2024-10-29').getTime(),
+    link: 'https://quest.zknoid.io',
+    image: '/image/events/lottery-testnet.svg',
+    imageFullWidth: true,
+    textColor: 'white',
+  },
 ];
 
 export const getEventType = (event: ZkNoidEvent): ZkNoidEventType => {

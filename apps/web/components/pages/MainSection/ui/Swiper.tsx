@@ -1,10 +1,12 @@
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import Image from 'next/image';
-import defaultSlide from '@/public/image/slides/slide1.svg';
+import pokerSlide from '@/public/image/slides/poker.svg';
 import mobileCoverIMG from '@/public/image/section1/mobile-cover.svg';
 import lotterySlide from '@/public/image/slides/lottery.svg';
 import ethSingaporeSlide from '@/public/image/slides/eth-singapore.svg';
+import avatarsSlide from '@/public/image/slides/avatars.svg';
+import testnetSlide from '@/public/image/slides/testnet.svg';
 import Link from 'next/link';
 
 export default function Swiper() {
@@ -17,7 +19,7 @@ export default function Swiper() {
 
   const slides: { image: any; link?: string; openAsNewTab?: boolean }[] = [
     {
-      image: defaultSlide,
+      image: pokerSlide,
     },
     {
       image: lotterySlide,
@@ -25,8 +27,11 @@ export default function Swiper() {
       openAsNewTab: true,
     },
     {
-      image: ethSingaporeSlide,
-      link: 'https://ethglobal.com/events/singapore2024',
+      image: avatarsSlide,
+    },
+    {
+      image: testnetSlide,
+      link: 'https://quest.zknoid.io',
       openAsNewTab: true,
     },
   ];
